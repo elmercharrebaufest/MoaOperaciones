@@ -1,0 +1,142 @@
+﻿<div class="content-wraper ccpp">
+    <!-- CONTENT-->
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <section class="container-fluid clearfix"  *ngIf="data != undefined">
+        <!--Title-->
+        <div class="row titleSection titleSectionTable">
+            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8; display: inline-block; vertical-align:top;"> Pago: <strong><span>Nº {{data.pago}}</span></strong> </div>
+                <div class="titleExtraData titleExtraDataOneLine"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Vendedor: <strong><a *ngIf="data.vendedores[0] != undefined" routerLink="/dato-fiscal/situacion-fiscal">{{data.vendedores[0].vendedor}}</a> </strong></div>
+            </div>
+            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+                <spinner-small #smallSpinner></spinner-small>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                </a>
+                    <!--<a href="#" style="text-decoration:none!important">
+            <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
+        </a>-->
+</div>
+        </div>
+        <!--End Title-->
+        <!--Datos de Pago-->
+        <div id="Pago" class=" firstSection row myRow">
+            <div class="row titleSection titleSectionNoBorder">
+                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen">
+                    <div class="rowInfoRoundedGreenLine">
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Fecha de pago</p>
+                            <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].fecha}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>ID Pago</p>
+                            <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].idPago}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Total Mercader&iacute;a</p>
+                            <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].brutoString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Total IVA</p>
+                            <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].ivaString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Retenciones</p>
+                            <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].retencionesString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Neto Acreditado</p>
+                            <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].netoString}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--factura-->
+        <div *ngFor="let salida of data.salidas" id="Pago" class="Pago">
+            <div class="PagoColumn">
+                <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td width="100%">
+                            <div>
+                                <p>Contrato Molinos</p>
+                                <p> <a class="animate" (click)="goToSeccionParam('/contrato/detalle', salida.contrato)" href="#">{{salida.contrato}}</a></p>
+                            </div>
+                            <div>
+                                <p> Tipo pago</p>
+                                <p style="margin-bottom: 0px!important; margin-right: 5px!important">{{salida.tipo}}</p>
+                                <p *ngFor="let registro of salida.registros" style="font-weight: 700!important;">{{registro.nroLegal}}</p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="PagoFactura">
+                <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                    <tr class="CalidadCCPPDataCategoria">
+                        <th width="60%">&nbsp;</th>
+                        <th width="20%">Total Mercader&iacute;a</th>
+                        <th width="20%">IVA</th>
+                    </tr>
+                    <ng-container *ngFor="let registro of salida.registros">
+                        <tr class="PagoTableLine">
+                            <td>{{registro.caract}}</td>
+                            <td><span [ngClass]="(isNegative(registro.bruto)) ? 'PagoNegative' : 'PagoPositive'">{{registro.brutoString}}</span></td>
+                            <td><span [ngClass]="(isNegative(registro.iva)) ? 'PagoNegative' : 'PagoPositive'"> {{registro.ivaString}}</span></td>
+                        </tr>
+                        <tr>
+                            <td><a class="animate" (click)="goToSeccionParam('/cuenta-corriente/simple', data.pago)" href="#"><span class="fa  fa-file-pdf-o "></span>ret iva</a></td>
+                            <td></td>
+                            <td><span [ngClass]="(isNegative(registro.retIva)) ? 'PagoNegative' : 'PagoPositive'">{{registro.retIvaString}}</span></td>
+                        </tr>
+                        <tr>
+                            <td><a class="animate" (click)="goToSeccionParam('/cuenta-corriente/simple', data.pago)" href="#"><span class="fa  fa-file-pdf-o "></span>ret IIBB</a></td>
+                            <td><span [ngClass]="(isNegative(registro.impIibb)) ? 'PagoNegative' : 'PagoPositive'">{{registro.impIibbString}}</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><a class="animate" (click)="goToSeccionParam('/cuenta-corriente/simple', data.pago)" href="#"><span class="fa  fa-file-pdf-o "></span>ret Ganancias</a></td>
+                            <td><span [ngClass]="(isNegative(registro.impGanancias)) ? 'PagoNegative' : 'PagoPositive'">{{registro.impGananciasString}}</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><strong>remanente Iva</strong> Transf DATANET (CBU: {{registro.cbuIva}})</td>
+                            <td></td>
+                            <td><span [ngClass]="(isNegative(registro.remanenteIva)) ? 'PagoNegative' : 'PagoPositive'">{{registro.remanenteIvaString}}</span></td>
+                        </tr>
+                    </ng-container>
+                    <tr role="row" class="totalTable">
+                        <td tabindex="0">TOTAL</td>
+                        <td></td>
+                        <td>{{salida.totalString}}</td>
+                    </tr>
+                </table>
+                
+            </div>
+        </div>
+        <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+            <tr role="row" class="totalTable totalTableWhite" *ngIf="showCorredorTotal(data.subtotalMercCorredor, data.subtotalIvaCorredor)">
+                <td tabindex="0">subtotal corredor</td>
+                <td>{{data.subtotalMercCorredorString}}</td>
+                <td>{{data.subtotalIvaCorredorString}}</td>
+            </tr>
+            <tr role="row" class="totalTable totalTableWhite">
+                <td tabindex="0">subtotal vendedor</td>
+                <td>{{data.subtotalMercVendedorString}}</td>
+                <td>{{data.subtotalIvaVendedorString}}</td>
+            </tr>
+        </table>
+        <!--Botones mobile-->
+        <div class="showBtn btnSection btnInfo animate  downloadPDF downloadPDF_PAGO">
+            <a href="#">
+                <div>
+                    <li class="fa fa-file-pdf-o" aria-hidden="true"></li>
+                </div>
+                <div>Factura</div>
+            </a>
+        </div>
+        <!--Fin botones mobile-->
+    </section>
+    <!--End CONTENT-->
+</div>

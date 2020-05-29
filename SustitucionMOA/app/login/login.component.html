@@ -1,0 +1,52 @@
+﻿<!--<body class="loginBody" (keypress)="enterPressedLogin($event)">-->
+    <div class="login-wrapper" (keypress)="enterPressedLogin($event)">
+        <div id="loginSide">
+            <div class="login rounded mySearch">
+                <div class="col-xs-12 loginTxt">
+                    <img src="./Content/images/header/logoLogin.png" class="img-responsive" style="margin-bottom:10px;">
+                    <span style="width:100%">Información de operaciones y entregas para proveedores de Materias Primas</span>
+                </div>
+                <div class="col-xs-12 title-caps">
+                    consultas online<p style="width:100%"> cereales y oleaginosas</p>
+                </div>
+                <hr>
+                <div class="col-xs-12 col-sm-6">
+                    Usuario:
+                    <div class="styled-select ">
+                        <input type="search" [(ngModel)]="username" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6" style="margin-bottom:10px;">
+                    Contraseña:
+                    <div class="styled-select">
+                        <input type="password" [(ngModel)]="pass" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="cargaDeDatos cargaDeDatosBtn" style="clear:both;">                    
+                    <div class="col-xs-12" *ngIf="loginButtonEnable">
+                        <a (click)="login()" href="#" style="text-decoration:none!important">
+                            <div class="btnSection animate">Ingresar <span class="fa fa-sign-in"></span></div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="spinner-small-container-login">
+                    <spinner-small></spinner-small>
+                </div>
+                <mensaje></mensaje>
+                <a routerLink="/usuario/recuperar-contrasenia" style="text-decoration:none!important; display:block">
+                    <div class="col-xs-12" style="margin-top:10px; margin-bottom:30px;"> ¿Olvidó su contraseña?</div>
+                </a>
+                <hr>
+                <div class="cargaDeDatos cargaDeDatosBtn" style="clear:both;">
+                    <div class="col-xs-8 col-sm-6 col-sm-offset-6 col-xs-offset-2">
+                        <a routerLink="/usuario/registro" style="text-decoration:none!important">
+                            <div class="btnSection btnSectionGrey animate">NUEVOS USUARIOS <span class="fa   fa-play "></span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--</body>-->
+

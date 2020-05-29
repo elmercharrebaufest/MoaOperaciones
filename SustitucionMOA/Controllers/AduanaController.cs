@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOASecurity;
+using SustitucionMOAUtils.DBMethods;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
+
+namespace SustitucionMOA.Controllers
+{
+    [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    public class AduanaController : BaseController
+    {
+        DBService _dbService = new DBService();
+        AduanaService _aduanaService = new AduanaService();
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_PESADAS)]
+        public ActionResult getPesada(int centro, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                return JsonCustom(_dbService.SqlSPReporte(centro, fechaInicio, fechaFin));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e) {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_PESADA_DETALLE)]
+        public ActionResult getPesadaDetalle(int centro, int nroOrden)
+        {
+            try
+            {
+                return JsonCustom(_dbService.SqlSPDeltallePesada(centro, nroOrden));
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CAMARAS_CONSOLIDACION)]
+        public ActionResult obtenerImagenCamaraConsolidacion(string url, string nombre) {
+            try
+            {
+                return JsonCustom(_aduanaService.ObtenerImagen(url, nombre));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message, nombre = nombre }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message, nombre = nombre }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error, nombre = nombre }, JsonRequestBehavior.AllowGet);
+            }
+        }        
+    }
+}

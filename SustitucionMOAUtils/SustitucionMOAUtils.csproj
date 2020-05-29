@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DA180EE1-E819-4216-B0F5-2377A22EA72A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SustitucionMOAUtils</RootNamespace>
+    <AssemblyName>SustitucionMOAUtils</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Quartz, Version=3.0.3.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.3.0.3\lib\net452\Quartz.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Credentials\CamCredential.cs" />
+    <Compile Include="Credentials\DBCredential.cs" />
+    <Compile Include="DBMethods\DBService.cs" />
+    <Compile Include="Email\EmailConfig.cs" />
+    <Compile Include="Email\EmailSender.cs" />
+    <Compile Include="Export\ExcelExport.cs" />
+    <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Logger\Log.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AduanaService.cs" />
+    <Compile Include="Services\CartaPorteService.cs" />
+    <Compile Include="Services\CommonService.cs" />
+    <Compile Include="Services\ContactoMailService.cs" />
+    <Compile Include="Services\ContratoService.cs" />
+    <Compile Include="Services\CuentaCorrienteService.cs" />
+    <Compile Include="Services\DataAgroService.cs" />
+    <Compile Include="Services\FacturaService.cs" />
+    <Compile Include="Services\FleteService.cs" />
+    <Compile Include="Services\HomeService.cs" />
+    <Compile Include="Services\LiquidacionService.cs" />
+    <Compile Include="Services\LoginService.cs" />
+    <Compile Include="Services\PagoService.cs" />
+    <Compile Include="Services\PDFService.cs" />
+    <Compile Include="Services\PesificacionService.cs" />
+    <Compile Include="Services\RYDMantenimientoService.cs" />
+    <Compile Include="Services\RYDService.cs" />
+    <Compile Include="Services\UsuarioService.cs" />
+    <Compile Include="Services\VendedorService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
+      <Project>{CDE9AB52-949B-428E-A737-5910D05116D8}</Project>
+      <Name>SustitucionMOAAsset</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACrypting\SustitucionMOACrypting.csproj">
+      <Project>{B6672999-1E81-4BDE-BDA1-D825C51A5388}</Project>
+      <Name>SustitucionMOACrypting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
+      <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
+      <Name>SustitucionMOACustomException</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Name>SustitucionMOAModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAValidator\SustitucionMOAValidator.csproj">
+      <Project>{7FD011FD-9B76-4FA9-AD54-3EB33F2D6E0C}</Project>
+      <Name>SustitucionMOAValidator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
+      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Name>SustitucionMOAWS</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

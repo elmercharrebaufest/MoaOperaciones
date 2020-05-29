@@ -1,0 +1,1292 @@
+﻿th:focus {
+    outline: 0px;
+}
+
+td:nth-child(1) a.btnShowModal {
+    display: none;
+}
+
+td:nth-child(1) a.btnShowModal,
+td:nth-child(1) a.btnShowModal:hover {
+    text-decoration: none;
+}
+
+td:nth-child(2) a.btnShowModal {
+    display: none;
+}
+
+td:nth-child(2) a.btnShowModal,
+td:nth-child(2) a.btnShowModal:hover {
+    text-decoration: none;
+}
+
+a.btnShowModal .fa-plus {
+	padding: 5px;
+}
+
+/*============= Inicio Cuenta Corriente =============*/
+@media (max-width: 1300px) {
+    .inicio-cc-table th:nth-child(10),
+    .inicio-cc-table td:nth-child(10) {
+        display: none;
+    }
+    .inicio-cc-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1200px) {
+    .inicio-cc-table th:nth-child(9),
+    .inicio-cc-table td:nth-child(9) {
+        display: none;
+    }
+}
+
+@media (max-width: 1100px) {
+    .inicio-cc-table th:nth-child(8),
+    .inicio-cc-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    .inicio-cc-table th:nth-child(7),
+    .inicio-cc-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .inicio-cc-table th:nth-child(6),
+    .inicio-cc-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .inicio-cc-table th:nth-child(5),
+    .inicio-cc-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .inicio-cc-table th:nth-child(4),
+    .inicio-cc-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .inicio-cc-table th:nth-child(3),
+    .inicio-cc-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato Vigente =============*/
+@media (max-width: 1100px) {
+    .contrato-vigente-table th:nth-child(8),
+    .contrato-vigente-table td:nth-child(8) {
+        display: none;
+    }
+    .contrato-vigente-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .contrato-vigente-table th:nth-child(7),
+    .contrato-vigente-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .contrato-vigente-table th:nth-child(6),
+    .contrato-vigente-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-vigente-table th:nth-child(5),
+    .contrato-vigente-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-vigente-table th:nth-child(4),
+    .contrato-vigente-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-vigente-table th:nth-child(3),
+    .contrato-vigente-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .contrato-vigente-table th:nth-child(9),
+    .contrato-vigente-table td:nth-child(9) {
+        display: none;
+    }
+}
+
+/*============= Contrato Fijaciones =============*/
+@media (max-width: 1100px) {
+    .contrato-fijacion-table th:nth-child(8),
+    .contrato-fijacion-table td:nth-child(8) {
+        display: none;
+    }
+    .contrato-fijacion-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .contrato-fijacion-table th:nth-child(7),
+    .contrato-fijacion-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .contrato-fijacion-table th:nth-child(6),
+    .contrato-fijacion-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-fijacion-table th:nth-child(5),
+    .contrato-fijacion-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-fijacion-table th:nth-child(4),
+    .contrato-fijacion-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-fijacion-table th:nth-child(3),
+    .contrato-fijacion-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato Ampliaciones =============*/
+@media (max-width: 1100px) {
+    .contrato-ampliacion-table th:nth-child(8),
+    .contrato-ampliacion-table td:nth-child(8) {
+        display: none;
+    }
+    .contrato-ampliacion-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .contrato-ampliacion-table th:nth-child(7),
+    .contrato-ampliacion-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .contrato-ampliacion-table th:nth-child(6),
+    .contrato-ampliacion-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-ampliacion-table th:nth-child(5),
+    .contrato-ampliacion-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-ampliacion-table th:nth-child(4),
+    .contrato-ampliacion-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-ampliacion-table th:nth-child(3),
+    .contrato-ampliacion-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato anulaciones =============*/
+@media (max-width: 1100px) {
+    .contrato-anulaciones-table th:nth-child(8),
+    .contrato-anulaciones-table td:nth-child(8) {
+        display: none;
+    }
+    .contrato-anulaciones-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .contrato-anulaciones-table th:nth-child(7),
+    .contrato-anulaciones-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .contrato-anulaciones-table th:nth-child(6),
+    .contrato-anulaciones-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-anulaciones-table th:nth-child(5),
+    .contrato-anulaciones-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-anulaciones-table th:nth-child(4),
+    .contrato-anulaciones-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-anulaciones-table th:nth-child(3),
+    .contrato-anulaciones-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato detalle Boleto =============*/
+@media (max-width: 900px) {
+    .contrato-det-boletos-table th:nth-child(9),
+    .contrato-det-boletos-table td:nth-child(9) {
+        display: none;
+    }
+	.contrato-det-boletos-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-det-boletos-table th:nth-child(8),
+    .contrato-det-boletos-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-det-boletos-table th:nth-child(7),
+    .contrato-det-boletos-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-det-boletos-table th:nth-child(6),
+    .contrato-det-boletos-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .contrato-det-boletos-table th:nth-child(5),
+    .contrato-det-boletos-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .contrato-det-boletos-table th:nth-child(4),
+    .contrato-det-boletos-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 300px) {
+    .contrato-det-boletos-table th:nth-child(2),
+    .contrato-det-boletos-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+/*============= Contrato detalle Pago =============*/
+@media (max-width: 900px) {
+    .contrato-det-pagos-table th:nth-child(6),
+    .contrato-det-pagos-table td:nth-child(6) {
+        display: none;
+    }
+	.contrato-det-pagos-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-det-pagos-table th:nth-child(5),
+    .contrato-det-pagos-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-det-pagos-table th:nth-child(4),
+    .contrato-det-pagos-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-det-pagos-table th:nth-child(3),
+    .contrato-det-pagos-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Contrato detalle Liquidaciones =============*/
+@media (max-width: 900px) {
+    .contrato-det-liquidaciones-table th:nth-child(6),
+    .contrato-det-liquidaciones-table td:nth-child(6) {
+        display: none;
+    }
+	.contrato-det-liquidaciones-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 800px) {
+    .contrato-det-liquidaciones-table th:nth-child(5),
+    .contrato-det-liquidaciones-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .contrato-det-liquidaciones-table th:nth-child(4),
+    .contrato-det-liquidaciones-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-det-liquidaciones-table th:nth-child(3),
+    .contrato-det-liquidaciones-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Contrato detalle Fijaciones =============*/
+@media (max-width: 500px) {
+    .contrato-det-fijaciones-table th:nth-child(4),
+    .contrato-det-fijaciones-table td:nth-child(4) {
+        display: none;
+    }
+	.contrato-det-fijaciones-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 400px) {
+    .contrato-det-fijaciones-table th:nth-child(3),
+    .contrato-det-fijaciones-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato detalle Ampliaciones / Anulaciones =============*/
+@media (max-width: 500px) {
+    .contrato-det-ampliaciones-anulaciones-table th:nth-child(4),
+    .contrato-det-ampliaciones-anulaciones-table td:nth-child(4) {
+        display: none;
+    }
+	.contrato-det-ampliaciones-anulaciones-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 400px) {
+    .contrato-det-ampliaciones-anulaciones-table th:nth-child(3),
+    .contrato-det-ampliaciones-anulaciones-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato detalle Aplicaciones =============*/
+@media (max-width: 700px) {
+    .contrato-det-aplicacciones-table th:nth-child(5),
+    .contrato-det-aplicacciones-table td:nth-child(5) {
+        display: none;
+    }
+	.contrato-det-aplicacciones-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-det-aplicacciones-table th:nth-child(4),
+    .contrato-det-aplicacciones-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .contrato-det-aplicacciones-table th:nth-child(3),
+    .contrato-det-aplicacciones-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Contrato detalle Hijos =============*/
+@media (max-width: 700px) {
+    .contrato-det-hijos-table th:nth-child(5),
+    .contrato-det-hijos-table td:nth-child(5) {
+        display: none;
+    }
+	.contrato-det-hijos-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 600px) {
+    .contrato-det-hijos-table th:nth-child(4),
+    .contrato-det-hijos-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .contrato-det-hijos-table th:nth-child(3),
+    .contrato-det-hijos-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= CCPP Descarga =============*/
+@media (max-width: 500px) {
+    .ccpp-descarga-table th:nth-child(4),
+    .ccpp-descarga-table td:nth-child(4) {
+        display: none;
+    }
+    .ccpp-descarga-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 400px) {
+    .ccpp-descarga-table th:nth-child(3),
+    .ccpp-descarga-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 350px) {
+    .ccpp-descarga-table th:nth-child(5),
+    .ccpp-descarga-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+/*============= CCPP Aplicacion =============*/
+@media (max-width: 900px) {
+    .ccpp-aplicacion-table th:nth-child(7),
+    .ccpp-aplicacion-table td:nth-child(7) {
+        display: none;
+    }
+    .ccpp-aplicacion-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 800px) {
+    .ccpp-aplicacion-table th:nth-child(6),
+    .ccpp-aplicacion-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .ccpp-aplicacion-table th:nth-child(5),
+    .ccpp-aplicacion-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .ccpp-aplicacion-table th:nth-child(4),
+    .ccpp-aplicacion-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .ccpp-aplicacion-table th:nth-child(3),
+    .ccpp-aplicacion-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .ccpp-aplicacion-table th:nth-child(8),
+    .ccpp-aplicacion-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+/*============= Liquidaciones Aprobadas =============*/
+@media (max-width: 1100px) {
+    .liquidaciones-aprobadas-table th:nth-child(7),
+    .liquidaciones-aprobadas-table td:nth-child(7) {
+        display: none;
+    }
+    
+    .liquidaciones-aprobadas-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .liquidaciones-aprobadas-table th:nth-child(6),
+    .liquidaciones-aprobadas-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .liquidaciones-aprobadas-table th:nth-child(5),
+    .liquidaciones-aprobadas-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .liquidaciones-aprobadas-table th:nth-child(4),
+    .liquidaciones-aprobadas-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .liquidaciones-aprobadas-table th:nth-child(2),
+    .liquidaciones-aprobadas-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+/*============= Liquidaciones Observadas =============*/
+@media (max-width: 1100px) {
+    .liquidaciones-observada-table th:nth-child(8),
+    .liquidaciones-observada-table td:nth-child(8) {
+        display: none;
+    }
+   
+    .liquidaciones-observada-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .liquidaciones-observada-table th:nth-child(7),
+    .liquidaciones-observada-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .liquidaciones-observada-table th:nth-child(6),
+    .liquidaciones-observada-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .liquidaciones-observada-table th:nth-child(5),
+    .liquidaciones-observada-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .liquidaciones-observada-table th:nth-child(4),
+    .liquidaciones-observada-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .liquidaciones-observada-table th:nth-child(2),
+    .liquidaciones-observada-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+@media (max-width: 300px) {
+    .liquidaciones-observada-table th:nth-child(9),
+    .liquidaciones-observada-table td:nth-child(9) {
+        display: none;
+    }
+}
+
+/*============= Liquidaciones Pagas =============*/
+@media (max-width: 1070px) {
+    .liquidacion-paga-table th:nth-child(7),
+    .liquidacion-paga-table td:nth-child(7) {
+        display: none;
+    }
+    .liquidacion-paga-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 900px) {
+    .liquidacion-paga-table th:nth-child(6),
+    .liquidacion-paga-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .liquidacion-paga-table th:nth-child(5),
+    .liquidacion-paga-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .liquidacion-paga-table th:nth-child(4),
+    .liquidacion-paga-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .liquidacion-paga-table th:nth-child(3),
+    .liquidacion-paga-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+/*============= Pagos Emitidos =============*/
+@media (max-width: 1100px) {
+    .pagos-emitidos-table th:nth-child(8),
+    .pagos-emitidos-table td:nth-child(8) {
+        display: none;
+    }
+    .pagos-emitidos-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .pagos-emitidos-table th:nth-child(7),
+    .pagos-emitidos-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .pagos-emitidos-table th:nth-child(6),
+    .pagos-emitidos-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .pagos-emitidos-table th:nth-child(5),
+    .pagos-emitidos-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .pagos-emitidos-table th:nth-child(4),
+    .pagos-emitidos-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .pagos-emitidos-table th:nth-child(3),
+    .pagos-emitidos-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Pagos Emitidos NG =============*/
+@media (max-width: 900px) {
+    .pagos-emitidos-ng-table th:nth-child(6),
+    .pagos-emitidos-ng-table td:nth-child(6) {
+        display: none;
+    }
+    .pagos-emitidos-ng-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 800px) {
+    .pagos-emitidos-ng-table th:nth-child(5),
+    .pagos-emitidos-ng-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .pagos-emitidos-ng-table th:nth-child(4),
+    .pagos-emitidos-ng-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .pagos-emitidos-ng-table th:nth-child(3),
+    .pagos-emitidos-ng-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Usuarios Listado =============*/
+@media (max-width: 590px) {
+    .usuarios-list-table th:nth-child(3),
+    .usuarios-list-table td:nth-child(3) {
+        display: none;
+    }
+    .usuarios-list-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 480px) {
+    .usuarios-list-table th:nth-child(4),
+    .usuarios-list-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .usuarios-list-table th:nth-child(5),
+    .usuarios-list-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 300px) {
+    .usuarios-list-table th:nth-child(1),
+    .usuarios-list-table td:nth-child(1) {
+        display: none;
+    }
+	.usuarios-list-table td:nth-child(2) a.btnShowModal {
+        display: inline;
+    }
+}
+
+
+/*============= Pesada Historica =============*/
+@media (max-width: 1000px) {
+    .pesada-historica-table th:nth-child(9),
+    .pesada-historica-table td:nth-child(9) {
+        display: none;
+    }
+    .pesada-historica-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 900px) {
+    .pesada-historica-table th:nth-child(8),
+    .pesada-historica-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .pesada-historica-table th:nth-child(7),
+    .pesada-historica-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .pesada-historica-table th:nth-child(6),
+    .pesada-historica-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .pesada-historica-table th:nth-child(5),
+    .pesada-historica-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .pesada-historica-table th:nth-child(4),
+    .pesada-historica-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .pesada-historica-table th:nth-child(3),
+    .pesada-historica-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Pesada Online =============*/
+@media (max-width: 1300px) {
+    .pesada-online-table th:nth-child(10),
+    .pesada-online-table td:nth-child(10) {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    .pesada-online-table th:nth-child(9),
+    .pesada-online-table td:nth-child(9) {
+        display: none;
+    }
+}
+
+@media (max-width: 1100px) {
+    .pesada-online-table th:nth-child(8),
+    .pesada-online-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    .pesada-online-table th:nth-child(7),
+    .pesada-online-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .pesada-online-table th:nth-child(6),
+    .pesada-online-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .pesada-online-table th:nth-child(5),
+    .pesada-online-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .pesada-online-table th:nth-child(4),
+    .pesada-online-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .pesada-online-table th:nth-child(3),
+    .pesada-online-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Cuenta Corriente Simple =============*/
+@media (max-width: 1300px) {
+    .cuenta-corriente-simple-table th:nth-child(10),
+    .cuenta-corriente-simple-table td:nth-child(10) {
+        display: none;
+    }
+    .cuenta-corriente-simple-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1300px) {
+    .cuenta-corriente-simple-table th:nth-child(7),
+    .cuenta-corriente-simple-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    .cuenta-corriente-simple-table th:nth-child(6),
+    .cuenta-corriente-simple-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 1100px) {
+    .cuenta-corriente-simple-table th:nth-child(5),
+    .cuenta-corriente-simple-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 1000px) {
+    .cuenta-corriente-simple-table th:nth-child(3),
+    .cuenta-corriente-simple-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .cuenta-corriente-simple-table th:nth-child(2),
+    .cuenta-corriente-simple-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .cuenta-corriente-simple-table th:nth-child(4),
+    .cuenta-corriente-simple-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+/*============= Cuenta Corriente Agrupada =============*/
+@media (max-width: 1000px) {
+    .cc-agrupada-table th:nth-child(5),
+    .cc-agrupada-table td:nth-child(5) {
+        display: none;
+    }
+    .cc-agrupada-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 900px) {
+    .cc-agrupada-table th:nth-child(4),
+    .cc-agrupada-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+
+/*============= Datos Ficales Exenciones =============*/
+@media (max-width: 450px) {
+    .datos-fiscales-exenciones-table th:nth-child(4),
+    .datos-fiscales-exenciones-table td:nth-child(4) {
+        display: none;
+    }
+
+	.datos-fiscales-exenciones-table th:nth-child(3),
+    .datos-fiscales-exenciones-table td:nth-child(3) {
+        display: none;
+    }
+
+	.datos-fiscales-exenciones-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 300px) {
+    .datos-fiscales-exenciones-table th:nth-child(2),
+    .datos-fiscales-exenciones-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+
+/*============= Datos Ficales Cuentas Habilitadas =============*/
+@media (max-width: 500px) {
+    .datos-fiscales-cuentas-habilitadas-table th:nth-child(4),
+    .datos-fiscales-cuentas-habilitadas-table td:nth-child(4) {
+        display: none;
+    }
+
+	.datos-fiscales-cuentas-habilitadas-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 400px) {
+    .datos-fiscales-cuentas-habilitadas-table th:nth-child(3),
+    .datos-fiscales-cuentas-habilitadas-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 300px) {
+    .datos-fiscales-cuentas-habilitadas-table th:nth-child(2),
+    .datos-fiscales-cuentas-habilitadas-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+
+/*============= Datos Ficales Cuentas Habilitadas =============*/
+@media (max-width: 300px) {
+    .datos-fiscales-convenios-multilaterales-table th:nth-child(3),
+    .datos-fiscales-convenios-multilaterales-table td:nth-child(3) {
+        display: none;
+    }
+	.datos-fiscales-convenios-multilaterales-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+
+}
+
+/*============= Cuenta Corriente Agrupada =============*/
+@media (max-width: 800px) {
+    .cuenta-corriente-agrupada-table th:nth-child(5),
+    .cuenta-corriente-agrupada-table td:nth-child(5) {
+        display: none;
+    }
+
+	.cuenta-corriente-agrupada-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 700px) {
+	.cuenta-corriente-agrupada-table th:nth-child(4),
+	.cuenta-corriente-agrupada-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .cuenta-corriente-agrupada-table th:nth-child(3),
+    .cuenta-corriente-agrupada-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .cuenta-corriente-agrupada-table th:nth-child(2),
+    .cuenta-corriente-agrupada-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+/*============= Cuenta Corriente Agrupada =============*/
+@media (max-width: 500px) {
+    .layout-liquidaciones-table th:nth-child(3),
+    .layout-liquidaciones-table td:nth-child(3) {
+        display: none;
+    }
+
+	.layout-liquidaciones-table th:nth-child(4),
+    .layout-liquidaciones-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+/*============= Flete Pendiente =============*/
+@media (max-width: 1100px) {
+    .flete-pendiente-table th:nth-child(9),
+    .flete-pendiente-table td:nth-child(9) {
+        display: none;
+    }
+    .flete-pendiente-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .flete-pendiente-table th:nth-child(8),
+    .flete-pendiente-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .flete-pendiente-table th:nth-child(7),
+    .flete-pendiente-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .flete-pendiente-table th:nth-child(6),
+    .flete-pendiente-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .flete-pendiente-table th:nth-child(5),
+    .flete-pendiente-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .flete-pendiente-table th:nth-child(4),
+    .flete-pendiente-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .flete-pendiente-table th:nth-child(3),
+    .flete-pendiente-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+
+/*============= Flete A Facturar =============*/
+@media (max-width: 1100px) {
+    .flete-a-facturar-table th:nth-child(10),
+    .flete-a-facturar-table td:nth-child(10) {
+        display: none;
+    }
+	.flete-a-facturar-table th:nth-child(9),
+    .flete-a-facturar-table td:nth-child(9) {
+        display: none;
+    }
+    .flete-a-facturar-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1070px) {
+    .flete-a-facturar-table th:nth-child(7),
+    .flete-a-facturar-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .flete-a-facturar-table th:nth-child(6),
+    .flete-a-facturar-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .flete-a-facturar-table th:nth-child(5),
+    .flete-a-facturar-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .flete-a-facturar-table th:nth-child(4),
+    .flete-a-facturar-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .flete-a-facturar-table th:nth-child(3),
+    .flete-a-facturar-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .flete-a-facturar-table th:nth-child(2),
+    .flete-a-facturar-table td:nth-child(2) {
+        display: none;
+    }
+}
+
+@media (max-width: 350px) {
+    .flete-a-facturar-table th:nth-child(11),
+    .flete-a-facturar-table td:nth-child(11) {
+        display: none;
+    }
+}
+
+/*============= Flete Facturado =============*/
+@media (max-width: 1200px) {
+    .flete-facturado-table th:nth-child(12),
+    .flete-facturado-table td:nth-child(12) {
+        display: none;
+    }
+	.flete-facturado-table th:nth-child(11),
+    .flete-facturado-table td:nth-child(11) {
+        display: none;
+    }
+    .flete-facturado-table td:nth-child(1) a.btnShowModal {
+        display: inline;
+    }
+}
+
+@media (max-width: 1100px) {
+    .flete-facturado-table th:nth-child(10),
+    .flete-facturado-table td:nth-child(10) {
+        display: none;
+    }
+}
+
+@media (max-width: 1050px) {
+    .flete-facturado-table th:nth-child(9),
+    .flete-facturado-table td:nth-child(9) {
+        display: none;
+    }
+}
+
+@media (max-width: 950px) {
+    .flete-facturado-table th:nth-child(8),
+    .flete-facturado-table td:nth-child(8) {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .flete-facturado-table th:nth-child(7),
+    .flete-facturado-table td:nth-child(7) {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .flete-facturado-table th:nth-child(6),
+    .flete-facturado-table td:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .flete-facturado-table th:nth-child(3),
+    .flete-facturado-table td:nth-child(3) {
+        display: none;
+    }
+}
+
+@media (max-width: 500px) {
+    .flete-facturado-table th:nth-child(4),
+    .flete-facturado-table td:nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .flete-facturado-table th:nth-child(5),
+    .flete-facturado-table td:nth-child(5) {
+        display: none;
+    }
+}
+
+@media (max-width: 300px) {
+    .flete-facturado-table th:nth-child(2),
+    .flete-facturado-table td:nth-child(2) {
+        display: none;
+    }
+}
+

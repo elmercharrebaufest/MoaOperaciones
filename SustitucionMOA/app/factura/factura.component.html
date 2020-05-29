@@ -1,0 +1,39 @@
+﻿<div class="content-wraper msf">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Factura</div>
+
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="row myRow firstSection mySearch cargaDeDatos">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <title-caps>Subida de PDF</title-caps>
+                <hr>  
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                    Archivo:
+                    <div class="styled-select">
+                        <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo" [(ngModel)]="inputFile">
+                    </div>
+                    <br />
+                </div>
+                <div class="row myRow">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)" site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
+                    </div>
+                </div>
+                <div class="row myRow cargaDeDatosBtn">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <spinner-small></spinner-small>
+                        <a (click)="subirPDF()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                            <div class="btnSection animate">Guardar <span class="fa  fa-play "></span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End CONTENT-->
+</div>

@@ -1,0 +1,93 @@
+﻿namespace SustitucionMOASecurity
+{
+    public static class Permiso
+    {
+        /* PERMISOS ADUANA */
+        public const string CONSULTAR_PESADAS = "CONSULTAR PESADAS";
+        public const string CONSULTAR_PESADA_DETALLE = "CONSULTAR PESADA DETALLE";
+        public const string CONSULTAR_CAMARAS_CONSOLIDACION = "CONSULTAR CAMARAS CONSOLIDACIO";
+        public const string CONSULTAR_CAMARAS_MUELLE = "CONSULTAR CAMARAS MUELLE";
+        public const string CONSULTAR_INFORMACION_METEOROLOGICA = "CONSULTAR INFORMACION METEOROL";
+
+        /* PERMISOS CARTA PORTE */
+        public const string CONSULTAR_CARTA_PORTE = "CONSULTAR CARTAS PORTE";
+        public const string CONSULTAR_CARTA_PORTE_DETALLE = "CONSULTAR CARTAS PORTE DETALLE";
+        public const string DESCARGAR_CARTA_PORTE = "DESCARGAR CARTAS PORTE";
+        public const string DESCARGAR_CARTA_PORTE_DETALLE = "DESCARGAR CARTAS PORTE DETALLE";
+        public const string CREAR_FORMULARIO_CCPP = "CREAR FORMULARIO CCPP";
+        
+
+        /* PERMISOS COMPROBANTES */
+        public const string CONSULTAR_COMPROBANTE = "CONSULTAR COMPROBANTES";
+        public const string DESCARGAR_COMPROBANTE = "DESCARGAR COMPROBANTES";
+
+        /* PERMISOS CONTRATO */
+        public const string CONSULTAR_CONTRATO = "CONSULTAR CONTRATOS";
+        public const string CONSULTAR_CONTRATO_DETALLE = "CONSULTAR CONTRATO DETALLE";
+        public const string DESCARGAR_CONTRATO = "DESCARGAR CONTRATOS";
+        public const string DESCARGAR_CONTRATO_DETALLE = "DESCARGAR CONTRATO DETALLE";
+
+        /* PERMISOS CUENTA CORRIENTE */
+        public const string CONSULTAR_CUENTA_CORRIENTE = "CONSULTAR CUENTA CORRIENTE";
+        public const string DESCARGAR_CUENTA_CORRIENTE = "DESCARGAR CUENTA CORRIENTE";
+
+        /* PERMISOS HOME */
+        public const string CONSULTAR_HOME = "CONSULTAR HOME";
+        public const string CONSULTAR_HOME_NG = "CONSULTAR HOME NG";
+
+        /* PERMISOS LIQUIDACIONES*/
+        public const string CONSULTAR_LIQUIDACIONES = "CONSULTAR LIQUIDACIONES";
+        public const string DESCARGAR_LIQUIDACIONES = "DESCARGAR LIQUIDACIONES";
+        public const string CONSULTAR_LIQUIDACIONES_NG = "CONSULTAR LIQUIDACIONES NG";
+        public const string DESCARGAR_LIQUIDACIONES_NG = "DESCARGAR LIQUIDACIONES NG";
+
+        /* PERMISOS PAGO */
+        public const string CONSULTAR_PAGOS = "CONSULTAR PAGOS";
+        public const string DESCARGAR_PAGOS = "DESCARGAR PAGOS";
+        public const string CONSULTAR_PAGOS_NG = "CONSULTAR PAGOS NG";
+        public const string DESCARGAR_PAGOS_NG = "DESCARGAR PAGOS NG";
+        public const string CONSULTAR_PAGO_DETALLE = "CONSULTAR PAGOS DETALLE";
+        public const string DESCARGAR_PAGO_DETALLE = "DESCARGAR PAGOS DETALLE";
+
+        /* PERMISOS RYD */
+        public const string CONSULTAR_INFORME = "CONSULTAR INFORME";
+        public const string CONSULTAR_LISTADO_PESADAS = "CONSULTAR LISTADO PESADAS";
+        public const string REGISTRAR_PESADA = "REGISTRAR PESADA";
+        //public const string DESCARGAR_RYD = "DESCARGAR RYD";
+
+
+        /* PERMISOS RYD MANTENIMIENTO */
+        public const string ABM_BALANZAS = "ABM BALANZAS";
+        public const string ABM_EXPORTADORES = "ABM EXPORTADORES";
+        public const string ABM_COMMODITIES = "ABM COMMODITIES";
+
+        /* PERMISOS USUARIOS */
+        public const string ABM_USUARIOS = "ABM USUARIOS";
+        public const string CAMBIAR_CONTRASENIA = "CAMBIAR CONTRASENIA";
+        public const string SELECCIONAR_VENDEDOR = "SELECCIONAR VENDEDOR";
+
+        /* PERMISOS VENDEDOR */
+        public const string CONSULTAR_DOCUMENTACION = "CONSULTAR DOCUMENTACION";
+        public const string CONSULTAR_DATOS_FISCALES = "CONSULTAR DATOS FISCALES";
+        public const string CONSULTAR_VENDEDORES = "CONSULTAR VENDEDORES";
+        public const string CONSULTAR_VENDEDOR_STATUS = "CONSULTAR VENDEDOR STATUS";
+
+        /* PERMISOS DESCARGA DOCUMENTOS */
+        public const string DESCARGAR_DOCUMENTO = "DESCARGAR DOCUMENTO";
+
+        /* PERMISOS CARGAR FACTURA PROVEEDORES */
+        public const string CARGAR_FACT_PROV = "CARGAR FACT PROV";
+
+        /* PERMISOS FLETES */
+        public const string CONSULTAR_FLETE = "CONSULTAR FLETE";
+
+        /*CONTACTO MAIL*/
+        public const string CONTACTO_MAIL = "CONTACTO MAIL";
+
+        /*PESIFICACION*/
+        public const string PESIFICACION = "PESIFICACION";
+
+        /*DATA AGRO*/
+        public const string DATAAGROLOGIN = "DATAAGROLOGIN";
+    }
+}

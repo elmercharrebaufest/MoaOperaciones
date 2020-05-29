@@ -1,0 +1,49 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Usuario: <strong>Cambio Contrase&ntilde;a</strong> </div>
+        </div>
+        <!--End Title-->
+        <!-- Form-->
+        <div class="row myRow firstSection mySearch cargaDeDatos">
+            <div class="rounded shadow">
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <div class="col-xs-12 col-sm-12">
+                        Contase&ntilde;a Actual:
+                        <div class="styled-select ">
+                            <input type="password" [(ngModel)]="contraseniaActual" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12">
+                        Contase&ntilde;a Nueva:
+                        <div class="styled-select ">
+                            <input type="password" [(ngModel)]="contraseniaNueva" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12">
+                        Confirmar Contase&ntilde;a:
+                        <div class="styled-select ">
+                            <input type="password" [(ngModel)]="contraseniaNuevaConfirmacion" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row myRow cargaDeDatosBtn" *ngIf="visibleButton">
+                    <div class="col-xs-12 col-sm-3 col-sm-offset-9 ">
+                        <a (click)="guardarContrasenia()" href="#" style="text-decoration:none!important">
+                            <div class="btnSection animate">Guardar <span class="fa  fa-play "></span></div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <spinner></spinner>
+            <mensaje></mensaje>
+        </div>
+
+
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
+</div>

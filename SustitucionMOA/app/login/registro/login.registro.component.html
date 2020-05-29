@@ -1,0 +1,62 @@
+﻿<!--<body class="loginBody">-->
+<div class="login-wrapper">
+    <div id="loginSide">
+        <div class="login rounded mySearch registroUsuario">
+            <div class="col-xs-12 loginTxt"><img src="./Content/images/header/logoLogin.png" class="img-responsive" style="margin-bottom:10px;"><span style="width:100%">Información de operaciones y entregas para proveedores de Materias Primas</span> </div>
+            <div class="col-xs-12 title-caps">
+                Registro de Usuario
+            </div>
+            <hr>
+            <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                <div class="col-xs-12 col-sm-12">
+                    N&uacute;mero Proveedor:
+                    <div class="styled-select ">
+                        <input type="search" [(ngModel)]="numeroProveedor" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12">
+                    Clave Activaci&oacute;n:
+                    <div class="styled-select ">
+                        <input type="search" [(ngModel)]="claveActivacion" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12">
+                    Elija un nombre de Usuario:
+                    <div class="styled-select ">
+                        <input type="search" [(ngModel)]="username" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12">
+                    Contase&ntilde;a:
+                    <div class="styled-select ">
+                        <input type="password" [(ngModel)]="contrasenia" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12">
+                    Confirmar Contase&ntilde;a:
+                    <div class="styled-select ">
+                        <input type="password" [(ngModel)]="contraseniaConfirmacion" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+            </div>
+            <div class="row myRow cargaDeDatosBtn" *ngIf="visibleButton">
+                <div class="col-xs-12 col-sm-4 col-sm-offset-8">
+                    <a (click)="registrar()" href="#" style="text-decoration:none!important">
+                        <div class="btnSection animate">Registrar <span class="fa  fa-play "></span></div>
+                    </a>
+                </div>
+            </div>
+            <spinner></spinner>
+            <mensaje></mensaje>
+            <hr>
+            <div class="cargaDeDatos cargaDeDatosBtn" style="clear:both;">
+                <div class="col-xs-8 col-sm-6 col-sm-offset-6 col-xs-offset-2">
+                    <a routerLink="/login" style="text-decoration:none!important">
+                        <div class="btnSection btnSectionGrey animate">Ir al Login <span class="fa   fa-play "></span></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--</body>-->

@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
+{
+    public class CalidadElement
+    {
+        public string caract { get; set; }
+        public decimal calaResul { get; set; }
+        public decimal camaResul { get; set; }
+        public string kgDto { get; set; }
+        public decimal dto { get; set; }
+    }
+
+}

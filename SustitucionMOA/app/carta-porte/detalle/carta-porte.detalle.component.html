@@ -1,0 +1,268 @@
+﻿<div class="content-wraper ccpp">
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix" *ngIf="data">
+        <!--Title-->
+        <div class="row titleSection titleSectionTable">
+            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8; display: inline-block; vertical-align:top;"> Carta de Porte: <strong><span>Nº {{data.ccpp}}</span></strong> </div>
+                <div class="titleExtraData titleExtraDataOneLine"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Vendedor: <strong>{{data.entregasDescargas[0].descripcionVendedor}} </strong>({{data.entregasDescargas[0].vendedor}})</div>
+            </div>
+            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+                <spinner-small #smallSpinner></spinner-small>
+                <!--<a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!isExportVisible()">-->
+                    <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                        <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                    </a>
+                    <!--<a href="#" style="text-decoration:none!important">
+            <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
+        </a>-->
+</div>
+        </div>
+        <!--End Title-->
+        <!--Datos de entrega-->
+        <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas">
+            <div class="row titleSection titleSectionNoBorder">
+                <div class="col-xs-12 col-sm-12">Datos de entrega</div>
+                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen">
+                    <div class="rowInfoRoundedGreenLine">
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Fecha</p>
+                            <p>{{data.entregasDescargas[0].fecha}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Producto</p>
+                            <p>{{data.entregasDescargas[0].descripcionProducto}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Descargado en planta</p>
+                            <p>{{data.entregasDescargas[0].descargaCentro}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Procedencia</p>
+                            <p>{{data.entregasDescargas[0].procedencia}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Total Recibidos</p>
+                            <p>{{data.entregasDescargas[0].netoDescontadoString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p>Total Aplicados</p>
+                            <p>{{data.entregasDescargas[0].totalAplicadosString}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row myRow titleSection titleSectionNoBorder">
+            <!--aplicaciones-->
+            <div id="Aplicaciones" class="col-xs-12 col-sm-8">
+                <div id="showAplicaciones" class="showBtn btnSection btnInfo animate" onClick="showAplicaciones()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Aplicaciones</div>
+                </div>
+                <div id="hideAplicaciones" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeAplicaciones()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Aplicaciones</div>
+                </div>
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12">Aplicaciones</div>
+                </div>
+                <div id="myAplicaciones" class="row myRow hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable " cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha de Aplicaci&oacute;n</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Contrato Molinos</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Kilos Aplicados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let aplicacion of data.aplicaciones" role="row" class="odd">
+                                    <td tabindex="0" class="sorting_1">{{aplicacion.fecha}}</td>
+                                    <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', aplicacion.contrato)" href="#">{{aplicacion.contrato}}</a></td>
+                                    <td>{{aplicacion.kgAplicadosString}}</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr role="row" class="totalTable">
+                                    <td tabindex="0">TOTAL</td>
+
+                                    <td style=""></td>
+                                    <td style="">{{data.aplicacionesTotalAplicadosString}}</td>
+                                </tr>
+                                <tr role="row" class="totalTable totalTableWhite">
+                                    <td tabindex="0">Excedente</td>
+
+                                    <td style=""></td>
+                                    <td style="">{{data.aplicacionesTotalExcedentesString}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- end aplicaciones -->
+            <!-- DESCARGA---->
+            <div id="Descarga" class="col-xs-12 col-sm-4" *ngIf="data.entregasDescargas">
+                <div id="showDescarga" class="showBtn btnSection btnInfo animate" onClick="showDescarga()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Datos de descarga</div>
+                </div>
+                <div id="hideDescarga" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeDescarga()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Datos de descarga</div>
+                </div>
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12">Datos de descarga</div>
+                </div>
+                <div id="myDescarga" class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen hideMobile">
+                    <div class="rowInfoRoundedGreenLine">
+                        <div class="col-xs-12 col-sm-4">
+                            <p>Vehículo</p>
+                            <p>{{data.entregasDescargas[0].tipoVehiculo}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <p>Chasis</p>
+                            <p>{{data.entregasDescargas[0].patente}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-4">
+                            <p>Acoplado</p>
+                            <p>{{data.entregasDescargas[0].acoplado}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end datos de descarga-->
+        </div>
+
+
+        <!--Calidad-->
+        <div class="row myRow">
+            <div id="Calidad" class="col-sm-12  hideMobile">
+                <div class="row titleSection titleSectionNoBorder">
+                    <div class="col-xs-12 col-sm-12">Calidad</div>
+                </div>
+                <div class="row myRow">
+                    <div class="clearfix totalTable">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>resultado final TOTAL</td>
+                                <td width="15%">
+                                    <p>Kg Netos</p>
+                                    {{data.calidadTotalNetosString}}
+                                </td>
+                                <td width="15%"></td>
+                                <td width="15%">
+                                    <p>Kg Aplicados</p>
+                                    {{data.calidadTotalAplicadosString}}
+                                </td>
+                                <td width="15%"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td width="80%" valign="top">
+                                <table class="CalidadCCPPData rounded shadow animate" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <!--<tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" rowspan="2" class="">Características</th>
+                                                    <th width="20%" rowspan="2">Calado Resultado</th>
+                                                    <th width="30%" colspan="2" class="CalidadCCPPDataSub"><div>Cámara</div></th>
+                                                    <th width="30%" colspan="2" class="CalidadCCPPDataSub"><div>Reconsideración</div></th>
+                                                </tr>
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="10%">Resultado</th>
+                                                    <th width="20%">Nº Cert.</th>
+                                                    <th width="10%">Resultado</th>
+                                                    <th width="20%">Nº Cert.</th>
+                                                </tr>-->
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" rowspan="2" class="">Características</th>
+                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub"><div>Calado</div></th>
+                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub"><div>C&aacute;mara</div></th>
+                                                </tr>
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" style="text-align:right">Resultado</th>
+                                                    <th width="20%">Kg DTO.</th>
+                                                    <th width="20%">Resultado</th>
+                                                    <th width="20%">DTO (%)</th>
+                                                </tr>
+                                                <ng-container *ngFor="let calidad of data.datosCalidad">
+                                                    <tr>
+                                                        <td>{{calidad.caracteristica}}</td>
+                                                        <td>{{calidad.resultadoCalado}}%</td>
+                                                        <td>{{calidad.kgDescuentoString}}</td>
+                                                        <td>{{calidad.resultadoCamara}}%</td>
+                                                        <td>{{calidad.porcentajeDescuento}}%</td>
+                                                    </tr>
+                                                    <tr class="CalidadCCPPDataPlus" *ngIf="showDataPlus(calidad)">
+                                                        <td colspan="6" style="border:none">
+                                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                <tr>
+                                                                    <td width="4%" align="center" valign="top" style="padding-right:0px!important"><span class="fa fa-caret-down" aria-hidden="true" style="font-size:25px; line-height:0;"></span></td>
+                                                                    <td width="96%">
+                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra" style="">
+                                                                            <tr>
+                                                                                <td>resultado final </td>
+                                                                                <td width="19.5%">
+                                                                                    <p>Kg Netos</p>
+                                                                                    {{calidad.kgNetosString}}
+                                                                                </td>
+                                                                                <td width="19.5%">
+                                                                                    <p>Kg Dto.</p>
+                                                                                    {{calidad.kgDescuentoString}}
+                                                                                </td>
+                                                                                <td width="19.5%">
+                                                                                    <p>Kg Aplicados</p>
+                                                                                    {{calidad.kgAplicadosString}}
+                                                                                </td>
+                                                                                <td width="19.5%">
+                                                                                    <p>Dto. (%)</p>
+                                                                                    {{calidad.porcentajeDescuento}}%
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </ng-container>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--Botones mobile-->
+        <div class="showBtn btnSection btnInfo animate downloadPDF">
+            <a (click)="descargarPDF()" href="#">
+                <div>
+                    <li class="fa fa-file-pdf-o" aria-hidden="true"></li>
+                </div>
+                <div>Calidad</div>
+            </a>
+        </div>
+        <!--Fin botones mobile-->
+    </section>
+    <!--End CONTENT-->
+</div>

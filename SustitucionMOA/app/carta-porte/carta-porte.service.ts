@@ -1,0 +1,135 @@
+﻿import { Injectable } from '@angular/core';
+import { Http, Response, URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/timeoutWith';
+import 'rxjs/add/observable/throw';
+import "rxjs/add/observable/defer";
+import { Formatter } from './../common/formatter/Formatter';
+import { BaseService } from './../common/services/BaseService';
+
+
+@Injectable()
+export class CartaPorteService extends BaseService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return null;
+    }  
+
+    getCartasPorteCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('periodo', periodo);
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        return this.http
+            .get('/api/cartaporte/' + method, { search: params, headers: this.headers })
+            .timeoutWith(30000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
+            .map(this.extractData);
+            
+    }
+
+    getDetalle(cartaPorteId: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cartaPorteId', cartaPorteId);
+        return this.http
+            .get('/api/cartaporte/getDetalle', { search: params, headers: this.headers })
+            .timeoutWith(30000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
+            .map(this.extractData);
+    } 
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return null;
+    }
+
+    exportExcelCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('periodo', periodo);
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        return this.http
+            .get('/api/cartaporte/' + method, { search: params, headers: this.headers })
+            .timeoutWith(60000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
+            .map(this.extractData);
+    }
+
+    exportExcelDetalle(cartaPorteId: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cartaPorteId', cartaPorteId);
+        return this.http
+            .get('/api/cartaporte/downloadDetalle', { search: params, headers: this.headers })
+            .timeoutWith(60000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
+            .map(this.extractData);
+    }
+
+    public exportPDFCalidad(numero_ccpp: string) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('numeroCCPP', numero_ccpp);
+        return this.http
+            .get('/api/cartaporte/exportPDFCalidad', { search: params, headers: this.headers })
+            .map(this.extractData);
+    }
+}
+
+@Injectable()
+export class CartaPorteDescargaService extends CartaPorteService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.getCartasPorteCommon(periodo, fecha_inicio, fecha_fin, 'getDescargas');
+    }
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadDescargas');
+    }
+}
+
+@Injectable()
+export class CartaPorteAplicacionService extends CartaPorteService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.getCartasPorteCommon(periodo, fecha_inicio, fecha_fin, 'getAplicaciones');
+    } 
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadAplicaciones');
+    }
+}
+
+@Injectable()
+export class CartaPorteFormularioService extends BaseService {
+
+    getFormularioDropdowns(): Observable<any> {
+        return this.http
+            .get('/api/cartaporte/getFormularioDropdowns', { headers: this.headers })
+            .map(this.extractData);
+    }
+
+    getDataCTG(valor: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('valor', valor);
+        return this.http
+            .get('/api/cartaporte/getDataCTG', { search: params, headers: this.headers })
+            .timeoutWith(30000, Observable.throw(new Error("Por favor, intentelo nuevamente")))
+            .map(this.extractData);
+    }
+
+    getCompletedPDFTemplate(formulario: any, archivo: any, pageSelected: any): Observable<any> {
+        var payload = new FormData();
+        payload.append("formularioString", JSON.stringify(formulario));
+        payload.append("paginaSeleccionada", pageSelected);
+        payload.append("file", archivo);
+        return this.http
+            .post('/api/cartaporte/getCompletedPDFTemplate', payload, this.headersPost)
+            //.timeoutWith(90000, Observable.throw(new Error("Por favor, intentelo nuevamente")))
+            .map(this.extractData);
+    }
+
+    getTemplate(formulario: any): Observable<any> {
+        var payload = new FormData();
+        payload.append("formularioString", JSON.stringify(formulario));
+        return this.http
+            .post('/api/cartaporte/getTemplate', payload, this.headersPost)
+            //.timeoutWith(90000, Observable.throw(new Error("Por favor, intentelo nuevamente")))
+            .map(this.extractData);
+    }
+}

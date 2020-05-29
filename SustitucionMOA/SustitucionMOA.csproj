@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B951631C-6E73-433B-B0DB-72EEB5990F7F}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SustitucionMOA</RootNamespace>
+    <AssemblyName>SustitucionMOA</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>2.6</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Quartz, Version=3.0.3.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.3.0.3\lib\net452\Quartz.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
+    <Content Include="app\aduana\camara\muelle\camara.muelle.component.html" />
+    <Content Include="app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
+    <Content Include="app\aduana\pesada\detalle\pesada.detalle.component.html" />
+    <Content Include="app\aduana\pesada\historica\pesada.historica.component.html" />
+    <Content Include="app\aduana\pesada\online\pesada.online.component.html" />
+    <Content Include="app\app.component.html" />
+    <Content Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
+    <Content Include="app\carta-porte\carta-porte.component.html" />
+    <Content Include="app\carta-porte\descarga\carta-porte.descarga.component.html" />
+    <Content Include="app\carta-porte\detalle\carta-porte.detalle.component.html" />
+    <Content Include="app\carta-porte\formulario\carta-porte.formulario.component.html" />
+    <Content Include="app\common\view-child\dropdown\dropdown.component.html" />
+    <Content Include="app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
+    <Content Include="app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
+    <Content Include="app\common\view-child\mensaje\mensaje.component.html" />
+    <Content Include="app\common\view-child\spinner-small\spinner-small.component.html" />
+    <Content Include="app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="app\contrato\ampliacion\contrato.ampliacion.component.html" />
+    <Content Include="app\contrato\anulacion\contrato.anulacion.component.html" />
+    <Content Include="app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.html" />
+    <Content Include="app\contrato\detalle\contrato.detalle.component.html" />
+    <Content Include="app\contrato\fijacion\contrato.fijacion.component.html" />
+    <Content Include="app\contrato\vigente\contrato.vigente.component.html" />
+    <Content Include="app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.html" />
+    <Content Include="app\cuenta-corriente\cuenta-corriente.component.html" />
+    <Content Include="app\dato-fiscal\dato-fiscal.component.html" />
+    <Content Include="app\dato-fiscal\documentacion\documentacion.component.html" />
+    <Content Include="app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.html" />
+    <Content Include="app\error\error.no-autorizado.component.html" />
+    <Content Include="app\factura\factura.component.html" />
+    <Content Include="app\flete\a-facturar\flete.a-facturar.component.html" />
+    <Content Include="app\flete\facturado\flete.facturado.component.html" />
+    <Content Include="app\flete\pendiente\flete.pendiente.component.html" />
+    <Content Include="app\home\home.component.html" />
+    <Content Include="app\home\no-granos\home.no-granos.component.html" />
+    <Content Include="app\layout\layout.component.html" />
+    <Content Include="app\liquidacion\aprobada\liquidacion.aprobada.component.html" />
+    <Content Include="app\liquidacion\no-granos\aprobada\liquidacion.no-granos.aprobada.component.html" />
+    <Content Include="app\liquidacion\no-granos\observada\liquidacion.no-granos.observada.component.html" />
+    <Content Include="app\liquidacion\no-granos\paga\liquidacion.no-granos.paga.component.html" />
+    <Content Include="app\liquidacion\observada\liquidacion.observada.component.html" />
+    <Content Include="app\liquidacion\paga\liquidacion.paga.component.html" />
+    <Content Include="app\liquidacion\proforma\liquidacion.proforma.component.html" />
+    <Content Include="app\login\login.component.html" />
+    <Content Include="app\login\recuperar-contrasenia\login.recuperar-contrasenia.component.html" />
+    <Content Include="app\login\registro\login.registro.component.html" />
+    <Content Include="app\pago\detalle\pago.detalle.component.html" />
+    <Content Include="app\pago\emitido\pago.emitido.component.html" />
+    <Content Include="app\pago\no-granos\emitido\pago.no-granos.emitido.component.html" />
+    <Content Include="app\pesificacion\pesificacion.component.html" />
+    <Content Include="app\ryd-mantenimiento\balanzas\balanzas.component.html" />
+    <Content Include="app\ryd-mantenimiento\commodities\commodities.component.html" />
+    <Content Include="app\ryd-mantenimiento\exportadores\exportadores.component.html" />
+    <Content Include="app\ryd\carga-pesadas\carga-pesadas.component.html" />
+    <Content Include="app\ryd\informe\informe.component.html" />
+    <Content Include="app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="app\usuario\alta\usuario.alta.component.html" />
+    <Content Include="app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
+    <Content Include="app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />
+    <Content Include="app\usuario\list\usuario.list.component.html" />
+    <Content Include="app\vendedor\vendedor_status.component.html" />
+    <Content Include="config.html" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\font-awesome.css" />
+    <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\loader.css" />
+    <Content Include="Content\css\MolinosForms.css" />
+    <Content Include="Content\css\MolinosGeneral.css" />
+    <Content Include="Content\css\ng2-select.css" />
+    <Content Include="Content\css\normalize.css" />
+    <Content Include="Content\css\tables.css" />
+    <Content Include="Content\datatables_files\dataTables.responsive.js" />
+    <Content Include="Content\datatables_files\jquery.dataTables.css" />
+    <Content Include="Content\datatables_files\jquery.dataTables.js" />
+    <Content Include="Content\datatables_files\responsive.dataTables.css" />
+    <Content Include="Content\datatables_files\sort_asc.png" />
+    <Content Include="Content\datatables_files\sort_both.png" />
+    <Content Include="Content\datatables_files\sort_desc.png" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\images\buttons\search.png" />
+    <Content Include="Content\images\header\login.jpg" />
+    <Content Include="Content\images\header\loginSmall.jpg" />
+    <Content Include="Content\images\header\logoOLD.png" />
+    <Content Include="Content\images\header\logoLogin.png" />
+    <Content Include="Content\images\header\logoSmall.png" />
+    <Content Include="Content\images\header\logo_.png" />
+    <Content Include="Content\images\header\logo.png" />
+    <Content Include="Content\images\header\sideBack.jpg" />
+    <Content Include="Content\js\bootstrap-datetimepicker.es.js" />
+    <Content Include="Content\js\bootstrap-datetimepicker.js" />
+    <Content Include="Content\js\bootstrap.js" />
+    <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\jquery.js" />
+    <Content Include="Content\js\molinos.js" />
+    <Content Include="Content\js\trmix.min.js" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="packages.config" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\RobotoCondensed-Bold.ttf" />
+    <Content Include="Content\fonts\RobotoCondensed-Light.ttf" />
+    <Content Include="Content\fonts\RobotoCondensed-Regular.ttf" />
+    <Content Include="Documentacion\Carta de certificado de deposito.doc" />
+    <Content Include="Documentacion\Carta de cesión de mercadería.doc" />
+    <Content Include="Documentacion\Carta de cesión de pago.doc" />
+    <Content Include="Documentacion\Carta de garantía.doc" />
+    <Content Include="Documentacion\Carta de notificación de anulación de cesión.doc" />
+    <Content Include="Documentacion\Carta de notificación de cambio de cuenta.doc" />
+    <Content Include="Documentacion\Criterios de Retención MOA.docx" />
+    <Content Include="Documentacion\Legajos Molinos Agro S.A..pdf" />
+    <Content Include="Documentacion\Listado de documentos requeridos para el alta o actualización.doc" />
+    <Content Include="Documentacion\Modelo de carta datanet.doc" />
+    <Content Include="Documentacion\Modelo de declaración jurada para acopiadores que tributan por diferencia de precio.doc" />
+    <Content Include="Documentacion\Modelo de declaración jurada Prov. Córdoba.doc" />
+    <Content Include="Documentacion\Modelo de declaración jurada Prov. Santa Fe.doc" />
+    <Content Include="Documentacion\Nota Modelo Acopiador Consignatario.doc" />
+    <Content Include="Documentacion\Requisitos de cesión de pago.pdf" />
+    <Content Include="Documentacion\Tarifas de secada y zaranda.pdf" />
+    <Content Include="Documentacion\Formulario Alta No Granos MOA.doc" />
+    <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor c Corredor - Alta.doc" />
+    <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
+    <Content Include="Documentacion\Pesificados carga masiva.docx" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
+    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="tsconfig.json" />
+    <Content Include="package.json" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\web.config" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="index.html" />
+    <Content Include="systemjs.config.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AduanaController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CartaPorteController.cs" />
+    <Compile Include="Controllers\ConfigController.cs" />
+    <Compile Include="Controllers\ContactoMailController.cs" />
+    <Compile Include="Controllers\ContratoController.cs" />
+    <Compile Include="Controllers\CuentaCorrienteController.cs" />
+    <Compile Include="Controllers\DataAgroController.cs" />
+    <Compile Include="Controllers\DocumentosController.cs" />
+    <Compile Include="Controllers\FacturaController.cs" />
+    <Compile Include="Controllers\FleteController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LiquidacionController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PagoController.cs" />
+    <Compile Include="Controllers\PDFController.cs" />
+    <Compile Include="Controllers\PesificacionController.cs" />
+    <Compile Include="Controllers\RYDController.cs" />
+    <Compile Include="Controllers\RYDMantenimientoController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
+    <Compile Include="Controllers\VendedorController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Job\InfoMetJob.cs" />
+    <Compile Include="Job\InfoMetScheduler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\CustomPermisoAuthorizeAttribute.cs" />
+    <Compile Include="Security\CustomPrincipal.cs" />
+    <Compile Include="Security\Permiso.cs" />
+    <Compile Include="Security\SessionPersister.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="app\aduana\aduana.component.ts" />
+    <TypeScriptCompile Include="app\aduana\aduana.service.ts" />
+    <TypeScriptCompile Include="app\aduana\camara\consolidacion\camara.consolidacion.component.ts" />
+    <TypeScriptCompile Include="app\aduana\camara\muelle\camara.muelle.component.ts" />
+    <TypeScriptCompile Include="app\aduana\informacion-meteorologica\informacion-meteorologica.component.ts" />
+    <TypeScriptCompile Include="app\aduana\pesada\detalle\pesada.detalle.component.ts" />
+    <TypeScriptCompile Include="app\aduana\pesada\historica\pesada.historica.component.ts" />
+    <TypeScriptCompile Include="app\aduana\pesada\online\pesada.online.component.ts" />
+    <TypeScriptCompile Include="app\app-routing.module.ts" />
+    <TypeScriptCompile Include="app\app.component.ts" />
+    <TypeScriptCompile Include="app\app.module.ts" />
+    <TypeScriptCompile Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\carta-porte.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\carta-porte.service.ts" />
+    <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\detalle\carta-porte.detalle.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.ts" />
+    <TypeScriptCompile Include="app\common\base-components\base-component.ts" />
+    <TypeScriptCompile Include="app\common\base-components\list-base-component.ts" />
+    <TypeScriptCompile Include="app\common\formatter\Formatter.ts" />
+    <TypeScriptCompile Include="app\common\models\fechaWS.ts" />
+    <TypeScriptCompile Include="app\common\models\filtro-agrupador.ts" />
+    <TypeScriptCompile Include="app\common\models\seccion.ts" />
+    <TypeScriptCompile Include="app\common\pipes\customFilterContain.ts" />
+    <TypeScriptCompile Include="app\common\pipes\customFilterOr.ts" />
+    <TypeScriptCompile Include="app\common\pipes\orderedColumn.ts" />
+    <TypeScriptCompile Include="app\common\pipes\shortenString.ts" />
+    <TypeScriptCompile Include="app\common\security\login-guard.ts" />
+    <TypeScriptCompile Include="app\common\services\BaseService.ts" />
+    <TypeScriptCompile Include="app\common\services\DataService.ts" />
+    <TypeScriptCompile Include="app\common\services\FloatMsgService.ts" />
+    <TypeScriptCompile Include="app\common\services\ModalService.ts" />
+    <TypeScriptCompile Include="app\common\services\NavService.ts" />
+    <TypeScriptCompile Include="app\common\services\SecurityService.ts" />
+    <TypeScriptCompile Include="app\common\services\ServiceLocator.ts" />
+    <TypeScriptCompile Include="app\common\services\SessionDataService.ts" />
+    <TypeScriptCompile Include="app\common\view-child\dropdown\dropdown.component.ts" />
+    <TypeScriptCompile Include="app\common\view-child\filtro-fecha\filtro-fecha.component.ts" />
+    <TypeScriptCompile Include="app\common\view-child\mensaje-modal\mensaje-modal.component.ts" />
+    <TypeScriptCompile Include="app\common\view-child\mensaje\mensaje.component.ts" />
+    <TypeScriptCompile Include="app\common\pipes\customFilter.ts" />
+    <TypeScriptCompile Include="app\common\view-child\spinner-small\spinner-small.component.ts" />
+    <TypeScriptCompile Include="app\common\view-child\spinner\spinner.component.ts" />
+    <TypeScriptCompile Include="app\contacto-mail\contacto-mail.component.ts" />
+    <TypeScriptCompile Include="app\contacto-mail\contacto-mail.service.ts" />
+    <TypeScriptCompile Include="app\contrato\ampliacion\contrato.ampliacion.component.ts" />
+    <TypeScriptCompile Include="app\contrato\anulacion\contrato.anulacion.component.ts" />
+    <TypeScriptCompile Include="app\contrato\contrato.component.ts" />
+    <TypeScriptCompile Include="app\contrato\contrato.service.ts" />
+    <TypeScriptCompile Include="app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.ts" />
+    <TypeScriptCompile Include="app\contrato\detalle\contrato.detalle.component.ts" />
+    <TypeScriptCompile Include="app\contrato\fijacion\contrato.fijacion.component.ts" />
+    <TypeScriptCompile Include="app\contrato\vigente\contrato.vigente.component.ts" />
+    <TypeScriptCompile Include="app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.ts" />
+    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente.component.ts" />
+    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente.service.ts" />
+    <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.component.ts" />
+    <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.service.ts" />
+    <TypeScriptCompile Include="app\dato-fiscal\documentacion\documentacion.component.ts" />
+    <TypeScriptCompile Include="app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.ts" />
+    <TypeScriptCompile Include="app\error\error.no-autorizado.component.ts" />
+    <TypeScriptCompile Include="app\factura\factura.component.ts" />
+    <TypeScriptCompile Include="app\factura\factura.service.ts" />
+    <TypeScriptCompile Include="app\flete\a-facturar\flete.a-facturar.component.ts" />
+    <TypeScriptCompile Include="app\flete\facturado\flete.facturado.component.ts" />
+    <TypeScriptCompile Include="app\flete\flete.component.ts" />
+    <TypeScriptCompile Include="app\flete\flete.service.ts" />
+    <TypeScriptCompile Include="app\flete\pendiente\flete.pendiente.component.ts" />
+    <TypeScriptCompile Include="app\home\home.component.ts" />
+    <TypeScriptCompile Include="app\home\home.service.ts" />
+    <TypeScriptCompile Include="app\home\no-granos\home.no-granos.component.ts" />
+    <TypeScriptCompile Include="app\layout\layout.component.ts" />
+    <TypeScriptCompile Include="app\layout\layout.service.ts" />
+    <TypeScriptCompile Include="app\liquidacion\aprobada\liquidacion.aprobada.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\liquidacion.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\liquidacion.service.ts" />
+    <TypeScriptCompile Include="app\liquidacion\no-granos\aprobada\liquidacion.no-granos.aprobada.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\no-granos\liquidacion.no-granos.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\no-granos\observada\liquidacion.no-granos.observada.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\no-granos\paga\liquidacion.no-granos.paga.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\observada\liquidacion.observada.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\paga\liquidacion.paga.component.ts" />
+    <TypeScriptCompile Include="app\liquidacion\proforma\liquidacion.proforma.component.ts" />
+    <TypeScriptCompile Include="app\login\login.component.ts" />
+    <TypeScriptCompile Include="app\login\login.service.ts" />
+    <TypeScriptCompile Include="app\login\recuperar-contrasenia\login.recuperar-contrasenia.component.ts" />
+    <TypeScriptCompile Include="app\login\registro\login.registro.component.ts" />
+    <TypeScriptCompile Include="app\pago\detalle\pago.detalle.component.ts" />
+    <TypeScriptCompile Include="app\pago\emitido\pago.emitido.component.ts" />
+    <TypeScriptCompile Include="app\pago\no-granos\emitido\pago.no-granos.emitido.component.ts" />
+    <TypeScriptCompile Include="app\pago\pago.component.ts" />
+    <TypeScriptCompile Include="app\pago\pago.service.ts" />
+    <TypeScriptCompile Include="app\pesificacion\pesificacion.component.ts" />
+    <TypeScriptCompile Include="app\pesificacion\pesificacion.service.ts" />
+    <TypeScriptCompile Include="app\ryd-mantenimiento\balanzas\balanzas.component.ts" />
+    <TypeScriptCompile Include="app\ryd-mantenimiento\commodities\commodities.component.ts" />
+    <TypeScriptCompile Include="app\ryd-mantenimiento\exportadores\exportadores.component.ts" />
+    <TypeScriptCompile Include="app\ryd-mantenimiento\ryd-mantenimiento.component.ts" />
+    <TypeScriptCompile Include="app\ryd-mantenimiento\ryd-mantenimiento.ts" />
+    <TypeScriptCompile Include="app\ryd-mantenimiento\ryd-mantenimiento.service.ts" />
+    <TypeScriptCompile Include="app\ryd\carga-pesadas\carga-pesadas.component.ts" />
+    <TypeScriptCompile Include="app\ryd\informe\informe.component.ts" />
+    <TypeScriptCompile Include="app\ryd\listado-pesadas\listado-pesadas.component.ts" />
+    <TypeScriptCompile Include="app\ryd\ryd.component.ts" />
+    <TypeScriptCompile Include="app\ryd\ryd.service.ts" />
+    <TypeScriptCompile Include="app\ryd\ryd.ts" />
+    <TypeScriptCompile Include="app\usuario\alta\usuario.alta.component.ts" />
+    <TypeScriptCompile Include="app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.ts" />
+    <TypeScriptCompile Include="app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.ts" />
+    <TypeScriptCompile Include="app\usuario\list\usuario.list.component.ts" />
+    <TypeScriptCompile Include="app\usuario\usuario.service.ts" />
+    <TypeScriptCompile Include="app\usuario\usuario.ts" />
+    <TypeScriptCompile Include="app\vendedor\vendedor_status.component.ts" />
+    <TypeScriptCompile Include="app\vendedor\vendedor_status.service.ts" />
+    <TypeScriptCompile Include="main.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Template\" />
+    <Folder Include="Views\Documentos\" />
+    <Folder Include="Views\Facturado\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
+      <Project>{CDE9AB52-949B-428E-A737-5910D05116D8}</Project>
+      <Name>SustitucionMOAAsset</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACrypting\SustitucionMOACrypting.csproj">
+      <Project>{B6672999-1E81-4BDE-BDA1-D825C51A5388}</Project>
+      <Name>SustitucionMOACrypting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
+      <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
+      <Name>SustitucionMOACustomException</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Name>SustitucionMOAModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAUtils\SustitucionMOAUtils.csproj">
+      <Project>{DA180EE1-E819-4216-B0F5-2377A22EA72A}</Project>
+      <Name>SustitucionMOAUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAValidator\SustitucionMOAValidator.csproj">
+      <Project>{7FD011FD-9B76-4FA9-AD54-3EB33F2D6E0C}</Project>
+      <Name>SustitucionMOAValidator</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>58280</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:58280/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

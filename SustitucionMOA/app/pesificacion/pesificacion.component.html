@@ -1,0 +1,93 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-12"> Pesificacion: <strong>Operaciones a Pesificar</strong></div>
+        </div>
+        <!--End Title-->
+
+        <mensaje></mensaje>
+        <spinner></spinner>
+
+        <div *ngIf="isVisible()" class="row myRow firstSection mySearch cargaDeDatos">
+            <div class="rounded shadow col-xs-12">
+                <!-- Nav tabs -->
+                <div class="col-xs-12">
+                    <ul class="nav nav-pills" role="tablist">
+                        <li role="presentation" class="active"><a href="#individual" aria-controls="individual" role="tab" data-toggle="tab">Carga Individual</a></li>
+                        <li role="presentation"><a href="#masiva" aria-controls="profile" role="tab" data-toggle="tab">Carga Masiva</a></li>
+                    </ul>
+                </div>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="individual">
+                        <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                            <div class="col-xs-12">
+                                Contrato: *
+                                <div class="styled-select ">
+                                    <input type="search" class="fourRounded" placeholder="" aria-controls="tableModal" [(ngModel)]="contrato">
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                Fijacion:
+                                <div class="styled-select ">
+                                    <input type="search" class="fourRounded" placeholder="" aria-controls="tableModal" [(ngModel)]="fijacion">
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                Cantidad (Kg): *
+                                <div class="styled-select ">
+                                    <input type="number" class="fourRounded" placeholder="" aria-controls="tableModal" [(ngModel)]="cantidad">
+                                </div>
+                            </div>
+                            <div class="col-xs-12"></div>
+                            <div class="col-xs-12">
+                                Fecha de Pesificacion: <b>{{fecha.FechaPesificacion}}</b> (El horario de corte es a las {{fecha.HoraDeCorte}}hs)
+                            </div>
+                            <hr>
+                            <div class="row myRow cargaDeDatosBtn">
+                                <div class="col-xs-12 col-sm-6 col-sm-offset-6">
+                                    <spinner-small></spinner-small>
+                                    <a (click)="guardarPesificaciones()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                                        <div class="btnSection animate">Enviar <span class="fa fa-play "></span></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="masiva">
+                        <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                            <div class="col-xs-12">
+                                <a href="../../../Documentacion/Pesificados carga masiva.docx" target="_blank" style="text-decoration:none!important">
+                                    <div class="documento">
+                                        <p><i class="fa fa-file-word-o" aria-hidden="true"></i>Carga masiva</p>
+                                        Se detallan como generar el archivo a subir para una carga masiva de pesificaciones
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-xs-12">
+                                Archivo: *
+                                <div class="styled-select">
+                                    <input type="file" accept=".csv" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row myRow cargaDeDatosBtn">
+                                <div class="col-xs-12 col-sm-6 col-sm-offset-6">
+                                    <spinner-small></spinner-small>
+                                    <a (click)="cargaMasiva()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                                        <div class="btnSection animate">Enviar <span class="fa fa-play "></span></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End CONTENT-->
+</div>
+
+<!-- Button trigger modal -->

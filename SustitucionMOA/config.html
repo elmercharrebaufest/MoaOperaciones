@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Codificador</title>
+	<meta charset="utf-8" />
+    <script src="Content/js/jquery.js"></script>
+    <script>
+
+        if (window.location.hostname != 'localhost') {
+            window.location.href = "/";
+        }
+
+        $(function () {
+            $("#buttonEncriptar").on("click", function () {
+                encriptar($("#unencryptedvalue").val());
+            });
+
+            function encriptar(value) {
+                mostrarError("");
+                mostrarValorEncriptado("");
+                $.ajax({
+                    type: "GET",
+                    data: {value : value},
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'JSON',
+                    async: true,
+                    url: "api/Config/encrypt",
+                    success: function (data) {
+                        if (data.error != undefined) {
+                            mostrarError(data.error);
+                        } else {
+                            mostrarValorEncriptado(data.data);
+                        }
+                        
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        mostrarError(errorThrown);
+                    }
+                });
+            }
+
+            function mostrarValorEncriptado(texto) {
+                $("#encryptedValue").html(texto);
+            }
+
+            function mostrarError(texto){
+                $("#errorMensaje").html(texto);
+            }
+        });
+        
+
+    </script>
+</head>
+<body>
+    <div>Ingrese el valor para que sea encriptado:</div>
+    <div><input type="text" id="unencryptedvalue" /> <button id="buttonEncriptar">Encriptar</button></div>
+    <div><span id="encryptedValue" style="font-weight:bolder"></span></div>
+    <div><span id="errorMensaje"></span></div>
+    <div><span id="mensaje" style="font-style:italic">Copie el valor encriptado y peguelo en el archivo de configuración de la web</span></div>    
+</body>
+</html>

@@ -1,0 +1,1480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SustitucionMOAWS</RootNamespace>
+    <AssemblyName>SustitucionMOAWS</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CredentialService\DataAgroWSCredential.cs" />
+    <Compile Include="CredentialService\SAPCredential.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\AplicacionesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\CambioPassWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\CartaPorteDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\CartaPorteFormularioCTGWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ContactoMailCategoriasWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ContactoMailWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ContratoDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ContratoPDFWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ContratosWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\CrearUsuarioWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\CuentaCorrienteWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DataAgroAuthWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\DetalleCteWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FijacionDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FijacionesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FletesRelacionWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FletesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\FleteValidarImporteWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\HomeNGWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\HomeWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\LiquidacionesNGWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\LiquidacionesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\LoginWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\MovimientoBalanzaWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\NoticiasDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PagoComprobantesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PagoDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PagosNGWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PagosWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PDFWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PerfilesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PermisosWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PesificacionGuadarWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\PesificacionWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\ProformaFleteProcedenciaServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\RecepcionesWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UsuarioDesbloquearWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UsuarioHabilitarWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UsuarioInhabilitarWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UsuarioNuevoWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UsuarioOlvidePassWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\UsuariosWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\VendedorDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\VendedoresWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\VendedorHabilitadoWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\VinculaDetalleWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="WSConsumers\AplicacionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\CambioPassConsumerMOA.cs" />
+    <Compile Include="WSConsumers\CartaPorteDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\CartaPorteFormularioCTGConsumerMOA.cs" />
+    <Compile Include="WSConsumers\CartaPorteFormularioDesplegablesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ContactoMailCategoriasConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ContactoMailConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ContratoPDFConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ContratosConsumerMOA.cs" />
+    <Compile Include="WSConsumers\CuentaCorrientesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\DataAgroAuthConsumerMOA.cs" />
+    <Compile Include="WSConsumers\DetalleCteConsumerMOA.cs" />
+    <Compile Include="WSConsumers\FijacionDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\FijacionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\FleteRelacionConsumerMOA.cs" />
+    <Compile Include="WSConsumers\FletesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\FleteValidarImporteConsumerMOA.cs" />
+    <Compile Include="WSConsumers\HomeConsumerMOA.cs" />
+    <Compile Include="WSConsumers\HomeNGConsumerMOA.cs" />
+    <Compile Include="WSConsumers\LiquidacionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\LiquidacionesNGConsumerMOA.cs" />
+    <Compile Include="WSConsumers\LoginConsumerMOA.cs" />
+    <Compile Include="WSConsumers\MovimientoBalanzaConsumerMOA.cs" />
+    <Compile Include="WSConsumers\NoticiasDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PagoComprobantesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PagoDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PagosConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PagosNGConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PDFConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PerfilesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PermisosConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PesificacionConsumerMOA.cs" />
+    <Compile Include="WSConsumers\PesificacionGuardarConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ProformaFleteProcedenciaConsumerMOA.cs" />
+    <Compile Include="WSConsumers\RecepcionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuarioCrearConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuarioDesbloquearConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuarioHabilitarConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuarioInhabilitarConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuarioNuevoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuarioOlvidePassConsumerMOA.cs" />
+    <Compile Include="WSConsumers\UsuariosConsumerMOA.cs" />
+    <Compile Include="WSConsumers\VendedorDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\VendedoresConsumerMOA.cs" />
+    <Compile Include="WSConsumers\VendedorHabilitadoConsumerMOA.cs" />
+    <Compile Include="WSConsumers\VinculaDetalleConsumerMOA.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES.wsdl" />
+    <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4050.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4060.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CambioPassWebServiceMOA\SI_MPMF_MOAOP_LOGIN_CAMBIOPASS.wsdl" />
+    <None Include="Service References\CambioPassWebServiceMOA\SustitucionMOAWS.CambioPassWebServiceMOA.SI_MPMF_MOAOP_LOGIN_CAMBIOPASSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CambioPassWebServiceMOA\SustitucionMOAWS.CambioPassWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CCPP.wsdl" />
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPPResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.ZMPES4300.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.ZMPES4310.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.ZMPES6190.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SI_MPMF_MOAOP_BUSCA_CTG.wsdl" />
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SI_MPMF_MOAOP_CP_DESPLEGABLES.wsdl" />
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioDesplegablesWebServiceMOA.Z_MPMF_MOAOP_CP_DESPLEGABLESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SI_MPMF_MOAOP_CATEG_CONTACTO.wsdl" />
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SustitucionMOAWS.ContactoMailCategoriasWebServiceMOA.SI_MPMF_MOAOP_CATEG_CONTACTOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SustitucionMOAWS.ContactoMailCategoriasWebServiceMOA.Z_MPMF_MOAOP_CATEG_CONTACTOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContactoMailWebServiceMOA\SI_MPMF_MOAOP_MAIL_CONTACTO.wsdl" />
+    <None Include="Service References\ContactoMailWebServiceMOA\SustitucionMOAWS.ContactoMailWebServiceMOA.SI_MPMF_MOAOP_MAIL_CONTACTOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_CONTRATO.wsdl" />
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_CONTRATOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4360.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4380.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4390.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4400.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4410.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4420.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4520.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES4710.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES5260.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES6200.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES6210.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoPDFWebServiceMOA\SI_MPMF_MOAOP_PDF_CONTRATO.wsdl" />
+    <None Include="Service References\ContratoPDFWebServiceMOA\SustitucionMOAWS.ContratoPDFWebServiceMOA.ITCOO.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoPDFWebServiceMOA\SustitucionMOAWS.ContratoPDFWebServiceMOA.SI_MPMF_MOAOP_PDF_CONTRATOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratoPDFWebServiceMOA\SustitucionMOAWS.ContratoPDFWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SI_MPMF_MOAOP_CONTRATOS.wsdl" />
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.SI_MPMF_MOAOP_CONTRATOSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.ZMPES3900.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.ZMPES4060.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.ZMPES4070.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.ZMPES4080.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.ZMPES4090.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CrearUsuarioWebServiceMOA\SI_MPMF_MOAOP_CREA_USER.wsdl" />
+    <None Include="Service References\CrearUsuarioWebServiceMOA\SustitucionMOAWS.CrearUsuarioWebServiceMOA.SI_MPMF_MOAOP_CREA_USERResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\SI_MPMF_MOAOP_CUENTA_CORRIENTE.wsdl" />
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.SI_MPMF_MOAOP_CUENTA_CORRIENTEResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.ZMPES6120.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService.wsdl" />
+    <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\SustitucionMOAWS.DataAgroAuthWebServiceMOA.TokenDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DetalleCteWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CTE.wsdl" />
+    <None Include="Service References\DetalleCteWebServiceMOA\SustitucionMOAWS.DetalleCteWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CTEResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DetalleCteWebServiceMOA\SustitucionMOAWS.DetalleCteWebServiceMOA.ZMPES4480.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DetalleCteWebServiceMOA\SustitucionMOAWS.DetalleCteWebServiceMOA.ZMPES5450.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_FIJACIONES.wsdl" />
+    <None Include="Service References\FijacionDetalleWebServiceMOA\SustitucionMOAWS.FijacionDetalleWebServiceMOA.SI_MPMF_MOAOP_DET_FIJACIONESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionDetalleWebServiceMOA\SustitucionMOAWS.FijacionDetalleWebServiceMOA.ZMPES4680.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionDetalleWebServiceMOA\SustitucionMOAWS.FijacionDetalleWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SI_MPMF_MOAOP_FIJACIONES.wsdl" />
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.SI_MPMF_MOAOP_FIJACIONESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4060.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4080.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4090.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4200.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FletesRelacionWebServiceMOA\SI_MPMF_MOAOP_RELAC_PL.wsdl" />
+    <None Include="Service References\FletesRelacionWebServiceMOA\SustitucionMOAWS.FletesRelacionWebServiceMOA.SI_MPMF_MOAOP_RELAC_PLResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FletesRelacionWebServiceMOA\SustitucionMOAWS.FletesRelacionWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FletesWebServiceMOA\SI_MPMF_MOAOP_VIAJES.wsdl" />
+    <None Include="Service References\FletesWebServiceMOA\SustitucionMOAWS.FletesWebServiceMOA.SI_MPMF_MOAOP_VIAJESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FletesWebServiceMOA\SustitucionMOAWS.FletesWebServiceMOA.ZMPES4870.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FletesWebServiceMOA\SustitucionMOAWS.FletesWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FletesWebServiceMOA\SustitucionMOAWS.FletesWebServiceMOA.ZMPES4970.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\SI_MPMF_MOAOP_VAL_IMPORTE.wsdl" />
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\SustitucionMOAWS.FleteValidarImporteWebServiceMOA.SI_MPMF_MOAOP_VAL_IMPORTEResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\SustitucionMOAWS.FleteValidarImporteWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\HomeNGWebServiceMOA\SI_MPMF_MOAOP_HOME_NG.wsdl" />
+    <None Include="Service References\HomeNGWebServiceMOA\SustitucionMOAWS.HomeNGWebServiceMOA.SI_MPMF_MOAOP_HOME_NGResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\HomeNGWebServiceMOA\SustitucionMOAWS.HomeNGWebServiceMOA.ZMPES4550.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\HomeWebServiceMOA\SI_MPMF_MOAOP_HOME.wsdl" />
+    <None Include="Service References\HomeWebServiceMOA\SustitucionMOAWS.HomeWebServiceMOA.SI_MPMF_MOAOP_HOMEResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\HomeWebServiceMOA\SustitucionMOAWS.HomeWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\HomeWebServiceMOA\SustitucionMOAWS.HomeWebServiceMOA.ZMPES4550.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\SI_MPMF_MOAOP_LIQUIDACIONES_NG.wsdl" />
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\SustitucionMOAWS.LiquidacionesNGWebServiceMOA.SI_MPMF_MOAOP_LIQUIDACIONES_NGResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\SustitucionMOAWS.LiquidacionesNGWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\SustitucionMOAWS.LiquidacionesNGWebServiceMOA.ZMPES6100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\SustitucionMOAWS.LiquidacionesNGWebServiceMOA.ZMPES6110.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesWebServiceMOA\SI_MPMF_MOAOP_LIQUIDACIONES.wsdl" />
+    <None Include="Service References\LiquidacionesWebServiceMOA\SustitucionMOAWS.LiquidacionesWebServiceMOA.SI_MPMF_MOAOP_LIQUIDACIONESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesWebServiceMOA\SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LiquidacionesWebServiceMOA\SustitucionMOAWS.LiquidacionesWebServiceMOA.ZMPES4980.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LoginWebServiceMOA\SI_MPMF_MOAOP_LOGIN_IN.wsdl" />
+    <None Include="Service References\LoginWebServiceMOA\SustitucionMOAWS.LoginWebServiceMOA.SI_MPMF_MOAOP_LOGIN_INResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\LoginWebServiceMOA\SustitucionMOAWS.LoginWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MovimientoBalanzaWebServiceMOA\SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA.wsdl" />
+    <None Include="Service References\MovimientoBalanzaWebServiceMOA\SustitucionMOAWS.MovimientoBalanzaWebServiceMOA.SI_MPMF_MOAOP_MOVIMIENTOS_BALANZAResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_NOTICIAS.wsdl" />
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_NOTICIASResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4530.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4540.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4920.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
+    <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NGResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.ZMPES4940.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagoDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLE_PAGO.wsdl" />
+    <None Include="Service References\PagoDetalleWebServiceMOA\SustitucionMOAWS.PagoDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_PAGOResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagoDetalleWebServiceMOA\SustitucionMOAWS.PagoDetalleWebServiceMOA.ZMPES4360.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagoDetalleWebServiceMOA\SustitucionMOAWS.PagoDetalleWebServiceMOA.ZMPES4510.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagoDetalleWebServiceMOA\SustitucionMOAWS.PagoDetalleWebServiceMOA.ZMPES5320.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagosNGWebServiceMOA\SI_MPMF_MOAOP_PAGOS_NG.wsdl" />
+    <None Include="Service References\PagosNGWebServiceMOA\SustitucionMOAWS.PagosNGWebServiceMOA.SI_MPMF_MOAOP_PAGOS_NGResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagosNGWebServiceMOA\SustitucionMOAWS.PagosNGWebServiceMOA.ZMPES4930.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagosWebServiceMOA\SI_MPMF_MOAOP_PAGOS_CTA_CTE.wsdl" />
+    <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.SI_MPMF_MOAOP_PAGOS_CTA_CTEResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.ZMPES5310.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PDFWebServiceMOA\SI_MPMF_MOAOP_PDF.wsdl" />
+    <None Include="Service References\PDFWebServiceMOA\SustitucionMOAWS.PDFWebServiceMOA.SI_MPMF_MOAOP_PDFResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PDFWebServiceMOA\SustitucionMOAWS.PDFWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PerfilesWebServiceMOA\SI_MPMF_MOAOP_PERFILES.wsdl" />
+    <None Include="Service References\PerfilesWebServiceMOA\SustitucionMOAWS.PerfilesWebServiceMOA.SI_MPMF_MOAOP_PERFILESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PerfilesWebServiceMOA\SustitucionMOAWS.PerfilesWebServiceMOA.Z_MPMF_MOAOP_PERFILESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PermisosWebServiceMOA\SI_MPMF_MOAOP_PERMISOS.wsdl" />
+    <None Include="Service References\PermisosWebServiceMOA\SustitucionMOAWS.PermisosWebServiceMOA.SI_MPMF_MOAOP_PERMISOSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PermisosWebServiceMOA\SustitucionMOAWS.PermisosWebServiceMOA.Z_MPMF_MOAOP_PERMISOSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\SI_MPMF_MOAOP_GUARDAR_PESIF.wsdl" />
+    <None Include="Service References\PesificacionWebServiceMOA\SI_MPMF_MOAOP_OBTENER_PEND_USD.wsdl" />
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\SustitucionMOAWS.PesificacionGuadarWebServiceMOA.SI_MPMF_MOAOP_GUARDAR_PESIFResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\SustitucionMOAWS.PesificacionGuadarWebServiceMOA.ZMPES5490.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PesificacionWebServiceMOA\SustitucionMOAWS.PesificacionWebServiceMOA.SI_MPMF_MOAOP_OBTENER_PEND_USDResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\PesificacionWebServiceMOA\SustitucionMOAWS.PesificacionWebServiceMOA.ZMPES5470.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SI_MPMF_MOAOP_DET_FLETE_PROC.wsdl" />
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SustitucionMOAWS.ProformaFleteProcedenciaServiceMOA.SI_MPMF_MOAOP_DET_FLETE_PROCResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SustitucionMOAWS.ProformaFleteProcedenciaServiceMOA.ZMPES6250.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SI_MPMF_MOAOP_RECEPCIONES.wsdl" />
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.SI_MPMF_MOAOP_RECEPCIONESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4050.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4080.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4090.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4110.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4130.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SI_MPMF_MOAOP_LOGIN_DESBUSR.wsdl" />
+    <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA.SI_MPMF_MOAOP_LOGIN_DESBUSRResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioHabilitarWebServiceMOA\SI_MPMF_MOAOP_LOGIN_HABUSR.wsdl" />
+    <None Include="Service References\UsuarioHabilitarWebServiceMOA\SustitucionMOAWS.UsuarioHabilitarWebServiceMOA.SI_MPMF_MOAOP_LOGIN_HABUSRResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioHabilitarWebServiceMOA\SustitucionMOAWS.UsuarioHabilitarWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioInhabilitarWebServiceMOA\SI_MPMF_MOAOP_LOGIN_INHAUSR.wsdl" />
+    <None Include="Service References\UsuarioInhabilitarWebServiceMOA\SustitucionMOAWS.UsuarioInhabilitarWebServiceMOA.SI_MPMF_MOAOP_LOGIN_INHAUSRResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioInhabilitarWebServiceMOA\SustitucionMOAWS.UsuarioInhabilitarWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioNuevoWebServiceMOA\SI_MPMF_MOAOP_LOGIN_NVOUSR.wsdl" />
+    <None Include="Service References\UsuarioNuevoWebServiceMOA\SustitucionMOAWS.UsuarioNuevoWebServiceMOA.SI_MPMF_MOAOP_LOGIN_NVOUSRResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioNuevoWebServiceMOA\SustitucionMOAWS.UsuarioNuevoWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioOlvidePassWebServiceMOA\SI_MPMF_MOAOP_LOGIN_OLVPASS.wsdl" />
+    <None Include="Service References\UsuarioOlvidePassWebServiceMOA\SustitucionMOAWS.UsuarioOlvidePassWebServiceMOA.SI_MPMF_MOAOP_LOGIN_OLVPASSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuarioOlvidePassWebServiceMOA\SustitucionMOAWS.UsuarioOlvidePassWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuariosWebServiceMOA\SI_MPMF_MOAOP_USUARIOS.wsdl" />
+    <None Include="Service References\UsuariosWebServiceMOA\SustitucionMOAWS.UsuariosWebServiceMOA.SI_MPMF_MOAOP_USUARIOSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\UsuariosWebServiceMOA\SustitucionMOAWS.UsuariosWebServiceMOA.Z_MPMF_MOAOP_USUARIOSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_VENDEDOR.wsdl" />
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDORResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.ZMPES4430.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.ZMPES4450.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.ZMPES4460.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.ZMPES4470.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.ZMPTE3420.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedoresWebServiceMOA\SI_MPMF_MOAOP_VENDEDORES.wsdl" />
+    <None Include="Service References\VendedoresWebServiceMOA\SustitucionMOAWS.VendedoresWebServiceMOA.SI_MPMF_MOAOP_VENDEDORESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedoresWebServiceMOA\SustitucionMOAWS.VendedoresWebServiceMOA.ZMPES4100.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedoresWebServiceMOA\SustitucionMOAWS.VendedoresWebServiceMOA.ZMPES4340.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedoresWebServiceMOA\SustitucionMOAWS.VendedoresWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SI_MPMF_MOAOP_VENDED_HABILIT.wsdl" />
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.SI_MPMF_MOAOP_VENDED_HABILITResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.ZMPES4430.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.ZMPES4450.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.ZMPES4470.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.ZMPTE3420.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VinculaDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_VINCULA.wsdl" />
+    <None Include="Service References\VinculaDetalleWebServiceMOA\SustitucionMOAWS.VinculaDetalleWebServiceMOA.SI_MPMF_MOAOP_DET_VINCULAResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VinculaDetalleWebServiceMOA\SustitucionMOAWS.VinculaDetalleWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\VinculaDetalleWebServiceMOA\SustitucionMOAWS.VinculaDetalleWebServiceMOA.ZMPES6090.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\AplicacionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\CambioPassWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\CartaPorteDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\CartaPorteFormularioCTGWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ContactoMailCategoriasWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ContactoMailWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ContratoDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ContratoPDFWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ContratosWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\CrearUsuarioWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\CuentaCorrienteWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\DataAgroAuthWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\DetalleCteWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\FijacionDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\FijacionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\FletesRelacionWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\FletesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\FleteValidarImporteWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\HomeNGWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\HomeWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\LiquidacionesNGWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\LiquidacionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\LoginWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\MovimientoBalanzaWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\NoticiasDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PagoDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PagosNGWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PagosWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PDFWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PerfilesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PermisosWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PesificacionGuadarWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\PesificacionWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ProformaFleteProcedenciaServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\RecepcionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\UsuarioDesbloquearWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\UsuarioHabilitarWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\UsuarioInhabilitarWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\UsuarioNuevoWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\UsuarioOlvidePassWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\UsuariosWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\VendedorDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\VendedoresWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\VendedorHabilitadoWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\VinculaDetalleWebServiceMOA\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
+      <Project>{CDE9AB52-949B-428E-A737-5910D05116D8}</Project>
+      <Name>SustitucionMOAAsset</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACrypting\SustitucionMOACrypting.csproj">
+      <Project>{B6672999-1E81-4BDE-BDA1-D825C51A5388}</Project>
+      <Name>SustitucionMOACrypting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
+      <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
+      <Name>SustitucionMOACustomException</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Name>SustitucionMOAModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\HomeWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\HomeWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\HomeWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AplicacionesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AplicacionesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\AplicacionesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratosWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratosWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratosWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CrearUsuarioWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CrearUsuarioWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CrearUsuarioWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FijacionDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FijacionDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FijacionDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FijacionesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FijacionesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FijacionesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LoginWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LoginWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LoginWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CambioPassWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CambioPassWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CambioPassWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioDesbloquearWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioDesbloquearWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioDesbloquearWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioHabilitarWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioHabilitarWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioHabilitarWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioNuevoWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioNuevoWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioNuevoWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioInhabilitarWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioInhabilitarWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioInhabilitarWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioOlvidePassWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioOlvidePassWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuarioOlvidePassWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PermisosWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PermisosWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PermisosWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RecepcionesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RecepcionesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RecepcionesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedoresWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedoresWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedoresWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\HomeNGWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\HomeNGWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\HomeNGWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MovimientoBalanzaWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MovimientoBalanzaWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MovimientoBalanzaWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PDFWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PDFWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PDFWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratoPDFWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratoPDFWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratoPDFWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VinculaDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VinculaDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VinculaDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagoComprobantesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagoComprobantesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagoComprobantesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuariosWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuariosWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\UsuariosWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PerfilesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PerfilesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PerfilesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FletesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FletesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FletesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LiquidacionesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LiquidacionesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\LiquidacionesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContratoDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContactoMailWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContactoMailWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContactoMailWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagosWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagosWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagosWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagosNGWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagosNGWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagosNGWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagoDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagoDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PagoDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FletesRelacionWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FletesRelacionWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\FletesRelacionWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedorDetalleWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DetalleCteWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DetalleCteWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DetalleCteWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PesificacionWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PesificacionWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PesificacionWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataAgroAuthWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

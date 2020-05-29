@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SustitucionMOAModel</RootNamespace>
+    <AssemblyName>SustitucionMOAModel</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\CamaraImageResponse.cs" />
+    <Compile Include="Models\DBMap\Pesada\Detalle\PesadaDetalle.cs" />
+    <Compile Include="Models\DBMap\Pesada\Pesada.cs" />
+    <Compile Include="Models\DBMap\Pesada\PesadaWSResponse.cs" />
+    <Compile Include="Models\DBMap\RYD\Balanza.cs" />
+    <Compile Include="Models\DBMap\RYD\CargaPesada\CargaPesadaBalanza.cs" />
+    <Compile Include="Models\DBMap\RYD\CargaPesada\PesadaBalanza.cs" />
+    <Compile Include="Models\DBMap\RYD\Commodity.cs" />
+    <Compile Include="Models\DBMap\RYD\DbElement.cs" />
+    <Compile Include="Models\DBMap\RYD\DbParameter.cs" />
+    <Compile Include="Models\DBMap\RYD\EncabezadoPesadas.cs" />
+    <Compile Include="Models\DBMap\RYD\Exportador.cs" />
+    <Compile Include="Models\DBMap\RYD\FiltroListadoPesadas.cs" />
+    <Compile Include="Models\DBMap\RYD\InputsBalanzas.cs" />
+    <Compile Include="Models\DBMap\RYD\InputsCargaPesadas.cs" />
+    <Compile Include="Models\DBMap\RYD\ListadoEncabezadoPesadas.cs" />
+    <Compile Include="Models\DropdownContent.cs" />
+    <Compile Include="Models\FechaWS.cs" />
+    <Compile Include="Models\DropdownOption.cs" />
+    <Compile Include="Models\Usuario.cs" />
+    <Compile Include="Models\ViewModel\CartaPorteViewModel.cs" />
+    <Compile Include="Models\ViewModel\ContratosNoCumplidosViewModel.cs" />
+    <Compile Include="Models\ViewModel\CuentaCorriente\CuentaCorrienteViewModel.cs" />
+    <Compile Include="Models\ViewModel\ContratoViewModel.cs" />
+    <Compile Include="Models\ViewModel\Flete\FleteViewModel.cs" />
+    <Compile Include="Models\ViewModel\Home\HomeViewModel.cs" />
+    <Compile Include="Models\ViewModel\Liquidacion\LiquidacionNGViewModel.cs" />
+    <Compile Include="Models\ViewModel\Liquidacion\LiquidacionViewModel.cs" />
+    <Compile Include="Models\ViewModel\Pago\PagoViewModel.cs" />
+    <Compile Include="Models\WSMapMOA\Balanza\MovimientoBalanzaMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorte.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteAplicacion.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteAplicacionWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteDescarga.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteDescargaWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Detalle\Aplicacion.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Detalle\Calidad.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Detalle\CartaPorteDetalleWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Detalle\EntregaDescarga.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\CartaPorteFormularioCTGWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\CartaPorteFormularioDropdownsWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\CCPPFormulario.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\CCPPFormularioElementPosition.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\Destino.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\FormularioDestinoElement.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\FormularioDropdownElement.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\Grano.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\Interviniente.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\Mensaje.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Formulario\Transporte.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Vinculacion\CartaPorteVinculacion.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\Vinculacion\DetalleVinculacionWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\ContactoMail\CategoriaContacto.cs" />
+    <Compile Include="Models\WSMapMOA\ContactoMail\ContactoContenido.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\ContratoCumplido.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\ContratoNoCumplido.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\ContratosNoCumplidosWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\ContratosWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\AmpliacionAnulacion.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Aplicacion.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Boleto.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Calidad.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\CalidadElement.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\CalidadExcelDetalle.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Caracteristica.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\ContratoDetalleWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Fijacion.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Hijo.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Liquidacion.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Pago.cs" />
+    <Compile Include="Models\WSMapMOA\Contrato\Detalle\Resumen.cs" />
+    <Compile Include="Models\WSMapMOA\CuentaCorriente\CuentaCorriente.cs" />
+    <Compile Include="Models\WSMapMOA\CuentaCorriente\CuentaCorrienteAgrupada.cs" />
+    <Compile Include="Models\WSMapMOA\CuentaCorriente\Movimiento.cs" />
+    <Compile Include="Models\WSMapMOA\CuentaCorriente\CuentaCorrienteAprobadaWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CuentaCorriente\CuentaCorrienteWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\DataAgro\DataAgroAuthWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\ErrorWS.cs" />
+    <Compile Include="Models\WSMapMOA\FechaStringWS.cs" />
+    <Compile Include="Models\WSMapMOA\Fijacion\Detalle\FijacionDetalle.cs" />
+    <Compile Include="Models\WSMapMOA\Fijacion\Detalle\FijacionDetalleWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Flete\Proforma.cs" />
+    <Compile Include="Models\WSMapMOA\Flete\Viaje.cs" />
+    <Compile Include="Models\WSMapMOA\Flete\FletesWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Home\HomeWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Home\ItemResumenHome.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\Liquidacion.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\LiquidacionWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\Compra.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\LiquidacionNGWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Liquidacion\NoGranos\Salida.cs" />
+    <Compile Include="Models\WSMapMOA\Login\LoginWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Noticia\Cabecera.cs" />
+    <Compile Include="Models\WSMapMOA\Noticia\Contenido.cs" />
+    <Compile Include="Models\WSMapMOA\Noticia\Noticia.cs" />
+    <Compile Include="Models\WSMapMOA\Noticia\NoticiasDetallesWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Noticia\Notificacion.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Comprobante\Comprobante.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Comprobante\PagoComprobanteWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Detalle\Cabecera.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Detalle\PagoDetalleWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Detalle\Salida.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Detalle\SalidaElement.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Detalle\SalidaExcelDetalle.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Detalle\Vendedor.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\NoGranos\PagoNG.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\NoGranos\PagosNGWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\Pago.cs" />
+    <Compile Include="Models\WSMapMOA\Pago\PagosWSMOAReponse.cs" />
+    <Compile Include="Models\WSMapMOA\Pdf.cs" />
+    <Compile Include="Models\WSMapMOA\PDF\PDFDetalle.cs" />
+    <Compile Include="Models\WSMapMOA\PDF\PDFResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\Contrato.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\Fecha.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\Item.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\PesificacionSetContratosWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Pesificacion\PesificacionGetContratosWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Proforma\Cabecera.cs" />
+    <Compile Include="Models\WSMapMOA\Proforma\DetalleCteWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Proforma\ProcedenciaFlete.cs" />
+    <Compile Include="Models\WSMapMOA\Proforma\ProcedenciaFleteWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Proforma\Salida.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Perfil\DropdownPerfilElement.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Perfil\DropdownTipoElement.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Perfil\GetPerfilesResponseMOA.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Perfil\Perfil.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Perfil\PerfilesWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Perfil\TipoProveedor.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Permiso\Permiso.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Permiso\PermisosWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\Usuario.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\UsuarioAlta.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\UsuarioCrearWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Usuario\UsuariosWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Detalle\Cabecera.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Detalle\Convenio.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Detalle\Cuenta.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Detalle\Exencion.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Detalle\VendedorDetalleWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Habilitado\VendedorHabilitadoWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\Vendedor.cs" />
+    <Compile Include="Models\WSMapMOA\Vendedor\VendedoresWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\Vincula\Detalle\DetalleVincula.cs" />
+    <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\ViewModel\RYD\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

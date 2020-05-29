@@ -1,0 +1,4 @@
+                 Temp.  Temp.  Temp.  Hum.   Pto.   Vel.   Dir.   Rec.  Vel.  Dir.  Sens.   Ind.   Ind.                  Int.  Grad.D. Grad.D.  Temp.  Hum.  Rocío  In.Cal.   Muest   Tx   Recep.  Int.
+  Fecha   Hora    Ext.   Máx.   Mín.  Ext.  Rocío Viento Viento Viento  Máx.  Max.  Term.  Calor   THW    Bar   Lluvia  Lluvia  Calor    Frío    Int.  Int.   Int.   Int.    Viento Viento   ISS   Arc.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 1/10/27  2:08p  -31.9  -17.7  -17.8     0    ---    0.0    INT   0.00 408.8   NNE  -31.9  -32.1  -32.0  ------    --- 8272.5    0.524   0.000    0.8     7  -31.3   -0.2    12547     1    100.0   15 

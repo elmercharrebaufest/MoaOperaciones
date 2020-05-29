@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SustitucionMOAAssets;
+
+namespace SustitucionMOAUtils.Logger
+{
+    public class Log
+    {
+        public static void Error(string ip, string usuario, string controller, string method, string error)
+        {
+            try
+            {
+                writeLog(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+                Console.WriteLine("ERROR heredado:" + error);
+            }
+        }
+
+        public static void Debug(string controller, string method, string valores)
+        {
+            try
+            {
+                writeLog("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+
+        private static void writeLog(string log) {
+            string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
+            checkOrCreateDirectory(directoryPath);
+            var dataFile = directoryPath + "ErrorLog" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+            File.AppendAllText(@dataFile, log + "\n");
+        }
+
+        private static void checkOrCreateDirectory(string directory)
+        {
+            System.IO.Directory.CreateDirectory(directory);
+        }
+    }
+}

@@ -1,0 +1,64 @@
+                            RESUMEN CLIMATOLÓGICO ANUAL
+
+NOMBRE: EMA SL  CIUDAD: San Lorenzo   ESTADO: Santa Fe  
+ALT:    50 m  LAT:  33° 36' 00" S  LONG:  62° 06' 00" W
+
+               TEMPERATURA (°C), BASE CALOR 18.3, BASE FRIO 18.3
+                          DESV  GRAD  GRAD                                          
+        MEDIA MEDIA       RESP  DIA   DIA                        MAX  MAX  MIN  MIN 
+AÑO MES MAX   MIN   MEDIA NORM  CAL.  FRIO  MAX FECHA MIN  FECHA >=32 <=0  <=0  <=-18 
+------------------------------------------------------------------------------------
+ 26  1
+ 26  2
+ 26  3
+ 26  4
+ 26  5
+ 26  6
+ 26  7
+ 26  8
+ 26  9
+ 26 10
+ 26 11
+ 26 12
+------------------------------------------------------------------------------------
+         0.0   0.0   0.0   0.0     0     0-32768.0 ENE32767.0  ENE    0    0    0    0
+
+                                PRECIPITACION (mm)
+
+               DESV   MAX        DIAS LLUVIA  
+               RESP   OBS.          MAS 
+AÑO MES TOTAL  NORM   DIA  FEC   .2   2   20
+--------------------------------------------
+ 26  1
+ 26  2
+ 26  3
+ 26  4
+ 26  5
+ 26  6
+ 26  7
+ 26  8
+ 26  9
+ 26 10
+ 26 11
+ 26 12
+--------------------------------------------
+         0.0   0.0   0.0  ENE    0    0    0
+
+                                VELOCIDAD DEL VIENTO (km/h)
+                          DIR
+AÑO MES  MED.  MAX  FECHA DOM
+---------------------------------
+ 26  1
+ 26  2
+ 26  3
+ 26  4
+ 26  5
+ 26  6
+ 26  7
+ 26  8
+ 26  9
+ 26 10
+ 26 11
+ 26 12
+---------------------------------
+         0.0-32768.0  ENE  ---

@@ -1,0 +1,36 @@
+﻿<!--<body class="loginBody">-->
+<div class="login-wrapper">
+    <div id="loginSide">
+        <div class="login rounded mySearch">
+            <div class="col-xs-12 loginTxt"><img src="./Content/images/header/logoLogin.png" class="img-responsive" style="margin-bottom:10px;"><span style="width:100%">Información de operaciones y entregas para proveedores de Materias Primas</span> </div>
+            <div class="col-xs-12 title-caps">
+                Recuperar Contrase&ntilde;a
+            </div>
+            <hr>
+            <div class="col-xs-12 col-sm-12">
+                Usuario:
+                <div class="styled-select">
+                    <input type="search" [(ngModel)]="username" class="fourRounded" placeholder="" aria-controls="tableModal">
+                </div>
+            </div>
+            <div class="row myRow cargaDeDatosBtn" *ngIf="visibleButton">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-6">
+                    <a (click)="recuperarContrasenia()" href="#" style="text-decoration:none!important">
+                        <div class="btnSection animate">Recuperar Contraseña <span class="fa fa-play"></span></div>
+                    </a>
+                </div>
+            </div>
+            <spinner></spinner>
+            <mensaje></mensaje>
+            <hr>
+            <div class="cargaDeDatos cargaDeDatosBtn" style="clear:both;">
+                <div class="col-xs-8 col-sm-6 col-sm-offset-6 col-xs-offset-2">
+                    <a routerLink="/login" style="text-decoration:none!important">
+                        <div class="btnSection btnSectionGrey animate">Login <span class="fa fa-play"></span></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--</body>-->
