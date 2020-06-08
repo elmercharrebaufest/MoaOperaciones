@@ -25,7 +25,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.getAplicaciones(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_cartaPorteService.GetAplicaciones(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -52,7 +52,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.getDescargas(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_cartaPorteService.GetDescargas(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -79,7 +79,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.downloadAplicaciones(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_cartaPorteService.DownloadAplicaciones(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -106,7 +106,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.downloadDescargas(SessionPersister.Proveedor, fechaInicio, fechaFin));
+                return JsonCustom(_cartaPorteService.DownloadDescargas(SessionPersister.Proveedor, fechaInicio, fechaFin));
             }
             catch (InfoCustomException e)
             {
@@ -128,11 +128,39 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
+        public ActionResult GetFotos(string cartaPorteId)
+        {
+            try
+            {
+                return JsonCustom(_cartaPorteService.GetCartaPorteFotos(cartaPorteId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CARTA_PORTE_DETALLE)]
         public ActionResult getDetalle(string cartaPorteId) {
             try
             {
-                return JsonCustom(new { data = _cartaPorteService.getDetalle(SessionPersister.Proveedor, cartaPorteId) });
+                return JsonCustom(new { data = _cartaPorteService.GetDetalle(SessionPersister.Proveedor, cartaPorteId) });
             }
             catch (InfoCustomException e)
             {
@@ -159,7 +187,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.downloadDetalle(SessionPersister.Proveedor, cartaPorteId));
+                return JsonCustom(_cartaPorteService.DownloadDetalle(SessionPersister.Proveedor, cartaPorteId));
             }
             catch (InfoCustomException e)
             {
@@ -186,7 +214,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.downloadPDFCalidad(SessionPersister.Proveedor, numeroCCPP));
+                return JsonCustom(_cartaPorteService.DownloadPDFCalidad(SessionPersister.Proveedor, numeroCCPP));
             }
             catch (InfoCustomException e)
             {
@@ -215,7 +243,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_cartaPorteService.getFormularioDropdowns());
+                return JsonCustom(_cartaPorteService.GetFormularioDropdowns());
             }
             catch (InfoCustomException e)
             {
@@ -242,7 +270,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom( new { data = _cartaPorteService.getDataCTG(valor) });
+                return JsonCustom( new { data = _cartaPorteService.GetDataCTG(valor) });
             }
             catch (InfoCustomException e)
             {
@@ -288,7 +316,7 @@ namespace SustitucionMOA.Controllers
                 }
                 var formulario = JsonConvert.DeserializeObject<CCPPFormulario>(formularioString);
 
-                return JsonCustom(new { data = _cartaPorteService.getCompletedPDFTemplate(formulario, paginaSeleccionada, archivoBytes) });
+                return JsonCustom(new { data = _cartaPorteService.GetCompletedPDFTemplate(formulario, paginaSeleccionada, archivoBytes) });
             }
             catch (InfoCustomException e)
             {
@@ -310,14 +338,16 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+
         
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CREAR_FORMULARIO_CCPP)]
         public ActionResult getTemplate(string formularioString)
         {
             try
             {
                 var formulario = JsonConvert.DeserializeObject<CCPPFormulario>(formularioString);
-                return JsonCustom(new { data = _cartaPorteService.getTemplate(formulario) });
+                return JsonCustom(new { data = _cartaPorteService.GetTemplate(formulario) });
             }
             catch (InfoCustomException e)
             {
