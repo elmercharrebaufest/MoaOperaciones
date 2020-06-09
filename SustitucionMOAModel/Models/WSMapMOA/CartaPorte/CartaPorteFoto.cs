@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -10,25 +11,15 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
 {
     public class CartaPorteFoto
     {
-        public byte[] Foto { get; set; }
+        public string Foto { get; set; }
 
-        public byte[] FotoChica { get; set; }
+        public string FotoChica { get; set; }
 
         public CartaPorteFoto(byte[] foto, byte[] fotoChica)
         {
-            Foto = Compress(foto);
-            FotoChica = fotoChica;
+            Foto = Convert.ToBase64String(foto); 
+            FotoChica = Convert.ToBase64String(fotoChica); ;
         }
 
-
-        public static byte[] Compress(byte[] data)
-        {
-            MemoryStream output = new MemoryStream();
-            using (DeflateStream dstream = new DeflateStream(output, CompressionLevel.Optimal))
-            {
-                dstream.Write(data, 0, data.Length);
-            }
-            return output.ToArray();
-        }
     }
 }

@@ -21,7 +21,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (FotoDto foto in fotos.Fotos)
             {
-                cartaPorteFotos.Add(new CartaPorteFoto(foto.Foto, null));
+                cartaPorteFotos.Add(new CartaPorteFoto(foto.Foto, foto.FotoChica));
             }
 
             return cartaPorteFotos;
