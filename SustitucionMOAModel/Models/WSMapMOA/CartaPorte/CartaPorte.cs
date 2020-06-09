@@ -9,28 +9,28 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
     public class CartaPorte
     {
         public string cartaPorte { get; set; }
-        public string contrnum { get; set; }
-        public string contrvend { get; set; }
-        public string fechaDescarga { get; set; }
-        public string producto { get; set; }
-        public decimal netoDescontado { get; set; }
-        public string unidadNetoDescontado { get; set; }
-        public decimal pendAplicacion { get; set; }
-        public string unidadPendAplicacion { get; set; }
-        public decimal aLiquidar { get; set; }
-        public string unidadALiquidar { get; set; }
-        public string idVendedor { get; set; }
-        public string vendedor { get; set; }
-        public string sust { get; set; }
-        public string titular { get; set; }
-        public string descripcionTitular { get; set; }
+        public string Contrnum { get; set; }
+        public string Contrvend { get; set; }
+        public string FechaDescarga { get; set; }
+        public string Producto { get; set; }
+        public decimal NetoDescontado { get; set; }
+        public string UnidadNetoDescontado { get; set; }
+        public decimal PendAplicacion { get; set; }
+        public string UnidadPendAplicacion { get; set; }
+        public decimal ALiquidar { get; set; }
+        public string UnidadALiquidar { get; set; }
+        public string IdVendedor { get; set; }
+        public string Vendedor { get; set; }
+        public string Sust { get; set; }
+        public string Titular { get; set; }
+        public string DescripcionTitular { get; set; }
     }
 
     public class CartaPorteView : CartaPorte{
-        public DateTime fechaDescargaDate { get; set; }
-        public string netoDescontadoString { get; set; }
-        public string pendAplicacionString { get; set; }
-        public string aLiquidarString { get; set; }
+        public DateTime FechaDescargaDate { get; set; }
+        public string NetoDescontadoString { get; set; }
+        public string PendAplicacionString { get; set; }
+        public string ALiquidarString { get; set; }
         
     }
 }

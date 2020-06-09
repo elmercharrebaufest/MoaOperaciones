@@ -78,8 +78,8 @@ namespace SustitucionMOAUtils.Services
                 ValidarRespuesta(dataView.data);
                 try
                 {
-                    dataView.filtroProducto = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.producto).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                    dataView.filtroVendedor = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+                    dataView.filtroProducto = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.Producto).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+                    dataView.filtroVendedor = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.Vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
                 }
                 catch { }
                 return dataView;
