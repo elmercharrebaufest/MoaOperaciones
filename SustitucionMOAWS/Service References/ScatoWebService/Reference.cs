@@ -71238,6 +71238,14 @@ namespace SustitucionMOAWS.ScatoWebService {
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumGaritaEntrada", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumGaritaEntradaResponse")]
         System.Threading.Tasks.Task<string> ObtenerNumGaritaEntradaAsync(int id);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumero", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumeroR" +
+            "esponse")]
+        SustitucionMOAWS.ScatoWebService.FotosDto ObtenerFotosCartaPortePorNumero(string numero);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumero", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumeroR" +
+            "esponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.FotosDto> ObtenerFotosCartaPortePorNumeroAsync(string numero);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDeEstablecimien" +
             "to", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDeEstablecimien" +
             "toResponse")]
@@ -76980,6 +76988,14 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         public System.Threading.Tasks.Task<string> ObtenerNumGaritaEntradaAsync(int id) {
             return base.Channel.ObtenerNumGaritaEntradaAsync(id);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.FotosDto ObtenerFotosCartaPortePorNumero(string numero) {
+            return base.Channel.ObtenerFotosCartaPortePorNumero(numero);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.FotosDto> ObtenerFotosCartaPortePorNumeroAsync(string numero) {
+            return base.Channel.ObtenerFotosCartaPortePorNumeroAsync(numero);
         }
         
         public SustitucionMOAWS.ScatoWebService.AsignacionDeEstablecimientoDto ObtenerAsignacionDeEstablecimiento(System.Guid instanceId) {

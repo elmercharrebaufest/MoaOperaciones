@@ -15,16 +15,13 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId)
         {
-            int CartaPorteID = int.Parse(cartaPorteId);
-            CartaPorteDto cartaPorte = service.ObtenerCartaPorte(CartaPorteID);
-
-            FotosDto fotos = service.ObtenerFotoPorPath("");
+            FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
 
             List<CartaPorteFoto> cartaPorteFotos = new List<CartaPorteFoto>();
 
             foreach (FotoDto foto in fotos.Fotos)
             {
-                cartaPorteFotos.Add(new CartaPorteFoto(foto.Foto, foto.FotoChica));
+                cartaPorteFotos.Add(new CartaPorteFoto(foto.Foto, null));
             }
 
             return cartaPorteFotos;

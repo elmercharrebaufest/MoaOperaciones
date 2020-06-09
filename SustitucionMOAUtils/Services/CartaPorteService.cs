@@ -28,11 +28,15 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                CartaPorteDescargaViewModel dataView = new CartaPorteDescargaViewModel();
-                dataView.filtroProducto = new DropdownContent();
-                dataView.filtroVendedor = new DropdownContent();
-                dataView.data = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas);
+                CartaPorteDescargaViewModel dataView = new CartaPorteDescargaViewModel
+                {
+                    filtroProducto = new DropdownContent(),
+                    filtroVendedor = new DropdownContent(),
+                    data = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas)
+                };
+
                 ValidarRespuesta(dataView.data);
+
                 try
                 {
                     dataView.filtroProducto = new DropdownContent(
@@ -71,26 +75,40 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                CartaPorteViewModel dataView = new CartaPorteViewModel();
-                dataView.filtroProducto = new DropdownContent();
-                dataView.filtroVendedor = new DropdownContent();
-                dataView.data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas);
+                CartaPorteViewModel dataView = new CartaPorteViewModel
+                {
+                    filtroProducto = new DropdownContent(),
+                    filtroVendedor = new DropdownContent(),
+                    data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas)
+                };
+
                 ValidarRespuesta(dataView.data);
                 try
                 {
-                    dataView.filtroProducto = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.Producto).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                    dataView.filtroVendedor = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.Vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+                    dataView.filtroProducto = new DropdownContent(
+                                                    dataView.data.cartasPorte
+                                                    .GroupBy(i => i.Producto)
+                                                    .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                                    .ToList()
+                                                );
+
+                    dataView.filtroVendedor = new DropdownContent(
+                                                    dataView.data.cartasPorte
+                                                    .GroupBy(i => i.Vendedor)
+                                                    .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                                    .ToList()
+                                                );
                 }
                 catch { }
                 return dataView;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -236,13 +254,13 @@ namespace SustitucionMOAUtils.Services
                 CartaPorteFormularioDropdownsWSMOAResponse data = new CartaPorteFormularioDesplegablesConsumerMOA().request();
                 return data;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -357,11 +375,11 @@ namespace SustitucionMOAUtils.Services
                     return ms.ToArray();
                 }
             }
-            catch (InfoCustomException e)
-            {
+            catch (InfoCustomException)
+            { 
                 throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
                 throw;
             }
@@ -601,7 +619,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        modValor = modValor + ".";
+                        modValor += ".";
                     }
                     return modValor;
                 }

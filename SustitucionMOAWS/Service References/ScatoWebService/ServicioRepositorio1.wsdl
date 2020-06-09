@@ -548,6 +548,12 @@
   <wsdl:message name="IServicioRepositorio_ObtenerNumGaritaEntrada_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerNumGaritaEntradaResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerFotosCartaPortePorNumero_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerFotosCartaPortePorNumero" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerFotosCartaPortePorNumero_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerFotosCartaPortePorNumeroResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerAsignacionDeEstablecimiento_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerAsignacionDeEstablecimiento" />
   </wsdl:message>
@@ -4740,6 +4746,10 @@
     <wsdl:operation name="ObtenerNumGaritaEntrada">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumGaritaEntrada" message="tns:IServicioRepositorio_ObtenerNumGaritaEntrada_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumGaritaEntradaResponse" message="tns:IServicioRepositorio_ObtenerNumGaritaEntrada_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerFotosCartaPortePorNumero">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumero" message="tns:IServicioRepositorio_ObtenerFotosCartaPortePorNumero_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumeroResponse" message="tns:IServicioRepositorio_ObtenerFotosCartaPortePorNumero_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerAsignacionDeEstablecimiento">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDeEstablecimiento" message="tns:IServicioRepositorio_ObtenerAsignacionDeEstablecimiento_InputMessage" />

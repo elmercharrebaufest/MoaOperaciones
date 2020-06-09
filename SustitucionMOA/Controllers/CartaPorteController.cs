@@ -128,7 +128,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
+        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
         public ActionResult GetFotos(string cartaPorteId)
         {
             try

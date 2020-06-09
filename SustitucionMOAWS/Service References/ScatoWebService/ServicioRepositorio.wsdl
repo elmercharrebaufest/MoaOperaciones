@@ -796,6 +796,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="ObtenerFotosCartaPortePorNumero">
+      <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumero" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="ObtenerAsignacionDeEstablecimiento">
       <soap:operation soapAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDeEstablecimiento" style="document" />
       <wsdl:input>
