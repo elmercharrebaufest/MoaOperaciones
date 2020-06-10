@@ -15,12 +15,13 @@ using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAUtils.Export;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
-using SustitucionMOAWS.WSConsumers;
+using SustitucionMOAWS.WSConsumers; 
 
 namespace SustitucionMOAUtils.Services
 {
-    public class CartaPorteService
+    public class CartaPorteService : ICartaPorteService
     {
 
         public CartaPorteDescargaViewModel GetDescargas(string proveedor, string fechaInicio, string fechaFin)
@@ -177,7 +178,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (InfoCustomException)
             {
-                throw; 
+                throw;
             }
             catch (ValidationCustomException)
             {
@@ -298,11 +299,13 @@ namespace SustitucionMOAUtils.Services
             {
                 decimal valorDecimal = 0;
 
-                try { 
-                    valorDecimal = Convert.ToDecimal(valor); 
+                try
+                {
+                    valorDecimal = Convert.ToDecimal(valor);
                 }
-                catch { 
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Nro. CTG")); 
+                catch
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Nro. CTG"));
                 }
 
                 CartaPorteCTGWSMOAResponse data = new CartaPorteFormularioCTGConsumerMOA().request(valorDecimal);
@@ -376,7 +379,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             catch (InfoCustomException)
-            { 
+            {
                 throw;
             }
             catch (ValidationCustomException)
@@ -399,7 +402,7 @@ namespace SustitucionMOAUtils.Services
 
                 using (MemoryStream msNewDoc = new MemoryStream())
                 {
-                    
+
                     document.Open();
                     //document.Add(new iTextSharp.text.Chunk(""));
                     foreach (int page in Enumerable.Range(1, 4))
@@ -489,7 +492,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(data.error.descripcion);
             }
             if (data.cartasPorte == null || data.cartasPorte.Count == 0)
-            { 
+            {
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
             }
         }

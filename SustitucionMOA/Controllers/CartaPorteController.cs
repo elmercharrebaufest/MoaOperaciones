@@ -9,6 +9,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.DBMethods;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAValidator;
@@ -18,7 +19,12 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class CartaPorteController : BaseController
     {
-        CartaPorteService _cartaPorteService = new CartaPorteService();
+        ICartaPorteService _cartaPorteService;
+
+        public CartaPorteController(ICartaPorteService cartaPorteService)
+        {
+            _cartaPorteService = cartaPorteService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CARTA_PORTE)]
         public ActionResult getAplicaciones(string periodo, string fechaInicio, string fechaFin)
