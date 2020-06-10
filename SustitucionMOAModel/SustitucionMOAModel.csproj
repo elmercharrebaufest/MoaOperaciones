@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -75,6 +76,7 @@
     <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteAplicacionWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteDescarga.cs" />
     <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteDescargaWSMOAResponse.cs" />
+    <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteFoto.cs" />
     <Compile Include="Models\WSMapMOA\CartaPorte\CartaPorteWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\CartaPorte\Detalle\Aplicacion.cs" />
     <Compile Include="Models\WSMapMOA\CartaPorte\Detalle\Calidad.cs" />

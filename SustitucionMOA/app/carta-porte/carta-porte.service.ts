@@ -69,6 +69,15 @@ export class CartaPorteService extends BaseService {
             .get('/api/cartaporte/exportPDFCalidad', { search: params, headers: this.headers })
             .map(this.extractData);
     }
+
+
+    getFotos(cartaPorteId: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cartaPorteId', cartaPorteId);
+        return this.http
+            .get('/api/cartaporte/GetFotos', { search: params, headers: this.headers })
+            .map(this.extractData);
+    }
 }
 
 @Injectable()

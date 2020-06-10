@@ -15,69 +15,55 @@ using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAUtils.Export;
-using SustitucionMOAWS.WSConsumers;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.ScatoWebService;
+using SustitucionMOAWS.WSConsumers; 
 
 namespace SustitucionMOAUtils.Services
 {
-    public class CartaPorteService
+    public class CartaPorteService : ICartaPorteService
     {
 
-        public CartaPorteDescargaViewModel getDescargas(string proveedor, string fechaInicio, string fechaFin)
-        {
-            try
-            {
-                List <FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                CartaPorteDescargaViewModel dataView = new CartaPorteDescargaViewModel();
-                dataView.filtroProducto = new DropdownContent();
-                dataView.filtroVendedor = new DropdownContent();
-                dataView.data = (CartaPorteDescargaWSMOAResponse) new RecepcionesConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(dataView.data);
-                try
-                {
-                    dataView.filtroProducto = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.producto).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                    dataView.filtroVendedor = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                }
-                catch { }
-                return dataView;
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        public CartaPorteViewModel getAplicaciones(string proveedor, string fechaInicio, string fechaFin)
+        public CartaPorteDescargaViewModel GetDescargas(string proveedor, string fechaInicio, string fechaFin)
         {
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-                CartaPorteViewModel dataView = new CartaPorteViewModel();
-                dataView.filtroProducto = new DropdownContent();
-                dataView.filtroVendedor = new DropdownContent();
-                dataView.data = (CartaPorteWSMOAResponse) new AplicacionesConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(dataView.data);
-                try { 
-                    dataView.filtroProducto = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.producto).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
-                    dataView.filtroVendedor = new DropdownContent(dataView.data.cartasPorte.GroupBy(i => i.vendedor).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+                CartaPorteDescargaViewModel dataView = new CartaPorteDescargaViewModel
+                {
+                    filtroProducto = new DropdownContent(),
+                    filtroVendedor = new DropdownContent(),
+                    data = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas)
+                };
+
+                ValidarRespuesta(dataView.data);
+
+                try
+                {
+                    dataView.filtroProducto = new DropdownContent(
+                                                    dataView.data.cartasPorte
+                                                        .GroupBy(i => i.producto)
+                                                        .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                                        .ToList()
+                                                    );
+
+                    dataView.filtroVendedor = new DropdownContent(
+                                                    dataView.data.cartasPorte
+                                                        .GroupBy(i => i.vendedor)
+                                                        .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                                        .ToList()
+                                                    );
                 }
                 catch { }
                 return dataView;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -85,21 +71,68 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadAplicaciones(string proveedor, string fechaInicio, string fechaFin) {
+        public CartaPorteViewModel GetAplicaciones(string proveedor, string fechaInicio, string fechaFin)
+        {
+            try
+            {
+                List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+                CartaPorteViewModel dataView = new CartaPorteViewModel
+                {
+                    filtroProducto = new DropdownContent(),
+                    filtroVendedor = new DropdownContent(),
+                    data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas)
+                };
+
+                ValidarRespuesta(dataView.data);
+                try
+                {
+                    dataView.filtroProducto = new DropdownContent(
+                                                    dataView.data.cartasPorte
+                                                    .GroupBy(i => i.Producto)
+                                                    .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                                    .ToList()
+                                                );
+
+                    dataView.filtroVendedor = new DropdownContent(
+                                                    dataView.data.cartasPorte
+                                                    .GroupBy(i => i.Vendedor)
+                                                    .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                                    .ToList()
+                                                );
+                }
+                catch { }
+                return dataView;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string DownloadAplicaciones(string proveedor, string fechaInicio, string fechaFin)
+        {
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 CartaPorteExcelWSMOAResponse data = (CartaPorteExcelWSMOAResponse)new AplicacionesExcelConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(data);
-                return ExcelExport.ToExcel(data.cartasPorte, new string[] {  "Carta Porte", "Contrato Molinos", "Contrato Proveedor", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "Pend. Aplic.", "Unidad Pend. Aplic.",  "Liquidar", "Unidad Liquidar", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" } , "Reporte Aplicaciones");
+                ValidarRespuesta(data);
+                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Contrato Molinos", "Contrato Proveedor", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "Pend. Aplic.", "Unidad Pend. Aplic.", "Liquidar", "Unidad Liquidar", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" }, "Reporte Aplicaciones");
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -107,22 +140,22 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadDescargas(string proveedor, string fechaInicio, string fechaFin)
+        public string DownloadDescargas(string proveedor, string fechaInicio, string fechaFin)
         {
             try
             {
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 CartaPorteDescargaExcelWSMOAResponse data = (CartaPorteDescargaExcelWSMOAResponse)new RecepcionesExcelConsumerMOA().request(proveedor, fechas);
-                validarRespuesta(data);
-                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga",  "Producto", "Descargado", "Unidad Descargado", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" }, "Reporte Descargas");
+                ValidarRespuesta(data);
+                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" }, "Reporte Descargas");
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -130,45 +163,26 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public CartaPorteDetalleWSMOAResponse getDetalle(string proveedor, string cartaporteId) {
-            try
-            {
-                 CartaPorteDetalleWSMOAResponse response = (CartaPorteDetalleWSMOAResponse) new CartaPorteDetalleConsumerMOA().request(proveedor, cartaporteId);
-
-                if (response.error != null && response.error.codigo != "11" && response.error.codigo != "" && response.error.codigo != "00")
-                    throw new ValidationCustomException(response.error.descripcion);
-
-                return response;
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        public string downloadDetalle(string proveedor, string cartaporteId)
+        public CartaPorteDetalleWSMOAResponse GetDetalle(string proveedor, string cartaporteId)
         {
             try
             {
-                CartaPorteDetalleExcelWSMOAResponse data = (CartaPorteDetalleExcelWSMOAResponse) new CartaPorteDetalleExcelConsumerMOA().request(proveedor, cartaporteId);
+                CartaPorteDetalleWSMOAResponse response = (CartaPorteDetalleWSMOAResponse)new CartaPorteDetalleConsumerMOA().request(proveedor, cartaporteId);
 
-                return ExcelExport.ToExcelCartaPorteDetalle(data.entregasDescargas, data.datosCalidad, data.aplicaciones, new string[] { "Vendedor", "Descripcion Vendedor", "Fecha", "Producto", "Descripcion Producto", "Centro", "Descarga Centro", "Procedencia", "Neto Descontado", "Unidad Neto Descontado", "Tipo Vehiculo", "Patente", "Acoplado", "Total Aplicados", "Unidad Total Aplicados" }, new string[] { "Caracteristica", "Resultado Calado", "Resultado Camara", "Certificado", "Resultado Reconsideracion", "Certificado Reconsideracion", "Netos", "Unidad Netos", "Descuento", "Unidad Descuento", "Aplicados", "Unidad Aplicados", "Porcentaje Descuento" }, new string[] { "Fecha", "Contrato", "Kg Aplicados", "Unidad" }, "Reporte Carta de Porte Detalle (Nro. " + cartaporteId + ")");
+                if (response.error != null && response.error.codigo != "11" && response.error.codigo != "" && response.error.codigo != "00")
+                {
+                    throw new ValidationCustomException(response.error.descripcion);
+                }
+
+                return response;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -176,7 +190,29 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Pdf downloadPDFCalidad(string proveedor, string cartaporteId)
+        public string DownloadDetalle(string proveedor, string cartaporteId)
+        {
+            try
+            {
+                CartaPorteDetalleExcelWSMOAResponse data = (CartaPorteDetalleExcelWSMOAResponse)new CartaPorteDetalleExcelConsumerMOA().request(proveedor, cartaporteId);
+
+                return ExcelExport.ToExcelCartaPorteDetalle(data.entregasDescargas, data.datosCalidad, data.aplicaciones, new string[] { "Vendedor", "Descripcion Vendedor", "Fecha", "Producto", "Descripcion Producto", "Centro", "Descarga Centro", "Procedencia", "Neto Descontado", "Unidad Neto Descontado", "Tipo Vehiculo", "Patente", "Acoplado", "Total Aplicados", "Unidad Total Aplicados" }, new string[] { "Caracteristica", "Resultado Calado", "Resultado Camara", "Certificado", "Resultado Reconsideracion", "Certificado Reconsideracion", "Netos", "Unidad Netos", "Descuento", "Unidad Descuento", "Aplicados", "Unidad Aplicados", "Porcentaje Descuento" }, new string[] { "Fecha", "Contrato", "Kg Aplicados", "Unidad" }, "Reporte Carta de Porte Detalle (Nro. " + cartaporteId + ")");
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public Pdf DownloadPDFCalidad(string proveedor, string cartaporteId)
         {
             try
             {
@@ -198,13 +234,13 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                 }
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -212,20 +248,20 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public CartaPorteFormularioDropdownsWSMOAResponse getFormularioDropdowns() {
+        public CartaPorteFormularioDropdownsWSMOAResponse GetFormularioDropdowns()
+        {
             try
             {
                 CartaPorteFormularioDropdownsWSMOAResponse data = new CartaPorteFormularioDesplegablesConsumerMOA().request();
-                //validarRespuesta(data);
                 return data;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -233,23 +269,56 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public CartaPorteCTGWSMOAResponse getDataCTG(string valor) {
+
+        public List<CartaPorteFoto> GetCartaPorteFotos(string cartaPorteId)
+        {
+            try
+            {
+                ScatoConsumer scatoConsumer = new ScatoConsumer();
+
+                return scatoConsumer.ObtenerFotoCartaPorte(cartaPorteId);
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+
+        public CartaPorteCTGWSMOAResponse GetDataCTG(string valor)
+        {
             try
             {
                 decimal valorDecimal = 0;
-                try { valorDecimal = Convert.ToDecimal(valor); }
-                catch { throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Nro. CTG")); }
+
+                try
+                {
+                    valorDecimal = Convert.ToDecimal(valor);
+                }
+                catch
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Nro. CTG"));
+                }
+
                 CartaPorteCTGWSMOAResponse data = new CartaPorteFormularioCTGConsumerMOA().request(valorDecimal);
-                validarRespuesta(data);
+                ValidarRespuesta(data);
                 return data;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -257,12 +326,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public byte[] getCompletedPDFTemplate(CCPPFormulario formulario, int paginaSeleccionada, byte[] archivoBytes)
+        public byte[] GetCompletedPDFTemplate(CCPPFormulario formulario, int paginaSeleccionada, byte[] archivoBytes)
         {
 
             try
             {
-                List<CCPPFormularioElementPosition> valores = getPositions(formulario);
+                List<CCPPFormularioElementPosition> valores = GetPositions(formulario);
 
                 int paginaHasta = paginaSeleccionada + 3;
 
@@ -272,7 +341,8 @@ namespace SustitucionMOAUtils.Services
                     {
                         var pageCount = reader.NumberOfPages;
 
-                        if (paginaHasta > pageCount) {
+                        if (paginaHasta > pageCount)
+                        {
                             throw new InfoCustomException(String.Format(InfoMsg.RangoPaginasNoValido, pageCount));
                         }
 
@@ -281,16 +351,16 @@ namespace SustitucionMOAUtils.Services
 
                         using (PdfStamper stamper = new PdfStamper(reader, ms))
                         {
-                            foreach(int page in Enumerable.Range(1, 4)){
+                            foreach (int page in Enumerable.Range(1, 4))
+                            {
                                 PdfContentByte cb = stamper.GetOverContent(page);
 
                                 foreach (CCPPFormularioElementPosition valor in valores)
                                 {
-                                    //EscribirTexto.Agregar(cb, valor.valor, valor.x, (int)(pageSize.Height - valor.y));
                                     BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 
                                     cb.SetColorFill(BaseColor.BLACK);
-                                    cb.SetFontAndSize(bf, 10);
+                                    cb.SetFontAndSize(bf, size: 10);
                                     cb.BeginText();
                                     try
                                     {
@@ -303,18 +373,18 @@ namespace SustitucionMOAUtils.Services
                             }
 
                         }
-                        
+
                     }
                     return ms.ToArray();
-                }                
+                }
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -322,17 +392,17 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        
-        public byte[] getTemplate(CCPPFormulario formulario)
+
+        public byte[] GetTemplate(CCPPFormulario formulario)
         {
             Document document = new Document(PageSize.A4, -1, -1, -1, -1);
             try
             {
-                List<CCPPFormularioElementPosition> valores = getPositions(formulario);
+                List<CCPPFormularioElementPosition> valores = GetPositions(formulario);
 
                 using (MemoryStream msNewDoc = new MemoryStream())
                 {
-                    iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, msNewDoc);
+
                     document.Open();
                     //document.Add(new iTextSharp.text.Chunk(""));
                     foreach (int page in Enumerable.Range(1, 4))
@@ -348,7 +418,6 @@ namespace SustitucionMOAUtils.Services
 
                         using (PdfReader reader = new PdfReader(result))
                         {
-                            var pageCount = reader.NumberOfPages;
                             var pageSize = reader.GetPageSize(1);
                             reader.SelectPages("1-4");
 
@@ -360,11 +429,10 @@ namespace SustitucionMOAUtils.Services
 
                                     foreach (CCPPFormularioElementPosition valor in valores)
                                     {
-                                        //EscribirTexto.Agregar(cb, valor.valor, valor.x, (int)(pageSize.Height - valor.y));
                                         BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
 
                                         cb.SetColorFill(BaseColor.BLACK);
-                                        cb.SetFontAndSize(bf, 10);
+                                        cb.SetFontAndSize(bf, size: 10);
                                         cb.BeginText();
                                         try
                                         {
@@ -381,13 +449,13 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -395,16 +463,59 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void validarRespuesta(CartaPorteWSMOAResponse data) {
-            if(data == null)
+        private void ValidarRespuesta(CartaPorteWSMOAResponse data)
+        {
+            if (data == null)
+            {
                 throw new ValidationCustomException(ErrorMsg.Error);
+            }
+
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "00")
+            {
                 throw new ValidationCustomException(data.error.descripcion);
+            }
+
             if (data.cartasPorte == null || data.cartasPorte.Count == 0)
+            {
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
+            }
         }
 
-        private void validarRespuesta(CartaPorteDescargaWSMOAResponse data)
+        private void ValidarRespuesta(CartaPorteDescargaWSMOAResponse data)
+        {
+            if (data == null)
+            {
+                throw new ValidationCustomException(ErrorMsg.Error);
+            }
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "00")
+            {
+                throw new ValidationCustomException(data.error.descripcion);
+            }
+            if (data.cartasPorte == null || data.cartasPorte.Count == 0)
+            {
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
+            }
+        }
+
+        private void ValidarRespuesta(CartaPorteDescargaExcelWSMOAResponse data)
+        {
+            if (data == null)
+            {
+                throw new ValidationCustomException(ErrorMsg.Error);
+            }
+
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "00")
+            {
+                throw new ValidationCustomException(data.error.descripcion);
+            }
+
+            if (data.cartasPorte == null || data.cartasPorte.Count == 0)
+            {
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
+            }
+        }
+
+        private void ValidarRespuesta(CartaPorteExcelWSMOAResponse data)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
@@ -414,31 +525,12 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
         }
 
-        private void validarRespuesta(CartaPorteDescargaExcelWSMOAResponse data)
+        private void ValidarRespuesta(CartaPorteCTGWSMOAResponse data)
         {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "00")
-                throw new ValidationCustomException(data.error.descripcion);
-            if (data.cartasPorte == null || data.cartasPorte.Count == 0)
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
-        }
-
-        private void validarRespuesta(CartaPorteExcelWSMOAResponse data)
-        {
-            if (data == null)
-                throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "11" && data.error.codigo != "00")
-                throw new ValidationCustomException(data.error.descripcion);
-            if (data.cartasPorte == null || data.cartasPorte.Count == 0)
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Cartas de Porte"));
-        }
-
-        private void validarRespuesta(CartaPorteCTGWSMOAResponse data)
-        {
-            if (data == null)
-                throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.mensaje != null && data.mensaje.Count > 0 && data.mensaje.ElementAt(0).codError == "Z2(099)" ) {
+            if (data.mensaje != null && data.mensaje.Count > 0 && data.mensaje.ElementAt(0).codError == "Z2(099)")
+            {
                 throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorIncorrecto, "Nro. CTG"));
             }
             if (data.mensaje != null && data.mensaje.Count > 0 && data.mensaje.ElementAt(0).msgError != "")
@@ -447,7 +539,8 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private List<CCPPFormularioElementPosition> getPositions(CCPPFormulario formulario) {
+        private List<CCPPFormularioElementPosition> GetPositions(CCPPFormulario formulario)
+        {
 
 
             DateTime? fechaDate = null;
@@ -456,7 +549,7 @@ namespace SustitucionMOAUtils.Services
                 fechaDate = DataFormatter.StringToDateTime(formulario.fechaCarga, "Fecha Carga");
             }
 
-            List<CCPPFormularioElementPosition> valoresPos = new List<CCPPFormularioElementPosition>() {
+            List<CCPPFormularioElementPosition> valoresPos = new List<CCPPFormularioElementPosition> {
                 new CCPPFormularioElementPosition(FormatearValorCantWords(formulario.nroCTG, 25),186,92),
                 new CCPPFormularioElementPosition(FormatearValorCantWords(formulario.nroRenspa, 25),299,92),
                 new CCPPFormularioElementPosition(GetDiaFecha(fechaDate),508,80),
@@ -523,13 +616,13 @@ namespace SustitucionMOAUtils.Services
                 if (valor.Trim().Length > cantWords)
                 {
                     string modValor = valor.Substring(0, cantWords - 1).Trim();
-                    if (valor.ElementAt(cantWords-1).Equals(" "))
+                    if (valor.ElementAt(cantWords - 1).Equals(" "))
                     {
-                        modValor = modValor.Substring(0, cantWords-3) + ".";
+                        modValor = modValor.Substring(0, cantWords - 3) + ".";
                     }
                     else
                     {
-                        modValor = modValor + ".";
+                        modValor += ".";
                     }
                     return modValor;
                 }
@@ -552,25 +645,19 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                if (fecha.Value.Day < 10)
-                {
-                    return "0" + fecha.Value.Day.ToString();
-                }
-                return fecha.Value.Day.ToString();
+                return fecha.Value.Day.ToString("00");
             }
-            catch {
+            catch
+            {
                 return "";
             }
         }
 
         private string GetMesFecha(DateTime? fecha)
         {
-            try {
-                if (fecha.Value.Month < 10)
-                {
-                    return "0" + fecha.Value.Month.ToString();
-                }
-                return fecha.Value.Month.ToString();
+            try
+            {
+                return fecha.Value.Month.ToString("00");
             }
             catch
             {
@@ -590,11 +677,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string FormatearCheckBox(string val) {
-            if (val.ToLower() == "true") {
-                return "X";
-            }
-            return "";
+        private string FormatearCheckBox(string val)
+        {
+            return val.ToLowerInvariant() == "true" ? "X" : "";
         }
     }
 }
