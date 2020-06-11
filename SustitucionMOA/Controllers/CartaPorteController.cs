@@ -134,12 +134,12 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
-        public ActionResult GetFotos(string cartaPorteId)
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
+        public JsonResult GetFotos(string cartaPorteId)
         {
             try
             {
-                return JsonCustom(_cartaPorteService.GetCartaPorteFotos(cartaPorteId));
+                return JsonCustom(_cartaPorteService.GetFotos(cartaPorteId));
             }
             catch (InfoCustomException e)
             {
@@ -342,10 +342,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }
-
-
-        
+        } 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CREAR_FORMULARIO_CCPP)]
         public ActionResult getTemplate(string formularioString)
