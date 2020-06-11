@@ -270,7 +270,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public List<CartaPorteFoto> GetCartaPorteFotos(string cartaPorteId)
+        public List<CartaPorteFoto> GetFotos(string cartaPorteId)
         {
             try
             {
