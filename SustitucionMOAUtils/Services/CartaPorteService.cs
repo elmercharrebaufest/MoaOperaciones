@@ -292,6 +292,28 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<CartaPorteFoto> GetFotos(List<string> cartaPorteIds)
+        {
+            try
+            {
+                ScatoConsumer scatoConsumer = new ScatoConsumer();
+
+                return scatoConsumer.ObtenerFotoCartasPorte(cartaPorteIds);
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
 
         public CartaPorteCTGWSMOAResponse GetDataCTG(string valor)
         {
