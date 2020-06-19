@@ -27,10 +27,10 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    
+
     @ViewChild("smallSpinner")
     protected spinnerSmallComponent: SpinnerSmallComponent;
-    
+
 
     constructor(protected service: CartaPorteService, protected navService: NavService, private route: ActivatedRoute, private router: Router, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
@@ -41,6 +41,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     data: any;
     cartaPorteId = "";
     tituloArchivo = "ReporteCartaPorteDetalle.xls";
+    fotoSrc = "";
 
     setTabs() {
         this.setMenuSeccionTab("carta-porte", "Detalle");
@@ -71,7 +72,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                    }else if (result.error != undefined && result.error != "") {
+                    } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
@@ -89,6 +90,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     exportExcel() {
+        console.log("holas")
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
@@ -97,7 +99,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                }else if (result.error != undefined && result.error != "") {
+                } else if (result.error != undefined && result.error != "") {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
@@ -170,7 +172,31 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
         return this.tieneData(calidad.kgNetos) || this.tieneData(calidad.kgDescuento) || this.tieneData(calidad.kgAplicados) || this.tieneData(calidad.porcentajeDescuento);
     }
 
-    tieneData(value : any) {
+    tieneData(value: any) {
         return value != undefined && value != 0 && value != "";
+    }
+
+    abrirModal() {
+        this.unsubscribe();
+        this.subscription = this.service.getFotos("000584899752").subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+
+                    this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+
+                    return true;
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+        return false;
     }
 }
