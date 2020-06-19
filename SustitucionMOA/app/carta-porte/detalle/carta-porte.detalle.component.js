@@ -182,6 +182,11 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
     CartaPorteDetalleComponent.prototype.tieneData = function (value) {
         return value != undefined && value != 0 && value != "";
     };
+    CartaPorteDetalleComponent.prototype.abrirModal = function () {
+        var imagen = document.getElementById("cartaPorteImagen");
+        imagen.src = "https://http2.mlstatic.com/software-portable-para-llenar-y-administrar-cartas-de-porte-D_NQ_NP_964054-MLA31984941935_082019-F.jpg";
+        // document.getElementById('cartaPorteImagen').src('https://http2.mlstatic.com/software-portable-para-llenar-y-administrar-cartas-de-porte-D_NQ_NP_964054-MLA31984941935_082019-F.jpg');
+    };
     __decorate([
         core_1.ViewChild(mensaje_component_1.MensajeComponent),
         __metadata("design:type", mensaje_component_1.MensajeComponent)

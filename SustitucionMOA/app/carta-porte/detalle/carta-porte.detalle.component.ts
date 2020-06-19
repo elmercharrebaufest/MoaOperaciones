@@ -173,4 +173,13 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     tieneData(value : any) {
         return value != undefined && value != 0 && value != "";
     }
+
+    abrirModal() {
+
+        var imagen = document.getElementById("cartaPorteImagen") as HTMLImageElement;
+
+        imagen.src = "https://http2.mlstatic.com/software-portable-para-llenar-y-administrar-cartas-de-porte-D_NQ_NP_964054-MLA31984941935_082019-F.jpg";
+
+        // document.getElementById('cartaPorteImagen').src('https://http2.mlstatic.com/software-portable-para-llenar-y-administrar-cartas-de-porte-D_NQ_NP_964054-MLA31984941935_082019-F.jpg');
+    }
 }
