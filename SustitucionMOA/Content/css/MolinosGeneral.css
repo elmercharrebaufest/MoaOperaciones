@@ -277,7 +277,6 @@ label {
 	max-height: 100%;
 	height: 100%;
 	-webkit-overflow-scrolling: touch;
-	z-index: 999;
 }
 .sidebar .sidebar-wrapper {
 	position: relative;

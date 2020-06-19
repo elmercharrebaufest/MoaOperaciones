@@ -41,12 +41,3 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
 }
 
-
-
-$('#myModal').on('shown.bs.modal', function () {
-    console.log("modal ejecutado");
-    $('#myModal').css('z-index', 0);
-  $('#myModal').appendTo("body").modal('show');
-  $('#myInput').trigger('focus')
-})
-
