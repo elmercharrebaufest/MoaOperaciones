@@ -174,3 +174,10 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
         return value != undefined && value != 0 && value != "";
     }
 }
+
+$('#myModal').on('shown.bs.modal', function () {
+    console.log("modal ejecutado");
+    $('#myModal').css('z-index', 0);
+  $('#myModal').appendTo("body").modal('show');
+  $('#myInput').trigger('focus')
+})
