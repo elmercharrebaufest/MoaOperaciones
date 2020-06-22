@@ -50,7 +50,7 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void GetFotosConImagenes()
         {
-            List<CartaPorteFoto> listaFotos = new List<CartaPorteFoto>() { new CartaPorteFoto(new byte[] { 1, 2, 3 }, new byte[] { 1, 2 }) };
+            List<CartaPorteFoto> listaFotos = new List<CartaPorteFoto>() { new CartaPorteFoto("1", new byte[] { 1, 2, 3 }, new byte[] { 1, 2 }) };
 
             cartaPorteServiceMock.Setup(s => s.GetFotos(It.Is<string>(i => i == "100"))).Returns(listaFotos);
 

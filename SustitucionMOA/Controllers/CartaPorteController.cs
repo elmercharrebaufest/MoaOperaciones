@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.DBMethods;
@@ -13,6 +17,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAValidator;
+
 
 namespace SustitucionMOA.Controllers
 {
@@ -190,8 +195,63 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult DescargarFotos(string cartaPorteIds)
+        {
+            try
+            {
+                var outputMemStream = new MemoryStream();
+
+                List<string> cartaPorteIdList = cartaPorteIds.Split(',').ToList();
+
+                using (var zipStream = new ZipOutputStream(outputMemStream))
+                {
+
+                    // 0-9, 9 being the highest level of compression
+                    zipStream.SetLevel(3);
+
+                    foreach (CartaPorteFoto foto in _cartaPorteService.GetFotos(cartaPorteIdList))
+                    {
+                        MemoryStream fotoMemoryStream = new MemoryStream(Convert.FromBase64String(foto.Foto));
+
+                        ZipEntry entry = new ZipEntry(string.Concat(foto.CartaPorteID, ".jpg"));
+                        entry.DateTime = DateTime.Now;
+                        zipStream.PutNextEntry(entry);
+                        StreamUtils.Copy(fotoMemoryStream, zipStream, new byte[4096]);
+                        zipStream.CloseEntry();
+                    }
+
+                    // Stop ZipStream.Dispose() from also Closing the underlying stream.
+                    zipStream.IsStreamOwner = false;
+                }
+
+                outputMemStream.Position = 0;
+
+                return File(outputMemStream.ToArray(), "application/zip", "ImagenesCartaPorte.zip");
+            }
+
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CARTA_PORTE_DETALLE)]
-        public ActionResult getDetalle(string cartaPorteId) {
+        public ActionResult getDetalle(string cartaPorteId)
+        {
             try
             {
                 return JsonCustom(new { data = _cartaPorteService.GetDetalle(SessionPersister.Proveedor, cartaPorteId) });
@@ -304,7 +364,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom( new { data = _cartaPorteService.GetDataCTG(valor) });
+                return JsonCustom(new { data = _cartaPorteService.GetDataCTG(valor) });
             }
             catch (InfoCustomException e)
             {
@@ -345,7 +405,8 @@ namespace SustitucionMOA.Controllers
                 {
                     throw e;
                 }
-                catch {
+                catch
+                {
                     throw new InfoCustomException(InfoMsg.NoPDF);
                 }
                 var formulario = JsonConvert.DeserializeObject<CCPPFormulario>(formularioString);
@@ -370,7 +431,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        } 
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CREAR_FORMULARIO_CCPP)]
         public ActionResult getTemplate(string formularioString)
