@@ -48,7 +48,7 @@ var FletePendienteComponent = /** @class */ (function (_super) {
     };
     FletePendienteComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-flete-pendiente',
             templateUrl: "./app/flete/pendiente/flete.pendiente.component.html?v=" + new Date().getTime(),
             providers: [{ provide: flete_service_1.FleteService, useClass: flete_service_1.FletePendienteService }]
         })

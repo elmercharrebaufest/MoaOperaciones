@@ -59,7 +59,7 @@ var HomeNGSComponent = /** @class */ (function (_super) {
     };
     HomeNGSComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-home-no-granos',
             //template: '<h1>{{titulo}}</h1>'
             templateUrl: "./app/home/no-granos/home.no-granos.component.html?v=" + new Date().getTime(),
             providers: [{ provide: home_service_1.HomeService, useClass: home_service_1.HomeNGService }]

@@ -84,7 +84,7 @@ var FleteFacturadoComponent = /** @class */ (function (_super) {
     };
     FleteFacturadoComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-flete-facturado',
             templateUrl: "./app/flete/facturado/flete.facturado.component.html?v=" + new Date().getTime(),
             providers: [{ provide: flete_service_1.FleteService, useClass: flete_service_1.FleteFacturadoService }]
         }),

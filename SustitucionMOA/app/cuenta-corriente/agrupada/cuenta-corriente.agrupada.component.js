@@ -103,7 +103,7 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
     };
     CuentaCorrienteAgrupadaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-cuenta-corriente-agrupada',
             templateUrl: "./app/cuenta-corriente/agrupada/cuenta-corriente.agrupada.component.html?v=" + new Date().getTime(),
             providers: [cuenta_corriente_service_1.CuentaCorrienteAgrupadaService]
         }),

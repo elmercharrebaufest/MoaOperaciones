@@ -157,7 +157,7 @@ var FacturaComponent = /** @class */ (function (_super) {
     ], FacturaComponent.prototype, "captcha", void 0);
     FacturaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-factura',
             templateUrl: "./app/factura/factura.component.html?v=" + new Date().getTime(),
             providers: [factura_service_1.FacturaService]
         }),

@@ -127,7 +127,7 @@ var PesadaOnlineComponent = /** @class */ (function (_super) {
     ], PesadaOnlineComponent.prototype, "spinnerComponent", void 0);
     PesadaOnlineComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-aduana-pesada-online',
             templateUrl: "./app/aduana/pesada/online/pesada.online.component.html?v=" + new Date().getTime(),
             providers: [aduana_service_1.AduanaService]
         }),

@@ -375,7 +375,7 @@ var CartaPorteFormularioComponent = /** @class */ (function (_super) {
     ], CartaPorteFormularioComponent.prototype, "spinnerSmallCTGBuscarComponent", void 0);
     CartaPorteFormularioComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-carta-porte-formulario',
             templateUrl: "./app/carta-porte/formulario/carta-porte.formulario.component.html?v=" + new Date().getTime(),
             providers: [carta_porte_service_1.CartaPorteFormularioService]
         }),

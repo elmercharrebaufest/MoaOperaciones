@@ -162,7 +162,7 @@ var ContratoDetalleFijacionComponent = /** @class */ (function (_super) {
     ], ContratoDetalleFijacionComponent.prototype, "spinnerSmallPDFComponent", void 0);
     ContratoDetalleFijacionComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contrato-detalle-fijacion',
             templateUrl: "./app/contrato/detalle-fijacion/contrato.detalle-fijacion.component.html?v=" + new Date().getTime(),
             providers: [{ provide: contrato_service_1.ContratoService, useClass: contrato_service_1.ContratoFijacionService }]
         }),

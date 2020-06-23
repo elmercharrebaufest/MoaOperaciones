@@ -3,7 +3,7 @@ import { ContratoBaseComponent } from './../contrato.component';
 import { ContratoService, ContratoVigenteService } from './../contrato.service';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-contrato-vigente',
     templateUrl: `./app/contrato/vigente/contrato.vigente.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: ContratoService, useClass: ContratoVigenteService }]
 })

@@ -3,7 +3,7 @@ import { FleteBaseComponent } from './../flete.component';
 import { FleteService, FletePendienteService } from './../flete.service';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-flete-pendiente',
     templateUrl: `./app/flete/pendiente/flete.pendiente.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: FleteService, useClass: FletePendienteService }]
 })

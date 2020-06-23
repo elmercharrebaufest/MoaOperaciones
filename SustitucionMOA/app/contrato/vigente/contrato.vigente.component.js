@@ -47,7 +47,7 @@ var ContratoVigenteComponent = /** @class */ (function (_super) {
     };
     ContratoVigenteComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contrato-vigente',
             templateUrl: "./app/contrato/vigente/contrato.vigente.component.html?v=" + new Date().getTime(),
             providers: [{ provide: contrato_service_1.ContratoService, useClass: contrato_service_1.ContratoVigenteService }]
         })

@@ -111,6 +111,8 @@ var ngx_modal_1 = require("ngx-modal");
 var ng2_auto_complete_1 = require("ng2-auto-complete");
 var angular2_recaptcha_1 = require("angular2-recaptcha");
 var app_routing_module_1 = require("./app-routing.module");
+;
+var carta_porte_modal_component_1 = require("./carta-porte/carta-porte-modal/carta-porte-modal.component");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -202,7 +204,8 @@ var AppModule = /** @class */ (function () {
                 customFilterContain_1.CustomFilterContain,
                 orderedColumn_1.OrderedColumn,
                 shortenString_1.ShortenStringPipe,
-                pesificacion_component_1.PesificacionComponent
+                pesificacion_component_1.PesificacionComponent,
+                carta_porte_modal_component_1.CartaPorteModalComponent
             ],
             providers: [
                 common_1.DatePipe,

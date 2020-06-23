@@ -16,7 +16,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-contrato',
     template: ``,
     providers: [ContratoService]
 })  

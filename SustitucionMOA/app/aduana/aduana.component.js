@@ -55,7 +55,7 @@ var AduanaBaseComponent = /** @class */ (function (_super) {
     };
     AduanaBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-aduana',
             template: "",
             providers: [aduana_service_1.AduanaService]
         }),

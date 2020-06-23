@@ -84,7 +84,7 @@ var ContratoBaseComponent = /** @class */ (function (_super) {
     };
     ContratoBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contrato',
             template: "",
             providers: [contrato_service_1.ContratoService]
         }),

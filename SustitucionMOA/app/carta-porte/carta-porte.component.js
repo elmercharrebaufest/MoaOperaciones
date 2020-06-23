@@ -86,7 +86,7 @@ var CartaPorteBaseComponent = /** @class */ (function (_super) {
     };
     CartaPorteBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-carta-porte',
             templateUrl: "./app/carta-porte/carta-porte.component.html?v=" + new Date().getTime(),
             providers: [carta_porte_service_1.CartaPorteService]
         }),

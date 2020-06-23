@@ -46,7 +46,7 @@ var ContratoFijacionComponent = /** @class */ (function (_super) {
     };
     ContratoFijacionComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contrato-fijacion',
             templateUrl: "./app/contrato/fijacion/contrato.fijacion.component.html?v=" + new Date().getTime(),
             providers: [{ provide: contrato_service_1.ContratoService, useClass: contrato_service_1.ContratoFijacionService }]
         })

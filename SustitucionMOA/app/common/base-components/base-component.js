@@ -58,7 +58,7 @@ var BaseComponent = /** @class */ (function () {
     };
     BaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-base',
             template: ""
         }),
         __metadata("design:paramtypes", [NavService_1.NavService, SecurityService_1.SecurityService, FloatMsgService_1.FloatMsgService, ModalService_1.ModalService])

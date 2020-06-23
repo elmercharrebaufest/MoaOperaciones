@@ -104,7 +104,7 @@ var PesadaDetalleComponent = /** @class */ (function (_super) {
     ], PesadaDetalleComponent.prototype, "spinnerComponent", void 0);
     PesadaDetalleComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-aduana-pesada-detalle',
             templateUrl: "./app/aduana/pesada/detalle/pesada.detalle.component.html?v=" + new Date().getTime(),
             providers: [aduana_service_1.AduanaService]
         }),

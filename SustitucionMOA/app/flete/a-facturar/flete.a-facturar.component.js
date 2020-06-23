@@ -163,7 +163,7 @@ var FleteAFacturarComponent = /** @class */ (function (_super) {
     };
     FleteAFacturarComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-flete-a-facturar',
             templateUrl: "./app/flete/a-facturar/flete.a-facturar.component.html?v=" + new Date().getTime(),
             providers: [{ provide: flete_service_1.FleteService, useClass: flete_service_1.FleteAFacturarService }]
         }),

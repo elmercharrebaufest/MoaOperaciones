@@ -7,7 +7,7 @@ import { SecurityService } from './../../../common/services/SecurityService';
 import { ModalService } from './../../../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-aduana-camara-muelle',
     templateUrl: `./app/aduana/camara/muelle/camara.muelle.component.html?v=${new Date().getTime()}`,
     //providers: []
 })

@@ -114,7 +114,7 @@ var CamaraConsolidacionComponent = /** @class */ (function (_super) {
     ], CamaraConsolidacionComponent.prototype, "spinnerComponent", void 0);
     CamaraConsolidacionComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-aduana-camara-consolidacion',
             templateUrl: "./app/aduana/camara/consolidacion/camara.consolidacion.component.html?v=" + new Date().getTime(),
         }),
         __metadata("design:paramtypes", [NavService_1.NavService, aduana_service_1.AduanaService, SecurityService_1.SecurityService, SessionDataService_1.SessionDataService, FloatMsgService_1.FloatMsgService, ModalService_1.ModalService])

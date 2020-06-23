@@ -47,7 +47,7 @@ var ContratoAmpliacionComponent = /** @class */ (function (_super) {
     };
     ContratoAmpliacionComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contrato-ampliacion',
             templateUrl: "./app/contrato/ampliacion/contrato.ampliacion.component.html?v=" + new Date().getTime(),
             providers: [{ provide: contrato_service_1.ContratoService, useClass: contrato_service_1.ContratoAmpliacionService }]
         })

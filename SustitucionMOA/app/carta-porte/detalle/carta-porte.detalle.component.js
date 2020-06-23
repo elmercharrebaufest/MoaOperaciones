@@ -220,7 +220,7 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
     ], CartaPorteDetalleComponent.prototype, "spinnerSmallComponent", void 0);
     CartaPorteDetalleComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-carta-porte-detalle',
             templateUrl: "./app/carta-porte/detalle/carta-porte.detalle.component.html?v=" + new Date().getTime(),
             providers: [carta_porte_service_1.CartaPorteService]
         }),

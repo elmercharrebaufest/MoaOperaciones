@@ -59,7 +59,7 @@ var CartaPorteDescargaComponent = /** @class */ (function (_super) {
     };
     CartaPorteDescargaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-carta-porte-descarga',
             templateUrl: "./app/carta-porte/descarga/carta-porte.descarga.component.html?v=" + new Date().getTime(),
             providers: [{ provide: carta_porte_service_1.CartaPorteService, useClass: carta_porte_service_1.CartaPorteDescargaService }]
         }),

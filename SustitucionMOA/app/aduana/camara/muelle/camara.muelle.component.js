@@ -56,7 +56,7 @@ var CamaraMuelleComponent = /** @class */ (function (_super) {
     };
     CamaraMuelleComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-aduana-camara-muelle',
             templateUrl: "./app/aduana/camara/muelle/camara.muelle.component.html?v=" + new Date().getTime(),
         }),
         __metadata("design:paramtypes", [NavService_1.NavService, aduana_service_1.AduanaService, SecurityService_1.SecurityService, FloatMsgService_1.FloatMsgService, ModalService_1.ModalService])

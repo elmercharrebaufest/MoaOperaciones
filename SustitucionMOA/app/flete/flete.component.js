@@ -164,7 +164,7 @@ var FleteBaseComponent = /** @class */ (function (_super) {
     };
     FleteBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-flete',
             template: "",
             providers: [flete_service_1.FleteService]
         }),

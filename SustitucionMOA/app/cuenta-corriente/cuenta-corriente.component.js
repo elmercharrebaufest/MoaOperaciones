@@ -190,7 +190,7 @@ var CuentaCorrienteBaseComponent = /** @class */ (function (_super) {
     };
     CuentaCorrienteBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-cuenta-corriente',
             templateUrl: "./app/cuenta-corriente/cuenta-corriente.component.html?v=" + new Date().getTime(),
             providers: [cuenta_corriente_service_1.CuentaCorrienteService]
         }),

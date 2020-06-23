@@ -47,7 +47,7 @@ var ContratoAnulacionComponent = /** @class */ (function (_super) {
     };
     ContratoAnulacionComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contrato-anulacion',
             templateUrl: "./app/contrato/anulacion/contrato.anulacion.component.html?v=" + new Date().getTime(),
             providers: [{ provide: contrato_service_1.ContratoService, useClass: contrato_service_1.ContratoAnulacionService }]
         })

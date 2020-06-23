@@ -175,7 +175,7 @@ var ListBaseComponent = /** @class */ (function (_super) {
     ], ListBaseComponent.prototype, "spinnerSmallComponent", void 0);
     ListBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-list-base',
             template: "",
             providers: [BaseService_1.BaseService]
         }),

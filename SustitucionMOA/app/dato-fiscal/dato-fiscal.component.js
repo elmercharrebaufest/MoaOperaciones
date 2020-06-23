@@ -159,8 +159,7 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
     ], DatoFiscalBaseComponent.prototype, "spinnerComponent", void 0);
     DatoFiscalBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
-            //template: '<h1>{{titulo}}</h1>'
+            selector: 'app-dato-fiscal',
             templateUrl: "./app/dato-fiscal/dato-fiscal.component.html?v=" + new Date().getTime(),
             providers: [dato_fiscal_service_1.DatoFiscalService]
         }),

@@ -145,7 +145,7 @@ var PesadaHistoricaComponent = /** @class */ (function (_super) {
     ], PesadaHistoricaComponent.prototype, "spinnerComponent", void 0);
     PesadaHistoricaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-aduana-pesada-historica',
             templateUrl: "./app/aduana/pesada/historica/pesada.historica.component.html?v=" + new Date().getTime(),
             providers: [aduana_service_1.AduanaService]
         }),

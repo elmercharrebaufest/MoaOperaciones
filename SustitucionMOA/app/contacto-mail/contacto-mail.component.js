@@ -236,7 +236,7 @@ var ContactoMailComponent = /** @class */ (function (_super) {
     ], ContactoMailComponent.prototype, "captcha", void 0);
     ContactoMailComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-contacto-mail',
             templateUrl: "./app/contacto-mail/contacto-mail.component.html?v=" + new Date().getTime(),
             providers: [contacto_mail_service_1.ContactoMailService]
         }),
