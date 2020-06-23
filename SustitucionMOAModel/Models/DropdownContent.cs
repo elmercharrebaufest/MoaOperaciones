@@ -11,7 +11,6 @@ namespace SustitucionMOAModel.Models
         public List<DropdownOption> options { get; set; }
 
         public DropdownContent() {
-
             this.options = new List<DropdownOption>() { new DropdownOption() { value = "", label = "Todos" } };
         }
 
