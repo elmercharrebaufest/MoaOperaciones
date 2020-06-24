@@ -273,14 +273,14 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="VICSCATOQA.DeployParameters.xml">
+    <Content Include="QA.DeployParameters.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="VICSCATOQA.DeployParameters.Debug.xml">
-      <DependentUpon>VICSCATOQA.DeployParameters.xml</DependentUpon>
+    <Content Include="QA.DeployParameters.Debug.xml">
+      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
     </Content>
-    <Content Include="VICSCATOQA.DeployParameters.Release.xml">
-      <DependentUpon>VICSCATOQA.DeployParameters.xml</DependentUpon>
+    <Content Include="QA.DeployParameters.Release.xml">
+      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
     </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
