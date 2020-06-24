@@ -185,11 +185,6 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
         return value != undefined && value != 0 && value != "";
     };
     CartaPorteDetalleComponent.prototype.abrirModal = function () {
-<<<<<<< HEAD
-        var imagen = document.getElementById("cartaPorteImagen");
-        imagen.src = "https://http2.mlstatic.com/software-portable-para-llenar-y-administrar-cartas-de-porte-D_NQ_NP_964054-MLA31984941935_082019-F.jpg";
-        // document.getElementById('cartaPorteImagen').src('https://http2.mlstatic.com/software-portable-para-llenar-y-administrar-cartas-de-porte-D_NQ_NP_964054-MLA31984941935_082019-F.jpg');
-=======
         var _this = this;
         this.unsubscribe();
         this.subscription = this.service.getFotos("000584899752").subscribe(function (result) {
@@ -210,7 +205,6 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
             _this.floatMsgService.setErrorMsg(error.message);
         });
         return false;
->>>>>>> 8193b392854f844915aedadc1fd9949ad62bbea9
     };
     __decorate([
         core_1.ViewChild(mensaje_component_1.MensajeComponent),
