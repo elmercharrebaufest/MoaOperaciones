@@ -88,14 +88,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     dataView.filtroProducto = new DropdownContent(
                                                     dataView.data.cartasPorte
-                                                    .GroupBy(i => i.Producto)
+                                                    .GroupBy(i => i.producto)
                                                     .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
                                                     .ToList()
                                                 );
 
                     dataView.filtroVendedor = new DropdownContent(
                                                     dataView.data.cartasPorte
-                                                    .GroupBy(i => i.Vendedor)
+                                                    .GroupBy(i => i.vendedor)
                                                     .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
                                                     .ToList()
                                                 );

@@ -28,6 +28,7 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
 
     filtroCCPP: string = "";
     filtroProducto: any = null;
+    filtroContrato: string = "";
     productoSelected: string = "";
     filtroVendedor: any = null;
     vendedorSelected: string = "";
