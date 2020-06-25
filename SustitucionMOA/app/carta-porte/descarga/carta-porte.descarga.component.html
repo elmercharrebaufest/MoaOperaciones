@@ -89,7 +89,7 @@
                             <td><a (click)="showModalTableResponsive(recepcionInfo)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{recepcionInfo.fechaDescarga}}</td>
                             <td><a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', recepcionInfo.cartaPorte)" href="#">{{recepcionInfo.cartaPorte}}</a></td>
                             <td>{{recepcionInfo.producto}}</td>
-                            <td>{{recepcionInfo.contrnum}}</td>
+                            <td style="text-align: center;">{{recepcionInfo.contrnum}}</td>
                             <td>{{recepcionInfo.netoDescontadoString}}</td>
                             <td *ngIf="isCorredor()">{{recepcionInfo.vendedor}}</td>
                         </tr>
