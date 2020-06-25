@@ -54,26 +54,26 @@ namespace SustitucionMOAWS.WSConsumers
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.tipo = error.TIPO;
             }
-
             foreach (ZMPES4050 aplicacionInfo in aplicaciones_out)
             {
                 result.cartasPorte.Add(new CartaPorteView()
                 {
-                    FechaDescarga = SAPFormatter.FormatearFecha(aplicacionInfo.FECHA_DESCARGA),
-                    FechaDescargaDate = SAPFormatter.GetDateTime(aplicacionInfo.FECHA_DESCARGA),
+                    fechaDescarga = SAPFormatter.FormatearFecha(aplicacionInfo.FECHA_DESCARGA),
+                    fechaDescargaDate = SAPFormatter.GetDateTime(aplicacionInfo.FECHA_DESCARGA),
                     cartaPorte = aplicacionInfo.CARTA_PORTE,
-                    Producto = aplicacionInfo.PRODUCTO,
-                    NetoDescontado = aplicacionInfo.NETO_DESCONTADO,
-                    NetoDescontadoString = SAPFormatter.FormatearCantidad(aplicacionInfo.NETO_DESCONTADO, aplicacionInfo.UNIME_NETO),
-                    PendAplicacion = aplicacionInfo.PEND_APLICACION,
-                    PendAplicacionString = SAPFormatter.FormatearCantidad(aplicacionInfo.PEND_APLICACION, aplicacionInfo.UNIME_APLIC),
-                    ALiquidar = aplicacionInfo.A_LIQUIDAR,
-                    ALiquidarString = SAPFormatter.FormatearCantidad(aplicacionInfo.A_LIQUIDAR, aplicacionInfo.UNIME_A_LIQUIDAR),
-                    Contrnum = aplicacionInfo.CONTRNUM,
-                    Contrvend = aplicacionInfo.CONTRVEND,
-                    IdVendedor = aplicacionInfo.ID_VENDEDOR,
-                    Vendedor = aplicacionInfo.VENDEDOR
+                    producto = aplicacionInfo.PRODUCTO,
+                    netoDescontado = aplicacionInfo.NETO_DESCONTADO,
+                    netoDescontadoString = SAPFormatter.FormatearCantidad(aplicacionInfo.NETO_DESCONTADO, aplicacionInfo.UNIME_NETO),
+                    pendAplicacion = aplicacionInfo.PEND_APLICACION,
+                    pendAplicacionString = SAPFormatter.FormatearCantidad(aplicacionInfo.PEND_APLICACION, aplicacionInfo.UNIME_APLIC),
+                    aLiquidar = aplicacionInfo.A_LIQUIDAR,
+                    aLiquidarString = SAPFormatter.FormatearCantidad(aplicacionInfo.A_LIQUIDAR, aplicacionInfo.UNIME_A_LIQUIDAR),
+                    contrnum = aplicacionInfo.CONTRNUM,
+                    contrvend = aplicacionInfo.CONTRVEND,
+                    idVendedor = aplicacionInfo.ID_VENDEDOR,
+                    vendedor = aplicacionInfo.VENDEDOR
                 });
+
             }
             return result;
         }
@@ -97,19 +97,19 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 result.cartasPorte.Add(new CartaPorte()
                 {
-                    FechaDescarga = SAPFormatter.FormatearFecha(aplicacionInfo.FECHA_DESCARGA),
+                    fechaDescarga = SAPFormatter.FormatearFecha(aplicacionInfo.FECHA_DESCARGA),
                     cartaPorte = aplicacionInfo.CARTA_PORTE,
-                    Producto = aplicacionInfo.PRODUCTO,
-                    UnidadNetoDescontado = aplicacionInfo.UNIME_NETO,
-                    NetoDescontado = aplicacionInfo.NETO_DESCONTADO,
-                    UnidadPendAplicacion = aplicacionInfo.UNIME_APLIC,
-                    PendAplicacion = aplicacionInfo.PEND_APLICACION,
-                    UnidadALiquidar = aplicacionInfo.UNIME_A_LIQUIDAR,
-                    ALiquidar = aplicacionInfo.A_LIQUIDAR,
-                    Contrnum = aplicacionInfo.CONTRNUM,
-                    Contrvend = aplicacionInfo.CONTRVEND,
-                    IdVendedor = aplicacionInfo.ID_VENDEDOR,
-                    Vendedor = aplicacionInfo.VENDEDOR
+                    producto = aplicacionInfo.PRODUCTO,
+                    unidadNetoDescontado = aplicacionInfo.UNIME_NETO,
+                    netoDescontado = aplicacionInfo.NETO_DESCONTADO,
+                    unidadPendAplicacion = aplicacionInfo.UNIME_APLIC,
+                    pendAplicacion = aplicacionInfo.PEND_APLICACION,
+                    unidadALiquidar = aplicacionInfo.UNIME_A_LIQUIDAR,
+                    aLiquidar = aplicacionInfo.A_LIQUIDAR,
+                    contrnum = aplicacionInfo.CONTRNUM,
+                    contrvend = aplicacionInfo.CONTRVEND,
+                    idVendedor = aplicacionInfo.ID_VENDEDOR,
+                    vendedor = aplicacionInfo.VENDEDOR
                 });
             }
             return result;

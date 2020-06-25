@@ -56,6 +56,12 @@
                                (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
+                <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15 ">
+                    Por Contrato:
+                    <div class="styled-select ">
+                        <input type="search" class="" placeholder="" [value]="filtroContrato" (input)="filtroContrato = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
                 <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
                     Mostrar:
                     <div class="styled-select ">
@@ -101,6 +107,7 @@
                                 (click)="orderColumnBy('producto')">
                                 Producto
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;" (click)="orderColumnBy('contrnum')">Contrato Molinos</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
                                 (click)="orderColumnBy('netoDescontado')">
                                 Recibido
@@ -140,6 +147,7 @@
 
                             </td>
                             <td style="text-align: center;">{{recepcionInfo.producto}}</td>
+                            <td>{{recepcionInfo.contrnum}}</td>
                             <td style="text-align: center;">{{recepcionInfo.netoDescontadoString}}</td>
                             <td *ngIf="isCorredor()" style="text-align: center;">{{recepcionInfo.vendedor}}</td>
                         </tr>

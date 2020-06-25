@@ -55,6 +55,7 @@ var CartaPorteDescargaComponent = /** @class */ (function (_super) {
             { etiqueta: "Fecha", valor: recepcionInfo.fechaDescarga },
             { etiqueta: "CCPP Nº", valor: recepcionInfo.cartaPorte },
             { etiqueta: "Producto", valor: recepcionInfo.producto },
+            { etiqueta: "Contrato", valor: recepcionInfo.contrnum },
             { etiqueta: "Recibido", valor: recepcionInfo.netoDescontadoString },
             { etiqueta: "Vendedor", valor: recepcionInfo.vendedor }
         ]);

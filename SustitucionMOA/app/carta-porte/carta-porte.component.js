@@ -45,6 +45,7 @@ var CartaPorteBaseComponent = /** @class */ (function (_super) {
         _this.modalService = modalService;
         _this.filtroCCPP = "";
         _this.filtroProducto = null;
+        _this.filtroContrato = "";
         _this.productoSelected = "";
         _this.filtroVendedor = null;
         _this.vendedorSelected = "";
