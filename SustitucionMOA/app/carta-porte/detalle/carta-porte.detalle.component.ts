@@ -42,6 +42,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     cartaPorteId = "";
     tituloArchivo = "ReporteCartaPorteDetalle.xls";
     fotoSrc = "";
+    showModalBox = false;
 
     setTabs() {
         this.setMenuSeccionTab("carta-porte", "Detalle");
@@ -90,7 +91,6 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     exportExcel() {
-        console.log("holas")
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
@@ -177,9 +177,12 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     abrirModal() {
+        this.spinnerSmallComponent.showIt();
+        this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        this.subscription = this.service.getFotos("000584899752").subscribe(
+        this.subscription = this.service.getFotos(this.cartaPorteId).subscribe(
             result => {
+                this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -187,7 +190,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-
+                    this.showModalBox = true;
                     this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
 
                     return true;

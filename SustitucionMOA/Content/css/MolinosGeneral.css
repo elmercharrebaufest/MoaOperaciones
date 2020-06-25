@@ -278,6 +278,14 @@ label {
 	height: 100%;
 	-webkit-overflow-scrolling: touch;
 }
+
+@media (max-width: 1199px) {
+	.sidebar {
+		z-index: 10;
+	}
+}
+
+
 .sidebar .sidebar-wrapper {
 	position: relative;
 	max-height: none;

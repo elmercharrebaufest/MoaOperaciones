@@ -12,16 +12,17 @@
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                    *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                   *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate">Exportar <span class="fa fa-file-excel-o"></span></div>
                 </a>
             </div>
             <div class="col-xs-12 col-sm-4 titleSectionTablePart">
                 <spinner-small #smallSpinner></spinner-small>
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-info btn-lg"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">Descargar
-                    Cartas de Porte</button>
+                <button type="button" class="btn btn-info btn-lg" (click)="validarCheckboxesFotos()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                    Descargar fotos
+                </button>
             </div>
         </div>
         <!--End Title-->
@@ -38,21 +39,21 @@
                     Por Vendedor:
                     <div class="styled-select ">
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroVendedor"
-                            (select)="setFiltroVendedor($event)"></dropdown>
+                                  (select)="setFiltroVendedor($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     Por Producto:
                     <div class="styled-select ">
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto"
-                            (select)="setFiltroProducto($event)"></dropdown>
+                                  (select)="setFiltroProducto($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15 ">
                     Por CCPP N°:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="filtroCCPP"
-                            (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
+                               (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
@@ -83,23 +84,27 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <table *ngIf="isVisible()" id="tableModal"
-                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-descarga-table"
-                    cellspacing="0" role="grid" aria-describedby="tableModal_info"
-                    style="width: 100%; padding:10px 10px;">
+                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-descarga-table"
+                       cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                       style="width: 100%; padding:10px 10px;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;">Seleccionar</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
                                 (click)="orderColumnBy('fechaDescargaDate')">Fecha</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
-                                (click)="orderColumnBy('cartaPorte')">CCPP
-                                Nº</th>
+                                (click)="orderColumnBy('cartaPorte')">
+                                CCPP
+                                Nº
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
                                 (click)="orderColumnBy('producto')">
-                                Producto</th>
+                                Producto
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
                                 (click)="orderColumnBy('netoDescontado')">
-                                Recibido</th>
+                                Recibido
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1"
                                 style="border-bottom: 1px solid; text-align: center;"
                                 (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">Vendedor</th>
@@ -112,17 +117,19 @@
                             <td>
                                 <div class="form">
                                     <div class="form-check" style="text-align: center;">
-                                        <input type="checkbox" class="form-check-input" id="">
+                                        <input type="checkbox" class="form-check-input" name="checkboxDescargar" value="{{recepcionInfo.cartaPorte}}" [(ngModel)]="CartasPortesIDDescarga[recepcionInfo.cartaPorte]">
                                     </div>
                                 </div>
                             </td>
-                            <td style="text-align: center;"><a (click)="showModalTableResponsive(recepcionInfo)"
-                                    class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>
-                                {{recepcionInfo.fechaDescarga}}</td>
+                            <td style="text-align: center;">
+                                <a (click)="showModalTableResponsive(recepcionInfo)"
+                                   class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>
+                                {{recepcionInfo.fechaDescarga}}
+                            </td>
                             <td style="text-align: center;">
                                 <a class="animate"
-                                    (click)="goToSeccionParam('/carta-porte/detalle', recepcionInfo.cartaPorte)"
-                                    href="#">{{recepcionInfo.cartaPorte}}</a>
+                                   (click)="goToSeccionParam('/carta-porte/detalle', recepcionInfo.cartaPorte)"
+                                   href="#">{{recepcionInfo.cartaPorte}}</a>
 
                                 <!-- Button trigger modal -->
                                 <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal"
@@ -141,21 +148,20 @@
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
                             <a class="paginate_button current"
-                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                               *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
                         </span>
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                            [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                           [class.disabled]="pT.isLastPage()"> Siguiente </a>
                     </div>
                 </pagination-template>
             </div>
         </div>
         <!-- END tables-->
-
         <!-- Modal -->
         <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
             data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">

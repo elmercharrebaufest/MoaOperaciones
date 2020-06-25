@@ -206,7 +206,6 @@ namespace SustitucionMOA.Controllers
                 using (var zipStream = new ZipOutputStream(outputMemStream))
                 {
 
-                    // 0-9, 9 being the highest level of compression
                     zipStream.SetLevel(3);
 
                     foreach (CartaPorteFoto foto in _cartaPorteService.GetFotos(cartaPorteIdList))
@@ -220,13 +219,12 @@ namespace SustitucionMOA.Controllers
                         zipStream.CloseEntry();
                     }
 
-                    // Stop ZipStream.Dispose() from also Closing the underlying stream.
                     zipStream.IsStreamOwner = false;
                 }
 
                 outputMemStream.Position = 0;
 
-                return File(outputMemStream.ToArray(), "application/zip", "ImagenesCartaPorte.zip");
+                return JsonCustom(File(outputMemStream.ToArray(), "application/zip", "ImagenesCartaPorte.zip"));
             }
 
             catch (InfoCustomException e)
