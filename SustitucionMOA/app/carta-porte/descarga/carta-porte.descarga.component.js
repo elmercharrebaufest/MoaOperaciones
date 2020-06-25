@@ -41,6 +41,9 @@ var CartaPorteDescargaComponent = /** @class */ (function (_super) {
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
         _this.tituloArchivo = "ReporteDescargas.xls";
+        _this.tituloZip = "FotosCartaPorte.zip";
+        _this.cartaPorteIDStr = "";
+        _this.CartasPortesIDDescarga = {};
         return _this;
     }
     CartaPorteDescargaComponent.prototype.checkPermisos = function () { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); };
@@ -56,6 +59,60 @@ var CartaPorteDescargaComponent = /** @class */ (function (_super) {
             { etiqueta: "Vendedor", valor: recepcionInfo.vendedor }
         ]);
         return false;
+    };
+    CartaPorteDescargaComponent.prototype.validarCheckboxesFotos = function () {
+        var _this = this;
+        this.cartaPorteIDStr = Object.keys(this.CartasPortesIDDescarga).filter(function (item, index) {
+            return _this.CartasPortesIDDescarga[item];
+        }).join(",");
+        if (this.cartaPorteIDStr == "") {
+            this.mensajeComponent.setMsgsEmpty();
+            this.mensajeComponent.setInfoMsg("Debe seleccionar las cartas de porte que quiere descargar");
+        }
+        else {
+            console.log(this.cartaPorteIDStr);
+            this.descargarFotos();
+        }
+    };
+    CartaPorteDescargaComponent.prototype.descargarFotos = function () {
+        var _this = this;
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.descargarFotos(this.cartaPorteIDStr).subscribe(function (result) {
+            _this.spinnerSmallComponent.hideIt();
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var byteArray = new Uint8Array(result.FileContents);
+                var blob = new Blob([byteArray], { type: 'application/zip' });
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // IE11
+                    window.navigator.msSaveOrOpenBlob(blob, _this.tituloZip);
+                }
+                else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    document.body.appendChild(link);
+                    link.href = url;
+                    link.download = _this.tituloZip;
+                    link.click();
+                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    return false;
+                }
+            }
+        }, function (error) {
+            _this.spinnerSmallComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false; // <- Prevent href del a
     };
     CartaPorteDescargaComponent = __decorate([
         core_1.Component({

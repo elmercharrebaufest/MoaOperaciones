@@ -51,6 +51,8 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
         _this.modalService = modalService;
         _this.cartaPorteId = "";
         _this.tituloArchivo = "ReporteCartaPorteDetalle.xls";
+        _this.fotoSrc = "";
+        _this.showModalBox = false;
         _this.mensajeComponent = new mensaje_component_1.MensajeComponent();
         _this.spinnerComponent = new spinner_component_1.SpinnerComponent();
         return _this;
@@ -181,6 +183,32 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
     };
     CartaPorteDetalleComponent.prototype.tieneData = function (value) {
         return value != undefined && value != 0 && value != "";
+    };
+    CartaPorteDetalleComponent.prototype.abrirModal = function () {
+        var _this = this;
+        this.spinnerSmallComponent.showIt();
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.getFotos(this.cartaPorteId).subscribe(function (result) {
+            _this.spinnerSmallComponent.hideIt();
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.floatMsgService.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.floatMsgService.setInfoMsg(result.info);
+            }
+            else {
+                _this.showModalBox = true;
+                _this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                return true;
+            }
+        }, function (error) {
+            _this.floatMsgService.setErrorMsg(error.message);
+        });
+        return false;
     };
     __decorate([
         core_1.ViewChild(mensaje_component_1.MensajeComponent),

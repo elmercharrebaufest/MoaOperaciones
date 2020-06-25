@@ -82,6 +82,27 @@ var CartaPorteService = /** @class */ (function (_super) {
             .get('/api/cartaporte/exportPDFCalidad', { search: params, headers: this.headers })
             .map(this.extractData);
     };
+    CartaPorteService.prototype.getFotos = function (cartaPorteId) {
+        var params = new http_1.URLSearchParams();
+        params.set('cartaPorteId', cartaPorteId);
+        return this.http
+            .get('/api/cartaporte/GetFotos', { search: params, headers: this.headers })
+            .map(this.extractData);
+    };
+    CartaPorteService.prototype.getListaFotos = function (cartaPorteIds) {
+        var params = new http_1.URLSearchParams();
+        params.set('cartaPorteIds', cartaPorteIds);
+        return this.http
+            .get('/api/cartaporte/GetListaFotos', { search: params, headers: this.headers })
+            .map(this.extractData);
+    };
+    CartaPorteService.prototype.descargarFotos = function (cartaPorteIds) {
+        var params = new http_1.URLSearchParams();
+        params.set('cartaPorteIds', cartaPorteIds);
+        return this.http
+            .get('/api/cartaporte/DescargarFotos', { search: params, headers: this.headers })
+            .map(this.extractData);
+    };
     CartaPorteService = __decorate([
         core_1.Injectable()
     ], CartaPorteService);
