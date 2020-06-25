@@ -119,7 +119,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let recepcionInfo of data.cartasPorte | customFilter : 'producto' : productoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'cartaPorte' : filtroCCPP | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                        <tr *ngFor="let recepcionInfo of data.cartasPorte | customFilter : 'producto' : productoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'cartaPorte' : filtroCCPP | customFilter : 'contrnum' : filtroContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td>
                                 <div class="form">
@@ -137,14 +137,6 @@
                                 <a class="animate"
                                    (click)="goToSeccionParam('/carta-porte/detalle', recepcionInfo.cartaPorte)"
                                    href="#">{{recepcionInfo.cartaPorte}}</a>
-
-                                <!-- Button trigger modal -->
-                                <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal"
-                                    data-target="#myModal" (click)="abrirModal()"
-                                    style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
-                                    <i class="far fa-file-image"></i>
-                                </button> -->
-
                             </td>
                             <td style="text-align: center;">{{recepcionInfo.producto}}</td>
                             <td style="text-align: center;">{{recepcionInfo.contrnum}}</td>
