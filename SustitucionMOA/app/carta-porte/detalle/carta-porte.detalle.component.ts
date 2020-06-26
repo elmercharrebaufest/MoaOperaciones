@@ -190,9 +190,8 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-                    this.showModalBox = true;
                     this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
-
+                    document.getElementById("openModalHiddenButton").click();
                     return true;
                 }
             },

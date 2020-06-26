@@ -201,8 +201,8 @@ var CartaPorteDetalleComponent = /** @class */ (function (_super) {
                 _this.floatMsgService.setInfoMsg(result.info);
             }
             else {
-                _this.showModalBox = true;
                 _this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                document.getElementById("openModalHiddenButton").click();
                 return true;
             }
         }, function (error) {

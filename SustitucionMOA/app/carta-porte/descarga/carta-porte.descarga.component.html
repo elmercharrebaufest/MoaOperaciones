@@ -139,7 +139,7 @@
                                    href="#">{{recepcionInfo.cartaPorte}}</a>
                             </td>
                             <td style="text-align: center;">{{recepcionInfo.producto}}</td>
-                            <td style="text-align: center;">{{recepcionInfo.contrnum}}</td>
+                            <td style="text-align: center;"><a class="animate" (click)="goToSeccionParam('/contrato/detalle', recepcionInfo.contrnum)" href="#">{{recepcionInfo.contrnum}}</a></td>
                             <td style="text-align: center;">{{recepcionInfo.netoDescontadoString}}</td>
                             <td *ngIf="isCorredor()" style="text-align: center;">{{recepcionInfo.vendedor}}</td>
                         </tr>
