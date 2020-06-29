@@ -263,3 +263,6 @@ Thumbs.db
 
 /SustitucionMOA/app/**/*.js
 /SustitucionMOA/app/**/*.map
+SustitucionMOA/main.js
+
+SustitucionMOA/main.js.map
