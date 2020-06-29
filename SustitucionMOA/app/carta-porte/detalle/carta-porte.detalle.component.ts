@@ -177,6 +177,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     abrirModal() {
+        console.log("funcionHOLA")
         this.spinnerSmallComponent.showIt();
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
