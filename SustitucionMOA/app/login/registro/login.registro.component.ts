@@ -13,7 +13,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'cambio-contrasenia',
+    selector: 'app-login-registro',
     templateUrl: `./app/login/registro/login.registro.component.html?v=${new Date().getTime()}`,
     providers: [LoginService]
 })

@@ -59,7 +59,7 @@ export class LoginCommonComponent extends BaseComponent {
 }
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-login',
     templateUrl: `./app/login/login.component.html?v=${new Date().getTime()}`,
     providers: [LoginService]
 })

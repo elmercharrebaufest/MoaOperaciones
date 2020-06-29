@@ -156,7 +156,7 @@ var PagoDetalleComponent = /** @class */ (function (_super) {
     ], PagoDetalleComponent.prototype, "spinnerSmallComponent", void 0);
     PagoDetalleComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-pago-detalle',
             templateUrl: "./app/pago/detalle/pago.detalle.component.html?v=" + new Date().getTime(),
             providers: [pago_service_1.PagoService]
         }),

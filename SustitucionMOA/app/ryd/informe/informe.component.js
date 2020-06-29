@@ -178,7 +178,7 @@ var InformeComponent = /** @class */ (function (_super) {
     ], InformeComponent.prototype, "spinnerSmallComponent", void 0);
     InformeComponent = __decorate([
         core_1.Component({
-            selector: 'informe',
+            selector: 'app-ryd-informe',
             templateUrl: "./app/ryd/informe/informe.component.html?v=" + new Date().getTime(),
             providers: [{ provide: ryd_service_1.RYDService, useClass: ryd_service_1.RYDInformeService }]
         }),

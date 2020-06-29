@@ -14,7 +14,7 @@ declare var $: any;
 
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-pesificacion',
     templateUrl: './app/pesificacion/pesificacion.component.html',
     providers: [PesificacionService]
 })

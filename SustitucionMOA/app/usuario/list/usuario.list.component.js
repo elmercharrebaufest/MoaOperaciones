@@ -223,7 +223,7 @@ var UsuarioListComponent = /** @class */ (function (_super) {
     ], UsuarioListComponent.prototype, "spinnerComponent", void 0);
     UsuarioListComponent = __decorate([
         core_1.Component({
-            selector: 'list',
+            selector: 'app-usuario-list',
             templateUrl: "./app/usuario/list/usuario.list.component.html?v=" + new Date().getTime(),
             providers: [usuario_service_1.UsuarioService]
         }),

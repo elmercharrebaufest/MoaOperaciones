@@ -150,7 +150,7 @@ var LiquidacionBaseComponent = /** @class */ (function (_super) {
     };
     LiquidacionBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion',
             template: "",
             providers: [liquidacion_service_1.LiquidacionService]
         }),

@@ -220,7 +220,7 @@ var HomeComponent = /** @class */ (function (_super) {
     ], HomeComponent.prototype, "spinnerComponent", void 0);
     HomeComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-home',
             //template: '<h1>{{titulo}}</h1>'
             templateUrl: "./app/home/home.component.html?v=" + new Date().getTime(),
             providers: [home_service_1.HomeService]

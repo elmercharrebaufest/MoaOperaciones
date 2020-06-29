@@ -149,7 +149,7 @@ var UsuarioCambioVendedorComponent = /** @class */ (function (_super) {
     ], UsuarioCambioVendedorComponent.prototype, "spinnerComponent", void 0);
     UsuarioCambioVendedorComponent = __decorate([
         core_1.Component({
-            selector: 'list',
+            selector: 'app-usuario-cambio-vendedor',
             templateUrl: "./app/usuario/cambio-vendedor/usuario.cambio-vendedor.component.html?v=" + new Date().getTime(),
             providers: [usuario_service_1.UsuarioService]
         }),

@@ -70,7 +70,7 @@ var LiquidacionObservadaComponent = /** @class */ (function (_super) {
     };
     LiquidacionObservadaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-observada',
             templateUrl: "./app/liquidacion/observada/liquidacion.observada.component.html?v=" + new Date().getTime(),
             providers: [{ provide: liquidacion_service_1.LiquidacionService, useClass: liquidacion_service_1.LiquidacionObservadaService }]
         }),

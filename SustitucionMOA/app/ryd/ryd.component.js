@@ -51,7 +51,7 @@ var RYDBaseComponent = /** @class */ (function (_super) {
     };
     RYDBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-ryd',
             template: "",
             providers: [ryd_service_1.RYDService]
         }),

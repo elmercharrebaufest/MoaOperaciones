@@ -67,7 +67,7 @@ var PagoEmitidoComponent = /** @class */ (function (_super) {
     };
     PagoEmitidoComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-pago-emitido',
             templateUrl: "./app/pago/emitido/pago.emitido.component.html?v=" + new Date().getTime(),
             providers: [{ provide: pago_service_1.PagoService, useClass: pago_service_1.PagoEmitidoService }]
         }),

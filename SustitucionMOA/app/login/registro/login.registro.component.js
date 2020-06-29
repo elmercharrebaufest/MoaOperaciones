@@ -110,7 +110,7 @@ var RegistroUsuarioComponent = /** @class */ (function (_super) {
     ], RegistroUsuarioComponent.prototype, "spinnerComponent", void 0);
     RegistroUsuarioComponent = __decorate([
         core_1.Component({
-            selector: 'cambio-contrasenia',
+            selector: 'app-login-registro',
             templateUrl: "./app/login/registro/login.registro.component.html?v=" + new Date().getTime(),
             providers: [login_service_1.LoginService]
         }),

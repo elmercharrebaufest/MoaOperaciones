@@ -158,7 +158,7 @@ var AltaUsuarioComponent = /** @class */ (function (_super) {
     ], AltaUsuarioComponent.prototype, "tipoDropdownComponent", void 0);
     AltaUsuarioComponent = __decorate([
         core_1.Component({
-            selector: 'cambio-contrasenia',
+            selector: 'app-usuario-alta-contrasenia',
             templateUrl: "./app/usuario/alta/usuario.alta.component.html?v=" + new Date().getTime(),
             providers: [usuario_service_1.UsuarioService]
         }),

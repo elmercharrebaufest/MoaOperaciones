@@ -16,7 +16,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-ryd-mantenimiento-exportadores',
     templateUrl: `./app/ryd-mantenimiento/exportadores/exportadores.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: RYDMantenimientoService, useClass: RYDMantenimientoExportadorService }]
 })

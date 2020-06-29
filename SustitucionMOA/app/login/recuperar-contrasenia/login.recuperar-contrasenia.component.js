@@ -95,7 +95,7 @@ var RecuperarContraseniaComponent = /** @class */ (function (_super) {
     ], RecuperarContraseniaComponent.prototype, "spinnerComponent", void 0);
     RecuperarContraseniaComponent = __decorate([
         core_1.Component({
-            selector: 'cambio-contrasenia',
+            selector: 'app-login-recuerar-contrasenia',
             templateUrl: "./app/login/recuperar-contrasenia/login.recuperar-contrasenia.component.html?v=" + new Date().getTime(),
             providers: [login_service_1.LoginService]
         }),

@@ -268,7 +268,7 @@ var RYDMantenimientoCommoditiesComponent = /** @class */ (function (_super) {
     ], RYDMantenimientoCommoditiesComponent.prototype, "spinnerComponent", void 0);
     RYDMantenimientoCommoditiesComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-ryd-mantenimiento-commodities',
             templateUrl: "./app/ryd-mantenimiento/commodities/commodities.component.html?v=" + new Date().getTime(),
             providers: [{ provide: ryd_mantenimiento_service_1.RYDMantenimientoService, useClass: ryd_mantenimiento_service_1.RYDMantenimientoCommoditiesService }]
         }),

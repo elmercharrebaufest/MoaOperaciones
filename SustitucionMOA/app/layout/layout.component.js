@@ -391,7 +391,7 @@ var LayoutComponent = /** @class */ (function () {
     ], LayoutComponent.prototype, "mensajeModalComponent", void 0);
     LayoutComponent = __decorate([
         core_1.Component({
-            selector: 'layout-app',
+            selector: 'app-layout',
             templateUrl: "./app/layout/layout.component.html?v=" + new Date().getTime(),
             providers: [layout_service_1.LayoutService]
         }),

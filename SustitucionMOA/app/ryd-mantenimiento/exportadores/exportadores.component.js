@@ -265,7 +265,7 @@ var RYDMantenimientoExportadorComponent = /** @class */ (function (_super) {
     ], RYDMantenimientoExportadorComponent.prototype, "spinnerComponent", void 0);
     RYDMantenimientoExportadorComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-ryd-mantenimiento-exportadores',
             templateUrl: "./app/ryd-mantenimiento/exportadores/exportadores.component.html?v=" + new Date().getTime(),
             providers: [{ provide: ryd_mantenimiento_service_1.RYDMantenimientoService, useClass: ryd_mantenimiento_service_1.RYDMantenimientoExportadorService }]
         }),

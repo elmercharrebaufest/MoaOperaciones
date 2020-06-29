@@ -76,7 +76,7 @@ var RYDMantenimientoBaseComponent = /** @class */ (function (_super) {
     ], RYDMantenimientoBaseComponent.prototype, "spinnerComponent", void 0);
     RYDMantenimientoBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-ryd-mantenimiento',
             template: "",
             providers: [ryd_mantenimiento_service_1.RYDMantenimientoService]
         }),

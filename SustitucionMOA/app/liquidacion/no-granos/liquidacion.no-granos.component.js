@@ -56,7 +56,7 @@ var LiquidacionNGBaseComponent = /** @class */ (function (_super) {
     };
     LiquidacionNGBaseComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-no-granos',
             template: "",
             providers: [liquidacion_service_1.LiquidacionService]
         }),

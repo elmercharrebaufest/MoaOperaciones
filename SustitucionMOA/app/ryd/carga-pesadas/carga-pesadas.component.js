@@ -381,7 +381,7 @@ var CargaPesadasComponent = /** @class */ (function (_super) {
     ], CargaPesadasComponent.prototype, "spinnerBottomComponent", void 0);
     CargaPesadasComponent = __decorate([
         core_1.Component({
-            selector: 'carga-pesadas',
+            selector: 'app-ryd-cargas-pesadas',
             templateUrl: "./app/ryd/carga-pesadas/carga-pesadas.component.html?v=" + new Date().getTime(),
             providers: [ryd_service_1.RYDService]
         }),

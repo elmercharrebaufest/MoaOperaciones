@@ -175,7 +175,7 @@ var LoginComponent = /** @class */ (function (_super) {
     ], LoginComponent.prototype, "spinnerSmallComponent", void 0);
     LoginComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-login',
             templateUrl: "./app/login/login.component.html?v=" + new Date().getTime(),
             providers: [login_service_1.LoginService]
         }),

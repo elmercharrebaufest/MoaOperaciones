@@ -114,7 +114,7 @@ var CambioContraseniaComponent = /** @class */ (function (_super) {
     ], CambioContraseniaComponent.prototype, "spinnerComponent", void 0);
     CambioContraseniaComponent = __decorate([
         core_1.Component({
-            selector: 'cambio-contrasenia',
+            selector: 'app-usuario-cambio-contrasenia',
             templateUrl: "./app/usuario/cambio-contrasenia/usuario.cambio-contrasenia.component.html?v=" + new Date().getTime(),
             providers: [usuario_service_1.UsuarioService]
         }),

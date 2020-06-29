@@ -199,7 +199,7 @@ var PesificacionComponent = /** @class */ (function (_super) {
     ], PesificacionComponent.prototype, "SpinnerSmallComponent", void 0);
     PesificacionComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-pesificacion',
             templateUrl: './app/pesificacion/pesificacion.component.html',
             providers: [pesificacion_service_1.PesificacionService]
         }),

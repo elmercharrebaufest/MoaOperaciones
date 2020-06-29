@@ -187,7 +187,7 @@ var LiquidacionProformaComponent = /** @class */ (function (_super) {
     ], LiquidacionProformaComponent.prototype, "spinnerSmallComponent", void 0);
     LiquidacionProformaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-proforma',
             templateUrl: "./app/liquidacion/proforma/liquidacion.proforma.component.html?v=" + new Date().getTime(),
             providers: [{ provide: liquidacion_service_1.LiquidacionService, useClass: liquidacion_service_1.LiquidacionProformaService }]
         }),

@@ -140,7 +140,7 @@ var VendedorStatusComponent = /** @class */ (function (_super) {
     ], VendedorStatusComponent.prototype, "spinnerComponent", void 0);
     VendedorStatusComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-vendedor-status',
             //template: '<h1>{{titulo}}</h1>'
             templateUrl: "./app/vendedor/vendedor_status.component.html?v=" + new Date().getTime(),
             providers: [vendedor_status_service_1.VendedorStatusService]

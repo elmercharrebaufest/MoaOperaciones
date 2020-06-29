@@ -68,7 +68,7 @@ var LiquidacionAprobadaComponent = /** @class */ (function (_super) {
     };
     LiquidacionAprobadaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-aprobada',
             templateUrl: "./app/liquidacion/aprobada/liquidacion.aprobada.component.html?v=" + new Date().getTime(),
             providers: [{ provide: liquidacion_service_1.LiquidacionService, useClass: liquidacion_service_1.LiquidacionAprobadaService }]
         }),

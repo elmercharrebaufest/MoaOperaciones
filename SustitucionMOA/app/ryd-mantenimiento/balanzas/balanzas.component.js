@@ -423,7 +423,7 @@ var RYDMantenimientoBalanzaComponent = /** @class */ (function (_super) {
     ], RYDMantenimientoBalanzaComponent.prototype, "spinnerComponent", void 0);
     RYDMantenimientoBalanzaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-ryd-mantenimiento-balanzas',
             templateUrl: "./app/ryd-mantenimiento/balanzas/balanzas.component.html?v=" + new Date().getTime(),
             providers: [{ provide: ryd_mantenimiento_service_1.RYDMantenimientoService, useClass: ryd_mantenimiento_service_1.RYDMantenimientoBalanzaService }]
         }),

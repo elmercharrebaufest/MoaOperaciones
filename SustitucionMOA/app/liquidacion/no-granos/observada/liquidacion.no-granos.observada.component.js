@@ -50,7 +50,7 @@ var LiquidacionNGObservadaComponent = /** @class */ (function (_super) {
     };
     LiquidacionNGObservadaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-no-granos-observada',
             templateUrl: "./app/liquidacion/no-granos/observada/liquidacion.no-granos.observada.component.html?v=" + new Date().getTime(),
             providers: [{ provide: liquidacion_service_1.LiquidacionService, useClass: liquidacion_service_1.LiquidacionNGObservadaService }]
         }),

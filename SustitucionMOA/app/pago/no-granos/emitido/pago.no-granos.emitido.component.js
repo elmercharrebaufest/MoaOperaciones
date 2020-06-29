@@ -64,7 +64,7 @@ var PagoEmitidoNGSComponent = /** @class */ (function (_super) {
     };
     PagoEmitidoNGSComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-pago-no-granos-emitido',
             templateUrl: "./app/pago/no-granos/emitido/pago.no-granos.emitido.component.html?v=" + new Date().getTime(),
             providers: [{ provide: pago_service_1.PagoService, useClass: pago_service_1.PagoEmitidoNGService }]
         }),

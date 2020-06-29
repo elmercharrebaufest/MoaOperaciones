@@ -10,7 +10,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-liquidacion-no-granos-paga',
     templateUrl: `./app/liquidacion/no-granos/paga/liquidacion.no-granos.paga.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: LiquidacionService, useClass: LiquidacionNGPagaService }]
 })

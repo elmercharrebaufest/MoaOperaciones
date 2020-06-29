@@ -50,7 +50,7 @@ var LiquidacionNGPagaComponent = /** @class */ (function (_super) {
     };
     LiquidacionNGPagaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-no-granos-paga',
             templateUrl: "./app/liquidacion/no-granos/paga/liquidacion.no-granos.paga.component.html?v=" + new Date().getTime(),
             providers: [{ provide: liquidacion_service_1.LiquidacionService, useClass: liquidacion_service_1.LiquidacionNGPagaService }]
         }),

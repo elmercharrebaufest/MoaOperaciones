@@ -218,7 +218,7 @@ var ListadoPesadasComponent = /** @class */ (function (_super) {
     ], ListadoPesadasComponent.prototype, "spinnerSmallComponent", void 0);
     ListadoPesadasComponent = __decorate([
         core_1.Component({
-            selector: 'listado-pesadas',
+            selector: 'app-ryd-listado-pesadas',
             templateUrl: "./app/ryd/listado-pesadas/listado-pesadas.component.html?v=" + new Date().getTime(),
             providers: [{ provide: ryd_service_1.RYDService, useClass: ryd_service_1.RYDListadoPesadasService }]
         }),

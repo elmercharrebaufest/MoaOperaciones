@@ -132,7 +132,7 @@ var PagoComponent = /** @class */ (function (_super) {
     };
     PagoComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-pago',
             template: "",
             providers: [pago_service_1.PagoService]
         }),

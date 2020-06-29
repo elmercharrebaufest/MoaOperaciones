@@ -51,7 +51,7 @@ var LiquidacionNGAprobadaComponent = /** @class */ (function (_super) {
     LiquidacionNGAprobadaComponent.prototype.showModal = function () { return false; };
     LiquidacionNGAprobadaComponent = __decorate([
         core_1.Component({
-            selector: 'my-app',
+            selector: 'app-liquidacion-no-granos-aprobada',
             templateUrl: "./app/liquidacion/no-granos/aprobada/liquidacion.no-granos.aprobada.component.html?v=" + new Date().getTime(),
             providers: [{ provide: liquidacion_service_1.LiquidacionService, useClass: liquidacion_service_1.LiquidacionNGAprobadaService }]
         }),
