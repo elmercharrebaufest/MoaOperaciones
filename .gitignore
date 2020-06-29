@@ -260,3 +260,6 @@ testem.log
 Thumbs.db
 /SustitucionMOA/App_Data/Logs
 /SustitucionMOA/Logs
+
+/SustitucionMOA/app/**/*.js
+/SustitucionMOA/app/**/*.map
