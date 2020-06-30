@@ -15,16 +15,47 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId)
         {
-            FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
+            return ObtenerFotoCartasPorte(new List<string> { cartaPorteId });
+        }
 
-            List<CartaPorteFoto> cartaPorteFotos = new List<CartaPorteFoto>();
-
-            foreach (FotoDto foto in fotos.Fotos)
+        public List<CartaPorteFoto> ObtenerFotoCartasPorte(List<string> cartaPorteIds)
+        {
+            try
             {
-                cartaPorteFotos.Add(new CartaPorteFoto(foto.Foto, foto.FotoChica));
-            }
+                List<CartaPorteFoto> cartaPorteFotos = new List<CartaPorteFoto>();
+                foreach (string cartaPorteId in cartaPorteIds)
+                {
+                    ObtenerFotosPorCartaPorteID(cartaPorteFotos, cartaPorteId);
+                }
 
-            return cartaPorteFotos;
+                if(cartaPorteFotos.Count == 0)
+                {
+                    throw new SustitucionMOAModel.CustomExceptions.InfoCustomException("No hay foto para la/s carta/s porte seleccionada");
+                }
+
+                return cartaPorteFotos;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        private void ObtenerFotosPorCartaPorteID(List<CartaPorteFoto> cartaPorteFotos, string cartaPorteId)
+        {
+            try
+            {
+                FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
+
+                foreach (FotoDto foto in fotos.Fotos)
+                {
+                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica));
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

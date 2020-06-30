@@ -88,14 +88,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     dataView.filtroProducto = new DropdownContent(
                                                     dataView.data.cartasPorte
-                                                    .GroupBy(i => i.Producto)
+                                                    .GroupBy(i => i.producto)
                                                     .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
                                                     .ToList()
                                                 );
 
                     dataView.filtroVendedor = new DropdownContent(
                                                     dataView.data.cartasPorte
-                                                    .GroupBy(i => i.Vendedor)
+                                                    .GroupBy(i => i.vendedor)
                                                     .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
                                                     .ToList()
                                                 );
@@ -270,13 +270,35 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public List<CartaPorteFoto> GetCartaPorteFotos(string cartaPorteId)
+        public List<CartaPorteFoto> GetFotos(string cartaPorteId)
         {
             try
             {
                 ScatoConsumer scatoConsumer = new ScatoConsumer();
 
                 return scatoConsumer.ObtenerFotoCartaPorte(cartaPorteId);
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CartaPorteFoto> GetFotos(List<string> cartaPorteIds)
+        {
+            try
+            {
+                ScatoConsumer scatoConsumer = new ScatoConsumer();
+
+                return scatoConsumer.ObtenerFotoCartasPorte(cartaPorteIds);
             }
             catch (InfoCustomException)
             {

@@ -14,7 +14,8 @@ namespace SustitucionMOAUtils.Interfaces
         string DownloadDetalle(string proveedor, string cartaporteId);
         Pdf DownloadPDFCalidad(string proveedor, string cartaporteId);
         CartaPorteViewModel GetAplicaciones(string proveedor, string fechaInicio, string fechaFin);
-        List<CartaPorteFoto> GetCartaPorteFotos(string cartaPorteId);
+        List<CartaPorteFoto> GetFotos(string cartaPorteId);
+        List<CartaPorteFoto> GetFotos(List<string> cartaPorteId);
         byte[] GetCompletedPDFTemplate(CCPPFormulario formulario, int paginaSeleccionada, byte[] archivoBytes);
         CartaPorteCTGWSMOAResponse GetDataCTG(string valor);
         CartaPorteDescargaViewModel GetDescargas(string proveedor, string fechaInicio, string fechaFin);
