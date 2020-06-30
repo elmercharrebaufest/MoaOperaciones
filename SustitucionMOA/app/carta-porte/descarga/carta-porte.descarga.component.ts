@@ -26,6 +26,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
     cartaPorteId = "";
     fotoSrc = "";
+    cartaPorteDescarga = "";
     showModalBox = false;
     data: any;
 
@@ -104,7 +105,6 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     }
 
     abrirModal(cartaDePorteNumero: string) {
-        console.log(cartaDePorteNumero);
         this.spinnerSmallComponent.showIt();
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
@@ -114,23 +114,19 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                    console.log("1");
                 } else if (result.error != undefined && result.error != "") {
                     this.floatMsgService.setErrorMsg(result.error);
-                    console.log("2");
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
-                    console.log("3");
                 } else {
                     this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
-                    document.getElementById("openModalHiddenButton2").click();
-                    console.log("4");
+                    this.cartaPorteDescarga = cartaDePorteNumero;
+                    document.getElementById("openModalHiddenButton").click();
                     return true;
                 }
             },
             error => {
                 this.floatMsgService.setErrorMsg(error.message);
-                console.log("5");
             }
         );
         return false;
