@@ -16,9 +16,8 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
-    cartaPorteIDStr = "";
+ 
 
-    CartasPortesIDDescarga: any = {};
 
     constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -43,26 +42,34 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     }
 
     validarCheckboxesFotos() {
+        let cartaPorteIDStr = "";
 
-        this.cartaPorteIDStr = Object.keys(this.CartasPortesIDDescarga).filter((item, index) => {
-            return this.CartasPortesIDDescarga[item];
-        }).join(",");
+        cartaPorteIDStr = this.selectedOptions();
 
-        if (this.cartaPorteIDStr == "") {
+        if (cartaPorteIDStr == "") {
             this.mensajeComponent.setMsgsEmpty();
             this.mensajeComponent.setInfoMsg("Debe seleccionar las cartas de porte que quiere descargar");
         }
         else {
-            console.log(this.cartaPorteIDStr);
-            this.descargarFotos();
+            this.descargarFotos(cartaPorteIDStr);
         }
     }
 
-    descargarFotos() {
+    selectedOptions() {
+        if (!this.data)
+            return "";
+
+        return this.data.cartasPorte
+                    .filter(function (e: { state: boolean; }) { return e.state })
+                    .map(function (e: { cartaPorte: string; }) { return e.cartaPorte })
+                    .join(",");
+    }
+
+    descargarFotos(cartaPorteIDStr: string) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.descargarFotos(this.cartaPorteIDStr).subscribe(
+        this.subscription = this.service.descargarFotos(cartaPorteIDStr).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -96,6 +103,14 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
             }
         );
         return false;  // <- Prevent href del a
+    }
+
+    checkAll(ev:any) {
+        this.data.cartasPorte.forEach((x: { state: any; }) => x.state = ev.target.checked)
+    }
+
+    isAllChecked() {
+        return this.data.cartasPorte.every((_: { state: any; }) => _.state);
     }
 }
 
