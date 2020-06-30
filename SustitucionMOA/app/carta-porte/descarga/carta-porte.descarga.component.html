@@ -95,7 +95,9 @@
                        style="width: 100%; padding:10px 10px;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;">Seleccionar</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;">Seleccionar 
+                                <input type="checkbox" name="all" [checked]="isAllChecked()" (change)="checkAll($event)" />
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
                                 (click)="orderColumnBy('fechaDescargaDate')">Fecha</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
@@ -124,7 +126,7 @@
                             <td>
                                 <div class="form">
                                     <div class="form-check" style="text-align: center;">
-                                        <input type="checkbox" class="form-check-input" name="checkboxDescargar" value="{{recepcionInfo.cartaPorte}}" [(ngModel)]="CartasPortesIDDescarga[recepcionInfo.cartaPorte]">
+                                        <input type="checkbox" class="form-check-input" name="descargarcb[]" value="{{recepcionInfo.cartaPorte}}" [(ngModel)]="recepcionInfo.state">
                                     </div>
                                 </div>
                             </td>
