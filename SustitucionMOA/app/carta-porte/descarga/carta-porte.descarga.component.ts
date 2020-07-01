@@ -23,6 +23,12 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
+    cartaPorteId = "";
+    fotoSrc = "";
+    cartaPorteDescarga = "";
+    showModalBox = false;
+    data: any;
+
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); }
 
     setTabs() {
@@ -103,6 +109,34 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
             }
         );
         return false;  // <- Prevent href del a
+    }
+
+    abrirModal(cartaDePorteNumero: string) {
+        this.spinnerSmallComponent.showIt();
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
+
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    this.cartaPorteDescarga = cartaDePorteNumero;
+                    document.getElementById("openModalHiddenButton").click();
+                    return true;
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+        return false;
     }
 
     checkAll(ev:any) {
