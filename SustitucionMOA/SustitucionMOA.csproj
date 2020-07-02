@@ -346,7 +346,7 @@
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\carta-porte.service.ts" />
+    <TypeScriptCompile Include="app\carta-porte\carta-porte2.service.ts" />
     <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\detalle\carta-porte.detalle.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.component.ts" />

@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { CartaPorteService } from './../carta-porte.service';
+import { CartaPorteService } from './../carta-porte2.service';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';

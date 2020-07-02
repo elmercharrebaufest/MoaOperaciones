@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { CartaPorteBaseComponent } from './../carta-porte.component';
-import { CartaPorteService, CartaPorteAplicacionService } from './../carta-porte.service';
+import { CartaPorteService, CartaPorteAplicacionService } from './../carta-porte2.service';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
