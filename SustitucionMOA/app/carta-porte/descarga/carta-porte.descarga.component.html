@@ -8,12 +8,21 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Cartas de Porte: <strong>Descargas</strong> </div>
+            <div class="col-xs-12 col-sm-8">Cartas de Porte: <strong>Descargas</strong> </div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
-                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+                    *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate">Exportar <span class="fa fa-file-excel-o"></span></div>
                 </a>
+            </div>
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info col-xs-12 col-sm-11" (click)="validarCheckboxesFotos()"
+                    style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
+                    Descargar <span class="fa fa-file-image-o" style="padding-left: 10px;"></span>
+
+                </button>
             </div>
         </div>
         <!--End Title-->
@@ -29,19 +38,29 @@
                 <div id="searchVendedor" class="col-xs-12  col-sm-6 col-md-15">
                     Por Vendedor:
                     <div class="styled-select ">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroVendedor" (select)="setFiltroVendedor($event)"></dropdown>
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroVendedor"
+                            (select)="setFiltroVendedor($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
                     Por Producto:
                     <div class="styled-select ">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto" (select)="setFiltroProducto($event)"></dropdown>
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto"
+                            (select)="setFiltroProducto($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15 ">
                     Por CCPP N°:
                     <div class="styled-select ">
-                        <input type="search" class="" placeholder="" [value]="filtroCCPP" (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [value]="filtroCCPP"
+                            (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div id="searchCCPP" class="col-xs-12 col-sm-6 col-md-15 ">
+                    Por Contrato:
+                    <div class="styled-select ">
+                        <input type="search" class="" placeholder="" [value]="filtroContrato"
+                            (input)="filtroContrato = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
@@ -71,67 +90,123 @@
             <div class="clearfix myTables">
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-descarga-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                <table *ngIf="isVisible()" id="tableModal"
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-descarga-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                    style="width: 100%; padding:10px 10px;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fechaDescargaDate')">Fecha</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('cartaPorte')">CCPP Nº</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('producto')">Producto</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('netoDescontado')">Recibido</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">Vendedor</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;">Seleccionar 
+                                <input type="checkbox" name="all" [checked]="isAllChecked()" (change)="checkAll($event)" />
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
+                                (click)="orderColumnBy('fechaDescargaDate')">Fecha</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
+                                (click)="orderColumnBy('cartaPorte')">
+                                CCPP
+                                Nº
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
+                                (click)="orderColumnBy('producto')">
+                                Producto
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
+                                (click)="orderColumnBy('contrnum')">Contrato Molinos</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;"
+                                (click)="orderColumnBy('netoDescontado')">
+                                Recibido
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1"
+                                style="border-bottom: 1px solid; text-align: center;"
+                                (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">Vendedor</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let recepcionInfo of data.cartasPorte | customFilter : 'producto' : productoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'cartaPorte' : filtroCCPP | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td><a (click)="showModalTableResponsive(recepcionInfo)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{recepcionInfo.fechaDescarga}}</td>
-                            <td><a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', recepcionInfo.cartaPorte)" href="#">{{recepcionInfo.cartaPorte}}</a></td>
-                            <td>{{recepcionInfo.producto}}</td>
-                            <td>{{recepcionInfo.netoDescontadoString}}</td>
-                            <td *ngIf="isCorredor()">{{recepcionInfo.vendedor}}</td>
+                        <tr *ngFor="let recepcionInfo of data.cartasPorte | customFilter : 'producto' : productoSelected | customFilter : 'vendedor' : vendedorSelected | customFilter : 'cartaPorte' : filtroCCPP | customFilter : 'contrnum' : filtroContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                            role="row" [class.odd]="!odd">
                             <td>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                    Launch demo modal
-                                </button>
-
-                                <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index : 0, position: absolute">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                ...
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                            </div>
-                                        </div>
+                                <div class="form">
+                                    <div class="form-check" style="text-align: center;">
+                                        <input type="checkbox" class="form-check-input" name="descargarcb[]" value="{{recepcionInfo.cartaPorte}}" [(ngModel)]="recepcionInfo.state">
                                     </div>
                                 </div>
                             </td>
+                            <td style="text-align: center;">
+                                <a (click)="showModalTableResponsive(recepcionInfo)" class="btnShowModal">
+                                    <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
+                                </a>
+                                {{recepcionInfo.fechaDescarga}}
+                            </td>
+                            <td style="text-align: center; display: flex;">
+                                <a class="animate"
+                                    (click)="goToSeccionParam('/carta-porte/detalle', recepcionInfo.cartaPorte)"
+                                    href="#"
+                                    style="align-items: center; display: flex;">{{recepcionInfo.cartaPorte}}</a>
+
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-info btn-lg"
+                                    (click)="abrirModal(recepcionInfo.cartaPorte)"
+                                    style="background: none; border: none; padding: 0 10px; margin: 0 5px;">
+                                    <span class="fa fa-file-image-o" style="color: #172f8f;"></span>
+                                </button>
+
+                            </td>
+                            <td style="text-align: center;">{{recepcionInfo.producto}}</td>
+                            <td style="text-align: center;">
+                                <a class="animate"
+                                    (click)="goToSeccionParam('/contrato/detalle', recepcionInfo.contrnum)"
+                                    href="#">{{recepcionInfo.contrnum}}</a>
+                            </td>
+                            <td style="text-align: center;">{{recepcionInfo.netoDescontadoString}}</td>
+                            <td *ngIf="isCorredor()" style="text-align: center;">{{recepcionInfo.vendedor}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
-                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
-                            <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current"
+                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
                         </span>
-                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
+                            [class.disabled]="pT.isLastPage()"> Siguiente </a>
                     </div>
                 </pagination-template>
             </div>
         </div>
         <!-- END tables-->
+        <!-- Modal -->
+        <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+            data-target="#myModal"></button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onClick="abrirModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Foto CCPP N° {{cartaPorteDescarga}} </h4>
+
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{fotoSrc}}" id="CartaPorteImagen" class="img-responsive"
+                            style="display: block; max-width: 100%;" />
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" id="CartaPorteDescargar" download="{{cartaPorteDescarga}}.jpg"
+                            href="{{fotoSrc}}">Descargar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
     <!--End CONTENT-->
 </div>

@@ -5,55 +5,102 @@
     <section class="container-fluid clearfix" *ngIf="data">
         <!--Title-->
         <div class="row titleSection titleSectionTable">
-            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div style="line-height:0.8; display: inline-block; vertical-align:top;"> Carta de Porte: <strong><span>Nº {{data.ccpp}}</span></strong> </div>
-                <div class="titleExtraData titleExtraDataOneLine"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Vendedor: <strong>{{data.entregasDescargas[0].descripcionVendedor}} </strong>({{data.entregasDescargas[0].vendedor}})</div>
+            <div class="col-xs-12 col-sm-8 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8; display: inline-block; vertical-align:top;">
+                    Carta de Porte:
+                    <strong><span>Nº {{data.ccpp}}</span></strong>
+                </div>
+                <div class="titleExtraData titleExtraDataOneLine">
+                    <i class="fa fa-arrow-circle-right"
+                       aria-hidden="true"></i> Vendedor: <strong>
+                        {{data.entregasDescargas[0].descripcionVendedor}}
+                    </strong>({{data.entregasDescargas[0].vendedor}})
+                </div>
             </div>
             <div class="col-xs-12 col-sm-2 titleSectionTablePart">
                 <spinner-small #smallSpinner></spinner-small>
                 <!--<a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!isExportVisible()">-->
-                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+                   *ngIf="!this.spinnerSmallComponent.visible">
                     <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
                 </a>
                 <!--<a href="#" style="text-decoration:none!important">
-            <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
-        </a>-->
+                    <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
+                </a>-->
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" (click)="abrirModal()">Open Modal</button>
+                <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"
+                    (click)="abrirModal()" style="display: none;">Open Modal</button> -->
             </div>
 
-            <app-carta-porte-modal [cartaPorteID]="123"></app-carta-porte-modal>
+
+            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+                <spinner-small #smallSpinner></spinner-small>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info btn-lg"
+                        (click)="abrirModal()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                    Ver Carta de Porte
+                </button>
+
+                <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"></button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                    onClick="abrirModal()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Foto CCPP N°{{data.ccpp}}</h4>
+
+                        </div>
+                        <div class="modal-body">
+                            <img src="{{fotoSrc}}" id="CartaPorteImagen" class="img-responsive"
+                                 style="display: block; max-width: 100%;" />
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-primary" id="CartaPorteDescargar" download="{{data.ccpp}}.jpg"
+                               href="{{fotoSrc}}">Descargar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!--End Title-->
         <!--Datos de entrega-->
         <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas">
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 col-sm-12">Datos de entrega</div>
-                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen">
+                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen"
+                     style="padding: 10px 10px;">
                     <div class="rowInfoRoundedGreenLine">
                         <div class="col-xs-12 col-sm-2">
-                            <p>Fecha</p>
-                            <p>{{data.entregasDescargas[0].fecha}}</p>
+                            <p style="text-align: center;">Fecha</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].fecha}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Producto</p>
-                            <p>{{data.entregasDescargas[0].descripcionProducto}}</p>
+                            <p style="text-align: center;">Producto</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].descripcionProducto}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Descargado en planta</p>
-                            <p>{{data.entregasDescargas[0].descargaCentro}}</p>
+                            <p style="text-align: center;">Descargado en planta</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].descargaCentro}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Procedencia</p>
-                            <p>{{data.entregasDescargas[0].procedencia}}</p>
+                            <p style="text-align: center;">Procedencia</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].procedencia}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Total Recibidos</p>
-                            <p>{{data.entregasDescargas[0].netoDescontadoString}}</p>
+                            <p style="text-align: center;">Total Recibidos</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].netoDescontadoString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Total Aplicados</p>
-                            <p>{{data.entregasDescargas[0].totalAplicadosString}}</p>
+                            <p style="text-align: center;">Total Aplicados</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].totalAplicadosString}}</p>
                         </div>
                     </div>
                 </div>
@@ -69,7 +116,8 @@
                     </div>
                     <div>Aplicaciones</div>
                 </div>
-                <div id="hideAplicaciones" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeAplicaciones()">
+                <div id="hideAplicaciones" class="hideBtn btnSection btnInfo animate btnInfoClose"
+                     onClick="closeAplicaciones()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -80,7 +128,9 @@
                 </div>
                 <div id="myAplicaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable" cellspacing="0" role="grid" style="width: 100%; padding:10px 0;">
+                        <table id=""
+                               class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable"
+                               cellspacing="0" role="grid" style="width: 100%; padding:10px 0;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha de Aplicaci&oacute;n</th>
@@ -91,7 +141,11 @@
                             <tbody>
                                 <tr *ngFor="let aplicacion of data.aplicaciones" role="row" class="odd">
                                     <td tabindex="0" class="sorting_1">{{aplicacion.fecha}}</td>
-                                    <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', aplicacion.contrato)" href="#">{{aplicacion.contrato}}</a></td>
+                                    <td>
+                                        <a class="animate"
+                                           (click)="goToSeccionParam('/contrato/detalle', aplicacion.contrato)"
+                                           href="#">{{aplicacion.contrato}}</a>
+                                    </td>
                                     <td>{{aplicacion.kgAplicadosString}}</td>
                                 </tr>
                             </tbody>
@@ -122,7 +176,8 @@
                     </div>
                     <div>Datos de descarga</div>
                 </div>
-                <div id="hideDescarga" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeDescarga()">
+                <div id="hideDescarga" class="hideBtn btnSection btnInfo animate btnInfoClose"
+                     onClick="closeDescarga()">
                     <div>
                         <li class="fa fa-times" aria-hidden="true"></li>
                     </div>
@@ -131,7 +186,8 @@
                 <div class="row titleSection titleSectionNoBorder hideMobile">
                     <div class="col-xs-12 col-sm-12">Datos de descarga</div>
                 </div>
-                <div id="myDescarga" class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen hideMobile">
+                <div id="myDescarga"
+                     class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen hideMobile">
                     <div class="rowInfoRoundedGreenLine">
                         <div class="col-xs-12 col-sm-4">
                             <p>Vehículo</p>
@@ -179,10 +235,12 @@
                     <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
                             <td width="80%" valign="top">
-                                <table class="CalidadCCPPData rounded shadow animate" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <table class="CalidadCCPPData rounded shadow animate" width="100%" border="0"
+                                       cellspacing="0" cellpadding="0">
                                     <tr>
                                         <td>
-                                            <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0"
+                                                   cellspacing="0" cellpadding="0">
                                                 <!--<tr class="CalidadCCPPDataCategoria">
                                                     <th width="20%" rowspan="2" class="">Características</th>
                                                     <th width="20%" rowspan="2">Calado Resultado</th>
@@ -197,8 +255,12 @@
                                                 </tr>-->
                                                 <tr class="CalidadCCPPDataCategoria">
                                                     <th width="20%" rowspan="2" class="">Características</th>
-                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub"><div>Calado</div></th>
-                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub"><div>C&aacute;mara</div></th>
+                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
+                                                        <div>Calado</div>
+                                                    </th>
+                                                    <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
+                                                        <div>C&aacute;mara</div>
+                                                    </th>
                                                 </tr>
                                                 <tr class="CalidadCCPPDataCategoria">
                                                     <th width="20%" style="text-align:right">Resultado</th>
@@ -216,11 +278,19 @@
                                                     </tr>
                                                     <tr class="CalidadCCPPDataPlus" *ngIf="showDataPlus(calidad)">
                                                         <td colspan="6" style="border:none">
-                                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <table width="100%" border="0" cellspacing="0"
+                                                                   cellpadding="0">
                                                                 <tr>
-                                                                    <td width="4%" align="center" valign="top" style="padding-right:0px!important"><span class="fa fa-caret-down" aria-hidden="true" style="font-size:25px; line-height:0;"></span></td>
+                                                                    <td width="4%" align="center" valign="top"
+                                                                        style="padding-right:0px!important">
+                                                                        <span class="fa fa-caret-down" aria-hidden="true"
+                                                                              style="font-size:25px; line-height:0;"></span>
+                                                                    </td>
                                                                     <td width="96%">
-                                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra" style="">
+                                                                        <table width="100%" border="0" cellspacing="0"
+                                                                               cellpadding="0"
+                                                                               class="totalTable CalidadDataExtra"
+                                                                               style="">
                                                                             <tr>
                                                                                 <td>resultado final </td>
                                                                                 <td width="19.5%">
@@ -269,5 +339,5 @@
         <!--Fin botones mobile-->
     </section>
     <!--End CONTENT-->
-   
+
 </div>

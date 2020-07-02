@@ -18,7 +18,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public string sust { get; set; }
         public string titular { get; set; }
         public string descripcionTitular { get; set; }
-        
+        public string contrnum { get; set; }
+
     }
 
     public class CartaPorteDescargaView : CartaPorteDescarga

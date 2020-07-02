@@ -50,6 +50,9 @@
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -240,6 +243,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
+    <Content Include="PROD.DeployParameters.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\fonts\fontawesome-webfont.eot" />
@@ -292,6 +298,18 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="QA.DeployParameters.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QA.DeployParameters.Debug.xml">
+      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="QA.DeployParameters.Release.xml">
+      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -359,7 +377,7 @@
     <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.spec.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\carta-porte.service.ts" />
+    <TypeScriptCompile Include="app\carta-porte\carta-porte2.service.ts" />
     <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\detalle\carta-porte.detalle.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.component.ts" />

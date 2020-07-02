@@ -81,9 +81,18 @@ export class CartaPorteService extends BaseService {
 
     public getListaFotos(cartaPorteIds: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
-        params.set('cartaPorteId', cartaPorteIds);
+        params.set('cartaPorteIds', cartaPorteIds);
         return this.http
             .get('/api/cartaporte/GetListaFotos', { search: params, headers: this.headers })
+            .map(this.extractData);
+    }
+
+    public descargarFotos(cartaPorteIds: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cartaPorteIds', cartaPorteIds);
+       
+        return this.http
+            .get('/api/cartaporte/DescargarFotos', { search: params, headers: this.headers })
             .map(this.extractData);
     }
 }

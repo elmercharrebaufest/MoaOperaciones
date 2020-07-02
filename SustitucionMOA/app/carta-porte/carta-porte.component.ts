@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
-import { CartaPorteService } from './carta-porte.service';
+import { CartaPorteService } from './carta-porte2.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
@@ -28,6 +28,7 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
 
     filtroCCPP: string = "";
     filtroProducto: any = null;
+    filtroContrato: string = "";
     productoSelected: string = "";
     filtroVendedor: any = null;
     vendedorSelected: string = "";
