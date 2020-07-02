@@ -8,10 +8,10 @@
                            /@value" />
 	</parameter>
 	
-	<parameter name="ServicioRepositorio Service Endpoint Address">
+	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='ServicioRepositorio']
+                           /endpoint[@name='BasicHttpBinding_IServicioRepositorio']
                            /@address" />
 	</parameter>
 

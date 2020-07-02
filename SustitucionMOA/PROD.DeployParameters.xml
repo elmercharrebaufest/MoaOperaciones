@@ -52,11 +52,12 @@
 	<setParameter name="SI_MPMF_MOAOP_CP_DESPLEGABLES Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_BUSCA_CTG Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_BUSCA_CTG&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	
-	
+	<setParameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FLETE_PROC&amp;interfaceNamespace=urn%3AOPERACIONES" />" />
+
 	<setParameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_OBTENER_PEND_USD&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_GUARDAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	
-	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
+	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
 	
 	
 </parameters>																																																																												 
