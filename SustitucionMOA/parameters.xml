@@ -337,6 +337,12 @@
                            /@address" />
 	</parameter>
 
+	<parameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DET_FLETE_PROC']
+                           /@address" />
+	</parameter>
 
 </parameters>
 
