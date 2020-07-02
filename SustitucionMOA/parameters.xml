@@ -148,6 +148,13 @@
                            /@address" />
 	</parameter>
 
+	<parameter name="SI_MPMF_MOAOP_PERFILES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PERFILES']
+                           /@address" />
+	</parameter>
+
 	<parameter name="SI_MPMF_MOAOP_PERMISOS Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -308,6 +315,28 @@
                            /endpoint[@name='SI_MPMF_MOAOP_BUSCA_CTG']
                            /@address" />
 	</parameter>
-	
+
+	<parameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_OBTENER_PEND_USD']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_GUARDAR_PESIF']
+                           /@address" />
+	</parameter>
+
+	<parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IAuthService']
+                           /@address" />
+	</parameter>
+
+
 </parameters>
 

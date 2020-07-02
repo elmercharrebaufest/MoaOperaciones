@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
 	<setParameter name="IIS Web Application Name" value="moaoperacionesp" />
-	<setParameter name="ConnectionMOADB Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
+	<setParameter name="ConnectionMOADB-Web.config Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
 	<setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
 
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
@@ -23,8 +23,11 @@
 	<setParameter name="SI_MPMF_MOAOP_LOGIN_HABUSR Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_HABUSR&amp;interfaceNamespace=urn%3AOPERACIONES"  />
 	<setParameter name="SI_MPMF_MOAOP_LOGIN_INHAUSR Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_INHAUSR&amp;interfaceNamespace=urn%3AOPERACIONES"  />
 	<setParameter name="SI_MPMF_MOAOP_LOGIN_NVOUSR Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_NVOUSR&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	
 	<setParameter name="SI_MPMF_MOAOP_LOGIN_OLVPASS Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_OLVPASS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_OLVPASS Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERFILES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	
+	<setParameter name="SI_MPMF_MOAOP_PERFILES Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERFILES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	
 	<setParameter name="SI_MPMF_MOAOP_PERMISOS Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERMISOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_RECEPCIONES Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_RECEPCIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_VENDEDORES Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDEDORES&amp;interfaceNamespace=urn%3AOPERACIONES" />
@@ -48,4 +51,12 @@
 	<setParameter name="SI_MPMF_MOAOP_VENDED_HABILIT Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDED_HABILIT&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_CP_DESPLEGABLES Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_BUSCA_CTG Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_BUSCA_CTG&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	
+	
+	<setParameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_OBTENER_PEND_USD&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	<setParameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_GUARDAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
+	
+	<setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="gvicdataagro02.molinosagro.ad/services/AuthService.svc" />
+	
+	
 </parameters>																																																																												 
