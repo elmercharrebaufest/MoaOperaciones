@@ -11,9 +11,9 @@ import { CamaraConsolidacionComponent } from './aduana/camara/consolidacion/cama
 import { CamaraMuelleComponent } from './aduana/camara/muelle/camara.muelle.component';
 import { CargaPesadasComponent } from './ryd/carga-pesadas/carga-pesadas.component';
 import { CartaPorteBaseComponent } from './carta-porte/carta-porte.component';
-import { CartaPorteAplicacionComponent } from './carta-porte/aplicacion/carta-porte.aplicacion.component';
-import { CartaPorteDetalleComponent } from './carta-porte/detalle/carta-porte.detalle.component';
-import { CartaPorteDescargaComponent } from './carta-porte/descarga/carta-porte.descarga.component';
+import { CartaPorteAplicacionComponent } from './carta-porte/aplicacion/carta-porte.aplicacion2.component';
+import { CartaPorteDetalleComponent } from './carta-porte/detalle/carta-porte.detalle2.component';
+import { CartaPorteDescargaComponent } from './carta-porte/descarga/carta-porte.descarga2.component';
 import { CartaPorteFormularioComponent } from './carta-porte/formulario/carta-porte.formulario.component';
 import { CambioContraseniaComponent } from './usuario/cambio-contrasenia/usuario.cambio-contrasenia.component';
 import { ContratoBaseComponent } from './contrato/contrato.component';
