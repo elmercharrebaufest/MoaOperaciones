@@ -234,6 +234,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ScatoWebService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\UsuarioDesbloquearWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -320,6 +325,7 @@
     <Compile Include="WSConsumers\PesificacionGuardarConsumerMOA.cs" />
     <Compile Include="WSConsumers\ProformaFleteProcedenciaConsumerMOA.cs" />
     <Compile Include="WSConsumers\RecepcionesConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ScatoConsumer.cs" />
     <Compile Include="WSConsumers\UsuarioCrearConsumerMOA.cs" />
     <Compile Include="WSConsumers\UsuarioDesbloquearConsumerMOA.cs" />
     <Compile Include="WSConsumers\UsuarioHabilitarConsumerMOA.cs" />
@@ -339,6 +345,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\System.Diagnostics.EventLogEntry.datasource" />
     <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -733,6 +740,1034 @@
     <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio.wsdl" />
+    <None Include="Service References\ScatoWebService\ServicioRepositorio.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio1.wsdl" />
+    <None Include="Service References\ScatoWebService\ServicioRepositorio1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio10.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio12.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio13.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio14.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio15.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio5.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio6.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio7.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio8.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio9.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ActividadConCargaAutomaticaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ActividadPorDispositivoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AdjuntoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AjusteDeCalidadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AjusteDeStockDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AjusteStockBinesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AlmacenDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AnalisisDeCalidadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AnalisisObligatorioDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AnalisisPorCaracteristicaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AnalisisVagonDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AppPoolDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ArchivoDeMovimientosDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ArchivoINVFilaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AsignacionDeEstablecimientoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AsignacionDeRecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AsignacionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AutorizacionCamionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AutorizacionChoferDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.AutorizacionTiempoEnTransitoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BajaCTGRetransmisionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BalanzadaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BalanzaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BalanzaPuertoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BalanzasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BocaDestinoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.BodegaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CaladoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CalidadMaterialDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CalleDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CamaraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CampoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CaracteristicaConfiguracionDeTablaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CaracteristicaDeCalidadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CaracteristicaDeCalidadPorWorkflowDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CaracteristicasAnalizadasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CargaDeCupoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CargaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CartaDePorteRegistradaServicioMonsantoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CartaPorteDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CartaPorteResponseDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CartaPorteValidaResponseDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CasilleroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CategoriaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CentroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CentroInfoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ChoferDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ClienteDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ColaImpresionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ControlDeBalanzaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ControlDeBalanzaPesadaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ControlDeTiempoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ControlRecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ControlRecorridoLogActividadConsultaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ConversionCaracteristicaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ConversionCentroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ConversionGrupoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ConversionMaterialDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CosechaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CuartelDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.CupoMobileDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DatosDeInstanciaAltaCTGDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DatosDeInstanciaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DatosDeWorkflowsDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DatosInstanciaWorkflowDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DatosRecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DescargaDeBinesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DescargaUnidadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DescuentoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DestinatarioCTGDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DestinoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DistribucionDeAlmacenesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DocumentoDeImpresionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DocumentoDeImpresionPorCentroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.DocumentoExternoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.EmpresaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.EntregadorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.EnvioUrenportDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.EstablecimientoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.EstadoMaterialDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ExcepcionAlControlDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ExcepcionAlDescuentoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ExcepcionEnvioCamaraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ExportacionDeArchivosSelectObjDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ExportadorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.FirmaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.FormatoDeCampoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.FormatoDeImpresionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.FormatoDePapelDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.Formulario239RecorridoMaterialCentroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.FotosDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.GraficoCamionesDiaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.GraficoCamionesHoraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.GraficoDePlantaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.GraficoEficienciaHidraulicasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.GraficoToneladasRangoDeDiasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.HistoricoInhabilitacionCamionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.HistoricoInhabilitacionChoferDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.HojaDeRutaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.HojaDeRutaYerbateraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.HojaDeRutaYerbateraValidaResponseDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.HumedimetroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ImpresionCartaPorteUrenportRecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ImpresionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ImpresionReciboMunicipalRecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ImpresoraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.InfoCaladoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.IngresoDeDatosDeExportacionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.InhabilitacionCamionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.InhabilitacionChoferDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.InstanciaWorkflowDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.KmPorProveedorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.LectorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.LetraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListadoCamionesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListadoDeCalidadesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListadoDePesadasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfActividadConCargaAutomaticaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfActividadPorDispositivoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfAjusteDeStockDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfAjusteStockBinesDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfAlmacenDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfAnalisisObligatorioDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfAnalisisPorCaracteristicaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfArchivoDeMovimientosDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfAsignacionDeRecorridoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfBalanzadaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfBalanzaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfBalanzaPuertoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfBocaDestinoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfBodegaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCaladoPorCaracteristicaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCalidadMaterialDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCalleDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCamaraDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCaracteristicaDeCalidadDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCaracteristicaDeCalidadPorWorkflowDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCargaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCasilleroDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCategoriaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCentroDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfChoferDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCiuAnuladoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfClienteDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConsultaCasilleroAntiguedadDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConsultaCasilleroDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConsultaCasilleroMuestraDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfControlDeTiempoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConversionCaracteristicaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConversionCentroDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConversionGrupoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConversionMaterialDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfConversionProcedenciaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfCosechaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfDestinoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfDocumentoDeImpresionDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfDocumentoDeImpresionPorCentroDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfDocumentoExternoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfEmpresaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfEntregadorDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfEnvioUrenportDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfEstablecimientoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfExcepcionAlControlDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfExcepcionAlDescuentoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfExcepcionEnvioCamaraDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfExportadorDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfFormatoDeImpresionDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHumedimetroDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfImpresionDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfImpresoraDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfInhabilitacionCamionDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfInhabilitacionChoferDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfInstanciaWorkflowDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfKmPorProveedorDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfLiberacionDeCasillerosDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfLoteBiotecnologiaListaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfLoteListaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMaterialDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMaterialPorWorkflowDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMaterialPuertoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMotivoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMotivoQuiebreBarreraDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMovimientoDeBinesDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMovimientoDeTercerosListaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMuestraEnvioACamaraBiotecnoligiaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfMuestraEnvioACamaraDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfNirsDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfPermisoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfPesoMaximoPorTipoVehiculoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfProveedorDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfProveedorExcluidoIntactaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfPuestoDeTrabajoContingenciaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfPuestoDeTrabajoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfPuestosDeCargaDescargaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfRangosDeRedondeoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfReciboMunicipalDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfRecorridoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfReglaDeAnalisisObligatorioDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfReportePesadaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfReportePesadaSeisHorasDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfRolDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfStockDeEstablecimientoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfSuplenciaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTalonarioDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTaraContenedorDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTaraRomaneoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTarjetaBloqueadaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTarjetaRangoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTarjetaSupervisorDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTecnologiaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTipoComercialDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTipoComercialPorWfDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTipoDocumentoIdentidadDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTransaccionSAPDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTransmisionASapDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTransmisionBajaCtgDefinitivaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfTransportistaDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfUsuarioDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfVaporDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfVariedadPorVinedoDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfVinedoPropioDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ListaPaginadaOfVinedoTercerosDtoT7DPfI5_P.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.LocalidadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.LogActividadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.LoteBiotecnologiaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.LoteDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MailAvisoStockDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MaterialDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MaterialIdYDescripcionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MaterialPorCentroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MaterialPorWorkflowDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MaterialPuertoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MicroMuestrasPorCasilleroDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MotivoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MotivoHumedadManualDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MotivoQuiebreBarreraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MotivoReasignacionDeTarjetaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MovimientoDeBinesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MovimientoDeTercerosListaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MuestraDeHumedadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MuestraEnvioACamaraBiotecnoligiaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MuestraEnvioACamaraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.MuestraEnvioACamaraYRecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.NirsDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.NotificacionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.NotificacionesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ObservacionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OnccaEmitidasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenCargaFasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenCargaInternaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenCargaInternaFasonDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenDeCargaContenedorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenDeDescargaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenDeDescargaFasonDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OrdenEntrePlantasDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.OtroRecorridoDelChoferDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PagoConMercadoPagoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PaisDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PanelServerAppPoolDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PermisoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PesoMaximoPorTipoVehiculoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PesoVagonesDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PrecintoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ProveedorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ProveedorInfoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ProvinciaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PuestoDeTrabajoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.PuestosDeCargaDescargaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RangosDeRedondeoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ReasignacionDeTarjetaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ReciboMunicipalDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RecorridoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RegistroBalanzaPuertoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ReglaDeAnalisisObligatorioDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RemitoBodegaUvaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RemitoBodegaVinoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RemitoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ReportePesadaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.Resultado.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RolDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RomaneoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.RomaneoItemDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ServicioDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.StockDeEstablecimientoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.SubZonaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.SuplenciaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TalonarioDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TaraContenedorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TaraRomaneoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TarjetaBloqueadaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TarjetaRangoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TarjetaSupervisorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TecnologiaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TicketAccesoAfipDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoBinDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoComercialDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoComprobanteOnccaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoDeWorkflow.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoDocumentoIdentidadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoDocumentoIngreso.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TipoVehiculoBodegaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TransmisionASapDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TransmisionesCupoEnErrorDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TransmisionSapAModificarDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TransportistaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.TransportistaInfoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.UltimoEstadoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.UsuarioDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.UsuarioMatriculaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ValidarCupoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ValidarProximaAccionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ValidarProximaAccionPorPuestoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ValoresSapDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VaporDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VariedadDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VariedadPorVinedoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VehiculoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VerificarKilosDeclaradosPorFincaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VideoCamaraDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VinedoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VinedoPropioDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.VinedoTercerosDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.WorkflowDefinicionDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.WorkflowDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.WorkflowInfoDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ScatoWebService\SustitucionMOAWS.ScatoWebService.ZonaDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SI_MPMF_MOAOP_LOGIN_DESBUSR.wsdl" />
     <None Include="Service References\UsuarioDesbloquearWebServiceMOA\SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA.SI_MPMF_MOAOP_LOGIN_DESBUSRResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -872,6 +1907,7 @@
     <WCFMetadataStorage Include="Service References\PesificacionWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ProformaFleteProcedenciaServiceMOA\" />
     <WCFMetadataStorage Include="Service References\RecepcionesWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ScatoWebService\" />
     <WCFMetadataStorage Include="Service References\UsuarioDesbloquearWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioHabilitarWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\UsuarioInhabilitarWebServiceMOA\" />
@@ -1465,6 +2501,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\DataAgroAuthWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ScatoWebService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ScatoWebService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ScatoWebService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

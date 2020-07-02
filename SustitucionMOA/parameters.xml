@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<parameters>
+
+	<parameter name="PasswordSapEnc Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='PasswordSapEnc']
+                           /@value" />
+	</parameter>
+	
+	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IServicioRepositorio']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_APLICACIONES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_APLICACIONES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_CONTRATOS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_CONTRATOS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_CREA_USER Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_CREA_USER']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DET_FIJACIONES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DET_FIJACIONES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DET_VINCULA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DET_VINCULA']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DETALLE_CCPP Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DETALLE_CCPP']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DETALLES_CONTRATO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DETALLES_CONTRATO']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DETALLES_VENDEDOR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DETALLES_VENDEDOR']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_FIJACIONES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_FIJACIONES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_HOME Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_HOME']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LIQUIDACIONES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LIQUIDACIONES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LIQUIDACIONES_NG Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LIQUIDACIONES_NG']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_IN Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_IN']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_CAMBIOPASS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_CAMBIOPASS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_DESBUSR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_DESBUSR']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_HABUSR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_HABUSR']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_INHAUSR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_INHAUSR']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_NVOUSR Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_NVOUSR']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_LOGIN_OLVPASS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_LOGIN_OLVPASS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_PERFILES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PERFILES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_PERMISOS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PERMISOS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_RECEPCIONES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_RECEPCIONES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_VENDEDORES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_VENDEDORES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_PAGOS_CTA_CTE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PAGOS_CTA_CTE']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DETALLE_PAGO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DETALLE_PAGO']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_PAGOS_NG Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PAGOS_NG']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_HOME_NG Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_HOME_NG']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_PDF_CONTRATO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PDF_CONTRATO']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_PDF Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PDF']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DETALLES_NOTICIAS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DETALLES_NOTICIAS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_USUARIOS Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_USUARIOS']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_CUENTA_CORRIENTE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_CUENTA_CORRIENTE']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DET_PAGOS_NG Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DET_PAGOS_NG']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_VIAJES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_VIAJES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DETALLE_CTE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DETALLE_CTE']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_VAL_IMPORTE Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_VAL_IMPORTE']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_RELAC_PL Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_RELAC_PL']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_MAIL_CONTACTO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_MAIL_CONTACTO']
+                           /@address" />
+	</parameter>
+	
+	<parameter name="SI_MPMF_MOAOP_CATEG_CONTACTO Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_CATEG_CONTACTO']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_VENDED_HABILIT Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_VENDED_HABILIT']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_CP_DESPLEGABLES Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_CP_DESPLEGABLES']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_BUSCA_CTG Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_BUSCA_CTG']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_OBTENER_PEND_USD']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_GUARDAR_PESIF']
+                           /@address" />
+	</parameter>
+
+	<parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IAuthService']
+                           /@address" />
+	</parameter>
+
+	<parameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_DET_FLETE_PROC']
+                           /@address" />
+	</parameter>
+
+</parameters>
+

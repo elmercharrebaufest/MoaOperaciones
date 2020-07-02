@@ -54,7 +54,6 @@ namespace SustitucionMOAWS.WSConsumers
                 result.error.descripcion = error.DESCRIPCION;
                 result.error.tipo = error.TIPO;
             }
-
             foreach (ZMPES4050 aplicacionInfo in aplicaciones_out)
             {
                 result.cartasPorte.Add(new CartaPorteView()
@@ -74,6 +73,7 @@ namespace SustitucionMOAWS.WSConsumers
                     idVendedor = aplicacionInfo.ID_VENDEDOR,
                     vendedor = aplicacionInfo.VENDEDOR
                 });
+
             }
             return result;
         }

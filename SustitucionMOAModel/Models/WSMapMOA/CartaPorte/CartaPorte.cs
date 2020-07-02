@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public decimal netoDescontado { get; set; }
         public string unidadNetoDescontado { get; set; }
         public decimal pendAplicacion { get; set; }
+
         public string unidadPendAplicacion { get; set; }
         public decimal aLiquidar { get; set; }
         public string unidadALiquidar { get; set; }
