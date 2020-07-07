@@ -12,7 +12,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'cambio-contrasenia',
+    selector: 'app-usuario-cambio-contrasenia',
     templateUrl: `./app/usuario/cambio-contrasenia/usuario.cambio-contrasenia.component.html?v=${new Date().getTime()}`,
     providers: [UsuarioService]
 })

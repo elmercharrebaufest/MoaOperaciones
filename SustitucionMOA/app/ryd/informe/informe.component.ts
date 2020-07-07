@@ -15,7 +15,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'informe',
+    selector: 'app-ryd-informe',
     templateUrl: `./app/ryd/informe/informe.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: RYDService, useClass: RYDInformeService }]
 })

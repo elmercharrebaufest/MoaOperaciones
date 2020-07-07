@@ -14,7 +14,7 @@ import 'rxjs/add/observable/throw';
 import { ModalService } from './../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-vendedor-status',
     //template: '<h1>{{titulo}}</h1>'
     templateUrl: `./app/vendedor/vendedor_status.component.html?v=${new Date().getTime()}`,
     providers: [VendedorStatusService]

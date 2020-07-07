@@ -14,7 +14,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-aduana-pesada-detalle',
     templateUrl: `./app/aduana/pesada/detalle/pesada.detalle.component.html?v=${new Date().getTime()}`,
     providers: [AduanaService]
 })

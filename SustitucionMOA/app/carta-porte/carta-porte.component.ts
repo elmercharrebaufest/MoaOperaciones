@@ -16,7 +16,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-carta-porte',
     templateUrl: `./app/carta-porte/carta-porte.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteService]
 })

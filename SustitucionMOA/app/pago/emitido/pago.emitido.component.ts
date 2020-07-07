@@ -10,7 +10,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-pago-emitido',
     templateUrl: `./app/pago/emitido/pago.emitido.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: PagoService, useClass: PagoEmitidoService }]
 })

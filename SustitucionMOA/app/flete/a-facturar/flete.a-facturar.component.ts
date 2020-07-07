@@ -9,7 +9,7 @@ import { ModalService } from './../../common/services/ModalService';
 declare var $: any;
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-flete-a-facturar',
     templateUrl: `./app/flete/a-facturar/flete.a-facturar.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: FleteService, useClass: FleteAFacturarService }]
 })

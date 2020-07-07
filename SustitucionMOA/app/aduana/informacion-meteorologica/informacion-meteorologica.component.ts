@@ -7,7 +7,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-aduana-informacion-meteorologica',
     templateUrl: `./app/aduana/informacion-meteorologica/informacion-meteorologica.component.html?v=${new Date().getTime()}`,
     //providers: []
 })

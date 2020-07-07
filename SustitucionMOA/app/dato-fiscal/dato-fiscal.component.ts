@@ -14,8 +14,7 @@ import 'rxjs/add/observable/throw';
 import { ModalService } from './../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
-    //template: '<h1>{{titulo}}</h1>'
+    selector: 'app-dato-fiscal',
     templateUrl: `./app/dato-fiscal/dato-fiscal.component.html?v=${new Date().getTime()}`,
     providers: [DatoFiscalService]
 })

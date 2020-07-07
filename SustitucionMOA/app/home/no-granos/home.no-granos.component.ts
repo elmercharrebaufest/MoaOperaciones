@@ -5,7 +5,7 @@ import { NavService } from './../../common/services/NavService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-home-no-granos',
     //template: '<h1>{{titulo}}</h1>'
     templateUrl: `./app/home/no-granos/home.no-granos.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: HomeService, useClass: HomeNGService }]
