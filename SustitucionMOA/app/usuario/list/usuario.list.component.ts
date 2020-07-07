@@ -13,7 +13,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'list',
+    selector: 'app-usuario-list',
     templateUrl: `./app/usuario/list/usuario.list.component.html?v=${new Date().getTime()}`,
     providers: [UsuarioService]
 })

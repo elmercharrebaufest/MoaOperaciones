@@ -148,6 +148,8 @@
     <Content Include="app\aduana\pesada\online\pesada.online.component.html" />
     <Content Include="app\app.component.html" />
     <Content Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
+    <Content Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
+    <Content Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.html" />
     <Content Include="app\carta-porte\carta-porte.component.html" />
     <Content Include="app\carta-porte\descarga\carta-porte.descarga.component.html" />
     <Content Include="app\carta-porte\detalle\carta-porte.detalle.component.html" />
@@ -274,6 +276,7 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor c Corredor - Alta.doc" />
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
+    <Content Include="angular.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -371,6 +374,8 @@
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
     <TypeScriptCompile Include="app\carta-porte\aplicacion\carta-porte.aplicacion2.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.spec.ts" />
+    <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte2.service.ts" />
     <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga2.component.ts" />

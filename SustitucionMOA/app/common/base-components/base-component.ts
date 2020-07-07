@@ -5,7 +5,7 @@ import { FloatMsgService } from './../services/FloatMsgService';
 import { ModalService } from './../services/ModalService';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-base',
     template: ``
 })
 export class BaseComponent implements OnDestroy{

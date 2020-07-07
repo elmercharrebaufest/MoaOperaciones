@@ -16,7 +16,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-cuenta-corriente-agrupada',
     templateUrl: `./app/cuenta-corriente/agrupada/cuenta-corriente.agrupada.component.html?v=${new Date().getTime()}`,
     providers: [CuentaCorrienteAgrupadaService]
 
