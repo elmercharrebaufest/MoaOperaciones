@@ -14,7 +14,7 @@ import { Seccion } from './../../common/models/Seccion';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
-    selector: 'app-contrato-detalle',
+    selector: 'my-app',
     templateUrl: `./app/contrato/detalle/contrato.detalle.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: ContratoService, useClass: ContratoFijacionService }]
 })

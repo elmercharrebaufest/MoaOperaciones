@@ -14,7 +14,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-liquidacion-observada',
+    selector: 'my-app',
     templateUrl: `./app/liquidacion/observada/liquidacion.observada.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: LiquidacionService, useClass: LiquidacionObservadaService }]
 })

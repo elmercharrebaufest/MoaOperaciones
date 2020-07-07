@@ -8,7 +8,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
-    selector: 'app-carta-porte-descarga',
+    selector: 'my-app',
     templateUrl: `./app/carta-porte/descarga/carta-porte.descarga.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: CartaPorteService, useClass: CartaPorteDescargaService }]
 })

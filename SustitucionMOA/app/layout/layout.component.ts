@@ -15,7 +15,7 @@ import { LoginGuard } from './../common/security/login-guard';
 declare var $: any;
 
 @Component({
-    selector: 'app-layout',
+    selector: 'layout-app',
     templateUrl: `./app/layout/layout.component.html?v=${new Date().getTime()}`,
     providers: [ LayoutService ]
 })

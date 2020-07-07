@@ -16,7 +16,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-flete',
+    selector: 'my-app',
     template: ``,
     providers: [FleteService]
 })

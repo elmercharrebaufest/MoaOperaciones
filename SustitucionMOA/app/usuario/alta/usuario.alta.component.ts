@@ -15,7 +15,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-usuario-alta-contrasenia',
+    selector: 'cambio-contrasenia',
     templateUrl: `./app/usuario/alta/usuario.alta.component.html?v=${new Date().getTime()}`,
     providers: [UsuarioService]
 })

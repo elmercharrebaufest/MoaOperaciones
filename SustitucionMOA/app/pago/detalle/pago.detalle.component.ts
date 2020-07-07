@@ -13,7 +13,7 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
-    selector: 'app-pago-detalle',
+    selector: 'my-app',
     templateUrl: `./app/pago/detalle/pago.detalle.component.html?v=${new Date().getTime()}`,
     providers: [PagoService]
 })

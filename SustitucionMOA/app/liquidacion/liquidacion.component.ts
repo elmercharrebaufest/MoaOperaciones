@@ -14,7 +14,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-liquidacion',
+    selector: 'my-app',
     template: ``,
     providers: [LiquidacionService]
 })

@@ -15,7 +15,7 @@ import { ModalService } from './../../../common/services/ModalService';
 declare var $: any;
 
 @Component({
-    selector: 'app-aduana-pesada-historica',
+    selector: 'my-app',
     templateUrl: `./app/aduana/pesada/historica/pesada.historica.component.html?v=${new Date().getTime()}`,
     providers: [AduanaService]
 })

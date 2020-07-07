@@ -16,7 +16,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-list-base',
+    selector: 'my-app',
     template: ``,
     providers: [BaseService]
 })

@@ -22,7 +22,7 @@ import "rxjs/add/operator/takeUntil";
 declare var $: any;
 
 @Component({
-    selector: 'app-ryd-cargas-pesadas',
+    selector: 'carga-pesadas',
     templateUrl: `./app/ryd/carga-pesadas/carga-pesadas.component.html?v=${new Date().getTime()}`,
     providers: [RYDService]
 })

@@ -10,7 +10,7 @@ import { SessionDataService } from './../common/services/SessionDataService';
 import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
 @Component({
-    selector: 'app-home',
+    selector: 'my-app',
     //template: '<h1>{{titulo}}</h1>'
     templateUrl: `./app/home/home.component.html?v=${new Date().getTime()}`,
     providers: [HomeService]

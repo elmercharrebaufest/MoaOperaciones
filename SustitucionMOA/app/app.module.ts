@@ -113,8 +113,7 @@ import { ModalModule } from 'ngx-modal';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
-import { AppRoutingModule } from './app-routing.module';;
-import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component'
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
     imports: [
@@ -204,8 +203,6 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         OrderedColumn,
         ShortenStringPipe,
         PesificacionComponent
-,
-        CartaPorteModalComponent
     ],
     providers: [
         DatePipe,

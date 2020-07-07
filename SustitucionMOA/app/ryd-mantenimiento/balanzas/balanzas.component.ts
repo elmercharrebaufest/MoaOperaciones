@@ -13,7 +13,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-ryd-mantenimiento-balanzas',
+    selector: 'my-app',
     templateUrl: `./app/ryd-mantenimiento/balanzas/balanzas.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: RYDMantenimientoService, useClass: RYDMantenimientoBalanzaService }]
 })

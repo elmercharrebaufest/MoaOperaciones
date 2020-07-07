@@ -10,7 +10,7 @@ import { SpinnerComponent } from './../../../common/view-child/spinner/spinner.c
 import { ModalService } from './../../../common/services/ModalService';
 
 @Component({
-    selector: 'app-aduana-camara-consolidacion',
+    selector: 'my-app',
     templateUrl: `./app/aduana/camara/consolidacion/camara.consolidacion.component.html?v=${new Date().getTime()}`,
     //providers: []
 })

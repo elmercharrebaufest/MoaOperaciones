@@ -11,7 +11,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-login-recuerar-contrasenia',
+    selector: 'cambio-contrasenia',
     templateUrl: `./app/login/recuperar-contrasenia/login.recuperar-contrasenia.component.html?v=${new Date().getTime()}`,
     providers: [LoginService]
 })

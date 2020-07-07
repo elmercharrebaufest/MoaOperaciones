@@ -15,7 +15,7 @@ import 'rxjs/add/observable/throw';
 declare var $: any;
 
 @Component({
-    selector: 'app-aduana-pesada-online',
+    selector: 'my-app',
     templateUrl: `./app/aduana/pesada/online/pesada.online.component.html?v=${new Date().getTime()}`,
     providers: [AduanaService]
 })

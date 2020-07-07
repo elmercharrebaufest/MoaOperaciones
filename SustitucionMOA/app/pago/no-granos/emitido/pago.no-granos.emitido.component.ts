@@ -11,7 +11,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-pago-no-granos-emitido',
+    selector: 'my-app',
     templateUrl: `./app/pago/no-granos/emitido/pago.no-granos.emitido.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: PagoService, useClass: PagoEmitidoNGService }]
 })

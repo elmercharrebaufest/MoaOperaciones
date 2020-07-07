@@ -15,7 +15,7 @@ import 'rxjs/add/observable/throw';
 declare var $: any;
 
 @Component({
-    selector: 'app-ryd-listado-pesadas',
+    selector: 'listado-pesadas',
     templateUrl: `./app/ryd/listado-pesadas/listado-pesadas.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: RYDService, useClass: RYDListadoPesadasService }]
 })

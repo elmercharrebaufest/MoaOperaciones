@@ -8,7 +8,7 @@ import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
 
 @Component({
-    selector: 'app-aduana',
+    selector: 'my-app',
     template: ``,
     providers: [ AduanaService ]
 })

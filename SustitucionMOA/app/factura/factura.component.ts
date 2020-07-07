@@ -20,7 +20,7 @@ declare var $: any;
 
 
 @Component({
-    selector: 'app-factura',
+    selector: 'my-app',
     templateUrl: `./app/factura/factura.component.html?v=${new Date().getTime()}`,
     providers: [FacturaService]
 })

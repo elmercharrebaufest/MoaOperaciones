@@ -15,7 +15,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 
 @Component({
-    selector: 'app-cuenta-corriente',
+    selector: 'my-app',
     templateUrl: `./app/cuenta-corriente/cuenta-corriente.component.html?v=${new Date().getTime()}`,
     providers: [CuentaCorrienteService]
 

@@ -19,7 +19,7 @@ import 'rxjs/add/observable/throw';
 declare var $: any;
 
 @Component({
-    selector: 'app-carta-porte-formulario',
+    selector: 'my-app',
     templateUrl: `./app/carta-porte/formulario/carta-porte.formulario.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteFormularioService]
 
