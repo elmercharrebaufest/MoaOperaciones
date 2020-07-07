@@ -373,13 +373,13 @@
     <TypeScriptCompile Include="app\app-routing.module.ts" />
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
-    <TypeScriptCompile Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\aplicacion\carta-porte.aplicacion2.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.spec.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\carta-porte2.service.ts" />
-    <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\detalle\carta-porte.detalle.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga2.component.ts" />
+    <TypeScriptCompile Include="app\carta-porte\detalle\carta-porte.detalle2.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.component.ts" />
     <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.ts" />
     <TypeScriptCompile Include="app\common\base-components\base-component.ts" />
