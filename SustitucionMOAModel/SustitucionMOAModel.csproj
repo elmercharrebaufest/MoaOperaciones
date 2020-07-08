@@ -48,6 +48,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Entities\TestEntity.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
     <Compile Include="Models\DBMap\Pesada\Detalle\PesadaDetalle.cs" />
     <Compile Include="Models\DBMap\Pesada\Pesada.cs" />
