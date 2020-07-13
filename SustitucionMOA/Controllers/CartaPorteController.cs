@@ -194,6 +194,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+     
 
         public ActionResult DescargarFotos(string cartaPorteIds)
         {

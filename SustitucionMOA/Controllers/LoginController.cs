@@ -11,24 +11,38 @@ using SustitucionMOAUtils.Services;
 using System.Text;
 using System.Linq;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
+using SustitucionMOARepositorio;
+using System.Collections.Generic;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOA.Controllers
 {
     public class LoginController : Controller
     {
+
         LoginService _loginService = new LoginService();
         DataAgroService _dataAgroService = new DataAgroService();
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected readonly IRepositorio repositorio;
+
+        public LoginController(IRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
 
         public ActionResult login(string username, string pass)
         {
             try
             {
+                IEnumerable<TestEntity> lUsuarios;
+
+                lUsuarios = repositorio.Listar<TestEntity>();
+
                 if (username == "" || username == null)
                 {
                     return Json(new { info = String.Format(InfoMsg.InputNoValido, "Usuario") }, JsonRequestBehavior.AllowGet);
-                }
+                }   
 
                 if (pass == "" || pass == null)
                 {

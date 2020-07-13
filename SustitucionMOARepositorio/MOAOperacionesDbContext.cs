@@ -53,5 +53,7 @@ namespace SustitucionMOARepositorio
                 metodo.MakeGenericMethod(tipoEntidad).Invoke(modelBuilder, null);
             }
         }
+
+        public System.Data.Entity.DbSet<SustitucionMOAModel.Entities.TestEntity> TestEntities { get; set; }
     }
 }
