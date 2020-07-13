@@ -13,7 +13,7 @@ namespace SustitucionMOARepositorio
     {
         public MOAOperacionesDbContext() : base("CONTEXTO")
         {
-
+            //Database.SetInitializer<MOAOperacionesDbContext>(null);
         }
 
 
@@ -54,6 +54,5 @@ namespace SustitucionMOARepositorio
             }
         }
 
-        public System.Data.Entity.DbSet<SustitucionMOAModel.Entities.TestEntity> TestEntities { get; set; }
     }
 }
