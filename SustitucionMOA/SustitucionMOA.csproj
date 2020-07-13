@@ -343,7 +343,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CartaPorteController.cs" />
@@ -363,7 +362,6 @@
     <Compile Include="Controllers\PesificacionController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
-    <Compile Include="Controllers\TestEntitiesController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VendedorController.cs" />
     <Compile Include="Global.asax.cs">
