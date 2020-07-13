@@ -2,10 +2,12 @@
 using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.ServiceModel;
 using System.Web;
@@ -61,6 +63,8 @@ namespace SustitucionMOA.App_Start
             //kernel.Load(new WebNinjectModule());
 
             kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
         }
     }
 }

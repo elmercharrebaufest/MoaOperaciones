@@ -34,8 +34,10 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consulta\DirOrden.cs" />
+    <Compile Include="Consulta\Expresiones.cs" />
+    <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Entities\TestEntity.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
     <Compile Include="Models\DBMap\Pesada\Detalle\PesadaDetalle.cs" />
     <Compile Include="Models\DBMap\Pesada\Pesada.cs" />
@@ -190,6 +196,7 @@
     <Compile Include="Models\WSMapMOA\Vendedor\VendedoresWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\DetalleVincula.cs" />
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
+    <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
