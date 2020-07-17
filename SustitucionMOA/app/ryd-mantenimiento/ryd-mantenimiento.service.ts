@@ -19,14 +19,14 @@ export class RYDMantenimientoService extends BaseService{
         return this.http
             .get('/api/RYDMantenimiento/getFiltros' + method, { headers: this.headers })
             .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     getInputDropDown(): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getInputDropDown', { headers: this.headers })
             .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     getNroPuesto(itcId: string): Observable<any> {
@@ -35,7 +35,7 @@ export class RYDMantenimientoService extends BaseService{
         return this.http
             .get('/api/RYDMantenimiento/getFiltrosNroPuesto', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     public buscarBalanza(descripcion: string, tipoSelected: string, codigoCabezalSelected: string, codigoSAP: string ): Observable<any> {
@@ -120,7 +120,7 @@ export class RYDMantenimientoService extends BaseService{
         return this.http
             .get('/api/RYDMantenimiento/aplicar', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 }
 
@@ -142,14 +142,14 @@ export class RYDMantenimientoCommoditiesService extends RYDMantenimientoService 
         return this.http
             .get('/api/RYDMantenimiento/getFiltrosCommodities', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     getInputCommodities(): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getCommodities', { headers: this.headers })
             .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     public guardarCommodity(materialSAP: string, almacenOrigen: string, descripcion: string): Observable<any> {
@@ -199,14 +199,14 @@ export class RYDMantenimientoExportadorService extends RYDMantenimientoService {
         return this.http
             .get('/api/RYDMantenimiento/getFiltrosExportador', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     getInputExportador(): Observable<any> {
         return this.http
             .get('/api/RYDMantenimiento/getExportador', { headers: this.headers })
             .pipe(timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     public guardarExportador(almacenSAP: string, descripcion: string): Observable<any> {

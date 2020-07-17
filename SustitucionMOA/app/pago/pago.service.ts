@@ -34,7 +34,7 @@ export class PagoService extends BaseService {
         return this.http
             .get('/api/pago/' + method, { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
 
     }
 
@@ -46,7 +46,7 @@ export class PagoService extends BaseService {
         return this.http
             .get('/api/pago/getComprobantes', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     descargarDocumentoPDF(documento: string, ejercicio: string): Observable<any> {
@@ -56,7 +56,7 @@ export class PagoService extends BaseService {
         return this.http
             .get('/api/PDF/downloadDocumentPDF', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
@@ -71,7 +71,7 @@ export class PagoService extends BaseService {
         return this.http
             .get('/api/pago/' + method, { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))))
-            .map(this.extractData);
+            .pipe(map(this.extractData));
     }
 
     public exportExcelDetalle(numero_pago: string) {
