@@ -1,4 +1,6 @@
-﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+
+import {of as observableOf,  Observable } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CartaPorteFormularioService } from './../carta-porte2.service';
 import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -13,9 +15,10 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { Formulario } from './carta-porte.formulario';
 import { Seccion } from './../../common/models/Seccion';
 import { ModalService } from './../../common/services/ModalService';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
+
+
 declare var $: any;
 
 @Component({
@@ -127,7 +130,7 @@ export class CartaPorteFormularioComponent extends ListBaseComponent {
 
     observableSource(keyword: any) {
         let filteredList = this.localidadOptions.filter(el => el.label.toLowerCase().indexOf(keyword.toLowerCase()) !== -1);
-        return Observable.of(filteredList);
+        return observableOf(filteredList);
     }
 
     getDataCTG(){

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LiquidacionService } from './liquidacion.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
 import { ListBaseComponent } from './../common/base-components/list-base-component'
@@ -10,8 +10,8 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
 import { Seccion } from './../common/models/Seccion';
 import { ModalService } from './../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-liquidacion',

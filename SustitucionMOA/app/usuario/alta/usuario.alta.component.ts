@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { UsuarioService } from './../usuario.service';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { Usuario } from './../usuario';
@@ -11,8 +11,8 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { Seccion } from './../../common/models/seccion';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-usuario-alta-contrasenia',

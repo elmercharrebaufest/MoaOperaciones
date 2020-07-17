@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CuentaCorrienteService } from './cuenta-corriente.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -11,8 +11,8 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/Seccion';
 import { ModalService } from './../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-cuenta-corriente',

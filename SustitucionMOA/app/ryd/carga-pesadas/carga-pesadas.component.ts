@@ -1,5 +1,5 @@
-﻿import { Component, OnInit, ViewChild, OnDestroy  } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, OnInit, ViewChild, OnDestroy  } from '@angular/core';
+import { Subscription ,  Subject } from 'rxjs';
 import { RYDService } from './../ryd.service';
 import { RYDBaseComponent } from './../ryd.component';
 import { Pesada, CargaPesadas } from './../ryd';
@@ -13,10 +13,6 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { Formatter } from './../../common/formatter/Formatter';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-
-import { Subject } from "rxjs/Subject";
 import "rxjs/add/operator/takeUntil";
 
 declare var $: any;

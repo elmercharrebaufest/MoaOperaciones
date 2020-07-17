@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnDestroy, Renderer } from '@angular/core';
+import { Component, ViewChild, OnDestroy, Renderer } from '@angular/core';
 import { Router } from "@angular/router";
 import { LoginService } from './../login.service';
 import { LoginCommonComponent } from './../login.component';
@@ -9,8 +9,8 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-login-registro',

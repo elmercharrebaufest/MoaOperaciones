@@ -1,9 +1,12 @@
-﻿import { Injectable } from '@angular/core';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
+import {map, timeoutWith} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
+
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 
@@ -19,8 +22,8 @@ export class PagoService extends BaseService {
         let params: URLSearchParams = new URLSearchParams();
         params.set('numeroPago', numero_pago);
         return this.http
-            .get('/api/pago/getDetalle', { search: params, headers: this.headers })
-            .map(this.extractData);
+            .get('/api/pago/getDetalle', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
     }
 
     getPagosCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
@@ -30,7 +33,7 @@ export class PagoService extends BaseService {
         params.set('fechaFin', fecha_fin);
         return this.http
             .get('/api/pago/' + method, { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))))
             .map(this.extractData);
 
     }
@@ -42,7 +45,7 @@ export class PagoService extends BaseService {
         params.set('fiscalYear', fiscYear);
         return this.http
             .get('/api/pago/getComprobantes', { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
             .map(this.extractData);
     }
 
@@ -52,7 +55,7 @@ export class PagoService extends BaseService {
         params.set('ejercicio', ejercicio);
         return this.http
             .get('/api/PDF/downloadDocumentPDF', { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
             .map(this.extractData);
     }
 
@@ -67,7 +70,7 @@ export class PagoService extends BaseService {
         params.set('fechaFin', fecha_fin);
         return this.http
             .get('/api/pago/' + method, { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))))
             .map(this.extractData);
     }
 
@@ -75,8 +78,8 @@ export class PagoService extends BaseService {
         let params: URLSearchParams = new URLSearchParams();
         params.set('numeroPago', numero_pago);
         return this.http
-            .get('/api/pago/downloadDetalle', { search: params, headers: this.headers })
-            .map(this.extractData);
+            .get('/api/pago/downloadDetalle', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
     }
 
 }

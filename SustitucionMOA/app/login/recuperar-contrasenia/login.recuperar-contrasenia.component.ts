@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnDestroy, Renderer } from '@angular/core';
+import { Component, ViewChild, OnDestroy, Renderer } from '@angular/core';
 import { LoginService } from './../login.service';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
@@ -7,8 +7,8 @@ import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.comp
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-login-recuerar-contrasenia',

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FacturaService } from './factura.service';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
@@ -14,8 +14,8 @@ import { ModalService } from './../common/services/ModalService';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 declare var $: any;
 
 

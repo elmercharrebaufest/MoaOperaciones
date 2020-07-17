@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnInit, Renderer, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, Renderer, OnDestroy } from '@angular/core';
 import { Router } from "@angular/router";
 import { LoginService } from './login.service';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
@@ -10,8 +10,8 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 
 export class LoginCommonComponent extends BaseComponent {

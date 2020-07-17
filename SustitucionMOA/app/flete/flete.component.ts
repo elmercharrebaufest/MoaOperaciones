@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { FleteService } from './flete.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
@@ -12,8 +12,8 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
 import { Seccion } from './../common/models/Seccion';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-flete',

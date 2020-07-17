@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RYDService, RYDInformeService } from './../ryd.service';
 import { RYDBaseComponent } from './../ryd.component';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
@@ -11,8 +11,8 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { DataService } from './../../common/services/DataService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'app-ryd-informe',

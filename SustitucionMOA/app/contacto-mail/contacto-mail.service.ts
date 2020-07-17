@@ -1,9 +1,11 @@
-﻿import { Injectable } from '@angular/core';
+
+import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs';
+
+
+
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 
@@ -40,15 +42,15 @@ export class ContactoMailService extends BaseService {
         payload.append("contacto", JSON.stringify(data));
         payload.append("file", archivo);
         return this.http
-            .post('/api/contactoMail/sendContactoMail', payload, this.headersPost)
-            .map(this.extractData);
+            .post('/api/contactoMail/sendContactoMail', payload, this.headersPost).pipe(
+            map(this.extractData));
     }
 
 
     public getCategorias(): Observable<any> {
         return this.http
-            .get('/api/contactoMail/getCategorias', { headers: this.headers })
-            .map(this.extractData);
+            .get('/api/contactoMail/getCategorias', { headers: this.headers }).pipe(
+            map(this.extractData));
     }
 
 }

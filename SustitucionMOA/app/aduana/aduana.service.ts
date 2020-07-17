@@ -1,9 +1,11 @@
-﻿import { Injectable } from '@angular/core';
+
+import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs';
+
+
+
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 
@@ -28,8 +30,8 @@ export class AduanaService extends BaseService {
         params.set('fechaInicio', fecha_inicio);
         params.set('fechaFin', fecha_fin);
         return this.http
-            .get('/api/aduana/getPesada', { search: params, headers: this.headers })
-            .map(this.extractData);
+            .get('/api/aduana/getPesada', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
     }
     
     public getPesadaDetalle(centro: string, nroOrden: string): Observable<any> {
@@ -37,8 +39,8 @@ export class AduanaService extends BaseService {
         params.set('centro', centro);
         params.set('nroOrden', nroOrden);
         return this.http
-            .get('/api/aduana/getPesadaDetalle', { search: params, headers: this.headers })
-            .map(this.extractData);
+            .get('/api/aduana/getPesadaDetalle', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
     }
 
     public getImagenCamaraConsolidacion(url: string, nombre: string): Observable<any> {
@@ -46,8 +48,8 @@ export class AduanaService extends BaseService {
         params.set('url', url);
         params.set('nombre', nombre);
         return this.http
-            .get('/api/aduana/obtenerImagenCamaraConsolidacion', { search: params, headers: this.headers })
-            .map(this.extractData);
+            .get('/api/aduana/obtenerImagenCamaraConsolidacion', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
     }
 }
 
