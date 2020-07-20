@@ -13,7 +13,6 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { Formatter } from './../../common/formatter/Formatter';
 import { ModalService } from './../../common/services/ModalService';
-import "rxjs/add/operator/takeUntil";
 
 declare var $: any;
 

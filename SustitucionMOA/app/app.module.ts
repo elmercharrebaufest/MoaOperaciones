@@ -1,4 +1,4 @@
-﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
@@ -109,6 +109,7 @@ import { LoginGuard } from './common/security/login-guard';
 
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SelectModule } from 'ng2-select';
+import { ModalModule } from 'ngx-modal';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
@@ -123,6 +124,7 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         FormsModule,
         NgxPaginationModule,
         SelectModule,
+        ModalModule,
         Ng2AutoCompleteModule,
         ReCaptchaModule
     ],
@@ -242,6 +244,6 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         SecurityService
     ],
     bootstrap: [AppComponent], 
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

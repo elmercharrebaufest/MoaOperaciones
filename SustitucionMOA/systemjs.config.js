@@ -33,15 +33,23 @@
 
             // other libraries
             //'rx': 'node_modules/rx/dist/rx.js',
-            'rx': 'npm:rxjs',
-            'rxjs': 'npm:rxjs/rxjs.js',
-            'rxjs-compat': 'npm:rxjs-compat/umd.js',
-            'rxjs/internal-compatibility' : 'npm:rxjs/internal-compatibility/index.js',
+            // 'rx': 'npm:rxjs',
+            // 'rxjs': './node_modules/rxjs',
+
+            // 'rxjs-compat': 'npm:rxjs-compat',
+            // 'rxjs/internal-compatibility' : 'npm:rxjs/internal-compatibility/index.js',
+
+            'rxjs': "npm:rxjs",
+            'rxjs/operators' : "npm:rxjs/operators",
+            'rxjs-compat/add/observable' : 'npm:rxjs-compat/add/observable',
+            'rxjs-compat/add/operator' : 'npm:rxjs-compat/add/operator',
+            'rxjs-compat/operator' : 'npm:rxjs-compat/operator',
             //'rxjs/add/observable/*' : ['npm:rxjs/add/observable/*'],
             //'./Rx': 'node_modules/rx/dist/rx.js',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
             'ngx-pagination': 'npm:ngx-pagination/dist/ngx-pagination.umd.js',
             'ng2-select': 'npm:ng2-select',
+            'ngx-modal': 'node_modules/ngx-modal',
             'ng2-auto-complete': 'node_modules/ng2-auto-complete/dist',
             'angular2-recaptcha': 'node_modules/angular2-recaptcha' 
         },
@@ -51,10 +59,31 @@
                 main: './main.js',
                 defaultExtension: 'js'
             },
-            Rx: {
-                main: 'Rx.js',
-                defaultExtension: 'js'
-            },
+            // Rx: {
+            //     main: 'Rx.js',
+            //     defaultExtension: 'js'
+            // },
+            // rxjs: {
+            //     main: 'rx.js',
+            //     defaultExtension: 'js'
+            // },
+            // 'rxjs-compat':{
+            //     main: 'umd.js',
+            //     defaultExtension: 'js'
+            // },
+            rxjs: {
+                defaultExtension: 'js', main: "index.js"
+              },
+            "rxjs-compat": { defaultExtension: 'js', main: "index.js" },
+            "rxjs/operators": { "main": "index.js", "defaultExtension": "js" },
+            "rxjs/observable": {  "defaultExtension": "js" },
+            "rxjs-compat/add/observable": {  "defaultExtension": "js" },
+            "rxjs-compat/add/operator": {  "defaultExtension": "js" },
+            "rxjs-compat/operator": {  "defaultExtension": "js" },
+            "rxjs/internal-compatibility": { "main": "index.js", "defaultExtension": "js" },
+            "rxjs/testing": { "main": "index.js", "defaultExtension": "js" },
+            'rxjs/ajax': { main: 'index.js', defaultExtension: 'js' },
+            'rxjs/webSocket': { main: 'index.js', defaultExtension: 'js' },
             'ngx-pagination': {
                 defaultExtension: 'js'
             },
@@ -62,6 +91,10 @@
                 main: 'ng2-select.js',
                 defaultExtension: 'js'
                 
+            },
+            "ngx-modal": {
+                "main": "index.js",
+                "defaultExtension": "js"
             },
             'ng2-auto-complete': {
                 main: 'ng2-auto-complete.umd.js',
