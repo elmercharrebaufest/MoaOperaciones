@@ -142,9 +142,7 @@ const appRoutes: Routes = [
             { path: 'factura', component: FacturaComponent },
             { path: 'pesificacion', component: PesificacionComponent }
         ],
-    },
-    { path: '**', component: LoginComponent },
-    
+    }
 ];
 
 @NgModule({

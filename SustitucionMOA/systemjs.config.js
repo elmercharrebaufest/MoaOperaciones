@@ -34,6 +34,9 @@
             // other libraries
             //'rx': 'node_modules/rx/dist/rx.js',
             'rxjs': 'npm:rxjs',
+            'rxjs-compat': 'npm:rxjs-compat/umd.js',
+            'rxjs/internal-compatibility' : 'npm:rxjs/internal-compatibility/index.js',
+            'rxjs/add/observable/*' : ['npm:rxjs/add/observable/*'],
             //'./Rx': 'node_modules/rx/dist/rx.js',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
             'ngx-pagination': 'npm:ngx-pagination/dist/ngx-pagination.umd.js',
