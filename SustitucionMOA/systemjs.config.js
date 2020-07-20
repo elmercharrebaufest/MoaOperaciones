@@ -23,7 +23,7 @@
             '@angular/common': 'npm:@angular/common/bundles/common.umd.js',
             '@angular/compiler': 'npm:@angular/compiler/bundles/compiler.umd.js',
             '@angular/platform-browser': 'npm:@angular/platform-browser/bundles/platform-browser.umd.js',
-            '@angular/platform-browser-dynamic': 'npm:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+            '@angular/platform-browser-dynamic': 'npm:@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.min.js',
             '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
             '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
             '@angular/router/upgrade': 'npm:@angular/router/bundles/router-upgrade.umd.js',
@@ -33,15 +33,15 @@
 
             // other libraries
             //'rx': 'node_modules/rx/dist/rx.js',
-            'rxjs': 'npm:rxjs',
+            'rx': 'npm:rxjs',
+            'rxjs': 'npm:rxjs/rxjs.js',
             'rxjs-compat': 'npm:rxjs-compat/umd.js',
             'rxjs/internal-compatibility' : 'npm:rxjs/internal-compatibility/index.js',
-            'rxjs/add/observable/*' : ['npm:rxjs/add/observable/*'],
+            //'rxjs/add/observable/*' : ['npm:rxjs/add/observable/*'],
             //'./Rx': 'node_modules/rx/dist/rx.js',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
             'ngx-pagination': 'npm:ngx-pagination/dist/ngx-pagination.umd.js',
             'ng2-select': 'npm:ng2-select',
-            'ngx-modal': 'node_modules/ngx-modal',
             'ng2-auto-complete': 'node_modules/ng2-auto-complete/dist',
             'angular2-recaptcha': 'node_modules/angular2-recaptcha' 
         },
@@ -51,7 +51,7 @@
                 main: './main.js',
                 defaultExtension: 'js'
             },
-            rxjs: {
+            Rx: {
                 main: 'Rx.js',
                 defaultExtension: 'js'
             },
@@ -62,10 +62,6 @@
                 main: 'ng2-select.js',
                 defaultExtension: 'js'
                 
-            },
-            "ngx-modal": {
-                "main": "index.js",
-                "defaultExtension": "js"
             },
             'ng2-auto-complete': {
                 main: 'ng2-auto-complete.umd.js',

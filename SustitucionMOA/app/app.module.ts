@@ -109,7 +109,6 @@ import { LoginGuard } from './common/security/login-guard';
 
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SelectModule } from 'ng2-select';
-import { ModalModule } from 'ngx-modal';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
@@ -124,7 +123,6 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         FormsModule,
         NgxPaginationModule,
         SelectModule,
-        ModalModule,
         Ng2AutoCompleteModule,
         ReCaptchaModule
     ],
