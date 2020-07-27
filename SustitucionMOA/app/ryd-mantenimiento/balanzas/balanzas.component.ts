@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RYDMantenimientoService, RYDMantenimientoBalanzaService } from './../ryd-mantenimiento.service';
 import { RYDMantenimientoBaseComponent } from './../ryd-mantenimiento.component';
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -9,11 +9,11 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-ryd-mantenimiento-balanzas',
     templateUrl: `./app/ryd-mantenimiento/balanzas/balanzas.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: RYDMantenimientoService, useClass: RYDMantenimientoBalanzaService }]
 })

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ContactoMailService } from './contacto-mail.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -13,12 +13,12 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/Seccion';
 import { ModalService } from './../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 declare var $: any;
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-contacto-mail',
     templateUrl: `./app/contacto-mail/contacto-mail.component.html?v=${new Date().getTime()}`,
     providers: [ContactoMailService]
 

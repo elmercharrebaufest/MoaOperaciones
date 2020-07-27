@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RYDService, RYDListadoPesadasService } from './../ryd.service';
 import { RYDBaseComponent } from './../ryd.component';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
@@ -10,12 +10,12 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 declare var $: any;
 
 @Component({
-    selector: 'listado-pesadas',
+    selector: 'app-ryd-listado-pesadas',
     templateUrl: `./app/ryd/listado-pesadas/listado-pesadas.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: RYDService, useClass: RYDListadoPesadasService }]
 })

@@ -1,4 +1,4 @@
-﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
@@ -113,7 +113,7 @@ import { ModalModule } from 'ngx-modal';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module';;
 
 @NgModule({
     imports: [
@@ -241,6 +241,6 @@ import { AppRoutingModule } from './app-routing.module';
         SecurityService
     ],
     bootstrap: [AppComponent], 
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

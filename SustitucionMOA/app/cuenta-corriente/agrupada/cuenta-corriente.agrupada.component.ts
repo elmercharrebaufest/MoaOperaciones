@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SlicePipe } from '@angular/common';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { CuentaCorrienteAgrupadaService } from './../cuenta-corriente.service';
@@ -12,11 +12,11 @@ import { DropdownComponent, DropdownOption } from './../../common/view-child/dro
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-cuenta-corriente-agrupada',
     templateUrl: `./app/cuenta-corriente/agrupada/cuenta-corriente.agrupada.component.html?v=${new Date().getTime()}`,
     providers: [CuentaCorrienteAgrupadaService]
 

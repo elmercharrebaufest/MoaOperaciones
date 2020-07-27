@@ -3,7 +3,7 @@ import { ContratoBaseComponent } from './../contrato.component';
 import { ContratoService, ContratoAnulacionService } from './../contrato.service';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-contrato-anulacion',
     templateUrl: `./app/contrato/anulacion/contrato.anulacion.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: ContratoService, useClass: ContratoAnulacionService }]
 })

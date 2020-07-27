@@ -14,6 +14,10 @@ using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOARepositorio;
 using System.Collections.Generic;
 using SustitucionMOAModel.Entities;
+using Microsoft.Owin.Security;
+using SustitucionMOA.Utils;
+using System.Web;
+using System.Security.Claims;
 
 namespace SustitucionMOA.Controllers
 {
@@ -31,14 +35,21 @@ namespace SustitucionMOA.Controllers
             this.repositorio = repositorio;
         }
 
+        public void LoginAzure(string username, string pass) {
+            string redirectUrl = "/";
+            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+        }
+
         public ActionResult login(string username, string pass)
         {
             try
             {
-                IEnumerable<TestEntity> lUsuarios;
-
-                lUsuarios = repositorio.Listar<TestEntity>();
-
+                if (Request.IsAuthenticated)
+                {
+                    username = "poncedef";
+                    pass = "prueba";
+                }
+            
                 if (username == "" || username == null)
                 {
                     return Json(new { info = String.Format(InfoMsg.InputNoValido, "Usuario") }, JsonRequestBehavior.AllowGet);
@@ -121,6 +132,10 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+       
+
+
 
         public ActionResult logout()
         {

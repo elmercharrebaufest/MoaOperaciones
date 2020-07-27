@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CartaPorteService } from './../carta-porte2.service';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
@@ -11,11 +11,11 @@ import { Seccion } from './../../common/models/seccion';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-carta-porte-detalle',
     templateUrl: `./app/carta-porte/detalle/carta-porte.detalle.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteService]
 })

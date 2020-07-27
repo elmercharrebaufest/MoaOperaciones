@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { AduanaService } from './../../aduana.service';
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -10,11 +10,11 @@ import { FloatMsgService } from './../../../common/services/FloatMsgService';
 import { SessionDataService } from './../../../common/services/SessionDataService';
 import { SecurityService } from './../../../common/services/SecurityService';
 import { ModalService } from './../../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-aduana-pesada-detalle',
     templateUrl: `./app/aduana/pesada/detalle/pesada.detalle.component.html?v=${new Date().getTime()}`,
     providers: [AduanaService]
 })

@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { DatoFiscalService } from './../dato-fiscal.service';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
@@ -9,8 +9,8 @@ import { Seccion } from './../../common/models/seccion';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'list',

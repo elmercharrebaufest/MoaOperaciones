@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DatoFiscalService } from './dato-fiscal.service';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
@@ -9,13 +9,12 @@ import { SecurityService } from './../common/services/SecurityService';
 import { Seccion } from './../common/models/Seccion';
 import { BaseComponent } from './../common/base-components/base-component';
 import { SessionDataService } from './../common/services/SessionDataService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 import { ModalService } from './../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
-    //template: '<h1>{{titulo}}</h1>'
+    selector: 'app-dato-fiscal',
     templateUrl: `./app/dato-fiscal/dato-fiscal.component.html?v=${new Date().getTime()}`,
     providers: [DatoFiscalService]
 })

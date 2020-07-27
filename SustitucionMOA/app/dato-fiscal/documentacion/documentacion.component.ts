@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DatoFiscalService } from './../dato-fiscal.service';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
@@ -7,8 +7,8 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { Seccion } from './../../common/models/seccion';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
     selector: 'documentacion',

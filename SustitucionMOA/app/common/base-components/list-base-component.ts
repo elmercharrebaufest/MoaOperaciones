@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseService } from './../services/BaseService';
 import { BaseComponent } from './base-component';
 import { FiltroFechaComponent } from './../view-child/filtro-fecha/filtro-fecha.component';
@@ -12,11 +12,11 @@ import { SecurityService } from './../services/SecurityService';
 import { ServiceLocator } from './../services/ServiceLocator';
 import { FloatMsgService } from './../services/FloatMsgService';
 import { ModalService } from './../services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-list-base',
     template: ``,
     providers: [BaseService]
 })

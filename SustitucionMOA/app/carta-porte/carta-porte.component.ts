@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CartaPorteService } from './carta-porte2.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
@@ -12,11 +12,11 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-carta-porte',
     templateUrl: `./app/carta-porte/carta-porte.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteService]
 })

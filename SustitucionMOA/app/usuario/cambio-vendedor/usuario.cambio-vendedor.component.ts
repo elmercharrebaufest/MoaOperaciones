@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { UsuarioService } from './../usuario.service';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
@@ -8,11 +8,11 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'list',
+    selector: 'app-usuario-cambio-vendedor',
     templateUrl: `./app/usuario/cambio-vendedor/usuario.cambio-vendedor.component.html?v=${new Date().getTime()}`,
     providers: [UsuarioService]
 })
