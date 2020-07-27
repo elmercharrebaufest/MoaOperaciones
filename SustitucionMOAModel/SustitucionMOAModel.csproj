@@ -49,7 +49,13 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Entities\Permiso.cs" />
+    <Compile Include="Entities\Proveedor.cs" />
+    <Compile Include="Entities\Rol.cs" />
     <Compile Include="Entities\TestEntity.cs" />
+    <Compile Include="Entities\TipoProveedor.cs" />
+    <Compile Include="Entities\TipoUsuario.cs" />
+    <Compile Include="Entities\Usuario.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
     <Compile Include="Models\DBMap\Pesada\Detalle\PesadaDetalle.cs" />
     <Compile Include="Models\DBMap\Pesada\Pesada.cs" />
