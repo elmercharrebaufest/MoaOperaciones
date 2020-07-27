@@ -23,7 +23,7 @@ export class LoginService {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
         return this.http
-            .get('/api/login/LoginAzure', { search: params, headers: headers }).pipe(
+            .get('/api/login/login', { search: params, headers: headers }).pipe(
             map(this.extractData));
     }
 

@@ -44,6 +44,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                if (Request.IsAuthenticated)
+                {
+                    username = "poncedef";
+                    pass = "prueba";
+                }
             
                 if (username == "" || username == null)
                 {

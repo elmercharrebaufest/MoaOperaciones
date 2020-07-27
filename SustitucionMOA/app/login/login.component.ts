@@ -76,6 +76,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
+        this.login();
     }
 
     titulo = "";

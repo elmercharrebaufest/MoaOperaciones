@@ -24,42 +24,28 @@ namespace SustitucionMOA.Controllers
         LoginService _loginService = new LoginService();
         // GET: Home
 
-        public void Index()
+        public ActionResult Index()
         {
 
-            string redirectUrl = "/api/Home/getHomeInfo";
-            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
-            //if (false)
-            //{
-            //    if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
-            //    {
-            //        return Redirect("/");
-            //    }
-            //    return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
-            //}
-            //else
-            //{
-            //    return Redirect("https://webOpDev.b2clogin.com/webOpDev.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_signup&client_id=af885dee-a5a6-48b3-ac9a-105f9aec5ca6&nonce=defaultNonce&redirect_uri=http://localhost:58280/api/login/login&scope=openid&response_type=id_token&prompt=login");
-            //}
+            if (Request.IsAuthenticated)
+            {
+                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
+                {
+                    return Redirect("/");
+                }
+                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+        }
+            else
+            {
+                string redirectUrl = "/";
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl});
+                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+
+            }
         }
 
         public ActionResult getHomeInfo(string fechaInicio, string fechaFin)
         {
-            string username = "", pass = "";
-            if (Request.IsAuthenticated)
-            {
-                username = "poncedef";
-                pass = "prueba";
-            }
-
-            LoginUser(username, pass);
-
-
-            foreach (Claim claim in ClaimsPrincipal.Current.Claims)
-            {
-                continue;
-            }
-
             try
             {
                 HomeViewModel result = _homeService.getHomeInfo(SessionPersister.Proveedor, fechaInicio, fechaFin, SessionPersister.Sociedad);
