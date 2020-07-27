@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
-    class TipoUsuario
+    public class TipoUsuario
     {
         [Key]
         public int Id { get; set; }

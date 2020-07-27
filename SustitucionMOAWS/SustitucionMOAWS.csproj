@@ -114,6 +114,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\DataAgroServices\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\DetalleCteWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -301,6 +306,7 @@
     <Compile Include="WSConsumers\ContratosConsumerMOA.cs" />
     <Compile Include="WSConsumers\CuentaCorrientesConsumerMOA.cs" />
     <Compile Include="WSConsumers\DataAgroAuthConsumerMOA.cs" />
+    <Compile Include="WSConsumers\DataAgroConsumer.cs" />
     <Compile Include="WSConsumers\DetalleCteConsumerMOA.cs" />
     <Compile Include="WSConsumers\FijacionDetalleConsumerMOA.cs" />
     <Compile Include="WSConsumers\FijacionesConsumerMOA.cs" />
@@ -495,6 +501,22 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\DataAgroAuthWebServiceMOA\SustitucionMOAWS.DataAgroAuthWebServiceMOA.TokenDto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices.wsdl" />
+    <None Include="Service References\DataAgroServices\DataAgroServices.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroServices\DataAgroServices2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\DataAgroServices\SustitucionMOAWS.DataAgroServices.ResultadoSap.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\DataAgroServices\SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\DetalleCteWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CTE.wsdl" />
@@ -1883,6 +1905,7 @@
     <WCFMetadataStorage Include="Service References\CrearUsuarioWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\CuentaCorrienteWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\DataAgroAuthWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\DataAgroServices\" />
     <WCFMetadataStorage Include="Service References\DetalleCteWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\FijacionDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\FijacionesWebServiceMOA\" />
@@ -2513,6 +2536,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ScatoWebService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataAgroServices\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataAgroServices\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\DataAgroServices\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

@@ -29,17 +29,18 @@ namespace SustitucionMOA.Controllers
 
             if (Request.IsAuthenticated)
             {
+
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
                     return Redirect("/");
                 }
                 return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
-        }
+            }
             else
             {
-                string redirectUrl = "/";
+                string redirectUrl = "/api/AzureB2C/Login";
                 HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl});
-                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+                return null;
 
             }
         }

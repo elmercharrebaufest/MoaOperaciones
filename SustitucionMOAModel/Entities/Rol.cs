@@ -9,12 +9,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
-    class Rol
+    public class Rol
     {
         [Key]
         public int Id { get; set; }
         public string Nombre { get; set; }
-
-        public List<Permiso> Permisos { get; set; }
+        public ICollection<Permiso> Permisos { get; set; }
     }
 }

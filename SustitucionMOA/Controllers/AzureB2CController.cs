@@ -2,9 +2,10 @@
 using System.Web.Mvc;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Models;
+using Model = SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using Entidades = SustitucionMOAModel.Entities;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
@@ -13,29 +14,27 @@ using System.Linq;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOARepositorio;
 using System.Collections.Generic;
-using Entidades = SustitucionMOAModel.Entities;
 using Microsoft.Owin.Security;
 using SustitucionMOA.Utils;
 using System.Web;
 using System.Security.Claims;
+using SustitucionMOAModel.Models;
 
 namespace SustitucionMOA.Controllers
 {
-    public class LoginController : Controller
+    public class AzureB2CController : Controller
     {
-
         LoginService _loginService = new LoginService();
         DataAgroService _dataAgroService = new DataAgroService();
 
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected readonly IRepositorio repositorio;
 
-        public LoginController(IRepositorio repositorio)
+        public AzureB2CController(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
         }
 
-        public ActionResult login(string username, string pass)
+        public ActionResult Login(string username, string pass)
         {
             try
             {
@@ -45,10 +44,26 @@ namespace SustitucionMOA.Controllers
                     pass = "prueba";
                 }
 
+                foreach (Claim claim in ClaimsPrincipal.Current.Claims)
+                {
+                    continue;
+                }
+
+                Entidades.Usuario usuarioLogeado = new Entidades.Usuario();
+
+                string CUIT = GetClaimValue("extension_CUIT");
+
+                //ValidarCUIT(CUIT);
+
+                usuarioLogeado.Mail = GetClaimValue("emails");
+
+                if(!ExisteUsuario(usuarioLogeado))
+                    RegistrarUsuario(usuarioLogeado);
+                
                 if (username == "" || username == null)
                 {
                     return Json(new { info = String.Format(InfoMsg.InputNoValido, "Usuario") }, JsonRequestBehavior.AllowGet);
-                }   
+                }
 
                 if (pass == "" || pass == null)
                 {
@@ -89,12 +104,12 @@ namespace SustitucionMOA.Controllers
                 SessionPersister.Proveedor = result.proveedor;
                 SessionPersister.GranosFlag = result.granosFlag;
                 SessionPersister.Sociedad = "MOA";
-                
+
                 NoticiasDetallesWSMOAResponse noticias;
-              
+
                 try
                 {
-                    
+
                     noticias = _loginService.getNoticias(result.proveedor);
                     noticias.cantidad = 0;
                     if (noticias != null && noticias.noticias != null)
@@ -102,7 +117,8 @@ namespace SustitucionMOA.Controllers
                         SessionPersister.Noticias = noticias.noticias;
                         noticias.cantidad += noticias.noticias.Count;
                     }
-                    if (noticias != null && noticias.notificaciones != null) {
+                    if (noticias != null && noticias.notificaciones != null)
+                    {
                         SessionPersister.Notificaciones = noticias.notificaciones;
                         noticias.cantidad += noticias.notificaciones.Count;
                     }
@@ -112,9 +128,9 @@ namespace SustitucionMOA.Controllers
                     noticias = new NoticiasDetallesWSMOAResponse() { };
                 }
 
-                LogFile(username,pass);
 
-                return Json(new { success = SuccessMsg.LoginOk, username = username, nombre = result.nombre, proveedor = result.proveedor, granosFlag = result.granosFlag, tipoUsuario = result.tipoUsuario, permisos = result.permisos, noticias = noticias }, JsonRequestBehavior.AllowGet);
+                return Redirect("/");
+
             }
             catch (WSCustomException e)
             {
@@ -128,27 +144,26 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult logout()
+        private string GetClaimValue(string Type)
         {
-            SessionPersister.clear();
-            return Json(new { success = "Ok" }, JsonRequestBehavior.AllowGet);
+            return ClaimsPrincipal.Current.Claims.Where(x => x.Type.Equals(Type)).Select(x => x.Value).FirstOrDefault(); 
         }
 
-        public void LogFile(string username, string pass)
+
+        public bool RegistrarUsuario(Entidades.Usuario usuario)
         {
-            DateTime dateTime = DateTime.Now;
-            string fecha = dateTime.ToString("yyyy/MM/dd");
-            string hora = dateTime.ToString("hh:mm:ss");
-            fecha = fecha.Replace("/", "");
-            hora = hora.Replace(":", "");
+            repositorio.Agregar(usuario);
+            return repositorio.GuardarCambios() == 1;
+        }
 
-            string path = Server.MapPath("/") + "Logs\\";
-            string fileName = "Log.txt";
-            string text = fecha + ";" + hora + ";" + username + ";" + pass;
+        public bool ExisteUsuario(Entidades.Usuario usuario)
+        {
+            return (repositorio.Existe<Entidades.Usuario>(u => u.Mail == usuario.Mail));
+        }
 
-            System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
-            file.WriteLine(text);
-            file.Close();
+        public bool ValidarCUIT(string CUIT)
+        {
+           return _dataAgroService.ValidarCUIT(CUIT);
         }
     }
 }

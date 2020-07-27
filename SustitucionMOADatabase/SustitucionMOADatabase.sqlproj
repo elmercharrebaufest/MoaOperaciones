@@ -61,5 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\TestEntity.sql" />
+    <Build Include="DBO\Tables\Permiso.sql" />
+    <Build Include="DBO\Tables\TipoProveedor.sql" />
+    <Build Include="DBO\Tables\TipoUsuario.sql" />
+    <Build Include="DBO\Tables\Rol.sql" />
   </ItemGroup>
 </Project>

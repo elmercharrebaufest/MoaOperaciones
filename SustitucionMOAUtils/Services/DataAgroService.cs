@@ -4,6 +4,7 @@ using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using System;
 using SustitucionMOAWS.WSConsumers;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+using SustitucionMOAWS.DataAgroServices;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -30,6 +31,28 @@ namespace SustitucionMOAUtils.Services
                 DataAgroAuthWSMOAResponse responseDataAgroAuth = (DataAgroAuthWSMOAResponse)new DataAgroAuthConsumerMOA().request(Int64.Parse(responseVendedorDetalle.cabeceras[0].cuit), nombre);
 
                 return responseDataAgroAuth;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public bool ValidarCUIT(string CUIT)
+        {
+            try
+            {
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+
+                return respuesta.HayError;
             }
             catch (InfoCustomException e)
             {
