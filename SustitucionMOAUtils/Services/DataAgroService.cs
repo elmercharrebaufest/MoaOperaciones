@@ -5,6 +5,7 @@ using System;
 using SustitucionMOAWS.WSConsumers;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAWS.DataAgroServices;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -46,11 +47,18 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public bool ValidarCUIT(string CUIT)
+        public bool ValidarCUITProveedor(Proveedor proveedor)
         {
             try
             {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT);
+
+                if (!respuesta.HayError)
+                {
+                    proveedor.ComercialAsignado = string.Concat(respuesta.Nombres, " ", respuesta.Apellido);
+                    proveedor.Habilitado = true;
+                }
 
                 return respuesta.HayError;
             }

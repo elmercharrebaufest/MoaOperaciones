@@ -51,14 +51,19 @@ namespace SustitucionMOA.Controllers
 
                 Entidades.Usuario usuarioLogeado = new Entidades.Usuario();
 
+                Entidades.Proveedor proveedor = new Entidades.Proveedor();
+
                 string CUIT = GetClaimValue("extension_CUIT");
 
-                //ValidarCUIT(CUIT);
+                proveedor.CUIT = CUIT;
+
+                ValidarCUITProveedor(proveedor);
 
                 usuarioLogeado.Mail = GetClaimValue("emails");
+                usuarioLogeado.Proveedor = proveedor;
 
-                if(!ExisteUsuario(usuarioLogeado))
-                    RegistrarUsuario(usuarioLogeado);
+                RegistrarProveedor(proveedor);
+                RegistrarUsuario(usuarioLogeado);
                 
                 if (username == "" || username == null)
                 {
@@ -152,8 +157,14 @@ namespace SustitucionMOA.Controllers
 
         public bool RegistrarUsuario(Entidades.Usuario usuario)
         {
-            repositorio.Agregar(usuario);
-            return repositorio.GuardarCambios() == 1;
+
+            if (!ExisteUsuario(usuario))
+            {
+
+                repositorio.Agregar(usuario);
+                return repositorio.GuardarCambios() == 1;
+            }
+            return true;
         }
 
         public bool ExisteUsuario(Entidades.Usuario usuario)
@@ -161,9 +172,26 @@ namespace SustitucionMOA.Controllers
             return (repositorio.Existe<Entidades.Usuario>(u => u.Mail == usuario.Mail));
         }
 
-        public bool ValidarCUIT(string CUIT)
+        public bool ValidarCUITProveedor(Entidades.Proveedor proveedor)
         {
-           return _dataAgroService.ValidarCUIT(CUIT);
+           return _dataAgroService.ValidarCUITProveedor(proveedor);
         }
+
+        public bool ExisteProveedor(Entidades.Proveedor proveedor)
+        {
+            return (repositorio.Existe<Entidades.Proveedor>(u => u.CUIT == u.CUIT));
+        }
+
+        public bool RegistrarProveedor(Entidades.Proveedor proveedor)
+        {
+            if (!ExisteProveedor(proveedor))
+            {
+                repositorio.Agregar(proveedor);
+                return repositorio.GuardarCambios() == 1;
+            }
+
+            return true;
+        }
+
     }
 }

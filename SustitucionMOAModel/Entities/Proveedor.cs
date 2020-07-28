@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Entities
         public string Nombre { get; set; }
         public string CUIT { get; set; }
         public string ComercialAsignado { get; set; }
-        public bool Estado { get; set; }
+        public bool Habilitado { get; set; }
         public TipoProveedor TipoProveedor { get; set; }
 }
 }
