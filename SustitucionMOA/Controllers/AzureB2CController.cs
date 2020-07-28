@@ -50,10 +50,10 @@ namespace SustitucionMOA.Controllers
                 }
 
                 Entidades.Usuario usuarioLogeado = new Entidades.Usuario();
-
                 Entidades.Proveedor proveedor = new Entidades.Proveedor();
 
                 string CUIT = GetClaimValue("extension_CUIT");
+                string GranosFlag = GetClaimValue("extension_Granos");
 
                 proveedor.CUIT = CUIT;
 
@@ -62,8 +62,8 @@ namespace SustitucionMOA.Controllers
                 usuarioLogeado.Mail = GetClaimValue("emails");
                 usuarioLogeado.Proveedor = proveedor;
 
-                RegistrarProveedor(proveedor);
-                RegistrarUsuario(usuarioLogeado);
+                /*RegistrarProveedor(proveedor);
+                RegistrarUsuario(usuarioLogeado);*/
                 
                 if (username == "" || username == null)
                 {
