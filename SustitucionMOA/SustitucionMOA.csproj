@@ -146,6 +146,12 @@
     <Content Include="app\aduana\pesada\detalle\pesada.detalle.component.html" />
     <Content Include="app\aduana\pesada\historica\pesada.historica.component.html" />
     <Content Include="app\aduana\pesada\online\pesada.online.component.html" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.js" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.js" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
     <Content Include="app\app.component.html" />
     <Content Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
     <Content Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
@@ -277,6 +283,12 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.js.map" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.scss" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.js.map" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -370,6 +382,11 @@
     <TypeScriptCompile Include="app\aduana\pesada\detalle\pesada.detalle.component.ts" />
     <TypeScriptCompile Include="app\aduana\pesada\historica\pesada.historica.component.ts" />
     <TypeScriptCompile Include="app\aduana\pesada\online\pesada.online.component.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.service.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.ts" />
     <TypeScriptCompile Include="app\app-routing.module.ts" />
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />

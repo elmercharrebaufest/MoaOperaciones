@@ -16,7 +16,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
- 
+
 
 
     constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
@@ -66,9 +66,9 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
             return "";
 
         return this.data.cartasPorte
-                    .filter(function (e: { state: boolean; }) { return e.state })
-                    .map(function (e: { cartaPorte: string; }) { return e.cartaPorte })
-                    .join(",");
+            .filter(function (e: { state: boolean; }) { return e.state })
+            .map(function (e: { cartaPorte: string; }) { return e.cartaPorte })
+            .join(",");
     }
 
     descargarFotos(cartaPorteIDStr: string) {
@@ -139,7 +139,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         return false;
     }
 
-    checkAll(ev:any) {
+    checkAll(ev: any) {
         this.data.cartasPorte.forEach((x: { state: any; }) => x.state = ev.target.checked)
     }
 

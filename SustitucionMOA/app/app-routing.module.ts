@@ -64,6 +64,8 @@ import { VendedoresListComponent } from './dato-fiscal/vendedor/dato-fiscal.vend
 import { VendedorStatusComponent } from './vendedor/vendedor_status.component';
 import { FacturaComponent } from './factura/factura.component';
 import { PesificacionComponent } from './pesificacion/pesificacion.component';
+import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component';
+import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component';
 
 
 const appRoutes: Routes = [
@@ -140,11 +142,13 @@ const appRoutes: Routes = [
             { path: 'ryd-mantenimiento', component: RYDMantenimientoBaseComponent },
             { path: 'vendedor/status', component: VendedorStatusComponent },
             { path: 'factura', component: FacturaComponent },
-            { path: 'pesificacion', component: PesificacionComponent }
+            { path: 'pesificacion', component: PesificacionComponent },
+            { path: 'alta-empresa-granos', component: EmpresaGranosComponent },
+            { path: 'alta-empresa-no-granos', component: EmpresaNoGranosComponent }
         ],
     },
     { path: '**', component: LoginComponent },
-    
+
 ];
 
 @NgModule({

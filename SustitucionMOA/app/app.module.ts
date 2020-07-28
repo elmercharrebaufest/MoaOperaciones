@@ -115,7 +115,11 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
 
 import { AppRoutingModule } from './app-routing.module';;
 import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component'
-
+    ;
+import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component'
+    ;
+import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component'
+import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-granos.service';
 @NgModule({
     imports: [
         BrowserModule,
@@ -204,8 +208,12 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         OrderedColumn,
         ShortenStringPipe,
         PesificacionComponent
-,
+        ,
         CartaPorteModalComponent
+        ,
+        EmpresaGranosComponent
+        ,
+        EmpresaNoGranosComponent,
     ],
     providers: [
         DatePipe,
@@ -241,9 +249,10 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         FacturaService,
         ServiceLocator,
         ModalService,
-        SecurityService
+        SecurityService,
+        EmpresaGranosService
     ],
-    bootstrap: [AppComponent], 
+    bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

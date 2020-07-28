@@ -1,0 +1,65 @@
+<div class="content-wraper">
+
+    <div class="row titleSection">Alta Proveedores</div>
+
+    <div class="row myRow firstSection roundedInfo">
+        <mdb-stepper #stepper>
+            <mdb-step name="Step 1" label="Informe comercial">
+                <h4>Informe comercial</h4>
+                <div class="form-group">
+                    <p>Por favor descargue el informe comercial, complételo con sus datos y firma.</p>
+                    <button type="button" class="btn btn-info col-xs-12 col-sm-11" (click)="validarCheckboxesFotos()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
+                        Descargar
+                    </button>
+                    <p>Por favor adjunte el informe comercial completo y firmado</p>
+                    <label for="informeComercialFirmado">Adjuntar</label>
+                    <input type="file" class="form-control-file" id="informeComercialFirmado">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 2" label="CBU">
+                <p> Constancia de CBU otorgado por el Banco certificado.</p>
+                <div class="form-group">
+                    <label for="constanciaCBU">Cargar constancia de CBU certificada por Banco</label>
+                    <input type="file" class="form-control-file" id="constanciaCBU">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 3" label="Documentación Impositiva">
+                <p>Documentación Impositiva</p>
+                <div class="form-group">
+                    <label for="constanciaCUIT">Constancia de CUIT</label>
+                    <input type="file" class="form-control-file" id="constanciaCUIT">
+                </div>
+                <div class="form-group">
+                    <label for="inscripcionIIBB">Inscripción en IIBB -local o Convenio (CM05
+                        vigente)</label>
+                    <input type="file" class="form-control-file" id="inscripcionIIBB">
+                </div>
+                <div class="form-group">
+                    <label for="gananciasIVAIIBB">Certificados de exclusión o exención en Ganancias, IVA e
+                        IIBB.</label>
+                    <input type="file" class="form-control-file" id="gananciasIVAIIBB">
+                </div>
+                <div class="form-group">
+                    <label for="SIPER">Solamente en caso de SISA 2 / SISA 3, presentar SIPER.</label>
+                    <input type="file" class="form-control-file" id="SIPER">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 4" label="Documentación">
+                <p>Documentación al día en Bolsa. Sólo Personas Físicas podrán operar sin oblea si remiten copia
+                    certificada y legalizada
+                    de DNI.</p>
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Documentación</label>
+                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 7" label="Enviar">
+                <p class="pl-2">Enviar!</p>
+                <div class="step-actions">
+                    <button mdbBtn size="sm" color="primary" (click)="onSubmit()">SUBMIT</button>
+                </div>
+            </mdb-step>
+        </mdb-stepper>
+    </div>
+</div>
