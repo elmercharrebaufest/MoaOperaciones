@@ -19,6 +19,7 @@ export class EmpresaGranosComponent extends BaseComponent {
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
+
   constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
     super(navService, securytiService, floatMsgService, modalService);
   }
@@ -27,7 +28,7 @@ export class EmpresaGranosComponent extends BaseComponent {
     this.setTabs();
     this.navService.setSeccionList([]);
     this.firstFormGroup = new FormGroup({
-     // email: new FormControl('', [Validators.required, Validators.email])
+      // email: new FormControl('', [Validators.required, Validators.email])
     });
     this.secondFormGroup = new FormGroup({
       password: new FormControl('', Validators.required)
@@ -42,6 +43,5 @@ export class EmpresaGranosComponent extends BaseComponent {
   }
 
   onSubmit() {
-    // do something here
   }
 }
