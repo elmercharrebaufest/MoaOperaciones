@@ -5,59 +5,71 @@
     <div class="row myRow firstSection roundedInfo">
         <mdb-stepper #stepper>
             <mdb-step name="Step 1" label="Informe comercial">
-                <h4>Informe comercial</h4>
-                <div class="form-group">
-                    <p>Por favor descargue el informe comercial, complételo con sus datos y firma.</p>
-                    <button type="button" class="btn btn-info col-xs-12 col-sm-11" (click)="validarCheckboxesFotos()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
-                        Descargar
-                    </button>
-                    <p>Por favor adjunte el informe comercial completo y firmado</p>
-                    <label for="informeComercialFirmado">Adjuntar</label>
-                    <input type="file" class="form-control-file" id="informeComercialFirmado">
+                <h3>Informe comercial</h3>
+                <div class="form-group" style="display: flex; flex-direction: column;">
+                    <div style="display: flex;">
+                        <p>Por favor descargue el informe comercial, complételo con sus datos y firma.</p>
+                        <button type="button" class="btn btn-info" (click)="validarCheckboxesFotos()"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;"><a
+                                href="../../../Content/files/InformeComercial.doc" download="InformeComercial">
+                                Descargar Archivo
+                            </a>
+                        </button>
+                    </div>
+                    <div>
+                        <label style="font-weight: 100 !important;" for="informeComercialFirmado">Por favor adjunte el
+                            informe comercial <strong>completo y firmado</strong></label>
+                        <input type="file" class="form-control-file" id="informeComercialFirmado">
+                    </div>
+
                 </div>
             </mdb-step>
             <mdb-step name="Step 2" label="CBU">
-                <p> Constancia de CBU otorgado por el Banco certificado.</p>
+                <h3> Constancia de CBU</h3>
                 <div class="form-group">
-                    <label for="constanciaCBU">Cargar constancia de CBU certificada por Banco</label>
+                    <label style="font-weight: 100 !important;" for="constanciaCBU">Cargar constancia de CBU certificada
+                        por Banco</label>
                     <input type="file" class="form-control-file" id="constanciaCBU">
                 </div>
             </mdb-step>
             <mdb-step name="Step 3" label="Documentación Impositiva">
-                <p>Documentación Impositiva</p>
+                <h3>Documentación Impositiva</h3>
                 <div class="form-group">
-                    <label for="constanciaCUIT">Constancia de CUIT</label>
+                    <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
                     <input type="file" class="form-control-file" id="constanciaCUIT">
                 </div>
                 <div class="form-group">
-                    <label for="inscripcionIIBB">Inscripción en IIBB -local o Convenio (CM05
+                    <label style="font-weight: 100 !important;" for="inscripcionIIBB">Inscripción en IIBB -local o
+                        Convenio (CM05
                         vigente)</label>
                     <input type="file" class="form-control-file" id="inscripcionIIBB">
                 </div>
                 <div class="form-group">
-                    <label for="gananciasIVAIIBB">Certificados de exclusión o exención en Ganancias, IVA e
+                    <label style="font-weight: 100 !important;" for="gananciasIVAIIBB">Certificados de exclusión o
+                        exención en Ganancias, IVA e
                         IIBB.</label>
                     <input type="file" class="form-control-file" id="gananciasIVAIIBB">
                 </div>
                 <div class="form-group">
-                    <label for="SIPER">Solamente en caso de SISA 2 / SISA 3, presentar SIPER.</label>
+                    <label style="font-weight: 100 !important;" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
+                        presentar SIPER.</label>
                     <input type="file" class="form-control-file" id="SIPER">
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
-                <p>Documentación al día en Bolsa. Sólo Personas Físicas podrán operar sin oblea si remiten copia
-                    certificada y legalizada
-                    de DNI.</p>
+                <h3>Documentación al día en Bolsa</h3>
                 <div class="form-group">
-                    <label for="exampleFormControlFile1">Documentación</label>
+                    <label style="font-weight: 100 !important;" for="exampleFormControlFile1">Sólo Personas Físicas
+                        podrán operar sin oblea si remiten copia
+                        certificada y legalizada
+                        de DNI.</label>
                     <input type="file" class="form-control-file" id="exampleFormControlFile1">
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
-                <p class="pl-2">Enviar!</p>
-                <div class="step-actions">
-                    <button mdbBtn size="sm" color="primary" (click)="onSubmit()">SUBMIT</button>
+                <div class="step-actions" style="display: flex; justify-content: center; margin-top: 30px;">
+                    <button mdbBtn size="sm" color="primary" (click)="onSubmit()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">Enviar</button>
                 </div>
             </mdb-step>
         </mdb-stepper>

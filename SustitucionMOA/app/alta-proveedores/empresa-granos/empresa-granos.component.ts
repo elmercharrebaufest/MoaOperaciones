@@ -27,7 +27,7 @@ export class EmpresaGranosComponent extends BaseComponent {
     this.setTabs();
     this.navService.setSeccionList([]);
     this.firstFormGroup = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email])
+     // email: new FormControl('', [Validators.required, Validators.email])
     });
     this.secondFormGroup = new FormGroup({
       password: new FormControl('', Validators.required)
