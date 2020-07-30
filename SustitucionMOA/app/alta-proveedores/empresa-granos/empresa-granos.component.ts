@@ -43,5 +43,10 @@ export class EmpresaGranosComponent extends BaseComponent {
   }
 
   onSubmit() {
+    var modal = document.getElementById("modal");
+    var container = document.getElementById("container");
+    modal.className = " show";
+    container.className += "hidden"
   }
 }
+

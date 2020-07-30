@@ -1,0 +1,56 @@
+.show {
+  display: inline;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal,
+.container {
+  margin-top: 128px;
+  padding-left: 35px;
+  padding-right: 35px;
+  padding-top: 25px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.btn-custom {
+  margin: 0 10px;
+  height: 30px;
+  align-items: center;
+  display: flex;
+  background: #172f8f;
+  border: none;
+  justify-content: center;
+  color: white;
+  border-radius: 5px;
+  width: 250px;
+}
+
+.informe-comercial {
+  display: flex;
+  flex-direction: column;
+}
+
+.informe-comercial div {
+  display: flex;
+}
+
+.enviar {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.download {
+  color: #172f8f;
+  text-decoration: none;
+}
+
+.label {
+  font-weight: 100 !important;
+}
