@@ -37,14 +37,25 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerRazonSocial()
         {
-            return "C22002937";
-            if (Proveedores.Count >= 1)
+            if (Proveedores.Count >= 1 )
             {
                 return Proveedores.First().RazonSocial;
             }
             else
             {
-                return "C22002937";
+                return "";
+            }
+        }
+
+        public string ObtenerCodigoProveedor()
+        {
+            if (Proveedores.Count >= 1)
+            {
+                return Proveedores.First().CodigoProveedor;
+            }
+            else
+            {
+                return "";
             }
         }
 
@@ -62,6 +73,11 @@ namespace SustitucionMOAModel.Entities
         public bool EstaHabilitado()
         {
             return Habilitado;
+        }
+
+        public bool EsNuevoUsuario()
+        {
+            return Roles.Where(r => r.Nombre.Equals("Nuevo Usuario")).Any();
         }
     }
 }

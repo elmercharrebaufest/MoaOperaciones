@@ -37,20 +37,35 @@ export class LoginCommonComponent extends BaseComponent {
         this.sessionDataService.setPermisos(result.permisos);
         this.sessionDataService.setGranosFlag(result.granosFlag);
 
-        if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
-            this.navService.navegarSeccion('/aduana/pesada-online');
-        } else if (result.tipoUsuario == "CLIE") {
-            this.navService.navegarSeccion('/cuenta-corriente/simple');
-        } else {
+        if (result.esNuevoUsuario) {
             if (result.granosFlag == "A") {
                 sessionStorage.setItem("granosSelected", "G");
-                this.navService.navegarSeccion('/home');
+                this.navService.navegarSeccion('/alta-empresa-granos');
             } else {
                 sessionStorage.setItem("granosSelected", result.granosFlag);
                 if (result.granosFlag == "G") {
+                    this.navService.navegarSeccion('/alta-empresa-granos');
+                } else {
+                    this.navService.navegarSeccion('/alta-empresa-no-granos');
+                }
+            }
+        } else {
+
+            if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
+                this.navService.navegarSeccion('/aduana/pesada-online');
+            } else if (result.tipoUsuario == "CLIE") {
+                this.navService.navegarSeccion('/cuenta-corriente/simple');
+            } else {
+                if (result.granosFlag == "A") {
+                    sessionStorage.setItem("granosSelected", "G");
                     this.navService.navegarSeccion('/home');
                 } else {
-                    this.navService.navegarSeccion('/home-ngs');
+                    sessionStorage.setItem("granosSelected", result.granosFlag);
+                    if (result.granosFlag == "G") {
+                        this.navService.navegarSeccion('/home');
+                    } else {
+                        this.navService.navegarSeccion('/home-ngs');
+                    }
                 }
             }
         }

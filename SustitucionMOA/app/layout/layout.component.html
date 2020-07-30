@@ -233,10 +233,12 @@
                 <li><a class="animate" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#"> Registro
                         de operaciones</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-granos')) ? 'active' : ''"
-                        (click)="goToSeccion('/alta-empresa-granos')" *ngIf="isGranosSelected()" href="#">
+                        (click)="goToSeccion('/alta-empresa-granos')"
+                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS')" href="#">
                         <!--data-toggle="tab">-->Alta Empresa</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-no-granos')) ? 'active' : ''"
-                        (click)="goToSeccion('/alta-empresa-no-granos')" *ngIf="isNoGranosSelected()" href="#">
+                        (click)="goToSeccion('/alta-empresa-no-granos')"
+                        *ngIf="isNoGranosSelected() && isAuthorized('ALTA EMPRESA NO GRANOS')" href="#">
                         <!--data-toggle="tab">-->Alta Empresa</a></li>
             </ul>
         </nav>

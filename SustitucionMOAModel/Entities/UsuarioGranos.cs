@@ -13,7 +13,9 @@ namespace SustitucionMOAModel.Entities
     {
         public UsuarioGranos() : base() { }
 
-        public UsuarioGranos(string mail, string CUIT) : base(mail, CUIT) { }
+        public UsuarioGranos(string mail, string CUIT) : base(mail, CUIT) {
+            TipoUsuario = TipoUsuario.GetTipoGranos();
+        }
 
 
         public string Comercial { get; set; }

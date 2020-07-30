@@ -26,6 +26,9 @@ namespace SustitucionMOARepositorio
                 incluir: x => x.Namespace == typeof(TestEntity).Namespace,
                 excluir: null);
 
+            Database.SetInitializer<MOAOperacionesDbContext>(null);
+            base.OnModelCreating(modelBuilder);
+
 
             //modelBuilder.Entity<Usuario>()
             //    .HasMany<Grupo>(s => s.GrupoAsociados)

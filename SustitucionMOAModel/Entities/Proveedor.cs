@@ -15,6 +15,7 @@ namespace SustitucionMOAModel.Entities
         public int Id { get; set; }
         public string CUIT { get; set; }
         public string RazonSocial { get; set; }
+        public string CodigoProveedor { get; set; }
         public bool Domicilio { get; set; }
         public string Telefono { get; set; }
         public string Email { get; set; }

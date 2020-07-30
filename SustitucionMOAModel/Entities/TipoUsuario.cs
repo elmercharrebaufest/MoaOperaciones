@@ -21,8 +21,8 @@ namespace SustitucionMOAModel.Entities
             return new TipoUsuario()
             {
                 Id = 1,
-                Nombre = "Ambos",
-                NombreCorto = "A"
+                Nombre = "Granos",
+                NombreCorto = "G"
             };
         }
     }

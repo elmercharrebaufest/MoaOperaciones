@@ -39,7 +39,15 @@ namespace SustitucionMOA.Controllers
             else
             {
                 string redirectUrl = "/api/AzureB2C/Login";
-                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl});
+                //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+                try
+                {
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+                }
+                catch (Exception ex)
+                {
+
+                }
                 return null;
 
             }

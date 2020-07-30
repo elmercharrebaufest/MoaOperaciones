@@ -40,12 +40,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (Request.IsAuthenticated)
-                {
-                    username = "poncedef";
-                    pass = "prueba";
-                }
-
                 if (username == "" || username == null)
                 {
                     return Json(new { info = String.Format(InfoMsg.InputNoValido, "Usuario") }, JsonRequestBehavior.AllowGet);
@@ -116,7 +110,7 @@ namespace SustitucionMOA.Controllers
 
                 LogFile(username, pass);
 
-                return Json(new { success = SuccessMsg.LoginOk, username = username, nombre = result.nombre, proveedor = result.proveedor, granosFlag = result.granosFlag, tipoUsuario = result.tipoUsuario, permisos = result.permisos, noticias = noticias }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = SuccessMsg.LoginOk, username = username, nombre = result.nombre, proveedor = result.proveedor, granosFlag = result.granosFlag, tipoUsuario = result.tipoUsuario, permisos = result.permisos, noticias = noticias, esNuevoUsuario = false }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -160,7 +154,7 @@ namespace SustitucionMOA.Controllers
                 SessionPersister.User = new Model.Usuario()
                 {
                     username = mail,
-                    nombre = "OJEDA ARIEL RUBEN ", //usuario.ObtenerRazonSocial(),
+                    nombre = usuario.ObtenerRazonSocial(),
                     permisos = usuario.ObtenerPermisos()
                 };
 
@@ -193,7 +187,7 @@ namespace SustitucionMOA.Controllers
 
                 }
 
-                return Json(new { success = SuccessMsg.LoginOk, username = usuario.Mail, nombre = "OJEDA ARIEL RUBEN", proveedor = usuario.ObtenerRazonSocial(), granosFlag = usuario.TipoUsuario.NombreCorto, tipoUsuario = "CORR", permisos = usuario.ObtenerPermisos(), noticias = noticias }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = SuccessMsg.LoginOk, username = usuario.Mail, nombre = usuario.ObtenerRazonSocial(), proveedor = usuario.ObtenerCodigoProveedor(), granosFlag = usuario.TipoUsuario.NombreCorto, tipoUsuario = "PROV", permisos = usuario.ObtenerPermisos(), noticias = noticias, esNuevoUsuario = usuario.EsNuevoUsuario() }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
