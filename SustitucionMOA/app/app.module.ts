@@ -114,7 +114,12 @@ import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
 import { AppRoutingModule } from './app-routing.module';;
-
+import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component'
+    ;
+import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component'
+    ;
+import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component'
+import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-granos.service';
 @NgModule({
     imports: [
         BrowserModule,
@@ -203,6 +208,12 @@ import { AppRoutingModule } from './app-routing.module';;
         OrderedColumn,
         ShortenStringPipe,
         PesificacionComponent
+        ,
+        CartaPorteModalComponent
+        ,
+        EmpresaGranosComponent
+        ,
+        EmpresaNoGranosComponent,
     ],
     providers: [
         DatePipe,
@@ -238,7 +249,8 @@ import { AppRoutingModule } from './app-routing.module';;
         FacturaService,
         ServiceLocator,
         ModalService,
-        SecurityService
+        SecurityService,
+        EmpresaGranosService
     ],
     bootstrap: [AppComponent], 
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

@@ -17,12 +17,12 @@ import { ModalService } from './../common/services/ModalService';
 
 @Component({
     selector: 'app-carta-porte',
-    templateUrl: `./app/carta-porte/carta-porte.component.html?v=${new Date().getTime()}`,
+    templateUrl: `./app/carta-porteddd/carta-porte.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteService]
 })
 export class CartaPorteBaseComponent extends ListBaseComponent {
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService ) {
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -70,5 +70,5 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
     protected cargarFiltrosVariables(result: any) {
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
         if (result.filtroVendedor != undefined) this.filtroVendedor = result.filtroVendedor.options;
-    }       
+    }
 }
