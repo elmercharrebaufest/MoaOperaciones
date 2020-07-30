@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using System.Linq;
 using System.Security.Claims;
 
 namespace SustitucionMOA.Utils
@@ -58,5 +59,11 @@ namespace SustitucionMOA.Utils
 
             return null;
         }
+
+        public static string GetClaimValue(string Type)
+        {
+            return ClaimsPrincipal.Current.Claims.Where(x => x.Type.ToLower().Equals(Type.ToLower())).Select(x => x.Value).FirstOrDefault();
+        }
+
     }
 }

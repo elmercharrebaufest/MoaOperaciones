@@ -27,6 +27,19 @@ export class LoginService {
             map(this.extractData));
     }
 
+    public validarLoginAzure(): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        let headers = new Headers();
+        headers.append('Cache-control', 'no-cache');
+        headers.append('Cache-control', 'no-store');
+        headers.append('Expires', '0');
+        headers.append('Pragma', 'no-cache');
+        return this.http
+            .get('/api/login/ValidarLoginAzure', { search: params, headers: headers }).pipe(
+                map(this.extractData));
+    }
+
+
     public registrar(numeroProveedor: string, claveActivacion: string, username: string, contrasenia: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('numeroProveedor', numeroProveedor);

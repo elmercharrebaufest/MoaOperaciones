@@ -49,14 +49,15 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
-    <Compile Include="Entities\Permiso.cs" />
+    <Compile Include="Entities\Contacto.cs" />
+    <Compile Include="Enums\EstadoAprobacion.cs" />
+    <Compile Include="Entities\PermisoPorRol.cs" />
     <Compile Include="Entities\Proveedor.cs" />
     <Compile Include="Entities\Rol.cs" />
     <Compile Include="Entities\TestEntity.cs" />
     <Compile Include="Entities\TipoProveedor.cs" />
     <Compile Include="Entities\TipoUsuario.cs" />
     <Compile Include="Entities\Usuario.cs" />
-    <Compile Include="Entities\UsuarioAmbos.cs" />
     <Compile Include="Entities\UsuarioGranos.cs" />
     <Compile Include="Entities\UsuarioNoGranos.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />

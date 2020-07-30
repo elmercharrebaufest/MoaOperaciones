@@ -54,7 +54,7 @@ export class LoginCommonComponent extends BaseComponent {
                 }
             }
         }
-        
+
     }
 }
 
@@ -76,7 +76,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-        this.login();
+        this.validarLoginAzure();
     }
 
     titulo = "";
@@ -84,7 +84,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
     username = "";
     pass = "";
     loginButtonEnable = true;
-    captchaOk : any = null;
+    captchaOk: any = null;
 
     @ViewChild(MensajeComponent)
     private mensajeComponent: MensajeComponent;
@@ -117,6 +117,35 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
             }
         );
         return false;
+    }
+
+    validarLoginAzure() {
+
+        this.mensajeComponent.setMsgsEmpty();
+        this.loginButtonEnable = false;
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.validarLoginAzure().subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                this.loginButtonEnable = true;
+                if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    //this.loginUser(result);
+                    this.redirect(result);
+                }
+                return false;
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+        return false;
+        
     }
 
     enterPressedLogin(event: any) {

@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
-    public class UsuarioNoGranos
+    [Table("UsuarioNoGranos")]
+    public class UsuarioNoGranos : Usuario
     {
-        public Usuario Usuario { get; set; }
+        public UsuarioNoGranos() : base() { }
+        public UsuarioNoGranos(string mail, string CUIT) : base(mail, CUIT) { }
     }
 }

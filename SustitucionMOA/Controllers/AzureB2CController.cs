@@ -19,6 +19,8 @@ using SustitucionMOA.Utils;
 using System.Web;
 using System.Security.Claims;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOA.Controllers
 {
@@ -34,137 +36,54 @@ namespace SustitucionMOA.Controllers
             this.repositorio = repositorio;
         }
 
-        public ActionResult Login(string username, string pass)
+        public ActionResult Login()
         {
             try
             {
-                if (Request.IsAuthenticated)
-                {
-                    username = "poncedef";
-                    pass = "prueba";
-                }
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
 
-                foreach (Claim claim in ClaimsPrincipal.Current.Claims)
-                {
-                    continue;
-                }
-
-                Entidades.Usuario usuarioLogeado = new Entidades.Usuario();
-                Entidades.Proveedor proveedor = new Entidades.Proveedor();
-
-                string CUIT = GetClaimValue("extension_CUIT");
-                string GranosFlag = GetClaimValue("extension_Granos");
-
-                proveedor.CUIT = CUIT;
-
-                ValidarCUITProveedor(proveedor);
-
-                usuarioLogeado.Mail = GetClaimValue("emails");
-                usuarioLogeado.Proveedor = proveedor;
-
-                /*RegistrarProveedor(proveedor);
-                RegistrarUsuario(usuarioLogeado);*/
+                string GranosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
                 
-                if (username == "" || username == null)
+                Entidades.Usuario usuario = new Entidades.Usuario(mail, CUIT);
+
+                if (GranosFlag.Equals("Granos"))
                 {
-                    return Json(new { info = String.Format(InfoMsg.InputNoValido, "Usuario") }, JsonRequestBehavior.AllowGet);
-                }
+                    UsuarioGranos usuarioGranos = new UsuarioGranos(mail, CUIT);
 
-                if (pass == "" || pass == null)
-                {
-                    return Json(new { info = String.Format(InfoMsg.InputNoValido, "Contraseña") }, JsonRequestBehavior.AllowGet);
-                }
-
-                LoginWSMOAResponse result = _loginService.login(username, pass);
-
-                if (result == null)
-                {
-                    return Json(new { info = ErrorMsg.ErrorLogin }, JsonRequestBehavior.AllowGet);
-                }
-
-                if (result.error != "00")
-                {
-                    return Json(new { info = result.texto }, JsonRequestBehavior.AllowGet);
-                }
-
-                if (result.proveedor == "" || result.proveedor == null)
-                {
-                    return Json(new { info = ErrorMsg.ErrorLogin }, JsonRequestBehavior.AllowGet);
-                }
-
-                if (result.permisos.Count() == 1 && result.permisos[0] == "DATAAGROLOGIN")
-                {
-                    SessionPersister.clear();
-                    DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
-                    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-                }
-
-                SessionPersister.User = new Usuario()
-                {
-                    username = username,
-                    nombre = result.nombre,
-                    permisos = result.permisos
-                };
-
-                SessionPersister.Proveedor = result.proveedor;
-                SessionPersister.GranosFlag = result.granosFlag;
-                SessionPersister.Sociedad = "MOA";
-
-                NoticiasDetallesWSMOAResponse noticias;
-
-                try
-                {
-
-                    noticias = _loginService.getNoticias(result.proveedor);
-                    noticias.cantidad = 0;
-                    if (noticias != null && noticias.noticias != null)
+                    if (!ExisteUsuario(usuarioGranos))
                     {
-                        SessionPersister.Noticias = noticias.noticias;
-                        noticias.cantidad += noticias.noticias.Count;
+                        Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
+
+                        usuarioGranos.Roles.Add(usuarioNuevo);
+
+                        RegistrarUsuarioGranos(usuarioGranos);
                     }
-                    if (noticias != null && noticias.notificaciones != null)
-                    {
-                        SessionPersister.Notificaciones = noticias.notificaciones;
-                        noticias.cantidad += noticias.notificaciones.Count;
-                    }
+                    usuario = usuarioGranos;
                 }
-                catch
-                {
-                    noticias = new NoticiasDetallesWSMOAResponse() { };
-                }
-
-
-                return Redirect("/");
-
             }
-            catch (WSCustomException e)
+            catch(Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return Redirect("/");
         }
 
-        private string GetClaimValue(string Type)
+        public bool RegistrarUsuarioGranos(UsuarioGranos usuario)
         {
-            return ClaimsPrincipal.Current.Claims.Where(x => x.Type.Equals(Type)).Select(x => x.Value).FirstOrDefault(); 
-        }
+            Proveedor proveedor = new Proveedor();
+            proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("CUIT");
+            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
 
+            ValidarCUITProveedor(usuario, proveedor);
 
-        public bool RegistrarUsuario(Entidades.Usuario usuario)
-        {
+            usuario.Mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            usuario.Proveedores.Add(proveedor);
 
-            if (!ExisteUsuario(usuario))
-            {
+            usuario.Habilitado = true;
 
-                repositorio.Agregar(usuario);
-                return repositorio.GuardarCambios() == 1;
-            }
-            return true;
+            repositorio.Agregar(usuario);
+            return repositorio.GuardarCambios() == 1;
         }
 
         public bool ExisteUsuario(Entidades.Usuario usuario)
@@ -172,9 +91,9 @@ namespace SustitucionMOA.Controllers
             return (repositorio.Existe<Entidades.Usuario>(u => u.Mail == usuario.Mail));
         }
 
-        public bool ValidarCUITProveedor(Entidades.Proveedor proveedor)
+        public bool ValidarCUITProveedor(UsuarioGranos usuario, Entidades.Proveedor proveedor)
         {
-           return _dataAgroService.ValidarCUITProveedor(proveedor);
+           return _dataAgroService.ValidarCUITProveedor(usuario, proveedor);
         }
 
         public bool ExisteProveedor(Entidades.Proveedor proveedor)
@@ -193,5 +112,9 @@ namespace SustitucionMOA.Controllers
             return true;
         }
 
+        public Rol ObtenerRolUsuarioNuevo() 
+        {
+            return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
+        }
     }
 }
