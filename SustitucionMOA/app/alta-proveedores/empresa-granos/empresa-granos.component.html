@@ -20,7 +20,7 @@
                     <div>
                         <label style="font-weight: 100 !important;" for="informeComercialFirmado">Por favor adjunte el
                             informe comercial <strong>completo y firmado</strong></label>
-                        <input type="file" class="form-control-file" id="informeComercialFirmado">
+                        <input type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
                     </div>
 
                 </div>
@@ -30,41 +30,41 @@
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="constanciaCBU">Cargar constancia de CBU certificada
                         por Banco</label>
-                    <input type="file" class="form-control-file" id="constanciaCBU">
+                    <input type="file" class="form-control-file" id="constanciaCBU" (change)="handleFileInput($event.target.files, 'constanciaCBU')">
                 </div>
             </mdb-step>
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
-                    <input type="file" class="form-control-file" id="constanciaCUIT">
+                    <input type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
                 </div>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="inscripcionIIBB">Inscripción en IIBB -local o
                         Convenio (CM05
                         vigente)</label>
-                    <input type="file" class="form-control-file" id="inscripcionIIBB">
+                    <input type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
                 </div>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="gananciasIVAIIBB">Certificados de exclusión o
                         exención en Ganancias, IVA e
                         IIBB.</label>
-                    <input type="file" class="form-control-file" id="gananciasIVAIIBB">
+                    <input type="file" class="form-control-file" id="gananciasIVAIIBB" (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
                 </div>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
                         presentar SIPER.</label>
-                    <input type="file" class="form-control-file" id="SIPER">
+                    <input type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
                 <h3>Documentación al día en Bolsa</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="exampleFormControlFile1">Sólo Personas Físicas
+                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">Sólo Personas Físicas
                         podrán operar sin oblea si remiten copia
                         certificada y legalizada
                         de DNI.</label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                    <input type="file" class="form-control-file" id="documentacionEnBolsa" (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">

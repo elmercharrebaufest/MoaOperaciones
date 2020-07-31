@@ -2356,6 +2356,15 @@ namespace SustitucionMOAWS.DataAgroServices {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NombresField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> ProveedorIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string[] ProveedorMailsField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ProveedorRazonSocialField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -2440,6 +2449,45 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.NombresField, value) != true)) {
                     this.NombresField = value;
                     this.RaisePropertyChanged("Nombres");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> ProveedorId {
+            get {
+                return this.ProveedorIdField;
+            }
+            set {
+                if ((this.ProveedorIdField.Equals(value) != true)) {
+                    this.ProveedorIdField = value;
+                    this.RaisePropertyChanged("ProveedorId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string[] ProveedorMails {
+            get {
+                return this.ProveedorMailsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ProveedorMailsField, value) != true)) {
+                    this.ProveedorMailsField = value;
+                    this.RaisePropertyChanged("ProveedorMails");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ProveedorRazonSocial {
+            get {
+                return this.ProveedorRazonSocialField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ProveedorRazonSocialField, value) != true)) {
+                    this.ProveedorRazonSocialField = value;
+                    this.RaisePropertyChanged("ProveedorRazonSocial");
                 }
             }
         }

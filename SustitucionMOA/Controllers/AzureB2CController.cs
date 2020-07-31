@@ -49,8 +49,15 @@ namespace SustitucionMOA.Controllers
 
                 if (GranosFlag.Equals("Granos"))
                 {
+
                     UsuarioGranos usuarioGranos = new UsuarioGranos(mail, CUIT);
 
+                    Proveedor proveedor = new Proveedor();
+                    proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
+                    proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+
+                    ValidarCUITProveedor(usuarioGranos, proveedor);
+                
                     if (!ExisteUsuario(usuarioGranos))
                     {
                         Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
@@ -61,6 +68,7 @@ namespace SustitucionMOA.Controllers
                     }
                     usuario = usuarioGranos;
                 }
+
             }
             catch(Exception ex)
             {
@@ -72,7 +80,7 @@ namespace SustitucionMOA.Controllers
         public bool RegistrarUsuarioGranos(UsuarioGranos usuario)
         {
             Proveedor proveedor = new Proveedor();
-            proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("CUIT");
+            proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
             proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
 
             ValidarCUITProveedor(usuario, proveedor);
@@ -93,7 +101,7 @@ namespace SustitucionMOA.Controllers
 
         public bool ValidarCUITProveedor(UsuarioGranos usuario, Entidades.Proveedor proveedor)
         {
-           return _dataAgroService.ValidarCUITProveedor(usuario, proveedor);
+           return _dataAgroService.ValidarCUITProveedorGranos(usuario, proveedor);
         }
 
         public bool ExisteProveedor(Entidades.Proveedor proveedor)

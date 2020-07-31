@@ -29,17 +29,14 @@ export class LayoutService extends BaseService {
         params.set('contrato', contrato);
         return this.http
             .get('/api/liquidacion/descargarFleteProcedencia', { search: params, headers: this.headers })
-            .pipe(
-                timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            )
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))) )
             .pipe(map(this.extractData));
     }
 
     public goToDataAgro() {
         return this.http
             .get('/api/dataAgro/goToDataAgro')
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde")))
-            )
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 }

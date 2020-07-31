@@ -18,7 +18,7 @@ namespace SustitucionMOAModel.Entities
         public string CodigoProveedor { get; set; }
         public bool Domicilio { get; set; }
         public string Telefono { get; set; }
-        public string Email { get; set; }
+        public string Mail { get; set; }
         public Contacto ContactoPagos { get; set; }
         public Contacto ContactoBoletos { get; set; }
         public TipoProveedor TipoProveedor { get; set; }

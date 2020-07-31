@@ -19,8 +19,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
 
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
     cartaPorteId = "";

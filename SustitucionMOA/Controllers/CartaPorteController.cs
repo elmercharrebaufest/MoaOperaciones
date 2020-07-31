@@ -85,7 +85,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
         public ActionResult downloadAplicaciones(string periodo, string fechaInicio, string fechaFin)
         {
             try
@@ -112,7 +111,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
         public ActionResult downloadDescargas(string periodo, string fechaInicio, string fechaFin)
         {
             try
@@ -139,7 +137,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CARTA_PORTE)]
         public JsonResult GetFotos(string cartaPorteId)
         {
             try
