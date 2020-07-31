@@ -53,4 +53,11 @@
 
 .label {
   font-weight: 100 !important;
+  color: #172f8f !important;
+  font-size: 17px !important;
+}
+
+#myModal {
+  overflow: scroll !important;
+  bottom: -85px !important;
 }

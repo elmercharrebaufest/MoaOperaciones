@@ -11,15 +11,14 @@
                         <p>Complete el informe comercial</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                            class="btn btn-info col-xs-12 col-sm-11"
+                            class="btn btn-info"
                             style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
                             Completar informe Comercial
-
                         </button>
 
                     </div>
-                    <div>
-                        <label class="informe-firmado" for="informeComercialFirmado">Por favor adjunte el
+                    <div style="flex-direction: column;">
+                        <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
                             informe comercial <strong>completo y firmado</strong></label>
                         <input type="file" class="form-control-file" id="informeComercialFirmado" required="required">
                     </div>
@@ -104,114 +103,126 @@
 
                 </div>
                 <div class="modal-body">
-                    <form action="">
-                        <div class="form-row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Razón social">
+
+                    <div class="tab-pane" id="tab2">
+                        <div class="formulario">
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Domicilio Legal
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="Domicilio" placeholder="Domicilio (50 caracteres)"
+                                        maxlength="50" />
+                                </div>
                             </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="CUIT">
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Empleados en relación de dependencia
+                                </div>
+                                <div class="formulario-input">
+                                    <div>
+                                        <div>
+                                            <label for="si"><input type="radio" id="si" value="si"
+                                                    name="depen">Si</label>
+                                            <input type="text" id="EmplRelDepCant"
+                                                placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
+                                        </div>
+                                        <label for="no"><input type="radio" id="no" value="no" name="depen">No</label>
+                                    </div>
+
+                                </div>
                             </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Rodados / Equipos aptos para la actividad rural
+                                </div>
+                                <div class="formulario-input">
+                                    <div>
+                                        <div><label for="equipro"><input type="radio" id="equipro" value="equipro"
+                                                    name="rodado">Equipamiento Propio</label></div>
+                                        <div><label for="equialq"><input type="radio" id="equialq" value="equialq"
+                                                    name="rodado">Alquilado</label> </div>
+                                        <div><label for="proyalq"><input type="radio" id="proyalq" value="proyalq"
+                                                    name="rodado">Propio y
+                                                alquilado</label> </div>
+                                        <div>
+                                            <label for="otrosro"><input type="radio" id="otrosro" value="otrosro"
+                                                    name="rodado">Otros</label>
+                                            <input type="text" id="RodadosOtros" placeholder="Otros (50 caracteres)"
+                                                maxlength="50" disabled />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Servicios de chacra
+                                </div>
+                                <div class="formulario-input">
+                                    <div>
+                                        <div><label for="persprop"><input type="radio" id="persprop" value="persprop"
+                                                    name="servicios">Personal propio</label></div>
+                                        <div><label for="perscont"><input type="radio" id="perscont" value="perscont"
+                                                    name="servicios">Personal contratado</label></div>
+                                        <div><label for="persprco"><input type="radio" id="persprco" value="persprco"
+                                                    name="servicios">Personal propio y contratado</label></div>
+                                        <div>
+                                            <label for="otros"><input type="radio" id="otros" value="otros"
+                                                    name="servicios">Otros</label>
+                                            <input type="text" id="ChacraOtros" placeholder="Otros (50 caracteres)"
+                                                maxlength="50" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="titulo">
+                                Antecedentes de la siembra
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Antigüedad en la actividad
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="AntigActividad" placeholder="Antigüedad (100 caracteres)"
+                                        maxlength="100" />
+                                </div>
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Actuación como productor / siembras anteriores
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="ActuacionProd" placeholder="Actuación (100 caracteres)"
+                                        maxlength="100" />
+                                </div>
+                            </div>
+
+                            <div class="titulo">
+                                Antecedentes comerciales
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Clientes anteriores
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)"
+                                        maxlength="100" />
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Otros comentarios
+                                </div>
+                                <div class="formulario-input">
+                                    <textarea id="Comentarios" placeholder="Comentarios (300 caracteres)"
+                                        maxlength="300"></textarea>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Domicilio Legal">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Domicilio comercial/Real">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Teléfono">
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Mail">
-                            </div>
-                        </div>
-                        <div class="form-check">
-                            <p>Área de compras:</p>
-                            <input class="form-check-input" type="checkbox" value="" id="corredorBsAs">
-                            <label class="form-check-label" for="corredorBsAs">
-                                Corredor Bs As
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="corredorRosarino">
-                            <label class="form-check-label" for="corredorRosarino">
-                                Corredor Rosarino
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="origIntNorte">
-                            <label class="form-check-label" for="origIntNorte">
-                                Orig Int Norte
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="origIntCentro">
-                            <label class="form-check-label" for="origIntCentro">
-                                Orig Int Centro
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="origIntSur">
-                            <label class="form-check-label" for="origIntSur">
-                                Orig Int Sur
-                            </label>
-                        </div>
-                        <div class="contactos">
-                            <p>Contactos:</p>
-                            <div class="form-row">
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Nombre">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Cargo">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Teléfono">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Mail">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Nombre">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Cargo">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Teléfono">
-                                </div>
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Mail">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-check">
-                            <p>Actividades</p>
-                            <input class="form-check-input" type="checkbox" value="" id="actividadAcopio">
-                            <label class="form-check-label" for="actividadAcopio">
-                                Acopio
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="actividadArrendador">
-                            <label class="form-check-label" for="actividadArrendador">
-                                Arrendador
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="actividadProductor">
-                            <label class="form-check-label" for="actividadProductor">
-                                Productor
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="actividadContratistaRural">
-                            <label class="form-check-label" for="actividadContratistaRural">
-                                Contratista Rural
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="actividadProveedorInsumos">
-                            <label class="form-check-label" for="actividadProveedorInsumos">
-                                Proveedor de Insumos
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="actividadOtros">
-                            <label class="form-check-label" for="actividadOtros">
-                                Otros
-                            </label>
-                            <input type="text" class="form-control" placeholder="Detalle">
-                        </div>
-                    </form>
+                    </div>
 
                 </div>
                 <div class="modal-footer">
