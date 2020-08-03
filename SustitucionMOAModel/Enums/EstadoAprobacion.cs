@@ -7,6 +7,7 @@
         AprobacionPendiente,
         DeshabilitadoEnDataAgro,
         EdicionRequerida,
-        Rechazado
+        Rechazado,
+        AunNoImplementado
     }
 }

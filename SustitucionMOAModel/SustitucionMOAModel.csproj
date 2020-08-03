@@ -55,7 +55,6 @@
     <Compile Include="Entities\Proveedor.cs" />
     <Compile Include="Entities\Rol.cs" />
     <Compile Include="Entities\TestEntity.cs" />
-    <Compile Include="Entities\TipoProveedor.cs" />
     <Compile Include="Entities\TipoUsuario.cs" />
     <Compile Include="Entities\Usuario.cs" />
     <Compile Include="Entities\UsuarioGranos.cs" />

@@ -26,7 +26,6 @@ namespace SustitucionMOA.Controllers
 {
     public class AzureB2CController : Controller
     {
-        LoginService _loginService = new LoginService();
         DataAgroService _dataAgroService = new DataAgroService();
 
         protected readonly IRepositorio repositorio;
@@ -35,7 +34,6 @@ namespace SustitucionMOA.Controllers
         {
             this.repositorio = repositorio;
         }
-
         public ActionResult Login()
         {
             try
@@ -43,27 +41,87 @@ namespace SustitucionMOA.Controllers
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
 
+                CUIT = CUIT.Replace("-", string.Empty);
+
                 string GranosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
                 
                 Entidades.Usuario usuario = new Entidades.Usuario(mail, CUIT);
 
-                if (GranosFlag.Equals("Granos"))
+                switch (GranosFlag)
                 {
-                    UsuarioGranos usuarioGranos = new UsuarioGranos(mail, CUIT);
+                    case "Granos":
+                        UsuarioGranos usuarioGranos = new UsuarioGranos(mail, CUIT);
 
-                    Proveedor proveedor = new Proveedor();
-                    proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
-                    proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+                        if (!ExisteUsuario(usuarioGranos))
+                        {
+                            Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
 
-                    if (!ExisteUsuario(usuarioGranos))
-                    {
-                        Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
+                            usuarioGranos.Roles.Add(usuarioNuevo);
+                            usuarioGranos.TipoUsuario = TipoUsuario.GetTipoGranos();
+                            RegistrarUsuarioGranos(usuarioGranos);
+                        }
+                        usuario = usuarioGranos;
+                        break;
 
-                        usuarioGranos.Roles.Add(usuarioNuevo);
+                    case "No Granos":
+                        Entidades.Usuario usuarioNoGranos = new Entidades.Usuario(mail, CUIT);
 
-                        RegistrarUsuarioGranos(usuarioGranos);
-                    }
-                    usuario = usuarioGranos;
+                        if (!ExisteUsuario(usuarioNoGranos))
+                        {
+                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+
+                            usuarioNoGranos.Roles.Add(usuarioNuevo);
+                            usuarioNoGranos.TipoUsuario = TipoUsuario.GetTipoNoGranos();
+
+                            RegistrarUsuarioGenerico(usuarioNoGranos);
+                        }
+                        usuario = usuarioNoGranos;
+                        break;
+
+                    case "Ambos":
+                        Entidades.Usuario usuarioAmbos = new Entidades.Usuario(mail, CUIT);
+
+                        if (!ExisteUsuario(usuarioAmbos))
+                        {
+                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+
+                            usuarioAmbos.Roles.Add(usuarioNuevo);
+                            usuarioAmbos.TipoUsuario = TipoUsuario.GetTipoAmbos();
+
+                            RegistrarUsuarioGenerico(usuarioAmbos);
+                        }
+                        usuario = usuarioAmbos;
+                        break;
+
+                    case "Corredor":
+                        Entidades.Usuario usuarioCorredor = new Entidades.Usuario(mail, CUIT);
+
+                        if (!ExisteUsuario(usuarioCorredor))
+                        {
+                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+
+                            usuarioCorredor.Roles.Add(usuarioNuevo);
+                            usuarioCorredor.TipoUsuario = TipoUsuario.GetTipoCorredor();
+
+                            RegistrarUsuarioGenerico(usuarioCorredor);
+                        }
+                        usuario = usuarioCorredor;
+                        break;
+
+                    case "Cliente":
+                        Entidades.Usuario usuarioCliente = new Entidades.Usuario(mail, CUIT);
+
+                        if (!ExisteUsuario(usuarioCliente))
+                        {
+                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+
+                            usuarioCliente.Roles.Add(usuarioNuevo);
+                            usuarioCliente.TipoUsuario = TipoUsuario.GetTipoCliente();
+
+                            RegistrarUsuarioGenerico(usuarioCliente);
+                        }
+                        usuario = usuarioCliente;
+                        break;
                 }
 
             }
@@ -76,11 +134,28 @@ namespace SustitucionMOA.Controllers
 
         public bool RegistrarUsuarioGranos(UsuarioGranos usuario)
         {
-            Proveedor proveedor = new Proveedor();
-            proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
-            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+            Proveedor proveedor = new Proveedor
+            {
+                CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT"),
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+            };
 
             ValidarCUITProveedor(usuario, proveedor);
+
+            usuario.Mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            usuario.Proveedores.Add(proveedor);
+
+            usuario.Habilitado = true;
+
+            repositorio.Agregar(usuario);
+            return repositorio.GuardarCambios() == 1;
+        }
+
+        public bool RegistrarUsuarioGenerico(Entidades.Usuario usuario)
+        {
+            Proveedor proveedor = new Proveedor();
+            proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
+            proveedor.EstadoAprobacion = EstadoAprobacion.AunNoImplementado;
 
             usuario.Mail = ClaimsPrincipalExtension.GetClaimValue("emails");
             usuario.Proveedores.Add(proveedor);
@@ -120,6 +195,11 @@ namespace SustitucionMOA.Controllers
         public Rol ObtenerRolUsuarioNuevo() 
         {
             return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
+        }
+
+        public Rol ObtenerRolUsuarioNoImplementado()
+        {
+            return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Usuario No Implementado"));
         }
     }
 }

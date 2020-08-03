@@ -22,11 +22,6 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
-        public Usuario()
-        {
-            Proveedores = new List<Proveedor>();
-            Roles = new List<Rol>();
-        }
         public Usuario(string mail, string CUIT)
         {
             Mail = mail;
@@ -37,6 +32,7 @@ namespace SustitucionMOAModel.Entities
 
         public Proveedor ObtenerProveedorActual()
         {
+            //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
             return Proveedores.First();
         }
 

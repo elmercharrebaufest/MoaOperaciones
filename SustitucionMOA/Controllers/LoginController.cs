@@ -157,7 +157,7 @@ namespace SustitucionMOA.Controllers
                     permisos = usuario.ObtenerPermisos()
                 };
 
-                SessionPersister.Proveedor = usuario.ObtenerRazonSocial();
+                SessionPersister.Proveedor = usuario.ObtenerCodigoProveedor();
                 SessionPersister.GranosFlag = usuario.TipoUsuario.NombreCorto;
                 SessionPersister.Sociedad = "MOA";
 
@@ -167,7 +167,7 @@ namespace SustitucionMOA.Controllers
                 {
                     if (usuario.EstaHabilitado())
                     {
-                        noticias = _loginService.getNoticias(usuario.ObtenerRazonSocial());
+                        noticias = _loginService.getNoticias(usuario.ObtenerCodigoProveedor());
                         noticias.cantidad = 0;
                         if (noticias != null && noticias.noticias != null)
                         {
@@ -181,7 +181,7 @@ namespace SustitucionMOA.Controllers
                         }
                     }
                 }
-                catch (Exception ex)
+                catch 
                 {
 
                 }

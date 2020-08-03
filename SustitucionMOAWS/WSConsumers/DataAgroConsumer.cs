@@ -19,19 +19,8 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.Windows.ClientCredential.Domain = DataAgroWSCredential.getDominio();
         }
 
-
         public ResultadoValidarProveedorComercial ValidarCUIT(string CUIT) {
-            ResultadoValidarProveedorComercial resultado = new ResultadoValidarProveedorComercial();
-            try
-            {
-                resultado = service.ValidarProveedorComercial(CUIT);
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return resultado;
+            return service.ValidarProveedorComercial(CUIT); ;
         }
     }
 }

@@ -11,8 +11,6 @@ namespace SustitucionMOAModel.Entities
     [Table("UsuarioGranos")]
     public class UsuarioGranos : Usuario
     {
-        public UsuarioGranos() : base() { }
-
         public UsuarioGranos(string mail, string CUIT) : base(mail, CUIT) {
             TipoUsuario = TipoUsuario.GetTipoGranos();
         }

@@ -8,6 +8,7 @@ using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -61,16 +62,23 @@ namespace SustitucionMOAUtils.Services
                     {
                         usuario.Comercial = string.Concat(respuesta.Nombres, " ", respuesta.Apellido);
 
+                        proveedor.IdComercialDataAgro = respuesta.ComercialId;
+                        proveedor.IdDataAgro = respuesta.ProveedorId;
+                        proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
+                        proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
                         proveedor.Mail = usuario.Mail;
                     }
                     else
                     {
                         proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                        proveedor.Observaciones = "El mail del registro no está dentro de los mails registrados en Data Agro.";
                     }
                 }
                 else
                 {
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                    proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
+
                 }
 
                 return respuesta.HayError;
@@ -88,5 +96,11 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return CUIT.Substring(2, 10);
+        }
     }
+
 }

@@ -32,8 +32,6 @@ namespace SustitucionMOA.Controllers
         {
             this.altaEmpresaService = altaEmpresaService;
         }
-
-
         public ActionResult GenerarInformeComercial(string EmplRelDep, string EmplRelDepCant, string Rodados, string RodadosOtros, string Chacra, string ChacraOtros, string AntigActividad, string ActuacionProd, string ClienteAnt, string Comentarios, string Domicilio)
         {
             try

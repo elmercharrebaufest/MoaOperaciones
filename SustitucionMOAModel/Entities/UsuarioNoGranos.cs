@@ -11,7 +11,6 @@ namespace SustitucionMOAModel.Entities
     [Table("UsuarioNoGranos")]
     public class UsuarioNoGranos : Usuario
     {
-        public UsuarioNoGranos() : base() { }
         public UsuarioNoGranos(string mail, string CUIT) : base(mail, CUIT) { }
     }
 }
