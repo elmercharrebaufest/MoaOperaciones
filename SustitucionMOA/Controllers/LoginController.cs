@@ -147,7 +147,6 @@ namespace SustitucionMOA.Controllers
                     usuarioGranos = BuscarUsuarioGranos(usuarioGranos);
                     usuarioGranos.TipoUsuario = TipoUsuario.GetTipoGranos();
 
-
                     usuario = usuarioGranos; ;
                 }
 

@@ -47,12 +47,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         return this.secondFormGroup.get('password');
     }
 
-    handleFileInput(files: FileList, fileName: string) {
+    handleFileInput(files: FileList, fileKey: string) {
         //this.mensajeComponent.setMsgsEmpty();
         //this.spinnerSmallComponent.showIt();
 
 
-        this.service.postFile(files, fileName)
+        this.service.postFile(files, fileKey)
      
         return false; 
 

@@ -35,11 +35,16 @@ namespace SustitucionMOAModel.Entities
             Roles = new List<Rol>();
         }
 
+        public Proveedor ObtenerProveedorActual()
+        {
+            return Proveedores.First();
+        }
+
         public string ObtenerRazonSocial()
         {
             if (Proveedores.Count >= 1 )
             {
-                return Proveedores.First().RazonSocial;
+                return ObtenerProveedorActual().RazonSocial;
             }
             else
             {
@@ -51,7 +56,7 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                return Proveedores.First().CodigoProveedor;
+                return ObtenerProveedorActual().CodigoProveedor;
             }
             else
             {

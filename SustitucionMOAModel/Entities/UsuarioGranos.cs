@@ -17,7 +17,14 @@ namespace SustitucionMOAModel.Entities
             TipoUsuario = TipoUsuario.GetTipoGranos();
         }
 
-
         public string Comercial { get; set; }
+        public string RutaInformeComercialFirmado { get; set; }
+        public string RutaConstanciaCBU { get; set; }
+        public string RutaConstanciaCUIT { get; set; }
+        public string RutaInscripcionIIBB { get; set; }
+        public string RutaGananciasIVAIIBB { get; set; }
+        public string RutaSIPER { get; set; }
+        public string RutaDocumentacionEnBolsa { get; set; }
+
     }
 }

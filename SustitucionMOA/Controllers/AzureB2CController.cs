@@ -49,15 +49,12 @@ namespace SustitucionMOA.Controllers
 
                 if (GranosFlag.Equals("Granos"))
                 {
-
                     UsuarioGranos usuarioGranos = new UsuarioGranos(mail, CUIT);
 
                     Proveedor proveedor = new Proveedor();
                     proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
                     proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
 
-                    ValidarCUITProveedor(usuarioGranos, proveedor);
-                
                     if (!ExisteUsuario(usuarioGranos))
                     {
                         Rol usuarioNuevo = ObtenerRolUsuarioNuevo();

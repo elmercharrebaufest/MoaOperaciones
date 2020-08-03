@@ -27,5 +27,7 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Proveedores")]
         public virtual ICollection<Usuario> UsuariosAsociados { get; set; }
+        public int? IdDataAgro { get; set; }
+        public int? IdComercialDataAgro { get; set; }
     }
 }
