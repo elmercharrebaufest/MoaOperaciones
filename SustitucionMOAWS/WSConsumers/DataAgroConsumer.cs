@@ -14,13 +14,16 @@ namespace SustitucionMOAWS.WSConsumers
 
         public DataAgroConsumer()
         {
-            service.ClientCredentials.Windows.ClientCredential.UserName = DataAgroWSCredential.getUserName();
-            service.ClientCredentials.Windows.ClientCredential.Password = DataAgroWSCredential.getPassword();
-            service.ClientCredentials.Windows.ClientCredential.Domain = DataAgroWSCredential.getDominio();
+            service.ClientCredentials.UserName.UserName = string.Concat(DataAgroWSCredential.getDominio(), @"\", DataAgroWSCredential.getUserName());
+            service.ClientCredentials.UserName.Password = DataAgroWSCredential.getPassword();
+            //service.ClientCredentials.UserName. = DataAgroWSCredential.getDominio();
         }
 
-        public ResultadoValidarProveedorComercial ValidarCUIT(string CUIT) {
+
+        public ResultadoValidarProveedorComercial ValidarCUIT(string CUIT)
+        {
             return service.ValidarProveedorComercial(CUIT); ;
         }
     }
+
 }

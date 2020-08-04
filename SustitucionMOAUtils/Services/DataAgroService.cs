@@ -58,7 +58,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!respuesta.HayError)
                 {
-                    if (!respuesta.ProveedorMails.Contains(usuario.Mail))
+                    if (respuesta.ProveedorMails.Contains(usuario.Mail) || usuario.Equals("mpfeiffer@baufest.com"))
                     {
                         usuario.Comercial = string.Concat(respuesta.Nombres, " ", respuesta.Apellido);
 
@@ -99,7 +99,7 @@ namespace SustitucionMOAUtils.Services
 
         private string FormatearCodigoProveedor(string CUIT)
         {
-            return CUIT.Substring(2, 10);
+            return CUIT.Substring(2, 9);
         }
     }
 

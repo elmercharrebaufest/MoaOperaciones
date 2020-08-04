@@ -3,7 +3,7 @@
   <wsp:Policy wsu:Id="BasicHttpBinding_IDataAgroServices_policy">
     <wsp:ExactlyOne>
       <wsp:All>
-        <http:NtlmAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" />
+        <http:BasicAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" />
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>

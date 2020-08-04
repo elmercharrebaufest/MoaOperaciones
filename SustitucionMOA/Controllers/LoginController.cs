@@ -209,9 +209,15 @@ namespace SustitucionMOA.Controllers
             return Json(new { success = "Ok" }, JsonRequestBehavior.AllowGet);
         }
 
-        private UsuarioGranos BuscarUsuarioGranos(UsuarioGranos usarioGranos)
+        private UsuarioGranos BuscarUsuarioGranos(UsuarioGranos usuarioGranos)
         {
-            return repositorio.Obtener<UsuarioGranos>(u => u.Mail == usarioGranos.Mail);
+            UsuarioGranos usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == usuarioGranos.Mail);
+
+            usuario.Proveedores.Add(repositorio.Obtener<Proveedor>(p => p.Id.ToString() == "1002"));
+
+            usuario.Roles.Add(repositorio.Obtener<Rol>(p => p.Id.ToString() == "2"));
+
+            return usuario;
         }
 
         public bool ExisteUsuario(Entidades.Usuario usuario)
