@@ -84,7 +84,7 @@
     <div id="modal" class="hidden modal">
         <h3>Solicitud de alta enviada</h3>
         <p>Un asesor le informará el estado de su registro.</p>
-        <p>¡Muhcas gracias!</p>
+        <p>¡Muchas gracias!</p>
     </div>
     <!-- end modal notificacion -->
 
@@ -112,7 +112,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="Domicilio" placeholder="Domicilio (50 caracteres)"
-                                        maxlength="50" />
+                                           (input)="Domicilio = $event.target.value"
+                                           maxlength="50" />
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -122,10 +123,13 @@
                                 <div class="formulario-input">
                                     <div>
                                         <div>
-                                            <label for="si"><input type="radio" id="si" value="si"
-                                                    name="depen">Si</label>
+                                            <label for="si">
+                                                <input type="radio" id="si" value="si"
+                                                       name="depen">Si
+                                            </label>
                                             <input type="text" id="EmplRelDepCant"
-                                                placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
+                                                   (input)="EmplRelDepCant = $event.target.value"
+                                                   placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
                                         </div>
                                         <label for="no"><input type="radio" id="no" value="no" name="depen">No</label>
                                     </div>
@@ -149,6 +153,8 @@
                                             <label for="otrosro"><input type="radio" id="otrosro" value="otrosro"
                                                     name="rodado">Otros</label>
                                             <input type="text" id="RodadosOtros" placeholder="Otros (50 caracteres)"
+                                                   (input)="RodadosOtros = $event.target.value"
+
                                                 maxlength="50" disabled />
                                         </div>
                                     </div>
@@ -171,6 +177,7 @@
                                             <label for="otros"><input type="radio" id="otros" value="otros"
                                                     name="servicios">Otros</label>
                                             <input type="text" id="ChacraOtros" placeholder="Otros (50 caracteres)"
+                                           (input)="ChacraOtros = $event.target.value"
                                                 maxlength="50" disabled />
                                         </div>
                                     </div>
@@ -185,7 +192,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="AntigActividad" placeholder="Antigüedad (100 caracteres)"
-                                        maxlength="100" />
+                                           (input)="AntigActividad = $event.target.value"
+                                           maxlength="100" />
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -194,7 +202,9 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="ActuacionProd" placeholder="Actuación (100 caracteres)"
-                                        maxlength="100" />
+                                           (input)="ActuacionProd = $event.target.value"
+                                           maxlength="100" />
+
                                 </div>
                             </div>
 
@@ -206,7 +216,8 @@
                                     Clientes anteriores
                                 </div>
                                 <div class="formulario-input">
-                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)"
+                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)" 
+                                           (input)="ClienteAnt = $event.target.value"
                                         maxlength="100" />
                                 </div>
                             </div>
@@ -217,6 +228,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <textarea id="Comentarios" placeholder="Comentarios (300 caracteres)"
+                                           (input)="Comentarios = $event.target.value"
+
                                         maxlength="300"></textarea>
                                 </div>
                             </div>
@@ -226,8 +239,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary" id="InformeComercialDescargar" download="{{cartaPorteDescarga}}.jpg"
-                        href="{{fotoSrc}}">Descargar</a>
+                    <a class="btn btn-primary" id="InformeComercialDescargar" (click)="generarInformeComercial()" >Descargar</a>
                 </div>
             </div>
         </div>

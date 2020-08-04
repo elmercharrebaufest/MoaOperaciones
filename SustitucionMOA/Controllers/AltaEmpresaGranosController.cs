@@ -3,6 +3,8 @@ using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -38,7 +40,16 @@ namespace SustitucionMOA.Controllers
             {
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 var FileArray = altaEmpresaService.GenerarInformeComercial(userMail, EmplRelDep, EmplRelDepCant, Rodados, RodadosOtros, Chacra, ChacraOtros, AntigActividad, ActuacionProd, ClienteAnt, Comentarios, Domicilio);
-                return File(FileArray, "application/pdf", "Informe Comercial.pdf");
+
+                PDFResponse result = new PDFResponse();
+
+                result.pdf = new Pdf()
+                {
+                    data = FileArray
+                };
+
+                return JsonCustom(result.pdf);
+                //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
             }
             catch (InfoCustomException e)
             {
@@ -58,7 +69,6 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-
         }
 
         [HttpPost]

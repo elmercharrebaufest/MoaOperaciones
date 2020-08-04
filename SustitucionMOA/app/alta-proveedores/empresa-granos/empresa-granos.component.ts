@@ -25,6 +25,18 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     http: any;
     fileToUpload: File;
 
+    EmplRelDep: string;
+    EmplRelDepCant: string;
+    Rodados: string;
+    RodadosOtros: string;
+    Chacra: string;
+    ChacraOtros: string;
+    AntigActividad: string;
+    ActuacionProd: string;
+    ClienteAnt: string;
+    Comentarios: string;
+    Domicilio: string;
+
     constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
@@ -81,11 +93,42 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
 
-  onSubmit() {
-    var modal = document.getElementById("modal");
-    var container = document.getElementById("container");
-    modal.className = " show";
-    container.className += "hidden"
-  }
+
+    generarInformeComercial() {
+        //this.mensajeComponent.setMsgsEmpty();
+        //this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.generarInformeComercial(this.EmplRelDep, this.EmplRelDepCant, this.Rodados, this.RodadosOtros, this.Chacra, this.ChacraOtros, this.AntigActividad, this.ActuacionProd, this.ClienteAnt, this.Comentarios, this.Domicilio).subscribe(
+            result => {
+                var byteArray = new Uint8Array(result.data);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // IE11
+                    window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                } else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    document.body.appendChild(link);
+                    link.href = url;
+                    link.download = "Informe comercial"  + ".pdf"
+                    link.click();
+                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    return false;
+                }
+                
+            },
+            error => {
+                console.log(error.message);
+            }
+        );
+        return false;  // <- Prevent href del a
+    }
+
+    onSubmit() {
+        var modal = document.getElementById("modal");
+        var container = document.getElementById("container");
+        modal.className = " show";
+        container.className += "hidden"
+    }
 }
 
