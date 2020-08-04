@@ -2,23 +2,23 @@
 
     <div class="row titleSection">Alta Proveedores</div>
 
-    <div class="row myRow firstSection roundedInfo">
+    <div class="row myRow firstSection roundedInfo" id="container">
         <mdb-stepper #stepper>
             <mdb-step name="Step 1" label="Informe comercial">
                 <h3>Informe comercial</h3>
-                <div class="form-group" style="display: flex; flex-direction: column;">
-                    <div style="display: flex;">
-                        <p>Por favor descargue el informe comercial, complételo con sus datos y firma.</p>
-                        <button type="button" class="btn btn-info" (click)="validarCheckboxesFotos()"
-                            style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center; "><a
-                                style="color: white; text-decoration: none;"
-                                href="../../../Content/files/InformeComercial.doc" download="InformeComercial">
-                                Descargar Archivo
-                            </a>
-                        </button>
-                    </div>
+                <div class="form-group informe-comercial">
                     <div>
-                        <label style="font-weight: 100 !important;" for="informeComercialFirmado">Por favor adjunte el
+                        <p>Complete el informe comercial</p>
+                        <!-- Button trigger modal -->
+                        <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
+                            class="btn btn-info"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
+                            Completar informe Comercial
+                        </button>
+
+                    </div>
+                    <div style="flex-direction: column;">
+                        <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
                             informe comercial <strong>completo y firmado</strong></label>
                         <input type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
                     </div>
@@ -28,7 +28,7 @@
             <mdb-step name="Step 2" label="CBU">
                 <h3> Constancia de CBU</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="constanciaCBU">Cargar constancia de CBU certificada
+                    <label class="label" for="constanciaCBU">Cargar constancia de CBU certificada
                         por Banco</label>
                     <input type="file" class="form-control-file" id="constanciaCBU" (change)="handleFileInput($event.target.files, 'constanciaCBU')">
                 </div>
@@ -40,19 +40,19 @@
                     <input type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
                 </div>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="inscripcionIIBB">Inscripción en IIBB -local o
+                    <label class="label" for="inscripcionIIBB">Inscripción en IIBB -local o
                         Convenio (CM05
                         vigente)</label>
                     <input type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
                 </div>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="gananciasIVAIIBB">Certificados de exclusión o
+                    <label class="label" for="gananciasIVAIIBB">Certificados de exclusión o
                         exención en Ganancias, IVA e
                         IIBB.</label>
                     <input type="file" class="form-control-file" id="gananciasIVAIIBB" (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
                 </div>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
+                    <label class="label" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
                         presentar SIPER.</label>
                     <input type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
                 </div>
@@ -68,13 +68,169 @@
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
-                <div class="step-actions" style="display: flex; justify-content: center; margin-top: 30px;">
-                    <button mdbBtn size="sm" color="primary" (click)="onSubmit()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center; color: white; border-radius: 5px; width: 250px;">
+                <div class="step-actions enviar">
+
+                    <input type="submit" (click)="onSubmit()" class="btn-custom">
+
+                    <!-- <button mdbBtn size="sm" color="primary" (click)="onSubmit()"
+                        >
                         Enviar
-                    </button>
+                    </button> -->
                 </div>
             </mdb-step>
         </mdb-stepper>
     </div>
+    <!-- modal notificacion -->
+    <div id="modal" class="hidden modal">
+        <h3>Solicitud de alta enviada</h3>
+        <p>Un asesor le informará el estado de su registro.</p>
+        <p>¡Muhcas gracias!</p>
+    </div>
+    <!-- end modal notificacion -->
+
+    <!-- Modal informe comercial-->
+    <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+        data-target="#myModal"></button>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="abrirModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
+
+                </div>
+                <div class="modal-body">
+
+                    <div class="tab-pane" id="tab2">
+                        <div class="formulario">
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Domicilio Legal
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="Domicilio" placeholder="Domicilio (50 caracteres)"
+                                        maxlength="50" />
+                                </div>
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Empleados en relación de dependencia
+                                </div>
+                                <div class="formulario-input">
+                                    <div>
+                                        <div>
+                                            <label for="si"><input type="radio" id="si" value="si"
+                                                    name="depen">Si</label>
+                                            <input type="text" id="EmplRelDepCant"
+                                                placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
+                                        </div>
+                                        <label for="no"><input type="radio" id="no" value="no" name="depen">No</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Rodados / Equipos aptos para la actividad rural
+                                </div>
+                                <div class="formulario-input">
+                                    <div>
+                                        <div><label for="equipro"><input type="radio" id="equipro" value="equipro"
+                                                    name="rodado">Equipamiento Propio</label></div>
+                                        <div><label for="equialq"><input type="radio" id="equialq" value="equialq"
+                                                    name="rodado">Alquilado</label> </div>
+                                        <div><label for="proyalq"><input type="radio" id="proyalq" value="proyalq"
+                                                    name="rodado">Propio y
+                                                alquilado</label> </div>
+                                        <div>
+                                            <label for="otrosro"><input type="radio" id="otrosro" value="otrosro"
+                                                    name="rodado">Otros</label>
+                                            <input type="text" id="RodadosOtros" placeholder="Otros (50 caracteres)"
+                                                maxlength="50" disabled />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Servicios de chacra
+                                </div>
+                                <div class="formulario-input">
+                                    <div>
+                                        <div><label for="persprop"><input type="radio" id="persprop" value="persprop"
+                                                    name="servicios">Personal propio</label></div>
+                                        <div><label for="perscont"><input type="radio" id="perscont" value="perscont"
+                                                    name="servicios">Personal contratado</label></div>
+                                        <div><label for="persprco"><input type="radio" id="persprco" value="persprco"
+                                                    name="servicios">Personal propio y contratado</label></div>
+                                        <div>
+                                            <label for="otros"><input type="radio" id="otros" value="otros"
+                                                    name="servicios">Otros</label>
+                                            <input type="text" id="ChacraOtros" placeholder="Otros (50 caracteres)"
+                                                maxlength="50" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="titulo">
+                                Antecedentes de la siembra
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Antigüedad en la actividad
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="AntigActividad" placeholder="Antigüedad (100 caracteres)"
+                                        maxlength="100" />
+                                </div>
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Actuación como productor / siembras anteriores
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="ActuacionProd" placeholder="Actuación (100 caracteres)"
+                                        maxlength="100" />
+                                </div>
+                            </div>
+
+                            <div class="titulo">
+                                Antecedentes comerciales
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Clientes anteriores
+                                </div>
+                                <div class="formulario-input">
+                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)"
+                                        maxlength="100" />
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="formulario-label">
+                                    Otros comentarios
+                                </div>
+                                <div class="formulario-input">
+                                    <textarea id="Comentarios" placeholder="Comentarios (300 caracteres)"
+                                        maxlength="300"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" id="InformeComercialDescargar" download="{{cartaPorteDescarga}}.jpg"
+                        href="{{fotoSrc}}">Descargar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal informe comercial-->
 </div>
