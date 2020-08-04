@@ -1,10 +1,13 @@
-﻿import { Injectable } from '@angular/core';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+
+import {map, timeoutWith} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/timeoutWith';
-import 'rxjs/add/observable/throw';
+
+
+
+
 import "rxjs/add/observable/defer";
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
@@ -16,16 +19,16 @@ export class RYDService extends BaseService {
 
     getInputsCargaPesadas(): Observable<any> {
         return this.http
-            .get('/api/ryd/getDataInputsCargaPesadas', { headers: this.headers })
-            .timeoutWith(1200000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .get('/api/ryd/getDataInputsCargaPesadas', { headers: this.headers }).pipe(
+            timeoutWith(1200000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 
     getFiltros(method: string): Observable<any> {
         return this.http
-            .get('/api/ryd/getFiltros' + method, { headers: this.headers })
-            .timeoutWith(300000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .get('/api/ryd/getFiltros' + method, { headers: this.headers }).pipe(
+            timeoutWith(300000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 
 
@@ -47,9 +50,9 @@ export class RYDService extends BaseService {
         params.set('pesoBruto', pesoBruto);
 
         return this.http
-            .post('/api/ryd/registrarPesada', params, this.headersPost)
-            .timeoutWith(1200000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .post('/api/ryd/registrarPesada', params, this.headersPost).pipe(
+            timeoutWith(1200000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 
     postFinalizarCargaPesadas(balanza: string, fecha: string): Observable<any> {
@@ -57,18 +60,18 @@ export class RYDService extends BaseService {
         params.set('balanza', balanza);
         params.set('fecha', fecha);
         return this.http
-            .post('/api/ryd/finalizarCargaPesadas', params, this.headersPost)
-            .timeoutWith(30000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .post('/api/ryd/finalizarCargaPesadas', params, this.headersPost).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 
     verificarBalanzaEnProceso(balanza: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('balanza', balanza);
         return this.http
-            .post('/api/ryd/verificarBalanza', params, this.headersPost)
-            .timeoutWith(30000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .post('/api/ryd/verificarBalanza', params, this.headersPost).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 
 }
@@ -84,18 +87,18 @@ export class RYDInformeService extends RYDService {
         let params: URLSearchParams = new URLSearchParams();
         params.set('balanza', balanza);
         return this.http
-            .get('/api/ryd/getInforme', { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .get('/api/ryd/getInforme', { search: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 
     exportExcel(balanza: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('balanza', balanza);
         return this.http
-            .get('/api/ryd/downloadInforme', { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente")))
-            .map(this.extractData);
+            .get('/api/ryd/downloadInforme', { search: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+            map(this.extractData),);
     }
 }
 
@@ -109,9 +112,9 @@ export class RYDListadoPesadasService extends RYDService {
         params.set('fechaInicio', fechaInicio);
         params.set('fechaFin', fechaFin);
         return this.http
-            .get('/api/ryd/getListadoPesadas', { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
-            .map(this.extractData);
+            .get('/api/ryd/getListadoPesadas', { search: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
+            map(this.extractData),);
     }
 
     getFiltros(): Observable<any> {
@@ -125,9 +128,9 @@ export class RYDListadoPesadasService extends RYDService {
         params.set('fechaInicio', fechaInicio);
         params.set('fechaFin', fechaFin);
         return this.http
-            .get('/api/ryd/downloadListadoPesada', { search: params, headers: this.headers })
-            .timeoutWith(30000, Observable.throw(new Error("Por favor, restrinja el rango de fechas")))
-            .map(this.extractData);
+            .get('/api/ryd/downloadListadoPesada', { search: params, headers: this.headers }).pipe(
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
+            map(this.extractData),);
     }
 }
 

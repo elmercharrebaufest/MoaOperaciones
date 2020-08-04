@@ -89,5 +89,8 @@
 
         /*DATA AGRO*/
         public const string DATAAGROLOGIN = "DATAAGROLOGIN";
+
+        public const string ALTAEMPRESA = "ALTA EMPRESA";
+
     }
 }

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PagoService } from './pago.service';
 import { SessionDataService } from './../common/services/SessionDataService';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -10,11 +10,11 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
 import { Seccion } from './../common/models/Seccion';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-pago',
     template: ``,
     providers: [PagoService]
 })

@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, OnInit, Renderer, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit, Renderer, OnDestroy } from '@angular/core';
 import { Router } from "@angular/router";
 import { LoginService } from './login.service';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
@@ -10,8 +10,8 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 
 export class LoginCommonComponent extends BaseComponent {
@@ -37,29 +37,44 @@ export class LoginCommonComponent extends BaseComponent {
         this.sessionDataService.setPermisos(result.permisos);
         this.sessionDataService.setGranosFlag(result.granosFlag);
 
-        if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
-            this.navService.navegarSeccion('/aduana/pesada-online');
-        } else if (result.tipoUsuario == "CLIE") {
-            this.navService.navegarSeccion('/cuenta-corriente/simple');
-        } else {
+        if (result.esNuevoUsuario) {
             if (result.granosFlag == "A") {
                 sessionStorage.setItem("granosSelected", "G");
-                this.navService.navegarSeccion('/home');
+                this.navService.navegarSeccion('/alta-empresa-granos');
             } else {
                 sessionStorage.setItem("granosSelected", result.granosFlag);
                 if (result.granosFlag == "G") {
+                    this.navService.navegarSeccion('/alta-empresa-granos');
+                } else {
+                    this.navService.navegarSeccion('/alta-empresa-no-granos');
+                }
+            }
+        } else {
+
+            if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
+                this.navService.navegarSeccion('/aduana/pesada-online');
+            } else if (result.tipoUsuario == "CLIE") {
+                this.navService.navegarSeccion('/cuenta-corriente/simple');
+            } else {
+                if (result.granosFlag == "A") {
+                    sessionStorage.setItem("granosSelected", "G");
                     this.navService.navegarSeccion('/home');
                 } else {
-                    this.navService.navegarSeccion('/home-ngs');
+                    sessionStorage.setItem("granosSelected", result.granosFlag);
+                    if (result.granosFlag == "G") {
+                        this.navService.navegarSeccion('/home');
+                    } else {
+                        this.navService.navegarSeccion('/home-ngs');
+                    }
                 }
             }
         }
-        
+
     }
 }
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-login',
     templateUrl: `./app/login/login.component.html?v=${new Date().getTime()}`,
     providers: [LoginService]
 })
@@ -76,6 +91,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
+        this.validarLoginAzure();
     }
 
     titulo = "";
@@ -83,7 +99,7 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
     username = "";
     pass = "";
     loginButtonEnable = true;
-    captchaOk : any = null;
+    captchaOk: any = null;
 
     @ViewChild(MensajeComponent)
     private mensajeComponent: MensajeComponent;
@@ -116,6 +132,35 @@ export class LoginComponent extends LoginCommonComponent implements OnInit, OnDe
             }
         );
         return false;
+    }
+
+    validarLoginAzure() {
+
+        this.mensajeComponent.setMsgsEmpty();
+        this.loginButtonEnable = false;
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.validarLoginAzure().subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                this.loginButtonEnable = true;
+                if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    //this.loginUser(result);
+                    this.redirect(result);
+                }
+                return false;
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+        return false;
+        
     }
 
     enterPressedLogin(event: any) {

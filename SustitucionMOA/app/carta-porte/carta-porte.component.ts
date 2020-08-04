@@ -1,5 +1,5 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
-import { CartaPorteService } from './carta-porte.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CartaPorteService } from './carta-porte2.service';
 import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
@@ -12,17 +12,17 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
-    templateUrl: `./app/carta-porte/carta-porte.component.html?v=${new Date().getTime()}`,
+    selector: 'app-carta-porte',
+    templateUrl: `./app/carta-porteddd/carta-porte.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteService]
 })
 export class CartaPorteBaseComponent extends ListBaseComponent {
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService ) {
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -70,5 +70,5 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
     protected cargarFiltrosVariables(result: any) {
         if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
         if (result.filtroVendedor != undefined) this.filtroVendedor = result.filtroVendedor.options;
-    }       
+    }
 }

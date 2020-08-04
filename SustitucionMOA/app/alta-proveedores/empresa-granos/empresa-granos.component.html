@@ -1,0 +1,80 @@
+<div class="content-wraper">
+
+    <div class="row titleSection">Alta Proveedores</div>
+
+    <div class="row myRow firstSection roundedInfo">
+        <mdb-stepper #stepper>
+            <mdb-step name="Step 1" label="Informe comercial">
+                <h3>Informe comercial</h3>
+                <div class="form-group" style="display: flex; flex-direction: column;">
+                    <div style="display: flex;">
+                        <p>Por favor descargue el informe comercial, complételo con sus datos y firma.</p>
+                        <button type="button" class="btn btn-info" (click)="validarCheckboxesFotos()"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center; "><a
+                                style="color: white; text-decoration: none;"
+                                href="../../../Content/files/InformeComercial.doc" download="InformeComercial">
+                                Descargar Archivo
+                            </a>
+                        </button>
+                    </div>
+                    <div>
+                        <label style="font-weight: 100 !important;" for="informeComercialFirmado">Por favor adjunte el
+                            informe comercial <strong>completo y firmado</strong></label>
+                        <input type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                    </div>
+
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 2" label="CBU">
+                <h3> Constancia de CBU</h3>
+                <div class="form-group">
+                    <label style="font-weight: 100 !important;" for="constanciaCBU">Cargar constancia de CBU certificada
+                        por Banco</label>
+                    <input type="file" class="form-control-file" id="constanciaCBU" (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 3" label="Documentación Impositiva">
+                <h3>Documentación Impositiva</h3>
+                <div class="form-group">
+                    <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
+                    <input type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 100 !important;" for="inscripcionIIBB">Inscripción en IIBB -local o
+                        Convenio (CM05
+                        vigente)</label>
+                    <input type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 100 !important;" for="gananciasIVAIIBB">Certificados de exclusión o
+                        exención en Ganancias, IVA e
+                        IIBB.</label>
+                    <input type="file" class="form-control-file" id="gananciasIVAIIBB" (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 100 !important;" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
+                        presentar SIPER.</label>
+                    <input type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 4" label="Documentación">
+                <h3>Documentación al día en Bolsa</h3>
+                <div class="form-group">
+                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">Sólo Personas Físicas
+                        podrán operar sin oblea si remiten copia
+                        certificada y legalizada
+                        de DNI.</label>
+                    <input type="file" class="form-control-file" id="documentacionEnBolsa" (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 7" label="Enviar">
+                <div class="step-actions" style="display: flex; justify-content: center; margin-top: 30px;">
+                    <button mdbBtn size="sm" color="primary" (click)="onSubmit()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center; color: white; border-radius: 5px; width: 250px;">
+                        Enviar
+                    </button>
+                </div>
+            </mdb-step>
+        </mdb-stepper>
+    </div>
+</div>

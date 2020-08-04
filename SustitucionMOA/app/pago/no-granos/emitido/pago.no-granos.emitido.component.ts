@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PagoService, PagoEmitidoNGService } from './../../pago.service';
 import { PagoComponent } from './../../pago.component';
 import { SessionDataService } from './../../../common/services/SessionDataService';
@@ -7,11 +7,11 @@ import { FloatMsgService } from './../../../common/services/FloatMsgService';
 import { NavService } from './../../../common/services/NavService';
 import { SecurityService } from './../../../common/services/SecurityService';
 import { Seccion } from './../../../common/models/Seccion';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-pago-no-granos-emitido',
     templateUrl: `./app/pago/no-granos/emitido/pago.no-granos.emitido.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: PagoService, useClass: PagoEmitidoNGService }]
 })

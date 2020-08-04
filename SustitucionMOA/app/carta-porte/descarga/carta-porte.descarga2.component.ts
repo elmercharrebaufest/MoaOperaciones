@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { CartaPorteBaseComponent } from './../carta-porte.component';
-import { CartaPorteService, CartaPorteDescargaService } from './../carta-porte.service';
+import { CartaPorteService, CartaPorteDescargaService } from './../carta-porte2.service';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
@@ -8,7 +8,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-carta-porte-descarga',
     templateUrl: `./app/carta-porte/descarga/carta-porte.descarga.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: CartaPorteService, useClass: CartaPorteDescargaService }]
 })
@@ -16,12 +16,17 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
- 
 
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
+
+    cartaPorteId = "";
+    fotoSrc = "";
+    cartaPorteDescarga = "";
+    showModalBox = false;
+    data: any;
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); }
 
@@ -60,9 +65,9 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
             return "";
 
         return this.data.cartasPorte
-                    .filter(function (e: { state: boolean; }) { return e.state })
-                    .map(function (e: { cartaPorte: string; }) { return e.cartaPorte })
-                    .join(",");
+            .filter(function (e: { state: boolean; }) { return e.state })
+            .map(function (e: { cartaPorte: string; }) { return e.cartaPorte })
+            .join(",");
     }
 
     descargarFotos(cartaPorteIDStr: string) {
@@ -105,7 +110,35 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         return false;  // <- Prevent href del a
     }
 
-    checkAll(ev:any) {
+    abrirModal(cartaDePorteNumero: string) {
+        this.spinnerSmallComponent.showIt();
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
+
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    this.cartaPorteDescarga = cartaDePorteNumero;
+                    document.getElementById("openModalHiddenButton").click();
+                    return true;
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            }
+        );
+        return false;
+    }
+
+    checkAll(ev: any) {
         this.data.cartasPorte.forEach((x: { state: any; }) => x.state = ev.target.checked)
     }
 

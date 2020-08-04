@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AduanaService } from './../../aduana.service';
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { MensajeComponent } from './../../../common/view-child/mensaje/mensaje.component';
@@ -10,12 +10,12 @@ import { SecurityService } from './../../../common/services/SecurityService';
 import { AduanaBaseComponent } from './../../aduana.component';
 import { Formatter } from './../../../common/formatter/Formatter';
 import { ModalService } from './../../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 declare var $: any;
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-aduana-pesada-online',
     templateUrl: `./app/aduana/pesada/online/pesada.online.component.html?v=${new Date().getTime()}`,
     providers: [AduanaService]
 })

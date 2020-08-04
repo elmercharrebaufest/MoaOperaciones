@@ -1,5 +1,5 @@
-﻿import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { CartaPorteService } from './../carta-porte.service';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { CartaPorteService } from './../carta-porte2.service';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
@@ -11,11 +11,11 @@ import { Seccion } from './../../common/models/seccion';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-carta-porte-detalle',
     templateUrl: `./app/carta-porte/detalle/carta-porte.detalle.component.html?v=${new Date().getTime()}`,
     providers: [CartaPorteService]
 })
@@ -177,6 +177,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     abrirModal() {
+        console.log("funcionHOLA")
         this.spinnerSmallComponent.showIt();
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();

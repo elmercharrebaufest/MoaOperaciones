@@ -1,4 +1,4 @@
-﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
@@ -11,9 +11,9 @@ import { CamaraConsolidacionComponent } from './aduana/camara/consolidacion/cama
 import { CamaraMuelleComponent } from './aduana/camara/muelle/camara.muelle.component';
 import { CargaPesadasComponent } from './ryd/carga-pesadas/carga-pesadas.component';
 import { CartaPorteBaseComponent } from './carta-porte/carta-porte.component';
-import { CartaPorteAplicacionComponent } from './carta-porte/aplicacion/carta-porte.aplicacion.component';
-import { CartaPorteDetalleComponent } from './carta-porte/detalle/carta-porte.detalle.component';
-import { CartaPorteDescargaComponent } from './carta-porte/descarga/carta-porte.descarga.component';
+import { CartaPorteAplicacionComponent } from './carta-porte/aplicacion/carta-porte.aplicacion2.component';
+import { CartaPorteDetalleComponent } from './carta-porte/detalle/carta-porte.detalle2.component';
+import { CartaPorteDescargaComponent } from './carta-porte/descarga/carta-porte.descarga2.component';
 import { CartaPorteFormularioComponent } from './carta-porte/formulario/carta-porte.formulario.component';
 import { CambioContraseniaComponent } from './usuario/cambio-contrasenia/usuario.cambio-contrasenia.component';
 import { ContratoBaseComponent } from './contrato/contrato.component';
@@ -113,8 +113,13 @@ import { ModalModule } from 'ngx-modal';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
-import { AppRoutingModule } from './app-routing.module';
-
+import { AppRoutingModule } from './app-routing.module';;
+import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component'
+    ;
+import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component'
+    ;
+import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component'
+import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-granos.service';
 @NgModule({
     imports: [
         BrowserModule,
@@ -203,6 +208,12 @@ import { AppRoutingModule } from './app-routing.module';
         OrderedColumn,
         ShortenStringPipe,
         PesificacionComponent
+        ,
+        CartaPorteModalComponent
+        ,
+        EmpresaGranosComponent
+        ,
+        EmpresaNoGranosComponent,
     ],
     providers: [
         DatePipe,
@@ -238,9 +249,10 @@ import { AppRoutingModule } from './app-routing.module';
         FacturaService,
         ServiceLocator,
         ModalService,
-        SecurityService
+        SecurityService,
+        EmpresaGranosService
     ],
     bootstrap: [AppComponent], 
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

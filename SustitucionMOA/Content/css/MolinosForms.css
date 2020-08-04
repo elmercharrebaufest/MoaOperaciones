@@ -2,424 +2,543 @@
 /* CSS Document */
 /*Datetimepicker */
 .datetimepicker {
-	padding: 4px;
-	margin-top: 1px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	direction: ltr;
-	font-size:16px;
+  padding: 4px;
+  margin-top: 1px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  direction: ltr;
+  font-size: 16px;
 }
 .datetimepicker-inline {
-	width: 220px;
+  width: 220px;
 }
 .datetimepicker.datetimepicker-rtl {
-	direction: rtl;
+  direction: rtl;
 }
 .datetimepicker.datetimepicker-rtl table tr td span {
-	float: right;
+  float: right;
 }
-.datetimepicker-dropdown, .datetimepicker-dropdown-left {
-	top: 0;
-	left: 0;
+.datetimepicker-dropdown,
+.datetimepicker-dropdown-left {
+  top: 0;
+  left: 0;
 }
- [class*=" datetimepicker-dropdown"]:before {
- content: '';
- display: inline-block;
- border-left: 7px solid transparent;
- border-right: 7px solid transparent;
- border-bottom: 7px solid #cccccc;
- border-bottom-color: rgba(0, 0, 0, 0.2);
- position: absolute;
+[class*=" datetimepicker-dropdown"]:before {
+  content: "";
+  display: inline-block;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #cccccc;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
 }
- [class*=" datetimepicker-dropdown"]:after {
- content: '';
- display: inline-block;
- border-left: 6px solid transparent;
- border-right: 6px solid transparent;
- border-bottom: 6px solid #ffffff;
- position: absolute;
+[class*=" datetimepicker-dropdown"]:after {
+  content: "";
+  display: inline-block;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #ffffff;
+  position: absolute;
 }
- [class*=" datetimepicker-dropdown-top"]:before {
- content: '';
- display: inline-block;
- border-left: 7px solid transparent;
- border-right: 7px solid transparent;
- border-top: 7px solid #cccccc;
- border-top-color: rgba(0, 0, 0, 0.2);
- border-bottom: 0;
+[class*=" datetimepicker-dropdown-top"]:before {
+  content: "";
+  display: inline-block;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #cccccc;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 0;
 }
- [class*=" datetimepicker-dropdown-top"]:after {
- content: '';
- display: inline-block;
- border-left: 6px solid transparent;
- border-right: 6px solid transparent;
- border-top: 6px solid #ffffff;
- border-bottom: 0;
+[class*=" datetimepicker-dropdown-top"]:after {
+  content: "";
+  display: inline-block;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #ffffff;
+  border-bottom: 0;
 }
 .datetimepicker-dropdown-bottom-left:before {
-	top: -7px;
-	right: 6px;
+  top: -7px;
+  right: 6px;
 }
 .datetimepicker-dropdown-bottom-left:after {
-	top: -6px;
-	right: 7px;
+  top: -6px;
+  right: 7px;
 }
 .datetimepicker-dropdown-bottom-right:before {
-	top: -7px;
-	left: 6px;
+  top: -7px;
+  left: 6px;
 }
 .datetimepicker-dropdown-bottom-right:after {
-	top: -6px;
-	left: 7px;
+  top: -6px;
+  left: 7px;
 }
 .datetimepicker-dropdown-top-left:before {
-	bottom: -7px;
-	right: 6px;
+  bottom: -7px;
+  right: 6px;
 }
 .datetimepicker-dropdown-top-left:after {
-	bottom: -6px;
-	right: 7px;
+  bottom: -6px;
+  right: 7px;
 }
 .datetimepicker-dropdown-top-right:before {
-	bottom: -7px;
-	left: 6px;
+  bottom: -7px;
+  left: 6px;
 }
 .datetimepicker-dropdown-top-right:after {
-	bottom: -6px;
-	left: 7px;
+  bottom: -6px;
+  left: 7px;
 }
 .datetimepicker > div {
-	display: none;
+  display: none;
 }
 .datetimepicker.minutes div.datetimepicker-minutes {
-	display: block;
+  display: block;
 }
 .datetimepicker.hours div.datetimepicker-hours {
-	display: block;
+  display: block;
 }
 .datetimepicker.days div.datetimepicker-days {
-	display: block;
+  display: block;
 }
 .datetimepicker.months div.datetimepicker-months {
-	display: block;
+  display: block;
 }
 .datetimepicker.years div.datetimepicker-years {
-	display: block;
+  display: block;
 }
 .datetimepicker table {
-	margin: 0;
+  margin: 0;
 }
-.datetimepicker td, .datetimepicker th {
-	text-align: center;
-	width: 20px;
-	height: 20px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	border: none;
+.datetimepicker td,
+.datetimepicker th {
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border: none;
 }
-.table-striped .datetimepicker table tr td, .table-striped .datetimepicker table tr th {
-	background-color: transparent;
+.table-striped .datetimepicker table tr td,
+.table-striped .datetimepicker table tr th {
+  background-color: transparent;
 }
 .datetimepicker table tr td.minute:hover {
-	background: #eeeeee;
-	cursor: pointer;
+  background: #eeeeee;
+  cursor: pointer;
 }
 .datetimepicker table tr td.hour:hover {
-	background: #eeeeee;
-	cursor: pointer;
+  background: #eeeeee;
+  cursor: pointer;
 }
 .datetimepicker table tr td.day:hover {
-	background: #eeeeee;
-	cursor: pointer;
+  background: #eeeeee;
+  cursor: pointer;
 }
-.datetimepicker table tr td.old, .datetimepicker table tr td.new {
-	color: #999999;
+.datetimepicker table tr td.old,
+.datetimepicker table tr td.new {
+  color: #999999;
 }
-.datetimepicker table tr td.disabled, .datetimepicker table tr td.disabled:hover {
-	background: none;
-	color: #999999;
-	cursor: default;
+.datetimepicker table tr td.disabled,
+.datetimepicker table tr td.disabled:hover {
+  background: none;
+  color: #999999;
+  cursor: default;
 }
-.datetimepicker table tr td.today, .datetimepicker table tr td.today:hover, .datetimepicker table tr td.today.disabled, .datetimepicker table tr td.today.disabled:hover {
-	background-color: #9fb5ab;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+.datetimepicker table tr td.today,
+.datetimepicker table tr td.today:hover,
+.datetimepicker table tr td.today.disabled,
+.datetimepicker table tr td.today.disabled:hover {
+  background-color: #9fb5ab;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
-.datetimepicker table tr td.today:hover, .datetimepicker table tr td.today:hover:hover, .datetimepicker table tr td.today.disabled:hover, .datetimepicker table tr td.today.disabled:hover:hover, .datetimepicker table tr td.today:active, .datetimepicker table tr td.today:hover:active, .datetimepicker table tr td.today.disabled:active, .datetimepicker table tr td.today.disabled:hover:active, .datetimepicker table tr td.today.active, .datetimepicker table tr td.today:hover.active, .datetimepicker table tr td.today.disabled.active, .datetimepicker table tr td.today.disabled:hover.active, .datetimepicker table tr td.today.disabled, .datetimepicker table tr td.today:hover.disabled, .datetimepicker table tr td.today.disabled.disabled, .datetimepicker table tr td.today.disabled:hover.disabled, .datetimepicker table tr td.today[disabled], .datetimepicker table tr td.today:hover[disabled], .datetimepicker table tr td.today.disabled[disabled], .datetimepicker table tr td.today.disabled:hover[disabled] {
-	background-color: #5d70b1;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+.datetimepicker table tr td.today:hover,
+.datetimepicker table tr td.today:hover:hover,
+.datetimepicker table tr td.today.disabled:hover,
+.datetimepicker table tr td.today.disabled:hover:hover,
+.datetimepicker table tr td.today:active,
+.datetimepicker table tr td.today:hover:active,
+.datetimepicker table tr td.today.disabled:active,
+.datetimepicker table tr td.today.disabled:hover:active,
+.datetimepicker table tr td.today.active,
+.datetimepicker table tr td.today:hover.active,
+.datetimepicker table tr td.today.disabled.active,
+.datetimepicker table tr td.today.disabled:hover.active,
+.datetimepicker table tr td.today.disabled,
+.datetimepicker table tr td.today:hover.disabled,
+.datetimepicker table tr td.today.disabled.disabled,
+.datetimepicker table tr td.today.disabled:hover.disabled,
+.datetimepicker table tr td.today[disabled],
+.datetimepicker table tr td.today:hover[disabled],
+.datetimepicker table tr td.today.disabled[disabled],
+.datetimepicker table tr td.today.disabled:hover[disabled] {
+  background-color: #5d70b1;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
-.datetimepicker table tr td.today:active, .datetimepicker table tr td.today:hover:active, .datetimepicker table tr td.today.disabled:active, .datetimepicker table tr td.today.disabled:hover:active, .datetimepicker table tr td.today.active, .datetimepicker table tr td.today:hover.active, .datetimepicker table tr td.today.disabled.active, .datetimepicker table tr td.today.disabled:hover.active {
-	background-color: #fbf069;
+.datetimepicker table tr td.today:active,
+.datetimepicker table tr td.today:hover:active,
+.datetimepicker table tr td.today.disabled:active,
+.datetimepicker table tr td.today.disabled:hover:active,
+.datetimepicker table tr td.today.active,
+.datetimepicker table tr td.today:hover.active,
+.datetimepicker table tr td.today.disabled.active,
+.datetimepicker table tr td.today.disabled:hover.active {
+  background-color: #fbf069;
 }
-.datetimepicker table tr td.active, .datetimepicker table tr td.active:hover, .datetimepicker table tr td.active.disabled, .datetimepicker table tr td.active.disabled:hover {
-	background-color: #006dcc;
-	font-weight:700;
-	color: #ffffff;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+.datetimepicker table tr td.active,
+.datetimepicker table tr td.active:hover,
+.datetimepicker table tr td.active.disabled,
+.datetimepicker table tr td.active.disabled:hover {
+  background-color: #006dcc;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
-.datetimepicker table tr td.active:hover, .datetimepicker table tr td.active:hover:hover, .datetimepicker table tr td.active.disabled:hover, .datetimepicker table tr td.active.disabled:hover:hover, .datetimepicker table tr td.active:active, .datetimepicker table tr td.active:hover:active, .datetimepicker table tr td.active.disabled:active, .datetimepicker table tr td.active.disabled:hover:active, .datetimepicker table tr td.active.active, .datetimepicker table tr td.active:hover.active, .datetimepicker table tr td.active.disabled.active, .datetimepicker table tr td.active.disabled:hover.active, .datetimepicker table tr td.active.disabled, .datetimepicker table tr td.active:hover.disabled, .datetimepicker table tr td.active.disabled.disabled, .datetimepicker table tr td.active.disabled:hover.disabled, .datetimepicker table tr td.active[disabled], .datetimepicker table tr td.active:hover[disabled], .datetimepicker table tr td.active.disabled[disabled], .datetimepicker table tr td.active.disabled:hover[disabled] {
-	background-color: #0044cc;
+.datetimepicker table tr td.active:hover,
+.datetimepicker table tr td.active:hover:hover,
+.datetimepicker table tr td.active.disabled:hover,
+.datetimepicker table tr td.active.disabled:hover:hover,
+.datetimepicker table tr td.active:active,
+.datetimepicker table tr td.active:hover:active,
+.datetimepicker table tr td.active.disabled:active,
+.datetimepicker table tr td.active.disabled:hover:active,
+.datetimepicker table tr td.active.active,
+.datetimepicker table tr td.active:hover.active,
+.datetimepicker table tr td.active.disabled.active,
+.datetimepicker table tr td.active.disabled:hover.active,
+.datetimepicker table tr td.active.disabled,
+.datetimepicker table tr td.active:hover.disabled,
+.datetimepicker table tr td.active.disabled.disabled,
+.datetimepicker table tr td.active.disabled:hover.disabled,
+.datetimepicker table tr td.active[disabled],
+.datetimepicker table tr td.active:hover[disabled],
+.datetimepicker table tr td.active.disabled[disabled],
+.datetimepicker table tr td.active.disabled:hover[disabled] {
+  background-color: #0044cc;
 }
-.datetimepicker table tr td.active:active, .datetimepicker table tr td.active:hover:active, .datetimepicker table tr td.active.disabled:active, .datetimepicker table tr td.active.disabled:hover:active, .datetimepicker table tr td.active.active, .datetimepicker table tr td.active:hover.active, .datetimepicker table tr td.active.disabled.active, .datetimepicker table tr td.active.disabled:hover.active {
-	background-color: #003399;
+.datetimepicker table tr td.active:active,
+.datetimepicker table tr td.active:hover:active,
+.datetimepicker table tr td.active.disabled:active,
+.datetimepicker table tr td.active.disabled:hover:active,
+.datetimepicker table tr td.active.active,
+.datetimepicker table tr td.active:hover.active,
+.datetimepicker table tr td.active.disabled.active,
+.datetimepicker table tr td.active.disabled:hover.active {
+  background-color: #003399;
 }
 .datetimepicker table tr td span {
-	display: block;
-	width: 23%;
-	height: 54px;
-	line-height: 54px;
-	float: left;
-	margin: 1%;
-	cursor: pointer;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
+  display: block;
+  width: 23%;
+  height: 54px;
+  line-height: 54px;
+  float: left;
+  margin: 1%;
+  cursor: pointer;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 .datetimepicker .datetimepicker-hours span {
-	height: 26px;
-	line-height: 26px;
+  height: 26px;
+  line-height: 26px;
 }
-.datetimepicker .datetimepicker-hours table tr td span.hour_am, .datetimepicker .datetimepicker-hours table tr td span.hour_pm {
-	width: 14.6%;
+.datetimepicker .datetimepicker-hours table tr td span.hour_am,
+.datetimepicker .datetimepicker-hours table tr td span.hour_pm {
+  width: 14.6%;
 }
-.datetimepicker .datetimepicker-hours fieldset legend, .datetimepicker .datetimepicker-minutes fieldset legend {
-	margin-bottom: inherit;
-	line-height: 30px;
+.datetimepicker .datetimepicker-hours fieldset legend,
+.datetimepicker .datetimepicker-minutes fieldset legend {
+  margin-bottom: inherit;
+  line-height: 30px;
 }
 .datetimepicker .datetimepicker-minutes span {
-	height: 26px;
-	line-height: 26px;
+  height: 26px;
+  line-height: 26px;
 }
 .datetimepicker table tr td span:hover {
-	background: #eeeeee;
+  background: #eeeeee;
 }
-.datetimepicker table tr td span.disabled, .datetimepicker table tr td span.disabled:hover {
-	background: none;
-	color: #999999;
-	cursor: default;
+.datetimepicker table tr td span.disabled,
+.datetimepicker table tr td span.disabled:hover {
+  background: none;
+  color: #999999;
+  cursor: default;
 }
-.datetimepicker table tr td span.active, .datetimepicker table tr td span.active:hover, .datetimepicker table tr td span.active.disabled, .datetimepicker table tr td span.active.disabled:hover {
-	background-color: #006dcc;
-	color: #ffffff;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+.datetimepicker table tr td span.active,
+.datetimepicker table tr td span.active:hover,
+.datetimepicker table tr td span.active.disabled,
+.datetimepicker table tr td span.active.disabled:hover {
+  background-color: #006dcc;
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
-.datetimepicker table tr td span.active:hover, .datetimepicker table tr td span.active:hover:hover, .datetimepicker table tr td span.active.disabled:hover, .datetimepicker table tr td span.active.disabled:hover:hover, .datetimepicker table tr td span.active:active, .datetimepicker table tr td span.active:hover:active, .datetimepicker table tr td span.active.disabled:active, .datetimepicker table tr td span.active.disabled:hover:active, .datetimepicker table tr td span.active.active, .datetimepicker table tr td span.active:hover.active, .datetimepicker table tr td span.active.disabled.active, .datetimepicker table tr td span.active.disabled:hover.active, .datetimepicker table tr td span.active.disabled, .datetimepicker table tr td span.active:hover.disabled, .datetimepicker table tr td span.active.disabled.disabled, .datetimepicker table tr td span.active.disabled:hover.disabled, .datetimepicker table tr td span.active[disabled], .datetimepicker table tr td span.active:hover[disabled], .datetimepicker table tr td span.active.disabled[disabled], .datetimepicker table tr td span.active.disabled:hover[disabled] {
-	background-color: #0044cc;
+.datetimepicker table tr td span.active:hover,
+.datetimepicker table tr td span.active:hover:hover,
+.datetimepicker table tr td span.active.disabled:hover,
+.datetimepicker table tr td span.active.disabled:hover:hover,
+.datetimepicker table tr td span.active:active,
+.datetimepicker table tr td span.active:hover:active,
+.datetimepicker table tr td span.active.disabled:active,
+.datetimepicker table tr td span.active.disabled:hover:active,
+.datetimepicker table tr td span.active.active,
+.datetimepicker table tr td span.active:hover.active,
+.datetimepicker table tr td span.active.disabled.active,
+.datetimepicker table tr td span.active.disabled:hover.active,
+.datetimepicker table tr td span.active.disabled,
+.datetimepicker table tr td span.active:hover.disabled,
+.datetimepicker table tr td span.active.disabled.disabled,
+.datetimepicker table tr td span.active.disabled:hover.disabled,
+.datetimepicker table tr td span.active[disabled],
+.datetimepicker table tr td span.active:hover[disabled],
+.datetimepicker table tr td span.active.disabled[disabled],
+.datetimepicker table tr td span.active.disabled:hover[disabled] {
+  background-color: #0044cc;
 }
-.datetimepicker table tr td span.active:active, .datetimepicker table tr td span.active:hover:active, .datetimepicker table tr td span.active.disabled:active, .datetimepicker table tr td span.active.disabled:hover:active, .datetimepicker table tr td span.active.active, .datetimepicker table tr td span.active:hover.active, .datetimepicker table tr td span.active.disabled.active, .datetimepicker table tr td span.active.disabled:hover.active {
-	background-color: #003399;
+.datetimepicker table tr td span.active:active,
+.datetimepicker table tr td span.active:hover:active,
+.datetimepicker table tr td span.active.disabled:active,
+.datetimepicker table tr td span.active.disabled:hover:active,
+.datetimepicker table tr td span.active.active,
+.datetimepicker table tr td span.active:hover.active,
+.datetimepicker table tr td span.active.disabled.active,
+.datetimepicker table tr td span.active.disabled:hover.active {
+  background-color: #003399;
 }
 .datetimepicker table tr td span.old {
-	color: #999999;
+  color: #999999;
 }
 .datetimepicker th.switch {
-	width: 145px;
+  width: 145px;
 }
 .datetimepicker th span.glyphicon {
-	pointer-events: none;
+  pointer-events: none;
 }
-.datetimepicker thead tr:first-child th, .datetimepicker tfoot th {
-	cursor: pointer;
+.datetimepicker thead tr:first-child th,
+.datetimepicker tfoot th {
+  cursor: pointer;
 }
-.datetimepicker thead tr:first-child th:hover, .datetimepicker tfoot th:hover {
-	background: #eeeeee;
+.datetimepicker thead tr:first-child th:hover,
+.datetimepicker tfoot th:hover {
+  background: #eeeeee;
 }
-.input-append.date .add-on i, .input-prepend.date .add-on i, .input-group.date .input-group-addon span {
-	cursor: pointer;
-	width: 14px;
-	height: 14px;
+.input-append.date .add-on i,
+.input-prepend.date .add-on i,
+.input-group.date .input-group-addon span {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
 }
 /*FORM*/
 
 .input-group-addon {
-	padding: 6px 12px;
-	font-size: 16px;
-	font-weight: 400;
-	line-height: 0;
-	color: #555;
-	text-align: center;
-	background-color: #eee;
-	border: none;
-	border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 0;
+  color: #555;
+  text-align: center;
+  background-color: #eee;
+  border: none;
+  border-radius: 4px;
 }
 fieldset {
-	padding: 0;
+  padding: 0;
 }
 th.switch {
-	margin: 20px 10px;
-	position: relative;
-	height: 26px;
-	width: 240px;
-	background: none;
-	font-size: 14px;
+  margin: 20px 10px;
+  position: relative;
+  height: 26px;
+  width: 240px;
+  background: none;
+  font-size: 14px;
 }
 .cargaDeDatos .cargaDeDatosFields {
-	padding-bottom: 0px;
-	/*border-bottom: 1px solid #999c9b;*/
-	margin-bottom: 10px;
+  padding-bottom: 0px;
+  /*border-bottom: 1px solid #999c9b;*/
+  margin-bottom: 10px;
 }
-.cargaDeDatos .btnSection, .cargaDeDatos .btnSection:hover {
-	background: #17308f;
-	color: #fff;
+.cargaDeDatos .btnSection,
+.cargaDeDatos .btnSection:hover {
+  background: #17308f;
+  color: #fff;
 }
 .cargaDeDatos .btnSection .fa {
-	color: #fff;
+  color: #fff;
 }
- .cargaDeDatos .cargaDeDatosFields [class*='col'] {
-margin-bottom:10px
+.cargaDeDatos .cargaDeDatosFields [class*="col"] {
+  margin-bottom: 10px;
 }
 /*.cargaDeDatos .cargaDeDatosFields [class*='col']:first-child {
  padding-left:0px;
 }*/
 .finalizar {
-	margin-top:20px
+  margin-top: 20px;
 }
-.finalizar .btnSection, .finalizar .btnSection:hover {
-	background: #03753e;
-	color: #fff;
-}
-
-.fletesActions .btnSection, .fletesActions .btnSection:hover {
-	background: #03753e;
-	color: #fff;
+.finalizar .btnSection,
+.finalizar .btnSection:hover {
+  background: #03753e;
+  color: #fff;
 }
 
-.mySearch .rounded, .roundedInfo .rounded {
-	margin-top:20px;
-	padding-left:0px;
-	padding-right:0px;
+.fletesActions .btnSection,
+.fletesActions .btnSection:hover {
+  background: #03753e;
+  color: #fff;
 }
-.roundedInfo .squareInfo{ margin-top:20px;padding-right:0px;}
 
-.squareInfo title-caps {padding-left:0px; color:#1e1e20; text-transform:inherit;}
-.mySearch hr, .roundedInfo hr {
-	margin:0px 15px 10px 15px;
-	border: 0.5px solid #999c9b;
-	clear:both;
-}
-.squareInfo hr {margin:0px 0px 10px 0px;
-	border: 0.5px solid #999c9b;
-	clear:both;}
- .cargaDeDatosFour [class*='col']:first-child {
- padding-left: 0px;
-}
- .cargaDeDatosFour [class*='col']:last-child {
- padding-right: 0px;
-}
-.styled-select input[type=checkbox], .styled-select input[type=radio] {
-	margin:0 auto;
-	width:100%;
-	margin-top:5px;
-	height:16px;
-	background:none!important;
-}
-.styled-select input[type=radio] {
-	vertical-align: middle;
-	margin:0;
-	height:16px;
-	width:20px;
-}
-.styled-select label {
-	vertical-align: middle;
-	margin:0
-}
-.styled-select p {
-	margin:0
-}
-.styled-select p:first-child {
-	margin:2px 0 25px 0
-}
-.entrefechas_2 {
-	margin-bottom:5px;
-}
-.alert {
-	border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	-webkit-box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
-	-moz-box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
-	box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
-	padding:15px;
-	font-size:18px;
-	font-weight:400;
-	margin-top:20px;
-}
-.alert i {
-	margin-right:10px;
-}
-.alert-danger {
-	color: #af1a16;
-	background-color: #f9eeee;
-	border: none;
-}
-.alert-warning {
-	color: #c58a25;
-	background-color: #f7f5ec;
-	border: none;
-}
- @media (max-width: 989px) {
-/*entre fechas search*/
-.entrefechas_2 {
-padding-left:10px!important;
-}
-.entrefechas_1, .entrefechas_2 {
-margin-top:5px;
-margin-bottom:20px;
-}
-/*
-entre fechas search*/
-
- }
- @media (max-width: 767px) {
- .cargaDeDatos .cargaDeDatosFields [class*='col'] {
-margin-bottom:5px;
-}
-.btnSection {
- margin-bottom: 15px;
-}
-.mySearch .rounded, .roundedInfo .rounded {
-padding-top:10px;
-}
-.cargaDeDatosFour [class*='col']:nth-child(3) {
- padding-left: 0px;
-}
- .cargaDeDatosFour [class*='col']:nth-child(3), .cargaDeDatosFour [class*='col']:last-child {
-margin-top: 0px;
-}
- .cargaDeDatosFour [class*='col']:nth-child(2) {
- padding-right: 0px;
-}
- .mySearch, .roundedInfo  {
- margin-top: 0px;
+.mySearch .rounded,
+.roundedInfo .rounded {
+  margin-top: 20px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 .roundedInfo .squareInfo {
-    padding-left: 0px;
+  margin-top: 20px;
+  padding-right: 0px;
 }
-.myTables {
-margin-bottom:10px
+
+.squareInfo title-caps {
+  padding-left: 0px;
+  color: #1e1e20;
+  text-transform: inherit;
+}
+.mySearch hr,
+.roundedInfo hr {
+  margin: 0px 15px 10px 15px;
+  border: 0.5px solid #999c9b;
+  clear: both;
+}
+.squareInfo hr {
+  margin: 0px 0px 10px 0px;
+  border: 0.5px solid #999c9b;
+  clear: both;
+}
+.cargaDeDatosFour [class*="col"]:first-child {
+  padding-left: 0px;
+}
+.cargaDeDatosFour [class*="col"]:last-child {
+  padding-right: 0px;
+}
+.styled-select input[type="checkbox"],
+.styled-select input[type="radio"] {
+  margin: 0 auto;
+  width: 100%;
+  margin-top: 5px;
+  height: 16px;
+  background: none !important;
+}
+.styled-select input[type="radio"] {
+  vertical-align: middle;
+  margin: 0;
+  height: 16px;
+  width: 20px;
+}
+.styled-select label {
+  vertical-align: middle;
+  margin: 0;
+}
+.styled-select p {
+  margin: 0;
 }
 .styled-select p:first-child {
-margin:2px 0 10px 0
+  margin: 2px 0 25px 0;
 }
 .entrefechas_2 {
-padding-left:0px!important;
+  margin-bottom: 5px;
 }
-.entrefechas_1, .entrefechas_2, .entrefechas_3 {
-margin-top:0px;
-margin-bottom:0px;
+.alert {
+  border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  -webkit-box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
+  -moz-box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
+  box-shadow: -1px 2px 11px 1px rgba(0, 0, 0, 0.11);
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 400;
+  margin-top: 20px;
 }
- .entrefechas_2 {
-margin-bottom:5px;
+.alert i {
+  margin-right: 10px;
 }
+.alert-danger {
+  color: #af1a16;
+  background-color: #f9eeee;
+  border: none;
+}
+.alert-warning {
+  color: #c58a25;
+  background-color: #f7f5ec;
+  border: none;
+}
+@media (max-width: 989px) {
+  /*entre fechas search*/
+  .entrefechas_2 {
+    padding-left: 10px !important;
+  }
+  .entrefechas_1,
+  .entrefechas_2 {
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+  /*
+entre fechas search*/
+}
+@media (max-width: 767px) {
+  .cargaDeDatos .cargaDeDatosFields [class*="col"] {
+    margin-bottom: 5px;
+  }
+  .btnSection {
+    margin-bottom: 15px;
+  }
+  .mySearch .rounded,
+  .roundedInfo .rounded {
+    padding-top: 10px;
+  }
+  .cargaDeDatosFour [class*="col"]:nth-child(3) {
+    padding-left: 0px;
+  }
+  .cargaDeDatosFour [class*="col"]:nth-child(3),
+  .cargaDeDatosFour [class*="col"]:last-child {
+    margin-top: 0px;
+  }
+  .cargaDeDatosFour [class*="col"]:nth-child(2) {
+    padding-right: 0px;
+  }
+  .mySearch,
+  .roundedInfo {
+    margin-top: 0px;
+  }
+  .roundedInfo .squareInfo {
+    padding-left: 0px;
+  }
+  .myTables {
+    margin-bottom: 10px;
+  }
+  .styled-select p:first-child {
+    margin: 2px 0 10px 0;
+  }
+  .entrefechas_2 {
+    padding-left: 0px !important;
+  }
+  .entrefechas_1,
+  .entrefechas_2,
+  .entrefechas_3 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+  .entrefechas_2 {
+    margin-bottom: 5px;
+  }
 }
 @media (max-width: 280px) {
-	.mySearch {
-		font-size: 15px;
-		line-height: 1;
-	}
-	/*.btnSection .fa {
+  .mySearch {
+    font-size: 15px;
+    line-height: 1;
+  }
+  /*.btnSection .fa {
  display:none
 }*/
 }

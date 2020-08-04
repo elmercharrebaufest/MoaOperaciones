@@ -13,7 +13,7 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-liquidacion-proforma',
     templateUrl: `./app/liquidacion/proforma/liquidacion.proforma.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: LiquidacionService, useClass: LiquidacionProformaService }]
 })

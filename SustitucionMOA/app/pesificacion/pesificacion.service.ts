@@ -1,11 +1,13 @@
-﻿import { Injectable } from '@angular/core';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
+
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
+import { timeoutWith, map } from 'rxjs/operators';
 
 
 @Injectable()
@@ -26,8 +28,8 @@ export class PesificacionService extends BaseService {
     protected getFechaPesificacion() {
         return this.http
             .get('/api/pesificacion/getFechaPesificacion')
-            .timeoutWith(30000, Observable.throw(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde")))
-            .map(this.extractData);
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
     protected setComprobantePesificacion(contrato: string, fijacion: string, cantidad: number) {
@@ -36,8 +38,8 @@ export class PesificacionService extends BaseService {
         payload.append("contrato", JSON.stringify(data));
         return this.http
             .post('/api/pesificacion/setComprobante', payload)
-            .timeoutWith(30000, Observable.throw(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde")))
-            .map(this.extractData);
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
     protected setComprobantesPesificacion(file: any): Observable<any> {
@@ -45,7 +47,7 @@ export class PesificacionService extends BaseService {
         payload.append("file", file);
         return this.http
             .post('/api/pesificacion/setComprobantes', payload, this.headersPost)
-            .timeoutWith(30000, Observable.throw(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde")))
-            .map(this.extractData);
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 }

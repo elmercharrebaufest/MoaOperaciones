@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, Renderer, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Renderer, ElementRef, AfterViewInit } from '@angular/core';
 import { LiquidacionService, LiquidacionAprobadaService } from './../liquidacion.service';
 import { LiquidacionBaseComponent } from './../liquidacion.component';
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -10,11 +10,11 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SecurityService } from './../../common/services/SecurityService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+
+
 
 @Component({
-    selector: 'my-app',
+    selector: 'app-liquidacion-aprobada',
     templateUrl: `./app/liquidacion/aprobada/liquidacion.aprobada.component.html?v=${new Date().getTime()}`,
     providers: [{ provide: LiquidacionService, useClass: LiquidacionAprobadaService }]
 })

@@ -1,9 +1,11 @@
-﻿import { Injectable } from '@angular/core';
+
+import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { Observable } from 'rxjs';
+
+
+
 
 
 @Injectable()
@@ -21,9 +23,22 @@ export class LoginService {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
         return this.http
-            .get('/api/login/login', { search: params, headers: headers })
-            .map(this.extractData);
+            .get('/api/login/login', { search: params, headers: headers }).pipe(
+            map(this.extractData));
     }
+
+    public validarLoginAzure(): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        let headers = new Headers();
+        headers.append('Cache-control', 'no-cache');
+        headers.append('Cache-control', 'no-store');
+        headers.append('Expires', '0');
+        headers.append('Pragma', 'no-cache');
+        return this.http
+            .get('/api/login/ValidarLoginAzure', { search: params, headers: headers }).pipe(
+                map(this.extractData));
+    }
+
 
     public registrar(numeroProveedor: string, claveActivacion: string, username: string, contrasenia: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
@@ -37,16 +52,16 @@ export class LoginService {
         headers.append('Expires', '0');
         headers.append('Pragma', 'no-cache');
         return this.http
-            .get('/api/usuario/registrar', { search: params, headers: headers })
-            .map(this.extractData);
+            .get('/api/usuario/registrar', { search: params, headers: headers }).pipe(
+            map(this.extractData));
     }
 
     public recuperarContrasenia(username: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('username', username);
         return this.http
-            .get('/api/usuario/recuperarContrasenia', { search: params })
-            .map(this.extractData);
+            .get('/api/usuario/recuperarContrasenia', { search: params }).pipe(
+            map(this.extractData));
     }
 
     private extractData(res: Response) {
