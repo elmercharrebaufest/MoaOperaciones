@@ -11,11 +11,11 @@ namespace SustitucionMOAModel.Entities
     [Table("UsuarioGranos")]
     public class UsuarioGranos : Usuario
     {
-        private UsuarioGranos() : base() { }
+        //private UsuarioGranos() : base() { }
 
-        public UsuarioGranos(string mail, string CUIT) : base(mail, CUIT) {
-            TipoUsuario = TipoUsuario.GetTipoGranos();
-        }
+        //public UsuarioGranos(string mail, string CUIT) : base(mail, CUIT) {
+        //    TipoUsuario = TipoUsuario.GetTipoGranos();
+        //}
 
         public string Comercial { get; set; }
         public string RutaInformeComercialFirmado { get; set; }

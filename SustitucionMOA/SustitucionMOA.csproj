@@ -207,8 +207,6 @@
     <Content Include="app\aduana\pesada\historica\pesada.historica.component.html" />
     <Content Include="app\aduana\pesada\online\pesada.online.component.html" />
     <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.js" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.js" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
@@ -343,9 +341,7 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.js.map" />
     <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.scss" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.js.map" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />

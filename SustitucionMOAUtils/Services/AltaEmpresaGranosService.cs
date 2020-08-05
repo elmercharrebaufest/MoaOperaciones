@@ -47,7 +47,7 @@ namespace SustitucionMOAUtils.Services
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
-                var proveedor = usuario.ObtenerProveedorActual();
+                var proveedor = repositorio.Obtener<Proveedor>(p => p.Id.ToString() == "1002");
                 //var url = "http://localhost:58280/api/AltaEmpresa/TEST";
 
                 string userName = DataAgroWSCredential.getUserName();

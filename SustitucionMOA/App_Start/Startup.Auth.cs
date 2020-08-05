@@ -69,6 +69,7 @@ namespace SustitucionMOA
         private Task OnRedirectToIdentityProvider(RedirectToIdentityProviderNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
         {
             var policy = notification.OwinContext.Get<string>("Policy");
+            notification.ProtocolMessage.UiLocales = "es-es";
 
             if (!string.IsNullOrEmpty(policy) && !policy.Equals(Globals.DefaultPolicy))
             {

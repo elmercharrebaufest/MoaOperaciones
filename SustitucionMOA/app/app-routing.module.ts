@@ -42,7 +42,7 @@ import { LiquidacionNGPagaComponent } from './liquidacion/no-granos/paga/liquida
 import { LiquidacionProformaComponent } from './liquidacion/proforma/liquidacion.proforma.component';
 import { ListadoPesadasComponent } from './ryd/listado-pesadas/listado-pesadas.component';
 import { LoginGuard } from './common/security/login-guard';
-import { LoginComponent } from './login/login.component';
+//import { LoginComponent } from './login/login.component';
 import { NoAutorizadoComponent } from './error/error.no-autorizado.component';
 import { PagoComponent } from './pago/pago.component';
 import { PagoEmitidoNGSComponent } from './pago/no-granos/emitido/pago.no-granos.emitido.component';
@@ -69,7 +69,7 @@ import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/e
 
 
 const appRoutes: Routes = [
-    { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+    //{ path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
     { path: 'documentacion', component: DocumentacionComponent },
     { path: 'usuario/registro', component: RegistroUsuarioComponent, canActivate: [LoginGuard] },
     { path: 'usuario/recuperar-contrasenia', component: RecuperarContraseniaComponent, canActivate: [LoginGuard] },
@@ -147,7 +147,7 @@ const appRoutes: Routes = [
             { path: 'alta-empresa-no-granos', component: EmpresaNoGranosComponent }
         ],
     },
-    { path: '**', component: LoginComponent },
+    { path: '**', component: HomeComponent },
 
 ];
 

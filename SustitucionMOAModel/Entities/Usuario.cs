@@ -16,25 +16,23 @@ namespace SustitucionMOAModel.Entities
         public string Mail { get; set; }
         public string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
-        public TipoUsuario TipoUsuario { get; set; }
+
+        public virtual TipoUsuario TipoUsuario { get; set; }
 
         [InverseProperty("UsuariosAsociados")]
         public virtual ICollection<Proveedor> Proveedores { get; set; }
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
-        internal Usuario() {
-            Proveedores = new List<Proveedor>();
-            Roles = new List<Rol>();
-        }
+        //internal Usuario() { }
 
-        public Usuario(string mail, string CUIT)
-        {
-            Mail = mail;
-            CUITRegistro = CUIT;
-            Proveedores = new List<Proveedor>();
-            Roles = new List<Rol>();
-        }
+        //public Usuario(string mail, string CUIT)
+        //{
+        //    Mail = mail;
+        //    CUITRegistro = CUIT;
+        //    Proveedores = new List<Proveedor>();
+        //    Roles = new List<Rol>();
+        //}
 
         public Proveedor ObtenerProveedorActual()
         {
@@ -46,7 +44,10 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1 )
             {
-                return ObtenerProveedorActual().RazonSocial;
+                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
+                    return ObtenerProveedorActual().RazonSocial;
+                else
+                    return "No definido";
             }
             else
             {
@@ -58,7 +59,10 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                return ObtenerProveedorActual().CodigoProveedor;
+                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
+                    return ObtenerProveedorActual().CodigoProveedor;
+                else
+                    return "-";
             }
             else
             {

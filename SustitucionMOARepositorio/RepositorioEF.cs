@@ -48,6 +48,19 @@ namespace SustitucionMOARepositorio
         {
             return Set<TEntidad>().AsNoTracking().FirstOrDefault(filtro);
         }
+
+        public TEntidad Obtener<TEntidad>(IEnumerable<Expression<Func<TEntidad, object>>> includes, Expression<Func<TEntidad, bool>> filtro) where TEntidad : class
+        {
+            IQueryable<TEntidad> resultado = Set<TEntidad>();
+
+            foreach (var i in includes)
+            {
+                resultado = resultado.Include(i);
+            }
+
+            return resultado.SingleOrDefault(filtro);
+        }
+
         public List<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc) where TEntidad : class
         {
             return ListarQueryable(Set<TEntidad>(), filtro, orden, direccionOrden, maxResultados).ToList();

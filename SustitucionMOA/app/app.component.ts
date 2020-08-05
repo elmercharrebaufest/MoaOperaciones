@@ -1,7 +1,13 @@
 ﻿declare let ga: Function;
-import { Component, Injector } from '@angular/core';
+import { Component, Injector, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from "@angular/router";
 import { ServiceLocator } from './common/services/ServiceLocator';
+import { SessionDataService } from './common/services/SessionDataService';
+import { NavService } from './common/services/NavService';
+import { MensajeComponent } from './common/view-child/mensaje/mensaje.component';
+import { SpinnerSmallComponent } from './common/view-child/spinner-small/spinner-small.component';
+import { map } from 'rxjs/operators';
+import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 
 
 @Component({
@@ -10,7 +16,13 @@ import { ServiceLocator } from './common/services/ServiceLocator';
 })
 export class AppComponent {
 
-    constructor(private injector: Injector, public router: Router) {
+    @ViewChild(MensajeComponent)
+    private mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerSmallComponent)
+    private spinnerSmallComponent: SpinnerSmallComponent;
+
+    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: Http) {
         ServiceLocator.injector = this.injector;
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -20,6 +32,92 @@ export class AppComponent {
                 }catch(e) { }
             }
         });
+    }
 
+    ngOnInit() {
+        this.navService.setSeccionList([]);
+        this.navService.setSeccionActive('');
+        this.validarLoginAzure();
+    }
+
+    private extractData(res: Response) {
+        return res.json();
+    }
+
+    validarLoginAzure() {
+        let params: URLSearchParams = new URLSearchParams();
+        let headers = new Headers();
+        headers.append('Cache-control', 'no-cache');
+        headers.append('Cache-control', 'no-store');
+        headers.append('Expires', '0');
+        headers.append('Pragma', 'no-cache');
+
+        let observable = this.http
+            .get('/api/AzureB2C/ValidarLoginAzure', { search: params, headers: headers })
+            .pipe(map(this.extractData));
+
+        observable.subscribe(result => {
+            if (result.tipoUsuario == "DATAAGROLOGIN") {
+                if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.url == undefined || result.url == "") {
+                    this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+                } else {
+                    location.href = result.url;
+                }
+            } else {
+                this.loginUser(result);
+            }
+        })
+    }
+
+    loginUser(result: any) {
+        sessionStorage.setItem("username", result.username);
+        sessionStorage.setItem("nombre", result.nombre);
+        sessionStorage.setItem("proveedor", result.proveedor);
+        sessionStorage.setItem("granosFlag", result.granosFlag);
+        sessionStorage.setItem("tipoUsuario", result.tipoUsuario);
+        sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
+        sessionStorage.setItem("permisos", JSON.stringify(result.permisos));
+        this.sessionDataService.setNombre(result.nombre);
+        this.sessionDataService.setUsername(result.username);
+        this.sessionDataService.setProveedor(result.proveedor);
+        this.sessionDataService.setTipoUsuario(result.tipoUsuario);
+        this.sessionDataService.setNoticias(result.noticias);
+        this.sessionDataService.setPermisos(result.permisos);
+        this.sessionDataService.setGranosFlag(result.granosFlag);
+
+        if (result.esNuevoUsuario) {
+            if (result.granosFlag == "A") {
+                sessionStorage.setItem("granosSelected", "G");
+                this.navService.navegarSeccion('/dato-fiscal/documentacion');
+            } else {
+                sessionStorage.setItem("granosSelected", result.granosFlag);
+                if (result.granosFlag == "G") {
+                    this.navService.navegarSeccion('/alta-empresa-granos');
+                } else {
+                    this.navService.navegarSeccion('/dato-fiscal/documentacion');
+                }
+            }
+        } else {
+
+            if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
+                this.navService.navegarSeccion('/aduana/pesada-online');
+            } else if (result.tipoUsuario == "CLIE") {
+                this.navService.navegarSeccion('/cuenta-corriente/simple');
+            } else {
+                if (result.granosFlag == "A") {
+                    sessionStorage.setItem("granosSelected", "G");
+                    this.navService.navegarSeccion('/home');
+                } else {
+                    sessionStorage.setItem("granosSelected", result.granosFlag);
+                    if (result.granosFlag == "G") {
+                        this.navService.navegarSeccion('/home');
+                    } else {
+                        this.navService.navegarSeccion('/home-ngs');
+                    }
+                }
+            }
+        }
     }
 }
