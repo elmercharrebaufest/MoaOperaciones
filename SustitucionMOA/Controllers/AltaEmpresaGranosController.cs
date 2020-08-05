@@ -38,6 +38,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                EmplRelDep = "no";
+                Rodados = "equipro";
+                Chacra = "persprop";
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 var FileArray = altaEmpresaService.GenerarInformeComercial(userMail, EmplRelDep, EmplRelDepCant, Rodados, RodadosOtros, Chacra, ChacraOtros, AntigActividad, ActuacionProd, ClienteAnt, Comentarios, Domicilio);
 

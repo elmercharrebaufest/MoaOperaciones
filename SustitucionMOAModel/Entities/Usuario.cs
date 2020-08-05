@@ -16,25 +16,23 @@ namespace SustitucionMOAModel.Entities
         public string Mail { get; set; }
         public string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
-        public TipoUsuario TipoUsuario { get; set; }
+
+        public virtual TipoUsuario TipoUsuario { get; set; }
 
         [InverseProperty("UsuariosAsociados")]
         public virtual ICollection<Proveedor> Proveedores { get; set; }
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
-        internal Usuario() {
-            Proveedores = new List<Proveedor>();
-            Roles = new List<Rol>();
-        }
+        //internal Usuario() { }
 
-        public Usuario(string mail, string CUIT)
-        {
-            Mail = mail;
-            CUITRegistro = CUIT;
-            Proveedores = new List<Proveedor>();
-            Roles = new List<Rol>();
-        }
+        //public Usuario(string mail, string CUIT)
+        //{
+        //    Mail = mail;
+        //    CUITRegistro = CUIT;
+        //    Proveedores = new List<Proveedor>();
+        //    Roles = new List<Rol>();
+        //}
 
         public Proveedor ObtenerProveedorActual()
         {

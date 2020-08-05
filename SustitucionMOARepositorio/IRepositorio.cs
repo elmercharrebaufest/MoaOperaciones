@@ -33,6 +33,8 @@ namespace SustitucionMOARepositorio
 
         TProyeccion Obtener<TEntidad, TProyeccion>(Expression<Func<TEntidad, bool>> condicion, Expression<Func<TEntidad, TProyeccion>> proyeccion) where TEntidad : class;
         TEntidad ObtenerNoTracking<TEntidad>(Expression<Func<TEntidad, bool>> filtro) where TEntidad : class;
+
+        TEntidad Obtener<TEntidad>(IEnumerable<Expression<Func<TEntidad, object>>> includes, Expression<Func<TEntidad, bool>> condicion) where TEntidad : class;
         /// <summary>
         /// Lista todas las entidades que complen con la condicion
         /// </summary>

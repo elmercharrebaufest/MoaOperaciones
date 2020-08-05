@@ -1,24 +1,19 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using Model = SustitucionMOAModel.Models;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
-using System.Text;
+using System;
 using System.Linq;
-using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using SustitucionMOARepositorio;
-using System.Collections.Generic;
+using System.Web.Mvc;
 using Entidades = SustitucionMOAModel.Entities;
-using Microsoft.Owin.Security;
-using SustitucionMOA.Utils;
-using System.Web;
-using System.Security.Claims;
-using SustitucionMOAModel.Entities;
+using Model = SustitucionMOAModel.Models;
 
 namespace SustitucionMOA.Controllers
 {
@@ -138,14 +133,14 @@ namespace SustitucionMOA.Controllers
 
                 string GranosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
-                Entidades.Usuario usuario = new Entidades.Usuario(mail, CUIT);
+                Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
 
                 if (GranosFlag.Equals("Granos"))
                 {
-                    Entidades.UsuarioGranos usuarioGranos = new Entidades.UsuarioGranos(mail, CUIT);
+                    UsuarioGranos usuarioGranos = new UsuarioGranos { Mail = mail, CUITRegistro = CUIT }; 
 
                     usuarioGranos = BuscarUsuarioGranos(usuarioGranos);
-                    usuarioGranos.TipoUsuario = TipoUsuario.GetTipoGranos();
+                    usuarioGranos.TipoUsuario = null;
 
                     usuario = usuarioGranos; ;
                 }
@@ -211,13 +206,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioGranos BuscarUsuarioGranos(UsuarioGranos usuarioGranos)
         {
-            UsuarioGranos usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == usuarioGranos.Mail);
-
-            usuario.Proveedores.Add(repositorio.Obtener<Proveedor>(p => p.Id.ToString() == "1002"));
-
-            usuario.Roles.Add(repositorio.Obtener<Rol>(p => p.Id.ToString() == "2"));
-
-            return usuario;
+            return repositorio.Obtener<UsuarioGranos>(u => u.Mail == usuarioGranos.Mail);
         }
 
         public bool ExisteUsuario(Entidades.Usuario usuario)

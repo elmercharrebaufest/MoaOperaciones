@@ -113,6 +113,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     link.download = "Informe comercial"  + ".pdf"
                     link.click();
                     setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+
                     return false;
                 }
                 
