@@ -44,7 +44,10 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1 )
             {
-                return ObtenerProveedorActual().RazonSocial;
+                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
+                    return ObtenerProveedorActual().RazonSocial;
+                else
+                    return "No definido";
             }
             else
             {
@@ -56,7 +59,10 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                return ObtenerProveedorActual().CodigoProveedor;
+                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
+                    return ObtenerProveedorActual().CodigoProveedor;
+                else
+                    return "-";
             }
             else
             {

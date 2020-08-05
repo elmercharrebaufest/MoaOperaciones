@@ -21,6 +21,7 @@ using System.Security.Claims;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Entities;
+using System.Threading.Tasks;
 
 namespace SustitucionMOA.Controllers
 {
@@ -48,14 +49,17 @@ namespace SustitucionMOA.Controllers
                 
                 Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT } ;
 
-                switch (GranosFlag)
+                switch (GranosFlag.ToLower())
                 {
-                    case "Granos":
+                    case "granos":
                         UsuarioGranos usuarioGranos = new UsuarioGranos { Mail = mail, CUITRegistro = CUIT };
 
                         if (!ExisteUsuario(usuarioGranos))
                         {
                             Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
+
+                            usuarioGranos.Roles = new List<Rol>();
+                            usuarioGranos.Proveedores = new List<Proveedor>();
 
                             usuarioGranos.Roles.Add(usuarioNuevo);
                             usuarioGranos.TipoUsuario = ObtenerTipoPorNombreCorto("G");
@@ -69,19 +73,27 @@ namespace SustitucionMOA.Controllers
                         usuario = usuarioGranos;
                         break;
 
-                    case "No Granos":
-                        Entidades.Usuario usuarioNoGranos = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
+                    case "no granos":
+                        Entidades.UsuarioNoGranos usuarioNoGranos = new Entidades.UsuarioNoGranos { Mail = mail, CUITRegistro = CUIT };
 
                         if (!ExisteUsuario(usuarioNoGranos))
                         {
                             Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
 
+                            usuarioNoGranos.Roles = new List<Rol>();
+                            usuarioNoGranos.Proveedores = new List<Proveedor>();
+
                             usuarioNoGranos.Roles.Add(usuarioNuevo);
-                            usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+                            usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
 
                             RegistrarUsuarioGenerico(usuarioNoGranos);
+                            usuario = usuarioNoGranos;
+
                         }
-                        usuario = usuarioNoGranos;
+                        else
+                        {
+                            usuario = BuscarUsuarioPorMail(mail);
+                        }
                         break;
 
                     case "Ambos":
@@ -91,11 +103,19 @@ namespace SustitucionMOA.Controllers
                         {
                             Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
 
+                            usuarioAmbos.Roles = new List<Rol>();
+                            usuarioAmbos.Proveedores = new List<Proveedor>();
+
                             usuarioAmbos.Roles.Add(usuarioNuevo);
-                            usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+                            usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("A");
 
                             RegistrarUsuarioGenerico(usuarioAmbos);
                         }
+                        else
+                        {
+                            usuario = BuscarUsuarioPorMail(mail);
+                        }
+
                         usuario = usuarioAmbos;
                         break;
 
@@ -106,11 +126,19 @@ namespace SustitucionMOA.Controllers
                         {
                             Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
 
+                            usuarioCorredor.Roles = new List<Rol>();
+                            usuarioCorredor.Proveedores = new List<Proveedor>();
+
                             usuarioCorredor.Roles.Add(usuarioNuevo);
-                            usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+                            usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("C");
 
                             RegistrarUsuarioGenerico(usuarioCorredor);
                         }
+                        else
+                        {
+                            usuario = BuscarUsuarioPorMail(mail);
+                        }
+
                         usuario = usuarioCorredor;
                         break;
 
@@ -122,10 +150,15 @@ namespace SustitucionMOA.Controllers
                             Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
 
                             usuarioCliente.Roles.Add(usuarioNuevo);
-                            usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+                            usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
 
                             RegistrarUsuarioGenerico(usuarioCliente);
                         }
+                        else
+                        {
+                            usuario = BuscarUsuarioPorMail(mail);
+                        }
+
                         usuario = usuarioCliente;
                         break;
                 }
@@ -177,9 +210,15 @@ namespace SustitucionMOA.Controllers
             return repositorio.Obtener<UsuarioGranos>(u => u.Mail == usuarioGranos.Mail);
         }
 
+        private Entidades.Usuario BuscarUsuarioPorMail(string mail)
+        {
+            return repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mail);
+        }
+        
+
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
         {
-            return repositorio.Obtener<TipoUsuario>(t => t.Nombre == nombreCorto);
+            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
         }
 
         public ActionResult ValidarLoginAzure()
@@ -273,6 +312,48 @@ namespace SustitucionMOA.Controllers
         public Rol ObtenerRolUsuarioNoImplementado()
         {
             return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Usuario No Implementado"));
+        }
+
+        public async Task SignOut()
+        {
+            // To sign out the user, you should issue an OpenIDConnect sign out request.
+            if (Request.IsAuthenticated)
+            {
+                SessionPersister.clear();
+                await MsalAppBuilder.ClearUserTokenCache();
+                IEnumerable<AuthenticationDescription> authTypes = HttpContext.GetOwinContext().Authentication.GetAuthenticationTypes();
+                HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
+                Request.GetOwinContext().Authentication.GetAuthenticationTypes();
+            }
+        }
+
+        public void ResetPassword()
+        {
+            // Let the middleware know you are trying to use the reset password policy (see OnRedirectToIdentityProvider in Startup.Auth.cs)
+            HttpContext.GetOwinContext().Set("Policy", Globals.ResetPasswordPolicyId);
+
+            // Set the page to redirect to after changing passwords
+            var authenticationProperties = new AuthenticationProperties { RedirectUri = "/" };
+            HttpContext.GetOwinContext().Authentication.Challenge(authenticationProperties);
+
+            return;
+        }
+
+        public void EditProfile()
+        {
+            if (Request.IsAuthenticated)
+            {
+                // Let the middleware know you are trying to use the edit profile policy (see OnRedirectToIdentityProvider in Startup.Auth.cs)
+                HttpContext.GetOwinContext().Set("Policy", Globals.EditProfilePolicyId);
+
+                // Set the page to redirect to after editing the profile
+                var authenticationProperties = new AuthenticationProperties { RedirectUri = "/" };
+                HttpContext.GetOwinContext().Authentication.Challenge(authenticationProperties);
+
+                return;
+            }
+
+            Response.Redirect("/");
         }
     }
 }

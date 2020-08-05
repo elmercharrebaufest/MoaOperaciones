@@ -90,13 +90,13 @@ export class AppComponent {
         if (result.esNuevoUsuario) {
             if (result.granosFlag == "A") {
                 sessionStorage.setItem("granosSelected", "G");
-                this.navService.navegarSeccion('/alta-empresa-granos');
+                this.navService.navegarSeccion('/dato-fiscal/documentacion');
             } else {
                 sessionStorage.setItem("granosSelected", result.granosFlag);
                 if (result.granosFlag == "G") {
                     this.navService.navegarSeccion('/alta-empresa-granos');
                 } else {
-                    this.navService.navegarSeccion('/alta-empresa-no-granos');
+                    this.navService.navegarSeccion('/dato-fiscal/documentacion');
                 }
             }
         } else {
