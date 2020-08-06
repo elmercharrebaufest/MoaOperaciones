@@ -49,6 +49,10 @@ namespace SustitucionMOA.Controllers
                 
                 Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT } ;
 
+                TestPartido();
+                TestProv();
+                TestLocalidad();
+
                 switch (GranosFlag.ToLower())
                 {
                     case "granos":
@@ -302,6 +306,21 @@ namespace SustitucionMOA.Controllers
             }
 
             return true;
+        }
+
+        public Provincia TestProv() 
+        {
+            return repositorio.Obtener<Provincia>(p => p.ProvinciaId == 1);
+        }
+
+        public Localidad TestLocalidad()
+        {
+            return repositorio.Obtener<Localidad>(p => p.ProvinciaId == 1);
+        }
+
+        public Partido TestPartido()
+        {
+            return repositorio.Obtener<Partido>(p => p.Id == 1);
         }
 
         public Rol ObtenerRolUsuarioNuevo() 

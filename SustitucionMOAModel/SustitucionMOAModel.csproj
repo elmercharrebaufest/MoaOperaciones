@@ -50,6 +50,9 @@
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Entities\Contacto.cs" />
+    <Compile Include="Entities\Localidad.cs" />
+    <Compile Include="Entities\Partido.cs" />
+    <Compile Include="Entities\Provincia.cs" />
     <Compile Include="Enums\EstadoAprobacion.cs" />
     <Compile Include="Entities\PermisoPorRol.cs" />
     <Compile Include="Entities\Proveedor.cs" />
@@ -60,6 +63,8 @@
     <Compile Include="Entities\UsuarioGranos.cs" />
     <Compile Include="Entities\UsuarioNoGranos.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
+    <Compile Include="Models\DataAgro\ParamInformeComercial.cs" />
+    <Compile Include="Models\DataAgro\ParamInformeComercialMaterial.cs" />
     <Compile Include="Models\DBMap\Pesada\Detalle\PesadaDetalle.cs" />
     <Compile Include="Models\DBMap\Pesada\Pesada.cs" />
     <Compile Include="Models\DBMap\Pesada\PesadaWSResponse.cs" />
@@ -78,6 +83,8 @@
     <Compile Include="Models\DropdownContent.cs" />
     <Compile Include="Models\FechaWS.cs" />
     <Compile Include="Models\DropdownOption.cs" />
+    <Compile Include="Models\DataAgro\NuevoAcopio.cs" />
+    <Compile Include="Models\DataAgro\NuevoProduccion.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\ViewModel\CartaPorteViewModel.cs" />
     <Compile Include="Models\ViewModel\ContratosNoCumplidosViewModel.cs" />

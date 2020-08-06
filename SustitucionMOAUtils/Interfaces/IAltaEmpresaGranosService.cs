@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.DataAgro;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,8 +12,8 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IAltaEmpresaGranosService
     {
-        byte[] GenerarInformeComercial(string userMail, string emplRelDep, string emplRelDepCant, string rodados, string rodadosOtros, string chacra, string chacraOtros, 
-                                        string antigActividad, string actuacionProd, string clienteAnt, string comentarios, string domicilio);
+        byte[] GenerarInformeComercial(ParamInformeComercial informeComercial);
         bool GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario);
+        string ObtenerMaterialesDataAgro();
     }
 }

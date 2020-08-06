@@ -20,7 +20,8 @@
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
                             informe comercial <strong>completo y firmado</strong></label>
-                        <input type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                        <input type="file" class="form-control-file" id="informeComercialFirmado"
+                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
                     </div>
 
                 </div>
@@ -30,31 +31,36 @@
                 <div class="form-group">
                     <label class="label" for="constanciaCBU">Cargar constancia de CBU certificada
                         por Banco</label>
-                    <input type="file" class="form-control-file" id="constanciaCBU" (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                    <input type="file" class="form-control-file" id="constanciaCBU"
+                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
                 </div>
             </mdb-step>
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
-                    <input type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                    <input type="file" class="form-control-file" id="constanciaCUIT"
+                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">Inscripción en IIBB -local o
                         Convenio (CM05
                         vigente)</label>
-                    <input type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                    <input type="file" class="form-control-file" id="inscripcionIIBB"
+                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
                 </div>
                 <div class="form-group">
                     <label class="label" for="gananciasIVAIIBB">Certificados de exclusión o
                         exención en Ganancias, IVA e
                         IIBB.</label>
-                    <input type="file" class="form-control-file" id="gananciasIVAIIBB" (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
+                    <input type="file" class="form-control-file" id="gananciasIVAIIBB"
+                        (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
                         presentar SIPER.</label>
-                    <input type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
+                    <input type="file" class="form-control-file" id="SIPER"
+                        (change)="handleFileInput($event.target.files, 'SIPER')">
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
@@ -64,7 +70,8 @@
                         podrán operar sin oblea si remiten copia
                         certificada y legalizada
                         de DNI.</label>
-                    <input type="file" class="form-control-file" id="documentacionEnBolsa" (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+                    <input type="file" class="form-control-file" id="documentacionEnBolsa"
+                        (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
@@ -112,8 +119,7 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="Domicilio" placeholder="Domicilio (50 caracteres)"
-                                           (input)="Domicilio = $event.target.value"
-                                           maxlength="50" />
+                                           [(ngModel)]="informe.Domicilio" maxlength="50" />
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -123,15 +129,18 @@
                                 <div class="formulario-input">
                                     <div>
                                         <div class="padding-5-0">
-                                            <label for="si" class="padding-0-5"><input type="radio" id="si" value="si"
-                                                    name="depen" class="margin-5px">Si</label>
-                                            <input type="text" id="EmplRelDepCant"
-                                                   (input)="EmplRelDepCant = $event.target.value"
+                                            <label for="si" class="padding-0-5">
+                                                <input type="radio" id="si" value="si" name="depen"
+                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">Si
+                                            </label>
+                                            <input type="text" id="EmplRelDepCant" [(ngModel)]="informe.EmplRelDepCant"
                                                    placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
                                         </div>
                                         <div class="padding-5-0">
-                                            <label for="no" class="padding-0-5"><input type="radio" id="no" value="no"
-                                                    name="depen" class="margin-5px">No</label>
+                                            <label for="no" class="padding-0-5">
+                                                <input type="radio" id="no" value="no" name="depen"
+                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">No
+                                            </label>
                                         </div>
                                     </div>
 
@@ -143,22 +152,32 @@
                                 </div>
                                 <div class="formulario-input">
                                     <div>
-                                        <div class="padding-5-0"><label for="equipro"><input type="radio" id="equipro"
-                                                    value="equipro" name="rodado" class="margin-5px">Equipamiento
-                                                Propio</label></div>
-                                        <div class="padding-5-0"><label for="equialq"><input type="radio" id="equialq"
-                                                    value="equialq" name="rodado" class="margin-5px">Alquilado</label>
-                                        </div>
-                                        <div class="padding-5-0"><label for="proyalq"><input type="radio" id="proyalq"
-                                                    value="proyalq" name="rodado" class="margin-5px">Propio y
-                                                alquilado</label> </div>
                                         <div class="padding-5-0">
-                                            <label for="otrosro" class="padding-0-5"><input type="radio" id="otrosro"
-                                                    value="otrosro" name="rodado" class="margin-5px">Otros</label>
+                                            <label for="equipro">
+                                                <input type="radio" id="equipro" value="equipro" name="rodado"
+                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Equipamiento
+                                                Propio
+                                            </label>
+                                        </div>
+                                        <div class="padding-5-0">
+                                            <label for="equialq">
+                                                <input type="radio" id="equialq" value="equialq" name="rodado"
+                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Alquilado
+                                            </label>
+                                        </div>
+                                        <div class="padding-5-0">
+                                            <label for="proyalq">
+                                                <input type="radio" id="proyalq" value="proyalq" name="rodado"
+                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Propio y alquilado
+                                            </label>
+                                        </div>
+                                        <div class="padding-5-0">
+                                            <label for="otrosro" class="padding-0-5">
+                                                <input type="radio" id="otrosro" value="otrosro" name="rodado"
+                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Otros
+                                            </label>
                                             <input type="text" id="RodadosOtros" placeholder="Otros (50 caracteres)"
-                                                   (input)="RodadosOtros = $event.target.value"
-
-                                                maxlength="50" disabled />
+                                                   [(ngModel)]="informe.RodadosOtros" maxlength="50" disabled />
                                         </div>
                                     </div>
 
@@ -170,22 +189,32 @@
                                 </div>
                                 <div class="formulario-input">
                                     <div>
-                                        <div class="padding-5-0"><label for="persprop"><input type="radio" id="persprop"
-                                                    value="persprop" name="servicios" class="margin-5px">Personal
-                                                propio</label></div>
-                                        <div class="padding-5-0"><label for="perscont"><input type="radio" id="perscont"
-                                                    value="perscont" name="servicios" class="margin-5px">Personal
-                                                contratado</label></div>
-                                        <div class="padding-5-0"><label for="persprco"><input type="radio" id="persprco"
-                                                    value="persprco" name="servicios" class="margin-5px">Personal propio
-                                                y
-                                                contratado</label></div>
                                         <div class="padding-5-0">
-                                            <label for="otros" class="padding-0-5"><input type="radio" id="otros"
-                                                    value="otros" name="servicios" class="margin-5px">Otros</label>
+                                            <label for="persprop">
+                                                <input type="radio" id="persprop" value="persprop" name="servicios"
+                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Personal propio
+                                            </label>
+                                        </div>
+                                        <div class="padding-5-0">
+                                            <label for="perscont">
+                                                <input type="radio" id="perscont" value="perscont" name="servicios"
+                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Personal contratado
+                                            </label>
+                                        </div>
+                                        <div class="padding-5-0">
+                                            <label for="persprco">
+                                                <input type="radio" id="persprco" value="persprco" name="servicios"
+                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Personal propio y
+                                                contratado
+                                            </label>
+                                        </div>
+                                        <div class="padding-5-0">
+                                            <label for="otros" class="padding-0-5">
+                                                <input type="radio" id="otros" value="otros" name="servicios"
+                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Otros
+                                            </label>
                                             <input type="text" id="ChacraOtros" placeholder="Otros (50 caracteres)"
-                                           (input)="ChacraOtros = $event.target.value"
-                                                maxlength="50" disabled />
+                                                   [(ngModel)]="informe.ChacraOtros" maxlength="50" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -199,8 +228,7 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="AntigActividad" placeholder="Antigüedad (100 caracteres)"
-                                           (input)="AntigActividad = $event.target.value"
-                                           maxlength="100" />
+                                           [(ngModel)]="informe.AntigActividad" maxlength="100" />
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -209,8 +237,7 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="ActuacionProd" placeholder="Actuación (100 caracteres)"
-                                           (input)="ActuacionProd = $event.target.value"
-                                           maxlength="100" />
+                                           [(ngModel)]="informe.ActuacionProd" maxlength="100" />
 
                                 </div>
                             </div>
@@ -223,9 +250,8 @@
                                     Clientes anteriores
                                 </div>
                                 <div class="formulario-input">
-                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)" 
-                                           (input)="ClienteAnt = $event.target.value"
-                                        maxlength="100" />
+                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)"
+                                           [(ngModel)]="informe.ClienteAnt" maxlength="100" />
                                 </div>
                             </div>
 
@@ -235,18 +261,16 @@
                                 </div>
                                 <div class="formulario-input">
                                     <textarea id="Comentarios" placeholder="Comentarios (300 caracteres)"
-                                           (input)="Comentarios = $event.target.value"
-
-                                        maxlength="300"></textarea>
+                                              [(ngModel)]="informe.Comentarios" maxlength="300"></textarea>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary" id="InformeComercialDescargar" (click)="generarInformeComercial()" >Descargar</a>
+                    <a class="btn btn-primary" id="InformeComercialDescargar"
+                        (click)="generarInformeComercial()">Descargar</a>
                 </div>
             </div>
         </div>

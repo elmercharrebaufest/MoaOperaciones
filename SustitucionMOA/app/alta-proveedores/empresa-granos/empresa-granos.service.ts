@@ -3,56 +3,52 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import { BaseService } from './../../common/services/BaseService';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Http, Response, URLSearchParams } from '@angular/http';
+import { Observable, throwError } from 'rxjs';
+import { map, debounceTime, timeoutWith } from 'rxjs/operators';
+import { InformeComercial } from './informeComercial';
 
 
 @Injectable()
 export class EmpresaGranosService extends BaseService {
 
-
     postFile(files: FileList, fileKey: string) {
-
         let fileToUpload = files.item(0);
         let formData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
         formData.append('fileKey', fileKey);
 
         this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData).subscribe((val) => {
-
             console.log(val);
         });
-        //const endpoint = 'your-destination-url';
-        //const formData: FormData = new FormData();
-        //formData.append('fileKey', fileToUpload, fileToUpload.name);
-        //return this.http
-        //    .post('/api/AltaEmpresa/UploadFile', formData, { headers: this.headers })
-        //    .pipe(map(() => { this.extractData; }))
-
-
     }
 
+    searchLocalidad(term) {
+        var listadoLocalidades = this.http.get('/api/AltaEmpresaGranos/GetLocalidadCombo' + term)
+            .pipe(
+                debounceTime(500),  // WAIT FOR 500 MILISECONDS ATER EACH KEY STROKE.
+                map(
+                    (data: any) => {
+                        return (
+                            data.length != 0 ? data as any[] : [{ "Localidad": "Sin resultados" } as any]
+                        );
+                    }
+                ));
 
-    generarInformeComercial(EmplRelDep: string, EmplRelDepCant: string, Rodados: string, RodadosOtros: string, Chacra: string, ChacraOtros: string, AntigActividad: string, ActuacionProd: string, ClienteAnt: string, Comentarios: string, Domicilio: string): Observable<any>  {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('EmplRelDep', EmplRelDep);
-        params.set('EmplRelDepCant', EmplRelDepCant);
-        params.set('Rodados', Rodados);
-        params.set('RodadosOtros', RodadosOtros);
-        params.set('Chacra', Chacra);
-        params.set('ChacraOtros', ChacraOtros);
-        params.set('AntigActividad', AntigActividad);
-        params.set('ActuacionProd', ActuacionProd);
-        params.set('clienteAnt', ClienteAnt);
-        params.set('Comentarios', Comentarios);
-        params.set('Domicilio', Domicilio);
+        return listadoLocalidades;
+    }  
 
+    generarInformeComercial(informeComercial : InformeComercial): Observable<any>  {
+        let payload = new FormData();
+        payload.append("informeComercialJson", JSON.stringify(informeComercial));
         return this.http
-            .get('/api/AltaEmpresaGranos/GenerarInformeComercial', { search: params, headers: this.headers })
+            .post('/api/AltaEmpresaGranos/GenerarInformeComercial', payload)
+            .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
-
     }
 
-    
+    obtenerMateriales(): Observable<any> {
+        return this.http
+            .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers })
+            .pipe(map(this.extractData));
+    }
 }

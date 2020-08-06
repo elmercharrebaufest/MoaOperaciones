@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SecurityService } from '../../common/services/SecurityService';
 import { NavService } from '../../common/services/NavService';
 import { SessionDataService } from '../../common/services/SessionDataService';
@@ -11,6 +11,9 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { EmpresaGranosService } from './empresa-granos.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
+import { Observable, Subject } from 'rxjs';
+import { InformeComercial } from './informeComercial';
+import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -25,20 +28,26 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     http: any;
     fileToUpload: File;
 
-    EmplRelDep: string;
-    EmplRelDepCant: string;
-    Rodados: string;
-    RodadosOtros: string;
-    Chacra: string;
-    ChacraOtros: string;
-    AntigActividad: string;
-    ActuacionProd: string;
-    ClienteAnt: string;
-    Comentarios: string;
-    Domicilio: string;
+    materialesData: any = null;
+
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
+
+    @ViewChild("smallSpinner")
+    protected spinnerSmallComponent: SpinnerSmallComponent;
+
+    informe = new InformeComercial();
+
+    searchTerm: FormControl = new FormControl();
+    myLocalidades = <any>[];
 
     constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
     }
 
     ngOnInit() {
@@ -50,6 +59,19 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.secondFormGroup = new FormGroup({
             password: new FormControl('', Validators.required)
         });
+
+        this.obtenerMateriales();
+
+        /*this.searchTerm.valueChanges.subscribe(
+            term => {
+                if (term != '') {
+                    this.service.searchLocalidad(term).subscribe(
+                        data => {
+                            this.myLocalidades = data as any[];
+                            //console.log(data[0].BookName);
+                        })
+                }
+            })*/
     }
 
     get email() {
@@ -58,6 +80,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     get password() {
         return this.secondFormGroup.get('password');
     }
+
 
     handleFileInput(files: FileList, fileKey: string) {
         //this.mensajeComponent.setMsgsEmpty();
@@ -92,13 +115,31 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     }
 
+    obtenerMateriales() {
+        this.unsubscribe();
+        this.subscription = this.service.obtenerMateriales().subscribe(
+            result => {
+                this.materialesData = result;
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
 
+        );
+    }
 
     generarInformeComercial() {
-        //this.mensajeComponent.setMsgsEmpty();
-        //this.spinnerSmallComponent.showIt();
+        if (this.mensajeComponent === undefined)
+            this.mensajeComponent = new MensajeComponent();
+
+        if (this.spinnerSmallComponent === undefined)
+            this.spinnerSmallComponent = new SpinnerSmallComponent();
+
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.generarInformeComercial(this.EmplRelDep, this.EmplRelDepCant, this.Rodados, this.RodadosOtros, this.Chacra, this.ChacraOtros, this.AntigActividad, this.ActuacionProd, this.ClienteAnt, this.Comentarios, this.Domicilio).subscribe(
+        this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
                 var byteArray = new Uint8Array(result.data);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
@@ -122,7 +163,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 console.log(error.message);
             }
         );
-        return false;  // <- Prevent href del a
     }
 
     onSubmit() {
@@ -131,5 +171,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         modal.className = " show";
         container.className += "hidden"
     }
+
 }
 

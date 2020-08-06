@@ -27,7 +27,6 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-
     @ViewChild("smallSpinner")
     protected spinnerSmallComponent: SpinnerSmallComponent;
 
