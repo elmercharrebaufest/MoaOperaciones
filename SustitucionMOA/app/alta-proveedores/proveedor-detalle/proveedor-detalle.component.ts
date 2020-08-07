@@ -1,28 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { NavService } from '../../common/services/NavService';
-import { BaseComponent } from '../../common/base-components/base-component';
 import { EmpresaGranosService } from '../empresa-granos/empresa-granos.service';
+import { NavService } from '../../common/services/NavService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
+import { BaseComponent } from '../../common/base-components/base-component';
 
 @Component({
-  selector: 'app-altas',
-  templateUrl: './app/alta-proveedores/altas/altas.component.html',
-  styleUrls: ['./app/alta-proveedores/altas/altas.component.css', '../Content/css/bootstrap.min.css']
+  selector: 'app-proveedor-detalle',
+  templateUrl: './app/alta-proveedores/proveedor-detalle/proveedor-detalle.component.html',
+  styleUrls: ['./app/alta-proveedores/proveedor-detalle/proveedor-detalle.component.css', '../Content/css/bootstrap.min.css']
 })
-export class AltasComponent extends BaseComponent implements OnInit {
+export class ProveedorDetalleComponent extends BaseComponent implements OnInit {
 
   constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
     super(navService, securytiService, floatMsgService, modalService);
   }
-
   ngOnInit(): void {
   }
 
-  verDetalle() {
-    this.navService.navegarSeccion('/proveedor-detalle');
-    return false;
-  }
 }

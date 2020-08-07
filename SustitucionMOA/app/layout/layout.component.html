@@ -238,6 +238,9 @@
                 <li><a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-no-granos')) ? 'active' : ''"
                         (click)="goToSeccion('/alta-empresa-no-granos')" *ngIf="isNoGranosSelected()" href="#">
                         <!--data-toggle="tab">-->Alta Empresa</a></li>
+                <li><a class="animate" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
+                        (click)="goToSeccion('/altas')" href="#">
+                        <!--data-toggle="tab">-->Altas Pendientes</a></li>
             </ul>
         </nav>
     </div>

@@ -11,17 +11,18 @@
                         <p>Complete el informe comercial</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                            class="btn btn-info"
-                            style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
+                            class="btn btn-info  btn-custom">
                             Completar informe Comercial
                         </button>
-
+                        <button type="button" class="btn btn-info btn-custom">
+                            Descargar
+                        </button>
                     </div>
-                    <div style="flex-direction: column;">
+                    <!-- <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
                             informe comercial <strong>completo y firmado</strong></label>
                         <input type="file" class="form-control-file" id="informeComercialFirmado" required="required">
-                    </div>
+                    </div> -->
 
                 </div>
             </mdb-step>
@@ -236,7 +237,7 @@
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-primary" id="InformeComercialDescargar" download="{{cartaPorteDescarga}}.jpg"
-                        href="{{fotoSrc}}">Descargar</a>
+                        href="">Guardar</a>
                 </div>
             </div>
         </div>
