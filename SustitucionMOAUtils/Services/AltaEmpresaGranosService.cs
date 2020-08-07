@@ -27,7 +27,7 @@ namespace SustitucionMOAUtils.Services
         public AltaEmpresaGranosService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"]; 
+            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
 
         }
 
@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var urlInformeComercial = string.Concat(DataAgroURL, "/InformeComercial/Listar");
                 var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
-          
+
                 //var url = "http://localhost:58280/api/AltaEmpresa/TEST";
 
                 string userName = DataAgroWSCredential.getUserName();
@@ -48,7 +48,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
-      
+
                 ObtenerCampaniaActual(out string Campania, out int CampaniaId);
 
                 informeComercial.Campaña = Campania;
@@ -132,30 +132,49 @@ namespace SustitucionMOAUtils.Services
                 CampaniaActual = jsonResult.Datos[0].CampaniaActual.ToString();
                 CampaniaIdActual = jsonResult.Datos[0].CampaniaIdActual;
             }
+
+
         }
 
-        public string ObtenerMaterialesDataAgro() {
-
-            var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
-
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler()
+        public string ObtenerMaterialesDataAgro()
+        {
+            try
             {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
+                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
 
-            using (var client = new HttpClient(httpClientHandler, false))
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(urlBusquedaMateriales, null);
+
+                    task.Wait();
+
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+
+                    return stringContent.Result;
+                }
+            }
+            catch (InfoCustomException)
             {
-                var task = client.PostAsync(urlBusquedaMateriales, null);
-
-                task.Wait();
-
-                var stringContent = task.Result.Content.ReadAsStringAsync();
-
-                return stringContent.Result;
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
 
@@ -204,11 +223,11 @@ namespace SustitucionMOAUtils.Services
 
                 fileSubido.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();
-                
+
 
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
