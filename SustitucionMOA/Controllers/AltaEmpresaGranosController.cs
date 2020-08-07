@@ -39,7 +39,7 @@ namespace SustitucionMOA.Controllers
             this.altaEmpresaService = altaEmpresaService;
             this.repositorio = repositorio;
         }
-        public ActionResult GenerarInformeComercial_OLD(string _EmplRelDep, string EmplRelDepCant, string _Rodados, string RodadosOtros, string _Chacra, string ChacraOtros, 
+        public ActionResult GenerarInformeComercial_OLD(string _EmplRelDep, string EmplRelDepCant, string _Rodados, string RodadosOtros, string _Chacra, string ChacraOtros,
                                                     string AntigActividad, string ActuacionProd, string ClienteAnt, string Comentarios, string Domicilio)
         {
             try
@@ -105,16 +105,16 @@ namespace SustitucionMOA.Controllers
                 var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial);
 
                 return File(FileArray, "application/pdf", "Informe Comercial.pdf");
-            /*    PDFResponse result = new PDFResponse
-                {
-                    pdf = new Pdf()
+                /*    PDFResponse result = new PDFResponse
                     {
-                        data = FileArray
-                    }
-                };
+                        pdf = new Pdf()
+                        {
+                            data = FileArray
+                        }
+                    };
 
-                return JsonCustom(result.pdf);
-                return File(FileArray, "application/pdf", "Informe Comercial.pdf");*/
+                    return JsonCustom(result.pdf);
+                    return File(FileArray, "application/pdf", "Informe Comercial.pdf");*/
             }
             catch (InfoCustomException e)
             {
@@ -218,7 +218,32 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult GetMateriales()
         {
-            return JsonCustom(altaEmpresaService.ObtenerMaterialesDataAgro());
+            try
+            {
+                return JsonCustom(altaEmpresaService.ObtenerMaterialesDataAgro());
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]

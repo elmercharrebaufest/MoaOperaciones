@@ -450,9 +450,10 @@
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.service.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\informeComercial.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\nuevoAcopio.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\nuevoProduccion.ts" />
+    <TypeScriptCompile Include="app\common\models\informeComercial.ts" />
+    <TypeScriptCompile Include="app\common\models\material.ts" />
+    <TypeScriptCompile Include="app\common\models\nuevoAcopio.ts" />
+    <TypeScriptCompile Include="app\common\models\nuevoProduccion.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.ts" />
     <TypeScriptCompile Include="app\app-routing.module.ts" />

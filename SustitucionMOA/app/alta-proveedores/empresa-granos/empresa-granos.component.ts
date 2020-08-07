@@ -1,19 +1,17 @@
 import { Component, ViewChild } from '@angular/core';
-import { SecurityService } from '../../common/services/SecurityService';
-import { NavService } from '../../common/services/NavService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { ModalService } from '../../common/services/ModalService';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { BaseService } from '../../common/services/BaseService';
-import { BaseComponent } from '../../common/base-components/base-component';
-import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component'
-import { EmpresaGranosService } from './empresa-granos.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
-import { Observable, Subject } from 'rxjs';
-import { InformeComercial } from './informeComercial';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { ModalService } from '../../common/services/ModalService';
+import { NavService } from '../../common/services/NavService';
+import { SecurityService } from '../../common/services/SecurityService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
+import { EmpresaGranosService } from './empresa-granos.service';
+import { InformeComercial } from '../../common/models/informeComercial';
+import { Material } from '../../common/models/material';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -27,6 +25,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     secondFormGroup: FormGroup;
     http: any;
     fileToUpload: File;
+    listaMateriales: Array<Material> = [];
+    campaniaActual: string;
 
     materialesData: any = null;
 
@@ -43,6 +43,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
+
 
     constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -119,7 +120,19 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.unsubscribe();
         this.subscription = this.service.obtenerMateriales().subscribe(
             result => {
-                this.materialesData = result;
+
+                let obj = JSON.parse(result);
+                console.log(obj.Datos)
+
+                console.log(obj.Datos[0])
+                obj.Datos.forEach(element => {
+                    let mat = new Material();
+                    mat.Id = element.MaterialId;
+                    mat.Descripcion = element.Descripcion;
+                    this.campaniaActual = element.CampaniaActual
+                    this.listaMateriales.push(mat);
+                });
+                this.materialesData = result.Datos;
             },
             error => {
                 this.spinnerComponent.hideIt();
@@ -166,6 +179,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     onSubmit() {
+
         var modal = document.getElementById("modal");
         var container = document.getElementById("container");
         modal.className = " show";
