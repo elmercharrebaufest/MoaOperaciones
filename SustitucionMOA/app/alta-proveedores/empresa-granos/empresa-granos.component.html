@@ -20,8 +20,9 @@
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
                             informe comercial <strong>completo y firmado</strong></label>
-                        <input type="file" class="form-control-file" id="informeComercialFirmado"
-                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                        <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+
+                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
                     </div>
 
                 </div>
@@ -29,49 +30,98 @@
             <mdb-step name="Step 2" label="CBU">
                 <h3> Constancia de CBU</h3>
                 <div class="form-group">
-                    <label class="label" for="constanciaCBU">Cargar constancia de CBU certificada
-                        por Banco</label>
-                    <input type="file" class="form-control-file" id="constanciaCBU"
-                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                    <label class="label" for="constanciaCBU">
+                        Cargar constancia de CBU certificada
+                        por Banco
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="constanciaCBU" (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+
+                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo subido</a>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="constanciaCBU">
+                        Cargar constancia de CBU Mercaderia
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia" (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
+
+                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="descargarArchivo('constanciaCBUMercaderia')">Ver archivo subido</a>
                 </div>
             </mdb-step>
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
-                    <input type="file" class="form-control-file" id="constanciaCUIT"
-                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                    <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+
+                    <a *ngIf="nombreArchivoconstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+
                 </div>
                 <div class="form-group">
-                    <label class="label" for="inscripcionIIBB">Inscripción en IIBB -local o
+                    <label class="label" for="inscripcionIIBB">
+                        Inscripción en IIBB -local o
                         Convenio (CM05
-                        vigente)</label>
-                    <input type="file" class="form-control-file" id="inscripcionIIBB"
-                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                        vigente)
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+
+                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver archivo subido</a>
                 </div>
                 <div class="form-group">
-                    <label class="label" for="gananciasIVAIIBB">Certificados de exclusión o
-                        exención en Ganancias, IVA e
-                        IIBB.</label>
-                    <input type="file" class="form-control-file" id="gananciasIVAIIBB"
-                        (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
+                    <label class="label" for="certificadoExclusionIVA">
+                        Certificados de exclusión o exención IVA
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA" (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
                 </div>
                 <div class="form-group">
-                    <label class="label" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
-                        presentar SIPER.</label>
-                    <input type="file" class="form-control-file" id="SIPER"
-                        (change)="handleFileInput($event.target.files, 'SIPER')">
+                    <label class="label" for="certificadoExclusionIIBB">
+                        Certificados de exclusión o exención en IIBB.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB" (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
+                </div>
+                <div class="form-group">
+                    <label class="label" for="certificadoExclusionSUSS">
+                        Certificados de exclusión o exención en SUSS.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS" (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
+                </div>
+                <div class="form-group">
+                    <label class="label" for="certificadoExclusionGanancias">
+                        Certificados de exclusión o exención en Ganancias.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias" (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
+                </div>
+                <div class="form-group">
+                    <label class="label" for="SIPER">
+                        Solamente en caso de SISA 2 / SISA 3, presentar SIPER.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
+
+                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
                 <h3>Documentación al día en Bolsa</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">Sólo Personas Físicas
+                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">
+                        Sólo Personas Físicas
                         podrán operar sin oblea si remiten copia
                         certificada y legalizada
-                        de DNI.</label>
-                    <input type="file" class="form-control-file" id="documentacionEnBolsa"
-                        (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+                        de DNI.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa" (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+
+                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">

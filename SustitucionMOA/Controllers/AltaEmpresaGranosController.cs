@@ -11,20 +11,10 @@ using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
 namespace SustitucionMOA.Controllers
@@ -260,6 +250,77 @@ namespace SustitucionMOA.Controllers
                 }
 
                 return Json(new { info = "Todo OK" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult ObtenerArchivosSubidos()
+        {
+            try
+            {
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
+
+                return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult DescargarArchivo(string fileKey)
+        {
+
+            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
+
+            string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey);
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+            string fileName = Path.GetFileName(rutaArchivoSubido);
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+        }
+
+        public ActionResult EnviarSolicitudUsuario()
+        {
+            try
+            {
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
+
+                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail));
             }
             catch (InfoCustomException e)
             {
