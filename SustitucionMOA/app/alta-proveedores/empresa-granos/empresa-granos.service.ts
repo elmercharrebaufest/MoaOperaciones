@@ -1,25 +1,23 @@
 ﻿import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
-import { BaseService } from './../../common/services/BaseService';
+import { URLSearchParams } from '@angular/http';
 import { Observable, throwError } from 'rxjs';
-import { map, debounceTime, timeoutWith } from 'rxjs/operators';
+import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
+import { debounceTime, map, timeoutWith } from 'rxjs/operators';
 import { InformeComercial } from '../../common/models/informeComercial';
-
+import { BaseService } from './../../common/services/BaseService';
 
 @Injectable()
 export class EmpresaGranosService extends BaseService {
 
-    postFile(files: FileList, fileKey: string) {
+    postFile(files: FileList, fileKey: string): Observable<any>  {
         let fileToUpload = files.item(0);
         let formData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
         formData.append('fileKey', fileKey);
 
-        this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData).subscribe((val) => {
-            console.log(val);
-        });
+        return this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData);
     }
 
     searchLocalidad(term) {
@@ -59,4 +57,38 @@ export class EmpresaGranosService extends BaseService {
             .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers })
             .pipe(map(this.extractData));
     }
+
+    obtenerArchivosSubidos(): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+
+        return this.http
+            .get('/api/AltaEmpresaGranos/ObtenerArchivosSubidos', { headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
+    descargarArchivoSubido(fileKey: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fileKey', fileKey);
+
+        return this.http
+            .get('/api/AltaEmpresaGranos/DescargarArchivo', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
+
+    enviarSolicitud(): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        return this.http
+            .get('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
+
+
 }

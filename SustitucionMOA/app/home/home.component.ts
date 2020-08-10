@@ -58,7 +58,7 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
 
     checkPermisos() {
         if (this.securityService.esGranosRedirect()) { 
-        this.securityService.tienePermisoRedirect("CONSULTAR HOME");
+            this.securityService.tienePermisoRedirect("CONSULTAR HOME");
         }
     }
 
