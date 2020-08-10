@@ -43,15 +43,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
 
-    @ViewChild(MensajeComponent)
-    protected mensajeComponent: MensajeComponent;
-
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
-
-    @ViewChild("smallSpinner")
-    protected spinnerSmallComponent: SpinnerSmallComponent;
-
     informe = new InformeComercial();
 
     searchTerm: FormControl = new FormControl();
@@ -64,20 +55,30 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.spinnerComponent = new SpinnerComponent();
     }
 
+    @ViewChild("msjEmpresaGranos")
+    protected mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
+
+    @ViewChild(SpinnerSmallComponent)
+    protected spinnerSmallComponent: SpinnerSmallComponent;
+
+
+    checkPermisos() { this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS"); }
+
+    setTabs() {
+        this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
+    }
+
+
     ngOnInit() {
         this.setTabs();
+        this.checkPermisos();
         this.navService.setSeccionList([]);
-        this.firstFormGroup = new FormGroup({
-            // email: new FormControl('', [Validators.required, Validators.email])
-        });
-        this.secondFormGroup = new FormGroup({
-            password: new FormControl('', Validators.required)
-        });
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
-
-
         /*this.searchTerm.valueChanges.subscribe(
             term => {
                 if (term != '') {
@@ -99,17 +100,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
 
     handleFileInput(files: FileList, fileKey: string) {
-        //this.mensajeComponent.setMsgsEmpty();
-        //this.spinnerSmallComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
 
-
-        this.service.postFile(files, fileKey)
-        this.obtenerArchivosSubidos();
-        return false; 
-
-        /*
         this.unsubscribe();
-        this.subscription = this.service.postFile(files.item(0), fileName).subscribe(
+        this.subscription = this.service.postFile(files, fileKey).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -120,14 +115,15 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setInfoMsg("Documento guardado correctamente");
+                    this.mensajeComponent.setSuccessMsg("Documento guardado correctamente");
+                    this.obtenerArchivosSubidos();
                 }
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
-        );*/
+        );
 
     }
 
@@ -258,11 +254,28 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
 
     onSubmit() {
-
-        var modal = document.getElementById("modal");
-        var container = document.getElementById("container");
-        modal.className = " show";
-        container.className += "hidden"
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.enviarSolicitud().subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.mensajeComponent.setMsgsEmpty();
+                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informará el estado de su registro.");
+                }
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
     }
 
 }

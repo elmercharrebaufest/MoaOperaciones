@@ -1,6 +1,9 @@
 <div class="content-wraper">
 
     <div class="row titleSection">Alta Proveedores</div>
+    <mensaje #msjEmpresaGranos></mensaje>
+    <spinner></spinner>
+    <spinner-small></spinner-small>
 
     <div class="row myRow firstSection roundedInfo" id="container">
         <mdb-stepper #stepper>
@@ -18,8 +21,10 @@
 
                     </div>
                     <div style="flex-direction: column;">
-                        <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
-                            informe comercial <strong>completo y firmado</strong></label>
+                        <label class="informe-firmado label" for="informeComercialFirmado">
+                            Por favor adjunte el
+                            informe comercial <strong>completo y firmado</strong>
+                        </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
 
                         <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
@@ -40,7 +45,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label" for="constanciaCBU">
+                    <label class="label" for="constanciaCBUMercaderia">
                         Cargar constancia de CBU Mercaderia
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia" (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
@@ -144,12 +149,11 @@
         <p>¡Muchas gracias!</p>
     </div>
     <!-- end modal notificacion -->
-
     <!-- Modal informe comercial-->
     <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-        data-target="#myModal"></button>
+            data-target="#myModal"></button>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -315,14 +319,14 @@
                                 </div>
                             </div>
 
-                     
+
                         </div>
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-primary" id="InformeComercialDescargar"
-                        (click)="generarInformeComercial()">Descargar</a>
+                       (click)="generarInformeComercial()">Descargar</a>
                 </div>
             </div>
         </div>

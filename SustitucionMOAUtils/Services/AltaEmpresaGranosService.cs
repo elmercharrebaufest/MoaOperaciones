@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
@@ -318,7 +319,13 @@ namespace SustitucionMOAUtils.Services
 
         private bool ValidarArchivosSubidos(UsuarioGranos usuario)
         {
-            //Ver cuales son los requeridos
+
+            if (usuario.RutaInformeComercialFirmado.IsNullOrWhiteSpace())
+                return false;
+
+            if (usuario.RutaConstanciaCBU.IsNullOrWhiteSpace())
+                return false;
+
             return true;
         }
 

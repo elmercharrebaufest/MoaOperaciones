@@ -11,15 +11,13 @@ import { BaseService } from './../../common/services/BaseService';
 @Injectable()
 export class EmpresaGranosService extends BaseService {
 
-    postFile(files: FileList, fileKey: string) {
+    postFile(files: FileList, fileKey: string): Observable<any>  {
         let fileToUpload = files.item(0);
         let formData = new FormData();
         formData.append('file', fileToUpload, fileToUpload.name);
         formData.append('fileKey', fileKey);
 
-        this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData).subscribe((val) => {
-            console.log(val)
-        });
+        return this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData);
     }
 
     searchLocalidad(term) {
