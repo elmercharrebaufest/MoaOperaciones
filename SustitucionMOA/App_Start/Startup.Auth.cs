@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
 using SustitucionMOA.Utils;
+using Microsoft.Owin.Host.SystemWeb;
 
 namespace SustitucionMOA
 {
@@ -40,6 +41,9 @@ namespace SustitucionMOA
                     ClientId = Globals.ClientId,
                     RedirectUri = Globals.RedirectUri,
                     PostLogoutRedirectUri = Globals.RedirectUri,
+
+                    //https://github.com/aspnet/AspNetKatana/wiki/System.Web-response-cookie-integration-issues
+                    CookieManager = new SystemWebCookieManager(),
 
                     // Specify the callbacks for each type of notifications
                     Notifications = new OpenIdConnectAuthenticationNotifications
