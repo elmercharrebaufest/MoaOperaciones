@@ -9,6 +9,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Configuration;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -58,7 +59,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!respuesta.HayError)
                 {
-                    if (respuesta.ProveedorMails.Contains(usuario.Mail) || usuario.Equals("mpfeiffer@baufest.com"))
+                    if (respuesta.ProveedorMails.Contains(usuario.Mail) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
                         usuario.Comercial = string.Concat(respuesta.Nombres, " ", respuesta.Apellido);
 

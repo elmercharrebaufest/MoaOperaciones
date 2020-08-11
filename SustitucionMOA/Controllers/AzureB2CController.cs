@@ -51,10 +51,6 @@ namespace SustitucionMOA.Controllers
 
                 Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
 
-                TestPartido();
-                TestProv();
-                TestLocalidad();
-
                 switch (GranosFlag.ToLower())
                 {
                     case "granos":
@@ -181,7 +177,8 @@ namespace SustitucionMOA.Controllers
                 SessionPersister.Sociedad = "MOA";
 
                 NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
-                try
+
+                if (!Globals.EsLocal)
                 {
                     if (usuario.EstaHabilitado())
                     {
@@ -198,10 +195,6 @@ namespace SustitucionMOA.Controllers
                             noticias.cantidad += noticias.notificaciones.Count;
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-
                 }
             }
             catch (Exception ex)
