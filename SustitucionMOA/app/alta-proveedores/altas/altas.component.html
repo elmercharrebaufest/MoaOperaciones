@@ -10,61 +10,17 @@
         <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow">
                 <title-caps>Refinar resultados</title-caps>
-                <div id="searchVer" class="col-xs-6 col-sm-6 col-md-5" style="padding-left:0px;">
-                    Ver
-                    <div class="styled-select ">
-                        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-                    </div>
-                </div>
-                <div id="searchVendedor" class="col-xs-6  col-sm-6 col-md-5">
-                    Por vendedor:
-                    <div class="styled-select ">
-                        <select>
-                            <option>Monsanto Argentina SRL</option>
-                            <option>Vendedor 1</option>
-                            <option>Vendedor 2</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="searchProducto" class="col-xs-6 col-sm-6 col-md-5">
-                    Por producto
-                    <div class="styled-select ">
-                        <select>
-                            <option>Maíz Dentado Duro</option>
-                            <option>Producto 2</option>
-                            <option>Producto 3</option>
-                        </select>
-                    </div>
-                </div>
+
                 <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
-                    Por CCPP N°:
+                    Por CUIT N°:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" aria-controls="tableModal">
                     </div>
-                </div>
-                <div id="searchMostrar" class="col-sm-2 col-md-5" style="padding-right:0px;">
-                    Mostrar
-                    <div class="styled-select ">
-                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
-                    </div>
-                </div>
-                <div id="showSearch" onClick="openSearch()">
-                    <div style="">
-                        <div class="fa fa-angle-double-right" aria-hidden="true"></div>
-                    </div>
-                    <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
-                </div>
-                <div id="hideSearch" onClick="closeSearch()">
-                    <div style="">
-                        <div class="fa fa-times" aria-hidden="true"></div>
-                    </div>
-                    <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
                 </div>
             </div>
         </div>
         <!-- End Search-->
         <!-- Tables-->
-
         <div class="row myRow">
             <div class="clearfix myTables">
                 <mensaje></mensaje>
@@ -77,18 +33,18 @@
                             <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">CUIT</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Comentarios</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="">Ver Documentación</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let recepcionInfo of cartaPorteList.cartasPorte | paginate: { itemsPerPage:itemsPerPage, currentPage: p }"
                             role="row" class="odd">
-                            <td>Fecha</td>
-                            <td>CUIT</td>
-                            <td>Estado</td>
+                            <td>Fecha: 29/04/2034</td>
+                            <td>CUIT: 14534245432</td>
+                            <td>Estado: Pendiente</td>
                             <td>
-                                <textarea name="" id="" cols="30" rows="10"></textarea>
+                                <button>VER</button>
                             </td>
                             <td>
                                 <button>Aceptar</button>
@@ -104,4 +60,70 @@
         <!-- END tables-->
     </section>
     <!--End CONTENT-->
+</div>
+
+<!-- DETALLE -->
+
+<div class="content-wraper">
+
+    <div class="row titleSection">Razón Social - CUIT</div>
+
+    <div class="row myRow firstSection roundedInfo" id="container">
+        <mdb-stepper #stepper>
+            <mdb-step name="Step 1" label="Informe comercial">
+                <h3>Informe comercial</h3>
+                <div class="form-group informe-comercial">
+                    <div style="flex-direction: column;">
+                        <p>Informe comercial</label>
+                            <button>Ver</button>
+                    </div>
+
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 2" label="CBU">
+                <h3> Constancia de CBU</h3>
+                <div class="form-group">
+                    <p>Constancia de CBU certificada
+                        por Banco</p>
+                    <button>Ver</button>
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 3" label="Documentación Impositiva">
+                <h3>Documentación Impositiva</h3>
+                <div class="form-group">
+                    <p>Constancia de CUIT</p>
+                    <button>Ver</button>
+                </div>
+                <div class="form-group">
+                    <p>Inscripción en IIBB -local o
+                        Convenio (CM05
+                        vigente)</p>
+                    <button>Ver</button>
+                </div>
+                <div class="form-group">
+                    <p>Certificados de exclusión o
+                        exención en Ganancias, IVA e
+                        IIBB.</p>
+                    <button>Ver</button>
+                </div>
+                <div class="form-group">
+                    <p>Solamente en caso de SISA 2 / SISA 3,
+                        presentar SIPER.</p>
+                    <button>Ver</button>
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 4" label="Documentación">
+                <h3>Documentación al día en Bolsa</h3>
+                <div class="form-group">
+                    <button>Ver</button>
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 7" label="">
+                <div>
+                    <button>Aprobar</button>
+                    <button>Rechazar</button>
+                </div>
+            </mdb-step>
+        </mdb-stepper>
+    </div>
 </div>
