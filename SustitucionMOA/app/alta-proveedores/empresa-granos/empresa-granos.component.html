@@ -59,8 +59,7 @@
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
-                    <a *ngIf="nombreArchivoconstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
-
+                    <a *ngIf="nombreArchivoconstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">
@@ -70,7 +69,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
 
-                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIVA">
@@ -78,7 +77,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA" (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIIBB">
@@ -86,7 +85,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB" (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionSUSS">
@@ -94,7 +93,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS" (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionGanancias">
@@ -102,7 +101,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias" (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
@@ -110,7 +109,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
 
-                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
 
                 </div>
             </mdb-step>
@@ -125,7 +124,7 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa" (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
 
-                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
 
                 </div>
             </mdb-step>
@@ -197,7 +196,6 @@
                                             </label>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -320,11 +318,143 @@
                             </div>
 
 
+                            <div class="titulo">
+                                Campaña {{campaniaActual}}
+                            </div>
+
+                            <div class="titulo">
+                                Produccion
+                            </div>
+
+
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Localidad
+                                        </div>
+                                        <div class="formulario-input">
+                                            <input type="text" placeholder="Localidad (100 caracteres)" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-8">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label col-md-12">
+                                            Propiedad
+                                        </div>
+                                        <div class="formulario-input col-md-12">
+                                            <div class="col-md-7">
+                                                <label for="ArrendaPropia1">
+                                                    <input type="radio" id="ArrendaPropia1" value="si" name="ArrendaPropiaA"
+                                                           [(ngModel)]="informe.EmplRelDep" class="margin-5px">Alquiladas
+                                                </label>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label for="ArrendaNoPropia1">
+                                                    <input type="radio" id="ArrendaNoPropia1" value="no" name="ArrendaPropiaA"
+                                                           [(ngModel)]="informe.EmplRelDep" class="margin-5px">Propias
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Grano
+                                        </div>
+                                        <div class="formulario-input">
+
+                                            <select [(ngModel)]="selected">
+                                                <option *ngFor="let material of listaMateriales" [ngValue]="material.id">{{material.Descripcion}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Hectareas
+                                        </div>
+                                        <div class="formulario-input">
+                                            <input type="number" placeholder="Hectareas" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Toneladas
+                                        </div>
+                                        <div class="formulario-input">
+                                            <input type="number" placeholder="Toneladas" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="titulo">Almacenamiento</div>
+
+                        <div class="row myRow">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-campo">
+                                    <div class="formulario-label">
+                                        Localidad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" placeholder="Localidad (100 caracteres)" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row myRow">
+
+                            <div class="col-xs-12 col-md-4">
+                                <div class="formulario-campo">
+                                    <div class="formulario-label">
+                                        Capacidad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="number" placeholder="Capacidad" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-8">
+                                <div class="formulario-campo">
+                                    <div class="formulario-label col-md-12">
+                                        Propiedad
+                                    </div>
+                                    <div class="formulario-input col-md-12">
+                                        <div class="col-md-7">
+                                            <label for="ArrendaPropiaB1">
+                                                <input type="radio" id="ArrendaPropiaB1" value="si" name="ArrendaPropiaB"
+                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">Alquiladas
+                                            </label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label for="ArrendaNoPropiaB1">
+                                                <input type="radio" id="ArrendaNoPropiaB1" value="no" name="ArrendaPropiaB"
+                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">Propias
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <a class="btn btn-primary" id="InformeComercialDescargar"
                        (click)="generarInformeComercial()">Descargar</a>
                 </div>

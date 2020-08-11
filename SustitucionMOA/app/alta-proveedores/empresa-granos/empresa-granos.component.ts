@@ -29,8 +29,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     campaniaActual: string;
 
-    materialesData: any = null;
-
     nombreArchivoInformeComercialFirmado:string = "";
     nombreArchivoConstanciaCBU: string = "";
     nombreArchivoConstanciaCBUMercaderia: string = "";
@@ -53,6 +51,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
+
     }
 
     @ViewChild("msjEmpresaGranos")
@@ -79,16 +78,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
-        /*this.searchTerm.valueChanges.subscribe(
-            term => {
-                if (term != '') {
-                    this.service.searchLocalidad(term).subscribe(
-                        data => {
-                            this.myLocalidades = data as any[];
-                            //console.log(data[0].BookName);
-                        })
-                }
-            })*/
     }
 
     get email() {
@@ -130,16 +119,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     obtenerMateriales() {
         this.subscription = this.service.obtenerMateriales().subscribe(
             result => {
-
                 let obj = JSON.parse(result);
                 obj.Datos.forEach(element => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
                     mat.Descripcion = element.Descripcion;
-                    this.campaniaActual = element.CampaniaActual
+                    this.campaniaActual = element.CampaniaTablero;
                     this.listaMateriales.push(mat);
                 });
-                this.materialesData = result.Datos;
             },
             error => {
                 this.spinnerComponent.hideIt();
