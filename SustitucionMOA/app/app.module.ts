@@ -114,12 +114,14 @@ import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
 import { AppRoutingModule } from './app-routing.module';;
-import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component'
-    ;
-import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component'
-    ;
+import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component';
+import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component';
 import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component'
 import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-granos.service';
+import { AltasComponent } from './alta-proveedores/altas/altas.component';
+import { CuitInvalidoComponent } from './alta-proveedores/cuit-invalido/cuit-invalido.component';
+import { ProveedorDetalleComponent } from './alta-proveedores/proveedor-detalle/proveedor-detalle.component';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -207,14 +209,13 @@ import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-
         CustomFilterContain,
         OrderedColumn,
         ShortenStringPipe,
-        PesificacionComponent
-        ,
-        CartaPorteModalComponent
-        ,
-        EmpresaGranosComponent
-        ,
+        PesificacionComponent,
+        CartaPorteModalComponent,
+        EmpresaGranosComponent,
         EmpresaNoGranosComponent,
-    ],
+        AltasComponent,
+        CuitInvalidoComponent,
+        ProveedorDetalleComponent],
     providers: [
         DatePipe,
         SessionDataService,

@@ -4,6 +4,8 @@ namespace SustitucionMOA.Utils
 {
     public static class Globals
     {
+        public static bool EsLocal = bool.Parse(ConfigurationManager.AppSettings["EsLocal"]);
+
         // App config settings
         public static string ClientId = ConfigurationManager.AppSettings["ida:ClientId"];
         public static string ClientSecret = ConfigurationManager.AppSettings["ida:ClientSecret"];
