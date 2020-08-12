@@ -26,6 +26,19 @@ namespace SustitucionMOA
             );
 
             routes.MapRoute(
+                name: "Registro",
+                url: "Registro",
+                defaults: new { controller = "Home", action = "Registro" }
+            );
+
+            routes.MapRoute(
+                name: "SignOut",
+                url: "SignOut",
+                defaults: new { controller = "Home", action = "SignOut" }
+            );
+
+     
+            routes.MapRoute(
                 name: "Default",
                 url: "api/{controller}/{action}/{id}",
                 defaults: new { action = "Index", id = UrlParameter.Optional }

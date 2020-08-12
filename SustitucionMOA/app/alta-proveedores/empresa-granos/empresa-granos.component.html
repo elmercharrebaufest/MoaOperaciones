@@ -60,7 +60,7 @@
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
-                    <a *ngIf="nombreArchivoconstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
+                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">

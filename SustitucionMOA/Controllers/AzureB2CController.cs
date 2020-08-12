@@ -311,21 +311,6 @@ namespace SustitucionMOA.Controllers
             return true;
         }
 
-        public Provincia TestProv()
-        {
-            return repositorio.Obtener<Provincia>(p => p.ProvinciaId == 1);
-        }
-
-        public Localidad TestLocalidad()
-        {
-            return repositorio.Obtener<Localidad>(p => p.ProvinciaId == 1);
-        }
-
-        public Partido TestPartido()
-        {
-            return repositorio.Obtener<Partido>(p => p.Id == 1);
-        }
-
         public Rol ObtenerRolUsuarioNuevo()
         {
             return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
@@ -347,35 +332,6 @@ namespace SustitucionMOA.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
                 Request.GetOwinContext().Authentication.GetAuthenticationTypes();
             }
-        }
-
-        public void ResetPassword()
-        {
-            // Let the middleware know you are trying to use the reset password policy (see OnRedirectToIdentityProvider in Startup.Auth.cs)
-            HttpContext.GetOwinContext().Set("Policy", Globals.ResetPasswordPolicyId);
-
-            // Set the page to redirect to after changing passwords
-            var authenticationProperties = new AuthenticationProperties { RedirectUri = "/" };
-            HttpContext.GetOwinContext().Authentication.Challenge(authenticationProperties);
-
-            return;
-        }
-
-        public void EditProfile()
-        {
-            if (Request.IsAuthenticated)
-            {
-                // Let the middleware know you are trying to use the edit profile policy (see OnRedirectToIdentityProvider in Startup.Auth.cs)
-                HttpContext.GetOwinContext().Set("Policy", Globals.EditProfilePolicyId);
-
-                // Set the page to redirect to after editing the profile
-                var authenticationProperties = new AuthenticationProperties { RedirectUri = "/" };
-                HttpContext.GetOwinContext().Authentication.Challenge(authenticationProperties);
-
-                return;
-            }
-
-            Response.Redirect("/");
         }
     }
 }
