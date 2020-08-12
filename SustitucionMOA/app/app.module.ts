@@ -120,6 +120,9 @@ import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empres
     ;
 import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component'
 import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-granos.service';
+import { AltaEmpresaService } from './alta-empresa/alta-empresa.service';
+import { AltaEmpresaListComponent } from './alta-empresa/list/alta-empresa.list.component';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -207,13 +210,11 @@ import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-
         CustomFilterContain,
         OrderedColumn,
         ShortenStringPipe,
-        PesificacionComponent
-        ,
-        CartaPorteModalComponent
-        ,
-        EmpresaGranosComponent
-        ,
+        PesificacionComponent,
+        CartaPorteModalComponent,
+        EmpresaGranosComponent,
         EmpresaNoGranosComponent,
+        AltaEmpresaListComponent
     ],
     providers: [
         DatePipe,
@@ -250,9 +251,10 @@ import { EmpresaGranosService } from './alta-proveedores/empresa-granos/empresa-
         ServiceLocator,
         ModalService,
         SecurityService,
-        EmpresaGranosService
+        EmpresaGranosService,
+        AltaEmpresaService
     ],
-    bootstrap: [AppComponent], 
+    bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

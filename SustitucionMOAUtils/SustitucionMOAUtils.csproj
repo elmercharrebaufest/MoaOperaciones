@@ -63,10 +63,12 @@
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Interfaces\IAltaEmpresaService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
+    <Compile Include="Services\AltaEmpresaService.cs" />
     <Compile Include="Services\AltaEmpresaGranosService.cs" />
     <Compile Include="Services\CartaPorteService.cs" />
     <Compile Include="Services\CommonService.cs" />

@@ -19,7 +19,7 @@ namespace SustitucionMOAAssets {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SuccessMsg {
@@ -147,6 +147,15 @@ namespace SustitucionMOAAssets {
         public static string DatosPesadasGuardadosOK {
             get {
                 return ResourceManager.GetString("DatosPesadasGuardadosOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La empresa ({0}) se actualizo correctamente.
+        /// </summary>
+        public static string EmpresaCambioEstadoOK {
+            get {
+                return ResourceManager.GetString("EmpresaCambioEstadoOK", resourceCulture);
             }
         }
         

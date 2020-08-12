@@ -46,12 +46,10 @@ namespace SustitucionMOA.Controllers
                 CUIT = CUIT.Replace("-", string.Empty);
 
                 string GranosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
-                
-                Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT } ;
 
-                TestPartido();
-                TestProv();
-                TestLocalidad();
+                Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
+
+               
 
                 switch (GranosFlag.ToLower())
                 {
@@ -180,21 +178,30 @@ namespace SustitucionMOA.Controllers
 
                 NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
 
-                if (usuario.EstaHabilitado())
+                try
                 {
-                    noticias = _loginService.getNoticias(usuario.ObtenerCodigoProveedor());
-                    noticias.cantidad = 0;
-                    if (noticias != null && noticias.noticias != null)
+                    if (usuario.EstaHabilitado())
                     {
-                        SessionPersister.Noticias = noticias.noticias;
-                        noticias.cantidad += noticias.noticias.Count;
-                    }
-                    if (noticias != null && noticias.notificaciones != null)
-                    {
-                        SessionPersister.Notificaciones = noticias.notificaciones;
-                        noticias.cantidad += noticias.notificaciones.Count;
+                        noticias = _loginService.getNoticias(usuario.ObtenerCodigoProveedor());
+                        noticias.cantidad = 0;
+                        if (noticias != null && noticias.noticias != null)
+                        {
+                            SessionPersister.Noticias = noticias.noticias;
+                            noticias.cantidad += noticias.noticias.Count;
+                        }
+                        if (noticias != null && noticias.notificaciones != null)
+                        {
+                            SessionPersister.Notificaciones = noticias.notificaciones;
+                            noticias.cantidad += noticias.notificaciones.Count;
+                        }
                     }
                 }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
 
                 //return Json(new { success = SuccessMsg.LoginOk, username = usuario.Mail, nombre = usuario.ObtenerRazonSocial(), proveedor = usuario.ObtenerCodigoProveedor(), granosFlag = usuario.TipoUsuario.NombreCorto, tipoUsuario = "PROV", permisos = usuario.ObtenerPermisos(), noticias = noticias, esNuevoUsuario = usuario.EsNuevoUsuario() }, JsonRequestBehavior.AllowGet);
 
@@ -218,7 +225,7 @@ namespace SustitucionMOA.Controllers
         {
             return repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mail);
         }
-        
+
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
         {
@@ -236,15 +243,18 @@ namespace SustitucionMOA.Controllers
             //    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
             //}
 
-            return Json(new { success = SuccessMsg.LoginOk, 
-                            username = SessionPersister.User.username, 
-                            nombre = SessionPersister.User.nombre, 
-                            proveedor = SessionPersister.Proveedor, 
-                            granosFlag = SessionPersister.GranosFlag, 
-                            tipoUsuario = "PROV", 
-                            permisos = SessionPersister.User.permisos, 
-                            noticias = SessionPersister.Notificaciones, 
-                            esNuevoUsuario = true }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                success = SuccessMsg.LoginOk,
+                username = SessionPersister.User.username,
+                nombre = SessionPersister.User.nombre,
+                proveedor = SessionPersister.Proveedor,
+                granosFlag = SessionPersister.GranosFlag,
+                tipoUsuario = "PROV",
+                permisos = SessionPersister.User.permisos,
+                noticias = SessionPersister.Notificaciones,
+                esNuevoUsuario = true
+            }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -289,7 +299,7 @@ namespace SustitucionMOA.Controllers
 
         public bool ValidarCUITProveedor(UsuarioGranos usuario, Entidades.Proveedor proveedor)
         {
-           return _dataAgroService.ValidarCUITProveedorGranos(usuario, proveedor);
+            return _dataAgroService.ValidarCUITProveedorGranos(usuario, proveedor);
         }
 
         public bool ExisteProveedor(Entidades.Proveedor proveedor)
@@ -308,7 +318,7 @@ namespace SustitucionMOA.Controllers
             return true;
         }
 
-        public Provincia TestProv() 
+        public Provincia TestProv()
         {
             return repositorio.Obtener<Provincia>(p => p.ProvinciaId == 1);
         }
@@ -323,7 +333,7 @@ namespace SustitucionMOA.Controllers
             return repositorio.Obtener<Partido>(p => p.Id == 1);
         }
 
-        public Rol ObtenerRolUsuarioNuevo() 
+        public Rol ObtenerRolUsuarioNuevo()
         {
             return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
         }

@@ -66,6 +66,8 @@ import { FacturaComponent } from './factura/factura.component';
 import { PesificacionComponent } from './pesificacion/pesificacion.component';
 import { EmpresaGranosComponent } from './alta-proveedores/empresa-granos/empresa-granos.component';
 import { EmpresaNoGranosComponent } from './alta-proveedores/empresa-no-granos/empresa-no-granos.component';
+import { AltaEmpresaListComponent } from './alta-empresa/list/alta-empresa.list.component';
+
 
 
 const appRoutes: Routes = [
@@ -144,7 +146,9 @@ const appRoutes: Routes = [
             { path: 'factura', component: FacturaComponent },
             { path: 'pesificacion', component: PesificacionComponent },
             { path: 'alta-empresa-granos', component: EmpresaGranosComponent },
-            { path: 'alta-empresa-no-granos', component: EmpresaNoGranosComponent }
+            { path: 'alta-empresa-no-granos', component: EmpresaNoGranosComponent },
+            { path: 'alta-empresa/list', component: AltaEmpresaListComponent }
+            
         ],
     },
     { path: '**', component: HomeComponent },

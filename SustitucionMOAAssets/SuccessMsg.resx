@@ -147,6 +147,9 @@
   <data name="DatosPesadasGuardadosOK" xml:space="preserve">
     <value>Los datos de las Pesadas se han guardado correctamente</value>
   </data>
+  <data name="EmpresaCambioEstadoOK" xml:space="preserve">
+    <value>La empresa ({0}) se actualizo correctamente</value>
+  </data>
   <data name="EnvioMsjOk" xml:space="preserve">
     <value>El mensaje ha sido enviado correctamente</value>
   </data>

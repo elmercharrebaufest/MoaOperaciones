@@ -264,6 +264,7 @@
     <Content Include="app\ryd\carga-pesadas\carga-pesadas.component.html" />
     <Content Include="app\ryd\informe\informe.component.html" />
     <Content Include="app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="app\alta-empresa\list\alta-empresa.list.component.html" />
     <Content Include="app\usuario\alta\usuario.alta.component.html" />
     <Content Include="app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
     <Content Include="app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />
@@ -399,6 +400,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
+    <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\AzureB2CController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -557,6 +559,9 @@
     <TypeScriptCompile Include="app\ryd\ryd.component.ts" />
     <TypeScriptCompile Include="app\ryd\ryd.service.ts" />
     <TypeScriptCompile Include="app\ryd\ryd.ts" />
+    <TypeScriptCompile Include="app\alta-empresa\list\alta-empresa.list.component.ts" />
+    <TypeScriptCompile Include="app\alta-empresa\alta-empresa.service.ts" />
+    <TypeScriptCompile Include="app\alta-empresa\empresa.ts" />
     <TypeScriptCompile Include="app\usuario\alta\usuario.alta.component.ts" />
     <TypeScriptCompile Include="app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.ts" />
     <TypeScriptCompile Include="app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.ts" />
