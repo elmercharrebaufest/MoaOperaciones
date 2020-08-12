@@ -1,3 +1,9 @@
+<style>
+    .ng-autocomplete {
+        width: 200px;
+    }
+</style>
+
 <div class="content-wraper">
 
     <div class="row titleSection">Alta Proveedores</div>
@@ -335,10 +341,30 @@
                                             Localidad
                                         </div>
                                         <div class="formulario-input">
-                                            <input type="text" placeholder="Localidad (100 caracteres)" maxlength="100" />
+                                            <div class="ng-autocomplete">
+                                                <ng-autocomplete [data]="data"
+                                                                 [searchKeyword]="keyword"
+                                                                 (selected)='selectEventProduccion($event, 1)'
+                                                                 (inputChanged)='onChangeSearchProduccion($event)'
+                                                                 (inputFocused)='onFocusedProduccion($event)'
+                                                                 [itemTemplate]="itemTemplate"
+                                                                 [notFoundText]="autocompleteNotFoundText"
+                                                                 [notFoundTemplate]="notFoundTemplate">
+                                                </ng-autocomplete>
+
+                                                <ng-template #itemTemplate let-item>
+                                                    <a [innerHTML]="item.Nombre"></a>
+                                                </ng-template>
+
+                                                <ng-template #notFoundTemplate let-notFound>
+                                                    <div [innerHTML]="notFound"></div>
+                                                </ng-template>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
+                            
 
                                 <div class="col-xs-12 col-md-8">
                                     <div class="formulario-campo">
@@ -411,7 +437,25 @@
                                         Localidad
                                     </div>
                                     <div class="formulario-input">
-                                        <input type="text" placeholder="Localidad (100 caracteres)" maxlength="100" />
+                                        <div class="ng-autocomplete">
+                                            <ng-autocomplete [data]="data"
+                                                             [searchKeyword]="keyword"
+                                                             (selected)='selectEventAlmacenamiento($event, 1)'
+                                                             (inputChanged)='onChangeSearchAlmacenamiento($event)'
+                                                             (inputFocused)='selectEventAlmacenamiento($event)'
+                                                             [itemTemplate]="itemTemplate"
+                                                             [notFoundText]="autocompleteNotFoundText"
+                                                             [notFoundTemplate]="notFoundTemplate">
+                                            </ng-autocomplete>
+
+                                            <ng-template #itemTemplate let-item>
+                                                <a [innerHTML]="item.Nombre"></a>
+                                            </ng-template>
+
+                                            <ng-template #notFoundTemplate let-notFound>
+                                                <div [innerHTML]="notFound"></div>
+                                            </ng-template>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

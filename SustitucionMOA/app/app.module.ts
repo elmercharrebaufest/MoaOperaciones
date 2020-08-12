@@ -122,6 +122,9 @@ import { AltasComponent } from './alta-proveedores/altas/altas.component';
 import { CuitInvalidoComponent } from './alta-proveedores/cuit-invalido/cuit-invalido.component';
 import { ProveedorDetalleComponent } from './alta-proveedores/proveedor-detalle/proveedor-detalle.component';
 
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -132,7 +135,8 @@ import { ProveedorDetalleComponent } from './alta-proveedores/proveedor-detalle/
         SelectModule,
         ModalModule,
         Ng2AutoCompleteModule,
-        ReCaptchaModule
+        ReCaptchaModule,
+        AutocompleteLibModule
     ],
     declarations: [
         AppComponent,

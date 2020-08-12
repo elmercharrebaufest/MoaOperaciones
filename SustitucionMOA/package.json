@@ -27,6 +27,7 @@
     "@angular/platform-browser-dynamic": "~6.1.10",
     "@angular/router": "~6.1.10",
     "angular-in-memory-web-api": "^0.6.1",
+    "angular-ng-autocomplete": "^2.0.1",
     "angular2-recaptcha": "^1.1.0",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",

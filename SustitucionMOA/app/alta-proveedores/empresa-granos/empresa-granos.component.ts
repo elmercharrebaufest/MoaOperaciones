@@ -47,11 +47,59 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     myLocalidades = <any>[];
 
 
+    keyword = 'Nombre';
+    data = [];
+    autocompleteNotFoundText = "No encontrado";
+
+    selectEventProduccion(item, index) {
+        console.log(item)
+
+        console.log(index)
+
+    }
+
+    selectEventAlmacenamiento(item, index) {
+        console.log(item)
+
+        console.log(index)
+
+    }
+    
+
+    onChangeSearchProduccion(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.data = result;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
+    onChangeSearchAlmacenamiento(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.data = result;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
     constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
-
     }
 
     @ViewChild("msjEmpresaGranos")
@@ -63,13 +111,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
 
-
     checkPermisos() { this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS"); }
 
     setTabs() {
         this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
     }
-
 
     ngOnInit() {
         this.setTabs();
