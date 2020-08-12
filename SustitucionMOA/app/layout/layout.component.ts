@@ -245,6 +245,12 @@ export class LayoutComponent implements OnDestroy {
         return false; // <- Prevent href del a
     }
 
+
+    editarCuenta() {
+        this.sessionDataService.editarCuenta();
+        return false; // <- Prevent href del a
+    }
+
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);
     }

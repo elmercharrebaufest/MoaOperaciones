@@ -285,8 +285,8 @@
                         <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
                                 (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
                                     class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
-                        <li><a (click)="goToSeccion('/usuario/cambio-contrasenia')" href="#" class="animate"><span
-                                    class="fa fa-key" aria-hidden="true"></span>Cambio de contraseña </a></li>
+                        <!--<li><a (click)="editarCuenta()" href="#" class="animate"><span
+                                    class="fa fa-key" aria-hidden="true"></span>Editar cuenta</a></li>-->
                         <li *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
                                 (click)="goToSeccion('/usuario/cambio-vendedor')" class="animate" href="#"><span
                                     class="fa fa-id-badge" aria-hidden="true"></span>Cambio de vendedor </a></li>

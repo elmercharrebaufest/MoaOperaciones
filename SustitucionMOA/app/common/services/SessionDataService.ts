@@ -59,8 +59,6 @@ export class SessionDataService {
     }
 
     logout() {
-        this.http.get('/api/AzureB2C/SignOut').subscribe(result => {
-        });
         this.setUsername("");
         this.setNombre("");
         this.setProveedor("");
@@ -70,6 +68,15 @@ export class SessionDataService {
         this.setPermisos(null);
         this.setNoticias(null);
         sessionStorage.clear();
-        this.router.navigate(['/']);
+
+        let logoutURL = window.location.origin + '/SignOut';
+
+        window.location.href = logoutURL;
+    }
+
+    editarCuenta() {
+        let logoutURL = window.location.origin + '/EditarCuenta';
+
+        window.location.href = logoutURL;
     }
 }
