@@ -268,7 +268,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informará el estado de su registro.");
+                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informarï¿½ el estado de su registro.");
                 }
             },
             error => {
@@ -278,5 +278,16 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
+    private fieldArray: Array<any> = [];
+    private newAttribute: any = {};
+
+    addFieldValue() {
+        this.fieldArray.push(this.newAttribute)
+        this.newAttribute = {};
+    }
+
+    deleteFieldValue(index) {
+        this.fieldArray.splice(index, 1);
+    }
 }
 
