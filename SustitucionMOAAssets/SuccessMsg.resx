@@ -180,4 +180,7 @@
   <data name="UsuarioHabilitadoOK" xml:space="preserve">
     <value>El usuario ({0}) ha sido habilitado</value>
   </data>
+  <data name="ValidacionPendienteOK" xml:space="preserve">
+    <value>Su usuario ha sido marcado para revisar por un administrador. Le informaremos por mail cuando pueda entrar.</value>
+  </data>
 </root>

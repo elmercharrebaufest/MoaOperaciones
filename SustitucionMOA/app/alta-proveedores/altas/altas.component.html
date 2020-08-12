@@ -9,86 +9,43 @@
         <!--Search-->
         <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow">
-                <title-caps>Refinar resultados</title-caps>
-                <div id="searchVer" class="col-xs-6 col-sm-6 col-md-5" style="padding-left:0px;">
-                    Ver
-                    <div class="styled-select ">
-                        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-                    </div>
+                <div>
+                    <title-caps>Refinar resultados</title-caps>
                 </div>
-                <div id="searchVendedor" class="col-xs-6  col-sm-6 col-md-5">
-                    Por vendedor:
-                    <div class="styled-select ">
-                        <select>
-                            <option>Monsanto Argentina SRL</option>
-                            <option>Vendedor 1</option>
-                            <option>Vendedor 2</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="searchProducto" class="col-xs-6 col-sm-6 col-md-5">
-                    Por producto
-                    <div class="styled-select ">
-                        <select>
-                            <option>Maíz Dentado Duro</option>
-                            <option>Producto 2</option>
-                            <option>Producto 3</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
-                    Por CCPP N°:
+                <div id="searchTexto" class="col-xs-6 col-sm-6 col-md-6 ">
+                    Por CUIT N°:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" aria-controls="tableModal">
                     </div>
-                </div>
-                <div id="searchMostrar" class="col-sm-2 col-md-5" style="padding-right:0px;">
-                    Mostrar
-                    <div class="styled-select ">
-                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
-                    </div>
-                </div>
-                <div id="showSearch" onClick="openSearch()">
-                    <div style="">
-                        <div class="fa fa-angle-double-right" aria-hidden="true"></div>
-                    </div>
-                    <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
-                </div>
-                <div id="hideSearch" onClick="closeSearch()">
-                    <div style="">
-                        <div class="fa fa-times" aria-hidden="true"></div>
-                    </div>
-                    <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
                 </div>
             </div>
         </div>
         <!-- End Search-->
         <!-- Tables-->
-
         <div class="row myRow">
             <div class="clearfix myTables">
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <table *ngIf="cartaPorteList" id="tableModal"
-                    class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table" cellspacing="0"
-                    role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">CUIT</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Comentarios</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="">Detalle</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let recepcionInfo of cartaPorteList.cartasPorte | paginate: { itemsPerPage:itemsPerPage, currentPage: p }"
-                            role="row" class="odd">
+                        <!-- <tr *ngFor="let recepcionInfo of cartaPorteList.cartasPorte | paginate: { itemsPerPage:itemsPerPage, currentPage: p }" -->
+                        <!-- role="row" class="odd"> -->
+                        <tr>
                             <td>Fecha</td>
                             <td>CUIT</td>
                             <td>Estado</td>
                             <td>
-                                <textarea name="" id="" cols="30" rows="10"></textarea>
+                                <button (click)="verDetalle()">Ver detalle</button>
                             </td>
                             <td>
                                 <button>Aceptar</button>

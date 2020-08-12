@@ -248,5 +248,14 @@ namespace SustitucionMOAAssets {
                 return ResourceManager.GetString("UsuarioHabilitadoOK", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Su usuario ha sido marcado para revisar por un administrador. Le informaremos por mail cuando pueda entrar..
+        /// </summary>
+        public static string ValidacionPendienteOK {
+            get {
+                return ResourceManager.GetString("ValidacionPendienteOK", resourceCulture);
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@ import { Material } from '../../common/models/material';
     styleUrls: ['./app/alta-proveedores/empresa-granos/empresa-granos.component.css', '../Content/css/bootstrap.min.css'],
     providers: [EmpresaGranosService]
 })
+
 export class EmpresaGranosComponent extends ListBaseComponent {
 
     firstFormGroup: FormGroup;
@@ -28,16 +29,17 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     campaniaActual: string;
 
-    materialesData: any = null;
-
-    @ViewChild(MensajeComponent)
-    protected mensajeComponent: MensajeComponent;
-
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
-
-    @ViewChild("smallSpinner")
-    protected spinnerSmallComponent: SpinnerSmallComponent;
+    nombreArchivoInformeComercialFirmado:string = "";
+    nombreArchivoConstanciaCBU: string = "";
+    nombreArchivoConstanciaCBUMercaderia: string = "";
+    nombreArchivoConstanciaCUIT: string = "";
+    nombreArchivoInscripcionIIBB: string = "";
+    nombreArchivoCertificadoExclusionIVA: string = "";
+    nombreArchivoCertificadoExclusionIIBB: string = "";
+    nombreArchivoCertificadoExclusionSUSS: string = "";
+    nombreArchivoCertificadoExclusionGanancias: string = "";
+    nombreArchivoSIPER: string = "";
+    nombreArchivoDocumentacionEnBolsa: string = "";
 
     informe = new InformeComercial();
 
@@ -49,30 +51,33 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
+
     }
+
+    @ViewChild("msjEmpresaGranos")
+    protected mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
+
+    @ViewChild(SpinnerSmallComponent)
+    protected spinnerSmallComponent: SpinnerSmallComponent;
+
+
+    checkPermisos() { this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS"); }
+
+    setTabs() {
+        this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
+    }
+
 
     ngOnInit() {
         this.setTabs();
+        this.checkPermisos();
         this.navService.setSeccionList([]);
-        this.firstFormGroup = new FormGroup({
-            // email: new FormControl('', [Validators.required, Validators.email])
-        });
-        this.secondFormGroup = new FormGroup({
-            password: new FormControl('', Validators.required)
-        });
 
         this.obtenerMateriales();
-
-        /*this.searchTerm.valueChanges.subscribe(
-            term => {
-                if (term != '') {
-                    this.service.searchLocalidad(term).subscribe(
-                        data => {
-                            this.myLocalidades = data as any[];
-                            //console.log(data[0].BookName);
-                        })
-                }
-            })*/
+        this.obtenerArchivosSubidos();
     }
 
     get email() {
@@ -84,17 +89,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
 
     handleFileInput(files: FileList, fileKey: string) {
-        //this.mensajeComponent.setMsgsEmpty();
-        //this.spinnerSmallComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
 
-
-        this.service.postFile(files, fileKey)
-     
-        return false; 
-
-        /*
         this.unsubscribe();
-        this.subscription = this.service.postFile(files.item(0), fileName).subscribe(
+        this.subscription = this.service.postFile(files, fileKey).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -105,34 +104,29 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setInfoMsg("Documento guardado correctamente");
+                    this.mensajeComponent.setSuccessMsg("Documento guardado correctamente");
+                    this.obtenerArchivosSubidos();
                 }
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
-        );*/
+        );
 
     }
 
     obtenerMateriales() {
-        this.unsubscribe();
         this.subscription = this.service.obtenerMateriales().subscribe(
             result => {
-
                 let obj = JSON.parse(result);
-                console.log(obj.Datos)
-
-                console.log(obj.Datos[0])
                 obj.Datos.forEach(element => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
                     mat.Descripcion = element.Descripcion;
-                    this.campaniaActual = element.CampaniaActual
+                    this.campaniaActual = element.CampaniaTablero;
                     this.listaMateriales.push(mat);
                 });
-                this.materialesData = result.Datos;
             },
             error => {
                 this.spinnerComponent.hideIt();
@@ -178,12 +172,97 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    onSubmit() {
+    descargarArchivo(fileKey: string) {
+        if (this.mensajeComponent === undefined)
+            this.mensajeComponent = new MensajeComponent();
 
-        var modal = document.getElementById("modal");
-        var container = document.getElementById("container");
-        modal.className = " show";
-        container.className += "hidden"
+        if (this.spinnerSmallComponent === undefined)
+            this.spinnerSmallComponent = new SpinnerSmallComponent();
+
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.descargarArchivoSubido(fileKey).subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: 'application/octet-stream' });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        return false;
+                    }
+                }
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    obtenerArchivosSubidos() {
+        this.subscription = this.service.obtenerArchivosSubidos().subscribe(
+            result => {
+                this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
+                this.nombreArchivoConstanciaCBU = result.constanciaCBU;
+                this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
+                this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
+                this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
+                this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
+                this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
+                this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
+                this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
+                this.nombreArchivoSIPER = result.SIPER;
+                this.nombreArchivoDocumentacionEnBolsa = result.documentacionEnBolsa;
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+
+    onSubmit() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.enviarSolicitud().subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.mensajeComponent.setMsgsEmpty();
+                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informará el estado de su registro.");
+                }
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
     }
 
 }

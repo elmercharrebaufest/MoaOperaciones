@@ -1,6 +1,9 @@
 <div class="content-wraper">
 
     <div class="row titleSection">Alta Proveedores</div>
+    <mensaje #msjEmpresaGranos></mensaje>
+    <spinner></spinner>
+    <spinner-small></spinner-small>
 
     <div class="row myRow firstSection roundedInfo" id="container">
         <mdb-stepper #stepper>
@@ -11,17 +14,21 @@
                         <p>Complete el informe comercial</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                                class="btn btn-info"
-                                style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
+                            class="btn btn-info  btn-custom">
                             Completar informe Comercial
                         </button>
-
+                        <button type="button" class="btn btn-info btn-custom">
+                            Descargar
+                        </button>
                     </div>
                     <div style="flex-direction: column;">
-                        <label class="informe-firmado label" for="informeComercialFirmado">Por favor adjunte el
-                            informe comercial <strong>completo y firmado</strong></label>
-                        <input type="file" class="form-control-file" id="informeComercialFirmado"
-                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                        <label class="informe-firmado label" for="informeComercialFirmado">
+                            Por favor adjunte el
+                            informe comercial <strong>completo y firmado</strong>
+                        </label>
+                        <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado" (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+
+                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
                     </div>
 
                 </div>
@@ -29,49 +36,97 @@
             <mdb-step name="Step 2" label="CBU">
                 <h3> Constancia de CBU</h3>
                 <div class="form-group">
-                    <label class="label" for="constanciaCBU">Cargar constancia de CBU certificada
-                        por Banco</label>
-                    <input type="file" class="form-control-file" id="constanciaCBU"
-                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                    <label class="label" for="constanciaCBU">
+                        Cargar constancia de CBU certificada
+                        por Banco
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="constanciaCBU" (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+
+                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo subido</a>
+                </div>
+
+                <div class="form-group">
+                    <label class="label" for="constanciaCBUMercaderia">
+                        Cargar constancia de CBU Mercaderia
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia" (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
+
+                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="descargarArchivo('constanciaCBUMercaderia')">Ver archivo subido</a>
                 </div>
             </mdb-step>
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
-                    <input type="file" class="form-control-file" id="constanciaCUIT"
-                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                    <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT" (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+
+                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
-                    <label class="label" for="inscripcionIIBB">Inscripción en IIBB -local o
+                    <label class="label" for="inscripcionIIBB">
+                        Inscripción en IIBB -local o
                         Convenio (CM05
-                        vigente)</label>
-                    <input type="file" class="form-control-file" id="inscripcionIIBB"
-                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                        vigente)
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB" (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+
+                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
-                    <label class="label" for="gananciasIVAIIBB">Certificados de exclusión o
-                        exención en Ganancias, IVA e
-                        IIBB.</label>
-                    <input type="file" class="form-control-file" id="gananciasIVAIIBB"
-                        (change)="handleFileInput($event.target.files, 'gananciasIVAIIBB')">
+                    <label class="label" for="certificadoExclusionIVA">
+                        Certificados de exclusión o exención IVA
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA" (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')"> Ver archivo subido</a>
                 </div>
                 <div class="form-group">
-                    <label class="label" for="SIPER">Solamente en caso de SISA 2 / SISA 3,
-                        presentar SIPER.</label>
-                    <input type="file" class="form-control-file" id="SIPER"
-                        (change)="handleFileInput($event.target.files, 'SIPER')">
+                    <label class="label" for="certificadoExclusionIIBB">
+                        Certificados de exclusión o exención en IIBB.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB" (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')"> Ver archivo subido</a>
+                </div>
+                <div class="form-group">
+                    <label class="label" for="certificadoExclusionSUSS">
+                        Certificados de exclusión o exención en SUSS.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS" (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')"> Ver archivo subido</a>
+                </div>
+                <div class="form-group">
+                    <label class="label" for="certificadoExclusionGanancias">
+                        Certificados de exclusión o exención en Ganancias.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias" (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')"> Ver archivo subido</a>
+                </div>
+                <div class="form-group">
+                    <label class="label" for="SIPER">
+                        Solamente en caso de SISA 2 / SISA 3, presentar SIPER.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="SIPER" (change)="handleFileInput($event.target.files, 'SIPER')">
+
+                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
+
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
                 <h3>Documentación al día en Bolsa</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">Sólo Personas Físicas
+                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">
+                        Sólo Personas Físicas
                         podrán operar sin oblea si remiten copia
                         certificada y legalizada
-                        de DNI.</label>
-                    <input type="file" class="form-control-file" id="documentacionEnBolsa"
-                        (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+                        de DNI.
+                    </label>
+                    <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa" (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+
+                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('constanciaCUIT')"> Ver archivo subido</a>
+
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
@@ -94,12 +149,11 @@
         <p>¡Muchas gracias!</p>
     </div>
     <!-- end modal notificacion -->
-
     <!-- Modal informe comercial-->
     <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-        data-target="#myModal"></button>
+            data-target="#myModal"></button>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -143,7 +197,6 @@
                                             </label>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -265,14 +318,146 @@
                                 </div>
                             </div>
 
-                     
+
+                            <div class="titulo">
+                                Campaña {{campaniaActual}}
+                            </div>
+
+                            <div class="titulo">
+                                Produccion
+                            </div>
+
+
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Localidad
+                                        </div>
+                                        <div class="formulario-input">
+                                            <input type="text" placeholder="Localidad (100 caracteres)" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-8">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label col-md-12">
+                                            Propiedad
+                                        </div>
+                                        <div class="formulario-input col-md-12">
+                                            <div class="col-md-7">
+                                                <label for="ArrendaPropia1">
+                                                    <input type="radio" id="ArrendaPropia1" value="si" name="ArrendaPropiaA"
+                                                           [(ngModel)]="informe.EmplRelDep" class="margin-5px">Alquiladas
+                                                </label>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <label for="ArrendaNoPropia1">
+                                                    <input type="radio" id="ArrendaNoPropia1" value="no" name="ArrendaPropiaA"
+                                                           [(ngModel)]="informe.EmplRelDep" class="margin-5px">Propias
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Grano
+                                        </div>
+                                        <div class="formulario-input">
+
+                                            <select [(ngModel)]="selected">
+                                                <option *ngFor="let material of listaMateriales" [ngValue]="material.id">{{material.Descripcion}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Hectareas
+                                        </div>
+                                        <div class="formulario-input">
+                                            <input type="number" placeholder="Hectareas" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-4">
+                                    <div class="formulario-campo">
+                                        <div class="formulario-label">
+                                            Toneladas
+                                        </div>
+                                        <div class="formulario-input">
+                                            <input type="number" placeholder="Toneladas" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="titulo">Almacenamiento</div>
+
+                        <div class="row myRow">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-campo">
+                                    <div class="formulario-label">
+                                        Localidad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" placeholder="Localidad (100 caracteres)" maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row myRow">
+
+                            <div class="col-xs-12 col-md-4">
+                                <div class="formulario-campo">
+                                    <div class="formulario-label">
+                                        Capacidad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="number" placeholder="Capacidad" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-8">
+                                <div class="formulario-campo">
+                                    <div class="formulario-label col-md-12">
+                                        Propiedad
+                                    </div>
+                                    <div class="formulario-input col-md-12">
+                                        <div class="col-md-7">
+                                            <label for="ArrendaPropiaB1">
+                                                <input type="radio" id="ArrendaPropiaB1" value="si" name="ArrendaPropiaB"
+                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">Alquiladas
+                                            </label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label for="ArrendaNoPropiaB1">
+                                                <input type="radio" id="ArrendaNoPropiaB1" value="no" name="ArrendaPropiaB"
+                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">Propias
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <a class="btn btn-primary" id="InformeComercialDescargar"
-                        (click)="generarInformeComercial()">Descargar</a>
+                       (click)="generarInformeComercial()">Descargar</a>
                 </div>
             </div>
         </div>

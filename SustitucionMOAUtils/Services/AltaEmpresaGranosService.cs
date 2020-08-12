@@ -1,13 +1,16 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
@@ -30,6 +33,8 @@ namespace SustitucionMOAUtils.Services
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
 
         }
+
+
 
         public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial)
         {
@@ -132,8 +137,6 @@ namespace SustitucionMOAUtils.Services
                 CampaniaActual = jsonResult.Datos[0].CampaniaActual.ToString();
                 CampaniaIdActual = jsonResult.Datos[0].CampaniaIdActual;
             }
-
-
         }
 
         public string ObtenerMaterialesDataAgro()
@@ -196,42 +199,179 @@ namespace SustitucionMOAUtils.Services
 
                 switch (fileKey)
                 {
-                    case "informeComercialFirmado":
+                    case FileKeys.InformeComercialFirmado:
                         usuario.RutaInformeComercialFirmado = rutaArchivo;
                         break;
-                    case "constanciaCBU":
+                    case FileKeys.ConstanciaCBU:
                         usuario.RutaConstanciaCBU = rutaArchivo;
                         break;
-                    case "constanciaCUIT":
+                    case FileKeys.ConstanciaCBUMercaderia:
+                        usuario.RutaConstanciaCBUMercaderia = rutaArchivo;
+                        break;
+                    case FileKeys.ConstanciaCUIT:
                         usuario.RutaConstanciaCUIT = rutaArchivo;
                         break;
-                    case "inscripcionIIBB":
+                    case FileKeys.InscripcionIIBB:
                         usuario.RutaInscripcionIIBB = rutaArchivo;
                         break;
-                    case "gananciasIVAIIBB":
-                        usuario.RutaGananciasIVAIIBB = rutaArchivo;
+                    case FileKeys.CertificadoExclusionIVA:
+                        usuario.RutaCertificadoExclusionIVA = rutaArchivo;
                         break;
-                    case "SIPER":
+                    case FileKeys.CertificadoExclusionIIBB:
+                        usuario.RutaCertificadoExclusionIIBB = rutaArchivo;
+                        break;
+                    case FileKeys.CertificadoExclusionSUSS:
+                        usuario.RutaCertificadoExclusionSUSS = rutaArchivo;
+                        break;
+                    case FileKeys.CertificadoExclusionGanancias:
+                        usuario.RutaCertificadoExclusionGanancias = rutaArchivo;
+                        break;
+                    case FileKeys.SIPER:
                         usuario.RutaSIPER = rutaArchivo;
                         break;
-                    case "documentacionEnBolsa":
+                    case FileKeys.DocumentacionEnBolsa:
                         usuario.RutaDocumentacionEnBolsa = rutaArchivo;
                         break;
                     default:
                         return false;
                 }
 
+                //Si subieron otros archivos anteriormente, los borramos
+                DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
+
+                foreach (FileInfo file in carpeta.GetFiles())
+                {
+                    file.Delete();
+                }
+
                 fileSubido.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();
 
-
                 return true;
             }
-            catch (Exception ex)
+            catch (InfoCustomException)
             {
-                return false;
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
 
+        public Dictionary<string,string> ObtenerArchivosSubidos(string mailUsuario)
+        {
+            var archivos = new Dictionary<string, string>();
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            archivos.Add(FileKeys.InformeComercialFirmado, ObtenerRuta(usuario.RutaInformeComercialFirmado));
+            archivos.Add(FileKeys.ConstanciaCBU, ObtenerRuta(usuario.RutaConstanciaCBU));
+            archivos.Add(FileKeys.ConstanciaCBUMercaderia, ObtenerRuta(usuario.RutaConstanciaCBUMercaderia));
+            archivos.Add(FileKeys.ConstanciaCUIT, ObtenerRuta(usuario.RutaConstanciaCUIT));
+            archivos.Add(FileKeys.InscripcionIIBB, ObtenerRuta(usuario.RutaInscripcionIIBB));
+            archivos.Add(FileKeys.CertificadoExclusionIVA, ObtenerRuta(usuario.RutaCertificadoExclusionIVA));
+            archivos.Add(FileKeys.CertificadoExclusionIIBB, ObtenerRuta(usuario.RutaCertificadoExclusionIIBB));
+            archivos.Add(FileKeys.CertificadoExclusionSUSS, ObtenerRuta(usuario.RutaCertificadoExclusionSUSS));
+            archivos.Add(FileKeys.CertificadoExclusionGanancias, ObtenerRuta(usuario.RutaCertificadoExclusionGanancias));
+            archivos.Add(FileKeys.SIPER, ObtenerRuta(usuario.RutaSIPER));
+            archivos.Add(FileKeys.DocumentacionEnBolsa, ObtenerRuta(usuario.RutaDocumentacionEnBolsa));
+
+            return archivos;
+        }
+
+        public string ObtenerRuta(string ruta)
+        {
+            if (Path.GetFileName(ruta) != null)
+                return Path.GetFileName(ruta);
+
+            return "";
+        }
+
+        public string EnviarSolicitudUsuario(string mailUsuario)
+        {
+            try
+            {
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+                if (!ValidarArchivosSubidos(usuario))
+                {
+                    return ErrorMsg.ErrorCompleteCampo;
+                }
+
+                var proveedor = usuario.ObtenerProveedorActual();
+
+                proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+
+                repositorio.GuardarCambios();
+
+                return SuccessMsg.ValidacionPendienteOK; 
+            }
+            catch (Exception ex)
+            {
+
+                return ErrorMsg.Error;
+            }
+        }
+
+        private bool ValidarArchivosSubidos(UsuarioGranos usuario)
+        {
+
+            if (usuario.RutaInformeComercialFirmado.IsNullOrWhiteSpace())
+                return false;
+
+            if (usuario.RutaConstanciaCBU.IsNullOrWhiteSpace())
+                return false;
+
+            return true;
+        }
+
+
+        public string ObtenerArchivo(string mailUsuario, string fileKey)
+        {
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+            string rutaArchivo = "";
+            switch (fileKey)
+            {
+                case FileKeys.InformeComercialFirmado:
+                    rutaArchivo = usuario.RutaInformeComercialFirmado;
+                    break;
+                case FileKeys.ConstanciaCBU:
+                    rutaArchivo = usuario.RutaConstanciaCBU;
+                    break;
+                case FileKeys.ConstanciaCBUMercaderia:
+                    rutaArchivo = usuario.RutaConstanciaCBUMercaderia;
+                    break;
+                case FileKeys.ConstanciaCUIT:
+                    rutaArchivo = usuario.RutaConstanciaCUIT;
+                    break;
+                case FileKeys.InscripcionIIBB:
+                    rutaArchivo = usuario.RutaInscripcionIIBB;
+                    break;
+                case FileKeys.CertificadoExclusionGanancias:
+                    rutaArchivo = usuario.RutaCertificadoExclusionGanancias;
+                    break;
+                case FileKeys.CertificadoExclusionIIBB:
+                    rutaArchivo = usuario.RutaCertificadoExclusionIIBB;
+                    break;
+                case FileKeys.CertificadoExclusionIVA:
+                    rutaArchivo = usuario.RutaCertificadoExclusionIVA;
+                    break;
+                case FileKeys.CertificadoExclusionSUSS:
+                    rutaArchivo = usuario.RutaCertificadoExclusionSUSS;
+                    break;
+                case FileKeys.SIPER:
+                    rutaArchivo = usuario.RutaSIPER;
+                    break;
+                case FileKeys.DocumentacionEnBolsa:
+                    rutaArchivo = usuario.RutaDocumentacionEnBolsa;
+                    break;
+            }
+
+            return rutaArchivo;
+        }
     }
 }

@@ -14,6 +14,9 @@ using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using System.Linq;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
+using SustitucionMOA.Utils;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SustitucionMOA.Controllers
 {
@@ -26,7 +29,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Index()
         {
-
             if (Request.IsAuthenticated)
             {
 
@@ -44,12 +46,56 @@ namespace SustitucionMOA.Controllers
                 {
                     HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
                 }
-                catch (Exception ex)
+                //Ignoramos esta excepción porque la da cuando carga recursos
+                catch 
                 {
 
                 }
                 return null;
 
+            }
+        }
+
+        public ActionResult Registro()
+        {
+            if (Request.IsAuthenticated)
+            {
+
+                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
+                {
+                    return Redirect("/");
+                }
+                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+            }
+            else
+            {
+                string redirectUrl = "/api/AzureB2C/Login";
+                //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+                try
+                {
+                    HttpContext.GetOwinContext().Set("Policy", Globals.SignUpPolicyId);
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
+                }
+                //Ignoramos esta excepción porque la da cuando carga recursos
+                catch
+                {
+
+                }
+                return null;
+
+            }
+        }
+
+        public async Task SignOut()
+        {
+            // To sign out the user, you should issue an OpenIDConnect sign out request.
+            if (Request.IsAuthenticated)
+            {
+                SessionPersister.clear();
+                await MsalAppBuilder.ClearUserTokenCache();
+                IEnumerable<AuthenticationDescription> authTypes = HttpContext.GetOwinContext().Authentication.GetAuthenticationTypes();
+                HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
+                Request.GetOwinContext().Authentication.GetAuthenticationTypes();
             }
         }
 

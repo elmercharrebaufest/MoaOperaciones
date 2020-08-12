@@ -1,27 +1,20 @@
-﻿using System;
-using System.Web.Mvc;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using Model = SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.Login;
-using SustitucionMOAModel.Models.WSMapMOA.Noticia;
-using Entidades = SustitucionMOAModel.Entities;
-using SustitucionMOASecurity;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
-using System.Text;
-using System.Linq;
-using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using SustitucionMOARepositorio;
-using System.Collections.Generic;
-using Microsoft.Owin.Security;
+﻿using Microsoft.Owin.Security;
 using SustitucionMOA.Utils;
-using System.Web;
-using System.Security.Claims;
-using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Enums;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using SustitucionMOARepositorio;
+using SustitucionMOASecurity;
+using SustitucionMOAUtils.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using Entidades = SustitucionMOAModel.Entities;
+using Model = SustitucionMOAModel.Models;
 
 namespace SustitucionMOA.Controllers
 {
@@ -37,6 +30,15 @@ namespace SustitucionMOA.Controllers
             this.repositorio = repositorio;
         }
         public ActionResult Login()
+        {
+
+            ValidarLogin();
+
+            return Redirect("/");
+
+        }
+
+        private void ValidarLogin()
         {
             try
             {
@@ -178,7 +180,7 @@ namespace SustitucionMOA.Controllers
 
                 NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
 
-                try
+                if (!Globals.EsLocal)
                 {
                     if (usuario.EstaHabilitado())
                     {
@@ -196,26 +198,14 @@ namespace SustitucionMOA.Controllers
                         }
                     }
                 }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-
-
-                //return Json(new { success = SuccessMsg.LoginOk, username = usuario.Mail, nombre = usuario.ObtenerRazonSocial(), proveedor = usuario.ObtenerCodigoProveedor(), granosFlag = usuario.TipoUsuario.NombreCorto, tipoUsuario = "PROV", permisos = usuario.ObtenerPermisos(), noticias = noticias, esNuevoUsuario = usuario.EsNuevoUsuario() }, JsonRequestBehavior.AllowGet);
-
             }
             catch (Exception ex)
             {
 
             }
 
-            //return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
-
-            return Redirect("/");
-
         }
+
         private UsuarioGranos BuscarUsuarioGranos(UsuarioGranos usuarioGranos)
         {
             return repositorio.Obtener<UsuarioGranos>(u => u.Mail == usuarioGranos.Mail);
@@ -242,6 +232,11 @@ namespace SustitucionMOA.Controllers
             //    DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
             //    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
             //}
+
+            if (SessionPersister.User == null)
+            {
+                ValidarLogin();
+            }
 
             return Json(new
             {
@@ -318,21 +313,6 @@ namespace SustitucionMOA.Controllers
             return true;
         }
 
-        public Provincia TestProv()
-        {
-            return repositorio.Obtener<Provincia>(p => p.ProvinciaId == 1);
-        }
-
-        public Localidad TestLocalidad()
-        {
-            return repositorio.Obtener<Localidad>(p => p.ProvinciaId == 1);
-        }
-
-        public Partido TestPartido()
-        {
-            return repositorio.Obtener<Partido>(p => p.Id == 1);
-        }
-
         public Rol ObtenerRolUsuarioNuevo()
         {
             return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
@@ -354,35 +334,6 @@ namespace SustitucionMOA.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
                 Request.GetOwinContext().Authentication.GetAuthenticationTypes();
             }
-        }
-
-        public void ResetPassword()
-        {
-            // Let the middleware know you are trying to use the reset password policy (see OnRedirectToIdentityProvider in Startup.Auth.cs)
-            HttpContext.GetOwinContext().Set("Policy", Globals.ResetPasswordPolicyId);
-
-            // Set the page to redirect to after changing passwords
-            var authenticationProperties = new AuthenticationProperties { RedirectUri = "/" };
-            HttpContext.GetOwinContext().Authentication.Challenge(authenticationProperties);
-
-            return;
-        }
-
-        public void EditProfile()
-        {
-            if (Request.IsAuthenticated)
-            {
-                // Let the middleware know you are trying to use the edit profile policy (see OnRedirectToIdentityProvider in Startup.Auth.cs)
-                HttpContext.GetOwinContext().Set("Policy", Globals.EditProfilePolicyId);
-
-                // Set the page to redirect to after editing the profile
-                var authenticationProperties = new AuthenticationProperties { RedirectUri = "/" };
-                HttpContext.GetOwinContext().Authentication.Challenge(authenticationProperties);
-
-                return;
-            }
-
-            Response.Redirect("/");
         }
     }
 }
