@@ -99,6 +99,23 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult ResetPassword()
+        {
+            string redirectUrl = "/api/AzureB2C/Login";
+            //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+            try
+            {
+                HttpContext.GetOwinContext().Set("Policy", Globals.ResetPasswordPolicyId);
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
+            }
+            //Ignoramos esta excepción porque la da cuando carga recursos
+            catch
+            {
+
+            }
+            return null;
+        }
+
         public ActionResult getHomeInfo(string fechaInicio, string fechaFin)
         {
             try

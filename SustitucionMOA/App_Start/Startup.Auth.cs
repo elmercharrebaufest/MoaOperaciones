@@ -97,7 +97,7 @@ namespace SustitucionMOA
             if (notification.ProtocolMessage.ErrorDescription != null && notification.ProtocolMessage.ErrorDescription.Contains("AADB2C90118"))
             {
                 // If the user clicked the reset password link, redirect to the reset password route
-                notification.Response.Redirect("/Account/ResetPassword");
+                notification.Response.Redirect("/ResetPassword");
             }
             else if (notification.Exception.Message == "access_denied")
             {

@@ -31,10 +31,7 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
-
         }
-
-
 
         public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial)
         {
@@ -263,7 +260,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public Dictionary<string,string> ObtenerArchivosSubidos(string mailUsuario)
+        public Dictionary<string, string> ObtenerArchivosSubidos(string mailUsuario)
         {
             var archivos = new Dictionary<string, string>();
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
@@ -293,28 +290,20 @@ namespace SustitucionMOAUtils.Services
 
         public string EnviarSolicitudUsuario(string mailUsuario)
         {
-            try
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            if (!ValidarArchivosSubidos(usuario))
             {
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-                if (!ValidarArchivosSubidos(usuario))
-                {
-                    return ErrorMsg.ErrorCompleteCampo;
-                }
-
-                var proveedor = usuario.ObtenerProveedorActual();
-
-                proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-
-                repositorio.GuardarCambios();
-
-                return SuccessMsg.ValidacionPendienteOK; 
+                return ErrorMsg.ErrorCompleteCampo;
             }
-            catch (Exception ex)
-            {
 
-                return ErrorMsg.Error;
-            }
+            var proveedor = usuario.ObtenerProveedorActual();
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.ValidacionPendienteOK;
         }
 
         private bool ValidarArchivosSubidos(UsuarioGranos usuario)
