@@ -51,6 +51,8 @@ namespace SustitucionMOA.Controllers
 
                 Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
 
+               
+
                 switch (GranosFlag.ToLower())
                 {
                     case "granos":

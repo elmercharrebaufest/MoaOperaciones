@@ -271,11 +271,12 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerArchivosSubidos()
+        public ActionResult ObtenerArchivosSubidos(string mail)
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                if (string.IsNullOrWhiteSpace(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
                 return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail));
@@ -300,10 +301,11 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string fileKey)
+        public ActionResult DescargarArchivo(string fileKey,string mail)
         {
 
-            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            if (string.IsNullOrWhiteSpace(mail))
+                mail = ClaimsPrincipalExtension.GetClaimValue("emails");
             mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
             string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey);

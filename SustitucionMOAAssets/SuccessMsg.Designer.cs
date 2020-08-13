@@ -151,6 +151,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La empresa ({0}) se actualizo correctamente.
+        /// </summary>
+        public static string EmpresaCambioEstadoOK {
+            get {
+                return ResourceManager.GetString("EmpresaCambioEstadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El mensaje ha sido enviado correctamente.
         /// </summary>
         public static string EnvioMsjOk {

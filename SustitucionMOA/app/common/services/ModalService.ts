@@ -23,6 +23,7 @@ export class ModalService {
     public modalContratoFleteProcedencia = new Subject<any>();
     public modalInfoFleteProcedencia = new Subject<any>();
     public modalShowFleteProcedencia = new Subject<any>();
+    public modalShowEmpresaCambiarEstado = new Subject<any>();
     public modalShowNoticia = new Subject<any>();
     public modalFooter = new Subject<any>();
     public dataGuardarFlete = new Subject<any>();
@@ -44,6 +45,7 @@ export class ModalService {
     modalContratoFleteProcedencia$ = this.modalContratoFleteProcedencia.asObservable();
     modalInfoFleteProcedencia$ = this.modalInfoFleteProcedencia.asObservable();
     modalShowFleteProcedencia$ = this.modalShowFleteProcedencia.asObservable();
+    modalShowEmpresaCambiarEstado$ = this.modalShowEmpresaCambiarEstado.asObservable();
     modalShowNoticia$ = this.modalShowNoticia.asObservable();
     modalFooter$ = this.modalFooter.asObservable();
     dataGuardarFlete$ = this.dataGuardarFlete.asObservable();
@@ -114,6 +116,16 @@ export class ModalService {
         this.modalShowNoticia.next(false);
     }
 
+    setModalShowEmpresaCambiarEstado(value: any) {
+        this.modalShowEmpresaCambiarEstado.next(value);
+        this.modalShowFleteProcedencia.next(false);
+        this.modalShowFlete.next(false);
+        this.modalShowLiquidacion.next(false);
+        this.modalShowComprobante.next(false);
+        this.modalShowDetalle.next(false);
+        this.modalShowNoticia.next(false);
+    }
+
     setModalContratoFleteProcedencia(contrato: string) {
         this.modalContratoFleteProcedencia.next(contrato);
     }
@@ -166,6 +178,12 @@ export class ModalService {
         this.modal.open();
     }
 
+    openModalEmpresaCambiarEstado(titulo: string, empresa: any, estadoid: number) {
+        this.setModalHeader(titulo);
+        this.setModalShowEmpresaCambiarEstado(true);
+        //this.setModalEmpresaCambiarEstado(empresa);
+        this.modal.open();
+    }
     setDatosGuardarFlete(data: string) {
         this.dataGuardarFlete.next(data);
     }

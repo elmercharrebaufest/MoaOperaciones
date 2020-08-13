@@ -92,5 +92,7 @@
 
         public const string ALTAEMPRESA = "ALTA EMPRESA";
 
+        public const string ABM_EMPRESAS = "ABM EMPRESAS";
+
     }
 }
