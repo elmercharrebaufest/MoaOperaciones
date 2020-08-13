@@ -12,9 +12,9 @@
                 <title-caps>Refinar resultados</title-caps>
 
                 <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
-                    Por CUIT N°:
+                    Por Razon Social/CUIT:
                     <div class="styled-select ">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [value]="" (input)="filtro = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
             </div>
@@ -25,29 +25,30 @@
             <div class="clearfix myTables">
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
-                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                       cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">CUIT</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Ver Documentación</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Id')">ID</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CodigoProveedor')">Codigo</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">Razon Social</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let recepcionInfo of cartaPorteList.cartasPorte | paginate: { itemsPerPage:itemsPerPage, currentPage: p }"
-                            role="row" class="odd">
-                            <td>Fecha: 29/04/2034</td>
-                            <td>CUIT: 14534245432</td>
-                            <td>Estado: Pendiente</td>
+                        <tr *ngFor="let empresa of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                            <td>{{empresa.Id}}</td>
+                            <td>{{empresa.CodigoProveedor}}</td>
+                            <td>{{empresa.CUIT}}</td>
+                            <td>{{empresa.RazonSocial}}</td>
                             <td>
-                                <button>VER</button>
-                            </td>
-                            <td>
-                                <button>Aceptar</button>
-                                <button>Rechazar</button>
+                                <button type="button" class="btn btn-info btn-lg"
+                                        (click)="abrirModal(empresa)"
+                                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                                    Ver Documentacion
+                                </button>
+                                <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"></button>
                             </td>
                         </tr>
                     </tbody>
@@ -61,194 +62,150 @@
     <!--End CONTENT-->
 </div>
 
-<!-- DETALLE -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
+     data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="hidemyModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">{{empresaSeleccionada.RazonSocial}} - {{empresaSeleccionada.CUIT}}</h4>
 
-<div class="content-wraper">
+            </div>
+            <div class="modal-body" style="padding-top:0;">
 
-    <div class="row titleSection">Razón Social - CUIT</div>
+                <!-- DETALLE -->
 
-    <div class="row myRow firstSection roundedInfo" id="container">
-        <mdb-stepper #stepper>
-            <mdb-step name="Step 1" label="Informe comercial">
-                <h3>Informe comercial</h3>
-                <div class="form-group informe-comercial">
-                    <div style="flex-direction: column;">
-                        <p>Informe comercial</label>
-                            <button>Ver</button>
+                <div class="content-wraper" style="margin-top:0;padding-top:0">
+
+                    <!--<div class="row titleSection">Razón Social - CUIT</div>-->
+
+                    <div class="row myRow firstSection roundedInfo" id="container">
+                        <mdb-stepper #stepper>
+                            <mdb-step name="Step 1" label="Informe comercial">
+                                <h3>Informe comercial</h3>
+                                <div class="form-group informe-comercial">
+                                    <div style="flex-direction: column;">
+                                        <label>Informe comercial</label>&nbsp;
+                                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">Sin Adjuntar</label>
+                                    </div>
+
+                                </div>
+                            </mdb-step>
+                            <mdb-step name="Step 2" label="CBU">
+                                <h3> Constancia de CBU</h3>
+                                <div class="form-group">
+                                    <label>
+                                        Constancia de CBU certificada
+                                        por Banco
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Constancia de CBU Mercaderia
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="descargarArchivo('nombreArchivoConstanciaCBUMercaderia')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCBUMercaderia == ''">Sin Adjuntar</label>
+                                </div>
+                            </mdb-step>
+                            <mdb-step name="Step 3" label="Documentación Impositiva">
+                                <h3>Documentación Impositiva</h3>
+                                <div class="form-group">
+                                    <label>Constancia de CUIT</label>&nbsp;
+                                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Inscripción en IIBB -local o
+                                        Convenio (CM05
+                                        vigente)
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Certificados de exclusión o
+                                        exención IVA.
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Certificados de exclusión o
+                                        exención IIBB.
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Certificados de exclusión o
+                                        exención SUSS.
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Certificados de exclusión o
+                                        exención Ganancias.
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">Sin Adjuntar</label>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        Solamente en caso de SISA 2 / SISA 3,
+                                        presentar SIPER.
+                                    </label>&nbsp;
+                                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('SIPER')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
+                                </div>
+                            </mdb-step>
+                            <mdb-step name="Step 4" label="Documentación">
+                                <h3>Documentación al día en Bolsa</h3>
+                                <div class="form-group">
+                                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('documentacionEnBolsa')">Ver archivo subido</a>
+                                    <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
+                                </div>
+                            </mdb-step>
+
+                        </mdb-stepper>
                     </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div  class="row" style="padding-left: 10px;padding-right: 10px;">
+                    <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
+                        <div class="alert alert-danger"><i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
+                    </div>
+                    <textarea placeholder="Ingrese aqui las observaciones" [value]="" [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
+                </div>
 
-                </div>
-            </mdb-step>
-            <mdb-step name="Step 2" label="CBU">
-                <h3> Constancia de CBU</h3>
-                <div class="form-group">
-                    <p>Constancia de CBU certificada
-                        por Banco</p>
-                    <button>Ver</button>
-                </div>
-            </mdb-step>
-            <mdb-step name="Step 3" label="Documentación Impositiva">
-                <h3>Documentación Impositiva</h3>
-                <div class="form-group">
-                    <p>Constancia de CUIT</p>
-                    <button>Ver</button>
-                </div>
-                <div class="form-group">
-                    <p>Inscripción en IIBB -local o
-                        Convenio (CM05
-                        vigente)</p>
-                    <button>Ver</button>
-                </div>
-                <div class="form-group">
-                    <p>Certificados de exclusión o
-                        exención en Ganancias, IVA e
-                        IIBB.</p>
-                    <button>Ver</button>
-                </div>
-                <div class="form-group">
-                    <p>Solamente en caso de SISA 2 / SISA 3,
-                        presentar SIPER.</p>
-                    <button>Ver</button>
-                </div>
-            </mdb-step>
-            <mdb-step name="Step 4" label="Documentación">
-                <h3>Documentación al día en Bolsa</h3>
-                <div class="form-group">
-                    <button>Ver</button>
-                </div>
-            </mdb-step>
-            <mdb-step name="Step 7" label="">
-                <div>
-                    <button>Aprobar</button>
-                    <button>Rechazar</button>
-                </div>
-            </mdb-step>
-        </mdb-stepper>
+                <button type="button" class="btn btn-info btn-lg"
+                        (click)="cambiarEstado(0)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Aceptar
+                </button>
+                <button type="button" class="btn btn-info btn-lg"
+                        (click)="cambiarEstado(5)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Rechazar
+                </button>
+                <button type="button" class="btn btn-info btn-lg"
+                        (click)="cambiarEstado(4)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    PedirDocumentacion
+                </button>
+            </div>
+        </div>
     </div>
 </div>
-
-
-<!-- --- EMPRESA GRANOS ---- -->
-
-<!-- EN TS: -->
-
-private fieldArray: Array<any> = [];
-    private newAttribute: any = {};
-
-    addFieldValue() {
-    this.fieldArray.push(this.newAttribute)
-    this.newAttribute = {};
-    }
-
-    deleteFieldValue(index) {
-    this.fieldArray.splice(index, 1);
-    }
-
-
-    <!-- EN HTML -->
-
-    <!-- TABLA 1 -->
-
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Grano</th>
-                <th>Campaña</th>
-                <th>Has</th>
-                <th>TNs</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let field of fieldArray; let i = index">
-                <td>
-                    <input [(ngModel)]="field.grano" class="form-control" type="text" name="{{field.grano}}" />
-                </td>
-                <td>
-                    <input [(ngModel)]="field.capana" class="form-control" type="text" name="{{field.campana}}" />
-                </td>
-                <td>
-                    <input [(ngModel)]="field.has" class="form-control" type="text" name="{{field.has}}" />
-                </td>
-                <td>
-                    <input [(ngModel)]="field.tns" class="form-control" type="text" name="{{field.tns}}" />
-                </td>
-                <td>
-                    <button class="btn btn-default" type="button" (click)="deleteFieldValue(i)">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeGrano" [(ngModel)]="newAttribute.grano"
-                        name="newAttributeGrano" />
-                </td>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeCampana" [(ngModel)]="newAttribute.campana"
-                        name="newAttributeCampana" />
-                </td>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeHas" [(ngModel)]="newAttribute.has"
-                        name="newAttributeHas" />
-                </td>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeTns" [(ngModel)]="newAttribute.has"
-                        name="newAttributeTns" />
-                </td>
-                <td>
-                    <button class="btn btn-default" type="button" (click)="addFieldValue()">Add</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-
-
-
-
-    <!-- TABLA 2 -->
-    <div>
-        <p>Capacidad planta</p>
-    </div>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Campaña</th>
-                <th>TNs</th>
-                <th>Condición</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let field of fieldArray; let i = index">
-                <td>
-                    <input [(ngModel)]="field.capanaalm" class="form-control" type="text" name="{{field.campanaalm}}" />
-                </td>
-                <td>
-                    <input [(ngModel)]="field.tnsalm" class="form-control" type="text" name="{{field.tnsalm}}" />
-                </td>
-                <td>
-                    <input [(ngModel)]="field.condiscionalm" class="form-control" type="text"
-                        name="{{field.condiscionalm}}" />
-                </td>
-                <td>
-                    <button class="btn btn-default" type="button" (click)="deleteFieldValue(i)">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeCampanaAlm"
-                        [(ngModel)]="newAttribute.campanaalm" name="newAttributeCampanaAlm" />
-                </td>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeTnsAlm" [(ngModel)]="newAttribute.tnsalm"
-                        name="newAttributeTnsAlm" />
-                </td>
-                <td>
-                    <input class="form-control" type="text" id="newAttributeCondicionAlm"
-                        [(ngModel)]="newAttribute.condicionalm" name="newAttributeCondicionAlm" />
-                </td>
-                <td>
-                    <button class="btn btn-default" type="button" (click)="addFieldValue()">Add</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>

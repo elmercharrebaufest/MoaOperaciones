@@ -290,12 +290,6 @@
                     </a>
                 </li>
                 <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('alta-empresa')) ? 'active' : ''"
-                       (click)="goToSeccion('/alta-empresa/list')" *ngIf="isAuthorized('ABM EMPRESAS')" href="#">
-                        <!--data-toggle="tab">-->Alta Empresas
-                    </a>
-                </li>
-                <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('vendedor')) ? 'active' : ''"
                        (click)="goToSeccion('/vendedor/status')"
                        *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()" href="#">
@@ -375,7 +369,7 @@
                         *ngIf="isNoGranosSelected() && isAuthorized('ALTA EMPRESA NO GRANOS')" href="#">
                         <!--data-toggle="tab">-->Alta Empresa</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
-                        (click)="goToSeccion('/altas')" href="#">
+                        (click)="goToSeccion('/altas')" href="#" *ngIf="isAuthorized('ABM EMPRESAS')">
                         <!--data-toggle="tab">-->Altas Pendientes</a></li>
             </ul>
         </nav>

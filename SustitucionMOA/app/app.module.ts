@@ -142,8 +142,6 @@ import { CartaPorteModalComponent } from "./carta-porte/carta-porte-modal/carta-
 import { EmpresaGranosComponent } from "./alta-proveedores/empresa-granos/empresa-granos.component";
 import { EmpresaNoGranosComponent } from "./alta-proveedores/empresa-no-granos/empresa-no-granos.component";
 import { EmpresaGranosService } from "./alta-proveedores/empresa-granos/empresa-granos.service";
-import { AltaEmpresaService } from "./alta-empresa/alta-empresa.service";
-import { AltaEmpresaListComponent } from "./alta-empresa/list/alta-empresa.list.component";
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { CuitInvalidoComponent } from "./alta-proveedores/cuit-invalido/cuit-invalido.component";
 import { ProveedorDetalleComponent } from "./alta-proveedores/proveedor-detalle/proveedor-detalle.component";
@@ -239,7 +237,6 @@ import { ProveedorDetalleComponent } from "./alta-proveedores/proveedor-detalle/
     CartaPorteModalComponent,
     EmpresaGranosComponent,
     EmpresaNoGranosComponent,
-    AltaEmpresaListComponent,
     AltasComponent,
     CuitInvalidoComponent,
     ProveedorDetalleComponent,
@@ -280,7 +277,6 @@ import { ProveedorDetalleComponent } from "./alta-proveedores/proveedor-detalle/
     ModalService,
     SecurityService,
     EmpresaGranosService,
-    AltaEmpresaService,
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

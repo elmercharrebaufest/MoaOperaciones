@@ -58,7 +58,7 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    obtenerArchivosSubidos(): Observable<any> {
+    obtenerArchivosSubidos(mail?: string): Observable<any> {
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
@@ -66,15 +66,17 @@ export class EmpresaGranosService extends BaseService {
         this.headers.append('Cache-control', 'no-store');
         this.headers.append('Expires', '0');
         this.headers.append('Pragma', 'no-cache');
-
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('mail', mail);
         return this.http
-            .get('/api/AltaEmpresaGranos/ObtenerArchivosSubidos', { headers: this.headers })
+            .get('/api/AltaEmpresaGranos/ObtenerArchivosSubidos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
 
-    descargarArchivoSubido(fileKey: string): Observable<any> {
+    descargarArchivoSubido(fileKey: string, mail?: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fileKey', fileKey);
+        params.set('mail', mail);
 
         return this.http
             .get('/api/AltaEmpresaGranos/DescargarArchivo', { search: params, headers: this.headers })
