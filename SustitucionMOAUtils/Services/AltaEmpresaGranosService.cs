@@ -31,10 +31,7 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
-
         }
-
-
 
         public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial)
         {

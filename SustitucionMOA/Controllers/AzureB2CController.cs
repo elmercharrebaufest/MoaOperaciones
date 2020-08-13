@@ -6,6 +6,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
@@ -20,14 +21,14 @@ namespace SustitucionMOA.Controllers
 {
     public class AzureB2CController : Controller
     {
-        DataAgroService _dataAgroService = new DataAgroService();
-
         protected readonly IRepositorio repositorio;
+        protected readonly IAzureB2CService azureB2CService;
         LoginService _loginService = new LoginService();
 
-        public AzureB2CController(IRepositorio repositorio)
+        public AzureB2CController(IRepositorio repositorio, IAzureB2CService azureB2CService)
         {
             this.repositorio = repositorio;
+            this.azureB2CService = azureB2CService;
         }
         public ActionResult Login()
         {
@@ -44,126 +45,12 @@ namespace SustitucionMOA.Controllers
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
-
                 CUIT = CUIT.Replace("-", string.Empty);
-
                 string GranosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
                 Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
 
-                switch (GranosFlag.ToLower())
-                {
-                    case "granos":
-                        UsuarioGranos usuarioGranos = new UsuarioGranos { Mail = mail, CUITRegistro = CUIT };
-
-                        if (!ExisteUsuario(usuarioGranos))
-                        {
-                            Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
-
-                            usuarioGranos.Roles = new List<Rol>();
-                            usuarioGranos.Proveedores = new List<Proveedor>();
-
-                            usuarioGranos.Roles.Add(usuarioNuevo);
-                            usuarioGranos.TipoUsuario = ObtenerTipoPorNombreCorto("G");
-                            RegistrarUsuarioGranos(usuarioGranos);
-                        }
-                        else
-                        {
-                            usuarioGranos = BuscarUsuarioGranos(usuarioGranos);
-                        }
-
-                        usuario = usuarioGranos;
-                        break;
-
-                    case "no granos":
-                        Entidades.UsuarioNoGranos usuarioNoGranos = new Entidades.UsuarioNoGranos { Mail = mail, CUITRegistro = CUIT };
-
-                        if (!ExisteUsuario(usuarioNoGranos))
-                        {
-                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
-
-                            usuarioNoGranos.Roles = new List<Rol>();
-                            usuarioNoGranos.Proveedores = new List<Proveedor>();
-
-                            usuarioNoGranos.Roles.Add(usuarioNuevo);
-                            usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
-
-                            RegistrarUsuarioGenerico(usuarioNoGranos);
-                            usuario = usuarioNoGranos;
-
-                        }
-                        else
-                        {
-                            usuario = BuscarUsuarioPorMail(mail);
-                        }
-                        break;
-
-                    case "Ambos":
-                        Entidades.Usuario usuarioAmbos = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
-
-                        if (!ExisteUsuario(usuarioAmbos))
-                        {
-                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
-
-                            usuarioAmbos.Roles = new List<Rol>();
-                            usuarioAmbos.Proveedores = new List<Proveedor>();
-
-                            usuarioAmbos.Roles.Add(usuarioNuevo);
-                            usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("A");
-
-                            RegistrarUsuarioGenerico(usuarioAmbos);
-                        }
-                        else
-                        {
-                            usuario = BuscarUsuarioPorMail(mail);
-                        }
-
-                        usuario = usuarioAmbos;
-                        break;
-
-                    case "Corredor":
-                        Entidades.Usuario usuarioCorredor = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
-
-                        if (!ExisteUsuario(usuarioCorredor))
-                        {
-                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
-
-                            usuarioCorredor.Roles = new List<Rol>();
-                            usuarioCorredor.Proveedores = new List<Proveedor>();
-
-                            usuarioCorredor.Roles.Add(usuarioNuevo);
-                            usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("C");
-
-                            RegistrarUsuarioGenerico(usuarioCorredor);
-                        }
-                        else
-                        {
-                            usuario = BuscarUsuarioPorMail(mail);
-                        }
-
-                        usuario = usuarioCorredor;
-                        break;
-
-                    case "Cliente":
-                        Entidades.Usuario usuarioCliente = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
-
-                        if (!ExisteUsuario(usuarioCliente))
-                        {
-                            Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
-
-                            usuarioCliente.Roles.Add(usuarioNuevo);
-                            usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
-
-                            RegistrarUsuarioGenerico(usuarioCliente);
-                        }
-                        else
-                        {
-                            usuario = BuscarUsuarioPorMail(mail);
-                        }
-
-                        usuario = usuarioCliente;
-                        break;
-                }
+                usuario = azureB2CService.LoguearUsuario(mail, CUIT, GranosFlag);
 
                 SessionPersister.User = new Model.Usuario()
                 {
@@ -204,21 +91,6 @@ namespace SustitucionMOA.Controllers
 
         }
 
-        private UsuarioGranos BuscarUsuarioGranos(UsuarioGranos usuarioGranos)
-        {
-            return repositorio.Obtener<UsuarioGranos>(u => u.Mail == usuarioGranos.Mail);
-        }
-
-        private Entidades.Usuario BuscarUsuarioPorMail(string mail)
-        {
-            return repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mail);
-        }
-
-
-        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
-        {
-            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
-        }
 
         public ActionResult ValidarLoginAzure()
         {
@@ -251,87 +123,5 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        public bool RegistrarUsuarioGranos(UsuarioGranos usuario)
-        {
-            Proveedor proveedor = new Proveedor
-            {
-                CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT"),
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
-            };
-
-            ValidarCUITProveedor(usuario, proveedor);
-
-            usuario.Mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            usuario.Proveedores.Add(proveedor);
-
-            usuario.Habilitado = true;
-
-            repositorio.Agregar(usuario);
-            return repositorio.GuardarCambios() == 1;
-        }
-
-        public bool RegistrarUsuarioGenerico(Entidades.Usuario usuario)
-        {
-            Proveedor proveedor = new Proveedor();
-            proveedor.CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
-            proveedor.EstadoAprobacion = EstadoAprobacion.AunNoImplementado;
-
-            usuario.Mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            usuario.Proveedores.Add(proveedor);
-
-            usuario.Habilitado = true;
-
-            repositorio.Agregar(usuario);
-            return repositorio.GuardarCambios() == 1;
-        }
-
-        public bool ExisteUsuario(Entidades.Usuario usuario)
-        {
-            return (repositorio.Existe<Entidades.Usuario>(u => u.Mail == usuario.Mail));
-        }
-
-        public bool ValidarCUITProveedor(UsuarioGranos usuario, Entidades.Proveedor proveedor)
-        {
-            return _dataAgroService.ValidarCUITProveedorGranos(usuario, proveedor);
-        }
-
-        public bool ExisteProveedor(Entidades.Proveedor proveedor)
-        {
-            return (repositorio.Existe<Entidades.Proveedor>(u => u.CUIT == u.CUIT));
-        }
-
-        public bool RegistrarProveedor(Entidades.Proveedor proveedor)
-        {
-            if (!ExisteProveedor(proveedor))
-            {
-                repositorio.Agregar(proveedor);
-                return repositorio.GuardarCambios() == 1;
-            }
-
-            return true;
-        }
-
-        public Rol ObtenerRolUsuarioNuevo()
-        {
-            return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
-        }
-
-        public Rol ObtenerRolUsuarioNoImplementado()
-        {
-            return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Usuario No Implementado"));
-        }
-
-        public async Task SignOut()
-        {
-            // To sign out the user, you should issue an OpenIDConnect sign out request.
-            if (Request.IsAuthenticated)
-            {
-                SessionPersister.clear();
-                await MsalAppBuilder.ClearUserTokenCache();
-                IEnumerable<AuthenticationDescription> authTypes = HttpContext.GetOwinContext().Authentication.GetAuthenticationTypes();
-                HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
-                Request.GetOwinContext().Authentication.GetAuthenticationTypes();
-            }
-        }
     }
 }

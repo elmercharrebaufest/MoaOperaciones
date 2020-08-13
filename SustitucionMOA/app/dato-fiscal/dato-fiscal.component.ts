@@ -68,6 +68,7 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
 
     ngOnInit() {
         this.setTabs();
+
         this.securityService.tienePermisoRedirect("CONSULTAR DATOS FISCALES");
         //this.service.getTitulo().subscribe(titulo => this.titulo = titulo);
         var secciones = [];
