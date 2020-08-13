@@ -302,15 +302,22 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult DescargarArchivo(string fileKey)
         {
+            try
+            {
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
-            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey);
 
-            string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey);
-
-            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
-            string fileName = Path.GetFileName(rutaArchivoSubido);
-            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+                string fileName = Path.GetFileName(rutaArchivoSubido);
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult EnviarSolicitudUsuario()

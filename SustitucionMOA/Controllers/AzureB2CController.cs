@@ -1,18 +1,14 @@
-﻿using Microsoft.Owin.Security;
-using SustitucionMOA.Utils;
+﻿using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Services;
+using SustitucionMOAUtils.Logger;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Entidades = SustitucionMOAModel.Entities;
 using Model = SustitucionMOAModel.Models;
@@ -23,16 +19,17 @@ namespace SustitucionMOA.Controllers
     {
         protected readonly IRepositorio repositorio;
         protected readonly IAzureB2CService azureB2CService;
-        LoginService _loginService = new LoginService();
+        protected readonly IDataAgroService dataAgroService;
 
-        public AzureB2CController(IRepositorio repositorio, IAzureB2CService azureB2CService)
+
+        public AzureB2CController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.azureB2CService = azureB2CService;
+            this.dataAgroService = dataAgroService;
         }
         public ActionResult Login()
         {
-
             ValidarLogin();
 
             return Redirect("/");
@@ -69,7 +66,7 @@ namespace SustitucionMOA.Controllers
                 {
                     if (usuario.EstaHabilitado())
                     {
-                        noticias = _loginService.getNoticias(usuario.ObtenerCodigoProveedor());
+                        noticias = azureB2CService.getNoticias(usuario.ObtenerCodigoProveedor());
                         noticias.cantidad = 0;
                         if (noticias != null && noticias.noticias != null)
                         {
@@ -84,23 +81,16 @@ namespace SustitucionMOA.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
             }
-
         }
 
 
         public ActionResult ValidarLoginAzure()
         {
-            //if (result.permisos.Count() == 1 && result.permisos[0] == "DATAAGROLOGIN")
-            //{
-            //    SessionPersister.clear();
-            //    DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
-            //    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-            //}
-
+      
             if (SessionPersister.User == null)
             {
                 ValidarLogin();
@@ -110,6 +100,15 @@ namespace SustitucionMOA.Controllers
             string granosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
             Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlag);
+
+            if (usuario.ObtenerPermisos().Count() == 1 && usuario.ObtenerPermisos().Contains("DATAAGROLOGIN"))
+            {
+                DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
+
+                SessionPersister.clear();
+
+                return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
+            }
 
             return Json(new
             {

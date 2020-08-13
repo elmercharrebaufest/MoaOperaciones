@@ -1,13 +1,13 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAWS.DataAgroServices;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -154,6 +154,17 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Obtener<Usuario>(u => u.Mail == mail);
         }
 
+        public NoticiasDetallesWSMOAResponse getNoticias(string proveedor)
+        {
+            try
+            {
+                return new NoticiasDetalleConsumerMOA().request(proveedor, DateTime.Now.ToString("yyyy-MM-dd"));
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
         {

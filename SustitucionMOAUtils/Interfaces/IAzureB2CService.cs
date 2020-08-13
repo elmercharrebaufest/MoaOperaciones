@@ -1,9 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -12,6 +8,8 @@ namespace SustitucionMOAUtils.Interfaces
         Usuario LoguearUsuario(string mail, string CUIT, string granosFlag);
 
         Usuario ObtenerUsuario(string mail, string granosFlag);
+
+        NoticiasDetallesWSMOAResponse getNoticias(string proveedor);
 
     }
 }
