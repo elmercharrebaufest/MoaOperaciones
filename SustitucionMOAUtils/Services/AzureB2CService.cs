@@ -34,12 +34,12 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioGranos))
                     {
-                        Rol usuarioNuevo = ObtenerRolUsuarioNuevo();
+                        Rol rolUsuarioNuevo = ObtenerRolPorCodigo("NUEG");
 
                         usuarioGranos.Roles = new List<Rol>();
                         usuarioGranos.Proveedores = new List<Proveedor>();
 
-                        usuarioGranos.Roles.Add(usuarioNuevo);
+                        usuarioGranos.Roles.Add(rolUsuarioNuevo);
                         usuarioGranos.TipoUsuario = ObtenerTipoPorNombreCorto("G");
                         RegistrarUsuarioGranos(usuarioGranos);
                     }
@@ -56,12 +56,12 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioNoGranos))
                     {
-                        Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+                        Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
 
                         usuarioNoGranos.Roles = new List<Rol>();
                         usuarioNoGranos.Proveedores = new List<Proveedor>();
 
-                        usuarioNoGranos.Roles.Add(usuarioNuevo);
+                        usuarioNoGranos.Roles.Add(rolUsuarioNoImplementado);
                         usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
 
                         RegistrarUsuarioGenerico(usuarioNoGranos);
@@ -79,12 +79,12 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioAmbos))
                     {
-                        Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+                        Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
 
                         usuarioAmbos.Roles = new List<Rol>();
                         usuarioAmbos.Proveedores = new List<Proveedor>();
 
-                        usuarioAmbos.Roles.Add(usuarioNuevo);
+                        usuarioAmbos.Roles.Add(rolUsuarioNoImplementado);
                         usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("A");
 
                         RegistrarUsuarioGenerico(usuarioAmbos);
@@ -102,12 +102,12 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioCorredor))
                     {
-                        Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+                        Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
 
                         usuarioCorredor.Roles = new List<Rol>();
                         usuarioCorredor.Proveedores = new List<Proveedor>();
 
-                        usuarioCorredor.Roles.Add(usuarioNuevo);
+                        usuarioCorredor.Roles.Add(rolUsuarioNoImplementado);
                         usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("C");
 
                         RegistrarUsuarioGenerico(usuarioCorredor);
@@ -125,9 +125,9 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioCliente))
                     {
-                        Rol usuarioNuevo = ObtenerRolUsuarioNoImplementado();
+                        Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
 
-                        usuarioCliente.Roles.Add(usuarioNuevo);
+                        usuarioCliente.Roles.Add(rolUsuarioNoImplementado);
                         usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
 
                         RegistrarUsuarioGenerico(usuarioCliente);
@@ -217,15 +217,14 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
-
-        public Rol ObtenerRolUsuarioNuevo()
+        public Rol ObtenerRolPorCodigo(string codigo)
         {
-            return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Nuevo Usuario"));
+            return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
         }
 
-        public Rol ObtenerRolUsuarioNoImplementado()
+        public Usuario ObtenerUsuario(string mail, string granosFlag)
         {
-            return repositorio.Obtener<Rol>(u => u.Nombre.Equals("Usuario No Implementado"));
+            return BuscarUsuarioPorMail(mail);
         }
     }
 }

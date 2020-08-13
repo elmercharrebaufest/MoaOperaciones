@@ -241,6 +241,7 @@
                         *ngIf="isNoGranosSelected() && isAuthorized('ALTA EMPRESA NO GRANOS')" href="#">
                         <!--data-toggle="tab">-->Alta Empresa</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
+                       *ngIf="isAuthorized('VISUALIZAR ALTAS')"
                         (click)="goToSeccion('/altas')" href="#">
                         <!--data-toggle="tab">-->Altas Pendientes</a></li>
             </ul>

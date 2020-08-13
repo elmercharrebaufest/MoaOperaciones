@@ -94,8 +94,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ValidarLoginAzure()
         {
-
-
             //if (result.permisos.Count() == 1 && result.permisos[0] == "DATAAGROLOGIN")
             //{
             //    SessionPersister.clear();
@@ -108,6 +106,11 @@ namespace SustitucionMOA.Controllers
                 ValidarLogin();
             }
 
+            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            string granosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+
+            Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlag);
+
             return Json(new
             {
                 success = SuccessMsg.LoginOk,
@@ -115,11 +118,11 @@ namespace SustitucionMOA.Controllers
                 nombre = SessionPersister.User.nombre,
                 proveedor = SessionPersister.Proveedor,
                 granosFlag = SessionPersister.GranosFlag,
-                tipoUsuario = "PROV",
+                tipoUsuario = usuario.TipoUsuario,
                 permisos = SessionPersister.User.permisos,
                 noticias = SessionPersister.Notificaciones,
-                esNuevoUsuario = true
-            }, JsonRequestBehavior.AllowGet);
+                esNuevoUsuario = usuario.EsNuevoUsuario()
+            }, JsonRequestBehavior.AllowGet); ;
         }
 
 
