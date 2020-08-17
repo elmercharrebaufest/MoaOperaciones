@@ -14,16 +14,16 @@
                         <p>Complete el informe comercial</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                            class="btn btn-info  btn-custom">
+                            class="btn-custom btn-azul">
                             Completar informe Comercial
                         </button>
-                        <button type="button" class="btn btn-info btn-custom">
+                        <button type="button" class="btn-custom btn-azul">
                             Descargar
                         </button>
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Por favor adjunte el
+                            Por favor <span class="adjuntar">adjuntar </span> el
                             informe comercial <strong>completo y firmado</strong>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
@@ -39,7 +39,7 @@
                 <h3> Constancia de CBU</h3>
                 <div class="form-group">
                     <label class="label" for="constanciaCBU">
-                        Cargar constancia de CBU certificada
+                        <span class="adjuntar">Adjuntar </span> constancia de CBU certificada
                         por Banco
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     <label class="label" for="constanciaCBUMercaderia">
-                        Cargar constancia de CBU Mercaderia
+                        <span class="adjuntar">Adjuntar </span> constancia de CBU Mercaderia
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
                         (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
@@ -63,7 +63,8 @@
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="constanciaCUIT">Constancia de CUIT</label>
+                    <label style="font-weight: 100 !important;" for="constanciaCUIT"><span class="adjuntar">Adjuntar
+                        </span>constancia de CUIT</label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
                         (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
@@ -73,7 +74,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">
-                        Inscripción en IIBB -local o
+                        <span class="adjuntar">Adjuntar </span>inscripción en IIBB -local o
                         Convenio (CM05
                         vigente)
                     </label>
@@ -85,7 +86,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIVA">
-                        Certificados de exclusión o exención IVA
+                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención IVA
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
                         (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
@@ -95,7 +96,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIIBB">
-                        Certificados de exclusión o exención en IIBB.
+                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en IIBB.
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
                         (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
@@ -105,7 +106,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionSUSS">
-                        Certificados de exclusión o exención en SUSS.
+                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en SUSS.
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
                         (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
@@ -115,7 +116,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionGanancias">
-                        Certificados de exclusión o exención en Ganancias.
+                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en Ganancias.
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
                         (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
@@ -125,7 +126,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        Solamente en caso de SISA 2 / SISA 3, presentar SIPER.
+                        <span class="adjuntar">Adjuntar </span> SIPER. Solamente en caso de SISA 2 / SISA 3.
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
                         (change)="handleFileInput($event.target.files, 'SIPER')">
@@ -139,7 +140,7 @@
                 <h3>Documentación al día en Bolsa</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="documentacionEnBolsa">
-                        Sólo Personas Físicas
+                        <span class="adjuntar">Adjuntar </span> documentación. Sólo Personas Físicas
                         podrán operar sin oblea si remiten copia
                         certificada y legalizada
                         de DNI.
@@ -154,22 +155,41 @@
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
                 <div class="step-actions enviar">
-
-                    <input type="submit" (click)="onSubmit()" class="btn-custom">
-
-                    <!-- <button mdbBtn size="sm" color="primary" (click)="onSubmit()"
-                        >
-                        Enviar
-                    </button> -->
+                    <button type="button" id="openModalNotificacion" data-toggle="modal"
+                        data-target="#modalNotificación" class="btn-custom btn-azul">
+                        <input type="submit" (click)="onSubmit()" class="btn-custom btn-azul">
+                    </button>
                 </div>
             </mdb-step>
         </mdb-stepper>
     </div>
+
+
     <!-- modal notificacion -->
-    <div id="modal" class="hidden modal">
-        <h3>Solicitud de alta enviada</h3>
-        <p>Un asesor le informará el estado de su registro.</p>
-        <p>¡Muchas gracias!</p>
+    <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
+        data-target="#modalNotificación"></button>
+    <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                        onClick="abrirModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
+                </div>
+                <div class="modal-body modal-notificacion">
+                    <p>¡Su solicitud fue enviada con éxito!</p>
+                    <p>Un asesor le informará el estado de su registro.</p>
+                    <p>¡Muchas gracias!</p>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="btn-azul btn-custom" id="InformeComercialDescargar">Aceptar</a>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- end modal notificacion -->
     <!-- Modal informe comercial-->
@@ -180,7 +200,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="abrirModal()">
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                        onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
@@ -195,8 +216,9 @@
                                     Domicilio Legal
                                 </div>
                                 <div class="formulario-input">
-                                    <input type="text" id="Domicilio" placeholder="Domicilio (50 caracteres)"
-                                        [(ngModel)]="informe.Domicilio" maxlength="50" />
+                                    <input type="text" id="Domicilio" class="input-custom"
+                                        placeholder="Domicilio (50 caracteres)" [(ngModel)]="informe.Domicilio"
+                                        maxlength="50" />
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -210,7 +232,8 @@
                                                 <input type="radio" id="si" value="si" name="depen"
                                                     [(ngModel)]="informe.EmplRelDep" class="margin-5px">Si
                                             </label>
-                                            <input type="text" id="EmplRelDepCant" [(ngModel)]="informe.EmplRelDepCant"
+                                            <input type="text" id="EmplRelDepCant" class="input-custom"
+                                                [(ngModel)]="informe.EmplRelDepCant"
                                                 placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
                                         </div>
                                         <div class="padding-5-0">
@@ -250,11 +273,12 @@
                                         </div>
                                         <div class="padding-5-0">
                                             <label for="otrosro" class="padding-0-5">
-                                                <input type="radio" id="otrosro" value="otrosro" name="rodado"
-                                                    [(ngModel)]="informe.Rodados" class="margin-5px">Otros
+                                                <input type="radio" class="input-custom" id="otrosro" value="otrosro"
+                                                    name="rodado" [(ngModel)]="informe.Rodados" class="margin-5px">Otros
                                             </label>
-                                            <input type="text" id="RodadosOtros" placeholder="Otros (50 caracteres)"
-                                                [(ngModel)]="informe.RodadosOtros" maxlength="50" disabled />
+                                            <input type="text" id="RodadosOtros" class="input-custom"
+                                                placeholder="Otros (50 caracteres)" [(ngModel)]="informe.RodadosOtros"
+                                                maxlength="50" disabled />
                                         </div>
                                     </div>
 
@@ -290,8 +314,9 @@
                                                 <input type="radio" id="otros" value="otros" name="servicios"
                                                     [(ngModel)]="informe.Chacra" class="margin-5px">Otros
                                             </label>
-                                            <input type="text" id="ChacraOtros" placeholder="Otros (50 caracteres)"
-                                                [(ngModel)]="informe.ChacraOtros" maxlength="50" disabled />
+                                            <input type="text" id="ChacraOtros" class="input-custom"
+                                                placeholder="Otros (50 caracteres)" [(ngModel)]="informe.ChacraOtros"
+                                                maxlength="50" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -304,8 +329,9 @@
                                     Antigüedad en la actividad
                                 </div>
                                 <div class="formulario-input">
-                                    <input type="text" id="AntigActividad" placeholder="Antigüedad (100 caracteres)"
-                                        [(ngModel)]="informe.AntigActividad" maxlength="100" />
+                                    <input type="text" class="input-custom" id="AntigActividad"
+                                        placeholder="Antigüedad (100 caracteres)" [(ngModel)]="informe.AntigActividad"
+                                        maxlength="100" />
                                 </div>
                             </div>
                             <div class="formulario-campo">
@@ -313,8 +339,9 @@
                                     Actuación como productor / siembras anteriores
                                 </div>
                                 <div class="formulario-input">
-                                    <input type="text" id="ActuacionProd" placeholder="Actuación (100 caracteres)"
-                                        [(ngModel)]="informe.ActuacionProd" maxlength="100" />
+                                    <input type="text" id="ActuacionProd" class="input-custom"
+                                        placeholder="Actuación (100 caracteres)" [(ngModel)]="informe.ActuacionProd"
+                                        maxlength="100" />
 
                                 </div>
                             </div>
@@ -327,8 +354,9 @@
                                     Clientes anteriores
                                 </div>
                                 <div class="formulario-input">
-                                    <input type="text" id="ClienteAnt" placeholder="Clientes (100 caracteres)"
-                                        [(ngModel)]="informe.ClienteAnt" maxlength="100" />
+                                    <input type="text" id="ClienteAnt" class="input-custom"
+                                        placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
+                                        maxlength="100" />
                                 </div>
                             </div>
 
@@ -337,8 +365,9 @@
                                     Otros comentarios
                                 </div>
                                 <div class="formulario-input">
-                                    <textarea id="Comentarios" placeholder="Comentarios (300 caracteres)"
-                                        [(ngModel)]="informe.Comentarios" maxlength="300"></textarea>
+                                    <textarea id="Comentarios" class="input-custom"
+                                        placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
+                                        maxlength="300"></textarea>
                                 </div>
                             </div>
 
@@ -348,7 +377,7 @@
                             <thead>
                                 <tr>
                                     <th>Grano</th>
-                                    <th>Campaña</th>
+                                    <th>Localidad</th>
                                     <th>Has</th>
                                     <th>TNs</th>
                                     <th>Acciones</th>
@@ -357,12 +386,19 @@
                             <tbody>
                                 <tr *ngFor="let field of fieldArray; let i = index">
                                     <td>
-                                        <input [(ngModel)]="field.grano" class="form-control" type="text"
-                                            name="{{field.grano}}" />
+                                        <!-- <input [(ngModel)]="field.grano" class="form-control" type="text"
+                                            name="{{field.grano}}" /> -->
+                                        <div class="formulario-input">
+                                            <select [(ngModel)]=" selected">
+                                                <option *ngFor="let material of listaMateriales"
+                                                    [ngValue]="material.id">
+                                                    {{material.Descripcion}}</option>
+                                            </select>
+                                        </div>
                                     </td>
                                     <td>
-                                        <input [(ngModel)]="field.capana" class="form-control" type="text"
-                                            name="{{field.campana}}" />
+                                        <input [(ngModel)]="field.localidad" class="form-control" type="text"
+                                            name="{{field.localidad}}" />
                                     </td>
                                     <td>
                                         <input [(ngModel)]="field.has" class="form-control" type="text"
@@ -373,18 +409,26 @@
                                             name="{{field.tns}}" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-default" type="button"
-                                            (click)="deleteFieldValue(i)">Delete</button>
+                                        <button class="btn-remove btn-custom" type="button"
+                                            (click)="deleteFieldValue(i)">Eliminar</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input class="form-control" type="text" id="newAttributeGrano"
-                                            [(ngModel)]="newAttribute.grano" name="newAttributeGrano" />
+                                        <div class="formulario-input">
+                                            <select [(ngModel)]="selected">
+
+                                                <input class="form-control" type="text" id="newAttributeGrano"
+                                                    [(ngModel)]="newAttribute.grano" name="newAttributeGrano" />
+
+                                                <option *ngFor="let material of listaMateriales"
+                                                    [ngValue]="material.id">{{material.Descripcion}}</option>
+                                            </select>
+                                        </div>
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" id="newAttributeCampana"
-                                            [(ngModel)]="newAttribute.campana" name="newAttributeCampana" />
+                                        <input class="form-control" type="text" id="newAttributeLocalidad"
+                                            [(ngModel)]="newAttribute.localidad" name="newAttributeLocalidad" />
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeHas"
@@ -392,17 +436,15 @@
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeTns"
-                                            [(ngModel)]="newAttribute.has" name="newAttributeTns" />
+                                            [(ngModel)]="newAttribute.tns" name="newAttributeTns" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-default" type="button"
-                                            (click)="addFieldValue()">Add</button>
+                                        <button class="btn-add btn-custom" type="button"
+                                            (click)="addFieldValue()">Agregar</button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-
-
 
 
                         <!-- TABLA 2 -->
@@ -412,47 +454,47 @@
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Campaña</th>
+                                    <th>Localidad</th>
                                     <th>TNs</th>
                                     <th>Condición</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let field of fieldArray; let i = index">
+                                <tr *ngFor="let field of fieldArrayAlm; let i = index">
                                     <td>
-                                        <input [(ngModel)]="field.capanaalm" class="form-control" type="text"
-                                            name="{{field.campanaalm}}" />
+                                        <input [(ngModel)]="field.localidadAlm" class="form-control" type="text"
+                                            name="{{field.localidadAlm}}">
                                     </td>
                                     <td>
-                                        <input [(ngModel)]="field.tnsalm" class="form-control" type="text"
-                                            name="{{field.tnsalm}}" />
+                                        <input [(ngModel)]="field.tnsAlm" class="form-control" type="text"
+                                            name="{{field.tnsAlm}}" />
                                     </td>
                                     <td>
-                                        <input [(ngModel)]="field.condiscionalm" class="form-control" type="text"
-                                            name="{{field.condiscionalm}}" />
+                                        <input [(ngModel)]="field.condiscionAlm" class="form-control" type="text"
+                                            name="{{field.condiscionAlm}}" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-default" type="button"
-                                            (click)="deleteFieldValue(i)">Delete</button>
+                                        <button class="btn-remove btn-custom" type="button"
+                                            (click)="deleteFieldValueAlm(i)">Eliminar</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input class="form-control" type="text" id="newAttributeCampanaAlm"
-                                            [(ngModel)]="newAttribute.campanaalm" name="newAttributeCampanaAlm" />
+                                        <input class="form-control" type="text" id="newAttributeLocalidadAlm"
+                                            [(ngModel)]="newAttribute.localidadAlm" name="newAttributeLocalidadAlm" />
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeTnsAlm"
-                                            [(ngModel)]="newAttribute.tnsalm" name="newAttributeTnsAlm" />
+                                            [(ngModel)]="newAttribute.tnsAlm" name="newAttributeTnsAlm" />
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeCondicionAlm"
-                                            [(ngModel)]="newAttribute.condicionalm" name="newAttributeCondicionAlm" />
+                                            [(ngModel)]="newAttribute.condicionAlm" name="newAttributeCondicionAlm" />
                                     </td>
                                     <td>
-                                        <button class="btn btn-default" type="button"
-                                            (click)="addFieldValue()">Add</button>
+                                        <button class="btn-add btn-custom" type="button"
+                                            (click)="addFieldValueAlm()">Agregar</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -462,7 +504,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary" id="InformeComercialDescargar"
+                    <a class="btn-azul btn-custom" id="InformeComercialDescargar"
                         (click)="generarInformeComercial()">Descargar</a>
                 </div>
             </div>

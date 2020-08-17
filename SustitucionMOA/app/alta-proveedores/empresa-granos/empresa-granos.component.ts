@@ -29,9 +29,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     campaniaActual: string;
 
+    private fieldArray: Array<any> = [];
+    private newAttribute: any = {};
+    private fieldArrayAlm: Array<any> = [];
+    private newAttributeAlm: any = {};
+
     materialesData: any = null;
 
-    nombreArchivoInformeComercialFirmado:string = "";
+    nombreArchivoInformeComercialFirmado: string = "";
     nombreArchivoConstanciaCBU: string = "";
     nombreArchivoConstanciaCBUMercaderia: string = "";
     nombreArchivoConstanciaCUIT: string = "";
@@ -42,6 +47,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoCertificadoExclusionGanancias: string = "";
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
+
 
     informe = new InformeComercial();
 
@@ -89,6 +95,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         })
                 }
             })*/
+
+        // this.addFieldValue();
+        // this.addFieldValueAlm();
     }
 
     get email() {
@@ -171,13 +180,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     var link = document.createElement("a");
                     document.body.appendChild(link);
                     link.href = url;
-                    link.download = "Informe comercial"  + ".pdf"
+                    link.download = "Informe comercial" + ".pdf"
                     link.click();
                     setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
                     return false;
                 }
-                
+
             },
             error => {
                 console.log(error.message);
@@ -278,9 +287,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    private fieldArray: Array<any> = [];
-    private newAttribute: any = {};
-
     addFieldValue() {
         this.fieldArray.push(this.newAttribute)
         this.newAttribute = {};
@@ -288,6 +294,15 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     deleteFieldValue(index) {
         this.fieldArray.splice(index, 1);
+    }
+
+    addFieldValueAlm() {
+        this.fieldArrayAlm.push(this.newAttributeAlm)
+        this.newAttributeAlm = {};
+    }
+
+    deleteFieldValueAlm(index) {
+        this.fieldArrayAlm.splice(index, 1);
     }
 }
 

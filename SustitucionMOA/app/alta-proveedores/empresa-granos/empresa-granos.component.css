@@ -1,3 +1,12 @@
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
 .show {
   display: inline;
 }
@@ -18,19 +27,84 @@
   flex-direction: column;
 }
 
+.modal-notificacion {
+  font-size: 16px;
+}
+
+.fade-complete {
+  margin: 0;
+  padding-top: 140px;
+}
+
+.btn-close {
+  color: white !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.btn-close:hover {
+  text-shadow: #00000096 2px 1px !important;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.adjuntar {
+  font-weight: 400;
+}
+
+.adjuntar:hover {
+  cursor: pointer;
+}
+
 .btn-custom {
   margin: 0 10px;
   height: 30px;
   align-items: center;
   display: flex;
-  background: #172f8f;
   border: none;
   justify-content: center;
   color: white;
   border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.btn-azul {
+  background: #172f8f;
   width: 250px;
 }
 
+.btn-azul:hover {
+  background: #0f1f5e;
+  color: white;
+}
+
+.btn-add,
+.btn-remove {
+  width: auto;
+  padding: 10px;
+}
+
+.btn-add {
+  background: #03753e;
+}
+
+.btn-add:hover {
+  background: #368860;
+}
+
+.btn-remove {
+  background: #af1a16;
+}
+
+.btn-remove:hover {
+  background: #b95a56;
+}
 .informe-comercial {
   display: flex;
   flex-direction: column;
@@ -95,4 +169,16 @@
 
 .form-control-file {
   margin: 10px 0;
+}
+
+.input-custom {
+  border-radius: 3px;
+  border: 1px solid lightgray;
+  padding: 3px;
+  background: #e9e7e72b;
+}
+
+.modal-footer {
+  justify-content: center;
+  display: flex;
 }
