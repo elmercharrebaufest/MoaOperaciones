@@ -4,6 +4,7 @@ using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
@@ -92,7 +93,7 @@ namespace SustitucionMOA.Controllers
                 informeComercial.NuevosCampos = nuevosCampos;
                 informeComercial.NuevosAcopios = nuevosAcopios;
 
-                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial);
+                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail);
 
                 return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 /*    PDFResponse result = new PDFResponse
@@ -126,7 +127,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         public ActionResult GenerarInformeComercial(string informeComercialJson)
         {
             try
@@ -158,7 +158,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial);
+                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
@@ -242,14 +242,18 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+
                 var fileSubido = Request.Files[0];
                 var fileKey = Request.Form.Get("fileKey");
+
                 if (fileSubido.ContentLength > 0)
                 {
-                    altaEmpresaService.GuardarArchivo(fileSubido, fileKey, mail);
+                    return JsonCustom(new { data = altaEmpresaService.GuardarArchivo(fileSubido, fileKey, mail) });
                 }
 
-                return Json(new { info = "Todo OK" }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = "El archivo está vacío" }, JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {
@@ -301,16 +305,13 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string fileKey,string mail)
+        public ActionResult DescargarArchivo(string fileKey, string mail)
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                if (string.IsNullOrWhiteSpace(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
-
-            if (string.IsNullOrWhiteSpace(mail))
-                mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
                 string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);

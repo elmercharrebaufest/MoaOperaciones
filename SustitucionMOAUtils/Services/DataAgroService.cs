@@ -101,7 +101,7 @@ namespace SustitucionMOAUtils.Services
 
         private string FormatearCodigoProveedor(string CUIT)
         {
-            return CUIT.Substring(2, 9);
+            return CUIT.Substring(2, 8);
         }
     }
 

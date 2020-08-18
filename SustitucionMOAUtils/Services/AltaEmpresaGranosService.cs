@@ -33,14 +33,16 @@ namespace SustitucionMOAUtils.Services
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
-        public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial)
+        public byte[] GenerarInformeComercial(ParamInformeComercial informeComercial, string mailUsuario)
         {
             try
             {
                 var urlInformeComercial = string.Concat(DataAgroURL, "/InformeComercial/Listar");
                 var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
 
-                //var url = "http://localhost:58280/api/AltaEmpresa/TEST";
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+                ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
@@ -178,7 +180,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public bool GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario)
+        public string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario)
         {
             try
             {
@@ -187,6 +189,8 @@ namespace SustitucionMOAUtils.Services
                 string rutaArchivosProveedores = ConfigurationManager.AppSettings["RutaArchivosProveedores"];
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+                ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
 
                 string rutaCarpeta = string.Concat(rutaArchivosProveedores, "/", usuario.CUITRegistro, "/", usuario.Id, "/", fileKey);
 
@@ -230,7 +234,7 @@ namespace SustitucionMOAUtils.Services
                         usuario.RutaDocumentacionEnBolsa = rutaArchivo;
                         break;
                     default:
-                        return false;
+                        return ErrorMsg.ErrorFileKeyInvalido;
                 }
 
                 //Si subieron otros archivos anteriormente, los borramos
@@ -244,7 +248,7 @@ namespace SustitucionMOAUtils.Services
                 fileSubido.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();
 
-                return true;
+                return SuccessMsg.ArchivoSubidoOK;
             }
             catch (InfoCustomException)
             {
@@ -292,6 +296,8 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
+            ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
+
             if (!ValidarArchivosSubidos(usuario))
             {
                 return ErrorMsg.ErrorCompleteCampo;
@@ -306,14 +312,26 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.ValidacionPendienteOK;
         }
 
+        private void ValidarEstadoSolicitud(Proveedor proveedor)
+        {
+            if (proveedor.EstadoAprobacion != EstadoAprobacion.DocumentacionPendiente && proveedor.EstadoAprobacion != EstadoAprobacion.EdicionRequerida)
+            {
+                throw new ValidationCustomException(ErrorMsg.EstadoIncorrectoSolicitud);
+            }
+        }
+
         private bool ValidarArchivosSubidos(UsuarioGranos usuario)
         {
 
             if (usuario.RutaInformeComercialFirmado.IsNullOrWhiteSpace())
-                return false;
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Informe comercial firmado"));
+            }
 
             if (usuario.RutaConstanciaCBU.IsNullOrWhiteSpace())
-                return false;
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
+            }
 
             return true;
         }
