@@ -216,10 +216,13 @@
     <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js" />
     <Content Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.css" />
     <Content Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.html" />
+    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.css" />
     <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
+    <Content Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.css" />
+    <Content Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.html" />
     <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.css" />
     <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.html" />
     <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js" />
@@ -477,6 +480,9 @@
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.service.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.service.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.spec.ts" />
+    <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.ts" />
     <TypeScriptCompile Include="app\common\models\informeComercial.ts" />

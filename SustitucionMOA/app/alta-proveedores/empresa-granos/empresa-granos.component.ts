@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
+import { InformeComercial } from '../../common/models/informeComercial';
+import { Material } from '../../common/models/material';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -8,10 +10,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { EmpresaGranosService } from './empresa-granos.service';
-import { InformeComercial } from '../../common/models/informeComercial';
-import { Material } from '../../common/models/material';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -50,15 +49,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
-        this.spinnerComponent = new SpinnerComponent();
-
     }
 
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
-
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
 
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
@@ -104,7 +98,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setSuccessMsg("Documento guardado correctamente");
+                    this.mensajeComponent.setSuccessMsg(result.data);
                     this.obtenerArchivosSubidos();
                 }
             },
@@ -129,7 +123,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 });
             },
             error => {
-                this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
 
@@ -137,17 +130,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     generarInformeComercial() {
-        if (this.mensajeComponent === undefined)
-            this.mensajeComponent = new MensajeComponent();
-
-        if (this.spinnerSmallComponent === undefined)
-            this.spinnerSmallComponent = new SpinnerSmallComponent();
-
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
+                this.spinnerSmallComponent.hideIt();
                 var byteArray = new Uint8Array(result.data);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
                 if (window.navigator.msSaveOrOpenBlob) {
@@ -167,18 +155,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 
             },
             error => {
-                console.log(error.message);
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
             }
         );
     }
 
     descargarArchivo(fileKey: string) {
-        if (this.mensajeComponent === undefined)
-            this.mensajeComponent = new MensajeComponent();
-
-        if (this.spinnerSmallComponent === undefined)
-            this.spinnerSmallComponent = new SpinnerSmallComponent();
-
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
@@ -233,12 +216,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.nombreArchivoDocumentacionEnBolsa = result.documentacionEnBolsa;
             },
             error => {
-                this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
     }
 
+    redirigirAEstado() {
+        this.navService.navegarSeccion('/estado-solicitud')
+    }
 
     onSubmit() {
         this.mensajeComponent.setMsgsEmpty();
@@ -256,6 +241,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
                     this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informará el estado de su registro.");
+                    this.redirigirAEstado();
                 }
             },
             error => {

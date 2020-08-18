@@ -37,7 +37,12 @@ namespace SustitucionMOA
                 defaults: new { controller = "Home", action = "SignOut" }
             );
 
-     
+            routes.MapRoute(
+               name: "ResetPassword",
+               url: "ResetPassword",
+               defaults: new { controller = "Home", action = "ResetPassword" }
+            );
+
             routes.MapRoute(
                 name: "Default",
                 url: "api/{controller}/{action}/{id}",

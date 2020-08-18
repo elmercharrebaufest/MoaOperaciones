@@ -10,4 +10,28 @@
         Rechazado,
         AunNoImplementado
     }
+
+    public static class EstadoDeAprobacionExtensions
+    {
+        public static string ToFriendlyString(this EstadoAprobacion me)
+        {
+            switch (me)
+            {
+                case EstadoAprobacion.Aprobado:
+                    return "Aprobado";
+                case EstadoAprobacion.DocumentacionPendiente:
+                    return "Documentación pendiente";
+                case EstadoAprobacion.AprobacionPendiente:
+                    return "Aprobación pendiente";
+                case EstadoAprobacion.DeshabilitadoEnDataAgro:
+                    return "Deshabilitado en DataAgro";
+                case EstadoAprobacion.EdicionRequerida:
+                    return "Edicion requerida";
+                case EstadoAprobacion.Rechazado:
+                    return "Rechazado";
+                default:
+                    return "Estado desconocido";
+            }
+        }
+    }
 }

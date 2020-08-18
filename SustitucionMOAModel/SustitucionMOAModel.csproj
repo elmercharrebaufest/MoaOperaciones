@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\EstadoAprobacionDto.cs" />
     <Compile Include="Dto\ProveedorDto.cs" />
     <Compile Include="Entities\Contacto.cs" />
     <Compile Include="Entities\Localidad.cs" />

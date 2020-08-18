@@ -88,7 +88,9 @@ namespace SustitucionMOAModel.Entities
 
         public bool EsNuevoUsuario()
         {
-            return Roles.Where(r => r.Nombre.Equals("Nuevo Usuario")).Any();
+            return
+                Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("NOIMP")).Any(); 
         }
     }
 }

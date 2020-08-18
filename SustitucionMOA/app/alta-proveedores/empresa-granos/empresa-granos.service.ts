@@ -17,7 +17,7 @@ export class EmpresaGranosService extends BaseService {
         formData.append('file', fileToUpload, fileToUpload.name);
         formData.append('fileKey', fileKey);
 
-        return this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData);
+        return this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData).pipe(map(this.extractData));
     }
 
     searchLocalidad(term) {

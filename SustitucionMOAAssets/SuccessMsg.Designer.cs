@@ -70,6 +70,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documento guardado correctamente.
+        /// </summary>
+        public static string ArchivoSubidoOK {
+            get {
+                return ResourceManager.GetString("ArchivoSubidoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to La balanza (Código: {0}) se ha actualizado correctamente.
         /// </summary>
         public static string BalanzaActualizacionOK {

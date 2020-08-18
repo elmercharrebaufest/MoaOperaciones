@@ -10,10 +10,11 @@ using SustitucionMOAModel.Enums;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Configuration;
+using SustitucionMOAUtils.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class DataAgroService
+    public class DataAgroService : IDataAgroService
     {
         public DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre)
         {
@@ -100,7 +101,7 @@ namespace SustitucionMOAUtils.Services
 
         private string FormatearCodigoProveedor(string CUIT)
         {
-            return CUIT.Substring(2, 9);
+            return CUIT.Substring(2, 8);
         }
     }
 

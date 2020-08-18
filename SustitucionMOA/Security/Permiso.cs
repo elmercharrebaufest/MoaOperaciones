@@ -94,5 +94,8 @@
 
         public const string ABM_EMPRESAS = "ABM EMPRESAS";
 
+        public const string ESTADO_SOLICITUD = "ESTADO SOLICITUD";
+
+
     }
 }
