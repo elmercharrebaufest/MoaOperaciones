@@ -71,6 +71,19 @@ namespace SustitucionMOAUtils.Services
                 }
                 proveedor.EstadoAprobacion = estado;
                 proveedor.Observaciones = observacion;
+
+                if (estado.Equals(EstadoAprobacion.Aprobado))
+                {
+
+                    UsuarioGranos usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == proveedor.Mail);
+
+                    usuario.Roles.Clear();
+
+                    Rol rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
+
+                    usuario.Roles.Add(rolUsuarioGranos);
+                }
+
                 repositorio.GuardarCambios();
 
                 return String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
@@ -79,6 +92,11 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        public Rol ObtenerRolPorCodigo(string codigo)
+        {
+            return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
         }
 
         public EstadoAprobacionDto GetEstadoAprobacion(string mail)

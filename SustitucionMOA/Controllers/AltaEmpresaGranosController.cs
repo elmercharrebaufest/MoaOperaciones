@@ -141,7 +141,7 @@ namespace SustitucionMOA.Controllers
 
                 var proveedor = usuario.ObtenerProveedorActual();
 
-                informeComercial.ProveedorId = proveedor.Id;
+                informeComercial.ProveedorId = (int)proveedor.IdDataAgro;
                 informeComercial.InformeComercialId = 0;
 
                 informeComercial.ComercialID = (int)proveedor.IdComercialDataAgro;
