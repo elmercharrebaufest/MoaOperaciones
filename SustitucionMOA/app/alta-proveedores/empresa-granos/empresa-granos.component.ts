@@ -28,7 +28,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     campaniaActual: string;
 
-    nombreArchivoInformeComercialFirmado:string = "";
+    private fieldArray: Array<any> = [];
+    private newAttribute: any = {};
+    private fieldArrayAlm: Array<any> = [];
+    private newAttributeAlm: any = {};
+
+    materialesData: any = null;
+
+    nombreArchivoInformeComercialFirmado: string = "";
     nombreArchivoConstanciaCBU: string = "";
     nombreArchivoConstanciaCBUMercaderia: string = "";
     nombreArchivoConstanciaCUIT: string = "";
@@ -39,6 +46,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoCertificadoExclusionGanancias: string = "";
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
+
 
     informe = new InformeComercial();
 
@@ -146,13 +154,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     var link = document.createElement("a");
                     document.body.appendChild(link);
                     link.href = url;
-                    link.download = "Informe comercial"  + ".pdf"
+                    link.download = "Informe comercial" + ".pdf"
                     link.click();
                     setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
                     return false;
                 }
-                
+
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
@@ -240,7 +248,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informará el estado de su registro.");
+                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informarï¿½ el estado de su registro.");
                     this.redirigirAEstado();
                 }
             },
@@ -251,5 +259,22 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
+    addFieldValue() {
+        this.fieldArray.push(this.newAttribute)
+        this.newAttribute = {};
+    }
+
+    deleteFieldValue(index) {
+        this.fieldArray.splice(index, 1);
+    }
+
+    addFieldValueAlm() {
+        this.fieldArrayAlm.push(this.newAttributeAlm)
+        this.newAttributeAlm = {};
+    }
+
+    deleteFieldValueAlm(index) {
+        this.fieldArrayAlm.splice(index, 1);
+    }
 }
 
