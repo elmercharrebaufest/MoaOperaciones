@@ -389,7 +389,7 @@
                                         <!-- <input [(ngModel)]="field.grano" class="form-control" type="text"
                                             name="{{field.grano}}" /> -->
                                         <div class="formulario-input">
-                                            <select [(ngModel)]=" selected">
+                                            <select [(ngModel)]=" selected" name="{{field.grano}}">
                                                 <option *ngFor="let material of listaMateriales"
                                                     [ngValue]="material.id">
                                                     {{material.Descripcion}}</option>
@@ -397,7 +397,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <input [(ngModel)]="field.localidad" class="form-control" type="text"
+                                        <input [(ngModel)]="field.localidad" class="form-control required" type="text"
                                             name="{{field.localidad}}" />
                                     </td>
                                     <td>
@@ -464,15 +464,15 @@
                                 <tr *ngFor="let field of fieldArrayAlm; let i = index">
                                     <td>
                                         <input [(ngModel)]="field.localidadAlm" class="form-control" type="text"
-                                            name="{{field.localidadAlm}}">
+                                            name="{{field.localidadAlm}}" style="font-weight: 100 !important;">
                                     </td>
                                     <td>
                                         <input [(ngModel)]="field.tnsAlm" class="form-control" type="text"
                                             name="{{field.tnsAlm}}" />
                                     </td>
                                     <td>
-                                        <input [(ngModel)]="field.condiscionAlm" class="form-control" type="text"
-                                            name="{{field.condiscionAlm}}" />
+                                        <input [(ngModel)]="field.condicionAlm" class="form-control" type="text"
+                                            name="{{field.condicionAlm}}" />
                                     </td>
                                     <td>
                                         <button class="btn-remove btn-custom" type="button"
@@ -482,15 +482,17 @@
                                 <tr>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeLocalidadAlm"
-                                            [(ngModel)]="newAttribute.localidadAlm" name="newAttributeLocalidadAlm" />
+                                            [(ngModel)]="newAttributeAlm.localidadAlm"
+                                            name="newAttributeLocalidadAlm" />
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeTnsAlm"
-                                            [(ngModel)]="newAttribute.tnsAlm" name="newAttributeTnsAlm" />
+                                            [(ngModel)]="newAttributeAlm.tnsAlm" name="newAttributeTnsAlm" />
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" id="newAttributeCondicionAlm"
-                                            [(ngModel)]="newAttribute.condicionAlm" name="newAttributeCondicionAlm" />
+                                            [(ngModel)]="newAttributeAlm.condicionAlm"
+                                            name="newAttributeCondicionAlm" />
                                     </td>
                                     <td>
                                         <button class="btn-add btn-custom" type="button"
