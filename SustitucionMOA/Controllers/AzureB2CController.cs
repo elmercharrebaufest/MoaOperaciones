@@ -1,4 +1,5 @@
-﻿using SustitucionMOA.Utils;
+﻿using Microsoft.Identity.Client;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
@@ -9,6 +10,9 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Web;
 using System.Web.Mvc;
 using Entidades = SustitucionMOAModel.Entities;
 using Model = SustitucionMOAModel.Models;
@@ -36,12 +40,42 @@ namespace SustitucionMOA.Controllers
 
         }
 
+        [Authorize]
         private void ValidarLogin()
         {
             try
             {
+                //var scope = new string[] { Globals.ReadTasksScope };
+
+
+                //IConfidentialClientApplication cca = MsalAppBuilder.BuildConfidentialClientApplication();
+                //var accountsTask = cca.GetAccountsAsync();
+                //accountsTask.Wait();
+                //var accounts = accountsTask.Result;
+                //var acquireTokenTask = cca.AcquireTokenSilent(scope, accounts.FirstOrDefault()).ExecuteAsync();
+                //acquireTokenTask.Wait();
+                //AuthenticationResult result = acquireTokenTask.Result;
+                //var principal2 = HttpContext.GetOwinContext().Authentication.User;
+                ////var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+                ////var newIdentity = new ClaimsIdentity(HttpContext.Current.User.Identity);
+
+                //ClaimsIdentity oldIdentity = principal2.Identities.FirstOrDefault(i => i.AuthenticationType == "ApplicationCookie");
+                //var newIdentity = new ClaimsIdentity(oldIdentity);
+
+                //foreach (var testID in principal2.Identities)
+                //{
+                //    var aux = testID;
+                //}    
+                //var test4 = newIdentity.FindFirst("emails").Value;
+
+                //ClaimsPrincipal principal = Thread.CurrentPrincipal as ClaimsPrincipal;
+
+                //string test3 = principal2.FindFirst("emails").Value;
+
+                //string mail2 = ClaimsPrincipal.Current.FindFirst("emails").Value; 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
+
                 CUIT = CUIT.Replace("-", string.Empty);
                 string GranosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
