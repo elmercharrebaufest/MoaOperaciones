@@ -92,6 +92,7 @@ a:hover {
 
 .btn-add {
   background: #03753e;
+  margin: 0;
 }
 
 .btn-add:hover {
@@ -181,4 +182,27 @@ a:hover {
 .modal-footer {
   justify-content: center;
   display: flex;
+}
+
+.table-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #172f8f;
+}
+
+.dropdown-granos {
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.table-custom {
+  margin-bottom: 10px;
+}
+
+.btn-add-container {
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 18px;
 }

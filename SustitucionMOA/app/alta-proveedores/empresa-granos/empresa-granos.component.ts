@@ -80,6 +80,19 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
+        /*this.searchTerm.valueChanges.subscribe(
+            term => {
+                if (term != '') {
+                    this.service.searchLocalidad(term).subscribe(
+                        data => {
+                            this.myLocalidades = data as any[];
+                            //console.log(data[0].BookName);
+                        })
+                }
+            })*/
+
+        this.addFieldValue();
+        this.addFieldValueAlm();
     }
 
     get email() {
