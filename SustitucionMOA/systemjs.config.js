@@ -47,6 +47,7 @@
             //'rxjs/add/observable/*' : ['npm:rxjs/add/observable/*'],
             //'./Rx': 'node_modules/rx/dist/rx.js',
             'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
+            'angular-ng-autocomplete': 'npm:angular-ng-autocomplete/bundles/angular-ng-autocomplete.umd.js',
             'ngx-pagination': 'npm:ngx-pagination/dist/ngx-pagination.umd.js',
             'ng2-select': 'npm:ng2-select',
             'ngx-modal': 'node_modules/ngx-modal',

@@ -149,6 +149,8 @@ import { EstadoSolicitudComponent } from './alta-proveedores/estado-solicitud/es
 
 import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/estado-solicitud.service'
 
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+
 
 @NgModule({
     imports: [
@@ -161,6 +163,7 @@ import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/esta
         ModalModule,
         Ng2AutoCompleteModule,
         ReCaptchaModule,
+        AutocompleteLibModule
     ],
     declarations: [
         AppComponent,

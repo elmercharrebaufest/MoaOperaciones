@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
@@ -15,6 +16,7 @@ using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
@@ -194,9 +196,18 @@ namespace SustitucionMOA.Controllers
         public ActionResult GetLocalidadCombo(string localidad)
         {
 
+            localidad = localidad.IsNullOrWhiteSpace() ? "" : localidad;
+
             if (localidad.Length > 2)
             {
-                var listadoLocalidad = repositorio.Listar<Localidad>(l => l.Nombre.Contains(localidad));
+
+                var listadoLocalidad = repositorio.Listar<Localidad, LocalidadCombo>(x => new LocalidadCombo()
+                {
+                    LocalidadId = x.LocalidadId,
+                    Nombre = x.Nombre,
+                },
+                 x => x.Nombre.Contains(localidad)
+                 , 500).OrderBy(x => x.Nombre).ToList();
 
                 //var jsonLocalidad = JsonConvert.SerializeObject(listadoLocalidad);
 
