@@ -373,135 +373,102 @@
 
 
                         </div>
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Grano</th>
-                                    <th>Localidad</th>
-                                    <th>Has</th>
-                                    <th>TNs</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let field of fieldArray; let i = index">
-                                    <td>
-                                        <!-- <input [(ngModel)]="field.grano" class="form-control" type="text"
-                                            name="{{field.grano}}" /> -->
-                                        <div class="formulario-input">
-                                            <select [(ngModel)]=" selected" name="{{field.grano}}">
-                                                <option *ngFor="let material of listaMateriales"
-                                                    [ngValue]="material.id">
-                                                    {{material.Descripcion}}</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <input [(ngModel)]="field.localidad" class="form-control required" type="text"
-                                            name="{{field.localidad}}" />
-                                    </td>
-                                    <td>
-                                        <input [(ngModel)]="field.has" class="form-control" type="text"
-                                            name="{{field.has}}" />
-                                    </td>
-                                    <td>
-                                        <input [(ngModel)]="field.tns" class="form-control" type="text"
-                                            name="{{field.tns}}" />
-                                    </td>
-                                    <td>
-                                        <button class="btn-remove btn-custom" type="button"
-                                            (click)="deleteFieldValue(i)">Eliminar</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="formulario-input">
-                                            <select [(ngModel)]="selected">
+                        <div>
 
-                                                <input class="form-control" type="text" id="newAttributeGrano"
-                                                    [(ngModel)]="newAttribute.grano" name="newAttributeGrano" />
+                            <div>
+                                <p class="table-title">Capacidad productiva</p>
+                            </div>
+                            <table class="table table-striped table-bordered table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Grano</th>
+                                        <th>Localidad</th>
+                                        <th>Has</th>
+                                        <th>TNs</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let field of fieldArray; let i = index">
+                                        <td>
+                                            <div class="formulario-input">
+                                                <select [(ngModel)]=" selected" name="{{field.grano}}"
+                                                    class="dropdown-granos">
+                                                    <option *ngFor="let material of listaMateriales"
+                                                        [ngValue]="material.id">
+                                                        {{material.Descripcion}}</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input [(ngModel)]="field.localidad" class="form-control required"
+                                                type="text" name="{{field.localidad}}" />
+                                        </td>
+                                        <td>
+                                            <input [(ngModel)]="field.has" class="form-control" type="text"
+                                                name="{{field.has}}" />
+                                        </td>
+                                        <td>
+                                            <input [(ngModel)]="field.tns" class="form-control" type="text"
+                                                name="{{field.tns}}" />
+                                        </td>
+                                        <td>
+                                            <button class="btn-remove btn-custom" type="button"
+                                                (click)="deleteFieldValue(i)">Eliminar</button>
+                                        </td>
+                                    </tr>
 
-                                                <option *ngFor="let material of listaMateriales"
-                                                    [ngValue]="material.id">{{material.Descripcion}}</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" id="newAttributeLocalidad"
-                                            [(ngModel)]="newAttribute.localidad" name="newAttributeLocalidad" />
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" id="newAttributeHas"
-                                            [(ngModel)]="newAttribute.has" name="newAttributeHas" />
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" id="newAttributeTns"
-                                            [(ngModel)]="newAttribute.tns" name="newAttributeTns" />
-                                    </td>
-                                    <td>
-                                        <button class="btn-add btn-custom" type="button"
-                                            (click)="addFieldValue()">Agregar</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
 
+                            </table>
+                            <div class="btn-add-container">
+                                <button class="btn-add btn-custom" type="button"
+                                    (click)="addFieldValue()">Agregar</button>
+                            </div>
+                        </div>
 
                         <!-- TABLA 2 -->
                         <div>
-                            <p>Capacidad planta</p>
-                        </div>
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Localidad</th>
-                                    <th>TNs</th>
-                                    <th>Condición</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let field of fieldArrayAlm; let i = index">
-                                    <td>
-                                        <input [(ngModel)]="field.localidadAlm" class="form-control" type="text"
-                                            name="{{field.localidadAlm}}" style="font-weight: 100 !important;">
-                                    </td>
-                                    <td>
-                                        <input [(ngModel)]="field.tnsAlm" class="form-control" type="text"
-                                            name="{{field.tnsAlm}}" />
-                                    </td>
-                                    <td>
-                                        <input [(ngModel)]="field.condicionAlm" class="form-control" type="text"
-                                            name="{{field.condicionAlm}}" />
-                                    </td>
-                                    <td>
-                                        <button class="btn-remove btn-custom" type="button"
-                                            (click)="deleteFieldValueAlm(i)">Eliminar</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input class="form-control" type="text" id="newAttributeLocalidadAlm"
-                                            [(ngModel)]="newAttributeAlm.localidadAlm"
-                                            name="newAttributeLocalidadAlm" />
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" id="newAttributeTnsAlm"
-                                            [(ngModel)]="newAttributeAlm.tnsAlm" name="newAttributeTnsAlm" />
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" id="newAttributeCondicionAlm"
-                                            [(ngModel)]="newAttributeAlm.condicionAlm"
-                                            name="newAttributeCondicionAlm" />
-                                    </td>
-                                    <td>
-                                        <button class="btn-add btn-custom" type="button"
-                                            (click)="addFieldValueAlm()">Agregar</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
 
+
+                            <div>
+                                <p class="table-title">Capacidad planta</p>
+                            </div>
+                            <table class="table table-striped table-bordered table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Localidad</th>
+                                        <th>TNs</th>
+                                        <th>Condición</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let field of fieldArrayAlm; let i = index">
+                                        <td>
+                                            <input [(ngModel)]="field.localidadAlm" class="form-control" type="text"
+                                                name="{{field.localidadAlm}}" style="font-weight: 100 !important;">
+                                        </td>
+                                        <td>
+                                            <input [(ngModel)]="field.tnsAlm" class="form-control" type="text"
+                                                name="{{field.tnsAlm}}" />
+                                        </td>
+                                        <td>
+                                            <input [(ngModel)]="field.condicionAlm" class="form-control" type="text"
+                                                name="{{field.condicionAlm}}" />
+                                        </td>
+                                        <td>
+                                            <button class="btn-remove btn-custom" type="button"
+                                                (click)="deleteFieldValueAlm(i)">Eliminar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="btn-add-container">
+                                <button class="btn-add btn-custom" type="button"
+                                    (click)="addFieldValueAlm()">Agregar</button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

@@ -96,8 +96,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 }
             })*/
 
-        // this.addFieldValue();
-        // this.addFieldValueAlm();
+        this.addFieldValue();
+        this.addFieldValueAlm();
     }
 
     get email() {
