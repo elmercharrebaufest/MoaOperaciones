@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>
-           
+
         </div>
         <!-- End Search-->
         <!-- Tables-->
@@ -78,7 +78,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
@@ -195,7 +195,7 @@
                                         <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
                                     </div>
                                 </mdb-step>
-                            </div>   
+                            </div>
                         </mdb-stepper>
                     </div>
                     <div class="row">
@@ -230,10 +230,12 @@
                     <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
                         <div class="alert alert-danger"><i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
                     </div>
+                    <label style="float:left;">Observaciones internas</label>
                     <textarea placeholder="Ingrese aqui las observaciones internas" [value]="" [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-right: 10px;"
                      *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                    <label style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]="" [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
                 </div>
                 <button type="button" class="btn btn-info btn-lg" *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
