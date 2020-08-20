@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -39,20 +39,31 @@
 
     <div class="wrapper row3">
         <main class="  " style="padding:0;">
+
             <p id="file_p" style="display:block;">
-                Archivo: <a href="#" id="a_file"></a><input type="file" id="select_file" style="display:none;" />
+                Archivo: <a href="#" id="a_file" ></a><input type="file" id="select_file" style="display:none;" />
             </p>
             <!-- ################################################################################################ -->
             <div class="content three_quarter" style="margin-left:13%;">
                 <div id="resolte-div" style="overflow: hidden;">
                     <div id="resolte-contaniner" style="width: 100%; height:550px; overflow: auto;"></div>
                 </div>
-                <script>
+                <script type="text/javascript">
+                    var url;
+                    
+                    $("#a_file").click(function () {
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    });
                     (function ($) {
                         $("#resolte-contaniner").css("height", (screen.height - 200) + "px");
                         //$("#resolte-div").css("width", (screen.width - 200) + "px");
                         //$("#resolte-div").css("width", "800px");
-                        
+
                         const queryString = window.location.search;
                         console.log(queryString);
                         const urlParams = new URLSearchParams(queryString);
@@ -81,9 +92,9 @@
                                 const dT = new ClipboardEvent('').clipboardData || new DataTransfer();
                                 dT.items.add(new File([blob], result.FileDownloadName));
                                 select_file.files = dT.files;
-                                var url = window.URL.createObjectURL(blob);
-                                $("#a_file").html(result.FileDownloadName).attr("href", url);
-                                $("#a_file").show();
+                                url = window.URL.createObjectURL(blob);
+                                $("#a_file").html(result.FileDownloadName);
+
 
                                 $("#resolte-contaniner").officeToHtml({
                                     //url: file_path,
