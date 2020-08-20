@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OfficeJs </title>
+    <meta charset="utf-8">
+    <link href="./layout/styles/layout.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./include/jquery_ui/themes/start/jquery-ui.min.css">
+    <script src="./include/jquery/jquery-1.12.4.min.js"></script>
+    <script src="./include/jquery_ui/jquery-ui.min.js"></script>
+    <!-- ################################ For files reder ###############################-->
+    <!--PDF-->
+    <link rel="stylesheet" href="./include/pdf/pdf.viewer.css">
+    <script src="./include/pdf/pdf.js"></script>
+    <!--Docs-->
+    <script src="./include/docx/jszip-utils.js"></script>
+    <script src="./include/docx/mammoth.browser.min.js"></script>
+    <!--PPTX-->
+    <link rel="stylesheet" href="./include/PPTXjs/css/pptxjs.css">
+    <link rel="stylesheet" href="./include/PPTXjs/css/nv.d3.min.css">
+    <script type="text/javascript" src="./include/PPTXjs/js/filereader.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/d3.min.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/nv.d3.min.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/pptxjs.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/divs2slides.js"></script>
+    <!--All Spreadsheet -->
+    <link rel="stylesheet" href="./include/SheetJS/handsontable.full.min.css">
+    <script type="text/javascript" src="./include/SheetJS/handsontable.full.min.js"></script>
+    <script type="text/javascript" src="./include/SheetJS/xlsx.full.min.js"></script>
+    <!--Image viewer-->
+    <link rel="stylesheet" href="./include/verySimpleImageViewer/css/jquery.verySimpleImageViewer.css">
+    <script type="text/javascript" src="./include/verySimpleImageViewer/js/jquery.verySimpleImageViewer.js"></script>
+    <!--officeToHtml-->
+    <script src="./include/officeToHtml/officeToHtml.js"></script>
+    <link rel="stylesheet" href="./include/officeToHtml/officeToHtml.css">
+</head>
+
+<body id="top" style="background-color:white;">
+
+    <div class="wrapper row3">
+        <main class="  " style="padding:0;">
+            <p id="file_p" style="display:block;">
+                Archivo: <a href="#" id="a_file"></a><input type="file" id="select_file" style="display:none;" />
+            </p>
+            <!-- ################################################################################################ -->
+            <div class="content three_quarter" style="margin-left:13%;">
+                <div id="resolte-div" style="overflow: hidden;">
+                    <div id="resolte-contaniner" style="width: 100%; height:550px; overflow: auto;"></div>
+                </div>
+                <script>
+                    (function ($) {
+                        $("#resolte-contaniner").css("height", (screen.height - 200) + "px");
+                        //$("#resolte-div").css("width", (screen.width - 200) + "px");
+                        //$("#resolte-div").css("width", "800px");
+                        
+                        const queryString = window.location.search;
+                        console.log(queryString);
+                        const urlParams = new URLSearchParams(queryString);
+                        var param = urlParams.get('param');
+                        console.log(param);
+                        param = atob(param);
+                        var parametros = new URLSearchParams(param);
+
+                        var datos = {
+                            fileKey: parametros.get("fileKey"),
+                            mail: parametros.get("mail")
+                        };
+                        $("#resolte-contaniner").html("");
+                        $("#resolte-contaniner").show();
+                        $.ajax({
+                            async: false,
+                            url: '/api/AltaEmpresaGranos/DescargarArchivo',
+                            type: 'GET',
+                            data: datos,
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (data) {
+                                result = data;
+                                var byteArray = new Uint8Array(result.FileContents);
+                                var blob = new Blob([byteArray], { type: 'application/octet-stream' });
+                                const dT = new ClipboardEvent('').clipboardData || new DataTransfer();
+                                dT.items.add(new File([blob], result.FileDownloadName));
+                                select_file.files = dT.files;
+                                var url = window.URL.createObjectURL(blob);
+                                $("#a_file").html(result.FileDownloadName).attr("href", url);
+                                $("#a_file").show();
+
+                                $("#resolte-contaniner").officeToHtml({
+                                    //url: file_path,
+                                    inputObjId: "select_file",
+                                    pdfSetting: {
+                                        setLang: "",
+                                        setLangFilesPath: "" /*"include/pdf/lang/locale" - relative to app path*/
+                                    }
+                                });
+                                $("#select_file").change();
+                            },
+                            error: function (a, b, c) {
+                                console.log("error");
+                                console.log(a);
+                                console.log(b);
+                                console.log(c);
+                            }
+                        });
+
+                    }(jQuery));
+                </script>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

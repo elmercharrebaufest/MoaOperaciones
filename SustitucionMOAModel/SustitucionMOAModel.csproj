@@ -49,10 +49,12 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\ProveedorHistorialAprobacionDto.cs" />
     <Compile Include="Dto\ProveedorDto.cs" />
     <Compile Include="Entities\Contacto.cs" />
     <Compile Include="Entities\Localidad.cs" />
     <Compile Include="Entities\Partido.cs" />
+    <Compile Include="Entities\ProveedorHistorialAprobacion.cs" />
     <Compile Include="Entities\Provincia.cs" />
     <Compile Include="Enums\EstadoAprobacion.cs" />
     <Compile Include="Entities\PermisoPorRol.cs" />

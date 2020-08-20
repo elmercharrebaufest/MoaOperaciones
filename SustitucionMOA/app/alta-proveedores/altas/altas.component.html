@@ -10,14 +10,25 @@
         <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow">
                 <title-caps>Refinar resultados</title-caps>
-
+                <hr />
                 <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
                     Por Razon Social/CUIT:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="" (input)="filtro = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
+                <div class="col-xs-6  col-sm-4 col-md-5">
+                    Por Estado:
+                    <div class="styled-select ">
+                        <select [(ngModel)]="selectedEstado" (ngModelChange)="onOptionsSelected()">
+                            <option value="" selected>Todos</option>
+                            <option *ngFor="let x of estados" value="{{x.Value}}">{{x.Value}}</option>
+                        </select>
+
+                    </div>
+                </div>
             </div>
+           
         </div>
         <!-- End Search-->
         <!-- Tables-->
@@ -33,15 +44,19 @@
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CodigoProveedor')">Codigo</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">Razon Social</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Comercial')">Comercial</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let empresa of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let empresa of dataFiltered | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td>{{empresa.Id}}</td>
                             <td>{{empresa.CodigoProveedor}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial}}</td>
+                            <td>{{empresa.Comercial}}</td>
+                            <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-lg"
                                         (click)="abrirModal(empresa)"
@@ -65,7 +80,7 @@
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
      data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="hidemyModal">
@@ -84,126 +99,167 @@
 
                     <div class="row myRow firstSection roundedInfo" id="container">
                         <mdb-stepper #stepper>
-                            <mdb-step name="Step 1" label="Informe comercial">
-                                <h3>Informe comercial</h3>
-                                <div class="form-group informe-comercial">
-                                    <div style="flex-direction: column;">
-                                        <label>Informe comercial</label>&nbsp;
-                                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">Sin Adjuntar</label>
+                            <div class="col-md-5">
+                                <mdb-step name="Step 1" label="Informe comercial">
+                                    <h3>Informe comercial</h3>
+                                    <div class="form-group informe-comercial">
+                                        <div style="flex-direction: column;">
+                                            <label>Informe comercial</label>&nbsp;
+                                            <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
+                                            <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">Sin Adjuntar</label>
+                                        </div>
+
                                     </div>
-
-                                </div>
-                            </mdb-step>
-                            <mdb-step name="Step 2" label="CBU">
-                                <h3> Constancia de CBU</h3>
-                                <div class="form-group">
-                                    <label>
-                                        Constancia de CBU certificada
-                                        por Banco
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Constancia de CBU Mercaderia
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="descargarArchivo('nombreArchivoConstanciaCBUMercaderia')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCBUMercaderia == ''">Sin Adjuntar</label>
-                                </div>
-                            </mdb-step>
-                            <mdb-step name="Step 3" label="Documentación Impositiva">
-                                <h3>Documentación Impositiva</h3>
-                                <div class="form-group">
-                                    <label>Constancia de CUIT</label>&nbsp;
-                                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Inscripción en IIBB -local o
-                                        Convenio (CM05
-                                        vigente)
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Certificados de exclusión o
-                                        exención IVA.
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Certificados de exclusión o
-                                        exención IIBB.
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Certificados de exclusión o
-                                        exención SUSS.
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Certificados de exclusión o
-                                        exención Ganancias.
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">Sin Adjuntar</label>
-                                </div>
-                                <div class="form-group">
-                                    <label>
-                                        Solamente en caso de SISA 2 / SISA 3,
-                                        presentar SIPER.
-                                    </label>&nbsp;
-                                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('SIPER')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
-                                </div>
-                            </mdb-step>
-                            <mdb-step name="Step 4" label="Documentación">
-                                <h3>Documentación al día en Bolsa</h3>
-                                <div class="form-group">
-                                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('documentacionEnBolsa')">Ver archivo subido</a>
-                                    <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
-                                </div>
-                            </mdb-step>
-
+                                </mdb-step>
+                                <mdb-step name="Step 2" label="CBU">
+                                    <h3> Constancia de CBU</h3>
+                                    <div class="form-group">
+                                        <label>
+                                            Constancia de CBU certificada
+                                            por Banco
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Constancia de CBU Mercaderia
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="descargarArchivo('nombreArchivoConstanciaCBUMercaderia')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoConstanciaCBUMercaderia == ''">Sin Adjuntar</label>
+                                    </div>
+                                </mdb-step>
+                                <mdb-step name="Step 4" label="Documentación">
+                                    <h3>Documentación al día en Bolsa</h3>
+                                    <div class="form-group">
+                                        <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('documentacionEnBolsa')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
+                                    </div>
+                                </mdb-step>
+                            </div>
+                            <div class="col-md-7">
+                                <mdb-step name="Step 3" label="Documentación Impositiva">
+                                    <h3>Documentación Impositiva</h3>
+                                    <div class="form-group">
+                                        <label>Constancia de CUIT</label>&nbsp;
+                                        <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Inscripción en IIBB -local o
+                                            Convenio (CM05
+                                            vigente)
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención IVA.
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención IIBB.
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención SUSS.
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención Ganancias.
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">Sin Adjuntar</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Solamente en caso de SISA 2 / SISA 3,
+                                            presentar SIPER.
+                                        </label>&nbsp;
+                                        <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('SIPER')">Ver archivo subido</a>
+                                        <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
+                                    </div>
+                                </mdb-step>
+                            </div>   
                         </mdb-stepper>
+                    </div>
+                    <div class="row">
+                        <table id="tableModalHistorial" class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                               cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Usuario</th>
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Observacion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let hist of empresaSeleccionada.HistorialAprobaciones ; let odd = odd" role="row" [class.odd]="!odd">
+                                    <td>{{hist.EstadoAprobacionDescripcion}}</td>
+                                    <td>{{hist.Usuario}}</td>
+                                    <td>{{hist.Fecha.slice(6,-2) | date: 'dd-MM-yyyy HH:mm'}}</td>
+                                    <td>{{hist.Observacion}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <div  class="row" style="padding-left: 10px;padding-right: 10px;">
+                <div class="row" style="padding-left: 10px;padding-right: 10px;"
+                     *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     ">
                     <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
                         <div class="alert alert-danger"><i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
                     </div>
-                    <textarea placeholder="Ingrese aqui las observaciones" [value]="" [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
+                    <textarea placeholder="Ingrese aqui las observaciones internas" [value]="" [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
-
-                <button type="button" class="btn btn-info btn-lg"
+                <div class="row" style="padding-left: 10px;padding-right: 10px;"
+                     *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                    <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]="" [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
+                </div>
+                <button type="button" class="btn btn-info btn-lg" *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(7)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Enviar a Análisis de Nosis
+                </button>
+                <button type="button" class="btn btn-info btn-lg" *ngIf="empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR')"
+                        (click)="cambiarEstado(8)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Enviar a Sentencia final
+                </button>
+                <button type="button" class="btn btn-info btn-lg" *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(0)"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                    Aceptar
+                    Aprobar
                 </button>
-                <button type="button" class="btn btn-info btn-lg"
+                <button type="button" class="btn btn-info btn-lg" *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(5)"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Rechazar
                 </button>
-                <button type="button" class="btn btn-info btn-lg"
+                <button type="button" class="btn btn-info btn-lg" *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(4)"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                    PedirDocumentacion
+                    Observar
                 </button>
             </div>
         </div>

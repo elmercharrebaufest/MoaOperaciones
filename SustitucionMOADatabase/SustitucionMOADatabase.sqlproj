@@ -65,5 +65,8 @@
     <Build Include="DBO\Tables\TipoProveedor.sql" />
     <Build Include="DBO\Tables\TipoUsuario.sql" />
     <Build Include="DBO\Tables\Rol.sql" />
+    <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
+    <Build Include="DBO\Tables\Proveedor.sql" />
+    <Build Include="DBO\Tables\Usuario.sql" />
   </ItemGroup>
 </Project>
