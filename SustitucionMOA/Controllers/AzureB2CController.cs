@@ -65,16 +65,18 @@ namespace SustitucionMOA.Controllers
 
                 usuario = azureB2CService.LoguearUsuario(mail, CUIT, GranosFlag);
 
-                SessionPersister.User = new Model.Usuario()
+
+
+                /*SessionPersister.User = new Model.Usuario()
                 {
                     username = mail,
                     nombre = usuario.ObtenerRazonSocial(),
                     permisos = usuario.ObtenerPermisos()
                 };
-
                 SessionPersister.Proveedor = usuario.ObtenerCodigoProveedor();
                 SessionPersister.GranosFlag = usuario.TipoUsuario.NombreCorto;
-                SessionPersister.Sociedad = "MOA";
+                SessionPersister.Sociedad = "MOA";*/
+                /*
 
                 NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
 
@@ -95,7 +97,7 @@ namespace SustitucionMOA.Controllers
                             noticias.cantidad += noticias.notificaciones.Count;
                         }
                     }
-                }
+                }*/
             }
             catch (Exception e)
             {
@@ -106,38 +108,65 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ValidarLoginAzure()
         {
-      
-            if (SessionPersister.User == null)
-            {
-                ValidarLogin();
-            }
 
-            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            string granosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+            //if (SessionPersister.User == null)
+            //{
+            //    //ValidarLogin();
+            //}
 
-            Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlag);
+            //return Json(new
+            //{
+            //    success = SuccessMsg.LoginOk,
+            //    username = "Martin",
+            //    nombre = "Martin",
+            //    proveedor = "123132",
+            //    granosFlag = "G",
+            //    tipoUsuario = "PROV",
+            //    noticias = "",
+            //    esNuevoUsuario = "true",
+            //}, JsonRequestBehavior.AllowGet);
 
-            if (usuario.ObtenerPermisos().Count() == 1 && usuario.ObtenerPermisos().Contains("DATAAGROLOGIN"))
-            {
-                DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
 
-                SessionPersister.clear();
+            //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            //string granosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
-                return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-            }
+            //Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlag);
+
+            //if (usuario.ObtenerPermisos().Count() == 1 && usuario.ObtenerPermisos().Contains("DATAAGROLOGIN"))
+            //{
+            //    DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
+
+            //    SessionPersister.clear();
+
+            //    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
+            //}
+
+            string username = ClaimsPrincipal.Current.FindFirst("username").Value;
 
             return Json(new
             {
                 success = SuccessMsg.LoginOk,
-                username = SessionPersister.User.username,
-                nombre = SessionPersister.User.nombre,
-                proveedor = SessionPersister.Proveedor,
-                granosFlag = SessionPersister.GranosFlag,
-                tipoUsuario = usuario.TipoUsuario,
-                permisos = SessionPersister.User.permisos,
-                noticias = SessionPersister.Notificaciones,
-                esNuevoUsuario = usuario.EsNuevoUsuario()
-            }, JsonRequestBehavior.AllowGet); ;
+                username = username,
+                nombre = "Martin",
+                proveedor = "123132",
+                granosFlag = "G",
+                tipoUsuario = "PROV",
+                noticias = "",
+                esNuevoUsuario = "true",
+            }, JsonRequestBehavior.AllowGet);
+
+            //return Json(new
+            //{
+            //    success = SuccessMsg.LoginOk,
+            //    username = SessionPersister.User.username,
+            //    nombre = SessionPersister.User.nombre,
+            //    proveedor = SessionPersister.Proveedor,
+            //    granosFlag = SessionPersister.GranosFlag,
+            //    tipoUsuario = usuario.TipoUsuario,
+            //    permisos = SessionPersister.User.permisos,
+            //    noticias = "",
+            //    esNuevoUsuario = usuario.EsNuevoUsuario()
+            //}, JsonRequestBehavior.AllowGet);
         }
 
 

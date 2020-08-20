@@ -14,11 +14,20 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using SustitucionMOA.Utils;
 using Microsoft.Owin.Host.SystemWeb;
+using Entidades = SustitucionMOAModel.Entities;
+using Model = SustitucionMOAModel.Models;
+using SustitucionMOAUtils.Interfaces;
+using System.Web.Mvc;
 
 namespace SustitucionMOA
 {
 	public partial class Startup
 	{
+		private static IAzureB2CService azureB2CService
+		{
+			get { return DependencyResolver.Current.GetService<IAzureB2CService>(); }
+		}
+
 		/*
         * Configure the OWIN middleware
         */
@@ -127,6 +136,9 @@ namespace SustitucionMOA
 				 This object contains the property `AuthenticationTicket.Identity`, which is a `ClaimsIdentity`, created from the token received from
 				 Azure AD and has a full set of claims.
 				 */
+
+				ValidarLogin(notification.AuthenticationTicket.Identity);
+
 				IConfidentialClientApplication confidentialClient = MsalAppBuilder.BuildConfidentialClientApplication(new ClaimsPrincipal(notification.AuthenticationTicket.Identity));
 
 				// Upon successful sign in, get & cache a token using MSAL
@@ -141,5 +153,58 @@ namespace SustitucionMOA
 				});
 			}
 		}
+		private void ValidarLogin(ClaimsIdentity notification)
+		{
+			try
+			{
+				string mail = notification.FindFirst("emails").Value;
+				string CUIT = notification.FindFirst("extension_CUIT").Value;
+
+				CUIT = CUIT.Replace("-", string.Empty);
+				string GranosFlag = notification.FindFirst("extension_Tipodeproveedor").Value;
+
+				Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
+
+				usuario = azureB2CService.LoguearUsuario(mail, CUIT, GranosFlag) ;
+
+				notification.AddClaim(new Claim("username", mail));
+
+				/*SessionPersister.User = new Model.Usuario()
+				{
+					username = mail,
+					nombre = usuario.ObtenerRazonSocial(),
+					permisos = usuario.ObtenerPermisos()
+				};
+				SessionPersister.Proveedor = usuario.ObtenerCodigoProveedor();
+				SessionPersister.GranosFlag = usuario.TipoUsuario.NombreCorto;
+				SessionPersister.Sociedad = "MOA";*/
+				/*
+
+                NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
+
+                if (!Globals.EsLocal)
+                {
+                    if (usuario.EstaHabilitado())
+                    {
+                        noticias = azureB2CService.getNoticias(usuario.ObtenerCodigoProveedor());
+                        noticias.cantidad = 0;
+                        if (noticias != null && noticias.noticias != null)
+                        {
+                            SessionPersister.Noticias = noticias.noticias;
+                            noticias.cantidad += noticias.noticias.Count;
+                        }
+                        if (noticias != null && noticias.notificaciones != null)
+                        {
+                            SessionPersister.Notificaciones = noticias.notificaciones;
+                            noticias.cantidad += noticias.notificaciones.Count;
+                        }
+                    }
+                }*/
+			}
+			catch (Exception e)
+			{
+			}
+		}
+
 	}
 }

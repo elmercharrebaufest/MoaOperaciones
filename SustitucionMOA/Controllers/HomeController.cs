@@ -25,7 +25,7 @@ using Model = SustitucionMOAModel.Models;
 
 namespace SustitucionMOA.Controllers
 {
-    [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    //[System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class HomeController : BaseController
     {
         HomeService _homeService = new HomeService();
@@ -44,6 +44,15 @@ namespace SustitucionMOA.Controllers
             this.dataAgroService = dataAgroService;
         }
 
+        public void SignUpSignIn()
+        {
+            string redirectUrl = "/RedirectHome";
+
+            // Use the default policy to process the sign up / sign in flow
+            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+            return;
+        }
+
         //public void Index()
         //{
         //    string redirectUrl = "/RedirectHome";
@@ -52,30 +61,48 @@ namespace SustitucionMOA.Controllers
         //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
         //    return;
         //}
+
         public ActionResult Index()
         {
+            return null;
+            /*string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-            //if (Request.IsAuthenticated)
+            if (Request.IsAuthenticated)
+            {
+                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
+                {
+                    return Redirect("/");
+                }
+
+                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+            }
+
+            return null;*/
+            //try
             //{
-                return View();
-            //}
-            //else
-            //{
+            //    string redirectUrl = "/RedirectHome";
+
+            //    // Use the default policy to process the sign up / sign in flow
+            //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
             //    return null;
             //}
+            //catch
+            //{
 
+            //}
+            //return null;
             /*if (Request.IsAuthenticated)
             {
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
-                    //return Redirect("/");
+                    return Redirect("/");
                 }
 
-                //     return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
             }
             else
             {
-                string redirectUrl = "/RedirectHome";
+                string redirectUrl = "/";
                 //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
                 try
                 {
@@ -87,44 +114,9 @@ namespace SustitucionMOA.Controllers
                 {
 
                 }
-                return;
+                return null;
             }*/
         }
-
-        /*public ActionResult Index()
-        {
-            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-            return View();
-            //return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
-            //if (Request.IsAuthenticated)
-            //{
-            //    if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
-            //    {
-            //        //return Redirect("/");
-            //    }
-
-            //    return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
-            //}
-            //else
-            //{
-            //string redirectUrl = "/RedirectHome";
-            ////Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
-            //try
-            //{
-            //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
-
-            //}
-            ////Ignoramos esta excepción porque la da cuando carga recursos
-            //catch
-            //{
-
-            //}
-            //return;
-
-            //    //return null;
-            //}
-        }*/
 
         public ActionResult RedirectHome()
         {

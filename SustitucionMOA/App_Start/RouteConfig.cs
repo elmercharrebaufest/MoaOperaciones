@@ -38,8 +38,14 @@ namespace SustitucionMOA
             );
 
             routes.MapRoute(
-              name: "SignUpSignIn",
-              url: "SignUpSignIn",
+              name: "LoginHome",
+              url: "LoginHome",
+              defaults: new { controller = "Home", action = "SignUpSignIn" }
+            );
+
+            routes.MapRoute(
+              name: "LoginAzure",
+              url: "LoginAzure",
               defaults: new { controller = "AzureB2C", action = "SignUpSignIn" }
             );
 
