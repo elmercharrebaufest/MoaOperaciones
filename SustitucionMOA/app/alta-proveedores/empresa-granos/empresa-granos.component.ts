@@ -1,6 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
+import { InformeComercial } from '../../common/models/informeComercial';
+import { Material } from '../../common/models/material';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -8,10 +10,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { EmpresaGranosService } from './empresa-granos.service';
-import { InformeComercial } from '../../common/models/informeComercial';
-import { Material } from '../../common/models/material';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -29,7 +28,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     campaniaActual: string;
 
-    nombreArchivoInformeComercialFirmado:string = "";
+    private fieldArray: Array<any> = [];
+    private newAttribute: any = {};
+    private fieldArrayAlm: Array<any> = [];
+    private newAttributeAlm: any = {};
+
+    materialesData: any = null;
+
+    nombreArchivoInformeComercialFirmado: string = "";
     nombreArchivoConstanciaCBU: string = "";
     nombreArchivoConstanciaCBUMercaderia: string = "";
     nombreArchivoConstanciaCUIT: string = "";
@@ -41,35 +47,78 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
 
+
     informe = new InformeComercial();
 
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
 
 
+    keyword = 'Nombre';
+    data = [];
+    autocompleteNotFoundText = "No encontrado";
+
+    selectEventProduccion(item, index) {
+        console.log(item)
+
+        console.log(index)
+
+    }
+
+    selectEventAlmacenamiento(item, index) {
+        console.log(item)
+
+        console.log(index)
+
+    }
+    
+
+    onChangeSearchProduccion(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.data = result;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
+    onChangeSearchAlmacenamiento(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.data = result;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
     constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
-        this.spinnerComponent = new SpinnerComponent();
-
     }
 
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
 
-    @ViewChild(SpinnerComponent)
-    protected spinnerComponent: SpinnerComponent;
-
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
-
 
     checkPermisos() { this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS"); }
 
     setTabs() {
         this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
     }
-
 
     ngOnInit() {
         this.setTabs();
@@ -78,6 +127,19 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
+        /*this.searchTerm.valueChanges.subscribe(
+            term => {
+                if (term != '') {
+                    this.service.searchLocalidad(term).subscribe(
+                        data => {
+                            this.myLocalidades = data as any[];
+                            //console.log(data[0].BookName);
+                        })
+                }
+            })*/
+
+        this.addFieldValue();
+        this.addFieldValueAlm();
     }
 
     get email() {
@@ -104,7 +166,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setSuccessMsg("Documento guardado correctamente");
+                    this.mensajeComponent.setSuccessMsg(result.data);
                     this.obtenerArchivosSubidos();
                 }
             },
@@ -129,7 +191,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 });
             },
             error => {
-                this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
 
@@ -137,17 +198,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     generarInformeComercial() {
-        if (this.mensajeComponent === undefined)
-            this.mensajeComponent = new MensajeComponent();
-
-        if (this.spinnerSmallComponent === undefined)
-            this.spinnerSmallComponent = new SpinnerSmallComponent();
-
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
+                this.spinnerSmallComponent.hideIt();
                 var byteArray = new Uint8Array(result.data);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
                 if (window.navigator.msSaveOrOpenBlob) {
@@ -158,27 +214,22 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     var link = document.createElement("a");
                     document.body.appendChild(link);
                     link.href = url;
-                    link.download = "Informe comercial"  + ".pdf"
+                    link.download = "Informe comercial" + ".pdf"
                     link.click();
                     setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
                     return false;
                 }
-                
+
             },
             error => {
-                console.log(error.message);
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
             }
         );
     }
 
     descargarArchivo(fileKey: string) {
-        if (this.mensajeComponent === undefined)
-            this.mensajeComponent = new MensajeComponent();
-
-        if (this.spinnerSmallComponent === undefined)
-            this.spinnerSmallComponent = new SpinnerSmallComponent();
-
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
@@ -233,12 +284,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.nombreArchivoDocumentacionEnBolsa = result.documentacionEnBolsa;
             },
             error => {
-                this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
     }
 
+    redirigirAEstado() {
+        this.navService.navegarSeccion('/estado-solicitud')
+    }
 
     onSubmit() {
         this.mensajeComponent.setMsgsEmpty();
@@ -255,7 +308,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setSuccessMsg("Solicitud enviada correctamente. Un asesor le informará el estado de su registro.");
+                    document.getElementById("openModalNotificacion").click();
                 }
             },
             error => {
@@ -265,5 +318,22 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
+    addFieldValue() {
+        this.fieldArray.push(this.newAttribute)
+        this.newAttribute = {};
+    }
+
+    deleteFieldValue(index) {
+        this.fieldArray.splice(index, 1);
+    }
+
+    addFieldValueAlm() {
+        this.fieldArrayAlm.push(this.newAttributeAlm)
+        this.newAttributeAlm = {};
+    }
+
+    deleteFieldValueAlm(index) {
+        this.fieldArrayAlm.splice(index, 1);
+    }
 }
 

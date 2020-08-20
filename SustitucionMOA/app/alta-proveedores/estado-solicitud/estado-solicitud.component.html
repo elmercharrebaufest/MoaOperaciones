@@ -1,0 +1,17 @@
+<div class="content-wraper">
+
+    <div class="row titleSection">Estado solicitud</div>
+
+    <div class="row myRow firstSection roundedInfo" id="container">
+
+        <div class="estado-solicitud-mensaje">
+
+            <div style="flex-direction: column;">
+                <p>Estado: {{estadoSolicitud}}</p>
+            </div>
+            <div *ngIf="observaciones != ''" style="flex-direction: column;">
+                <p>Observaciones: {{observaciones}}</p>
+            </div>
+        </div>
+    </div>
+</div>

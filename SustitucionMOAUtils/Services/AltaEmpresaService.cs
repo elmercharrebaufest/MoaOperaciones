@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -70,6 +71,19 @@ namespace SustitucionMOAUtils.Services
                 }
                 proveedor.EstadoAprobacion = estado;
                 proveedor.Observaciones = observacion;
+
+                if (estado.Equals(EstadoAprobacion.Aprobado))
+                {
+
+                    UsuarioGranos usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == proveedor.Mail);
+
+                    usuario.Roles.Clear();
+
+                    Rol rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
+
+                    usuario.Roles.Add(rolUsuarioGranos);
+                }
+
                 repositorio.GuardarCambios();
 
                 return String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
@@ -78,7 +92,34 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
 
+        public Rol ObtenerRolPorCodigo(string codigo)
+        {
+            return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
+        }
+
+        public EstadoAprobacionDto GetEstadoAprobacion(string mail)
+        {
+            try
+            {
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+
+                Proveedor proveedor = usuario.ObtenerProveedorActual();
+
+                EstadoAprobacionDto estadoAprobacionDto = new EstadoAprobacionDto
+                {
+                    Estado = proveedor.EstadoAprobacion,
+                    EstadoDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                    Observaciones = proveedor.Observaciones.IsNullOrWhiteSpace() ? "" : proveedor.Observaciones
+                };
+
+                return estadoAprobacionDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

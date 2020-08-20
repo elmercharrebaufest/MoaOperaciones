@@ -186,4 +186,13 @@
   <data name="ErrorArchivoTamanio" xml:space="preserve">
     <value>El tamaño del archivo supera los 3 MBs permitidos</value>
   </data>
+  <data name="ErrorArchivoRequerido" xml:space="preserve">
+    <value>El archivo {0} es requerido.</value>
+  </data>
+  <data name="ErrorFileKeyInvalido" xml:space="preserve">
+    <value>No se pudo identificar el tipo de archivo que desea subir</value>
+  </data>
+  <data name="EstadoIncorrectoSolicitud" xml:space="preserve">
+    <value>No puede editar la solicitud debido que su estado no es "Documentacion pendiente".</value>
+  </data>
 </root>
