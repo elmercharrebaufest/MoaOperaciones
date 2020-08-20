@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using SustitucionMOA.Utils;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 
@@ -22,6 +23,9 @@ namespace SustitucionMOASecurity
         static string notificacionesSessionvar = "notificaciones";
 
         static string sociedadSessionvar = "sociedad";
+
+        static string B2CClaimsvar = "B2CClaims";
+
 
         public static Usuario User
         {
@@ -43,6 +47,25 @@ namespace SustitucionMOASecurity
             }
         }
 
+        public static string B2CClaimsMail
+        {
+            get
+            {
+                if (HttpContext.Current == null)
+                    return null;
+
+                var sessionVar = HttpContext.Current.Session[B2CClaimsvar];
+
+                if (sessionVar != null)
+                    return sessionVar as string;
+
+                return null;
+            }
+            set
+            {
+                HttpContext.Current.Session[B2CClaimsvar] = value;
+            }
+        }
 
         public static string Proveedor
         {

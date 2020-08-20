@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using Microsoft.Owin.Security;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Entities;
@@ -32,6 +33,16 @@ namespace SustitucionMOA.Controllers
             this.azureB2CService = azureB2CService;
             this.dataAgroService = dataAgroService;
         }
+
+        public void SignUpSignIn()
+        {
+            string redirectUrl = "/RedirectHome";
+
+            // Use the default policy to process the sign up / sign in flow
+            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+            return;
+        }
+
         public ActionResult Login()
         {
             ValidarLogin();
@@ -40,39 +51,10 @@ namespace SustitucionMOA.Controllers
 
         }
 
-        [Authorize]
         private void ValidarLogin()
         {
             try
             {
-                //var scope = new string[] { Globals.ReadTasksScope };
-
-
-                //IConfidentialClientApplication cca = MsalAppBuilder.BuildConfidentialClientApplication();
-                //var accountsTask = cca.GetAccountsAsync();
-                //accountsTask.Wait();
-                //var accounts = accountsTask.Result;
-                //var acquireTokenTask = cca.AcquireTokenSilent(scope, accounts.FirstOrDefault()).ExecuteAsync();
-                //acquireTokenTask.Wait();
-                //AuthenticationResult result = acquireTokenTask.Result;
-                //var principal2 = HttpContext.GetOwinContext().Authentication.User;
-                ////var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
-                ////var newIdentity = new ClaimsIdentity(HttpContext.Current.User.Identity);
-
-                //ClaimsIdentity oldIdentity = principal2.Identities.FirstOrDefault(i => i.AuthenticationType == "ApplicationCookie");
-                //var newIdentity = new ClaimsIdentity(oldIdentity);
-
-                //foreach (var testID in principal2.Identities)
-                //{
-                //    var aux = testID;
-                //}    
-                //var test4 = newIdentity.FindFirst("emails").Value;
-
-                //ClaimsPrincipal principal = Thread.CurrentPrincipal as ClaimsPrincipal;
-
-                //string test3 = principal2.FindFirst("emails").Value;
-
-                //string mail2 = ClaimsPrincipal.Current.FindFirst("emails").Value; 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string CUIT = ClaimsPrincipalExtension.GetClaimValue("extension_CUIT");
 

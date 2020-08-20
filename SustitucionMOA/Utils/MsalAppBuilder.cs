@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using SustitucionMOASecurity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace SustitucionMOA.Utils
 				  .Build();
 
 			MSALPerUserMemoryTokenCache userTokenCache = new MSALPerUserMemoryTokenCache(clientapp.UserTokenCache, currentUser ?? ClaimsPrincipal.Current);
+
 			return clientapp;
 		}
 

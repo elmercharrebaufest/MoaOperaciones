@@ -1,22 +1,27 @@
-﻿using System;
-using System.Web;
-using System.Web.Mvc;
+﻿using Microsoft.Ajax.Utilities;
 using Microsoft.Owin.Security;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Models.ViewModel.Home;
-using SustitucionMOASecurity;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
-using System.Security.Claims;
 using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Models.ViewModel.Home;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
-using System.Linq;
-using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using SustitucionMOA.Utils;
+using SustitucionMOARepositorio;
+using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using Entidades = SustitucionMOAModel.Entities;
+using Model = SustitucionMOAModel.Models;
+
+
 
 namespace SustitucionMOA.Controllers
 {
@@ -25,34 +30,107 @@ namespace SustitucionMOA.Controllers
     {
         HomeService _homeService = new HomeService();
         LoginService _loginService = new LoginService();
+
+        protected readonly IRepositorio repositorio;
+        protected readonly IAzureB2CService azureB2CService;
+        protected readonly IDataAgroService dataAgroService;
+
         // GET: Home
 
+        public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService)
+        {
+            this.repositorio = repositorio;
+            this.azureB2CService = azureB2CService;
+            this.dataAgroService = dataAgroService;
+        }
+
+        //public void Index()
+        //{
+        //    string redirectUrl = "/RedirectHome";
+
+        //    // Use the default policy to process the sign up / sign in flow
+        //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+        //    return;
+        //}
         public ActionResult Index()
         {
-            if (Request.IsAuthenticated)
-            {
 
+            //if (Request.IsAuthenticated)
+            //{
+                return View();
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+
+            /*if (Request.IsAuthenticated)
+            {
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
-                    return Redirect("/");
+                    //return Redirect("/");
                 }
-                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+
+                //     return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
             }
             else
             {
-                string redirectUrl = "/api/AzureB2C/Login";
+                string redirectUrl = "/RedirectHome";
                 //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
                 try
                 {
                     HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+
                 }
                 //Ignoramos esta excepción porque la da cuando carga recursos
-                catch 
+                catch
                 {
 
                 }
-                return null;
-            }
+                return;
+            }*/
+        }
+
+        /*public ActionResult Index()
+        {
+            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+            return View();
+            //return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+            //if (Request.IsAuthenticated)
+            //{
+            //    if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
+            //    {
+            //        //return Redirect("/");
+            //    }
+
+            //    return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+            //}
+            //else
+            //{
+            //string redirectUrl = "/RedirectHome";
+            ////Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+            //try
+            //{
+            //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+
+            //}
+            ////Ignoramos esta excepción porque la da cuando carga recursos
+            //catch
+            //{
+
+            //}
+            //return;
+
+            //    //return null;
+            //}
+        }*/
+
+        public ActionResult RedirectHome()
+        {
+            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+            return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
         }
 
         public ActionResult Registro()
@@ -60,10 +138,13 @@ namespace SustitucionMOA.Controllers
             if (Request.IsAuthenticated)
             {
 
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
                     return Redirect("/");
                 }
+
                 return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
             }
             else
@@ -194,13 +275,13 @@ namespace SustitucionMOA.Controllers
                     //return Json(new { info = ErrorMsg.ErrorLogin }, JsonRequestBehavior.AllowGet);
                 }
 
-               /* if (result.permisos.Count() == 1 && result.permisos[0] == "DATAAGROLOGIN")
-                {
-                    SessionPersister.clear();
-                    DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
-                    return false;
-                    //return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-                }*/
+                /* if (result.permisos.Count() == 1 && result.permisos[0] == "DATAAGROLOGIN")
+                 {
+                     SessionPersister.clear();
+                     DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
+                     return false;
+                     //return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
+                 }*/
 
                 SessionPersister.User = new Usuario()
                 {
