@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
 import { Empresa } from './Empresa'
+import { HistorialAprobaciones } from './Empresa'
 
 
 
@@ -31,6 +32,10 @@ export class AltaEmpresaService extends BaseService {
             map(this.extractData));
     }
 
-   
+    public getEstados(): Observable<any> {
+        return this.http
+            .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
 
 }

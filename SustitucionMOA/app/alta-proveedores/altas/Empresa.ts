@@ -9,4 +9,14 @@
     IdDataAgro: number;
     Mail: string;
     Observaciones: string;
+    Comercial: string;
+    HistorialAprobaciones: any;
+}
+
+export class HistorialAprobaciones {
+    Id: number;
+    Usurario: string;
+    EstadoAprobacionDescripcion: string;
+    Observaciones: string;
+    Fecha: Date;
 }

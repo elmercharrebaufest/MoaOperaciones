@@ -22,5 +22,8 @@ namespace SustitucionMOAModel.Dto
         public int? IdDataAgro { get; set; }
         public int? IdComercialDataAgro { get; set; }
         public string EstadoAprobacionDescripcion { get; set; }
+
+        public virtual List<ProveedorHistorialAprobacionDto> HistorialAprobaciones { get; set; }
+        public string Comercial { get; set; }
     }
 }

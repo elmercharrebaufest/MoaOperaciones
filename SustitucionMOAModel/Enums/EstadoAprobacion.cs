@@ -8,7 +8,9 @@
         DeshabilitadoEnDataAgro,
         EdicionRequerida,
         Rechazado,
-        AunNoImplementado
+        AunNoImplementado,
+        AnalisisDeNosis,
+        SentenciaFinal
     }
 
     public static class EstadoDeAprobacionExtensions

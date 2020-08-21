@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Net.Mail;
+using System.Text;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 
 namespace SustitucionMOAUtils.Email
@@ -109,5 +113,57 @@ namespace SustitucionMOAUtils.Email
                     + "Nro. de Proforma: " + nroProforma + "\n\n"
                     + "Importe: $" + importe;
         }
+
+        public static void EnviarMail(List<string> enviarA, string asunto, string cuerpo, List<string> copia = null, AlternateView vistaAlternativa = null, byte[] archivo = null, string nombreArchivo = null)
+        {
+            try
+            {
+                MailMessage oMensaje = new MailMessage
+                {
+                    From = new MailAddress(EmailConfig.getEmailAddFrom()),
+                    Body = cuerpo,
+                    Subject = asunto
+                };
+                foreach (string mail in enviarA)
+                {
+                    if (!string.IsNullOrEmpty(mail))
+                    {
+                        oMensaje.To.Add(mail);
+                    }
+                }
+                if (enviarA == null || enviarA.Count() == 0)
+                {
+                    oMensaje.To.Add(EmailConfig.getEmailAddFrom());
+                }
+
+                if (copia != null)
+                {
+                    foreach (string mail in copia)
+                    {
+                        oMensaje.CC.Add(mail);
+                    }
+                }
+                if (vistaAlternativa != null)
+                {
+                    oMensaje.AlternateViews.Add(vistaAlternativa);
+                }
+
+                oMensaje.BodyEncoding = Encoding.UTF8;
+                oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+                if (archivo != null)
+                {
+                    Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
+                    oMensaje.Attachments.Add(data);
+                }
+                SmtpClient oCliente = getSmtpClient();
+                oCliente.Send(oMensaje);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+      
+
     }
 }
