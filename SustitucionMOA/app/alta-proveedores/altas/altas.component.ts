@@ -38,12 +38,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     data: any;
+    dataFiltered: any;
+    estados: any;
+    selectedEstado: string = "q";
     orderedByColumn: string = "id";
-    empresaSeleccionada: Empresa ;
+    empresaSeleccionada: Empresa = new Empresa();
     empresaEstadoSeleccionada: number = 0;
     orderDirection: number = 1;
     itemsPerPage = 20;
-    filtroUsuarioVendedor: string = "";
     nombreArchivoInformeComercialFirmado: string = "";
     nombreArchivoConstanciaCBU: string = "";
     nombreArchivoConstanciaCBUMercaderia: string = "";
@@ -56,10 +58,12 @@ export class AltasComponent extends BaseComponent implements OnInit {
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
     observaciones: string = "";
-    ngOnInit(): void {
-        this.getEmpresa();
-    }
+    observacionesProveedor: string = "";
     mensajeError: string = "";
+
+    ngOnInit(): void {
+        this.getEstados();
+    }
 
     verDetalle() {
         this.navService.navegarSeccion('/proveedor-detalle');
@@ -82,6 +86,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
+                        this.dataFiltered = result.data;
                     }
                 },
                 error => {
@@ -98,7 +103,40 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+    getEstados() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.data = null;
+        try {
+            this.unsubscribe();
+            this.subscription = this.altaEmpresaService.getEstados().subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.estados = result.data;
+                        this.getEmpresa();
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
 
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
     isVisible() {
         return this.data && this.data.length != 0;
     }
@@ -115,8 +153,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     cambiarEstado(estadoId: number) {
-        if (estadoId != 0 && this.observaciones == "") {
-            this.mensajeError="Debe ingresar una observacion.";
+        if (estadoId == 4 && this.observacionesProveedor == "") {
+            this.mensajeError = "Debe ingresar una observacion para el Proveedor.";
             return false;
         }
         this.spinnerComponent.showIt();
@@ -124,6 +162,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         try {
             this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones).subscribe(
                 result => {
+                    this.getEmpresa();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -133,11 +172,12 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
-                        this.getEmpresa();
-                        this.observaciones = "";
-                        this.mensajeError = "";
-                        document.getElementById("hidemyModal").click();
                     }
+
+                    this.observaciones = "";
+                    this.observacionesProveedor = "";
+                    this.mensajeError = "";
+                    document.getElementById("hidemyModal").click();
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -153,10 +193,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    
+
     abrirModal(empresa: Empresa) {
         this.empresaSeleccionada = empresa;
         this.observaciones = "";
+        this.observacionesProveedor = "";
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
@@ -165,7 +206,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    obtenerArchivosSubidos(mail:string) {
+    obtenerArchivosSubidos(mail: string) {
         this.subscription = this.service.obtenerArchivosSubidos(mail).subscribe(
             result => {
                 this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
@@ -193,41 +234,60 @@ export class AltasComponent extends BaseComponent implements OnInit {
         if (this.spinnerSmallComponent === undefined)
             this.spinnerSmallComponent = new SpinnerSmallComponent();
 
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerSmallComponent.showIt();
-        this.unsubscribe();
-        this.subscription = this.service.descargarArchivoSubido(fileKey,this.empresaSeleccionada.Mail).subscribe(
-            result => {
-                this.spinnerSmallComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    var byteArray = new Uint8Array(result.FileContents);
-                    var blob = new Blob([byteArray], { type: 'application/octet-stream' });
+        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail);
+        console.log(param);        
+        var url = "/officetohtml/index.html?param=" + param;
+        var link = document.createElement("a");
+        document.body.appendChild(link);
+        link.href = url;
+        link.target = "_blank";
+        link.click();
+        
 
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // IE11
-                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
-                    } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
-                        document.body.appendChild(link);
-                        link.href = url;
-                        link.download = result.FileDownloadName;
-                        link.click();
-                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                        return false;
-                    }
-                }
-            },
-            error => {
-                this.spinnerSmallComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
+        //this.mensajeComponent.setMsgsEmpty();
+        //this.spinnerSmallComponent.showIt();
+        //this.unsubscribe();
+        //this.subscription = this.service.descargarArchivoSubido(fileKey, this.empresaSeleccionada.Mail).subscribe(
+        //    result => {
+        //        this.spinnerSmallComponent.hideIt();
+        //        if (result.logout == true) {
+        //            this.sessionDataService.logout();
+        //        } else if (result.error != undefined && result.error != "") {
+        //            this.mensajeComponent.setErrorMsg(result.error);
+        //        } else if (result.info != undefined) {
+        //            this.mensajeComponent.setInfoMsg(result.info);
+        //        } else {
+        //            var byteArray = new Uint8Array(result.FileContents);
+        //            var blob = new Blob([byteArray], { type: 'application/octet-stream' });
+
+        //            if (window.navigator.msSaveOrOpenBlob) {
+        //                // IE11
+        //                window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
+        //            } else {
+        //                var url = window.URL.createObjectURL(blob);
+        //                var link = document.createElement("a");
+        //                document.body.appendChild(link);
+        //                link.href = url;
+        //                link.download = result.FileDownloadName;
+        //                link.click();
+        //                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+        //                return false;
+        //            }
+        //        }
+        //    },
+        //    error => {
+        //        this.spinnerSmallComponent.hideIt();
+        //        this.mensajeComponent.setErrorMsg(error.message);
+        //    }
+        //);
+    }
+
+    onOptionsSelected() {
+        if (this.selectedEstado != "") {
+            this.dataFiltered = this.data.filter(t => t.EstadoAprobacionDescripcion == this.selectedEstado);
+        } else {
+            this.dataFiltered = this.data;
+        }
+
     }
 }

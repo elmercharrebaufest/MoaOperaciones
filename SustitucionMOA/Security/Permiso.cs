@@ -93,6 +93,8 @@
         public const string ALTAEMPRESA = "ALTA EMPRESA";
 
         public const string ABM_EMPRESAS = "ABM EMPRESAS";
+        public const string ABM_EMPRESAS_OPERADOR = "ABM EMPRESAS OPERADOR";
+        public const string ABM_EMPRESAS_APROBADOR = "ABM EMPRESAS APROBADOR";
 
     }
 }

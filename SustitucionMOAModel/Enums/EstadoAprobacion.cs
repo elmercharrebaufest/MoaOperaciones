@@ -8,6 +8,8 @@
         DeshabilitadoEnDataAgro,
         EdicionRequerida,
         Rechazado,
-        AunNoImplementado
+        AunNoImplementado,
+        AnalisisDeNosis,
+        SentenciaFinal
     }
 }
