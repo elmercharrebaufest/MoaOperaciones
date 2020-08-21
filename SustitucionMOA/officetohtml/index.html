@@ -152,14 +152,14 @@
                                 result = data;
                                 var byteArray = new Uint8Array(result.FileContents);
                                 var blob = new Blob([byteArray], { type: 'application/octet-stream' });
-                                const dT = new DataTransfer();
-                                console.log(4);
+                                const dT = new DataTransfer();                                
                                 dT.items.add(new File([blob], result.FileDownloadName));
-                               console.log(5);
-                                select_file.files = dT.files;
+                                console.log(4);
                                 url = window.URL.createObjectURL(blob);
+                                console.log(5);
+                                select_file.files = dT.files;
                                 $("#a_file").html(result.FileDownloadName);
-                                
+
 
                                 $("#resolte-contaniner").officeToHtml({
                                     //url: file_path,
