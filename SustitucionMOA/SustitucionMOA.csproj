@@ -218,6 +218,7 @@
     <Content Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.html" />
     <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.css" />
     <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.css" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
@@ -690,6 +691,7 @@
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff" />
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff2" />
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
+    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
