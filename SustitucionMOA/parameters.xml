@@ -14,9 +14,9 @@
                            /@value" />
 	</parameter>
 
-	<parameter name="RedirectUri Config">
+	<parameter name="ida:RedirectUri Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='RedirectUri']
+						match="/configuration/appSettings/add[@key='ida:RedirectUri']
                            /@value" />
 	</parameter>
 	
