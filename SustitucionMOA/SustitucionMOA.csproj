@@ -679,9 +679,6 @@
     <Content Include="officetohtml\include\pdf\locale\zu\viewer.properties" />
     <Content Include="officetohtml\include\pdf\pdf.js.map" />
     <Content Include="officetohtml\include\pdf\pdf.worker.js.map" />
-    <Content Include="officetohtml\include\PPTXjs\~%24Sample_11.pptx" />
-    <Content Include="officetohtml\include\PPTXjs\~%24Sample_12.pptx" />
-    <Content Include="officetohtml\include\PPTXjs\~%24Sample_video.pptx" />
     <Content Include="officetohtml\include\SheetJS\del\handsontable\dist\handsontable.css.map" />
     <Content Include="officetohtml\include\SheetJS\del\handsontable\dist\handsontable.js.map" />
     <Content Include="officetohtml\include\SheetJS\del\handsontable\dist\pikaday\LICENSE" />
