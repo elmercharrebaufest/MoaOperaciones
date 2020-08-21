@@ -52,11 +52,10 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                if (ClaimsPrincipal.Current != null)
+                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType) != null)
                 {
                     return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
                 }
-
                 return null;
             }
             set
@@ -65,72 +64,13 @@ namespace SustitucionMOASecurity
             }
         }
 
-        public static string GranosFlag
-        {
-            get
-            {
-                /*if (HttpContext.Current == null)
-                    return string.Empty;
-
-                var sessionVar = HttpContext.Current.Session[granosFlagSessionvar];
-
-                if (sessionVar != null)
-                    return sessionVar as string;*/
-
-                return null;
-            }
-            set
-            {
-                //HttpContext.Current.Session[granosFlagSessionvar] = value;
-            }
-        }
-
-        public static List<Noticia> Noticias
-        {
-            get
-            {
-                /*if (HttpContext.Current == null)
-                    return new List<Noticia>() { };
-
-                var sessionVar = HttpContext.Current.Session[noticiasSessionvar];
-
-                if (sessionVar != null)
-                    return sessionVar as List<Noticia>;*/
-
-                return null;
-            }
-            set
-            {
-               // HttpContext.Current.Session[noticiasSessionvar] = value;
-            }
-        }
-
-        public static List<Notificacion> Notificaciones
-        {
-            get
-            {
-               /* if (HttpContext.Current == null)
-                    return new List<Notificacion>() { };
-
-                var sessionVar = HttpContext.Current.Session[notificacionesSessionvar];
-
-                if (sessionVar != null)
-                    return sessionVar as List<Notificacion>;*/
-
-                return null;
-            }
-            set
-            {
-                //HttpContext.Current.Session[notificacionesSessionvar] = value;
-            }
-        }
-
         public static string Sociedad
         {
             get
             {
-                if (ClaimsPrincipal.Current != null)
-                {
+
+                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSociedadType) != null)
+                        {
                     return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSociedadType).Value;
                 }
                 /*
@@ -151,8 +91,8 @@ namespace SustitucionMOASecurity
         }
 
         public static string getUsername() {
-            if (ClaimsPrincipal.Current != null) {
-                return ClaimsPrincipal.Current.FindFirst("username").Value;
+            if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType) != null) {
+                return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
             }
             return "No User";
         }

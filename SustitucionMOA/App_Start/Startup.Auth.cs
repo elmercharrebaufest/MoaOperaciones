@@ -1,29 +1,29 @@
 ﻿using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Owin.Host.SystemWeb;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Notifications;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
+using SustitucionMOA.Utils;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
-using SustitucionMOA.Utils;
-using Microsoft.Owin.Host.SystemWeb;
-using Entidades = SustitucionMOAModel.Entities;
-using Model = SustitucionMOAModel.Models;
-using SustitucionMOAUtils.Interfaces;
 using System.Web.Mvc;
+using Entidades = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOA
 {
-	public partial class Startup
+    public partial class Startup
 	{
-		private static IAzureB2CService azureB2CService
+		private static IAzureB2CService AzureB2CService
 		{
 			get { return DependencyResolver.Current.GetService<IAzureB2CService>(); }
 		}
@@ -153,6 +153,7 @@ namespace SustitucionMOA
 				});
 			}
 		}
+
 		private void ValidarLogin(ClaimsIdentity notification)
 		{
 			try
@@ -165,54 +166,24 @@ namespace SustitucionMOA
 
 				Entidades.Usuario usuario = new Entidades.Usuario { Mail = mail, CUITRegistro = CUIT };
 
-				usuario = azureB2CService.LoguearUsuario(mail, CUIT, GranosFlag) ;
+				usuario = AzureB2CService.LoguearUsuario(mail, CUIT, GranosFlag) ;
 
 				notification.AddClaim(new Claim(Globals.ClaimsUserNameType, mail));
 				notification.AddClaim(new Claim(Globals.ClaimsNombreType, usuario.ObtenerRazonSocial()));
-				//notification.AddClaim(new Claim("permisos", usuario.ObtenerPermisos()));
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
 				notification.AddClaim(new Claim(Globals.ClaimsGranosFlagType, usuario.TipoUsuario.NombreCorto));
 				notification.AddClaim(new Claim(Globals.ClaimsSociedadType, "MOA"));
+				notification.AddClaim(new Claim(Globals.ClaimsEsNuevoUsuarioType, usuario.EsNuevoUsuario().ToString()));
+				notification.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, usuario.ObtenerRolPrincipal().Codigo));
 
 				foreach (var permiso in usuario.ObtenerPermisos())
                 {
 					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, permiso));
 				}
-
-				/*SessionPersister.User = new Model.Usuario()
-				{
-					username = mail,
-					nombre = usuario.ObtenerRazonSocial(),
-					permisos = usuario.ObtenerPermisos()
-				};
-				SessionPersister.Proveedor = usuario.ObtenerCodigoProveedor();
-				SessionPersister.GranosFlag = usuario.TipoUsuario.NombreCorto;
-				SessionPersister.Sociedad = "MOA";*/
-				/*
-
-                NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
-
-                if (!Globals.EsLocal)
-                {
-                    if (usuario.EstaHabilitado())
-                    {
-                        noticias = azureB2CService.getNoticias(usuario.ObtenerCodigoProveedor());
-                        noticias.cantidad = 0;
-                        if (noticias != null && noticias.noticias != null)
-                        {
-                            SessionPersister.Noticias = noticias.noticias;
-                            noticias.cantidad += noticias.noticias.Count;
-                        }
-                        if (noticias != null && noticias.notificaciones != null)
-                        {
-                            SessionPersister.Notificaciones = noticias.notificaciones;
-                            noticias.cantidad += noticias.notificaciones.Count;
-                        }
-                    }
-                }*/
 			}
 			catch (Exception e)
 			{
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
 			}
 		}
 

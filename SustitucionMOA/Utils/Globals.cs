@@ -43,7 +43,7 @@ namespace SustitucionMOA.Utils
         public const string ClaimsGranosFlagType = "granosFlag";
         public const string ClaimsSociedadType = "sociedad";
         public const string ClaimsNoticiasType = "noticias";
-        public const string ClaimsNotificacionesType = "notificaciones";
-
+        public const string ClaimsTipoUsuarioType = "tipoUsuario";
+        public const string ClaimsEsNuevoUsuarioType = "esNuevoUsuario";
     }
 }

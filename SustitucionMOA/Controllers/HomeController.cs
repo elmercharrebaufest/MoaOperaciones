@@ -5,6 +5,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.Home;
+using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
@@ -15,6 +16,7 @@ using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -44,54 +46,9 @@ namespace SustitucionMOA.Controllers
             this.dataAgroService = dataAgroService;
         }
 
-        public void SignUpSignIn()
-        {
-            string redirectUrl = "/RedirectHome";
-
-            // Use the default policy to process the sign up / sign in flow
-            HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
-            return;
-        }
-
-        //public void Index()
-        //{
-        //    string redirectUrl = "/RedirectHome";
-
-        //    // Use the default policy to process the sign up / sign in flow
-        //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
-        //    return;
-        //}
-
         public ActionResult Index()
         {
-            return null;
-            /*string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
             if (Request.IsAuthenticated)
-            {
-                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
-                {
-                    return Redirect("/");
-                }
-
-                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
-            }
-
-            return null;*/
-            //try
-            //{
-            //    string redirectUrl = "/RedirectHome";
-
-            //    // Use the default policy to process the sign up / sign in flow
-            //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
-            //    return null;
-            //}
-            //catch
-            //{
-
-            //}
-            //return null;
-            /*if (Request.IsAuthenticated)
             {
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
@@ -115,22 +72,13 @@ namespace SustitucionMOA.Controllers
 
                 }
                 return null;
-            }*/
-        }
-
-        public ActionResult RedirectHome()
-        {
-            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-            return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+            }
         }
 
         public ActionResult Registro()
         {
             if (Request.IsAuthenticated)
             {
-
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
@@ -141,7 +89,7 @@ namespace SustitucionMOA.Controllers
             }
             else
             {
-                string redirectUrl = "/api/AzureB2C/Login";
+                string redirectUrl = "/";
                 //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
                 try
                 {
@@ -154,7 +102,6 @@ namespace SustitucionMOA.Controllers
 
                 }
                 return null;
-
             }
         }
 
@@ -173,7 +120,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ResetPassword()
         {
-            string redirectUrl = "/api/AzureB2C/Login";
+            string redirectUrl = "/";
             //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
             try
             {
@@ -186,6 +133,74 @@ namespace SustitucionMOA.Controllers
 
             }
             return null;
+        }
+
+        public ActionResult ValidarLoginAzure()
+        {
+            if (!Request.IsAuthenticated)
+            {
+                return Redirect("/");
+            }
+            string test = SessionPersister.getUsername();
+
+            string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
+            string nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value;
+            string proveedor = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
+            string granosFlag = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsGranosFlagType).Value;
+            string tipoUsuario = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsTipoUsuarioType).Value;
+            string esNuevoUsuarioStr = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsNuevoUsuarioType).Value;
+
+            bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
+
+            List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
+
+            if (permisos.Count() == 1 && permisos.Contains("DATAAGROLOGIN"))
+            {
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+
+                Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
+
+                DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
+
+                SessionPersister.clear();
+
+                return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
+            }
+
+            NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
+
+            if (!Globals.EsLocal)
+            {
+                if (!esNuevoUsuario)
+                {
+                    noticias = _loginService.getNoticias(proveedor);
+                    noticias.cantidad = 0;
+                    if (noticias != null && noticias.noticias != null)
+                    {
+                        SessionPersister.Noticias = noticias.noticias;
+                        noticias.cantidad += noticias.noticias.Count;
+                    }
+                    if (noticias != null && noticias.notificaciones != null)
+                    {
+                        SessionPersister.Notificaciones = noticias.notificaciones;
+                        noticias.cantidad += noticias.notificaciones.Count;
+                    }
+                }
+            }
+
+            return Json(new
+            {
+                success = SuccessMsg.LoginOk,
+                username,
+                nombre,
+                proveedor,
+                granosFlag,
+                permisos,
+                tipoUsuario,
+                noticias,
+                esNuevoUsuario,
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult getHomeInfo(string fechaInicio, string fechaFin)
@@ -230,102 +245,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        /*
-        public bool LoginUser(string username, string pass)
-        {
-            try
-            {
-
-                if (username == "" || username == null)
-                {
-                    return false;
-                }
-
-                if (pass == "" || pass == null)
-                {
-                    return false;
-                    //return Json(new { info = String.Format(InfoMsg.InputNoValido, "Contraseña") }, JsonRequestBehavior.AllowGet);
-                }
-
-                LoginWSMOAResponse result = _loginService.login(username, pass);
-
-                if (result == null)
-                {
-                    return false;
-                    //return Json(new { info = ErrorMsg.ErrorLogin }, JsonRequestBehavior.AllowGet);
-                }
-
-                if (result.error != "00")
-                {
-                    return false;
-                    //return Json(new { info = result.texto }, JsonRequestBehavior.AllowGet);
-                }
-
-                if (result.proveedor == "" || result.proveedor == null)
-                {
-                    return false;
-                    //return Json(new { info = ErrorMsg.ErrorLogin }, JsonRequestBehavior.AllowGet);
-                }
-
-                /* if (result.permisos.Count() == 1 && result.permisos[0] == "DATAAGROLOGIN")
-                 {
-                     SessionPersister.clear();
-                     DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
-                     return false;
-                     //return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-                 }
-
-                SessionPersister.User = new Usuario()
-                {
-                    username = username,
-                    nombre = result.nombre,
-                    permisos = result.permisos
-                };
-
-                SessionPersister.Proveedor = result.proveedor;
-                SessionPersister.GranosFlag = result.granosFlag;
-                SessionPersister.Sociedad = "MOA";
-
-                NoticiasDetallesWSMOAResponse noticias;
-
-                try
-                {
-
-                    noticias = _loginService.getNoticias(result.proveedor);
-                    noticias.cantidad = 0;
-                    if (noticias != null && noticias.noticias != null)
-                    {
-                        SessionPersister.Noticias = noticias.noticias;
-                        noticias.cantidad += noticias.noticias.Count;
-                    }
-                    if (noticias != null && noticias.notificaciones != null)
-                    {
-                        SessionPersister.Notificaciones = noticias.notificaciones;
-                        noticias.cantidad += noticias.notificaciones.Count;
-                    }
-                }
-                catch
-                {
-                    noticias = new NoticiasDetallesWSMOAResponse() { };
-                }
-
-                //LogFile(username, pass);
-                return true;
-                //return Json(new { success = SuccessMsg.LoginOk, username = username, nombre = result.nombre, proveedor = result.proveedor, granosFlag = result.granosFlag, tipoUsuario = result.tipoUsuario, permisos = result.permisos, noticias = noticias }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return false;
-                //return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return false;
-                //return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-        */
     }
 }

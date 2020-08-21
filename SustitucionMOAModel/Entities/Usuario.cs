@@ -34,6 +34,11 @@ namespace SustitucionMOAModel.Entities
         //    Roles = new List<Rol>();
         //}
 
+        public Rol ObtenerRolPrincipal()
+        {
+            return Roles.First();
+        }
+
         public Proveedor ObtenerProveedorActual()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
