@@ -11,6 +11,7 @@ namespace SustitucionMOA
     {
         public void Configuration(IAppBuilder app)
         {
+            //Configuro la autenticación
             ConfigureAuth(app);
         }
     }
