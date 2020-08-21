@@ -197,12 +197,14 @@ namespace SustitucionMOA.Controllers
             {
                 if (vendedor == null)
                     return Json(new { error = String.Format(ErrorMsg.ErrorValorNuloVacio, "Vendedor") }, JsonRequestBehavior.AllowGet);
+                
                 SessionPersister.Proveedor = vendedor;
                 if (SessionPersister.User != null)
                 {
                     SessionPersister.User.nombre = descripcion;
                 }
                 return JsonCustom(new { vendedor = vendedor, descripcion = descripcion });
+                
             }
             catch (ValidationCustomException e)
             {

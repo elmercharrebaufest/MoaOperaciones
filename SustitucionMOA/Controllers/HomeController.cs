@@ -230,7 +230,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        /*
         public bool LoginUser(string username, string pass)
         {
             try
@@ -273,7 +273,7 @@ namespace SustitucionMOA.Controllers
                      DataAgroAuthWSMOAResponse data = _dataAgroService.goToDataAgro(result.proveedor, result.nombre);
                      return false;
                      //return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-                 }*/
+                 }
 
                 SessionPersister.User = new Usuario()
                 {
@@ -326,6 +326,6 @@ namespace SustitucionMOA.Controllers
                 //return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        */
     }
 }

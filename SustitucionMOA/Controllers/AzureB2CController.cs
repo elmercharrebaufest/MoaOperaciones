@@ -10,6 +10,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -127,10 +128,10 @@ namespace SustitucionMOA.Controllers
             //}, JsonRequestBehavior.AllowGet);
 
 
-            //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            //string granosFlag = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
-            //Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlag);
+            Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
 
             //if (usuario.ObtenerPermisos().Count() == 1 && usuario.ObtenerPermisos().Contains("DATAAGROLOGIN"))
             //{
@@ -141,32 +142,38 @@ namespace SustitucionMOA.Controllers
             //    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
             //}
 
-            string username = ClaimsPrincipal.Current.FindFirst("username").Value;
+            string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
+            string nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value;
+            string proveedor = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
+            string granosFlag = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsGranosFlagType).Value;
+
+            List<string> permisos = new List<string>();
 
             return Json(new
             {
                 success = SuccessMsg.LoginOk,
                 username = username,
-                nombre = "Martin",
-                proveedor = "123132",
-                granosFlag = "G",
-                tipoUsuario = "PROV",
+                nombre = nombre,
+                proveedor = proveedor,
+                granosFlag = granosFlag,
+                permisos = permisos,
+                tipoUsuario = usuario.TipoUsuario,
                 noticias = "",
-                esNuevoUsuario = "true",
+                esNuevoUsuario = usuario.EsNuevoUsuario(),
             }, JsonRequestBehavior.AllowGet);
 
-            //return Json(new
-            //{
-            //    success = SuccessMsg.LoginOk,
-            //    username = SessionPersister.User.username,
-            //    nombre = SessionPersister.User.nombre,
-            //    proveedor = SessionPersister.Proveedor,
-            //    granosFlag = SessionPersister.GranosFlag,
-            //    tipoUsuario = usuario.TipoUsuario,
-            //    permisos = SessionPersister.User.permisos,
-            //    noticias = "",
-            //    esNuevoUsuario = usuario.EsNuevoUsuario()
-            //}, JsonRequestBehavior.AllowGet);
+            /*return Json(new
+            {
+                success = SuccessMsg.LoginOk,
+                username = SessionPersister.User.username,
+                nombre = SessionPersister.User.nombre,
+                proveedor = SessionPersister.Proveedor,
+                granosFlag = SessionPersister.GranosFlag,
+                tipoUsuario = usuario.TipoUsuario,
+                permisos = SessionPersister.User.permisos,
+                noticias = "",
+                esNuevoUsuario = usuario.EsNuevoUsuario()
+            }, JsonRequestBehavior.AllowGet);*/
         }
 
 

@@ -167,7 +167,17 @@ namespace SustitucionMOA
 
 				usuario = azureB2CService.LoguearUsuario(mail, CUIT, GranosFlag) ;
 
-				notification.AddClaim(new Claim("username", mail));
+				notification.AddClaim(new Claim(Globals.ClaimsUserNameType, mail));
+				notification.AddClaim(new Claim(Globals.ClaimsNombreType, usuario.ObtenerRazonSocial()));
+				//notification.AddClaim(new Claim("permisos", usuario.ObtenerPermisos()));
+				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
+				notification.AddClaim(new Claim(Globals.ClaimsGranosFlagType, usuario.TipoUsuario.NombreCorto));
+				notification.AddClaim(new Claim(Globals.ClaimsSociedadType, "MOA"));
+
+				foreach (var permiso in usuario.ObtenerPermisos())
+                {
+					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, permiso));
+				}
 
 				/*SessionPersister.User = new Model.Usuario()
 				{

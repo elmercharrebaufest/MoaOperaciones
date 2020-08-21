@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -31,39 +32,19 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                if (HttpContext.Current == null)
-                    return null;
+                //if (HttpContext.Current == null)
+                //    return null;
 
-                var sessionVar = HttpContext.Current.Session[userSessionvar];
+                //var sessionVar = HttpContext.Current.Session[userSessionvar];
 
-                if (sessionVar != null)
-                    return sessionVar as Usuario;
-
-                return null;
-            }
-            set
-            {
-                HttpContext.Current.Session[userSessionvar] = value;
-            }
-        }
-
-        public static string B2CClaimsMail
-        {
-            get
-            {
-                if (HttpContext.Current == null)
-                    return null;
-
-                var sessionVar = HttpContext.Current.Session[B2CClaimsvar];
-
-                if (sessionVar != null)
-                    return sessionVar as string;
+                //if (sessionVar != null)
+                //    return sessionVar as Usuario;
 
                 return null;
             }
             set
             {
-                HttpContext.Current.Session[B2CClaimsvar] = value;
+                //HttpContext.Current.Session[userSessionvar] = value;
             }
         }
 
@@ -71,19 +52,16 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                if (HttpContext.Current == null)
-                    return string.Empty;
-
-                var sessionVar = HttpContext.Current.Session[proveedorSessionvar];
-
-                if (sessionVar != null)
-                    return sessionVar as string;
+                if (ClaimsPrincipal.Current != null)
+                {
+                    return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
+                }
 
                 return null;
             }
             set
             {
-                HttpContext.Current.Session[proveedorSessionvar] = value;
+                //HttpContext.Current.Session[proveedorSessionvar] = value;
             }
         }
 
@@ -91,19 +69,19 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                if (HttpContext.Current == null)
+                /*if (HttpContext.Current == null)
                     return string.Empty;
 
                 var sessionVar = HttpContext.Current.Session[granosFlagSessionvar];
 
                 if (sessionVar != null)
-                    return sessionVar as string;
+                    return sessionVar as string;*/
 
                 return null;
             }
             set
             {
-                HttpContext.Current.Session[granosFlagSessionvar] = value;
+                //HttpContext.Current.Session[granosFlagSessionvar] = value;
             }
         }
 
@@ -111,19 +89,19 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                if (HttpContext.Current == null)
+                /*if (HttpContext.Current == null)
                     return new List<Noticia>() { };
 
                 var sessionVar = HttpContext.Current.Session[noticiasSessionvar];
 
                 if (sessionVar != null)
-                    return sessionVar as List<Noticia>;
+                    return sessionVar as List<Noticia>;*/
 
                 return null;
             }
             set
             {
-                HttpContext.Current.Session[noticiasSessionvar] = value;
+               // HttpContext.Current.Session[noticiasSessionvar] = value;
             }
         }
 
@@ -131,19 +109,19 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                if (HttpContext.Current == null)
+               /* if (HttpContext.Current == null)
                     return new List<Notificacion>() { };
 
                 var sessionVar = HttpContext.Current.Session[notificacionesSessionvar];
 
                 if (sessionVar != null)
-                    return sessionVar as List<Notificacion>;
+                    return sessionVar as List<Notificacion>;*/
 
                 return null;
             }
             set
             {
-                HttpContext.Current.Session[notificacionesSessionvar] = value;
+                //HttpContext.Current.Session[notificacionesSessionvar] = value;
             }
         }
 
@@ -151,6 +129,11 @@ namespace SustitucionMOASecurity
         {
             get
             {
+                if (ClaimsPrincipal.Current != null)
+                {
+                    return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSociedadType).Value;
+                }
+                /*
                 if (HttpContext.Current == null)
                     return string.Empty;
 
@@ -158,30 +141,30 @@ namespace SustitucionMOASecurity
 
                 if (sessionVar != null)
                     return sessionVar as string;
-
+                */
                 return null;
             }
             set
             {
-                HttpContext.Current.Session[sociedadSessionvar] = value;
+             //   HttpContext.Current.Session[sociedadSessionvar] = value;
             }
         }
 
         public static string getUsername() {
-            if (User != null) {
-                return User.username;
+            if (ClaimsPrincipal.Current != null) {
+                return ClaimsPrincipal.Current.FindFirst("username").Value;
             }
             return "No User";
         }
 
         public static void clear()
         {
-            User = null;
+            /*User = null;
             Noticias = null;
             Notificaciones = null;
             Proveedor = string.Empty;
             GranosFlag = string.Empty;
-            Sociedad = string.Empty;
+            Sociedad = string.Empty;*/
         }
     }
 }
