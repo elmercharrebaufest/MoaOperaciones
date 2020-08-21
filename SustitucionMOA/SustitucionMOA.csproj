@@ -560,7 +560,6 @@
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />
     <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.js.map" />
     <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js.map" />
