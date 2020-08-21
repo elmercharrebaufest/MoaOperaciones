@@ -1,7 +1,8 @@
 ﻿export class NuevoAcopio {
-  public Toneladas: number;
-  public LocalidadID: number;
-  public ArrendaPropia: boolean;
+    public Toneladas: number;
+    public LocalidadID: number;
+    public Localidad: string;
+    public ArrendaPropia: boolean;
 
-  constructor() {}
+    constructor() { }
 }

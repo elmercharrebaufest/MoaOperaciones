@@ -11,6 +11,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
+import { NuevoAcopio } from '../../common/models/nuevoAcopio';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -30,8 +31,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     private fieldArray: Array<any> = [];
     private newAttribute: any = {};
-    private fieldArrayAlm: Array<any> = [];
-    private newAttributeAlm: any = {};
+   // private acopiosArray: Array<NuevoAcopio> = [];
+    private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
 
     materialesData: any = null;
 
@@ -53,7 +54,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
 
-
     keyword = 'Nombre';
     data = [];
     autocompleteNotFoundText = "No encontrado";
@@ -66,12 +66,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     selectEventAlmacenamiento(item, index) {
-        console.log(item)
-
-        console.log(index)
-
+        this.informe.NuevosAcopios[index].LocalidadID = item.LocalidadId;
     }
-    
 
     onChangeSearchProduccion(term: string) {
         if (term.length > 2) {
@@ -127,16 +123,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
-        /*this.searchTerm.valueChanges.subscribe(
-            term => {
-                if (term != '') {
-                    this.service.searchLocalidad(term).subscribe(
-                        data => {
-                            this.myLocalidades = data as any[];
-                            //console.log(data[0].BookName);
-                        })
-                }
-            })*/
 
         this.addFieldValue();
         this.addFieldValueAlm();
@@ -328,12 +314,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     addFieldValueAlm() {
-        this.fieldArrayAlm.push(this.newAttributeAlm)
-        this.newAttributeAlm = {};
+        this.informe.NuevosAcopios.push(this.newAttributeAlm)
+        this.newAttributeAlm = new NuevoAcopio();
     }
 
     deleteFieldValueAlm(index) {
-        this.fieldArrayAlm.splice(index, 1);
+        this.informe.NuevosAcopios.splice(index, 1);
     }
 }
 
