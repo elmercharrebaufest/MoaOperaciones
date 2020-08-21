@@ -559,7 +559,6 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.scss" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />
