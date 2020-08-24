@@ -60,7 +60,6 @@ namespace SustitucionMOA.Controllers
             else
             {
                 string redirectUrl = "/";
-                //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
                 try
                 {
                     HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
@@ -110,7 +109,6 @@ namespace SustitucionMOA.Controllers
             // To sign out the user, you should issue an OpenIDConnect sign out request.
             if (Request.IsAuthenticated)
             {
-                SessionPersister.clear();
                 await MsalAppBuilder.ClearUserTokenCache();
                 IEnumerable<AuthenticationDescription> authTypes = HttpContext.GetOwinContext().Authentication.GetAuthenticationTypes();
                 HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
@@ -163,8 +161,6 @@ namespace SustitucionMOA.Controllers
 
                 DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
 
-                SessionPersister.clear();
-
                 return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
             }
 
@@ -178,12 +174,10 @@ namespace SustitucionMOA.Controllers
                     noticias.cantidad = 0;
                     if (noticias != null && noticias.noticias != null)
                     {
-                        SessionPersister.Noticias = noticias.noticias;
                         noticias.cantidad += noticias.noticias.Count;
                     }
                     if (noticias != null && noticias.notificaciones != null)
                     {
-                        SessionPersister.Notificaciones = noticias.notificaciones;
                         noticias.cantidad += noticias.notificaciones.Count;
                     }
                 }

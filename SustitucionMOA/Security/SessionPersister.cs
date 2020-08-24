@@ -11,40 +11,22 @@ using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 
 namespace SustitucionMOASecurity
 {
+    /*Modificamos toda esta clase para dejar de usar el session persister como HttpContext.Current.Session. Ahora solamente usamos los claims. 
+    Esto lo tuvimos que cambiar porq ue no era compatible con el login con Azure
+    */
     public static class SessionPersister
     {
-        static string userSessionvar = "user";
-
-        static string proveedorSessionvar = "proveedor";
-
-        static string granosFlagSessionvar = "granosFlag";
-
-        static string noticiasSessionvar = "noticias";
-
-        static string notificacionesSessionvar = "notificaciones";
-
-        static string sociedadSessionvar = "sociedad";
-
-        static string B2CClaimsvar = "B2CClaims";
-
-
         public static Usuario User
         {
             get
             {
-                //if (HttpContext.Current == null)
-                //    return null;
+                return new Usuario
+                {
+                    username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value,
+                    nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value,
+                    permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList()
 
-                //var sessionVar = HttpContext.Current.Session[userSessionvar];
-
-                //if (sessionVar != null)
-                //    return sessionVar as Usuario;
-
-                return null;
-            }
-            set
-            {
-                //HttpContext.Current.Session[userSessionvar] = value;
+                };
             }
         }
 
@@ -60,6 +42,7 @@ namespace SustitucionMOASecurity
             }
             set
             {
+                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
                 //HttpContext.Current.Session[proveedorSessionvar] = value;
             }
         }
@@ -68,43 +51,22 @@ namespace SustitucionMOASecurity
         {
             get
             {
-
                 if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSociedadType) != null)
-                        {
+                {
                     return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSociedadType).Value;
                 }
-                /*
-                if (HttpContext.Current == null)
-                    return string.Empty;
 
-                var sessionVar = HttpContext.Current.Session[sociedadSessionvar];
-
-                if (sessionVar != null)
-                    return sessionVar as string;
-                */
                 return null;
-            }
-            set
-            {
-             //   HttpContext.Current.Session[sociedadSessionvar] = value;
             }
         }
 
-        public static string getUsername() {
-            if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType) != null) {
+        public static string getUsername()
+        {
+            if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType) != null)
+            {
                 return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
             }
             return "No User";
-        }
-
-        public static void clear()
-        {
-            /*User = null;
-            Noticias = null;
-            Notificaciones = null;
-            Proveedor = string.Empty;
-            GranosFlag = string.Empty;
-            Sociedad = string.Empty;*/
         }
     }
 }
