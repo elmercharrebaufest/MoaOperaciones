@@ -25,11 +25,13 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
+        protected readonly IDataAgroService dataAgroService;
         private readonly string DataAgroURL;
 
-        public AltaEmpresaGranosService(IRepositorio repositorio)
+        public AltaEmpresaGranosService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
@@ -282,6 +284,18 @@ namespace SustitucionMOAUtils.Services
             archivos.Add(FileKeys.DocumentacionEnBolsa, ObtenerRuta(usuario.RutaDocumentacionEnBolsa));
 
             return archivos;
+        }
+
+        public string ObtenerCBUSISA(string mailUsuario)
+        {
+            var archivos = new Dictionary<string, string>();
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            var proveedor = usuario.ObtenerProveedorActual();
+
+            string CBU = dataAgroService.ObtenerCBUProveedor(proveedor.CUIT);
+
+            return CBU;
         }
 
         public string ObtenerRuta(string ruta)

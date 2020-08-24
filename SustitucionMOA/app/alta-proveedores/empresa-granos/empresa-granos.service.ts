@@ -74,6 +74,13 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    obtenerCBUSISA(): Observable<any> {
+        return this.http
+            .get('/api/AltaEmpresaGranos/ObtenerCBUSISA')
+            .pipe(map(this.extractData));
+
+    }
+
     descargarArchivoSubido(fileKey: string, mail?: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fileKey', fileKey);

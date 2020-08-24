@@ -47,7 +47,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoCertificadoExclusionGanancias: string = "";
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
-
+    CBUSISA: string = "";
 
     informe = new InformeComercial();
 
@@ -57,12 +57,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     keyword = 'Nombre';
     data = [];
     autocompleteNotFoundText = "No encontrado";
-
+    
     selectEventProduccion(item, index) {
         console.log(item)
 
         console.log(index)
-
     }
 
     selectEventAlmacenamiento(item, index) {
@@ -123,6 +122,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
+        this.obtenerCBUSISA();
 
         this.addFieldValue();
         this.addFieldValueAlm();
@@ -180,6 +180,17 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
 
+        );
+    }
+
+    obtenerCBUSISA() {
+        this.subscription = this.service.obtenerCBUSISA().subscribe(
+            result => {
+                this.CBUSISA = result;
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
         );
     }
 
