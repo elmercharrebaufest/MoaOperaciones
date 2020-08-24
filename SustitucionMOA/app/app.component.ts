@@ -53,7 +53,7 @@ export class AppComponent {
         headers.append('Pragma', 'no-cache');
 
         let observable = this.http
-            .get('/api/AzureB2C/ValidarLoginAzure', { search: params, headers: headers })
+            .get('/api/Home/ValidarLoginAzure', { search: params, headers: headers })
             .pipe(map(this.extractData));
 
         observable.subscribe(result => {

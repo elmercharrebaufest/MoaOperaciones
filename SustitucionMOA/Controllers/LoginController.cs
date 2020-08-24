@@ -30,7 +30,7 @@ namespace SustitucionMOA.Controllers
         {
             this.repositorio = repositorio;
         }
-
+        /*
         public ActionResult login(string username, string pass)
         {
             try
@@ -229,6 +229,6 @@ namespace SustitucionMOA.Controllers
             System.IO.StreamWriter file = new System.IO.StreamWriter(path + fileName, true);
             file.WriteLine(text);
             file.Close();
-        }
+        }*/
     }
 }
