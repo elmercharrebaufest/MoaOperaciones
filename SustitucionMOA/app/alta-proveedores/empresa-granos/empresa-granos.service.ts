@@ -74,6 +74,16 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    borrarArchivo(fileKey: string, fileID: string): Observable<any> {
+
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fileKey', fileKey);
+        params.set('fileID', "0");
+        return this.http
+            .get('/api/AltaEmpresaGranos/BorrarArchivo', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
     obtenerCBUSISA(): Observable<any> {
         return this.http
             .get('/api/AltaEmpresaGranos/ObtenerCBUSISA')

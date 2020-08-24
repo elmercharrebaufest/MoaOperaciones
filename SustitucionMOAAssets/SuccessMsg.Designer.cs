@@ -70,6 +70,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documento borrado correctamente.
+        /// </summary>
+        public static string ArchivoBorrado {
+            get {
+                return ResourceManager.GetString("ArchivoBorrado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documento guardado correctamente.
         /// </summary>
         public static string ArchivoSubidoOK {

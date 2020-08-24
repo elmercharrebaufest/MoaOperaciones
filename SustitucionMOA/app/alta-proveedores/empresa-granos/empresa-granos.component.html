@@ -34,10 +34,16 @@
 
                         <a *ngIf="nombreArchivoInformeComercialFirmado != ''"
                            (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
+
+                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="borrarArchivo('informeComercialFirmado')">
+                            Borrar archivo
+                        </a>
+
                         <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">
                             Sin
                             Adjuntar
                         </label>
+
                     </div>
 
                 </div>
@@ -60,6 +66,11 @@
                         Ver archivo
                         subido
                     </a>
+
+                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="borrarArchivo('constanciaCBU')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
                 </div>
 
@@ -72,6 +83,10 @@
 
                     <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''"
                        (click)="descargarArchivo('constanciaCBUMercaderia')">Ver archivo subido</a>
+
+                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="borrarArchivo('constanciaCBUMercaderia')">
+                        Borrar archivo
+                    </a>
 
                     <label style="color:red;" *ngIf="nombreArchivoConstanciaCBUMercaderia == ''"> Sin Adjuntar</label>
                 </div>
@@ -91,6 +106,11 @@
                         Ver
                         archivo subido
                     </a>
+
+                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="borrarArchivo('constanciaCUIT')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -106,6 +126,11 @@
                         Ver
                         archivo subido
                     </a>
+
+                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="borrarArchivo('inscripcionIIBB')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -117,6 +142,11 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''"
                        (click)="descargarArchivo('certificadoExclusionIVA')"> Ver archivo subido</a>
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="borrarArchivo('certificadoExclusionIVA')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -128,6 +158,12 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''"
                        (click)="descargarArchivo('certificadoExclusionIIBB')"> Ver archivo subido</a>
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="borrarArchivo('certificadoExclusionIIBB')">
+                        Borrar archivo
+                    </a>
+
+
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -139,6 +175,12 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''"
                        (click)="descargarArchivo('certificadoExclusionSUSS')"> Ver archivo subido</a>
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="borrarArchivo('certificadoExclusionSUSS')">
+                        Borrar archivo
+                    </a>
+
+
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -150,6 +192,11 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''"
                        (click)="descargarArchivo('certificadoExclusionGanancias')"> Ver archivo subido</a>
+
+                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="borrarArchivo('certificadoExclusionGanancias')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">
                         Sin
                         Adjuntar
@@ -162,10 +209,15 @@
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
                            (change)="handleFileInput($event.target.files, 'SIPER')">
 
-                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('constanciaCUIT')">
+                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('SIPER')">
                         Ver archivo
                         subido
                     </a>
+
+                    <a *ngIf="nombreArchivoSIPER != ''" (click)="borrarArchivo('SIPER')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
 
                 </div>
@@ -182,10 +234,15 @@
                     <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa"
                            (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
 
-                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('constanciaCUIT')">
+                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('documentacionEnBolsa')">
                         Ver
                         archivo subido
                     </a>
+
+                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="borrarArchivo('documentacionEnBolsa')">
+                        Borrar archivo
+                    </a>
+
                     <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
                 </div>
             </mdb-step>

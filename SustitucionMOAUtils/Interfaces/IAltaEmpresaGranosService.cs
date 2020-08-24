@@ -8,6 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         byte[] GenerarInformeComercial(ParamInformeComercial informeComercial, string mailUsuario);
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario);
+        string BorrarArchivo(string mailUsuario, string fileKey, int fileID);
         string ObtenerMaterialesDataAgro();
         Dictionary<string, string> ObtenerArchivosSubidos(string mail);
         string EnviarSolicitudUsuario(string mail);
