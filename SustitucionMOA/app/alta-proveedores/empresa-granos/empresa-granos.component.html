@@ -94,7 +94,7 @@
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="constanciaCUIT">
+                    <label class="label" for="constanciaCUIT">
                         <span class="adjuntar">
                             Adjuntar
                         </span>constancia de CUIT
@@ -223,13 +223,12 @@
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
-                <h3>Documentación al día en Bolsa</h3>
+                <h3>Otros archivos</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="documentacionEnBolsa">
-                        <span class="adjuntar">Adjuntar </span> documentación. Sólo Personas Físicas
-                        podrán operar sin oblea si remiten copia
-                        certificada y legalizada
-                        de DNI.
+                    <label class="label" for="documentacionEnBolsa">
+                        <span class="adjuntar">
+                            Adjuntar
+                        </span>  
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa"
                            (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
