@@ -1,6 +1,6 @@
 ﻿export class NuevoProduccion {
     public MaterialId: number;
-    public CampañaId: number;
+    public CampaniaId: number;
     public Hectareas: number;
     public Toneladas: number;
     public LocalidadId: number;

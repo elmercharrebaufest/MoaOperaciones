@@ -208,14 +208,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.informe.NuevosAcopios.forEach(acopio => {
-            //var material = this.listaMateriales.find(el => el.Id == acopio.MaterialId);
-            //acopio.CampañaID = material.CampaniaActualId;
-            //acopio.CampañaID = material.CampaniaActualId;
-        });
+
         this.informe.NuevosCampos.forEach(campo => {
             var material = this.listaMateriales.find(el => el.Id == campo.MaterialId);
-            //campo.CampañaId = material.CampaniaActualId;
+            campo.CampaniaId = material.CampaniaActualId;
         });
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
