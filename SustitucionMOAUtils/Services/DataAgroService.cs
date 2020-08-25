@@ -99,6 +99,33 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string ObtenerCBUProveedor(string CUITproveedor)
+        {
+            try
+            {
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUITproveedor);
+
+                if (respuesta.HayError)
+                {
+                    throw new Exception(String.Join(" - ", respuesta.ListaErrores.ToList()));
+                }
+
+                return respuesta.ProveedorCBU;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         private string FormatearCodigoProveedor(string CUIT)
         {
             return CUIT.Substring(2, 8);

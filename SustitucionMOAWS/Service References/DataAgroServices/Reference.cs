@@ -662,6 +662,9 @@ namespace SustitucionMOAWS.DataAgroServices {
         private int DiasDiferimientoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DolarizadoExpressField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string EspecialField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -1144,6 +1147,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((this.DiasDiferimientoField.Equals(value) != true)) {
                     this.DiasDiferimientoField = value;
                     this.RaisePropertyChanged("DiasDiferimiento");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DolarizadoExpress {
+            get {
+                return this.DolarizadoExpressField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DolarizadoExpressField, value) != true)) {
+                    this.DolarizadoExpressField = value;
+                    this.RaisePropertyChanged("DolarizadoExpress");
                 }
             }
         }
@@ -2278,7 +2294,7 @@ namespace SustitucionMOAWS.DataAgroServices {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private double CantidadField;
+        private string CantidadField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string CodigoSapField;
@@ -2294,12 +2310,12 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Cantidad {
+        public string Cantidad {
             get {
                 return this.CantidadField;
             }
             set {
-                if ((this.CantidadField.Equals(value) != true)) {
+                if ((object.ReferenceEquals(this.CantidadField, value) != true)) {
                     this.CantidadField = value;
                     this.RaisePropertyChanged("Cantidad");
                 }
@@ -2357,10 +2373,16 @@ namespace SustitucionMOAWS.DataAgroServices {
         private string NombresField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ProveedorCBUField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<int> ProveedorIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string[] ProveedorMailsField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool ProveedorOperableField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ProveedorRazonSocialField;
@@ -2454,6 +2476,19 @@ namespace SustitucionMOAWS.DataAgroServices {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ProveedorCBU {
+            get {
+                return this.ProveedorCBUField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ProveedorCBUField, value) != true)) {
+                    this.ProveedorCBUField = value;
+                    this.RaisePropertyChanged("ProveedorCBU");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Nullable<int> ProveedorId {
             get {
                 return this.ProveedorIdField;
@@ -2475,6 +2510,19 @@ namespace SustitucionMOAWS.DataAgroServices {
                 if ((object.ReferenceEquals(this.ProveedorMailsField, value) != true)) {
                     this.ProveedorMailsField = value;
                     this.RaisePropertyChanged("ProveedorMails");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool ProveedorOperable {
+            get {
+                return this.ProveedorOperableField;
+            }
+            set {
+                if ((this.ProveedorOperableField.Equals(value) != true)) {
+                    this.ProveedorOperableField = value;
+                    this.RaisePropertyChanged("ProveedorOperable");
                 }
             }
         }

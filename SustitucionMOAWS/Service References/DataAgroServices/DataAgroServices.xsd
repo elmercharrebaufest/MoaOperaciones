@@ -102,6 +102,7 @@
       <xs:element minOccurs="0" name="CuitCorredor" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="DescuentoBonificaciones" nillable="true" type="tns:ArrayOfDescuentoBonificacionSap" />
       <xs:element minOccurs="0" name="DiasDiferimiento" type="xs:int" />
+      <xs:element minOccurs="0" name="DolarizadoExpress" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Especial" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EstabArrendado" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="EstabPropio" nillable="true" type="xs:string" />
@@ -215,7 +216,7 @@
   <xs:element name="CupoSapDto" nillable="true" type="tns:CupoSapDto" />
   <xs:complexType name="ContratoSAP">
     <xs:sequence>
-      <xs:element minOccurs="0" name="Cantidad" type="xs:double" />
+      <xs:element minOccurs="0" name="Cantidad" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CodigoSap" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
@@ -228,8 +229,10 @@
       <xs:element minOccurs="0" name="ListaErrores" nillable="true" type="tns:ArrayOfErrorMessage" />
       <xs:element minOccurs="0" name="Mail" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Nombres" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProveedorCBU" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="ProveedorId" nillable="true" type="xs:int" />
       <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="ProveedorMails" nillable="true" type="q1:ArrayOfstring" />
+      <xs:element minOccurs="0" name="ProveedorOperable" type="xs:boolean" />
       <xs:element minOccurs="0" name="ProveedorRazonSocial" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>

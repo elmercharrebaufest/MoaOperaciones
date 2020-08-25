@@ -25,11 +25,13 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
+        protected readonly IDataAgroService dataAgroService;
         private readonly string DataAgroURL;
 
-        public AltaEmpresaGranosService(IRepositorio repositorio)
+        public AltaEmpresaGranosService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
@@ -192,7 +194,7 @@ namespace SustitucionMOAUtils.Services
 
                 ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
 
-                string rutaCarpeta = string.Concat(rutaArchivosProveedores, "/", usuario.CUITRegistro, "/", usuario.Id, "/", fileKey);
+                string rutaCarpeta = ArmarRutaCarpeta(fileKey, rutaArchivosProveedores, usuario);
 
                 string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
@@ -264,6 +266,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, UsuarioGranos usuario)
+        {
+            return string.Concat(rutaArchivosProveedores, "/", usuario.CUITRegistro, "/", usuario.Id, "/", fileKey);
+        }
+
         public Dictionary<string, string> ObtenerArchivosSubidos(string mailUsuario)
         {
             var archivos = new Dictionary<string, string>();
@@ -282,6 +289,18 @@ namespace SustitucionMOAUtils.Services
             archivos.Add(FileKeys.DocumentacionEnBolsa, ObtenerRuta(usuario.RutaDocumentacionEnBolsa));
 
             return archivos;
+        }
+
+        public string ObtenerCBUSISA(string mailUsuario)
+        {
+            var archivos = new Dictionary<string, string>();
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            var proveedor = usuario.ObtenerProveedorActual();
+
+            string CBU = dataAgroService.ObtenerCBUProveedor(proveedor.CUIT);
+
+            return CBU;
         }
 
         public string ObtenerRuta(string ruta)
@@ -336,7 +355,6 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-
         public string ObtenerArchivo(string mailUsuario, string fileKey)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
@@ -379,6 +397,56 @@ namespace SustitucionMOAUtils.Services
             }
 
             return rutaArchivo;
+        }
+
+        public string BorrarArchivo(string mailUsuario, string fileKey, int fileID)
+        {
+            string rutaArchivosProveedores = ConfigurationManager.AppSettings["RutaArchivosProveedores"];
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            string rutaArchivo = ObtenerArchivo(mailUsuario, fileKey);
+
+
+            switch (fileKey)
+            {
+                case FileKeys.InformeComercialFirmado:
+                    usuario.RutaInformeComercialFirmado = "";
+                    break;
+                case FileKeys.ConstanciaCBU:
+                    usuario.RutaConstanciaCBU = "";
+                    break;
+                case FileKeys.ConstanciaCBUMercaderia:
+                    usuario.RutaConstanciaCBUMercaderia = "";
+                    break;
+                case FileKeys.ConstanciaCUIT:
+                    usuario.RutaConstanciaCUIT = "";
+                    break;
+                case FileKeys.InscripcionIIBB:
+                    usuario.RutaInscripcionIIBB = "";
+                    break;
+                case FileKeys.CertificadoExclusionIVA:
+                    usuario.RutaCertificadoExclusionIVA = "";
+                    break;
+                case FileKeys.CertificadoExclusionIIBB:
+                    usuario.RutaCertificadoExclusionIIBB = "";
+                    break;
+                case FileKeys.CertificadoExclusionSUSS:
+                    usuario.RutaCertificadoExclusionSUSS = "";
+                    break;
+                case FileKeys.CertificadoExclusionGanancias:
+                    usuario.RutaCertificadoExclusionGanancias = "";
+                    break;
+                case FileKeys.SIPER:
+                    usuario.RutaSIPER = "";
+                    break;
+                default:
+                    return ErrorMsg.ErrorFileKeyInvalido;
+            }
+
+            repositorio.GuardarCambios();
+            File.Delete(rutaArchivo);
+
+            return SuccessMsg.ArchivoBorrado;
         }
     }
 }
