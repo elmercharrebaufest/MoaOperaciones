@@ -26,8 +26,8 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Por favor <span class="adjuntar">adjuntar </span> el
-                            informe comercial <strong>completo y firmado</strong>
+                            Informe comercial <strong>completo y firmado </strong> <span
+                                class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
                                (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
@@ -54,10 +54,8 @@
                     <div>CBU informado en SISA: {{CBUSISA}}</div>
 
                     <label class="label" for="constanciaCBU">
-
-
-                        <span class="adjuntar">Adjuntar </span> constancia de CBU certificada
-                        por Banco
+                        Constancia de CBU certificada
+                        por Banco <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
                            (change)="handleFileInput($event.target.files, 'constanciaCBU')">
@@ -76,7 +74,7 @@
 
                 <div class="form-group">
                     <label class="label" for="constanciaCBUMercaderia">
-                        <span class="adjuntar">Adjuntar </span> constancia de CBU Mercaderia
+                        Constancia de CBU Mercaderia certificada por el banco <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
                            (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
@@ -94,11 +92,8 @@
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
-                    <label class="label" for="constanciaCUIT">
-                        <span class="adjuntar">
-                            Adjuntar
-                        </span>constancia de CUIT
-                    </label>
+                    <label style="font-weight: 100 !important;" for="constanciaCUIT">
+                        Constancia de CUIT <span class="adjuntar">Adjuntar</span></label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
                            (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
@@ -115,9 +110,9 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">
-                        <span class="adjuntar">Adjuntar </span>inscripción en IIBB -local o
+                        Inscripción en IIBB -local o
                         Convenio (CM05
-                        vigente)
+                        vigente) <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
                            (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
@@ -135,7 +130,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIVA">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención IVA
+                        Certificados de exclusión o exención IVA <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
@@ -151,7 +146,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIIBB">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en IIBB.
+                        Certificados de exclusión o exención en IIBB <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
@@ -168,7 +163,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionSUSS">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en SUSS.
+                        Certificados de exclusión o exención en SUSS <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
@@ -185,7 +180,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionGanancias">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en Ganancias.
+                        Certificados de exclusión o exención en Ganancias <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
@@ -204,7 +199,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        <span class="adjuntar">Adjuntar </span> SIPER. Solamente en caso de SISA 2 / SISA 3.
+                        SIPER. Solamente en caso de SISA 2 / SISA 3 <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
                            (change)="handleFileInput($event.target.files, 'SIPER')">
