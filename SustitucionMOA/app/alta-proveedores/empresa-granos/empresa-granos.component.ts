@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { InformeComercial } from '../../common/models/informeComercial';
 import { Material } from '../../common/models/material';
+import { NuevoAcopio } from '../../common/models/nuevoAcopio';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -11,7 +12,6 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
-import { NuevoAcopio } from '../../common/models/nuevoAcopio';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -31,7 +31,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     private fieldArray: Array<any> = [];
     private newAttribute: any = {};
-   // private acopiosArray: Array<NuevoAcopio> = [];
+    // private acopiosArray: Array<NuevoAcopio> = [];
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
 
     materialesData: any = null;
@@ -57,7 +57,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     keyword = 'Nombre';
     data = [];
     autocompleteNotFoundText = "No encontrado";
-    
+
     selectEventProduccion(item, index) {
         console.log(item)
 
@@ -105,6 +105,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
+
+    @ViewChild("modalMsjEmpresaGranos")
+    protected modalMensajeComponent: MensajeComponent;
+
 
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
@@ -225,28 +229,36 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.unsubscribe();
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
-                this.spinnerSmallComponent.hideIt();
-                var byteArray = new Uint8Array(result.data);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // IE11
-                    window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.modalMensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.modalMensajeComponent.setInfoMsg(result.info);
                 } else {
-                    var url = window.URL.createObjectURL(blob);
-                    var link = document.createElement("a");
-                    document.body.appendChild(link);
-                    link.href = url;
-                    link.download = "Informe comercial" + ".pdf"
-                    link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    this.spinnerSmallComponent.hideIt();
+                    var byteArray = new Uint8Array(result.data);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = "Informe comercial" + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
-                    return false;
+                        return false;
+                    }
                 }
 
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
+                this.modalMensajeComponent.setErrorMsg(error.message);
             }
         );
     }
