@@ -293,7 +293,6 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerCBUSISA(string mailUsuario)
         {
-            var archivos = new Dictionary<string, string>();
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
             var proveedor = usuario.ObtenerProveedorActual();
@@ -446,6 +445,69 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             File.Delete(rutaArchivo);
 
+            return SuccessMsg.ArchivoBorrado;
+        }
+
+        public string EliminarArchivo(string mailUsuario, string fileKey)
+        {
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
+
+            string rutaArchivo = "";
+            switch (fileKey)
+            {
+                case FileKeys.InformeComercialFirmado:
+                    rutaArchivo = usuario.RutaInformeComercialFirmado;
+                    usuario.RutaInformeComercialFirmado = null;
+                    break;
+                case FileKeys.ConstanciaCBU:
+                    rutaArchivo = usuario.RutaConstanciaCBU;
+                    usuario.RutaConstanciaCBU = null;
+                    break;
+                case FileKeys.ConstanciaCBUMercaderia:
+                    rutaArchivo = usuario.RutaConstanciaCBUMercaderia;
+                    usuario.RutaConstanciaCBUMercaderia = null;
+                    break;
+                case FileKeys.ConstanciaCUIT:
+                    rutaArchivo = usuario.RutaConstanciaCUIT;
+                    usuario.RutaConstanciaCUIT = null;
+                    break;
+                case FileKeys.InscripcionIIBB:
+                    rutaArchivo = usuario.RutaInscripcionIIBB;
+                    usuario.RutaInscripcionIIBB = null;
+                    break;
+                case FileKeys.CertificadoExclusionGanancias:
+                    rutaArchivo = usuario.RutaCertificadoExclusionGanancias;
+                    usuario.RutaCertificadoExclusionGanancias = null;
+                    break;
+                case FileKeys.CertificadoExclusionIIBB:
+                    rutaArchivo = usuario.RutaCertificadoExclusionIIBB;
+                    usuario.RutaCertificadoExclusionIIBB = null;
+                    break;
+                case FileKeys.CertificadoExclusionIVA:
+                    rutaArchivo = usuario.RutaCertificadoExclusionIVA;
+                    usuario.RutaCertificadoExclusionIVA = null;
+                    break;
+                case FileKeys.CertificadoExclusionSUSS:
+                    rutaArchivo = usuario.RutaCertificadoExclusionSUSS;
+                    usuario.RutaCertificadoExclusionSUSS = null;
+                    break;
+                case FileKeys.SIPER:
+                    rutaArchivo = usuario.RutaSIPER;
+                    usuario.RutaSIPER = null;
+                    break;
+                case FileKeys.DocumentacionEnBolsa:
+                    rutaArchivo = usuario.RutaDocumentacionEnBolsa;
+                    usuario.RutaDocumentacionEnBolsa = null;
+                    break;
+            }
+
+            repositorio.GuardarCambios();
+            if (File.Exists(rutaArchivo))
+            {
+                File.Delete(rutaArchivo);
+            }
             return SuccessMsg.ArchivoBorrado;
         }
     }

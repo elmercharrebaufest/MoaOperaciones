@@ -34,11 +34,9 @@
 
                         <a *ngIf="nombreArchivoInformeComercialFirmado != ''"
                            (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
-
-                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="borrarArchivo('informeComercialFirmado')">
-                            Borrar archivo
-                        </a>
-
+                        &nbsp;
+                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" style="color:red;"
+                           (click)="eliminarArchivo('informeComercialFirmado')" title="Eliminar Adjunto">Eliminar</a>
                         <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">
                             Sin
                             Adjuntar
@@ -51,7 +49,10 @@
             <mdb-step name="Step 2" label="CBU">
                 <h3> Constancia de CBU</h3>
                 <div class="form-group">
-                    <div>CBU informado en SISA: {{CBUSISA}}</div>
+                    <div>
+                        CBU informado en SISA: {{CBUSISA}}
+                    </div>
+                    <br />
 
                     <label class="label" for="constanciaCBU">
                         Constancia de CBU certificada
@@ -64,11 +65,9 @@
                         Ver archivo
                         subido
                     </a>
-
-                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="borrarArchivo('constanciaCBU')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoConstanciaCBU != ''" style="color:red;"
+                       (click)="eliminarArchivo('constanciaCBU')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
                 </div>
 
@@ -81,6 +80,9 @@
 
                     <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''"
                        (click)="descargarArchivo('constanciaCBUMercaderia')">Ver archivo subido</a>
+                    &nbsp;
+                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" style="color:red;"
+                       (click)="eliminarArchivo('constanciaCBUMercaderia')" title="Eliminar Adjunto">Eliminar</a>
 
                     <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="borrarArchivo('constanciaCBUMercaderia')">
                         Borrar archivo
@@ -101,11 +103,9 @@
                         Ver
                         archivo subido
                     </a>
-
-                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="borrarArchivo('constanciaCUIT')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" style="color:red;"
+                       (click)="eliminarArchivo('constanciaCUIT')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -121,11 +121,9 @@
                         Ver
                         archivo subido
                     </a>
-
-                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="borrarArchivo('inscripcionIIBB')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" style="color:red;"
+                       (click)="eliminarArchivo('inscripcionIIBB')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -137,11 +135,9 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''"
                        (click)="descargarArchivo('certificadoExclusionIVA')"> Ver archivo subido</a>
-
-                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="borrarArchivo('certificadoExclusionIVA')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" style="color:red;"
+                       (click)="eliminarArchivo('certificadoExclusionIVA')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -153,12 +149,9 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''"
                        (click)="descargarArchivo('certificadoExclusionIIBB')"> Ver archivo subido</a>
-
-                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="borrarArchivo('certificadoExclusionIIBB')">
-                        Borrar archivo
-                    </a>
-
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" style="color:red;"
+                       (click)="eliminarArchivo('certificadoExclusionIIBB')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -170,12 +163,9 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''"
                        (click)="descargarArchivo('certificadoExclusionSUSS')"> Ver archivo subido</a>
-
-                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="borrarArchivo('certificadoExclusionSUSS')">
-                        Borrar archivo
-                    </a>
-
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" style="color:red;"
+                       (click)="eliminarArchivo('certificadoExclusionSUSS')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
                 </div>
                 <div class="form-group">
@@ -187,11 +177,9 @@
 
                     <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''"
                        (click)="descargarArchivo('certificadoExclusionGanancias')"> Ver archivo subido</a>
-
-                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="borrarArchivo('certificadoExclusionGanancias')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" style="color:red;"
+                       (click)="eliminarArchivo('certificadoExclusionGanancias')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">
                         Sin
                         Adjuntar
@@ -208,11 +196,9 @@
                         Ver archivo
                         subido
                     </a>
-
-                    <a *ngIf="nombreArchivoSIPER != ''" (click)="borrarArchivo('SIPER')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoSIPER != ''" style="color:red;"
+                       (click)="eliminarArchivo('SIPER')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
 
                 </div>
@@ -232,11 +218,9 @@
                         Ver
                         archivo subido
                     </a>
-
-                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="borrarArchivo('documentacionEnBolsa')">
-                        Borrar archivo
-                    </a>
-
+                    &nbsp;
+                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" style="color:red;"
+                       (click)="eliminarArchivo('documentacionEnBolsa')" title="Eliminar Adjunto">Eliminar</a>
                     <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
                 </div>
             </mdb-step>
@@ -250,6 +234,34 @@
         </mdb-stepper>
     </div>
 
+
+
+
+    <!-- Modal confirmar eliminar -->
+    <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal" style="display:none;">Click to Open Confirm Modal</a>
+    <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Esta seguro?</h4>
+                </div>
+                <div class="modal-body modal-notificacion">
+                    <p>
+                        ¿Realmente desea eliminar el adjunto {{descripcionSeleccionado}}?
+                    </p>
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" (click)="eliminarArchivoSeleccionado()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- modal notificacion -->
     <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
@@ -283,7 +295,7 @@
             data-target="#myModal"></button>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
@@ -294,142 +306,9 @@
 
                 </div>
                 <div class="modal-body">
-
+                    <spinner-small #spinnerModal></spinner-small>
                     <div class="tab-pane" id="tab2">
                         <div class="formulario">
-                            <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Domicilio Legal
-                                </div>
-                                <div class="formulario-input">
-                                    <input type="text" id="Domicilio" class="input-custom"
-                                           placeholder="Domicilio (50 caracteres)" [(ngModel)]="informe.Domicilio"
-                                           maxlength="50" />
-                                </div>
-                            </div>
-                            <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Empleados en relación de dependencia
-                                </div>
-                                <div class="formulario-input">
-                                    <div>
-                                        <div class="padding-5-0">
-                                            <label for="si" class="padding-0-5">
-                                                <input type="radio" id="si" value="si" name="depen"
-                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">Si
-                                            </label>
-                                            <input type="text" id="EmplRelDepCant" class="input-custom"
-                                                   [(ngModel)]="informe.EmplRelDepCant"
-                                                   placeholder="Cantidad (50 caracteres)" maxlength="50" disabled />
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="no" class="padding-0-5">
-                                                <input type="radio" id="no" value="no" name="depen"
-                                                       [(ngModel)]="informe.EmplRelDep" class="margin-5px">No
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Rodados / Equipos aptos para la actividad rural
-                                </div>
-                                <div class="formulario-input">
-                                    <div>
-                                        <div class="padding-5-0">
-                                            <label for="equipro">
-                                                <input type="radio" id="equipro" value="equipro" name="rodado"
-                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Equipamiento
-                                                Propio
-                                            </label>
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="equialq">
-                                                <input type="radio" id="equialq" value="equialq" name="rodado"
-                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Alquilado
-                                            </label>
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="proyalq">
-                                                <input type="radio" id="proyalq" value="proyalq" name="rodado"
-                                                       [(ngModel)]="informe.Rodados" class="margin-5px">Propio y alquilado
-                                            </label>
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="otrosro" class="padding-0-5">
-                                                <input type="radio" class="input-custom" id="otrosro" value="otrosro"
-                                                       name="rodado" [(ngModel)]="informe.Rodados" class="margin-5px">Otros
-                                            </label>
-                                            <input type="text" id="RodadosOtros" class="input-custom"
-                                                   placeholder="Otros (50 caracteres)" [(ngModel)]="informe.RodadosOtros"
-                                                   maxlength="50" disabled />
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Servicios de chacra
-                                </div>
-                                <div class="formulario-input">
-                                    <div>
-                                        <div class="padding-5-0">
-                                            <label for="persprop">
-                                                <input type="radio" id="persprop" value="persprop" name="servicios"
-                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Personal propio
-                                            </label>
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="perscont">
-                                                <input type="radio" id="perscont" value="perscont" name="servicios"
-                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Personal contratado
-                                            </label>
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="persprco">
-                                                <input type="radio" id="persprco" value="persprco" name="servicios"
-                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Personal propio y
-                                                contratado
-                                            </label>
-                                        </div>
-                                        <div class="padding-5-0">
-                                            <label for="otros" class="padding-0-5">
-                                                <input type="radio" id="otros" value="otros" name="servicios"
-                                                       [(ngModel)]="informe.Chacra" class="margin-5px">Otros
-                                            </label>
-                                            <input type="text" id="ChacraOtros" class="input-custom"
-                                                   placeholder="Otros (50 caracteres)" [(ngModel)]="informe.ChacraOtros"
-                                                   maxlength="50" disabled />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="titulo">
-                                Antecedentes de la siembra
-                            </div>
-                            <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Antigüedad en la actividad
-                                </div>
-                                <div class="formulario-input">
-                                    <input type="text" class="input-custom" id="AntigActividad"
-                                           placeholder="Antigüedad (100 caracteres)" [(ngModel)]="informe.AntigActividad"
-                                           maxlength="100" />
-                                </div>
-                            </div>
-                            <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Actuación como productor / siembras anteriores
-                                </div>
-                                <div class="formulario-input">
-                                    <input type="text" id="ActuacionProd" class="input-custom"
-                                           placeholder="Actuación (100 caracteres)" [(ngModel)]="informe.ActuacionProd"
-                                           maxlength="100" />
-
-                                </div>
-                            </div>
 
                             <div class="titulo">
                                 Antecedentes comerciales
@@ -457,9 +336,6 @@
                             </div>
 
 
-                            <div class="titulo">
-                                Campaña {{campaniaActual}}
-                            </div>
                         </div>
                         <div>
 
@@ -473,14 +349,15 @@
                                         <th>Localidad</th>
                                         <th>Has</th>
                                         <th>TNs</th>
+                                        <th>Condicion</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let field of fieldArray; let i = index">
-                                        <td>
+                                    <tr *ngFor="let field of informe.NuevosCampos; let i = index">
+                                        <td width="140px">
                                             <div class="formulario-input">
-                                                <select [(ngModel)]=" selected" name="{{field.grano}}"
+                                                <select [(ngModel)]=" selected" name="{{field.MaterialId}}"
                                                         class="dropdown-granos">
                                                     <option *ngFor="let material of listaMateriales"
                                                             [ngValue]="material.id">
@@ -490,13 +367,15 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input [(ngModel)]="field.localidad" class="form-control required"
-                                                   type="hidden" name="{{field.localidad}}" />
+                                            <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden"
+                                                   id="localidad_{{i}}"
+                                                   style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                             (selected)='selectEventAlmacenamiento($event, i)'
-                                                             (inputChanged)='onChangeSearchAlmacenamiento($event)'
-                                                             (inputFocused)='selectEventAlmacenamiento($event)'
+                                                             (selected)='selectEventProduccion($event, i)'
+                                                             [(ngModel)]="field.Localidad"
+                                                             (inputChanged)='onChangeSearchProduccion($event)'
+                                                             (inputFocused)='selectEventProduccion($event)'
                                                              [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
                                                              [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
@@ -509,15 +388,19 @@
                                                 <div [innerHTML]="notFound"></div>
                                             </ng-template>
                                         </td>
-                                        <td>
-                                            <input [(ngModel)]="field.has" class="form-control" type="text"
-                                                   name="{{field.has}}" />
+                                        <td width="100px">
+                                            <input [(ngModel)]="field.Hectareas" class="form-control" type="number" name="{{field.Hectareas}}" />
                                         </td>
-                                        <td>
-                                            <input [(ngModel)]="field.tns" class="form-control" type="text"
-                                                   name="{{field.tns}}" />
+                                        <td width="100px">
+                                            <input [(ngModel)]="field.Toneladas" class="form-control" type="number" name="{{field.Toneladas}}" />
                                         </td>
-                                        <td>
+                                        <td width="75px">
+                                            <select [(ngModel)]="field.ArrendaPropia" class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                <option value="true">Propio</option>
+                                                <option value="false">Alquilado</option>
+                                            </select>
+                                        </td>
+                                        <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
                                                     (click)="deleteFieldValue(i)">
                                                 Eliminar
@@ -539,14 +422,13 @@
 
                         <!-- TABLA 2 -->
                         <div>
-
-
                             <div>
                                 <p class="table-title">Capacidad planta</p>
                             </div>
                             <table class="table table-striped table-bordered table-custom">
                                 <thead>
                                     <tr>
+                                        <!--<th>Campaña</th>-->
                                         <th>Localidad</th>
                                         <th>TNs</th>
                                         <th>Condición</th>
@@ -557,7 +439,7 @@
                                     <tr *ngFor="let acopio of informe.NuevosAcopios; let i = index">
                                         <td>
                                             <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
-                                                   id="localidad_{{i}}"
+                                                   id="localidadalm_{{i}}"
                                                    style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
@@ -577,16 +459,16 @@
                                                 <div [innerHTML]="notFound"></div>
                                             </ng-template>
                                         </td>
-                                        <td>
-                                            <input [(ngModel)]="acopio.Toneladas" class="form-control" type="text" />
+                                        <td width="100px">
+                                            <input [(ngModel)]="acopio.Toneladas" class="form-control" type="number" />
                                         </td>
-                                        <td>
-                                            <select [(ngModel)]="acopio.ArrendaPropia">
+                                        <td width="75px">
+                                            <select [(ngModel)]="acopio.ArrendaPropia" class="dropdown-granos ng-pristine ng-valid ng-touched">
                                                 <option value="true">Propio</option>
                                                 <option value="false">Alquilado</option>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
                                                     (click)="deleteFieldValueAlm(i)">
                                                 Eliminar
@@ -607,10 +489,12 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <a class="btn btn-primary" id="InformeComercialDescargar"
-                       (click)="generarInformeComercial()">Descargar</a>
+                       (click)="generarInformeComercial()">Guardar y Descargar</a>
                 </div>
             </div>
         </div>
     </div>
     <!-- end modal informe comercial-->
 </div>
+
+

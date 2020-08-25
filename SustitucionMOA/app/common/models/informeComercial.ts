@@ -14,7 +14,7 @@ export class InformeComercial {
     public ClienteAnt: string;
     public Comentarios: string;
 
-    public NuevosCampos: Array<NuevoProduccion>;
+    public NuevosCampos: NuevoProduccion[];
     public NuevosAcopios: NuevoAcopio[];
 
     constructor() {

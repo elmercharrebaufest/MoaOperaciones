@@ -13,6 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         Dictionary<string, string> ObtenerArchivosSubidos(string mail);
         string EnviarSolicitudUsuario(string mail);
         string ObtenerArchivo(string mail, string fileKey);
+        string EliminarArchivo(string mail, string fileKey);
         string ObtenerCBUSISA(string mailUsuario);
     }
 }

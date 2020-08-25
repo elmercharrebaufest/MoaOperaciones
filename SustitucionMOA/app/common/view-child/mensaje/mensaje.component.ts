@@ -18,14 +18,17 @@ export class MensajeComponent {
     }
 
     setErrorMsg(msg: string) {
+        window.scroll(0, 0);
         this.errorMsg = msg;
     }
 
     setInfoMsg(msg: string) {
+        window.scroll(0, 0);
         this.infoMsg = msg;
     }
 
     setSuccessMsg(msg: string) {
+        window.scroll(0, 0);
         this.successMsg = msg;
     }
     

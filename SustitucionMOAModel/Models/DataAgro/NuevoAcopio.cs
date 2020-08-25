@@ -12,5 +12,6 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int LocalidadID { get; set; }
         public bool ArrendaPropia { get; set; }
         public int CampañaID { get; set; }
+
     }
 }

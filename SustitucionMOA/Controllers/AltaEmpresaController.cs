@@ -73,11 +73,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult setEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion)
+        public ActionResult setEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor)
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.setEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), "") });
+                return JsonCustom(new { data = altaEmpresaService.setEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"),  observacionParaElProveedor) });
             }
             catch (InfoCustomException e)
             {
@@ -102,6 +102,7 @@ namespace SustitucionMOA.Controllers
                 estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.AprobacionPendiente, AddSpacesToSentence(EstadoAprobacion.AprobacionPendiente.ToString())));
                 estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.AnalisisDeNosis, AddSpacesToSentence(EstadoAprobacion.AnalisisDeNosis.ToString())));
                 estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.SentenciaFinal, AddSpacesToSentence(EstadoAprobacion.SentenciaFinal.ToString())));
+                estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.EdicionRequerida, AddSpacesToSentence(EstadoAprobacion.EdicionRequerida.ToString())));
                 return JsonCustom(new { data = estados });
             }
             catch (InfoCustomException e)
