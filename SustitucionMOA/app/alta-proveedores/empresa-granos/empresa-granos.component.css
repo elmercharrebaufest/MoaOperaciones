@@ -52,6 +52,11 @@ a:hover {
 
 .adjuntar {
   font-weight: 400;
+  border-radius: 5px;
+  color: white;
+  background: #172f8f;
+  margin: 5px;
+  padding: 5px;
 }
 
 .adjuntar:hover {
