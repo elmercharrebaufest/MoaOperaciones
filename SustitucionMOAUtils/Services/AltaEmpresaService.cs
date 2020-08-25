@@ -47,6 +47,7 @@ namespace SustitucionMOAUtils.Services
                                  x => (int)x.EstadoAprobacion == (int)EstadoAprobacion.AprobacionPendiente
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AnalisisDeNosis
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.SentenciaFinal
+                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EdicionRequerida
                                 );
 
 
@@ -127,7 +128,12 @@ namespace SustitucionMOAUtils.Services
                     usuario.Roles.Add(rolUsuarioGranos);
                 }
 
-                proveedor.Observaciones = observacionParaElProveedor;
+                if (estado == EstadoAprobacion.Rechazado || estado == EstadoAprobacion.EdicionRequerida)
+                {
+                    proveedor.Observaciones = observacionParaElProveedor;
+                }
+
+
                 repositorio.GuardarCambios();
 
                 try

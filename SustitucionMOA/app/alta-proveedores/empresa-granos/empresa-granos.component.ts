@@ -12,6 +12,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
 import { NuevoAcopio } from '../../common/models/nuevoAcopio';
+import { NuevoProduccion } from '../../common/models/nuevoProduccion';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -27,12 +28,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     http: any;
     fileToUpload: File;
     listaMateriales: Array<Material> = [];
+    listaCampanias: any = [];
     campaniaActual: string;
 
-    private fieldArray: Array<any> = [];
-    private newAttribute: any = {};
-   // private acopiosArray: Array<NuevoAcopio> = [];
+
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
+    private newAttribute: NuevoProduccion = new NuevoProduccion();
 
     materialesData: any = null;
 
@@ -48,6 +49,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
 
+    nombreArchivoSeleccionado: string = "";
+    fileKeySeleccionado: string = "";
+    descripcionSeleccionado: string = "";
 
     informe = new InformeComercial();
 
@@ -59,10 +63,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     autocompleteNotFoundText = "No encontrado";
 
     selectEventProduccion(item, index) {
-        console.log(item)
-
-        console.log(index)
-
+        this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     }
 
     selectEventAlmacenamiento(item, index) {
@@ -168,13 +169,33 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.subscription = this.service.obtenerMateriales().subscribe(
             result => {
                 let obj = JSON.parse(result);
+                this.listaCampanias = new Array();
                 obj.Datos.forEach(element => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
-                    mat.Descripcion = element.Descripcion;
-                    this.campaniaActual = element.CampaniaTablero;
+                    mat.Descripcion = element.Descripcion + " (" + element.CampaniaActual + ")";
                     this.listaMateriales.push(mat);
+                    let cam = {
+                        CampaniaActual: element.CampaniaActual,
+                        CampaniaIdActual: element.CampaniaIdActual
+                    }
+                    this.listaCampanias.push(cam);
                 });
+                console.log(this.listaCampanias);
+                const listaCampanias2 = [];
+                const map = new Map();
+                for (const item of this.listaCampanias) {
+                    if (!map.has(item.CampaniaIdActual)) {
+                        map.set(item.CampaniaIdActual, true);    // set any value to Map
+                        listaCampanias2.push({
+                            CampaniaActual: item.CampaniaActual,
+                            CampaniaIdActual: item.CampaniaIdActual
+                        });
+                    }
+                }
+                console.log(listaCampanias2)
+                this.listaCampanias = listaCampanias2;
+                console.log(this.listaCampanias);
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -187,6 +208,15 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
+        this.informe.NuevosAcopios.forEach(acopio => {
+            //var material = this.listaMateriales.find(el => el.Id == acopio.MaterialId);
+            //acopio.CampañaID = material.CampaniaActualId;
+            //acopio.CampañaID = material.CampaniaActualId;
+        });
+        this.informe.NuevosCampos.forEach(campo => {
+            var material = this.listaMateriales.find(el => el.Id == campo.MaterialId);
+            //campo.CampañaId = material.CampaniaActualId;
+        });
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
@@ -254,6 +284,74 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
+    eliminarArchivo(fileKey: string, nombreArchivo: string, descripcion: string) {
+        this.fileKeySeleccionado = fileKey;
+        this.nombreArchivoSeleccionado = nombreArchivo;
+        this.descripcionSeleccionado = descripcion;
+        document.getElementById("openModalConfirmModal").click();
+
+    }
+    eliminarArchivoSeleccionado() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado).subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    if (this.fileKeySeleccionado == "informeComercialFirmado") {
+                        this.nombreArchivoInformeComercialFirmado = "";
+                    }
+                    if (this.fileKeySeleccionado == "constanciaCBU") {
+                        this.nombreArchivoConstanciaCBU = "";
+                    }
+                    if (this.fileKeySeleccionado == "constanciaCBUMercaderia") {
+                        this.nombreArchivoConstanciaCBUMercaderia = "";
+                    }
+                    if (this.fileKeySeleccionado == "constanciaCUIT") {
+                        this.nombreArchivoConstanciaCUIT = "";
+                    }
+                    if (this.fileKeySeleccionado == "inscripcionIIBB") {
+                        this.nombreArchivoInscripcionIIBB = "";
+                    }
+                    if (this.fileKeySeleccionado == "certificadoExclusionIVA") {
+                        this.nombreArchivoCertificadoExclusionIVA = "";
+                    }
+                    if (this.fileKeySeleccionado == "certificadoExclusionIIBB") {
+                        this.nombreArchivoCertificadoExclusionIIBB = "";
+                    }
+                    if (this.fileKeySeleccionado == "certificadoExclusionSUSS") {
+                        this.nombreArchivoCertificadoExclusionSUSS = "";
+                    }
+                    if (this.fileKeySeleccionado == "certificadoExclusionGanancias") {
+                        this.nombreArchivoCertificadoExclusionGanancias = "";
+                    }
+                    if (this.fileKeySeleccionado == "SIPER") {
+                        this.nombreArchivoSIPER = "";
+                    }
+                    if (this.fileKeySeleccionado == "documentacionEnBolsa") {
+                        this.nombreArchivoDocumentacionEnBolsa = "";
+                    }
+                    this.fileKeySeleccionado = "";
+                    this.nombreArchivoSeleccionado = "";
+                    this.descripcionSeleccionado = "";
+                }
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+
+        document.getElementById("openModalConfirmModal").click();
+    }
+
     obtenerArchivosSubidos() {
         this.subscription = this.service.obtenerArchivosSubidos().subscribe(
             result => {
@@ -305,12 +403,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     addFieldValue() {
-        this.fieldArray.push(this.newAttribute)
-        this.newAttribute = {};
+        this.informe.NuevosCampos.push(this.newAttribute)
+        this.newAttribute = new NuevoProduccion();
     }
 
     deleteFieldValue(index) {
-        this.fieldArray.splice(index, 1);
+        this.informe.NuevosCampos.splice(index, 1);
     }
 
     addFieldValueAlm() {
@@ -321,5 +419,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     deleteFieldValueAlm(index) {
         this.informe.NuevosAcopios.splice(index, 1);
     }
+
 }
 

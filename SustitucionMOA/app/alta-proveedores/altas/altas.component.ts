@@ -160,7 +160,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones).subscribe(
+            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor).subscribe(
                 result => {
                     this.getEmpresa();
                     this.spinnerComponent.hideIt();
@@ -242,44 +242,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         link.href = url;
         link.target = "_blank";
         link.click();
-        
-
-        //this.mensajeComponent.setMsgsEmpty();
-        //this.spinnerSmallComponent.showIt();
-        //this.unsubscribe();
-        //this.subscription = this.service.descargarArchivoSubido(fileKey, this.empresaSeleccionada.Mail).subscribe(
-        //    result => {
-        //        this.spinnerSmallComponent.hideIt();
-        //        if (result.logout == true) {
-        //            this.sessionDataService.logout();
-        //        } else if (result.error != undefined && result.error != "") {
-        //            this.mensajeComponent.setErrorMsg(result.error);
-        //        } else if (result.info != undefined) {
-        //            this.mensajeComponent.setInfoMsg(result.info);
-        //        } else {
-        //            var byteArray = new Uint8Array(result.FileContents);
-        //            var blob = new Blob([byteArray], { type: 'application/octet-stream' });
-
-        //            if (window.navigator.msSaveOrOpenBlob) {
-        //                // IE11
-        //                window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
-        //            } else {
-        //                var url = window.URL.createObjectURL(blob);
-        //                var link = document.createElement("a");
-        //                document.body.appendChild(link);
-        //                link.href = url;
-        //                link.download = result.FileDownloadName;
-        //                link.click();
-        //                setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-        //                return false;
-        //            }
-        //        }
-        //    },
-        //    error => {
-        //        this.spinnerSmallComponent.hideIt();
-        //        this.mensajeComponent.setErrorMsg(error.message);
-        //    }
-        //);
     }
 
     onOptionsSelected() {

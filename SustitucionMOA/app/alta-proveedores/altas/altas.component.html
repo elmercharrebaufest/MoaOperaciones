@@ -219,6 +219,9 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div *ngIf="empresaSeleccionada.Observaciones != ''">
+                            <br /><b>Última notificación enviada al Proveedor:</b>{{empresaSeleccionada.Observaciones}}
+                        </div>
                     </div>
                 </div>
             </div>

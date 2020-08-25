@@ -80,7 +80,7 @@ namespace SustitucionMOA.Controllers
 
                 nuevosCampos.Add(new NuevoProduccion
                 {
-                    CampañaID = 8,
+                    CampañaId = 8,
                     ArrendaPropia = true,
                     Hectareas = 100,
                     LocalidadId = 100,
@@ -204,12 +204,10 @@ namespace SustitucionMOA.Controllers
                 var listadoLocalidad = repositorio.Listar<Localidad, LocalidadCombo>(x => new LocalidadCombo()
                 {
                     LocalidadId = x.LocalidadId,
-                    Nombre = x.Nombre,
+                    Nombre = x.Nombre + " (" + x.Provincia.Nombre + ")",
                 },
                  x => x.Nombre.Contains(localidad)
                  , 500).OrderBy(x => x.Nombre).ToList();
-
-                //var jsonLocalidad = JsonConvert.SerializeObject(listadoLocalidad);
 
                 return JsonCustom(listadoLocalidad);
             }
@@ -344,6 +342,37 @@ namespace SustitucionMOA.Controllers
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
                 return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult EliminarArchivo(string fileKey, string mail)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
+                string result = altaEmpresaService.EliminarArchivo(mail, fileKey);
+
+                return JsonCustom(result);
             }
             catch (InfoCustomException e)
             {

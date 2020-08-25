@@ -92,6 +92,14 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    eliminarArchivoSubido(fileKey: string, mail?: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fileKey', fileKey);
+        params.set('mail', mail);
 
+        return this.http
+            .get('/api/AltaEmpresaGranos/EliminarArchivo', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
 
 }

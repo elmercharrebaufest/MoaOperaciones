@@ -22,11 +22,12 @@ export class AltaEmpresaService extends BaseService {
     }
 
 
-    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string): Observable<any> {
+    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('empresaId', empresaId.toString());
         params.set('estado', estadoId.toString());
         params.set('observacion', observacion);
+        params.set('observacionParaElProveedor', observacionesProveedor);
         return this.http
             .get('/api/AltaEmpresa/setEstadoAprobacion', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
