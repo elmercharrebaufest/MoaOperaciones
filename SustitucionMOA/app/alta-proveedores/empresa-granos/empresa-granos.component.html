@@ -484,13 +484,14 @@
                                     <tr *ngFor="let field of informe.NuevosCampos; let i = index">
                                         <td width="140px">
                                             <div class="formulario-input">
-                                                <select [(ngModel)]=" selected" name="{{field.MaterialId}}"
+                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId" 
                                                         class="dropdown-granos">
                                                     <option *ngFor="let material of listaMateriales"
-                                                            [ngValue]="material.id">
+                                                            value="{{material.Id}}">
                                                         {{material.Descripcion}}
                                                     </option>
-                                                </select>                                                
+                                                </select>
+                                                <input [(ngModel)]="field.CampaniaId" class="form-control" type="text" value="0" name="{{field.CampaniaId}}" style="display:none;" />
                                             </div>
                                         </td>
                                         <td>
@@ -557,7 +558,7 @@
                             <table class="table table-striped table-bordered table-custom">
                                 <thead>
                                     <tr>
-                                        <!--<th>Campaña</th>-->
+                                        <th>Campaña</th>
                                         <th>Localidad</th>
                                         <th>TNs</th>
                                         <th>Condición</th>
@@ -566,16 +567,16 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let acopio of informe.NuevosAcopios; let i = index">
-                                        <td width="140px">
-                                            <!--<div class="formulario-input">
-                                                <select [(ngModel)]=" selected" name="{{acopio.CampaniaID}}"
+                                        <td width="75px">
+                                            <div class="formulario-input">
+                                                <select name="{{acopio.CampaniaID}}" [(ngModel)]="acopio.CampaniaID"
                                                         class="dropdown-granos">
                                                     <option *ngFor="let camp of listaCampanias"
-                                                            [ngValue]="camp.CampaniaIdActual">
+                                                            value="{{camp.CampaniaIdActual}}">
                                                         {{camp.CampaniaActual}}
                                                     </option>
                                                 </select>
-                                            </div>-->
+                                            </div>
                                         </td>
                                         <td>
                                             <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"

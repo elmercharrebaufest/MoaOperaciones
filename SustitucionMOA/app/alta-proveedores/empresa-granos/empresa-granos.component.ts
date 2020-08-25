@@ -174,6 +174,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
                     mat.Descripcion = element.Descripcion + " (" + element.CampaniaActual + ")";
+                    mat.CampaniaActual = element.CampaniaActual;
+                    mat.CampaniaIdActual = element.CampaniaIdActual;
                     this.listaMateriales.push(mat);
                     let cam = {
                         CampaniaActual: element.CampaniaActual,
@@ -181,7 +183,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     }
                     this.listaCampanias.push(cam);
                 });
-                console.log(this.listaCampanias);
                 const listaCampanias2 = [];
                 const map = new Map();
                 for (const item of this.listaCampanias) {
@@ -193,8 +194,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         });
                     }
                 }
-                console.log(listaCampanias2)
                 this.listaCampanias = listaCampanias2;
+                console.log(this.listaMateriales);
                 console.log(this.listaCampanias);
             },
             error => {
@@ -204,15 +205,24 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
+    //onChangeMaterialProduccion(event, index) {
+    //    console.log(event);
+    //    this.informe.NuevosCampos[index].CampaniaId = event.target.CampaniaIdActual;
+    //}
     generarInformeComercial() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-
         this.informe.NuevosCampos.forEach(campo => {
-            var material = this.listaMateriales.find(el => el.Id == campo.MaterialId);
-            campo.CampaniaId = material.CampaniaActualId;
+            for (const item of this.listaMateriales) {
+                console.log(item.Id, campo.MaterialId);
+                if (item.Id == campo.MaterialId) {
+                    campo.CampaniaId = item.CampaniaIdActual;
+                }
+            }
+
         });
+
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();

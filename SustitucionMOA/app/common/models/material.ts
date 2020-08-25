@@ -2,7 +2,7 @@
     public Id: number;
     public Descripcion: string;
     public CampaniaActual: string;
-    public CampaniaActualId: number;
+    public CampaniaIdActual: number;
 
     constructor() { }
 }
