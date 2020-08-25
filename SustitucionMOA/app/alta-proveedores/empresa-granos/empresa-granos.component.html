@@ -23,11 +23,11 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Por favor <span class="adjuntar">adjuntar </span> el
-                            informe comercial <strong>completo y firmado</strong>
+                            Informe comercial <strong>completo y firmado </strong> <span
+                                class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
-                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')" required>
 
                         <a *ngIf="nombreArchivoInformeComercialFirmado != ''"
                             (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
@@ -39,11 +39,11 @@
                 <h3> Constancia de CBU</h3>
                 <div class="form-group">
                     <label class="label" for="constanciaCBU">
-                        <span class="adjuntar">Adjuntar </span> constancia de CBU certificada
-                        por Banco
+                        Constancia de CBU certificada
+                        por Banco <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
-                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                        (change)="handleFileInput($event.target.files, 'constanciaCBU')" required>
 
                     <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo
                         subido</a>
@@ -51,10 +51,10 @@
 
                 <div class="form-group">
                     <label class="label" for="constanciaCBUMercaderia">
-                        <span class="adjuntar">Adjuntar </span> constancia de CBU Mercaderia
+                        Constancia de CBU Mercaderia certificada por el banco <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
-                        (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
+                        (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')" required>
 
                     <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''"
                         (click)="descargarArchivo('constanciaCBUMercaderia')">Ver archivo subido</a>
@@ -63,10 +63,10 @@
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
-                    <label style="font-weight: 100 !important;" for="constanciaCUIT"><span class="adjuntar">Adjuntar
-                        </span>constancia de CUIT</label>
+                    <label style="font-weight: 100 !important;" for="constanciaCUIT">
+                        Constancia de CUIT <span class="adjuntar">Adjuntar</span></label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
-                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')" required>
 
                     <a *ngIf="nombreArchivoconstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver
                         archivo subido</a>
@@ -74,62 +74,62 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">
-                        <span class="adjuntar">Adjuntar </span>inscripción en IIBB -local o
+                        Inscripción en IIBB -local o
                         Convenio (CM05
-                        vigente)
+                        vigente) <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
-                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')" required>
 
                     <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver
                         archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIVA">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención IVA
+                        Certificados de exclusión o exención IVA <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')" required>
 
                     <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''"
                         (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIIBB">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en IIBB.
+                        Certificados de exclusión o exención en IIBB <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')" required>
 
                     <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''"
                         (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionSUSS">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en SUSS.
+                        Certificados de exclusión o exención en SUSS <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')" required>
 
                     <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''"
                         (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionGanancias">
-                        <span class="adjuntar">Adjuntar </span>certificados de exclusión o exención en Ganancias.
+                        Certificados de exclusión o exención en Ganancias <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')" required>
 
                     <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''"
                         (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        <span class="adjuntar">Adjuntar </span> SIPER. Solamente en caso de SISA 2 / SISA 3.
+                        SIPER. Solamente en caso de SISA 2 / SISA 3 <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
-                        (change)="handleFileInput($event.target.files, 'SIPER')">
+                        (change)="handleFileInput($event.target.files, 'SIPER')" required>
 
                     <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo
                         subido</a>
@@ -140,13 +140,13 @@
                 <h3>Documentación al día en Bolsa</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="documentacionEnBolsa">
-                        <span class="adjuntar">Adjuntar </span> documentación. Sólo Personas Físicas
+                        Sólo Personas Físicas
                         podrán operar sin oblea si remiten copia
                         certificada y legalizada
-                        de DNI.
+                        de DNI. <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa"
-                        (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+                        (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')" required>
 
                     <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('constanciaCUIT')">Ver
                         archivo subido</a>
@@ -218,7 +218,7 @@
                                 <div class="formulario-input">
                                     <input type="text" id="Domicilio" class="input-custom"
                                         placeholder="Domicilio (50 caracteres)" [(ngModel)]="informe.Domicilio"
-                                        maxlength="50" />
+                                        maxlength="50" required />
                                 </div>
                             </div>
                             <div class="formulario-campo">
