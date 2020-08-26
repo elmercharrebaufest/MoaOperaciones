@@ -69,6 +69,7 @@
     <Compile Include="Entities\UsuarioNoGranos.cs" />
     <Compile Include="Enums\FileKeys.cs" />
     <Compile Include="Models\CamaraImageResponse.cs" />
+    <Compile Include="Models\DataAgro\ContactoComercial.cs" />
     <Compile Include="Models\DataAgro\ParamInformeComercial.cs" />
     <Compile Include="Models\DataAgro\ParamInformeComercialMaterial.cs" />
     <Compile Include="Models\DBMap\Pesada\Detalle\PesadaDetalle.cs" />

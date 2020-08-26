@@ -13,6 +13,7 @@ import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spi
 import { EmpresaGranosService } from './empresa-granos.service';
 import { NuevoAcopio } from '../../common/models/nuevoAcopio';
 import { NuevoProduccion } from '../../common/models/nuevoProduccion';
+import { ContactoComercial } from '../../common/models/contactoComercial';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -29,8 +30,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     fileToUpload: File;
     listaMateriales: Array<Material> = [];
     listaCampanias: any = [];
-    campaniaActual: string;
-
+    campaniaActual: number;
 
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
     private newAttribute: NuevoProduccion = new NuevoProduccion();
@@ -48,15 +48,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoCertificadoExclusionGanancias: string = "";
     nombreArchivoSIPER: string = "";
     nombreArchivoDocumentacionEnBolsa: string = "";
-
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
     descripcionSeleccionado: string = "";
-
     informe = new InformeComercial();
-
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
+    mensajeError: string = "";
 
     keyword = 'Nombre';
     data = [];
@@ -86,6 +84,25 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     onChangeSearchAlmacenamiento(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.data = result;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
+    selectEventInforme(item) {
+        this.informe.localidadId = item.LocalidadId;
+    }
+
+    onChangeSearchInforme(term: string) {
         if (term.length > 2) {
             this.unsubscribe();
             this.subscription = this.service.searchLocalidad(term).subscribe(
@@ -173,7 +190,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 obj.Datos.forEach(element => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
-                    mat.Descripcion = element.Descripcion + " (" + element.CampaniaActual + ")";
+                    mat.Descripcion = element.Descripcion;
                     mat.CampaniaActual = element.CampaniaActual;
                     mat.CampaniaIdActual = element.CampaniaIdActual;
                     this.listaMateriales.push(mat);
@@ -195,8 +212,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     }
                 }
                 this.listaCampanias = listaCampanias2;
-                console.log(this.listaMateriales);
-                console.log(this.listaCampanias);
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -205,43 +220,51 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    //onChangeMaterialProduccion(event, index) {
-    //    console.log(event);
-    //    this.informe.NuevosCampos[index].CampaniaId = event.target.CampaniaIdActual;
-    //}
     generarInformeComercial() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.informe.NuevosCampos.forEach(campo => {
-            for (const item of this.listaMateriales) {
-                console.log(item.Id, campo.MaterialId);
-                if (item.Id == campo.MaterialId) {
-                    campo.CampaniaId = item.CampaniaIdActual;
-                }
-            }
-
+        this.informe.NuevosAcopios.forEach(campo => {
+            campo.CampaniaID = this.campaniaActual;
         });
-
+        this.informe.NuevosCampos.forEach(campo => {
+            campo.CampaniaId = this.campaniaActual;
+        });
+        this.informe.CampaniaId = this.campaniaActual;
+        for (const item of this.listaCampanias) {
+            if (item.CampaniaIdActual == this.campaniaActual) {
+                this.informe.Campania = item.CampaniaActual;
+            }
+        }
+        if (this.validarInforme()) {
+            this.spinnerSmallComponent.hideIt();
+            return;
+        }
+        this.mensajeError = "";
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
-                var byteArray = new Uint8Array(result.data);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // IE11
-                    window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                if (result.error) {
+                    this.mensajeError = result.error;
                 } else {
-                    var url = window.URL.createObjectURL(blob);
-                    var link = document.createElement("a");
-                    document.body.appendChild(link);
-                    link.href = url;
-                    link.download = "Informe comercial" + ".pdf"
-                    link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    var byteArray = new Uint8Array(result.data);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = "Informe comercial" + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
-                    return false;
+                        return false;
+                    }
                 }
+
 
             },
             error => {
@@ -426,5 +449,77 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.informe.NuevosAcopios.splice(index, 1);
     }
 
+    validarInforme() {
+        
+        if (this.informe.direccion == "" || !this.informe.direccion) {
+            this.mensajeError = "No completo la direccion.";
+            return true;
+        }
+        if (!this.informe.codigoPostal || this.informe.codigoPostal == "") {
+            this.mensajeError = "No completo el codigo postal.";
+            return true;
+        }
+        if (!this.informe.localidadId || this.informe.localidadId == null || this.informe.localidadId == 0) {
+            this.mensajeError = "No completo la Localidad en Domicilio Actividad.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Apellido || this.informe.ContactoComercial.Apellido == "") {
+            this.mensajeError = "No completo el Apellido del contacto.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Nombres || this.informe.ContactoComercial.Nombres == "") {
+            this.mensajeError = "No completo el Nombre del contacto.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Puesto || this.informe.ContactoComercial.Puesto == "") {
+            this.mensajeError = "No completo el Puesto del contacto.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Telefono1 || this.informe.ContactoComercial.Telefono1 == "") {
+            this.mensajeError = "No completo el Telefono del contacto.";
+            return true;
+        }
+        if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
+            this.mensajeError = "No completo la Campaña Actual.";
+            return true;
+        }
+        for (const item of this.informe.NuevosCampos) {
+            if (item.MaterialId == null || item.MaterialId == 0) {
+                this.mensajeError = "Debe completar el grano en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.LocalidadId == null || item.LocalidadId == 0) {
+                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.Hectareas == null || item.Hectareas == 0) {
+                this.mensajeError = "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.Toneladas == null || item.Toneladas == 0) {
+                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.ArrendaPropia == null ) {
+                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad productiva.";
+                return true;
+            }
+        }
+        for (const item of this.informe.NuevosAcopios) {            
+            if (item.LocalidadID == null || item.LocalidadID == 0) {
+                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
+                return true;
+            }            
+            if (item.Toneladas == null || item.Toneladas == 0) {
+                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                return true;
+            }
+            if (item.ArrendaPropia == null) {
+                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad planta.";
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

@@ -436,7 +436,104 @@
 
                                 </div>
                             </div>-->
+                            <div class="titulo">
+                                Domicilio Actividad
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Direccion
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="direccion" class="form-control"
+                                               placeholder="Direccion (100 caracteres)" [(ngModel)]="informe.direccion"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Codigo Postal
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="codigoPostal" class="form-control"
+                                               placeholder="Codigo Postal (20 caracteres)" [(ngModel)]="informe.codigoPostal"
+                                               maxlength="20" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="formulario-label">
+                                        Localidad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input [(ngModel)]="informe.localidadId" class="form-control" type="hidden"
+                                               id="localidadinf"
+                                               style="font-weight: 100 !important;">
 
+                                        <ng-autocomplete [data]="data" [searchKeyword]="keyword"
+                                                         (selected)='selectEventInforme($event)'
+                                                         [(ngModel)]="informe.localidad"
+                                                         (inputChanged)='onChangeSearchInforme($event)'
+                                                         (inputFocused)='selectEventInforme($event)'
+                                                         [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                         [notFoundTemplate]="notFoundTemplate">
+                                        </ng-autocomplete>
+
+                                        <ng-template #itemTemplate let-item>
+                                            <a [innerHTML]="item.Nombre"></a>
+                                        </ng-template>
+
+                                        <ng-template #notFoundTemplate let-notFound>
+                                            <div [innerHTML]="notFound"></div>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="titulo">
+                                Contacto
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Apellido
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="direccion" class="form-control"
+                                               placeholder="Apellido (50 caracteres)" [(ngModel)]="informe.ContactoComercial.Apellido"
+                                               maxlength="50" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Nombres
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="codigoPostal" class="form-control"
+                                               placeholder="Nombres (50 caracteres)" [(ngModel)]="informe.ContactoComercial.Nombres"
+                                               maxlength="50" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Puesto
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="direccion" class="form-control"
+                                               placeholder="Puesto (50 caracteres)" [(ngModel)]="informe.ContactoComercial.Puesto"
+                                               maxlength="50" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Telefono
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="codigoPostal" class="form-control"
+                                               placeholder="Telefono (100 caracteres)" [(ngModel)]="informe.ContactoComercial.Telefono1"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
                             <div class="titulo">
                                 Antecedentes comerciales
                             </div>
@@ -465,7 +562,17 @@
 
                         </div>
                         <div>
-
+                            <div>
+                                <p class="table-title">
+                                    Campaña:
+                                    <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual" class="dropdown-granos">
+                                        <option *ngFor="let camp of listaCampanias"
+                                                value="{{camp.CampaniaIdActual}}">
+                                            {{camp.CampaniaActual}}
+                                        </option>
+                                    </select>
+                                </p>
+                            </div>
                             <div>
                                 <p class="table-title">Capacidad productiva</p>
                             </div>
@@ -484,7 +591,7 @@
                                     <tr *ngFor="let field of informe.NuevosCampos; let i = index">
                                         <td width="140px">
                                             <div class="formulario-input">
-                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId" 
+                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
                                                         class="dropdown-granos">
                                                     <option *ngFor="let material of listaMateriales"
                                                             value="{{material.Id}}">
@@ -558,7 +665,7 @@
                             <table class="table table-striped table-bordered table-custom">
                                 <thead>
                                     <tr>
-                                        <th>Campaña</th>
+                                        <!--<th>Campaña</th>-->
                                         <th>Localidad</th>
                                         <th>TNs</th>
                                         <th>Condición</th>
@@ -567,7 +674,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let acopio of informe.NuevosAcopios; let i = index">
-                                        <td width="75px">
+                                        <!--<td width="75px">
                                             <div class="formulario-input">
                                                 <select name="{{acopio.CampaniaID}}" [(ngModel)]="acopio.CampaniaID"
                                                         class="dropdown-granos">
@@ -577,8 +684,10 @@
                                                     </option>
                                                 </select>
                                             </div>
-                                        </td>
+                                        </td>-->
                                         <td>
+                                            <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text" value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
+
                                             <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
                                                    id="localidadalm_{{i}}"
                                                    style="font-weight: 100 !important;">
@@ -628,9 +737,16 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <a class="btn btn-primary" id="InformeComercialDescargar"
-                       (click)="generarInformeComercial()">Guardar y Descargar</a>
+                    <div class="formulario" style="width:100%;text-align: center;">
+                        <div *ngIf="mensajeError != ''" class="formulario-input;">
+                            <div class="alert alert-danger"><i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
+                        </div>
+                        <div class="formulario-input">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <a class="btn btn-primary" id="InformeComercialDescargar"
+                               (click)="generarInformeComercial()">Guardar y Descargar</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

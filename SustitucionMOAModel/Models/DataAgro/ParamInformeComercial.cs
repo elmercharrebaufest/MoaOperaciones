@@ -34,5 +34,10 @@ namespace SustitucionMOAModel.Models.DataAgro
         public List<NuevoProduccion> NuevosCampos { get; set; }
         public List<NuevoAcopio> NuevosAcopios { get; set; }
 
+        public ContactoComercial ContactoComercial { get; set; }
+
+        public string direccion { get; set; }
+        public string codigoPostal { get; set; }
+        public int? localidadId { get; set; }
     }
 }

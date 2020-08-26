@@ -809,6 +809,7 @@
     <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.ts" />
+    <TypeScriptCompile Include="app\common\models\contactoComercial.ts" />
     <TypeScriptCompile Include="app\common\models\informeComercial.ts" />
     <TypeScriptCompile Include="app\common\models\material.ts" />
     <TypeScriptCompile Include="app\common\models\nuevoAcopio.ts" />
