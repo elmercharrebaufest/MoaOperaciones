@@ -128,7 +128,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom("{\"Datos\":[{\"MaterialId\":4,\"Codigo\":\"000000000019908018\",\"Descripcion\":\"Girasol\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":5,\"Codigo\":\"000000000019908019\",\"Descripcion\":\"Girsol AO\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":1,\"Codigo\":\"000000000019908036\",\"Descripcion\":\"Maiz\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":3,\"Codigo\":\"000000000019908017\",\"Descripcion\":\"Soja\",\"CampaniaIdActual\":7,\"CampaniaActual\":\"18-19\",\"CampaniaTableroId\":7,\"CampaniaTablero\":\"18-19\"},{\"MaterialId\":2,\"Codigo\":\"000000000019908027\",\"Descripcion\":\"Trigo\",\"CampaniaIdActual\":7,\"CampaniaActual\":\"18-19\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"}],\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false}");
+                //return JsonCustom("{\"Datos\":[{\"MaterialId\":4,\"Codigo\":\"000000000019908018\",\"Descripcion\":\"Girasol\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":5,\"Codigo\":\"000000000019908019\",\"Descripcion\":\"Girsol AO\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":1,\"Codigo\":\"000000000019908036\",\"Descripcion\":\"Maiz\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":3,\"Codigo\":\"000000000019908017\",\"Descripcion\":\"Soja\",\"CampaniaIdActual\":7,\"CampaniaActual\":\"18-19\",\"CampaniaTableroId\":7,\"CampaniaTablero\":\"18-19\"},{\"MaterialId\":2,\"Codigo\":\"000000000019908027\",\"Descripcion\":\"Trigo\",\"CampaniaIdActual\":7,\"CampaniaActual\":\"18-19\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"}],\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false}");
                 return JsonCustom(altaEmpresaService.ObtenerMaterialesDataAgro());
 
             }
@@ -223,11 +223,12 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerArchivosSubidos()
+        public ActionResult ObtenerArchivosSubidos(string mail)
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                if (string.IsNullOrEmpty(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail));
             }
