@@ -207,56 +207,12 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(rutaCarpeta);
 
-                bool tieneMultiplesArchivos = false;
-
-                switch (fileKey)
-                {
-                    case FileKeys.InformeComercialFirmado:
-                        usuario.RutaInformeComercialFirmado = rutaArchivo;
-                        break;
-                    case FileKeys.ConstanciaCBU:
-                        usuario.RutaConstanciaCBU = rutaArchivo;
-                        break;
-                    case FileKeys.ConstanciaCBUMercaderia:
-                        usuario.RutaConstanciaCBUMercaderia = rutaArchivo;
-                        break;
-                    case FileKeys.ConstanciaCUIT:
-                        usuario.RutaConstanciaCUIT = rutaArchivo;
-                        break;
-                    case FileKeys.InscripcionIIBB:
-                        usuario.RutaInscripcionIIBB = rutaArchivo;
-                        break;
-                    case FileKeys.CertificadoExclusionIVA:
-                        usuario.RutaCertificadoExclusionIVA = rutaArchivo;
-                        break;
-                    //case FileKeys.CertificadoExclusionIIBB:
-                    //    usuario.RutaCertificadoExclusionIIBB = rutaArchivo;
-                    //    break;
-                    case FileKeys.CertificadoExclusionSUSS:
-                        usuario.RutaCertificadoExclusionSUSS = rutaArchivo;
-                        break;
-                    case FileKeys.CertificadoExclusionGanancias:
-                        usuario.RutaCertificadoExclusionGanancias = rutaArchivo;
-                        break;
-                    case FileKeys.SIPER:
-                        usuario.RutaSIPER = rutaArchivo;
-                        break;
-                    case FileKeys.DocumentacionEnBolsa:
-                        usuario.RutaDocumentacionEnBolsa = rutaArchivo;
-                        break;
-                    case FileKeys.CertificadoExclusionIIBB:
-                    case FileKeys.OtrosArchivos:
-                        usuario.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
-                        tieneMultiplesArchivos = true;
-                        break;
-                    default:
-                        return ErrorMsg.ErrorFileKeyInvalido;
-                }
+                usuario.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
 
                 //Si subieron otros archivos anteriormente, los borramos
                 DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
 
-                if (!tieneMultiplesArchivos)
+                if (fileKey != FileKeys.CertificadoExclusionIIBB || fileKey != FileKeys.OtrosArchivos)
                 {
                     foreach (FileInfo file in carpeta.GetFiles())
                     {
@@ -291,39 +247,8 @@ namespace SustitucionMOAUtils.Services
         public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario)
 
         {
-            //var archivos = new Dictionary<string, string>();
-
             List<ArchivoDto> archivos = new List<ArchivoDto>();
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-            if(!usuario.RutaInformeComercialFirmado.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.InformeComercialFirmado, Nombre = ObtenerRuta(usuario.RutaInformeComercialFirmado) });
-
-            if(!usuario.RutaConstanciaCBU.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.ConstanciaCBU, Nombre = ObtenerRuta(usuario.RutaConstanciaCBU) });
-
-            if(!usuario.RutaConstanciaCBUMercaderia.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.ConstanciaCBUMercaderia, Nombre = ObtenerRuta(usuario.RutaConstanciaCBUMercaderia) });
-
-            if(!usuario.RutaConstanciaCUIT.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.ConstanciaCUIT, Nombre = ObtenerRuta(usuario.RutaConstanciaCUIT) });
-
-            if(!usuario.RutaInscripcionIIBB.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.InscripcionIIBB, Nombre = ObtenerRuta(usuario.RutaInscripcionIIBB) });
-
-            if(!usuario.RutaCertificadoExclusionIVA.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.CertificadoExclusionIVA, Nombre = ObtenerRuta(usuario.RutaCertificadoExclusionIVA) });
-
-            //archivos.Add(FileKeys.CertificadoExclusionIIBB, ObtenerRuta(usuario.RutaCertificadoExclusionIIBB));
-            if(!usuario.RutaCertificadoExclusionSUSS.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.CertificadoExclusionSUSS, Nombre = ObtenerRuta(usuario.RutaCertificadoExclusionSUSS) });
-
-            if(!usuario.RutaCertificadoExclusionGanancias.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.CertificadoExclusionGanancias, Nombre = ObtenerRuta(usuario.RutaCertificadoExclusionGanancias) });
-
-            if(!usuario.RutaSIPER.IsNullOrWhiteSpace())
-                archivos.Add(new ArchivoDto { FileKey = FileKeys.SIPER, Nombre = ObtenerRuta(usuario.RutaSIPER) });
-            //archivos.Add(FileKeys.DocumentacionEnBolsa, ObtenerRuta(usuario.RutaDocumentacionEnBolsa));
 
             foreach (var archivo in usuario.Archivos)
             {
@@ -383,12 +308,12 @@ namespace SustitucionMOAUtils.Services
         private bool ValidarArchivosSubidos(UsuarioGranos usuario)
         {
 
-            if (usuario.RutaInformeComercialFirmado.IsNullOrWhiteSpace())
+            if (usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Informe comercial firmado"));
             }
 
-            if (usuario.RutaConstanciaCBU.IsNullOrWhiteSpace())
+            if (usuario.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCBU))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
             }
@@ -400,53 +325,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
-            string rutaArchivo = "";
-
-            if (fileID > 0)
-            {
-                rutaArchivo = usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta;
-            }
-            else
-            {
-                switch (fileKey)
-                {
-                    case FileKeys.InformeComercialFirmado:
-                        rutaArchivo = usuario.RutaInformeComercialFirmado;
-                        break;
-                    case FileKeys.ConstanciaCBU:
-                        rutaArchivo = usuario.RutaConstanciaCBU;
-                        break;
-                    case FileKeys.ConstanciaCBUMercaderia:
-                        rutaArchivo = usuario.RutaConstanciaCBUMercaderia;
-                        break;
-                    case FileKeys.ConstanciaCUIT:
-                        rutaArchivo = usuario.RutaConstanciaCUIT;
-                        break;
-                    case FileKeys.InscripcionIIBB:
-                        rutaArchivo = usuario.RutaInscripcionIIBB;
-                        break;
-                    case FileKeys.CertificadoExclusionGanancias:
-                        rutaArchivo = usuario.RutaCertificadoExclusionGanancias;
-                        break;
-                    case FileKeys.CertificadoExclusionIIBB:
-                        rutaArchivo = usuario.RutaCertificadoExclusionIIBB;
-                        break;
-                    case FileKeys.CertificadoExclusionIVA:
-                        rutaArchivo = usuario.RutaCertificadoExclusionIVA;
-                        break;
-                    case FileKeys.CertificadoExclusionSUSS:
-                        rutaArchivo = usuario.RutaCertificadoExclusionSUSS;
-                        break;
-                    case FileKeys.SIPER:
-                        rutaArchivo = usuario.RutaSIPER;
-                        break;
-                    case FileKeys.DocumentacionEnBolsa:
-                        rutaArchivo = usuario.RutaDocumentacionEnBolsa;
-                        break;
-                }
-            }
-
-            return rutaArchivo;
+            return usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta; ;
         }
 
         public string EliminarArchivo(string mailUsuario, string fileKey, int archivoID)
@@ -455,64 +334,11 @@ namespace SustitucionMOAUtils.Services
 
             ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
             string rutaArchivo = "";
-
-            if (archivoID > 0)
-            {
-                var archivoEliminar = usuario.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault();
-                rutaArchivo = archivoEliminar.Ruta;
-                usuario.Archivos.Remove(archivoEliminar);
-            }
-            else
-            {
-                switch (fileKey)
-                {
-                    case FileKeys.InformeComercialFirmado:
-                        rutaArchivo = usuario.RutaInformeComercialFirmado;
-                        usuario.RutaInformeComercialFirmado = null;
-                        break;
-                    case FileKeys.ConstanciaCBU:
-                        rutaArchivo = usuario.RutaConstanciaCBU;
-                        usuario.RutaConstanciaCBU = null;
-                        break;
-                    case FileKeys.ConstanciaCBUMercaderia:
-                        rutaArchivo = usuario.RutaConstanciaCBUMercaderia;
-                        usuario.RutaConstanciaCBUMercaderia = null;
-                        break;
-                    case FileKeys.ConstanciaCUIT:
-                        rutaArchivo = usuario.RutaConstanciaCUIT;
-                        usuario.RutaConstanciaCUIT = null;
-                        break;
-                    case FileKeys.InscripcionIIBB:
-                        rutaArchivo = usuario.RutaInscripcionIIBB;
-                        usuario.RutaInscripcionIIBB = null;
-                        break;
-                    case FileKeys.CertificadoExclusionGanancias:
-                        rutaArchivo = usuario.RutaCertificadoExclusionGanancias;
-                        usuario.RutaCertificadoExclusionGanancias = null;
-                        break;
-                    case FileKeys.CertificadoExclusionIIBB:
-                        rutaArchivo = usuario.RutaCertificadoExclusionIIBB;
-                        usuario.RutaCertificadoExclusionIIBB = null;
-                        break;
-                    case FileKeys.CertificadoExclusionIVA:
-                        rutaArchivo = usuario.RutaCertificadoExclusionIVA;
-                        usuario.RutaCertificadoExclusionIVA = null;
-                        break;
-                    case FileKeys.CertificadoExclusionSUSS:
-                        rutaArchivo = usuario.RutaCertificadoExclusionSUSS;
-                        usuario.RutaCertificadoExclusionSUSS = null;
-                        break;
-                    case FileKeys.SIPER:
-                        rutaArchivo = usuario.RutaSIPER;
-                        usuario.RutaSIPER = null;
-                        break;
-                    case FileKeys.DocumentacionEnBolsa:
-                        rutaArchivo = usuario.RutaDocumentacionEnBolsa;
-                        usuario.RutaDocumentacionEnBolsa = null;
-                        break;
-                }
-            }
-
+        
+            var archivoEliminar = usuario.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault();
+            rutaArchivo = archivoEliminar.Ruta;
+            usuario.Archivos.Remove(archivoEliminar);
+       
             repositorio.GuardarCambios();
             if (File.Exists(rutaArchivo))
             {

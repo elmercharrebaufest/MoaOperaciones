@@ -47,17 +47,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
     empresaEstadoSeleccionada: number = 0;
     orderDirection: number = 1;
     itemsPerPage = 20;
-    nombreArchivoInformeComercialFirmado: string = "";
-    nombreArchivoConstanciaCBU: string = "";
-    nombreArchivoConstanciaCBUMercaderia: string = "";
-    nombreArchivoConstanciaCUIT: string = "";
-    nombreArchivoInscripcionIIBB: string = "";
-    nombreArchivoCertificadoExclusionIVA: string = "";
-    nombreArchivoCertificadoExclusionIIBB: string = "";
-    nombreArchivoCertificadoExclusionSUSS: string = "";
-    nombreArchivoCertificadoExclusionGanancias: string = "";
-    nombreArchivoSIPER: string = "";
-    nombreArchivoDocumentacionEnBolsa: string = "";
     observaciones: string = "";
     observacionesProveedor: string = "";
     mensajeError: string = "";
@@ -237,7 +226,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         let fileKey: string = archivo.FileKey
 
         var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString());
-        console.log(param);        
         var url = "/officetohtml/index.html?param=" + param;
         var link = document.createElement("a");
         document.body.appendChild(link);

@@ -36,18 +36,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     private newAttribute: NuevoProduccion = new NuevoProduccion();
 
     materialesData: any = null;
-
-    nombreArchivoInformeComercialFirmado: string = "";
-    nombreArchivoConstanciaCBU: string = "";
-    nombreArchivoConstanciaCBUMercaderia: string = "";
-    nombreArchivoConstanciaCUIT: string = "";
-    nombreArchivoInscripcionIIBB: string = "";
-    nombreArchivoCertificadoExclusionIVA: string = "";
-    nombreArchivoCertificadoExclusionIIBB: string = "";
-    nombreArchivoCertificadoExclusionSUSS: string = "";
-    nombreArchivoCertificadoExclusionGanancias: string = "";
-    nombreArchivoSIPER: string = "";
-    nombreArchivoDocumentacionEnBolsa: string = "";
     CBUSISA: string = "";
 
     nombreArchivoSeleccionado: string = "";
@@ -202,8 +190,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     }
                 }
                 this.listaCampanias = listaCampanias2;
-                console.log(this.listaMateriales);
-                console.log(this.listaCampanias);
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -229,7 +215,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.unsubscribe();
         this.informe.NuevosCampos.forEach(campo => {
             for (const item of this.listaMateriales) {
-                console.log(item.Id, campo.MaterialId);
                 if (item.Id == campo.MaterialId) {
                     campo.CampaniaId = item.CampaniaIdActual;
                 }
