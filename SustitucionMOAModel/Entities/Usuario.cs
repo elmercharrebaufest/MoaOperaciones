@@ -24,6 +24,8 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
+        public virtual ICollection<Archivo> Archivos { get; set; }
+
         //internal Usuario() { }
 
         //public Usuario(string mail, string CUIT)

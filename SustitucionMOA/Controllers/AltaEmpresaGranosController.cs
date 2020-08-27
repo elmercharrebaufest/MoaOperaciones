@@ -5,7 +5,6 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
@@ -102,12 +101,10 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult GetLocalidadCombo(string localidad)
         {
-
             localidad = localidad.IsNullOrWhiteSpace() ? "" : localidad;
 
             if (localidad.Length > 2)
             {
-
                 var listadoLocalidad = repositorio.Listar<Localidad, LocalidadCombo>(x => new LocalidadCombo()
                 {
                     LocalidadId = x.LocalidadId,
@@ -126,9 +123,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                //return JsonCustom("{\"Datos\":[{\"MaterialId\":4,\"Codigo\":\"000000000019908018\",\"Descripcion\":\"Girasol\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":5,\"Codigo\":\"000000000019908019\",\"Descripcion\":\"Girsol AO\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":1,\"Codigo\":\"000000000019908036\",\"Descripcion\":\"Maiz\",\"CampaniaIdActual\":8,\"CampaniaActual\":\"19-20\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"},{\"MaterialId\":3,\"Codigo\":\"000000000019908017\",\"Descripcion\":\"Soja\",\"CampaniaIdActual\":7,\"CampaniaActual\":\"18-19\",\"CampaniaTableroId\":7,\"CampaniaTablero\":\"18-19\"},{\"MaterialId\":2,\"Codigo\":\"000000000019908027\",\"Descripcion\":\"Trigo\",\"CampaniaIdActual\":7,\"CampaniaActual\":\"18-19\",\"CampaniaTableroId\":8,\"CampaniaTablero\":\"19-20\"}],\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false}");
                 return JsonCustom(altaEmpresaService.ObtenerMaterialesDataAgro());
-
             }
             catch (InfoCustomException e)
             {
@@ -161,45 +156,37 @@ namespace SustitucionMOA.Controllers
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
-
-                var fileSubido = Request.Files[0];
+                
                 var fileKey = Request.Form.Get("fileKey");
 
-                if (fileSubido.ContentLength > 0)
-                {
-                    return JsonCustom(new { data = altaEmpresaService.GuardarArchivo(fileSubido, fileKey, mail) });
+                List<string> errores = new List<string>();
+
+                for (int i = 0; i < Request.Files.Count; i++)
+                { 
+                    var fileSubido = Request.Files[i];
+
+                    if (fileSubido.ContentLength > 0)
+                    {
+                        var result = altaEmpresaService.GuardarArchivo(fileSubido, fileKey, mail);
+
+                        if (!result.Equals(SuccessMsg.ArchivoSubidoOK))
+                        {
+                            errores.Add(string.Concat("Ocurrió un error con el archivo ", fileSubido.FileName, ": ", result));
+                        }
+                    }
+                    else
+                    {
+                        errores.Add(string.Concat("El archivo ", fileSubido.FileName, " está vacío."));
+                    }
                 }
 
-                return Json(new { info = "El archivo está vacío" }, JsonRequestBehavior.AllowGet);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
+                if ( errores.Count > 0)
+                {
+                    return JsonCustom(new { info = errores });
+                }
 
-        public ActionResult BorrarArchivo(string fileKey, int fileID)
-        {
-            try
-            {
-                
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                return JsonCustom(new { data = SuccessMsg.ArchivoSubidoOK });
 
-                return JsonCustom(new { data = altaEmpresaService.BorrarArchivo(mail, fileKey, fileID) });
             }
             catch (InfoCustomException e)
             {
@@ -278,14 +265,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string fileKey, string mail)
+        public ActionResult DescargarArchivo(string fileKey, string mail, int archivoID)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
-                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey);
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey, archivoID);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);
@@ -298,14 +285,15 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult EnviarSolicitudUsuario()
+        public ActionResult EliminarArchivo(string fileKey, int archivoID)
         {
             try
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
-                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail));
+                string result = altaEmpresaService.EliminarArchivo(mail, fileKey, archivoID);
+
+                return JsonCustom(result);
             }
             catch (InfoCustomException e)
             {
@@ -327,16 +315,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult EliminarArchivo(string fileKey, string mail)
+        public ActionResult EnviarSolicitudUsuario()
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(mail))
-                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
-                string result = altaEmpresaService.EliminarArchivo(mail, fileKey);
 
-                return JsonCustom(result);
+                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail));
             }
             catch (InfoCustomException e)
             {
