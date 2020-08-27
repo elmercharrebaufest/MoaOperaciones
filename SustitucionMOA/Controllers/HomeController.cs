@@ -184,7 +184,6 @@ namespace SustitucionMOA.Controllers
 
             if (esNuevoUsuario)
             {
-
                 if (usuario.ObtenerProveedorActual().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                 {
                     if (granosFlag == "G")
@@ -223,7 +222,6 @@ namespace SustitucionMOA.Controllers
                     }
                 }
             }
-
 
             return Json(new
             {

@@ -32,8 +32,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaCampanias: any = [];
     campaniaActual: string;
 
-    private fieldArray: Array<any> = [];
-    private newAttribute: any = {};
     // private acopiosArray: Array<NuevoAcopio> = [];
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
     private newAttribute: NuevoProduccion = new NuevoProduccion();
@@ -231,19 +229,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
-                this.spinnerModal.hideIt();
-                var byteArray = new Uint8Array(result.data);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // IE11
-                    window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.modalMensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.modalMensajeComponent.setInfoMsg(result.info);
-                } else {
                     this.spinnerSmallComponent.hideIt();
                     var byteArray = new Uint8Array(result.data);
                     var blob = new Blob([byteArray], { type: 'application/pdf' });
@@ -261,9 +246,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
                         return false;
                     }
-                }
-
-            },
+                },
             error => {
                 this.spinnerModal.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);

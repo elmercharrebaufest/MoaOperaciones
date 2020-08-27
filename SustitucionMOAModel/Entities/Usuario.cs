@@ -97,6 +97,7 @@ namespace SustitucionMOAModel.Entities
         {
             return
                 Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any(); 
         }
     }

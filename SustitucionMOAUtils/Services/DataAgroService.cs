@@ -25,6 +25,9 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
         }
+        public DataAgroService()
+        {
+        }
 
         public DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre)
         {
@@ -68,6 +71,11 @@ namespace SustitucionMOAUtils.Services
             {
                 ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT);
 
+                usuario.Roles = new List<Rol>();
+                usuario.Proveedores = new List<Proveedor>();
+                usuario.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+                proveedor.Mail = usuario.Mail;
+
                 if (!respuesta.HayError)
                 {
                     if (respuesta.ProveedorMails.Contains(usuario.Mail) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
@@ -78,28 +86,26 @@ namespace SustitucionMOAUtils.Services
                         proveedor.IdDataAgro = respuesta.ProveedorId;
                         proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
                         proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
-                        proveedor.Mail = usuario.Mail;
-
-                        usuario.Roles = new List<Rol>();
-                        usuario.Proveedores = new List<Proveedor>();
-
-                        usuario.TipoUsuario = ObtenerTipoPorNombreCorto("G");
 
                         Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ?  "GRAN" : "NUEG" );
 
                         proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
                 
                         usuario.Roles.Add(rolUsuario);
-
                     }
                     else
                     {
+                        Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
+                        usuario.Roles.Add(rolDesabilitado);
+
                         proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                         proveedor.Observaciones = "El mail del registro no está dentro de los mails registrados en Data Agro.";
                     }
                 }
                 else
                 {
+                    Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
+                    usuario.Roles.Add(rolDesabilitado);
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                     proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
                 }
@@ -108,6 +114,8 @@ namespace SustitucionMOAUtils.Services
                 usuario.Habilitado = true;
 
                 repositorio.Agregar(usuario);
+
+                repositorio.GuardarCambios();
 
                 return respuesta.HayError;
             }
