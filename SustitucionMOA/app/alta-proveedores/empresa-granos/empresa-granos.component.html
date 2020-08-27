@@ -34,11 +34,11 @@
                         <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0"> Sin Adjuntar</label>
 
                         <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
-                            <a (click)="descargarArchivo('constanciaCBU', archivo )">
+                            <a (click)="descargarArchivo(archivo )">
                                 {{archivo.Nombre}}
                             </a>
 
-                            <a style="color:red;" (click)="eliminarArchivo('informeComercialFirmado', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                            <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                         </span>
                     </div>
                 </div>
@@ -61,11 +61,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
-                        <a (click)="descargarArchivo('constanciaCBU', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('constanciaCBU', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
                 </div>
 
@@ -79,11 +79,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
-                        <a (click)="descargarArchivo('constanciaCBUMercaderia', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('constanciaCBUMercaderia', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
 
                 </div>
@@ -100,11 +100,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
-                        <a (click)="descargarArchivo('constanciaCUIT', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('constanciaCUIT', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
                 </div>
                 <div class="form-group">
@@ -119,11 +119,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
-                        <a (click)="descargarArchivo('inscripcionIIBB', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('inscripcionIIBB', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
                 </div>
                 <div class="form-group">
@@ -136,11 +136,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
-                        <a (click)="descargarArchivo('certificadoExclusionIVA', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('certificadoExclusionIVA', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
                 </div>
                 <div class="form-group">
@@ -152,11 +152,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0"> Sin Adjuntar</label>
 
                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
-                        <a (click)="descargarArchivo('certificadoExclusionIIBB', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('certificadoExclusionIIBB', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </div>
                 </div>
                 <div class="form-group">
@@ -168,11 +168,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
-                        <a (click)="descargarArchivo('certificadoExclusionSUSS', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('certificadoExclusionSUSS', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
                 </div>
                 <div class="form-group">
@@ -185,11 +185,11 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
-                        <a (click)="descargarArchivo('certificadoExclusionGanancias', archivo )">
+                        <a (click)="descargarArchivo(archivo )">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('certificadoExclusionGanancias', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
                 </div>
                 <div class="form-group">
@@ -202,35 +202,36 @@
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
-                        <a (click)="descargarArchivo('SIPER', archivo )">
+                        <a (click)="descargarArchivo(archivo)">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('SIPER', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
 
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
                 <h3>
-                    Otros archivos           <label class="label" for="otrosArchivos">
+                    Otros archivos 
+                    <label class="label" for="otrosArchivos">
                         <span class="adjuntar">
                             Adjuntar
                         </span>
                     </label>
                 </h3>
                 <div class="form-group">
-          
+
                     <input style="display:none" type="file" class="form-control-file" id="otrosArchivos" multiple
                            (change)="handleFileInput($event.target.files, 'otrosArchivos')">
 
 
                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
-                        <a (click)="descargarArchivo('otrosArchivos', archivo )">
+                        <a (click)="descargarArchivo(archivo)">
                             {{archivo.Nombre}}
                         </a>
 
-                        <a style="color:red;" (click)="eliminarArchivo('otrosArchivos', archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </div>
 
 
@@ -271,7 +272,7 @@
                 </div>
                 <div class="modal-body modal-notificacion">
                     <p>
-                        ¿Realmente desea eliminar el adjunto {{descripcionSeleccionado}}?
+                        ¿Realmente desea eliminar el adjunto {{nombreArchivoSeleccionado}}?
                     </p>
 
                 </div>
@@ -377,7 +378,7 @@
                                     <tr *ngFor="let field of informe.NuevosCampos; let i = index">
                                         <td width="140px">
                                             <div class="formulario-input">
-                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId" 
+                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
                                                         class="dropdown-granos">
                                                     <option *ngFor="let material of listaMateriales"
                                                             value="{{material.Id}}">

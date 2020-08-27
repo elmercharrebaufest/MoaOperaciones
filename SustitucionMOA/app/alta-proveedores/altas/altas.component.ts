@@ -12,6 +12,7 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { Empresa } from './Empresa';
 import { release } from 'os';
+import { Archivo } from '../../common/models/archivo';
 
 
 @Component({
@@ -60,6 +61,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     observaciones: string = "";
     observacionesProveedor: string = "";
     mensajeError: string = "";
+
+    listaArchivos: Array<Archivo> = [];
 
     ngOnInit(): void {
         this.getEstados();
@@ -209,17 +212,13 @@ export class AltasComponent extends BaseComponent implements OnInit {
     obtenerArchivosSubidos(mail: string) {
         this.subscription = this.service.obtenerArchivosSubidos(mail).subscribe(
             result => {
-                this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
-                this.nombreArchivoConstanciaCBU = result.constanciaCBU;
-                this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
-                this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
-                this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
-                this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
-                this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
-                this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
-                this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
-                this.nombreArchivoSIPER = result.SIPER;
-                this.nombreArchivoDocumentacionEnBolsa = result.documentacionEnBolsa;
+                this.listaArchivos = new Array();
+
+                result.forEach(element => {
+                    let archivo = new Archivo();
+                    archivo = element;
+                    this.listaArchivos.push(archivo);
+                });
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -227,14 +226,17 @@ export class AltasComponent extends BaseComponent implements OnInit {
         );
     }
 
-    descargarArchivo(fileKey: string) {
+    descargarArchivo(archivo: Archivo) {
         if (this.mensajeComponent === undefined)
             this.mensajeComponent = new MensajeComponent();
 
         if (this.spinnerSmallComponent === undefined)
             this.spinnerSmallComponent = new SpinnerSmallComponent();
 
-        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail);
+        let archivoId: number = archivo.Id;
+        let fileKey: string = archivo.FileKey
+
+        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString());
         console.log(param);        
         var url = "/officetohtml/index.html?param=" + param;
         var link = document.createElement("a");

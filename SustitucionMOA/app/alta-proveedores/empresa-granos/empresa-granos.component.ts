@@ -223,10 +223,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    //onChangeMaterialProduccion(event, index) {
-    //    console.log(event);
-    //    this.informe.NuevosCampos[index].CampaniaId = event.target.CampaniaIdActual;
-    //}
     generarInformeComercial() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerModal.showIt();
@@ -269,11 +265,15 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    descargarArchivo(fileKey: string, archivo?: Archivo) {
+    descargarArchivo(archivo: Archivo) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.descargarArchivoSubido(fileKey).subscribe(
+
+        let archivoID: number = archivo.Id; 
+        let fileKey: string = archivo.FileKey;
+
+        this.subscription = this.service.descargarArchivoSubido(fileKey, archivoID).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -308,23 +308,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    //eliminarArchivo(fileKey: string, nombreArchivo: string, descripcion: string) {
-    //    this.fileKeySeleccionado = fileKey;
-    //    this.nombreArchivoSeleccionado = nombreArchivo;
-    //    this.descripcionSeleccionado = descripcion;
-    //    document.getElementById("openModalConfirmModal").click();
-    //}
 
+    eliminarArchivo(archivo: Archivo) {
 
-    eliminarArchivo(fileKey: string, archivo: Archivo) {
-        this.fileKeySeleccionado = fileKey;
-
-        if (archivo)
-            this.nombreArchivoSeleccionado = archivo.Nombre;
-
-
+        this.fileKeySeleccionado = archivo.FileKey;
+        this.nombreArchivoSeleccionado = archivo.Nombre;
         this.archivoSeleccionado = archivo;
-        //this.descripcionSeleccionado = descripcion;
+
         document.getElementById("openModalConfirmModal").click();
     }
 
@@ -333,10 +323,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        let archivoID: number = 0;
 
-        if (this.archivoSeleccionado)
-            archivoID = this.archivoSeleccionado.Id; 
+        let archivoID: number = this.archivoSeleccionado.Id; 
 
         this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado, archivoID).subscribe(
             result => {
@@ -363,27 +351,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    //obtenerArchivosSubidos() {
-    //    this.subscription = this.service.obtenerArchivosSubidos().subscribe(
-    //        result => {
-    //            this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
-    //            this.nombreArchivoConstanciaCBU = result.constanciaCBU;
-    //            this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
-    //            this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
-    //            this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
-    //            this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
-    //            this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
-    //            this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
-    //            this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
-    //            this.nombreArchivoSIPER = result.SIPER;
-    //        },
-    //        error => {
-    //            this.mensajeComponent.setErrorMsg(error.message);
-    //        }
-    //    );
-    //}
-
-
     obtenerArchivosSubidos() {
         this.subscription = this.service.obtenerArchivosSubidos().subscribe(
             result => {
@@ -394,29 +361,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     archivo = element;
                     this.listaArchivos.push(archivo);
                 });
-
-                //this.nombreArchivoInformeComercialFirmado = this.buscarArchivoPorFileKey("informeComercialFirmado");
-                //this.nombreArchivoConstanciaCBU = this.buscarArchivoPorFileKey("constanciaCBU");
-                //this.nombreArchivoConstanciaCBUMercaderia = this.buscarArchivoPorFileKey("constanciaCBUMercaderia");
-                //this.nombreArchivoConstanciaCUIT = this.buscarArchivoPorFileKey("constanciaCUIT");
-                //this.nombreArchivoInscripcionIIBB = this.buscarArchivoPorFileKey("inscripcionIIBB");
-                //this.nombreArchivoCertificadoExclusionIVA = this.buscarArchivoPorFileKey("certificadoExclusionIVA");
-                //this.nombreArchivoCertificadoExclusionIIBB = this.buscarArchivoPorFileKey("certificadoExclusionIIBB");
-                //this.nombreArchivoCertificadoExclusionSUSS = this.buscarArchivoPorFileKey("certificadoExclusionSUSS");
-                //this.nombreArchivoCertificadoExclusionGanancias = this.buscarArchivoPorFileKey("certificadoExclusionGanancias");
-                //this.nombreArchivoSIPER = this.buscarArchivoPorFileKey("SIPER");
-
-                //this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
-                //this.nombreArchivoConstanciaCBU = result.constanciaCBU;
-                //this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
-                //this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
-                //this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
-                //this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
-                //this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
-                //this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
-                //this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
-                //this.nombreArchivoSIPER = result.SIPER;
-
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);

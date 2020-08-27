@@ -85,11 +85,11 @@ export class EmpresaGranosService extends BaseService {
 
     }
 
-    descargarArchivoSubido(fileKey: string, mail?: string, fileID?: number): Observable<any> {
+    descargarArchivoSubido(fileKey: string, archivoID?: number): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fileKey', fileKey);
-        params.set('mail', mail);
-        params.set('fileID', fileID.toString());
+        params.set('mail', "");
+        params.set('archivoID', archivoID.toString());
 
         return this.http
             .get('/api/AltaEmpresaGranos/DescargarArchivo', { search: params, headers: this.headers })

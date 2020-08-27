@@ -268,14 +268,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string fileKey, string mail, int fileID)
+        public ActionResult DescargarArchivo(string fileKey, string mail, int archivoID)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
-                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey, fileID);
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey, archivoID);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);
