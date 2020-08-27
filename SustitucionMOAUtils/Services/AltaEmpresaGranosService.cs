@@ -87,6 +87,11 @@ namespace SustitucionMOAUtils.Services
 
                     dynamic jsonResult = JObject.Parse(stringContent.Result);
 
+                    if (bool.Parse(jsonResult.HayErrores.ToString()))
+                    {
+                        throw new InfoCustomException(jsonResult.Errores[0].Message);
+                    }
+
                     downloadKey = jsonResult.DownloadKey;
 
 

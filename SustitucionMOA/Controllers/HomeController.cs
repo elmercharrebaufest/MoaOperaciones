@@ -1,12 +1,10 @@
-﻿using Microsoft.Ajax.Utilities;
-using Microsoft.Owin.Security;
+﻿using Microsoft.Owin.Security;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Models;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.Home;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
@@ -21,7 +19,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Entidades = SustitucionMOAModel.Entities;
-using Model = SustitucionMOAModel.Models;
 
 
 
@@ -152,13 +149,13 @@ namespace SustitucionMOA.Controllers
 
             List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
 
+            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+
+            Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
+
             if (permisos.Count() == 1 && permisos.Contains("DATAAGROLOGIN"))
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
-
-                Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
-
                 DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
 
                 return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
@@ -183,6 +180,51 @@ namespace SustitucionMOA.Controllers
                 }
             }
 
+            string redirectURL = "";
+
+            if (esNuevoUsuario)
+            {
+
+                if (usuario.ObtenerProveedorActual().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                {
+                    if (granosFlag == "G")
+                    {
+                        redirectURL = "/alta-empresa-granos";
+                    }
+                    else
+                    {
+                        redirectURL = "/dato-fiscal/documentacion";
+                    }
+                }
+                else
+                {
+                    redirectURL = "/estado-solicitud";
+                }
+            }
+            else
+            {
+                if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
+                {
+                    redirectURL = "/aduana/pesada-online";
+                }
+                else if (tipoUsuario == "CLIE")
+                {
+                    redirectURL = "/cuenta-corriente/simple";
+                }
+                else
+                {
+                    if (granosFlag == "A" || granosFlag == "G")
+                    {
+                        redirectURL = "/home";
+                    }
+                    else
+                    {
+                        redirectURL = "/home-ngs";
+                    }
+                }
+            }
+
+
             return Json(new
             {
                 success = SuccessMsg.LoginOk,
@@ -194,6 +236,7 @@ namespace SustitucionMOA.Controllers
                 tipoUsuario,
                 noticias,
                 esNuevoUsuario,
+                redirectURL,
             }, JsonRequestBehavior.AllowGet);
         }
 

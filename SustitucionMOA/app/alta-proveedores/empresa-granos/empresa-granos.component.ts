@@ -32,6 +32,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaCampanias: any = [];
     campaniaActual: string;
 
+    private fieldArray: Array<any> = [];
+    private newAttribute: any = {};
+    // private acopiosArray: Array<NuevoAcopio> = [];
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
     private newAttribute: NuevoProduccion = new NuevoProduccion();
 
@@ -53,7 +56,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     keyword = 'Nombre';
     data = [];
     autocompleteNotFoundText = "No encontrado";
-    
+
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     }
@@ -99,6 +102,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
+
+    @ViewChild("modalMsjEmpresaGranos")
+    protected modalMensajeComponent: MensajeComponent;
+
 
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
@@ -230,22 +237,38 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 if (window.navigator.msSaveOrOpenBlob) {
                     // IE11
                     window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.modalMensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.modalMensajeComponent.setInfoMsg(result.info);
                 } else {
-                    var url = window.URL.createObjectURL(blob);
-                    var link = document.createElement("a");
-                    document.body.appendChild(link);
-                    link.href = url;
-                    link.download = "Informe comercial" + ".pdf"
-                    link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    this.spinnerSmallComponent.hideIt();
+                    var byteArray = new Uint8Array(result.data);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = "Informe comercial" + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
-                    return false;
+                        return false;
+                    }
                 }
 
             },
             error => {
                 this.spinnerModal.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
+                this.spinnerSmallComponent.hideIt();
+                this.modalMensajeComponent.setErrorMsg(error.message);
             }
         );
     }
