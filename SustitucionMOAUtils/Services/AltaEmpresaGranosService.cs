@@ -338,6 +338,8 @@ namespace SustitucionMOAUtils.Services
             var archivoEliminar = usuario.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault();
             rutaArchivo = archivoEliminar.Ruta;
             usuario.Archivos.Remove(archivoEliminar);
+
+            repositorio.Remover(archivoEliminar);
        
             repositorio.GuardarCambios();
             if (File.Exists(rutaArchivo))
