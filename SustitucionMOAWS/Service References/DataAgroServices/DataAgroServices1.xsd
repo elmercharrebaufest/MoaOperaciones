@@ -97,17 +97,31 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="AltaCupoSAP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="cupoSAP" nillable="true" type="q14:CupoSapDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AltaCupoSAPResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AltaCupoSAPResult" nillable="true" type="q15:ResultadoSap" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="AnularContratoSAP">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="contratoSAP" nillable="true" type="q14:ContratoSAP" />
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="contratoSAP" nillable="true" type="q16:ContratoSAP" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="AnularContratoSAPResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnularContratoSAPResult" nillable="true" type="q15:ResultadoSap" />
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AnularContratoSAPResult" nillable="true" type="q17:ResultadoSap" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -121,7 +135,21 @@
   <xs:element name="ValidarProveedorComercialResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ValidarProveedorComercialResult" nillable="true" type="q16:ResultadoValidarProveedorComercial" />
+        <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="ValidarProveedorComercialResult" nillable="true" type="q18:ResultadoValidarProveedorComercial" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AltaContratoSAP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="contratoSAP" nillable="true" type="q19:ContratoSAPDto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AltaContratoSAPResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Molinos.DataAgro.Entities.Dto" minOccurs="0" name="AltaContratoSAPResult" nillable="true" type="q20:ResultadoSap" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

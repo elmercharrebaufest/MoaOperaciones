@@ -87,6 +87,7 @@ namespace SustitucionMOA
 
 			if (!string.IsNullOrEmpty(policy) && !policy.Equals(Globals.DefaultPolicy))
 			{
+				notification.ProtocolMessage.UiLocales = "en-us";
 				notification.ProtocolMessage.Scope = OpenIdConnectScope.OpenId;
 				notification.ProtocolMessage.ResponseType = OpenIdConnectResponseType.IdToken;
 				notification.ProtocolMessage.IssuerAddress = notification.ProtocolMessage.IssuerAddress.ToLower().Replace(Globals.DefaultPolicy.ToLower(), policy.ToLower());

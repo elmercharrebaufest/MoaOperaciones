@@ -11,11 +11,21 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Configuration;
 using SustitucionMOAUtils.Interfaces;
+using System.Collections.Generic;
+using SustitucionMOARepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
     public class DataAgroService : IDataAgroService
     {
+        protected readonly IRepositorio repositorio;
+
+
+        public DataAgroService(IRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
+
         public DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre)
         {
             try
@@ -62,13 +72,25 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (respuesta.ProveedorMails.Contains(usuario.Mail) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
-                        usuario.Comercial = string.Concat(respuesta.Nombres, " ", respuesta.Apellido);
+                        usuario.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
 
                         proveedor.IdComercialDataAgro = respuesta.ComercialId;
                         proveedor.IdDataAgro = respuesta.ProveedorId;
                         proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
                         proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
                         proveedor.Mail = usuario.Mail;
+
+                        usuario.Roles = new List<Rol>();
+                        usuario.Proveedores = new List<Proveedor>();
+
+                        usuario.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+
+                        Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ?  "GRAN" : "NUEG" );
+
+                        proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                
+                        usuario.Roles.Add(rolUsuario);
+
                     }
                     else
                     {
@@ -80,8 +102,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                     proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
-
                 }
+
+                usuario.Proveedores.Add(proveedor);
+                usuario.Habilitado = true;
+
+                repositorio.Agregar(usuario);
 
                 return respuesta.HayError;
             }
@@ -97,6 +123,16 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
+        {
+            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+        }
+
+        public Rol ObtenerRolPorCodigo(string codigo)
+        {
+            return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
         }
 
         public string ObtenerCBUProveedor(string CUITproveedor)
