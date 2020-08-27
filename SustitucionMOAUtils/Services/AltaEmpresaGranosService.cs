@@ -55,10 +55,10 @@ namespace SustitucionMOAUtils.Services
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
 
-                ObtenerCampaniaActual(out string Campania, out int CampaniaId);
+                //ObtenerCampaniaActual(out string Campania, out int CampaniaId);
 
-                informeComercial.Campaña = Campania;
-                informeComercial.CampañaId = CampaniaId;
+                //informeComercial.Campaña = Campania;
+                //informeComercial.CampañaId = CampaniaId;
 
                 string downloadKey = "";
 

@@ -40,10 +40,7 @@ namespace SustitucionMOA.Controllers
                 informeComercialJson = informeComercialJson.Replace("nia","ña");
                 var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
 
-                foreach (var item in informeComercial.NuevosCampos)
-                {
-
-                }
+               
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 userMail = userMail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : userMail;
@@ -52,6 +49,7 @@ namespace SustitucionMOA.Controllers
 
                 var proveedor = usuario.ObtenerProveedorActual();
 
+                informeComercial.ContactoComercial.Email1 = userMail;
                 informeComercial.ProveedorId = (int)proveedor.IdDataAgro;
                 informeComercial.InformeComercialId = 0;
 
