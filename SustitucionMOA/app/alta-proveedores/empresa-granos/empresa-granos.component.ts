@@ -35,6 +35,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaCampanias: any = [];
     campaniaActual: number;
 
+    // private acopiosArray: Array<NuevoAcopio> = [];
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
     private newAttribute: NuevoProduccion = new NuevoProduccion();
 
@@ -56,7 +57,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     keyword = 'Nombre';
     data = [];
     autocompleteNotFoundText = "No encontrado";
-    
+
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     }
@@ -121,6 +122,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
+
+    @ViewChild("modalMsjEmpresaGranos")
+    protected modalMensajeComponent: MensajeComponent;
+
 
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
@@ -281,6 +286,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             error => {
                 this.spinnerModal.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
+                this.spinnerSmallComponent.hideIt();
+                this.modalMensajeComponent.setErrorMsg(error.message);
             }
         );
     }

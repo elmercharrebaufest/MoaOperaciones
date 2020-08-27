@@ -34,13 +34,6 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioGranos))
                     {
-                        Rol rolUsuarioNuevo = ObtenerRolPorCodigo("NUEG");
-
-                        usuarioGranos.Roles = new List<Rol>();
-                        usuarioGranos.Proveedores = new List<Proveedor>();
-
-                        usuarioGranos.Roles.Add(rolUsuarioNuevo);
-                        usuarioGranos.TipoUsuario = ObtenerTipoPorNombreCorto("G");
                         RegistrarUsuarioGranos(usuarioGranos);
                     }
                     else
@@ -179,14 +172,15 @@ namespace SustitucionMOAUtils.Services
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
             };
 
-            ValidarCUITProveedor(usuario, proveedor);
+            return ValidarCUITProveedor(usuario, proveedor);
+       
 
-            usuario.Proveedores.Add(proveedor);
+            //usuario.Proveedores.Add(proveedor);
 
-            usuario.Habilitado = true;
+            //usuario.Habilitado = true;
 
-            repositorio.Agregar(usuario);
-            return repositorio.GuardarCambios() == 1;
+            //repositorio.Agregar(usuario);
+            //return repositorio.GuardarCambios() == 1;
         }
 
         public bool RegistrarUsuarioGenerico(Usuario usuario)
