@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[Usuario](
+CREATE TABLE [dbo].[Usuario](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Mail] [nvarchar](max) NULL,
 	[CUITRegistro] [nvarchar](max) NULL,
@@ -17,3 +17,4 @@ GO
 
 ALTER TABLE [dbo].[Usuario] CHECK CONSTRAINT [FK_dbo.Usuario_dbo.TipoUsuario_TipoUsuario_Id]
 GO
+

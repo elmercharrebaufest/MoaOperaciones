@@ -74,17 +74,9 @@
     <Compile Include="Extensiones\SqlBulkExtension.cs" />
     <Compile Include="IConsultaEscalar.cs" />
     <Compile Include="IRepositorio.cs" />
-    <Compile Include="Migrations\202008051926318_Initial.cs" />
-    <Compile Include="Migrations\202008051926318_Initial.designer.cs">
-      <DependentUpon>202008051926318_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202008051931415_Initial2.cs" />
-    <Compile Include="Migrations\202008051931415_Initial2.designer.cs">
-      <DependentUpon>202008051931415_Initial2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202008261241190_Initial1.cs" />
-    <Compile Include="Migrations\202008261241190_Initial1.designer.cs">
-      <DependentUpon>202008261241190_Initial1.cs</DependentUpon>
+    <Compile Include="Migrations\202008272151267_Initial.cs" />
+    <Compile Include="Migrations\202008272151267_Initial.designer.cs">
+      <DependentUpon>202008272151267_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MOAOperacionesDbContext.cs" />
@@ -97,14 +89,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202008051926318_Initial.resx">
-      <DependentUpon>202008051926318_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008051931415_Initial2.resx">
-      <DependentUpon>202008051931415_Initial2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202008261241190_Initial1.resx">
-      <DependentUpon>202008261241190_Initial1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202008272151267_Initial.resx">
+      <DependentUpon>202008272151267_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

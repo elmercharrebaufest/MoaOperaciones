@@ -1,6 +1,7 @@
-﻿CREATE TABLE [dbo].[TipoUsuario](
+CREATE TABLE [dbo].[TipoUsuario](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Nombre] [nvarchar](max) NULL,
+	[NombreCorto] [nvarchar](max) NULL,
  CONSTRAINT [PK_dbo.TipoUsuario] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

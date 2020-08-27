@@ -14,8 +14,6 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
-import { NuevoAcopio } from '../../common/models/nuevoAcopio';
-import { NuevoProduccion } from '../../common/models/nuevoProduccion';
 import { ContactoComercial } from '../../common/models/contactoComercial';
 
 @Component({

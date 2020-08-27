@@ -1,7 +1,8 @@
-CREATE TABLE [dbo].[TestEntity](
+CREATE TABLE [dbo].[Partido](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Nombre] [nvarchar](max) NULL,
- CONSTRAINT [PK_dbo.TestEntity] PRIMARY KEY CLUSTERED 
+	[Descripcion] [nvarchar](max) NULL,
+	[ProvinciaID] [int] NOT NULL,
+ CONSTRAINT [PK_dbo.Partido] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

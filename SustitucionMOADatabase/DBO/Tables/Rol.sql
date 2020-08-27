@@ -1,5 +1,6 @@
-﻿CREATE TABLE [dbo].[Rol](
+CREATE TABLE [dbo].[Rol](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Codigo] [nvarchar](max) NULL,
 	[Nombre] [nvarchar](max) NULL,
  CONSTRAINT [PK_dbo.Rol] PRIMARY KEY CLUSTERED 
 (
