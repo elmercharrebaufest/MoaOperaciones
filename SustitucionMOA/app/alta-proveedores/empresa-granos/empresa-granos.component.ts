@@ -1,8 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
+import { Archivo } from '../../common/models/archivo';
 import { InformeComercial } from '../../common/models/informeComercial';
 import { Material } from '../../common/models/material';
+import { NuevoAcopio } from '../../common/models/nuevoAcopio';
+import { NuevoProduccion } from '../../common/models/nuevoProduccion';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -11,8 +14,6 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
-import { NuevoAcopio } from '../../common/models/nuevoAcopio';
-import { NuevoProduccion } from '../../common/models/nuevoProduccion';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -30,7 +31,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     listaCampanias: any = [];
     campaniaActual: string;
-
 
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
     private newAttribute: NuevoProduccion = new NuevoProduccion();
@@ -53,6 +53,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
     descripcionSeleccionado: string = "";
+    archivoSeleccionado: Archivo = null;
+
+    listaArchivos: Array<Archivo> = [];
 
     informe = new InformeComercial();
 
@@ -169,32 +172,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    borrarArchivo(fileKey: string) {
-        //this.mensajeComponent.setMsgsEmpty();
-        //this.spinnerSmallComponent.showIt();
-        //this.unsubscribe();
-        //this.subscription = this.service.borrarArchivo(fileKey, "").subscribe(
-        //    result => {
-        //        this.spinnerSmallComponent.hideIt();
-        //        if (result.logout == true) {
-        //            this.sessionDataService.logout();
-        //        } else if (result.error != undefined && result.error != "") {
-        //            this.mensajeComponent.setErrorMsg(result.error);
-        //        } else if (result.info != undefined) {
-        //            this.mensajeComponent.setInfoMsg(result.info);
-        //        } else {
-        //            this.mensajeComponent.setMsgsEmpty();
-        //            this.mensajeComponent.setSuccessMsg(result.data);
-        //            this.obtenerArchivosSubidos();
-        //        }
-        //    },
-        //    error => {
-        //        this.spinnerSmallComponent.hideIt();
-        //        this.mensajeComponent.setErrorMsg(error.message);
-        //    }
-        //);
-    }
-
     obtenerMateriales() {
         this.subscription = this.service.obtenerMateriales().subscribe(
             result => {
@@ -292,7 +269,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    descargarArchivo(fileKey: string) {
+    descargarArchivo(fileKey: string, archivo?: Archivo) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
@@ -331,18 +308,37 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    eliminarArchivo(fileKey: string, nombreArchivo: string, descripcion: string) {
-        this.fileKeySeleccionado = fileKey;
-        this.nombreArchivoSeleccionado = nombreArchivo;
-        this.descripcionSeleccionado = descripcion;
-        document.getElementById("openModalConfirmModal").click();
+    //eliminarArchivo(fileKey: string, nombreArchivo: string, descripcion: string) {
+    //    this.fileKeySeleccionado = fileKey;
+    //    this.nombreArchivoSeleccionado = nombreArchivo;
+    //    this.descripcionSeleccionado = descripcion;
+    //    document.getElementById("openModalConfirmModal").click();
+    //}
 
+
+    eliminarArchivo(fileKey: string, archivo: Archivo) {
+        this.fileKeySeleccionado = fileKey;
+
+        if (archivo)
+            this.nombreArchivoSeleccionado = archivo.Nombre;
+
+
+        this.archivoSeleccionado = archivo;
+        //this.descripcionSeleccionado = descripcion;
+        document.getElementById("openModalConfirmModal").click();
     }
+
+
     eliminarArchivoSeleccionado() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado).subscribe(
+        let archivoID: number = 0;
+
+        if (this.archivoSeleccionado)
+            archivoID = this.archivoSeleccionado.Id; 
+
+        this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado, archivoID).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -352,42 +348,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    if (this.fileKeySeleccionado == "informeComercialFirmado") {
-                        this.nombreArchivoInformeComercialFirmado = "";
-                    }
-                    if (this.fileKeySeleccionado == "constanciaCBU") {
-                        this.nombreArchivoConstanciaCBU = "";
-                    }
-                    if (this.fileKeySeleccionado == "constanciaCBUMercaderia") {
-                        this.nombreArchivoConstanciaCBUMercaderia = "";
-                    }
-                    if (this.fileKeySeleccionado == "constanciaCUIT") {
-                        this.nombreArchivoConstanciaCUIT = "";
-                    }
-                    if (this.fileKeySeleccionado == "inscripcionIIBB") {
-                        this.nombreArchivoInscripcionIIBB = "";
-                    }
-                    if (this.fileKeySeleccionado == "certificadoExclusionIVA") {
-                        this.nombreArchivoCertificadoExclusionIVA = "";
-                    }
-                    if (this.fileKeySeleccionado == "certificadoExclusionIIBB") {
-                        this.nombreArchivoCertificadoExclusionIIBB = "";
-                    }
-                    if (this.fileKeySeleccionado == "certificadoExclusionSUSS") {
-                        this.nombreArchivoCertificadoExclusionSUSS = "";
-                    }
-                    if (this.fileKeySeleccionado == "certificadoExclusionGanancias") {
-                        this.nombreArchivoCertificadoExclusionGanancias = "";
-                    }
-                    if (this.fileKeySeleccionado == "SIPER") {
-                        this.nombreArchivoSIPER = "";
-                    }
-                    if (this.fileKeySeleccionado == "documentacionEnBolsa") {
-                        this.nombreArchivoDocumentacionEnBolsa = "";
-                    }
+                    this.obtenerArchivosSubidos();
                     this.fileKeySeleccionado = "";
                     this.nombreArchivoSeleccionado = "";
                     this.descripcionSeleccionado = "";
+                    document.getElementById("openModalConfirmModal").click();
+
                 }
             },
             error => {
@@ -395,24 +361,62 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-
-        document.getElementById("openModalConfirmModal").click();
     }
+
+    //obtenerArchivosSubidos() {
+    //    this.subscription = this.service.obtenerArchivosSubidos().subscribe(
+    //        result => {
+    //            this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
+    //            this.nombreArchivoConstanciaCBU = result.constanciaCBU;
+    //            this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
+    //            this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
+    //            this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
+    //            this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
+    //            this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
+    //            this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
+    //            this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
+    //            this.nombreArchivoSIPER = result.SIPER;
+    //        },
+    //        error => {
+    //            this.mensajeComponent.setErrorMsg(error.message);
+    //        }
+    //    );
+    //}
+
 
     obtenerArchivosSubidos() {
         this.subscription = this.service.obtenerArchivosSubidos().subscribe(
             result => {
-                this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
-                this.nombreArchivoConstanciaCBU = result.constanciaCBU;
-                this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
-                this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
-                this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
-                this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
-                this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
-                this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
-                this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
-                this.nombreArchivoSIPER = result.SIPER;
-                this.nombreArchivoDocumentacionEnBolsa = result.documentacionEnBolsa;
+                this.listaArchivos = new Array();
+
+                result.forEach(element => {
+                    let archivo = new Archivo();
+                    archivo = element;
+                    this.listaArchivos.push(archivo);
+                });
+
+                //this.nombreArchivoInformeComercialFirmado = this.buscarArchivoPorFileKey("informeComercialFirmado");
+                //this.nombreArchivoConstanciaCBU = this.buscarArchivoPorFileKey("constanciaCBU");
+                //this.nombreArchivoConstanciaCBUMercaderia = this.buscarArchivoPorFileKey("constanciaCBUMercaderia");
+                //this.nombreArchivoConstanciaCUIT = this.buscarArchivoPorFileKey("constanciaCUIT");
+                //this.nombreArchivoInscripcionIIBB = this.buscarArchivoPorFileKey("inscripcionIIBB");
+                //this.nombreArchivoCertificadoExclusionIVA = this.buscarArchivoPorFileKey("certificadoExclusionIVA");
+                //this.nombreArchivoCertificadoExclusionIIBB = this.buscarArchivoPorFileKey("certificadoExclusionIIBB");
+                //this.nombreArchivoCertificadoExclusionSUSS = this.buscarArchivoPorFileKey("certificadoExclusionSUSS");
+                //this.nombreArchivoCertificadoExclusionGanancias = this.buscarArchivoPorFileKey("certificadoExclusionGanancias");
+                //this.nombreArchivoSIPER = this.buscarArchivoPorFileKey("SIPER");
+
+                //this.nombreArchivoInformeComercialFirmado = result.informeComercialFirmado;
+                //this.nombreArchivoConstanciaCBU = result.constanciaCBU;
+                //this.nombreArchivoConstanciaCBUMercaderia = result.constanciaCBUMercaderia;
+                //this.nombreArchivoConstanciaCUIT = result.constanciaCUIT;
+                //this.nombreArchivoInscripcionIIBB = result.inscripcionIIBB;
+                //this.nombreArchivoCertificadoExclusionIVA = result.certificadoExclusionIVA;
+                //this.nombreArchivoCertificadoExclusionIIBB = result.certificadoExclusionIIBB;
+                //this.nombreArchivoCertificadoExclusionSUSS = result.certificadoExclusionSUSS;
+                //this.nombreArchivoCertificadoExclusionGanancias = result.certificadoExclusionGanancias;
+                //this.nombreArchivoSIPER = result.SIPER;
+
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -422,6 +426,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     redirigirAEstado() {
         this.navService.navegarSeccion('/estado-solicitud')
+    }
+
+    buscarArchivoPorFileKey(fileKey: string) {
+        return this.listaArchivos.find(x => x.FileKey == fileKey).Nombre;
     }
 
     onSubmit() {
@@ -466,6 +474,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     deleteFieldValueAlm(index) {
         this.informe.NuevosAcopios.splice(index, 1);
     }
+
+
     // Comento c�digo que no compila
     //    (function () {
     //    'use strict';

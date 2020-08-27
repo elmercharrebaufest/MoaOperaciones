@@ -26,6 +26,5 @@ namespace SustitucionMOAModel.Entities
 
         public string RutaSIPER { get; set; }
         public string RutaDocumentacionEnBolsa { get; set; }
-
     }
 }

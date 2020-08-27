@@ -19,5 +19,6 @@ namespace SustitucionMOAModel.Enums
         public const string CertificadoExclusionSUSS = "certificadoExclusionSUSS";
         public const string SIPER = "SIPER";
         public const string DocumentacionEnBolsa = "documentacionEnBolsa";
+        public const string OtrosArchivos = "otrosArchivos";
     }
 }

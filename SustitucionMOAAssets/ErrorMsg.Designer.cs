@@ -79,6 +79,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ya existe un archivo con el mismo nombre..
+        /// </summary>
+        public static string ErrorArchivoRepetido {
+            get {
+                return ResourceManager.GetString("ErrorArchivoRepetido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El archivo {0} es requerido..
         /// </summary>
         public static string ErrorArchivoRequerido {

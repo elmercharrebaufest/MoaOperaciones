@@ -150,6 +150,7 @@ import { EstadoSolicitudComponent } from './alta-proveedores/estado-solicitud/es
 import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/estado-solicitud.service'
 
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { ArchivoPipe } from "./alta-proveedores/empresa-granos/archivos.pipe";
 
 
 @NgModule({
@@ -247,7 +248,8 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
         AltasComponent,
         CuitInvalidoComponent,
         ProveedorDetalleComponent,
-        EstadoSolicitudComponent
+        EstadoSolicitudComponent,
+        ArchivoPipe
     ],
     providers: [
         DatePipe,

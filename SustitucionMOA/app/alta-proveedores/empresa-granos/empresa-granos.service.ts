@@ -11,10 +11,14 @@ import { BaseService } from './../../common/services/BaseService';
 @Injectable()
 export class EmpresaGranosService extends BaseService {
 
-    postFile(files: FileList, fileKey: string): Observable<any>  {
-        let fileToUpload = files.item(0);
+    postFile(files: FileList, fileKey: string): Observable<any> {
         let formData = new FormData();
-        formData.append('file', fileToUpload, fileToUpload.name);
+
+        for (let i = 0; i < files.length; i++) {
+            let fileToUpload = files.item(i);
+            formData.append('file', fileToUpload, fileToUpload.name);
+        }
+
         formData.append('fileKey', fileKey);
 
         return this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData).pipe(map(this.extractData));
@@ -33,10 +37,10 @@ export class EmpresaGranosService extends BaseService {
         params.set('localidad', term);
 
         return this.http.get('/api/AltaEmpresaGranos/GetLocalidadCombo', { search: params, headers: this.headers })
-                .pipe(map(this.extractData));
-    }  
+            .pipe(map(this.extractData));
+    }
 
-    generarInformeComercial(informeComercial : InformeComercial): Observable<any>  {
+    generarInformeComercial(informeComercial: InformeComercial): Observable<any> {
         let payload = new FormData();
         payload.append("informeComercialJson", JSON.stringify(informeComercial));
         return this.http
@@ -74,16 +78,6 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    borrarArchivo(fileKey: string, fileID: string): Observable<any> {
-
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('fileKey', fileKey);
-        params.set('fileID', "0");
-        return this.http
-            .get('/api/AltaEmpresaGranos/BorrarArchivo', { search: params, headers: this.headers })
-            .pipe(map(this.extractData));
-    }
-
     obtenerCBUSISA(): Observable<any> {
         return this.http
             .get('/api/AltaEmpresaGranos/ObtenerCBUSISA')
@@ -91,10 +85,11 @@ export class EmpresaGranosService extends BaseService {
 
     }
 
-    descargarArchivoSubido(fileKey: string, mail?: string): Observable<any> {
+    descargarArchivoSubido(fileKey: string, mail?: string, fileID?: number): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fileKey', fileKey);
         params.set('mail', mail);
+        params.set('fileID', fileID.toString());
 
         return this.http
             .get('/api/AltaEmpresaGranos/DescargarArchivo', { search: params, headers: this.headers })
@@ -109,10 +104,10 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    eliminarArchivoSubido(fileKey: string, mail?: string): Observable<any> {
+    eliminarArchivoSubido(fileKey: string, archivoID?: number): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fileKey', fileKey);
-        params.set('mail', mail);
+        params.set('archivoID', archivoID.toString());
 
         return this.http
             .get('/api/AltaEmpresaGranos/EliminarArchivo', { search: params, headers: this.headers })

@@ -195,4 +195,7 @@
   <data name="EstadoIncorrectoSolicitud" xml:space="preserve">
     <value>No puede editar la solicitud debido que su estado no es "Documentacion pendiente".</value>
   </data>
+  <data name="ErrorArchivoRepetido" xml:space="preserve">
+    <value>Ya existe un archivo con el mismo nombre.</value>
+  </data>
 </root>
