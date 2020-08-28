@@ -133,6 +133,29 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT)
+        {
+            try
+            {
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+
+                return respuesta;
+            }
+            catch (InfoCustomException e)
+            {
+                return null;
+            }
+            catch (ValidationCustomException e)
+            {
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
         {
             return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);

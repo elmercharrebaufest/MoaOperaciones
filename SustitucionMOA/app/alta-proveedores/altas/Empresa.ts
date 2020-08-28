@@ -11,6 +11,8 @@
     Observaciones: string;
     Comercial: string;
     HistorialAprobaciones: any;
+    SISAEstadoCuit: string;
+    EstadoSIPER: string;
 }
 
 export class HistorialAprobaciones {

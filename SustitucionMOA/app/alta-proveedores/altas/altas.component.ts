@@ -149,10 +149,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeError = "Debe ingresar una observacion para el Proveedor.";
             return false;
         }
+        if (estadoId == 7 && this.empresaSeleccionada.SISAEstadoCuit != "1" && (this.empresaSeleccionada.EstadoSIPER == "" || this.empresaSeleccionada.EstadoSIPER == null)) {
+            this.mensajeError = "Debe ingresar Estado en SIPER.";
+            return false;
+        }
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor).subscribe(
+            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(
                 result => {
                     this.getEmpresa();
                     this.spinnerComponent.hideIt();

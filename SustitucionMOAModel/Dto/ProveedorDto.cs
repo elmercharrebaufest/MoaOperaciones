@@ -25,5 +25,7 @@ namespace SustitucionMOAModel.Dto
 
         public virtual List<ProveedorHistorialAprobacionDto> HistorialAprobaciones { get; set; }
         public string Comercial { get; set; }
+        public string SISAEstadoCuit { get; set; }
+        public string EstadoSIPER { get; set; }
     }
 }

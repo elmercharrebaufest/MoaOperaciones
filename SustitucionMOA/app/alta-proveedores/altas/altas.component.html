@@ -46,6 +46,7 @@
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">Razon Social</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Comercial')">Comercial</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SISAEstadoCuit')">SISA</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
                         </tr>
@@ -57,6 +58,7 @@
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial}}</td>
                             <td>{{empresa.Comercial}}</td>
+                            <td>{{empresa.SISAEstadoCuit}}</td>                            
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-lg"
@@ -153,6 +155,15 @@
                                                 {{archivo.Nombre}}
                                             </a>
                                         </div>
+                                    </div>
+                                </mdb-step>
+                                <mdb-step name="Step 6" label="Documentación">
+                                    <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
+                                    <div class="form-group" *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                        Estado en SIPER <input type="text" class="form-control" [value]="" [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
+                                    </div>
+                                    <div class="form-group" *ngIf="empresaSeleccionada.EstadoAprobacion != 2 || !isAuthorized('ABM EMPRESAS OPERADOR')">
+                                        Estado en SIPER:  <label>{{empresaSeleccionada.EstadoSIPER}}</label>
                                     </div>
                                 </mdb-step>
                             </div>

@@ -19,11 +19,13 @@ namespace SustitucionMOAModel.Entities
         public string Mail { get; set; }
         public EstadoAprobacion EstadoAprobacion { get; set; }
         public string Observaciones { get; set; }
+        public int? IdDataAgro { get; set; }
+        public int? IdComercialDataAgro { get; set; }
+        public string EstadoSIPER { get; set; }
+
 
         [InverseProperty("Proveedores")]
         public virtual ICollection<Usuario> UsuariosAsociados { get; set; }
-        public int? IdDataAgro { get; set; }
-        public int? IdComercialDataAgro { get; set; }
 
         [InverseProperty("Proveedor")]
         public virtual ICollection<ProveedorHistorialAprobacion> HistorialAprobaciones { get; set; }

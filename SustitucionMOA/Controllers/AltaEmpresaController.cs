@@ -13,6 +13,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,11 +35,13 @@ namespace SustitucionMOA.Controllers
     {
         protected readonly IRepositorio repositorio;
         readonly IAltaEmpresaService altaEmpresaService;
+        readonly IDataAgroService dataAgroService;
 
-        public AltaEmpresaController(IAltaEmpresaService altaEmpresaService, IRepositorio repositorio)
+        public AltaEmpresaController(IAltaEmpresaService altaEmpresaService, IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.altaEmpresaService = altaEmpresaService;
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
@@ -49,6 +52,12 @@ namespace SustitucionMOA.Controllers
                 var empresas = altaEmpresaService.getEmpresas();
                 foreach (var item in empresas)
                 {
+                    ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
+                    if (result != null)
+                    {
+                        item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                    }
+
                     item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
                     foreach (var item2 in item.HistorialAprobaciones)
                     {
@@ -73,11 +82,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult setEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor)
+        public ActionResult setEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER)
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.setEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"),  observacionParaElProveedor) });
+                return JsonCustom(new { data = altaEmpresaService.setEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER) });
             }
             catch (InfoCustomException e)
             {

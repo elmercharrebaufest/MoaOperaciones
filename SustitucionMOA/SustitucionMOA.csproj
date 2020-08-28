@@ -970,6 +970,10 @@
       <Project>{7FD011FD-9B76-4FA9-AD54-3EB33F2D6E0C}</Project>
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
+      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Name>SustitucionMOAWS</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

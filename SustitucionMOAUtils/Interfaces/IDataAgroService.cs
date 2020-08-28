@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
+using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre);
         bool ValidarCUITProveedorGranos(UsuarioGranos usuario, Proveedor proveedor);
         string ObtenerCBUProveedor(string CUITproveedor);
+        ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT);
+
     }
 }
