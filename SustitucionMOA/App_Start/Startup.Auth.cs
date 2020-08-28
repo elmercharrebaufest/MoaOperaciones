@@ -72,7 +72,7 @@ namespace SustitucionMOA
 					},
 
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
-					Scope = $"openid profile offline_access {Globals.ReadTasksScope} {Globals.WriteTasksScope}"
+					Scope = $"openid profile offline_access"
 				}
 			);
 		}
@@ -87,7 +87,7 @@ namespace SustitucionMOA
 
 			if (!string.IsNullOrEmpty(policy) && !policy.Equals(Globals.DefaultPolicy))
 			{
-				notification.ProtocolMessage.UiLocales = "en-us";
+				notification.ProtocolMessage.UiLocales = "es-es";
 				notification.ProtocolMessage.Scope = OpenIdConnectScope.OpenId;
 				notification.ProtocolMessage.ResponseType = OpenIdConnectResponseType.IdToken;
 				notification.ProtocolMessage.IssuerAddress = notification.ProtocolMessage.IssuerAddress.ToLower().Replace(Globals.DefaultPolicy.ToLower(), policy.ToLower());
