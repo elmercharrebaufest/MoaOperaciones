@@ -4,5 +4,19 @@
 	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=GVICSQLTEST2016.molinosagro.ad;initial catalog=MOAOperaciones;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
 	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
+	<setParameter name="EsLocal Config" value="false" />
+
+	<setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar:9000" />
+	
 	<setParameter name="ida:RedirectUri Config" value="https://moaoperacionesqa.molinosagro.com.ar/" />
+	<setParameter name="ida:Tenant Config" value="webOpDev.onmicrosoft.com" />
+	<setParameter name="ida:TenantId Config" value="52797f85-e8e3-4d20-b3bf-70cc5e60ee71" />
+	<setParameter name="ida:ClientId Config" value="af885dee-a5a6-48b3-ac9a-105f9aec5ca6" />
+	<setParameter name="ida:ClientSecret Config" value="-Hl7Fb.1l_Y_227ojF1egefB3UTGt.2C6t" />
+	<setParameter name="ida:AadInstance Config" value="https://webOpDev.b2clogin.com/tfp/{0}/{1}" />
+	<setParameter name="ida:SignUpPolicyId Config" value="B2C_1_REGISTRO" />
+	<setParameter name="ida:SignInPolicyId Config" value="B2C_1_iniciodesesion" />
+	<setParameter name="ida:EditProfilePolicyId Config" value="b2c_1_edit_profile" />
+	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
+
 </parameters>
