@@ -106,8 +106,14 @@
                                     <div class="form-group informe-comercial">
                                         <div style="flex-direction: column;">
                                             <label>Informe comercial</label>&nbsp;
-                                            <a *ngIf="nombreArchivoInformeComercialFirmado != ''" (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
-                                            <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">Sin Adjuntar</label>
+
+                                            <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0"> Sin Adjuntar</label>
+
+                                            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
+                                                <a (click)="descargarArchivo(archivo)">
+                                                    {{archivo.Nombre}}
+                                                </a>
+                                            </span>
                                         </div>
 
                                     </div>
@@ -119,22 +125,34 @@
                                             Constancia de CBU certificada
                                             por Banco
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0"> Sin Adjuntar</label>
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                     <div class="form-group">
                                         <label>
                                             Constancia de CBU Mercaderia
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="descargarArchivo('nombreArchivoConstanciaCBUMercaderia')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoConstanciaCBUMercaderia == ''">Sin Adjuntar</label>
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0"> Sin Adjuntar</label>
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                 </mdb-step>
                                 <mdb-step name="Step 4" label="Documentación">
-                                    <h3>Documentación al día en Bolsa</h3>
+                                    <h3>Otros archivos </h3>
                                     <div class="form-group">
-                                        <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('documentacionEnBolsa')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'otrosArchivos').length === 0"> Sin Adjuntar</label>
+                                        <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </div>
                                     </div>
                                 </mdb-step>
                             </div>
@@ -143,8 +161,13 @@
                                     <h3>Documentación Impositiva</h3>
                                     <div class="form-group">
                                         <label>Constancia de CUIT</label>&nbsp;
-                                        <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                     <div class="form-group">
                                         <label>
@@ -152,48 +175,80 @@
                                             Convenio (CM05
                                             vigente)
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0"> Sin Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                     <div class="form-group">
                                         <label>
                                             Certificados de exclusión o
                                             exención IVA.
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" (click)="descargarArchivo('certificadoExclusionIVA')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
+                                   
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0"> Sin Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                     <div class="form-group">
                                         <label>
                                             Certificados de exclusión o
                                             exención IIBB.
-                                        </label>&nbsp;
-                                        <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" (click)="descargarArchivo('certificadoExclusionIIBB')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
+                                        </label>
+
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0"> Sin Adjuntar</label>
+                                        <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label>
                                             Certificados de exclusión o
                                             exención SUSS.
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" (click)="descargarArchivo('certificadoExclusionSUSS')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0"> Sin Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                     <div class="form-group">
                                         <label>
                                             Certificados de exclusión o
                                             exención Ganancias.
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" (click)="descargarArchivo('certificadoExclusionGanancias')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">Sin Adjuntar</label>
+                                 
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0"> Sin Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                     <div class="form-group">
                                         <label>
-                                            Solamente en caso de SISA 2 / SISA 3,
-                                            presentar SIPER.
+                                            SIPER.
                                         </label>&nbsp;
-                                        <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('SIPER')">Ver archivo subido</a>
-                                        <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
+
+                                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
                                     </div>
                                 </mdb-step>
                             </div>

@@ -87,37 +87,41 @@ export class AppComponent {
         this.sessionDataService.setPermisos(result.permisos);
         this.sessionDataService.setGranosFlag(result.granosFlag);
 
-        if (result.esNuevoUsuario) {
-            if (result.granosFlag == "A") {
-                sessionStorage.setItem("granosSelected", "G");
-                this.navService.navegarSeccion('/dato-fiscal/documentacion');
-            } else {
-                sessionStorage.setItem("granosSelected", result.granosFlag);
-                if (result.granosFlag == "G") {
-                    this.navService.navegarSeccion('/alta-empresa-granos');
-                } else {
-                    this.navService.navegarSeccion('/dato-fiscal/documentacion');
-                }
-            }
-        } else {
+        sessionStorage.setItem("granosSelected", result.granosFlag);
+        this.navService.navegarSeccion(result.redirectURL);
 
-            if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
-                this.navService.navegarSeccion('/aduana/pesada-online');
-            } else if (result.tipoUsuario == "CLIE") {
-                this.navService.navegarSeccion('/cuenta-corriente/simple');
-            } else {
-                if (result.granosFlag == "A") {
-                    sessionStorage.setItem("granosSelected", "G");
-                    this.navService.navegarSeccion('/home');
-                } else {
-                    sessionStorage.setItem("granosSelected", result.granosFlag);
-                    if (result.granosFlag == "G") {
-                        this.navService.navegarSeccion('/home');
-                    } else {
-                        this.navService.navegarSeccion('/home-ngs');
-                    }
-                }
-            }
-        }
+        //La URL a donde direccionamos ahora la traemos del controller. Esto es para no tener que estan pasando tantas variables que no nos interesan acá
+        //if (result.esNuevoUsuario) {
+        //    if (result.granosFlag == "A") {
+        //        sessionStorage.setItem("granosSelected", "G");
+        //        this.navService.navegarSeccion('/dato-fiscal/documentacion');
+        //    } else {
+        //        sessionStorage.setItem("granosSelected", result.granosFlag);
+        //        if (result.granosFlag == "G") {
+        //            this.navService.navegarSeccion('/alta-empresa-granos');
+        //        } else {
+        //            this.navService.navegarSeccion('/dato-fiscal/documentacion');
+        //        }
+        //    }
+        //} else {
+
+        //    if (result.tipoUsuario == "ADMP" || result.tipoUsuario == "ADNA" || result.tipoUsuario == "RYDD") {
+        //        this.navService.navegarSeccion('/aduana/pesada-online');
+        //    } else if (result.tipoUsuario == "CLIE") {
+        //        this.navService.navegarSeccion('/cuenta-corriente/simple');
+        //    } else {
+        //        if (result.granosFlag == "A") {
+        //            sessionStorage.setItem("granosSelected", "G");
+        //            this.navService.navegarSeccion('/home');
+        //        } else {
+        //            sessionStorage.setItem("granosSelected", result.granosFlag);
+        //            if (result.granosFlag == "G") {
+        //                this.navService.navegarSeccion('/home');
+        //            } else {
+        //                this.navService.navegarSeccion('/home-ngs');
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

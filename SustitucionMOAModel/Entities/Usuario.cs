@@ -24,6 +24,8 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
+        public virtual ICollection<Archivo> Archivos { get; set; }
+
         //internal Usuario() { }
 
         //public Usuario(string mail, string CUIT)
@@ -95,6 +97,7 @@ namespace SustitucionMOAModel.Entities
         {
             return
                 Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any(); 
         }
     }

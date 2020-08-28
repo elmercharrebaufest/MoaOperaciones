@@ -60,13 +60,22 @@
     <Folder Include="DBO\Tables" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="DBO\Tables\TestEntity.sql" />
-    <Build Include="DBO\Tables\Permiso.sql" />
-    <Build Include="DBO\Tables\TipoProveedor.sql" />
-    <Build Include="DBO\Tables\TipoUsuario.sql" />
-    <Build Include="DBO\Tables\Rol.sql" />
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
+    <Build Include="DBO\Tables\Archivo.sql" />
+    <Build Include="DBO\Tables\Contacto.sql" />
+    <Build Include="DBO\Tables\Localidad.sql" />
+    <Build Include="DBO\Tables\Partido.sql" />
+    <Build Include="DBO\Tables\PermisoPorRol.sql" />
     <Build Include="DBO\Tables\Proveedor.sql" />
+    <Build Include="DBO\Tables\ProveedorUsuario.sql" />
+    <Build Include="DBO\Tables\Provincia.sql" />
+    <Build Include="DBO\Tables\Rol.sql" />
+    <Build Include="DBO\Tables\RolPermisoPorRol.sql" />
+    <Build Include="DBO\Tables\RolUsuario.sql" />
+    <Build Include="DBO\Tables\TestEntity.sql" />
+    <Build Include="DBO\Tables\TipoUsuario.sql" />
     <Build Include="DBO\Tables\Usuario.sql" />
+    <Build Include="DBO\Tables\UsuarioGranos.sql" />
+    <Build Include="DBO\Tables\UsuarioNoGranos.sql" />
   </ItemGroup>
 </Project>

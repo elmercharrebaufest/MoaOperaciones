@@ -26,24 +26,21 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Informe comercial <strong>completo y firmado </strong> <span
-                                class="adjuntar">Adjuntar</span>
+                            Informe comercial <strong>completo y firmado </strong> <span class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
                                (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
 
-                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''"
-                           (click)="descargarArchivo('informeComercialFirmado')">Ver archivo subido</a>
-                        &nbsp;
-                        <a *ngIf="nombreArchivoInformeComercialFirmado != ''" style="color:red;"
-                           (click)="eliminarArchivo('informeComercialFirmado')" title="Eliminar Adjunto">Eliminar</a>
-                        <label style="color:red;" *ngIf="nombreArchivoInformeComercialFirmado == ''">
-                            Sin
-                            Adjuntar
-                        </label>
+                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0"> Sin Adjuntar</label>
 
+                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
+                            <a (click)="descargarArchivo(archivo )">
+                                {{archivo.Nombre}}
+                            </a>
+
+                            <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                        </span>
                     </div>
-
                 </div>
             </mdb-step>
             <mdb-step name="Step 2" label="CBU">
@@ -61,14 +58,15 @@
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
                            (change)="handleFileInput($event.target.files, 'constanciaCBU')">
 
-                    <a *ngIf="nombreArchivoConstanciaCBU != ''" (click)="descargarArchivo('constanciaCBU')">
-                        Ver archivo
-                        subido
-                    </a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoConstanciaCBU != ''" style="color:red;"
-                       (click)="eliminarArchivo('constanciaCBU')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCBU == ''">Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0"> Sin Adjuntar</label>
+
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
                 </div>
 
                 <div class="form-group">
@@ -78,35 +76,36 @@
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
                            (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
 
-                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''"
-                       (click)="descargarArchivo('constanciaCBUMercaderia')">Ver archivo subido</a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" style="color:red;"
-                       (click)="eliminarArchivo('constanciaCBUMercaderia')" title="Eliminar Adjunto">Eliminar</a>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0"> Sin Adjuntar</label>
 
-                    <a *ngIf="nombreArchivoConstanciaCBUMercaderia != ''" (click)="borrarArchivo('constanciaCBUMercaderia')">
-                        Borrar archivo
-                    </a>
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
 
-                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCBUMercaderia == ''"> Sin Adjuntar</label>
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
+
                 </div>
             </mdb-step>
             <mdb-step name="Step 3" label="Documentación Impositiva">
                 <h3>Documentación Impositiva</h3>
                 <div class="form-group">
                     <label style="font-weight: 100 !important;" for="constanciaCUIT">
-                        Constancia de CUIT <span class="adjuntar">Adjuntar</span></label>
+                        Constancia de CUIT <span class="adjuntar">Adjuntar</span>
+                    </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
                            (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
-                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" (click)="descargarArchivo('constanciaCUIT')">
-                        Ver
-                        archivo subido
-                    </a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoConstanciaCUIT != ''" style="color:red;"
-                       (click)="eliminarArchivo('constanciaCUIT')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoConstanciaCUIT == ''">Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
+
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="label" for="inscripcionIIBB">
@@ -117,14 +116,15 @@
                     <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
                            (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
 
-                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" (click)="descargarArchivo('inscripcionIIBB')">
-                        Ver
-                        archivo subido
-                    </a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoInscripcionIIBB != ''" style="color:red;"
-                       (click)="eliminarArchivo('inscripcionIIBB')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoInscripcionIIBB == ''">Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0"> Sin Adjuntar</label>
+
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIVA">
@@ -133,26 +133,31 @@
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''"
-                       (click)="descargarArchivo('certificadoExclusionIVA')"> Ver archivo subido</a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoCertificadoExclusionIVA != ''" style="color:red;"
-                       (click)="eliminarArchivo('certificadoExclusionIVA')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIVA == ''">Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0"> Sin Adjuntar</label>
+
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionIIBB">
                         Certificados de exclusión o exención en IIBB <span class="adjuntar">Adjuntar</span>
                     </label>
-                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB" multiple
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0"> Sin Adjuntar</label>
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''"
-                       (click)="descargarArchivo('certificadoExclusionIIBB')"> Ver archivo subido</a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoCertificadoExclusionIIBB != ''" style="color:red;"
-                       (click)="eliminarArchivo('certificadoExclusionIIBB')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionIIBB == ''">Sin Adjuntar</label>
+                    <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionSUSS">
@@ -160,13 +165,15 @@
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0"> Sin Adjuntar</label>
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''"
-                       (click)="descargarArchivo('certificadoExclusionSUSS')"> Ver archivo subido</a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoCertificadoExclusionSUSS != ''" style="color:red;"
-                       (click)="eliminarArchivo('certificadoExclusionSUSS')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionSUSS == ''">Sin Adjuntar</label>
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="label" for="certificadoExclusionGanancias">
@@ -175,15 +182,15 @@
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
                            (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
 
-                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''"
-                       (click)="descargarArchivo('certificadoExclusionGanancias')"> Ver archivo subido</a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoCertificadoExclusionGanancias != ''" style="color:red;"
-                       (click)="eliminarArchivo('certificadoExclusionGanancias')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoCertificadoExclusionGanancias == ''">
-                        Sin
-                        Adjuntar
-                    </label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0"> Sin Adjuntar</label>
+
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
+                        <a (click)="descargarArchivo(archivo )">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
@@ -192,36 +199,50 @@
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
                            (change)="handleFileInput($event.target.files, 'SIPER')">
 
-                    <a *ngIf="nombreArchivoSIPER != ''" (click)="descargarArchivo('SIPER')">
-                        Ver archivo
-                        subido
-                    </a>
-                    &nbsp;
-                    <a *ngIf="nombreArchivoSIPER != ''" style="color:red;"
-                       (click)="eliminarArchivo('SIPER')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoSIPER == ''">Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin Adjuntar</label>
+
+                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                        <a (click)="descargarArchivo(archivo)">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </span>
 
                 </div>
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
-                <h3>Otros archivos</h3>
-                <div class="form-group">
-                    <label class="label" for="documentacionEnBolsa">
+                <h3>
+                    Otros archivos 
+                    <label class="label" for="otrosArchivos">
                         <span class="adjuntar">
                             Adjuntar
-                        </span>  
+                        </span>
                     </label>
-                    <input style="display:none" type="file" class="form-control-file" id="documentacionEnBolsa"
-                           (change)="handleFileInput($event.target.files, 'documentacionEnBolsa')">
+                </h3>
+                <div class="form-group">
 
-                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('documentacionEnBolsa')">
+                    <input style="display:none" type="file" class="form-control-file" id="otrosArchivos" multiple
+                           (change)="handleFileInput($event.target.files, 'otrosArchivos')">
+
+
+                    <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
+                        <a (click)="descargarArchivo(archivo)">
+                            {{archivo.Nombre}}
+                        </a>
+
+                        <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                    </div>
+
+
+                    <!--<a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('otrosArchivos')">
                         Ver
                         archivo subido
-                    </a>
+                    </a>-->
                     &nbsp;
-                    <a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" style="color:red;"
+                    <!--<a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" style="color:red;"
                        (click)="eliminarArchivo('documentacionEnBolsa')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>-->
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
@@ -251,7 +272,7 @@
                 </div>
                 <div class="modal-body modal-notificacion">
                     <p>
-                        ¿Realmente desea eliminar el adjunto {{descripcionSeleccionado}}?
+                        ¿Realmente desea eliminar el adjunto {{nombreArchivoSeleccionado}}?
                     </p>
 
                 </div>

@@ -1,12 +1,11 @@
-﻿CREATE TABLE [dbo].[Proveedor](
+CREATE TABLE [dbo].[Proveedor](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[CUIT] [nvarchar](max) NULL,
 	[RazonSocial] [nvarchar](max) NULL,
-	[Email] [nvarchar](max) NULL,
+	[CodigoProveedor] [nvarchar](max) NULL,
+	[Mail] [nvarchar](max) NULL,
 	[EstadoAprobacion] [int] NOT NULL,
 	[Observaciones] [nvarchar](max) NULL,
-	[CodigoProveedor] [varchar](255) NULL,
-	[Mail] [varchar](255) NULL,
 	[IdDataAgro] [int] NULL,
 	[IdComercialDataAgro] [int] NULL,
  CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 

@@ -798,6 +798,7 @@
     <TypeScriptCompile Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.ts" />
+    <TypeScriptCompile Include="app\common\pipes\archivos.pipe.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.service.ts" />
@@ -806,6 +807,7 @@
     <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.ts" />
     <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.ts" />
+    <TypeScriptCompile Include="app\common\models\archivo.ts" />
     <TypeScriptCompile Include="app\common\models\contactoComercial.ts" />
     <TypeScriptCompile Include="app\common\models\informeComercial.ts" />
     <TypeScriptCompile Include="app\common\models\material.ts" />

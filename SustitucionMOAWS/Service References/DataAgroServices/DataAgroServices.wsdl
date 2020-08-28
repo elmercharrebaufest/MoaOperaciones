@@ -57,6 +57,12 @@
   <wsdl:message name="IDataAgroServices_ActualizarCupoSAP_OutputMessage">
     <wsdl:part name="parameters" element="tns:ActualizarCupoSAPResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataAgroServices_AltaCupoSAP_InputMessage">
+    <wsdl:part name="parameters" element="tns:AltaCupoSAP" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_AltaCupoSAP_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AltaCupoSAPResponse" />
+  </wsdl:message>
   <wsdl:message name="IDataAgroServices_AnularContratoSAP_InputMessage">
     <wsdl:part name="parameters" element="tns:AnularContratoSAP" />
   </wsdl:message>
@@ -68,6 +74,12 @@
   </wsdl:message>
   <wsdl:message name="IDataAgroServices_ValidarProveedorComercial_OutputMessage">
     <wsdl:part name="parameters" element="tns:ValidarProveedorComercialResponse" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_AltaContratoSAP_InputMessage">
+    <wsdl:part name="parameters" element="tns:AltaContratoSAP" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_AltaContratoSAP_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AltaContratoSAPResponse" />
   </wsdl:message>
   <wsdl:portType name="IDataAgroServices">
     <wsdl:operation name="Ping">
@@ -98,6 +110,10 @@
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ActualizarCupoSAP" message="tns:IDataAgroServices_ActualizarCupoSAP_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ActualizarCupoSAPResponse" message="tns:IDataAgroServices_ActualizarCupoSAP_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="AltaCupoSAP">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/AltaCupoSAP" message="tns:IDataAgroServices_AltaCupoSAP_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/AltaCupoSAPResponse" message="tns:IDataAgroServices_AltaCupoSAP_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="AnularContratoSAP">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/AnularContratoSAP" message="tns:IDataAgroServices_AnularContratoSAP_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/AnularContratoSAPResponse" message="tns:IDataAgroServices_AnularContratoSAP_OutputMessage" />
@@ -105,6 +121,10 @@
     <wsdl:operation name="ValidarProveedorComercial">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial" message="tns:IDataAgroServices_ValidarProveedorComercial_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialResponse" message="tns:IDataAgroServices_ValidarProveedorComercial_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AltaContratoSAP">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/AltaContratoSAP" message="tns:IDataAgroServices_AltaContratoSAP_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/AltaContratoSAPResponse" message="tns:IDataAgroServices_AltaContratoSAP_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IDataAgroServices" type="tns:IDataAgroServices">
@@ -173,6 +193,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="AltaCupoSAP">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/AltaCupoSAP" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="AnularContratoSAP">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/AnularContratoSAP" style="document" />
       <wsdl:input>
@@ -184,6 +213,15 @@
     </wsdl:operation>
     <wsdl:operation name="ValidarProveedorComercial">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AltaContratoSAP">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/AltaContratoSAP" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

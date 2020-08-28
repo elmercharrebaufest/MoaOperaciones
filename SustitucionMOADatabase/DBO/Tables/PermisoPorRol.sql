@@ -1,7 +1,7 @@
-CREATE TABLE [dbo].[TestEntity](
+CREATE TABLE [dbo].[PermisoPorRol](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Nombre] [nvarchar](max) NULL,
- CONSTRAINT [PK_dbo.TestEntity] PRIMARY KEY CLUSTERED 
+	[Permiso] [nvarchar](max) NULL,
+ CONSTRAINT [PK_dbo.PermisoPorRol] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
