@@ -116,7 +116,7 @@ namespace SustitucionMOA
 			}
 			else
 			{
-				notification.Response.Redirect("/Home/Error?message=" + notification.Exception.Message);
+				notification.Response.Redirect("/");
 			}
 
 			return Task.FromResult(0);
