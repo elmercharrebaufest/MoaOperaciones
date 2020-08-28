@@ -62,7 +62,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (respuesta.ProveedorMails.Contains(usuario.Mail) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
-                        usuario.Comercial = string.Concat(respuesta.Nombres, " ", respuesta.Apellido);
+                        usuario.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
 
                         proveedor.IdComercialDataAgro = respuesta.ComercialId;
                         proveedor.IdDataAgro = respuesta.ProveedorId;
@@ -98,6 +98,29 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT)
+        {
+            try
+            {
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+
+                return respuesta;
+            }
+            catch (InfoCustomException e)
+            {
+                return null;
+            }
+            catch (ValidationCustomException e)
+            {
+                return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
 
         public string ObtenerCBUProveedor(string CUITproveedor)
         {

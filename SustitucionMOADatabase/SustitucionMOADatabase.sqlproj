@@ -68,5 +68,6 @@
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
     <Build Include="DBO\Tables\Proveedor.sql" />
     <Build Include="DBO\Tables\Usuario.sql" />
+    <Build Include="DBO\Tables\UsuarioGranos.sql" />
   </ItemGroup>
 </Project>

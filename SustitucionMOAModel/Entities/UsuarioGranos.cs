@@ -17,7 +17,7 @@ namespace SustitucionMOAModel.Entities
         public string RutaConstanciaCBUMercaderia { get; set; }
         public string RutaConstanciaCUIT { get; set; }
         public string RutaInscripcionIIBB { get; set; }
-        
+
         public string RutaCertificadoExclusionIVA { get; set; }
         public string RutaCertificadoExclusionIIBB { get; set; }
         public string RutaCertificadoExclusionSUSS { get; set; }

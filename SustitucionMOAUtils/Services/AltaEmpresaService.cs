@@ -64,6 +64,7 @@ namespace SustitucionMOAUtils.Services
                     Observaciones = x.Observaciones,
                     RazonSocial = x.RazonSocial ?? "",
                     Comercial = x.UsuariosAsociados.Count() > 0 ? (x.UsuariosAsociados.First() as UsuarioGranos).Comercial : "",
+                    EstadoSIPER = x.EstadoSIPER,
                     HistorialAprobaciones = x.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto
                     {
                         Id = a.Id,
@@ -89,7 +90,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public string setEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor)
+        public string setEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER)
         {
             try
             {
@@ -133,6 +134,10 @@ namespace SustitucionMOAUtils.Services
                     proveedor.Observaciones = observacionParaElProveedor;
                 }
 
+                if (!string.IsNullOrWhiteSpace(estadoSIPER))
+                {
+                    proveedor.EstadoSIPER = estadoSIPER;
+                }
 
                 repositorio.GuardarCambios();
 
