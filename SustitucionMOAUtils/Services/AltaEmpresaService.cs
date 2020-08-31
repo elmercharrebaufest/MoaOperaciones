@@ -213,7 +213,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mail);
 
                 Proveedor proveedor = usuario.ObtenerProveedorActual();
 

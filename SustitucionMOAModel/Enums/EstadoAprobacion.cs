@@ -31,6 +31,8 @@
                     return "Edicion requerida";
                 case EstadoAprobacion.Rechazado:
                     return "Rechazado";
+                case EstadoAprobacion.AunNoImplementado:
+                    return "Tipo de usuario no implementado";
                 default:
                     return "Estado desconocido";
             }

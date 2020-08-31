@@ -22,7 +22,7 @@
 
 	<parameter name="EsLocal Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='ida:EsLocal']
+						match="/configuration/appSettings/add[@key='EsLocal']
                            /@value" />
 	</parameter>
 

@@ -67,7 +67,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     break;
 
-                case "Ambos":
+                case "ambos":
                     Usuario usuarioAmbos = new Usuario { Mail = mail, CUITRegistro = CUIT };
 
                     if (!ExisteUsuario(usuarioAmbos))
@@ -84,13 +84,13 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        usuario = BuscarUsuarioPorMail(mail);
+                        usuarioAmbos = BuscarUsuarioPorMail(mail);
                     }
 
                     usuario = usuarioAmbos;
                     break;
 
-                case "Corredor":
+                case "corredor":
                     Usuario usuarioCorredor = new Usuario { Mail = mail, CUITRegistro = CUIT };
 
                     if (!ExisteUsuario(usuarioCorredor))
@@ -101,24 +101,27 @@ namespace SustitucionMOAUtils.Services
                         usuarioCorredor.Proveedores = new List<Proveedor>();
 
                         usuarioCorredor.Roles.Add(rolUsuarioNoImplementado);
-                        usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("C");
+                        usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("CORR");
 
                         RegistrarUsuarioGenerico(usuarioCorredor);
                     }
                     else
                     {
-                        usuario = BuscarUsuarioPorMail(mail);
+                        usuarioCorredor = BuscarUsuarioPorMail(mail);
                     }
 
                     usuario = usuarioCorredor;
                     break;
 
-                case "Cliente":
+                case "cliente":
                     Usuario usuarioCliente = new Usuario { Mail = mail, CUITRegistro = CUIT };
 
                     if (!ExisteUsuario(usuarioCliente))
                     {
                         Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
+
+                        usuarioCliente.Roles = new List<Rol>();
+                        usuarioCliente.Proveedores = new List<Proveedor>();
 
                         usuarioCliente.Roles.Add(rolUsuarioNoImplementado);
                         usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
@@ -127,7 +130,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        usuario = BuscarUsuarioPorMail(mail);
+                        usuarioCliente = BuscarUsuarioPorMail(mail);
                     }
 
                     usuario = usuarioCliente;
@@ -188,6 +191,7 @@ namespace SustitucionMOAUtils.Services
             Proveedor proveedor = new Proveedor();
             proveedor.CUIT = usuario.CUITRegistro;
             proveedor.EstadoAprobacion = EstadoAprobacion.AunNoImplementado;
+            proveedor.Observaciones = "El tipo de usuario seleccionado aún no ha sido implementado. Contactese con su comercial.";
 
             usuario.Proveedores.Add(proveedor);
 
