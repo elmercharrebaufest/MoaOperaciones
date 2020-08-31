@@ -153,7 +153,7 @@ namespace SustitucionMOA
 			}
 			catch (Exception ex)
 			{
-				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
 			}
 		}
 
