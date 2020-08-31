@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public bool ValidarCUITProveedorGranos(UsuarioGranos usuario, Proveedor proveedor)
+        public bool ValidarCUITProveedorGranos(ref UsuarioGranos usuario, Proveedor proveedor)
         {
             try
             {

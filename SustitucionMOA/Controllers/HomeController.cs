@@ -73,32 +73,19 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Registro()
         {
-            if (Request.IsAuthenticated)
+            string redirectUrl = "/";
+            //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+            try
+            {
+                HttpContext.GetOwinContext().Set("Policy", Globals.SignUpPolicyId);
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
+            }
+            //Ignoramos esta excepción porque la da cuando carga recursos
+            catch
             {
 
-                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
-                {
-                    return Redirect("/");
-                }
-
-                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
             }
-            else
-            {
-                string redirectUrl = "/";
-                //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
-                try
-                {
-                    HttpContext.GetOwinContext().Set("Policy", Globals.SignUpPolicyId);
-                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
-                }
-                //Ignoramos esta excepción porque la da cuando carga recursos
-                catch
-                {
-
-                }
-                return null;
-            }
+            return null;
         }
 
         public async Task SignOut()

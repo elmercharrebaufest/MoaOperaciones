@@ -12,7 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IDataAgroService
     {
         DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre);
-        bool ValidarCUITProveedorGranos(UsuarioGranos usuario, Proveedor proveedor);
+        bool ValidarCUITProveedorGranos(ref UsuarioGranos usuario, Proveedor proveedor);
         string ObtenerCBUProveedor(string CUITproveedor);
         ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT);
 

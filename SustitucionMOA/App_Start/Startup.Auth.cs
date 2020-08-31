@@ -53,15 +53,14 @@ namespace SustitucionMOA
 					RedirectUri = Globals.RedirectUri,
 					PostLogoutRedirectUri = Globals.RedirectUri,
 
-					CookieManager = new SystemWebCookieManager(),
-
-
 					// Specify the callbacks for each type of notifications
 					Notifications = new OpenIdConnectAuthenticationNotifications
 					{
 						RedirectToIdentityProvider = OnRedirectToIdentityProvider,
 						AuthorizationCodeReceived = OnAuthorizationCodeReceived,
 						AuthenticationFailed = OnAuthenticationFailed,
+						SecurityTokenValidated = OnSecurityTokenValidated
+
 					},
 
 					// Specify the claim type that specifies the Name property.
@@ -75,6 +74,15 @@ namespace SustitucionMOA
 					Scope = $"openid profile offline_access"
 				}
 			);
+		}
+
+
+		//Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
+		private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
+		{
+			ValidarLogin(notification.AuthenticationTicket.Identity);
+
+			return Task.FromResult(0);
 		}
 
 		/*
@@ -138,8 +146,6 @@ namespace SustitucionMOA
 				 Azure AD and has a full set of claims.
 				 */
 
-				ValidarLogin(notification.AuthenticationTicket.Identity);
-
 				IConfidentialClientApplication confidentialClient = MsalAppBuilder.BuildConfidentialClientApplication(new ClaimsPrincipal(notification.AuthenticationTicket.Identity));
 
 				// Upon successful sign in, get & cache a token using MSAL
@@ -147,11 +153,7 @@ namespace SustitucionMOA
 			}
 			catch (Exception ex)
 			{
-				throw new HttpResponseException(new HttpResponseMessage
-				{
-					StatusCode = HttpStatusCode.BadRequest,
-					ReasonPhrase = $"Unable to get authorization code {ex.Message}."
-				});
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
 			}
 		}
 

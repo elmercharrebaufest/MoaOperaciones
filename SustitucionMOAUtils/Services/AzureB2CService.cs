@@ -34,7 +34,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (!ExisteUsuario(usuarioGranos))
                     {
-                        RegistrarUsuarioGranos(usuarioGranos);
+                        RegistrarUsuarioGranos(ref usuarioGranos);
                     }
                     else
                     {
@@ -167,7 +167,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
         }
 
-        public bool RegistrarUsuarioGranos(UsuarioGranos usuario)
+        public bool RegistrarUsuarioGranos(ref UsuarioGranos usuario)
         {
             Proveedor proveedor = new Proveedor
             {
@@ -175,7 +175,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
             };
 
-            return ValidarCUITProveedor(usuario, proveedor);
+            return ValidarCUITProveedor(ref usuario, proveedor);
        
 
             //usuario.Proveedores.Add(proveedor);
@@ -206,9 +206,9 @@ namespace SustitucionMOAUtils.Services
             return (repositorio.Existe<Usuario>(u => u.Mail == usuario.Mail));
         }
 
-        public bool ValidarCUITProveedor(UsuarioGranos usuario, Proveedor proveedor)
+        public bool ValidarCUITProveedor(ref UsuarioGranos usuario, Proveedor proveedor)
         {
-            return dataAgroService.ValidarCUITProveedorGranos(usuario, proveedor);
+            return dataAgroService.ValidarCUITProveedorGranos(ref usuario, proveedor);
         }
 
         public bool ExisteProveedor(Proveedor proveedor)
