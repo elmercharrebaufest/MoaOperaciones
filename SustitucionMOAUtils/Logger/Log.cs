@@ -23,6 +23,20 @@ namespace SustitucionMOAUtils.Logger
             }
         }
 
+        public static void Error(string ip, string usuario, string controller, string method, Exception exception)
+        {
+            try
+            {
+                writeLog(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+                Console.WriteLine("ERROR heredado:" + exception.ToString());
+            }
+        }
+
+
         public static void Debug(string controller, string method, string valores)
         {
             try

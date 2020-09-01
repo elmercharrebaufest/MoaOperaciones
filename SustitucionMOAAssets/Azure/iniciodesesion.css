@@ -104,7 +104,7 @@ body > div.container.unified_container > div {
   display: flex;
   justify-content: left;
   align-items: center;
-  width: 50%;
+  width: 33.33%;
   height: 100vh;
   background-color: rgba(4, 117, 62, 0.75);
 }
