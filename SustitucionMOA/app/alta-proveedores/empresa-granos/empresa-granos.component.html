@@ -26,7 +26,7 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Informe comercial <strong>completo y firmado </strong> <span class="adjuntar">Adjuntar</span>
+                            Informe comercial <strong>completo y firmado *</strong> <span class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
                                (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
@@ -40,6 +40,13 @@
 
                             <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                         </span>
+
+                        <div>
+                            <p>
+                                Recordá que deberás enviar el original <strong>completo y firmado </strong> a nuestras
+                                oficinas
+                            </p>
+                        </div>
                     </div>
                 </div>
             </mdb-step>
@@ -52,8 +59,7 @@
                     <br />
 
                     <label class="label" for="constanciaCBU">
-                        Constancia de CBU certificada
-                        por Banco <span class="adjuntar">Adjuntar</span>
+                        Constancia de CBU certificada por Banco <strong>*</strong><span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
                            (change)="handleFileInput($event.target.files, 'constanciaCBU')">
@@ -67,6 +73,13 @@
 
                         <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </span>
+
+                    <div>
+                        <p>
+                            Recordá que deberás enviar el original <strong>completo y firmado </strong> a nuestras
+                            oficinas
+                        </p>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -194,7 +207,7 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        SIPER. Solamente en caso de SISA 2 / SISA 3 <span class="adjuntar">Adjuntar</span>
+                        SIPER. Solamente en caso de SISA 2 / SISA 3 <strong>*</strong><span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
                            (change)="handleFileInput($event.target.files, 'SIPER')">
@@ -246,6 +259,9 @@
                 </div>
             </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
+                <div>
+                    <p><strong>*</strong> Los campos marcados son obligatorios</p>
+                </div>
                 <div class="step-actions enviar">
                     <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
                             data-target="#modalNotificación" class="btn-custom btn-azul"></button>
@@ -345,7 +361,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="formulario-label">
-                                        Codigo Postal
+                                        Código Postal
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
@@ -418,7 +434,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="formulario-label">
-                                        Telefono
+                                        Teléfono
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
@@ -451,8 +467,6 @@
                                               maxlength="300"></textarea>
                                 </div>
                             </div>
-
-
                         </div>
                         <div>
                             <div>
@@ -556,7 +570,6 @@
                             <table class="table table-striped table-bordered table-custom">
                                 <thead>
                                     <tr>
-                                        <!--<th>Campaña</th>-->
                                         <th>Localidad</th>
                                         <th>TNs</th>
                                         <th>Condición</th>
@@ -565,17 +578,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let acopio of informe.NuevosAcopios; let i = index">
-                                        <!--<td width="75px">
-                                            <div class="formulario-input">
-                                                <select name="{{acopio.CampaniaID}}" [(ngModel)]="acopio.CampaniaID"
-                                                        class="dropdown-granos">
-                                                    <option *ngFor="let camp of listaCampanias"
-                                                            value="{{camp.CampaniaIdActual}}">
-                                                        {{camp.CampaniaActual}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </td>-->
+                  
                                         <td>
                                             <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text" value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
 
