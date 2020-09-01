@@ -151,21 +151,28 @@ namespace SustitucionMOA.Controllers
 
                 NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
 
-                if (!Globals.EsLocal)
+                try
                 {
-                    if (!esNuevoUsuario)
+                    if (!Globals.EsLocal)
                     {
-                        noticias = _loginService.getNoticias(proveedor);
-                        noticias.cantidad = 0;
-                        if (noticias != null && noticias.noticias != null)
+                        if (!esNuevoUsuario)
                         {
-                            noticias.cantidad += noticias.noticias.Count;
-                        }
-                        if (noticias != null && noticias.notificaciones != null)
-                        {
-                            noticias.cantidad += noticias.notificaciones.Count;
+                            noticias = _loginService.getNoticias(proveedor);
+                            noticias.cantidad = 0;
+                            if (noticias != null && noticias.noticias != null)
+                            {
+                                noticias.cantidad += noticias.noticias.Count;
+                            }
+                            if (noticias != null && noticias.notificaciones != null)
+                            {
+                                noticias.cantidad += noticias.notificaciones.Count;
+                            }
                         }
                     }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 }
 
                 string redirectURL = "";
@@ -236,12 +243,12 @@ namespace SustitucionMOA.Controllers
             }
             catch (WSCustomException e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
