@@ -1,0 +1,267 @@
+body > div.container.unified_container {
+  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg)
+    center center no-repeat fixed;
+  background-size: cover;
+  width: 100%;
+}
+
+body > div.container.unified_container > div > div {
+  width: 100%;
+}
+
+img {
+  max-width: 100%;
+  background: white;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  padding-left: 15px;
+}
+
+.panel-body {
+  padding: 15px;
+  font-size: 14px;
+}
+
+body > div.container.unified_container > div > div > div > div {
+  height: auto;
+  overflow: auto;
+  max-height: 90vh;
+}
+
+body > div.container.unified_container > div {
+  width: 50%;
+}
+
+div#api {
+  background: white;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 15px;
+}
+
+#emailVerificationControl_but_verify_code {
+  margin-right: 10px !important;
+}
+
+button#next,
+#email_ver_but_send,
+#continue,
+#emailVerificationControl_but_verify_code,
+#emailVerificationControl_but_send_new_code {
+  border-radius: 5px;
+  border: none;
+  background-color: #337ab7;
+  color: white;
+  margin: 10px 0;
+  padding: 5px 10px;
+}
+
+#cancel {
+  border-radius: 5px;
+  border: none;
+  background-color: #dd441e;
+  color: white;
+  margin: 10px 0;
+}
+
+#cancel:hover {
+  background-color: #9a280c;
+}
+
+.error {
+  color: #dd441e !important;
+  padding-left: 15px;
+  font-size: 11px;
+}
+
+#emailVerificationControl_success_message {
+  color: #43a047 !important;
+}
+
+#api {
+  padding-top: 0;
+}
+
+#email_ver_but_send {
+  width: 40%;
+}
+
+#continue,
+#cancel {
+  width: 50%;
+  height: 30px;
+  font-weight: bold;
+}
+
+#continue {
+  margin-right: 5px;
+}
+
+#cancel {
+  margin-left: 5px;
+}
+
+button#next {
+  width: 100%;
+}
+
+button#next:hover,
+#email_ver_but_send:hover,
+#continue:hover {
+  background-color: #17308f;
+}
+
+#attributeVerification > div.buttons {
+  display: flex;
+}
+
+input#password {
+  border-radius: 5px;
+}
+
+input#logonIdentifier {
+  border-radius: 5px;
+}
+
+.entry-item {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+a#createAccount,
+#emailVerificationControl_but_send_code {
+  background: #337ab7;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: auto;
+  margin: 10px 0;
+  text-decoration: none;
+  border: none;
+  font-size: 15px;
+}
+
+button#email_ver_but_send {
+  border-radius: 5px;
+}
+
+button#continue {
+  border-radius: 5px;
+}
+
+body > div.container.self_asserted_container > div {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+  height: 100% !important;
+  background-color: rgba(4, 117, 62, 0.75);
+}
+
+body > div.container.self_asserted_container {
+  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg)
+    center center no-repeat fixed;
+  background-size: cover;
+  width: 100%;
+}
+
+body > div.container.unified_container > div {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(4, 117, 62, 0.75);
+}
+
+body > div.container.unified_container > div > div > div {
+  width: 85%;
+  margin: auto;
+}
+
+#background_branding_container {
+  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg);
+}
+
+#background_branding_container > img {
+  display: none !important;
+}
+
+#api > div > div.intro > h2 {
+  font-size: 20px !important;
+}
+
+body > div.container.unified_container > div > div > div > div {
+  color: #172f8f;
+}
+
+#attributeList > ul {
+  list-style: none !important;
+}
+
+#email {
+  margin-bottom: 10px;
+}
+
+input {
+  width: 50%;
+  border-radius: 5px;
+  border: none;
+  background-color: rgb(232, 240, 254) !important;
+  color: black;
+}
+
+#api > div > div.entry > div.rememberMe {
+  display: flex;
+}
+
+#rememberMe {
+  width: 10%;
+}
+
+#api > div > div.divider > h2 {
+  display: none;
+}
+
+#api > div > div.create {
+  margin-top: 15px;
+}
+
+#attributeList > ul {
+  padding: 0 !important;
+}
+
+#emailVerificationControl > ul {
+  padding-left: 0;
+}
+
+label,
+input {
+  margin-bottom: 5px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+.intro,
+.helpLink {
+  display: none;
+}
+
+#Granos_option,
+#Corredor_option,
+[id="No granos_option"],
+#Cliente_option,
+#Ambos_option {
+  font-weight: 100;
+  width: 87%;
+}
+
+.input-error {
+  border: solid 1px #dd441e;
+}
+
+#emailVerificationControl > div.buttons > div.verificationErrorText.error {
+  padding: 0;
+}

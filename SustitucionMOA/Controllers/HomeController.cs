@@ -119,110 +119,131 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ValidarLoginAzure()
         {
-            if (!Request.IsAuthenticated)
+            try
             {
-                return Redirect("/");
-            }
-            string test = SessionPersister.getUsername();
-
-            string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
-            string nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value;
-            string proveedor = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
-            string granosFlag = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsGranosFlagType).Value;
-            string tipoUsuario = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsTipoUsuarioType).Value;
-            string esNuevoUsuarioStr = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsNuevoUsuarioType).Value;
-
-            bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
-
-            List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
-
-            string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
-
-            Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
-
-            if (permisos.Count() == 1 && permisos.Contains("DATAAGROLOGIN"))
-            {
-                DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
-
-                return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
-            }
-
-            NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
-
-            if (!Globals.EsLocal)
-            {
-                if (!esNuevoUsuario)
+                if (!Request.IsAuthenticated)
                 {
-                    noticias = _loginService.getNoticias(proveedor);
-                    noticias.cantidad = 0;
-                    if (noticias != null && noticias.noticias != null)
+                    return Redirect("/");
+                }
+
+                string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
+                string nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value;
+                string proveedor = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
+                string granosFlag = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsGranosFlagType).Value;
+                string tipoUsuario = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsTipoUsuarioType).Value;
+                string esNuevoUsuarioStr = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsNuevoUsuarioType).Value;
+
+                bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
+
+                List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
+
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+
+                Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
+
+                if (permisos.Count() == 1 && permisos.Contains("DATAAGROLOGIN"))
+                {
+                    DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
+
+                    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
+                }
+
+                NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
+
+                if (!Globals.EsLocal)
+                {
+                    if (!esNuevoUsuario)
                     {
-                        noticias.cantidad += noticias.noticias.Count;
-                    }
-                    if (noticias != null && noticias.notificaciones != null)
-                    {
-                        noticias.cantidad += noticias.notificaciones.Count;
+                        noticias = _loginService.getNoticias(proveedor);
+                        noticias.cantidad = 0;
+                        if (noticias != null && noticias.noticias != null)
+                        {
+                            noticias.cantidad += noticias.noticias.Count;
+                        }
+                        if (noticias != null && noticias.notificaciones != null)
+                        {
+                            noticias.cantidad += noticias.notificaciones.Count;
+                        }
                     }
                 }
-            }
 
-            string redirectURL = "";
+                string redirectURL = "";
 
-            if (esNuevoUsuario)
-            {
-                if (usuario.ObtenerProveedorActual().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                if (esNuevoUsuario)
                 {
-                    if (granosFlag == "G")
+                    if (usuario.ObtenerProveedorActual().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                     {
-                        redirectURL = "/alta-empresa-granos";
+                        if (granosFlag == "G")
+                        {
+                            redirectURL = "/alta-empresa-granos";
+                        }
+                        else
+                        {
+                            redirectURL = "/dato-fiscal/documentacion";
+                        }
                     }
                     else
                     {
-                        redirectURL = "/dato-fiscal/documentacion";
+                        redirectURL = "/estado-solicitud";
                     }
                 }
                 else
                 {
-                    redirectURL = "/estado-solicitud";
-                }
-            }
-            else
-            {
-                if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
-                {
-                    redirectURL = "/aduana/pesada-online";
-                }
-                else if (tipoUsuario == "CLIE")
-                {
-                    redirectURL = "/cuenta-corriente/simple";
-                }
-                else
-                {
-                    if (granosFlag == "A" || granosFlag == "G")
+                    if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
                     {
-                        redirectURL = "/home";
+                        redirectURL = "/aduana/pesada-online";
+                    }
+                    else if (tipoUsuario == "CLIE")
+                    {
+                        redirectURL = "/cuenta-corriente/simple";
                     }
                     else
                     {
-                        redirectURL = "/home-ngs";
+                        if (granosFlag == "A" || granosFlag == "G")
+                        {
+                            redirectURL = "/home";
+                        }
+                        else
+                        {
+                            redirectURL = "/home-ngs";
+                        }
                     }
                 }
-            }
 
-            return Json(new
+                return Json(new
+                {
+                    success = SuccessMsg.LoginOk,
+                    username,
+                    nombre,
+                    proveedor,
+                    granosFlag,
+                    permisos,
+                    tipoUsuario,
+                    noticias,
+                    esNuevoUsuario,
+                    redirectURL,
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (InfoCustomException e)
             {
-                success = SuccessMsg.LoginOk,
-                username,
-                nombre,
-                proveedor,
-                granosFlag,
-                permisos,
-                tipoUsuario,
-                noticias,
-                esNuevoUsuario,
-                redirectURL,
-            }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult getHomeInfo(string fechaInicio, string fechaFin)

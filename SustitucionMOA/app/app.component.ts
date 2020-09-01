@@ -29,7 +29,7 @@ export class AppComponent {
                 try {
                     ga('set', 'page', event.urlAfterRedirects);
                     ga('send', 'pageview');
-                }catch(e) { }
+                } catch (e) { }
             }
         });
     }
@@ -56,19 +56,27 @@ export class AppComponent {
             .get('/api/Home/ValidarLoginAzure', { search: params, headers: headers })
             .pipe(map(this.extractData));
 
-        observable.subscribe(result => {
-            if (result.tipoUsuario == "DATAAGROLOGIN") {
-                if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.url == undefined || result.url == "") {
-                    this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+        observable.subscribe(
+            result => {
+                if (result.tipoUsuario == "DATAAGROLOGIN") {
+                    if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.url == undefined || result.url == "") {
+                        this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
+                    } else {
+                        location.href = result.url;
+                    }
                 } else {
-                    location.href = result.url;
+                    if (result.error != undefined && result.error != "") {
+                        alert(result.error);
+                        location.href = "/SignOut";
+                    } 
+                    else {
+                        this.loginUser(result);
+                    }
                 }
-            } else {
-                this.loginUser(result);
             }
-        })
+        );
     }
 
     loginUser(result: any) {

@@ -313,12 +313,12 @@ namespace SustitucionMOAUtils.Services
         private bool ValidarArchivosSubidos(UsuarioGranos usuario)
         {
 
-            if (usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
+            if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Informe comercial firmado"));
             }
 
-            if (usuario.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCBU))
+            if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCBU))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
             }
