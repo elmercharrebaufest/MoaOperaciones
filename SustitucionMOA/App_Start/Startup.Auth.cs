@@ -120,10 +120,12 @@ namespace SustitucionMOA
 			}
 			else if (notification.Exception.Message == "access_denied")
 			{
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, notification.Exception.Message);
 				notification.Response.Redirect("/");
 			}
 			else
 			{
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, notification.Exception.Message);
 				notification.Response.Redirect("/");
 			}
 
@@ -153,7 +155,7 @@ namespace SustitucionMOA
 			}
 			catch (Exception ex)
 			{
-				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
 			}
 		}
 
