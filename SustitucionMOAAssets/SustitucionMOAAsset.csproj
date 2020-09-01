@@ -80,6 +80,24 @@
       <LastGenOutput>SuccessMsg.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Azure\cambioPass.css" />
+    <Content Include="Azure\cambioPass.html" />
+    <Content Include="Azure\cambioPass.js" />
+    <Content Include="Azure\iniciodesesion.css" />
+    <Content Include="Azure\iniciodesesion.html" />
+    <Content Include="Azure\iniciodesesion.js" />
+    <Content Include="Azure\jquery.maskedinput.js" />
+    <Content Include="Azure\login.jpg" />
+    <Content Include="Azure\loginSmall.jpg" />
+    <Content Include="Azure\logoLogin.png" />
+    <Content Include="Azure\registro.css" />
+    <Content Include="Azure\registro.js" />
+    <Content Include="Azure\registrolayout.html" />
+    <Content Include="Azure\selfAsserted.html" />
+    <Content Include="Azure\selfcss.css" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

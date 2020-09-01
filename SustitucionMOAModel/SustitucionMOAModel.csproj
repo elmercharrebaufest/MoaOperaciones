@@ -50,6 +50,7 @@
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
+    <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />
     <Compile Include="Dto\ProveedorHistorialAprobacionDto.cs" />
