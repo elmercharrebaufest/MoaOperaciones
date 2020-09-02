@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -121,34 +120,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void ObtenerCampaniaActual(out string CampaniaActual, out int CampaniaIdActual)
-        {
-            var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
-
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler()
-            {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
-
-            using (var client = new HttpClient(httpClientHandler, false))
-            {
-                var task = client.PostAsync(urlBusquedaMateriales, null);
-
-                task.Wait();
-
-                var stringContent = task.Result.Content.ReadAsStringAsync();
-
-                dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                CampaniaActual = jsonResult.Datos[0].CampaniaActual.ToString();
-                CampaniaIdActual = jsonResult.Datos[0].CampaniaIdActual;
-            }
-        }
-
         public string ObtenerMaterialesDataAgro()
         {
             try
@@ -246,7 +217,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, UsuarioGranos usuario)
+        public string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, UsuarioGranos usuario)
         {
             return string.Concat(rutaArchivosProveedores, "/", usuario.CUITRegistro, "/", usuario.Id, "/", fileKey);
         }
@@ -276,14 +247,6 @@ namespace SustitucionMOAUtils.Services
             return CBU;
         }
 
-        public string ObtenerRuta(string ruta)
-        {
-            if (Path.GetFileName(ruta) != null)
-                return Path.GetFileName(ruta);
-
-            return "";
-        }
-
         public string EnviarSolicitudUsuario(string mailUsuario)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
@@ -306,7 +269,7 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.ValidacionPendienteOK;
         }
 
-        private void ValidarEstadoSolicitud(Proveedor proveedor)
+        public void ValidarEstadoSolicitud(Proveedor proveedor)
         {
             if (proveedor.EstadoAprobacion != EstadoAprobacion.DocumentacionPendiente && proveedor.EstadoAprobacion != EstadoAprobacion.EdicionRequerida)
             {
@@ -314,7 +277,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
+        public bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
         {
 
             if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))

@@ -745,7 +745,6 @@
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
-    <Compile Include="Controllers\AzureB2CController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CartaPorteController.cs" />
     <Compile Include="Controllers\ConfigController.cs" />
