@@ -17,7 +17,7 @@
                         <p>Complete el informe comercial</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                                class="btn-custom btn-azul">
+                            class="btn-custom btn-azul">
                             Completar informe Comercial
                         </button>
                         <!--<button type="button" class="btn-custom btn-azul">
@@ -26,19 +26,23 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Informe comercial <strong>completo y firmado *</strong> <span class="adjuntar">Adjuntar</span>
+                            Informe comercial <strong>completo y firmado *</strong> <span
+                                class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
-                               (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
 
-                        <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0"> Sin Adjuntar</label>
+                        <label style="color:red;"
+                            *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0"> Sin
+                            Adjuntar</label>
 
                         <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
                             <a (click)="descargarArchivo(archivo )">
                                 {{archivo.Nombre}}
                             </a>
 
-                            <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
+                            <a style="color:red;" (click)="eliminarArchivo(archivo)"
+                                title="Eliminar Adjunto">Eliminar</a>
                         </span>
 
                         <div>
@@ -59,12 +63,14 @@
                     <br />
 
                     <label class="label" for="constanciaCBU">
-                        Constancia de CBU certificada por Banco <strong>*</strong><span class="adjuntar">Adjuntar</span>
+                        Constancia de CBU certificada cuenta AFIP o SISA <strong>*</strong><span
+                            class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
-                           (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0">
+                        Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
                         <a (click)="descargarArchivo(archivo )">
@@ -84,12 +90,14 @@
 
                 <div class="form-group">
                     <label class="label" for="constanciaCBUMercaderia">
-                        Constancia de CBU Mercaderia certificada por el banco <span class="adjuntar">Adjuntar</span>
+                        Constancia de CBU certificada cuenta Mercaderia <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
-                           (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
+                        (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0"> Sin
+                        Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
                         <a (click)="descargarArchivo(archivo )">
@@ -108,9 +116,10 @@
                         Constancia de CUIT <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
-                           (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
                         <a (click)="descargarArchivo(archivo )">
@@ -127,9 +136,11 @@
                         vigente) <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
-                           (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0"> Sin
+                        Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
                         <a (click)="descargarArchivo(archivo )">
@@ -144,9 +155,11 @@
                         Certificados de exclusión o exención IVA <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
-                           (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0"> Sin
+                        Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
                         <a (click)="descargarArchivo(archivo )">
@@ -160,9 +173,11 @@
                     <label class="label" for="certificadoExclusionIIBB">
                         Certificados de exclusión o exención en IIBB <span class="adjuntar">Adjuntar</span>
                     </label>
-                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB" multiple
-                           (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0"> Sin Adjuntar</label>
+                    <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
+                        multiple (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0"> Sin
+                        Adjuntar</label>
 
                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
                         <a (click)="descargarArchivo(archivo )">
@@ -177,8 +192,10 @@
                         Certificados de exclusión o exención en SUSS <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
-                           (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0"> Sin Adjuntar</label>
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0"> Sin
+                        Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
                         <a (click)="descargarArchivo(archivo )">
@@ -193,9 +210,11 @@
                         Certificados de exclusión o exención en Ganancias <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
-                           (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
+                        (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;"
+                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0"> Sin
+                        Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
                         <a (click)="descargarArchivo(archivo )">
@@ -207,12 +226,14 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        SIPER. Solamente en caso de SISA 2 / SISA 3 <strong>*</strong><span class="adjuntar">Adjuntar</span>
+                        SIPER <strong [ngClass]="{'hidden': estadoSISA == '1'}">*</strong> <span
+                            class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
-                           (change)="handleFileInput($event.target.files, 'SIPER')">
+                        (change)="handleFileInput($event.target.files, 'SIPER')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin
+                        Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
                         <a (click)="descargarArchivo(archivo)">
@@ -226,7 +247,7 @@
             </mdb-step>
             <mdb-step name="Step 4" label="Documentación">
                 <h3>
-                    Otros archivos 
+                    Otros archivos
                     <label class="label" for="otrosArchivos">
                         <span class="adjuntar">
                             Adjuntar
@@ -236,7 +257,7 @@
                 <div class="form-group">
 
                     <input style="display:none" type="file" class="form-control-file" id="otrosArchivos" multiple
-                           (change)="handleFileInput($event.target.files, 'otrosArchivos')">
+                        (change)="handleFileInput($event.target.files, 'otrosArchivos')">
 
 
                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
@@ -258,13 +279,27 @@
                     <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>-->
                 </div>
             </mdb-step>
+            <mdb-step name="Step 5" label="Declaración Jurada">
+                <h3>Declaración Jurada</h3>
+                <form action="">
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At similique vero suscipit iste
+                            nostrum, distinctio sequi numquam expedita illo quo architecto eveniet dolor optio incidunt
+                            repellendus eligendi quisquam id illum?</p>
+                    </div>
+                    <div class="form-group form-check declaracionJuradaDiv">
+                        <label class="form-check-label" for="declaracionJurada">Aceptatar </label>
+                        <input type="checkbox" class="form-check-input" id="declaracionJurada">
+                    </div>
+                </form>
+            </mdb-step>
             <mdb-step name="Step 7" label="Enviar">
                 <div>
                     <p><strong>*</strong> Los campos marcados son obligatorios</p>
                 </div>
                 <div class="step-actions enviar">
                     <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                            data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                        data-target="#modalNotificación" class="btn-custom btn-azul"></button>
                     <input type="submit" (click)="onSubmit()" class="btn-custom btn-azul" value="Enviar">
                 </div>
             </mdb-step>
@@ -275,9 +310,10 @@
 
 
     <!-- Modal confirmar eliminar -->
-    <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal" style="display:none;">Click to Open Confirm Modal</a>
-    <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"
+        style="display:none;">Click to Open Confirm Modal</a>
+    <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -294,7 +330,8 @@
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" (click)="eliminarArchivoSeleccionado()">Eliminar</button>
+                    <button type="button" class="btn btn-danger"
+                        (click)="eliminarArchivoSeleccionado()">Eliminar</button>
                 </div>
             </div>
         </div>
@@ -302,14 +339,14 @@
 
     <!-- modal notificacion -->
     <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-            data-target="#modalNotificación"></button>
+        data-target="#modalNotificación"></button>
     <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                            onClick="abrirModal()">
+                        onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
@@ -329,14 +366,14 @@
     <!-- end modal notificacion -->
     <!-- Modal informe comercial-->
     <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-            data-target="#myModal"></button>
+        data-target="#myModal"></button>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                            onClick="abrirModal()">
+                        onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
@@ -355,8 +392,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="direccion" class="form-control"
-                                               placeholder="Direccion (100 caracteres)" [(ngModel)]="informe.direccion"
-                                               maxlength="100" />
+                                            placeholder="Direccion (100 caracteres)" [(ngModel)]="informe.direccion"
+                                            maxlength="100" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -365,8 +402,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
-                                               placeholder="Codigo Postal (20 caracteres)" [(ngModel)]="informe.codigoPostal"
-                                               maxlength="20" />
+                                            placeholder="Codigo Postal (20 caracteres)"
+                                            [(ngModel)]="informe.codigoPostal" maxlength="20" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -375,16 +412,14 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input [(ngModel)]="informe.localidadId" class="form-control" type="hidden"
-                                               id="localidadinf"
-                                               style="font-weight: 100 !important;">
+                                            id="localidadinf" style="font-weight: 100 !important;">
 
                                         <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                         (selected)='selectEventInforme($event)'
-                                                         [(ngModel)]="informe.localidad"
-                                                         (inputChanged)='onChangeSearchInforme($event)'
-                                                         (inputFocused)='selectEventInforme($event)'
-                                                         [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
-                                                         [notFoundTemplate]="notFoundTemplate">
+                                            (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
+                                            (inputChanged)='onChangeSearchInforme($event)'
+                                            (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
+                                            [notFoundText]="autocompleteNotFoundText"
+                                            [notFoundTemplate]="notFoundTemplate">
                                         </ng-autocomplete>
 
                                         <ng-template #itemTemplate let-item>
@@ -408,8 +443,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="direccion" class="form-control"
-                                               placeholder="Apellido (50 caracteres)" [(ngModel)]="informe.ContactoComercial.Apellido"
-                                               maxlength="50" />
+                                            placeholder="Apellido (50 caracteres)"
+                                            [(ngModel)]="informe.ContactoComercial.Apellido" maxlength="50" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -418,8 +453,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
-                                               placeholder="Nombres (50 caracteres)" [(ngModel)]="informe.ContactoComercial.Nombres"
-                                               maxlength="50" />
+                                            placeholder="Nombres (50 caracteres)"
+                                            [(ngModel)]="informe.ContactoComercial.Nombres" maxlength="50" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -428,8 +463,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="direccion" class="form-control"
-                                               placeholder="Puesto (50 caracteres)" [(ngModel)]="informe.ContactoComercial.Puesto"
-                                               maxlength="50" />
+                                            placeholder="Puesto (50 caracteres)"
+                                            [(ngModel)]="informe.ContactoComercial.Puesto" maxlength="50" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -438,8 +473,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
-                                               placeholder="Telefono (100 caracteres)" [(ngModel)]="informe.ContactoComercial.Telefono1"
-                                               maxlength="100" />
+                                            placeholder="Telefono (100 caracteres)"
+                                            [(ngModel)]="informe.ContactoComercial.Telefono1" maxlength="100" />
                                     </div>
                                 </div>
                             </div>
@@ -452,8 +487,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="ClienteAnt" class="input-custom"
-                                           placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
-                                           maxlength="100" />
+                                        placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
+                                        maxlength="100" />
                                 </div>
                             </div>
 
@@ -463,8 +498,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <textarea id="Comentarios" class="input-custom"
-                                              placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
-                                              maxlength="300"></textarea>
+                                        placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
+                                        maxlength="300"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -472,9 +507,9 @@
                             <div>
                                 <p class="table-title">
                                     Campaña:
-                                    <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual" class="dropdown-granos">
-                                        <option *ngFor="let camp of listaCampanias"
-                                                value="{{camp.CampaniaIdActual}}">
+                                    <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
+                                        class="dropdown-granos">
+                                        <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
                                             {{camp.CampaniaActual}}
                                         </option>
                                     </select>
@@ -499,27 +534,27 @@
                                         <td width="140px">
                                             <div class="formulario-input">
                                                 <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
-                                                        class="dropdown-granos">
+                                                    class="dropdown-granos">
                                                     <option *ngFor="let material of listaMateriales"
-                                                            value="{{material.Id}}">
+                                                        value="{{material.Id}}">
                                                         {{material.Descripcion}}
                                                     </option>
                                                 </select>
-                                                <input [(ngModel)]="field.CampaniaId" class="form-control" type="text" value="0" name="{{field.CampaniaId}}" style="display:none;" />
+                                                <input [(ngModel)]="field.CampaniaId" class="form-control" type="text"
+                                                    value="0" name="{{field.CampaniaId}}" style="display:none;" />
                                             </div>
                                         </td>
                                         <td>
                                             <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden"
-                                                   id="localidad_{{i}}"
-                                                   style="font-weight: 100 !important;">
+                                                id="localidad_{{i}}" style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                             (selected)='selectEventProduccion($event, i)'
-                                                             [(ngModel)]="field.Localidad"
-                                                             (inputChanged)='onChangeSearchProduccion($event)'
-                                                             (inputFocused)='selectEventProduccion($event)'
-                                                             [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
-                                                             [notFoundTemplate]="notFoundTemplate">
+                                                (selected)='selectEventProduccion($event, i)'
+                                                [(ngModel)]="field.Localidad"
+                                                (inputChanged)='onChangeSearchProduccion($event)'
+                                                (inputFocused)='selectEventProduccion($event)'
+                                                [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
 
                                             <ng-template #itemTemplate let-item>
@@ -531,20 +566,23 @@
                                             </ng-template>
                                         </td>
                                         <td width="100px">
-                                            <input [(ngModel)]="field.Hectareas" class="form-control" type="number" name="{{field.Hectareas}}" />
+                                            <input [(ngModel)]="field.Hectareas" class="form-control" type="number"
+                                                name="{{field.Hectareas}}" />
                                         </td>
                                         <td width="100px">
-                                            <input [(ngModel)]="field.Toneladas" class="form-control" type="number" name="{{field.Toneladas}}" />
+                                            <input [(ngModel)]="field.Toneladas" class="form-control" type="number"
+                                                name="{{field.Toneladas}}" />
                                         </td>
                                         <td width="75px">
-                                            <select [(ngModel)]="field.ArrendaPropia" class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                            <select [(ngModel)]="field.ArrendaPropia"
+                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
                                                 <option value="true">Propio</option>
                                                 <option value="false">Alquilado</option>
                                             </select>
                                         </td>
                                         <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
-                                                    (click)="deleteFieldValue(i)">
+                                                (click)="deleteFieldValue(i)">
                                                 Eliminar
                                             </button>
                                         </td>
@@ -554,8 +592,7 @@
 
                             </table>
                             <div class="btn-add-container">
-                                <button class="btn-add btn-custom" type="button"
-                                        (click)="addFieldValue()">
+                                <button class="btn-add btn-custom" type="button" (click)="addFieldValue()">
                                     Agregar
                                 </button>
 
@@ -578,21 +615,21 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let acopio of informe.NuevosAcopios; let i = index">
-                  
+
                                         <td>
-                                            <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text" value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
+                                            <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text"
+                                                value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
 
                                             <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
-                                                   id="localidadalm_{{i}}"
-                                                   style="font-weight: 100 !important;">
+                                                id="localidadalm_{{i}}" style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                             (selected)='selectEventAlmacenamiento($event, i)'
-                                                             [(ngModel)]="acopio.Localidad"
-                                                             (inputChanged)='onChangeSearchAlmacenamiento($event)'
-                                                             (inputFocused)='selectEventAlmacenamiento($event)'
-                                                             [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
-                                                             [notFoundTemplate]="notFoundTemplate">
+                                                (selected)='selectEventAlmacenamiento($event, i)'
+                                                [(ngModel)]="acopio.Localidad"
+                                                (inputChanged)='onChangeSearchAlmacenamiento($event)'
+                                                (inputFocused)='selectEventAlmacenamiento($event)'
+                                                [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
 
                                             <ng-template #itemTemplate let-item>
@@ -607,14 +644,15 @@
                                             <input [(ngModel)]="acopio.Toneladas" class="form-control" type="number" />
                                         </td>
                                         <td width="75px">
-                                            <select [(ngModel)]="acopio.ArrendaPropia" class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                            <select [(ngModel)]="acopio.ArrendaPropia"
+                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
                                                 <option value="true">Propio</option>
                                                 <option value="false">Alquilado</option>
                                             </select>
                                         </td>
                                         <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
-                                                    (click)="deleteFieldValueAlm(i)">
+                                                (click)="deleteFieldValueAlm(i)">
                                                 Eliminar
                                             </button>
                                         </td>
@@ -622,8 +660,7 @@
                                 </tbody>
                             </table>
                             <div class="btn-add-container">
-                                <button class="btn-add btn-custom" type="button"
-                                        (click)="addFieldValueAlm()">
+                                <button class="btn-add btn-custom" type="button" (click)="addFieldValueAlm()">
                                     Agregar
                                 </button>
                             </div>
@@ -633,12 +670,13 @@
                 <div class="modal-footer">
                     <div class="formulario" style="width:100%;text-align: center;">
                         <div *ngIf="mensajeError != ''" class="formulario-input;">
-                            <div class="alert alert-danger"><i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
+                            <div class="alert alert-danger"><i aria-hidden="true"
+                                    class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
                         </div>
                         <div class="formulario-input">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             <a class="btn btn-primary" id="InformeComercialDescargar"
-                               (click)="generarInformeComercial()">Guardar y Descargar</a>
+                                (click)="generarInformeComercial()">Guardar y Descargar</a>
                         </div>
                     </div>
                 </div>
@@ -647,5 +685,3 @@
     </div>
     <!-- end modal informe comercial-->
 </div>
-
-
