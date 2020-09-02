@@ -10,6 +10,7 @@ using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -47,6 +48,7 @@ namespace SustitucionMOAUtils.Services
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
                 ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
+
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
@@ -286,9 +288,11 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
+            var infoProveedor = ObtenerInfoProveedor(mailUsuario);
+
             ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
 
-            if (!ValidarArchivosSubidos(usuario))
+            if (!ValidarArchivosSubidos(usuario, infoProveedor))
             {
                 return ErrorMsg.ErrorCompleteCampo;
             }
@@ -310,7 +314,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool ValidarArchivosSubidos(UsuarioGranos usuario)
+        private bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
         {
 
             if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
@@ -321,6 +325,14 @@ namespace SustitucionMOAUtils.Services
             if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCBU))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
+            }
+
+            if (infoProveedor.estadoSISA != "1")
+            {
+                if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+                }
             }
 
             return true;
@@ -352,6 +364,24 @@ namespace SustitucionMOAUtils.Services
                 File.Delete(rutaArchivo);
             }
             return SuccessMsg.ArchivoBorrado;
+        }
+
+        public InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            var proveedor = usuario.ObtenerProveedorActual();
+
+            ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
+            var info = new InfoProveedorDataAgroDto
+            {
+                ProveedorCBU = result.ProveedorCBU,
+                ProveedorClasificacion = result.ProveedorClasificacion,
+                estadoSISA = result.ProveedorSISACodCategoria
+            };
+
+            return info;
         }
     }
 }

@@ -10,6 +10,6 @@ namespace SustitucionMOAModel.Dto
     {
         public string ProveedorCBU { get; set; }
         public string ProveedorClasificacion { get; set; }
-        public string ProveedorSISACodCategoria { get; set; }
+        public string estadoSISA { get; set; }
     }
 }

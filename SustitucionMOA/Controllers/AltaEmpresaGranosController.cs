@@ -36,10 +36,10 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                informeComercialJson = informeComercialJson.Replace("nia","ña");
+                informeComercialJson = informeComercialJson.Replace("nia", "ña");
                 var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
 
-               
+
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 userMail = userMail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : userMail;
@@ -47,6 +47,16 @@ namespace SustitucionMOA.Controllers
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
 
                 var proveedor = usuario.ObtenerProveedorActual();
+
+                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail);
+
+                if (infoProveedor.ProveedorClasificacion == "Productor")
+                {
+                    if (!informeComercial.NuevosCampos.Any())
+                    {
+                        throw new ValidationCustomException("Para generar el informe comercial debe informar los campos");
+                    }
+                }
 
                 informeComercial.ContactoComercial.Email1 = userMail;
                 informeComercial.ProveedorId = (int)proveedor.IdDataAgro;
@@ -236,6 +246,17 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult ObtenerInfoProveedor(string mail)
+        {
+
+            if (string.IsNullOrEmpty(mail))
+                mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+            return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail));
+        }
+
 
         public ActionResult ObtenerCBUSISA()
         {
