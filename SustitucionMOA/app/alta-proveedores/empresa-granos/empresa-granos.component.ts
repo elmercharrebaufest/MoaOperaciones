@@ -121,10 +121,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
 
-    @ViewChild("modalMsjEmpresaGranos")
-    protected modalMensajeComponent: MensajeComponent;
-
-
     @ViewChild(SpinnerSmallComponent)
     protected spinnerSmallComponent: SpinnerSmallComponent;
 
@@ -235,7 +231,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     generarInformeComercial() {
-        this.mensajeComponent.setMsgsEmpty();
+
         this.spinnerModal.showIt();
         this.unsubscribe();
         this.informe.NuevosAcopios.forEach(campo => {
@@ -250,10 +246,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.informe.Campania = item.CampaniaActual;
             }
         }
+
         if (this.validarInforme()) {
-            this.spinnerSmallComponent.hideIt();
+            this.spinnerModal.hideIt();
             return;
         }
+
         this.mensajeError = "";
         this.subscription = this.service.generarInformeComercial(this.informe).subscribe(
             result => {
@@ -278,14 +276,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         return false;
                     }
                 }
-
-
             },
             error => {
                 this.spinnerModal.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-                this.spinnerSmallComponent.hideIt();
-                this.modalMensajeComponent.setErrorMsg(error.message);
+                this.mensajeError = error.message;
+
             }
         );
     }
