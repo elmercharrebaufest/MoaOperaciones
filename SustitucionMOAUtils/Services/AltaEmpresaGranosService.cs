@@ -279,7 +279,6 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
         {
-
             if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Informe comercial firmado"));
