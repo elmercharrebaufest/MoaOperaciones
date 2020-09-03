@@ -48,7 +48,6 @@ namespace SustitucionMOAUtils.Services
 
                 ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
 
-
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
@@ -57,11 +56,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
-
-                //ObtenerCampaniaActual(out string Campania, out int CampaniaId);
-
-                //informeComercial.Campaña = Campania;
-                //informeComercial.CampañaId = CampaniaId;
 
                 string downloadKey = "";
 
@@ -74,7 +68,6 @@ namespace SustitucionMOAUtils.Services
                 var buffer = Encoding.UTF8.GetBytes(content);
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
 
                 using (var client = new HttpClient(httpClientHandler, false))
                 {
@@ -222,20 +215,7 @@ namespace SustitucionMOAUtils.Services
             return string.Concat(rutaArchivosProveedores, "/", usuario.CUITRegistro, "/", usuario.Id, "/", fileKey);
         }
 
-        public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario)
-
-        {
-            List<ArchivoDto> archivos = new List<ArchivoDto>();
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-            foreach (var archivo in usuario.Archivos)
-            {
-                archivos.Add(new ArchivoDto(archivo));
-            }
-
-            return archivos;
-        }
-
+        [Obsolete]
         public string ObtenerCBUSISA(string mailUsuario)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
@@ -302,14 +282,28 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        public string ObtenerArchivo(string mailUsuario, string fileKey, int fileID)
+        public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario)
+        {
+            List<ArchivoDto> archivos = new List<ArchivoDto>();
+
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            foreach (var archivo in usuario.Archivos)
+            {
+                archivos.Add(new ArchivoDto(archivo));
+            }
+
+            return archivos;
+        }
+
+        public string ObtenerArchivo(string mailUsuario, int fileID)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
-            return usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta; ;
+            return usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta;
         }
 
-        public string EliminarArchivo(string mailUsuario, string fileKey, int archivoID)
+        public string EliminarArchivo(string mailUsuario, int archivoID)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 

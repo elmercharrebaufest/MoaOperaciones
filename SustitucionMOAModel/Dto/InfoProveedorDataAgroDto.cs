@@ -19,5 +19,14 @@ namespace SustitucionMOAModel.Dto
                    ProveedorClasificacion == dto.ProveedorClasificacion &&
                    estadoSISA == dto.estadoSISA;
         }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 350282287;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ProveedorCBU);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ProveedorClasificacion);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(estadoSISA);
+            return hashCode;
+        }
     }
 }

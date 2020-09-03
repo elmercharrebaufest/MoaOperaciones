@@ -38,11 +38,11 @@ namespace SustitucionMOATest.Services
         {
             string fileKey = "Prueba";
             string rutaArchivoProveedores = "C:/Archivos";
-            UsuarioGranos usuarioGranos = new UsuarioGranos { CUITRegistro = "123", Id = 10};
+            UsuarioGranos usuarioGranos = new UsuarioGranos { CUITRegistro = "123", Id = 10 };
 
             var expected = "C:/Archivos/123/10/Prueba";
 
-            var result = target.ArmarRutaCarpeta(fileKey,rutaArchivoProveedores,usuarioGranos);
+            var result = target.ArmarRutaCarpeta(fileKey, rutaArchivoProveedores, usuarioGranos);
 
             Assert.AreEqual(expected, result);
         }
@@ -116,7 +116,7 @@ namespace SustitucionMOATest.Services
         {
             var proveedor = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente };
 
-            var result =  target.ValidarEstadoSolicitud(proveedor);
+            var result = target.ValidarEstadoSolicitud(proveedor);
 
             var expected = true;
 
@@ -145,13 +145,21 @@ namespace SustitucionMOATest.Services
                 estadoSISA = "1"
             };
 
-            var infoDataAgro = new ResultadoValidarProveedorComercial { 
+            var infoDataAgro = new ResultadoValidarProveedorComercial
+            {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
                 ProveedorSISACodCategoria = "1"
             };
 
-            var usuarioGranosOk = new UsuarioGranos { Archivos = new List<Archivo>(), Proveedores = new List<Proveedor>() };
+            var mailUsuario = "existente@mail.com";
+
+            var usuarioGranosOk = new UsuarioGranos
+            {
+                Mail = mailUsuario,
+                Archivos = new List<Archivo>(),
+                Proveedores = new List<Proveedor>()
+            };
 
             var proveedorOk = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente, CUIT = "233333333333" };
 
@@ -160,7 +168,6 @@ namespace SustitucionMOATest.Services
             usuarioGranosOk.Archivos.Add(new Archivo { FileKey = FileKeys.InformeComercialFirmado });
             usuarioGranosOk.Archivos.Add(new Archivo { FileKey = FileKeys.ConstanciaCBU });
 
-            var mailUsuario = "existente@mail.com";
 
             usuarioGranosOk.Mail = mailUsuario;
 
@@ -187,8 +194,14 @@ namespace SustitucionMOATest.Services
                 ProveedorClasificacion = "Productor",
                 ProveedorSISACodCategoria = "1"
             };
+            var mailUsuario = "existente@mail.com";
 
-            var usuarioGranosOk = new UsuarioGranos { Archivos = new List<Archivo>(), Proveedores = new List<Proveedor>() };
+            var usuarioGranosOk = new UsuarioGranos
+            {
+                Mail = mailUsuario,
+                Archivos = new List<Archivo>(),
+                Proveedores = new List<Proveedor>()
+            };
 
             var proveedorOk = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente, CUIT = "233333333333" };
 
@@ -196,8 +209,6 @@ namespace SustitucionMOATest.Services
 
             usuarioGranosOk.Archivos.Add(new Archivo { FileKey = FileKeys.InformeComercialFirmado });
             usuarioGranosOk.Archivos.Add(new Archivo { FileKey = FileKeys.ConstanciaCBU });
-
-            var mailUsuario = "existente@mail.com";
 
             usuarioGranosOk.Mail = mailUsuario;
 
@@ -210,6 +221,101 @@ namespace SustitucionMOATest.Services
             var result = target.EnviarSolicitudUsuario(mailUsuario);
 
             var expected = SuccessMsg.ValidacionPendienteOK;
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<Proveedor>()), Times.Never);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void ObtenerArchivosSubidos()
+        {
+            var mailUsuario = "existente@mail.com";
+
+            var usuarioGranosOk = new UsuarioGranos
+            {
+                Mail = mailUsuario,
+                Archivos = new List<Archivo>()
+            };
+
+            var expected = new List<ArchivoDto>();
+
+            Archivo archivoInfoComercial = new Archivo
+            {
+                FileKey = FileKeys.InformeComercialFirmado,
+                Id = 1,
+                Ruta = "C:/test.txt"
+            };
+
+            Archivo archivoConstanciaCBU = new Archivo
+            {
+                FileKey = FileKeys.ConstanciaCBU,
+                Id = 2,
+                Ruta = "C:/test2.txt"
+            };
+
+            expected.Add(new ArchivoDto(archivoInfoComercial));
+            expected.Add(new ArchivoDto(archivoConstanciaCBU));
+
+            usuarioGranosOk.Archivos.Add(archivoInfoComercial);
+            usuarioGranosOk.Archivos.Add(archivoConstanciaCBU);
+
+            repositorioMock
+              .Setup(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()))
+              .Returns(usuarioGranosOk);
+
+            target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
+
+            var result = target.ObtenerArchivosSubidos(mailUsuario);
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<Archivo>()), Times.Never);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()), Times.Once);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void ObtenerArchivoTest()
+        {
+            var mailUsuario = "existente@mail.com";
+
+            var usuarioGranosOk = new UsuarioGranos
+            {
+                Mail = mailUsuario,
+                Archivos = new List<Archivo>()
+            };
+
+
+            Archivo archivoInfoComercial = new Archivo
+            {
+                FileKey = FileKeys.InformeComercialFirmado,
+                Id = 1,
+                Ruta = "C:/test.txt"
+            };
+
+            Archivo archivoConstanciaCBU = new Archivo
+            {
+                FileKey = FileKeys.ConstanciaCBU,
+                Id = 2,
+                Ruta = "C:/test2.txt"
+            };
+
+            usuarioGranosOk.Archivos.Add(archivoInfoComercial);
+            usuarioGranosOk.Archivos.Add(archivoConstanciaCBU);
+
+            repositorioMock
+              .Setup(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()))
+              .Returns(usuarioGranosOk);
+
+            target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
+
+            var result = target.ObtenerArchivo(mailUsuario, 2);
+
+            var expected = "C:/test2.txt";
+
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<Archivo>()), Times.Never);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()), Times.Once);
 
             Assert.AreEqual(expected, result);
         }

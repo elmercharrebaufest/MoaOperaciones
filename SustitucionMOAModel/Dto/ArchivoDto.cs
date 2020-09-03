@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SustitucionMOAModel.Dto
@@ -27,6 +28,23 @@ namespace SustitucionMOAModel.Dto
                 return Path.GetFileName(ruta);
 
             return "";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ArchivoDto dto &&
+                   Id == dto.Id &&
+                   FileKey == dto.FileKey &&
+                   Nombre == dto.Nombre;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 2018846538;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FileKey);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Nombre);
+            return hashCode;
         }
     }
 }

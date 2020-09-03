@@ -293,7 +293,7 @@ namespace SustitucionMOA.Controllers
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
-                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, fileKey, archivoID);
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);
@@ -312,7 +312,7 @@ namespace SustitucionMOA.Controllers
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                string result = altaEmpresaService.EliminarArchivo(mail, fileKey, archivoID);
+                string result = altaEmpresaService.EliminarArchivo(mail, archivoID);
 
                 return JsonCustom(result);
             }
