@@ -269,12 +269,14 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.ValidacionPendienteOK;
         }
 
-        public void ValidarEstadoSolicitud(Proveedor proveedor)
+        public bool ValidarEstadoSolicitud(Proveedor proveedor)
         {
             if (proveedor.EstadoAprobacion != EstadoAprobacion.DocumentacionPendiente && proveedor.EstadoAprobacion != EstadoAprobacion.EdicionRequerida)
             {
                 throw new ValidationCustomException(ErrorMsg.EstadoIncorrectoSolicitud);
             }
+
+            return true;
         }
 
         public bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
