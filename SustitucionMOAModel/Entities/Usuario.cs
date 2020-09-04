@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
+using System.Linq;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -98,7 +94,8 @@ namespace SustitucionMOAModel.Entities
             return
                 Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("NOIMP")).Any(); 
+                Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
+                !Habilitado;
         }
 
         public void RemoverRoles()
@@ -110,5 +107,6 @@ namespace SustitucionMOAModel.Entities
         {
             Roles.Add(rol);
         }
+
     }
 }

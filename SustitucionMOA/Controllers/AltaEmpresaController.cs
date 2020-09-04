@@ -1,33 +1,17 @@
 ﻿using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.WSMapMOA;
-using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
 using System.Web.Mvc;
-using System.Web.Services.Description;
-using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
 namespace SustitucionMOA.Controllers
 {
@@ -52,10 +36,19 @@ namespace SustitucionMOA.Controllers
                 var empresas = altaEmpresaService.GetEmpresas();
                 foreach (var item in empresas)
                 {
-                    ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
-                    if (result != null)
+
+                    if (item.EstadoAprobacion != EstadoAprobacion.AunNoImplementado &&
+                        item.EstadoAprobacion != EstadoAprobacion.DeshabilitadoEnDataAgro)
                     {
-                        item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
+                        if (result != null)
+                        {
+                            item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                        }
+                    }
+                    else
+                    {
+                        item.SISAEstadoCuit = "";
                     }
 
                     item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
@@ -103,15 +96,64 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        public ActionResult HabilitarUsuario(int empresaId, string observacion)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.HabilitarUsuario(ClaimsPrincipalExtension.GetClaimValue("emails"), empresaId, observacion) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        public ActionResult DeshabilitarUsuario(int empresaId, string observacion, string observacionParaElProveedor)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.DeshabilitarUsuario(ClaimsPrincipalExtension.GetClaimValue("emails"), empresaId, observacion, observacionParaElProveedor) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
         public ActionResult getEstados()
         {
             try
             {
-                List<KeyValuePair<int, string>> estados = new List<KeyValuePair<int, string>>();
-                estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.AprobacionPendiente, AddSpacesToSentence(EstadoAprobacion.AprobacionPendiente.ToString())));
-                estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.AnalisisDeNosis, AddSpacesToSentence(EstadoAprobacion.AnalisisDeNosis.ToString())));
-                estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.SentenciaFinal, AddSpacesToSentence(EstadoAprobacion.SentenciaFinal.ToString())));
-                estados.Add(new KeyValuePair<int, string>((int)EstadoAprobacion.EdicionRequerida, AddSpacesToSentence(EstadoAprobacion.EdicionRequerida.ToString())));
+                List<KeyValuePair<int, string>> estados = new List<KeyValuePair<int, string>>
+                {
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.AprobacionPendiente, EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.AnalisisDeNosis, EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.SentenciaFinal, EstadoAprobacion.SentenciaFinal.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.EdicionRequerida, EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.DeshabilitadoEnDataAgro, EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.AunNoImplementado, EstadoAprobacion.AunNoImplementado.ToFriendlyString())
+                };
                 return JsonCustom(new { data = estados });
             }
             catch (InfoCustomException e)
@@ -149,8 +191,6 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                userMail = userMail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : userMail;
 
                 return JsonCustom(new { data = altaEmpresaService.GetEstadoAprobacion(userMail) });
             }

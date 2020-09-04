@@ -18,13 +18,10 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
-        private readonly string DataAgroURL;
 
         public AltaEmpresaService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
-            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
-
         }
 
         public List<ProveedorDto> GetEmpresas()
@@ -36,32 +33,11 @@ namespace SustitucionMOAUtils.Services
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AnalisisDeNosis
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.SentenciaFinal
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EdicionRequerida
+                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.DeshabilitadoEnDataAgro
+                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AunNoImplementado
                                 );
 
-
-                List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto
-                {
-                    CodigoProveedor = x.CodigoProveedor ?? "",
-                    CUIT = x.CUIT,
-                    EstadoAprobacion = x.EstadoAprobacion,
-                    EstadoAprobacionDescripcion = x.EstadoAprobacion.ToString(),
-                    Id = x.Id,
-                    IdComercialDataAgro = x.IdComercialDataAgro,
-                    IdDataAgro = x.IdDataAgro,
-                    Mail = x.Mail ?? "",
-                    Observaciones = x.Observaciones,
-                    RazonSocial = x.RazonSocial ?? "",
-                    Comercial = x.UsuariosAsociados.Count() > 0 ? (x.UsuariosAsociados.First() as UsuarioGranos).Comercial : "",
-                    EstadoSIPER = x.EstadoSIPER,
-                    HistorialAprobaciones = x.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto
-                    {
-                        Id = a.Id,
-                        EstadoAprobacionDescripcion = a.EstadoAprobacion.ToString(),
-                        Fecha = a.Fecha,
-                        Observacion = a.Observacion,
-                        Usuario = a.Usuario.Mail
-                    }).ToList()
-                }).ToList();
+                List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
 
                 if (proveedorDtos.Count == 0)
                 {
@@ -89,7 +65,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (proveedor == null)
                 {
-                    throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
+                    throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
                 }
                 if (proveedor.HistorialAprobaciones == null)
                 {
@@ -165,6 +141,77 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        public string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion)
+        {
+            int usuarioID = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
+
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorID);
+            
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+
+            usuario.Habilitado = true;
+
+            var rolUsuario = ObtenerRolPorCodigo(usuario.TipoUsuario.NombreCorto);
+
+            usuario.RemoverRoles();
+
+            usuario.AgregarRol(rolUsuario);
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
+
+            
+            proveedor.HistorialAprobaciones.Add(
+                  new ProveedorHistorialAprobacion
+                  {
+                      Fecha = DateTime.Now,
+                      EstadoAprobacion = EstadoAprobacion.Aprobado,
+                      Observacion = observacion,
+                      Proveedor_Id = proveedorID,
+                      Usuario_Id = usuarioID
+                  }
+              );
+
+            repositorio.GuardarCambios();
+
+            return string.Format(SuccessMsg.UsuarioHabilitadoOK, usuario.Mail);
+        }
+
+        public string DeshabilitarUsuario(string usuarioMail, int proveedorID, string observacion, string observarcionProveedor)
+        {
+            int usuarioID = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
+
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorID);
+
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+
+            usuario.Habilitado = false;
+
+            usuario.RemoverRoles();
+
+            var rolUsuario = ObtenerRolPorCodigo("DES");
+
+            usuario.AgregarRol(rolUsuario);
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.Deshabilitado;
+
+            proveedor.Observaciones = observarcionProveedor;
+
+            proveedor.HistorialAprobaciones.Add(
+                  new ProveedorHistorialAprobacion
+                  {
+                      Fecha = DateTime.Now,
+                      EstadoAprobacion = EstadoAprobacion.Deshabilitado,
+                      Observacion = observacion,
+                      Proveedor_Id = proveedorID,
+                      Usuario_Id = usuarioID
+                  }
+              );
+
+            repositorio.GuardarCambios();
+
+            return string.Format(SuccessMsg.UsuarioDeshabilitadoOK, usuario.Mail);
         }
 
         public Rol ObtenerRolPorCodigo(string codigo)
