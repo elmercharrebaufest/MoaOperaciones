@@ -100,5 +100,15 @@ namespace SustitucionMOAModel.Entities
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any(); 
         }
+
+        public void RemoverRoles()
+        {
+            Roles.Clear();
+        }
+
+        public void AgregarRol(Rol rol)
+        {
+            Roles.Add(rol);
+        }
     }
 }
