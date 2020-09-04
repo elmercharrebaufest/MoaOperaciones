@@ -57,7 +57,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     autocompleteNotFoundText = "No encontrado";
 
     //Indira
-    estadoSISA: string = "1";
+    estadoSISA: string = "";
 
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
@@ -143,7 +143,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
-        this.obtenerCBUSISA();
+        this.obtenerInfoProveedor();
 
         this.addFieldValue();
         this.addFieldValueAlm();
@@ -224,10 +224,22 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    obtenerCBUSISA() {
-        this.subscription = this.service.obtenerCBUSISA().subscribe(
+    // obtenerCBUSISA() {
+    //     this.subscription = this.service.obtenerCBUSISA().subscribe(
+    //         result => {
+    //             this.CBUSISA = result;
+    //         },
+    //         error => {
+    //             this.mensajeComponent.setErrorMsg(error.message);
+    //         }
+    //     );
+    // }
+
+    obtenerInfoProveedor() {
+        this.subscription = this.service.obtenerInfoProveedor().subscribe(
             result => {
-                this.CBUSISA = result;
+                this.CBUSISA = result.ProveedorCBU;
+                this.estadoSISA = result.estadoSISA;
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);

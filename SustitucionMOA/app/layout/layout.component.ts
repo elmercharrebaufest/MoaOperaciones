@@ -17,7 +17,7 @@ declare var $: any;
 @Component({
     selector: 'app-layout',
     templateUrl: `./app/layout/layout.component.html?v=${new Date().getTime()}`,
-    providers: [ LayoutService ]
+    providers: [LayoutService]
 })
 
 export class LayoutComponent implements OnDestroy {
@@ -77,7 +77,7 @@ export class LayoutComponent implements OnDestroy {
         this.tipoUsuario = sessionStorage.getItem("tipoUsuario");
         this.noticias = JSON.parse(sessionStorage.getItem("noticias"));
         this.seccionActive = this.navService.seccionActiveValue;
-        this.menuActive = this.navService.menuActiveValue; 
+        this.menuActive = this.navService.menuActiveValue;
 
         sessionDataService.username$.subscribe(
             username => {
@@ -232,7 +232,7 @@ export class LayoutComponent implements OnDestroy {
             successMsj => {
                 this.setMsjSuccess(successMsj);
             });
-     
+
     }
 
     ngAfterViewInit() {
@@ -493,5 +493,14 @@ export class LayoutComponent implements OnDestroy {
             }
         );
         return false;
+    }
+
+    clickLogo() {
+        if (this.isAuthorized('CONSULTAR HOME') && this.isGranosSelected()) {
+            this.goToSeccion('/home')
+        }
+        if (this.isAuthorized('CONSULTAR HOME NG') && this.isNoGranosSelected()) {
+            this.goToSeccion('/home-ngs')
+        }
     }
 }
