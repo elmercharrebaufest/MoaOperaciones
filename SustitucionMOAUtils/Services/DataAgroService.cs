@@ -1,18 +1,17 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
-using System;
-using SustitucionMOAWS.WSConsumers;
-using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
-using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Configuration;
-using SustitucionMOAUtils.Interfaces;
-using System.Collections.Generic;
+using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.DataAgroServices;
+using SustitucionMOAWS.WSConsumers;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -87,10 +86,10 @@ namespace SustitucionMOAUtils.Services
                         proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
                         proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
 
-                        Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ?  "GRAN" : "NUEG" );
+                        Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
                         proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
-                
+
                         usuario.Roles.Add(rolUsuario);
                     }
                     else
@@ -135,24 +134,10 @@ namespace SustitucionMOAUtils.Services
 
         public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT)
         {
-            try
-            {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
 
-                return respuesta;
-            }
-            catch (InfoCustomException e)
-            {
-                return null;
-            }
-            catch (ValidationCustomException e)
-            {
-                return null;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+
+            return respuesta;
         }
 
 

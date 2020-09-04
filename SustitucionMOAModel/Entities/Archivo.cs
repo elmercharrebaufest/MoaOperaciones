@@ -15,5 +15,22 @@ namespace SustitucionMOAModel.Entities
         public string FileKey { get; set; }
 
         public string Ruta { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Archivo archivo &&
+                   Id == archivo.Id &&
+                   FileKey == archivo.FileKey &&
+                   Ruta == archivo.Ruta;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 173752721;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FileKey);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Ruta);
+            return hashCode;
+        }
     }
 }

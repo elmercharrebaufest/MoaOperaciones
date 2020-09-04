@@ -1,27 +1,16 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Quartz.Util;
+﻿using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -38,11 +27,10 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        public List<ProveedorDto> getEmpresas()
+        public List<ProveedorDto> GetEmpresas()
         {
             try
             {
-
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
                                  x => (int)x.EstadoAprobacion == (int)EstadoAprobacion.AprobacionPendiente
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AnalisisDeNosis
@@ -81,16 +69,19 @@ namespace SustitucionMOAUtils.Services
                 }
                 return proveedorDtos;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
                 throw;
             }
-
-
         }
 
-        public string setEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER)
+        public string SetEstadoAprobacion(int proveedorId,
+                                          EstadoAprobacion estado,
+                                          string observacion,
+                                          string usuarioMail,
+                                          string observacionParaElProveedor,
+                                          string estadoSIPER,
+                                          bool enviarMail)
         {
             try
             {
@@ -104,6 +95,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
                 }
+
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
                 proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
@@ -114,19 +106,19 @@ namespace SustitucionMOAUtils.Services
                         Proveedor_Id = proveedorId,
                         Usuario_Id = usuarioId
                     }
-                    );
+                );
+
                 proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
                 {
-
                     UsuarioGranos usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == proveedor.Mail);
 
-                    usuario.Roles.Clear();
+                    usuario.RemoverRoles();
 
                     Rol rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
-                    usuario.Roles.Add(rolUsuarioGranos);
+                    usuario.AgregarRol(rolUsuarioGranos);
                 }
 
                 if (estado == EstadoAprobacion.Rechazado || estado == EstadoAprobacion.EdicionRequerida)
@@ -141,28 +133,32 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.GuardarCambios();
 
-                try
+                if (enviarMail)
                 {
-                    if (estado == EstadoAprobacion.Aprobado)
+                    try
                     {
-                        enviarMailAprobado(proveedor);
-                    }
-                    else if (estado == EstadoAprobacion.Rechazado)
-                    {
-                        enviarMailRechazado(proveedor, observacionParaElProveedor);
+                        if (estado == EstadoAprobacion.Aprobado)
+                        {
+                            EnviarMailAprobado(proveedor);
+                        }
+                        else if (estado == EstadoAprobacion.Rechazado)
+                        {
+                            EnviarMailRechazado(proveedor, observacionParaElProveedor);
 
-                    }
-                    else if (estado == EstadoAprobacion.EdicionRequerida)
-                    {
-                        enviarMailEdicionRequerida(proveedor, observacionParaElProveedor);
+                        }
+                        else if (estado == EstadoAprobacion.EdicionRequerida)
+                        {
+                            EnviarMailEdicionRequerida(proveedor, observacionParaElProveedor);
 
+                        }
                     }
-                    return String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
+                    catch (Exception)
+                    {
+                        throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
+                    }
+
                 }
-                catch (Exception)
-                {
-                    throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
-                }
+                return string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
 
             }
             catch (Exception)
@@ -173,10 +169,10 @@ namespace SustitucionMOAUtils.Services
 
         public Rol ObtenerRolPorCodigo(string codigo)
         {
-            return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
+            return repositorio.Obtener<Rol>(u => u.Codigo == codigo);
         }
 
-        private void enviarMailEdicionRequerida(Proveedor proveedor, string observacionParaElProveedor)
+        private void EnviarMailEdicionRequerida(Proveedor proveedor, string observacionParaElProveedor)
         {
             string cuerpo = "Estimado: " + proveedor.RazonSocial + "\n\n"
                                         + "Su alta fue Observada." + "\n\n";
@@ -188,7 +184,7 @@ namespace SustitucionMOAUtils.Services
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, null, null, null, null);
         }
 
-        private void enviarMailRechazado(Proveedor proveedor, string observacionParaElProveedor)
+        private void EnviarMailRechazado(Proveedor proveedor, string observacionParaElProveedor)
         {
             string cuerpo = "Estimado: " + proveedor.RazonSocial + "\n\n"
                     + "Su alta fue rechazada por Administración. Comunicarse con su comercial." + "\n\n";
@@ -200,7 +196,7 @@ namespace SustitucionMOAUtils.Services
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, null, null, null, null);
         }
 
-        private void enviarMailAprobado(Proveedor proveedor)
+        private void EnviarMailAprobado(Proveedor proveedor)
         {
             string cuerpo = "Estimado: " + proveedor.RazonSocial + "\n\n"
                       + "Su alta para operar en Molinos Agro fue aprobada exitosamente." + "\n\n";

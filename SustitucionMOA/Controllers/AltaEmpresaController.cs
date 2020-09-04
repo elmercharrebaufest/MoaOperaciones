@@ -49,7 +49,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var empresas = altaEmpresaService.getEmpresas();
+                var empresas = altaEmpresaService.GetEmpresas();
                 foreach (var item in empresas)
                 {
                     ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
@@ -86,7 +86,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.setEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER) });
+                return JsonCustom(new { data = altaEmpresaService.SetEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER, true) });
             }
             catch (InfoCustomException e)
             {

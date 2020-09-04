@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -49,7 +48,6 @@ namespace SustitucionMOAUtils.Services
 
                 ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
 
-
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
@@ -58,11 +56,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
-
-                //ObtenerCampaniaActual(out string Campania, out int CampaniaId);
-
-                //informeComercial.Campaña = Campania;
-                //informeComercial.CampañaId = CampaniaId;
 
                 string downloadKey = "";
 
@@ -75,7 +68,6 @@ namespace SustitucionMOAUtils.Services
                 var buffer = Encoding.UTF8.GetBytes(content);
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
 
                 using (var client = new HttpClient(httpClientHandler, false))
                 {
@@ -118,34 +110,6 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        public void ObtenerCampaniaActual(out string CampaniaActual, out int CampaniaIdActual)
-        {
-            var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Material/Buscar");
-
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler()
-            {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
-
-            using (var client = new HttpClient(httpClientHandler, false))
-            {
-                var task = client.PostAsync(urlBusquedaMateriales, null);
-
-                task.Wait();
-
-                var stringContent = task.Result.Content.ReadAsStringAsync();
-
-                dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                CampaniaActual = jsonResult.Datos[0].CampaniaActual.ToString();
-                CampaniaIdActual = jsonResult.Datos[0].CampaniaIdActual;
             }
         }
 
@@ -246,25 +210,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, UsuarioGranos usuario)
+        public string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, UsuarioGranos usuario)
         {
             return string.Concat(rutaArchivosProveedores, "/", usuario.CUITRegistro, "/", usuario.Id, "/", fileKey);
         }
 
-        public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario)
-
-        {
-            List<ArchivoDto> archivos = new List<ArchivoDto>();
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-            foreach (var archivo in usuario.Archivos)
-            {
-                archivos.Add(new ArchivoDto(archivo));
-            }
-
-            return archivos;
-        }
-
+        [Obsolete]
         public string ObtenerCBUSISA(string mailUsuario)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
@@ -274,14 +225,6 @@ namespace SustitucionMOAUtils.Services
             string CBU = dataAgroService.ObtenerCBUProveedor(proveedor.CUIT);
 
             return CBU;
-        }
-
-        public string ObtenerRuta(string ruta)
-        {
-            if (Path.GetFileName(ruta) != null)
-                return Path.GetFileName(ruta);
-
-            return "";
         }
 
         public string EnviarSolicitudUsuario(string mailUsuario)
@@ -306,17 +249,18 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.ValidacionPendienteOK;
         }
 
-        private void ValidarEstadoSolicitud(Proveedor proveedor)
+        public bool ValidarEstadoSolicitud(Proveedor proveedor)
         {
             if (proveedor.EstadoAprobacion != EstadoAprobacion.DocumentacionPendiente && proveedor.EstadoAprobacion != EstadoAprobacion.EdicionRequerida)
             {
                 throw new ValidationCustomException(ErrorMsg.EstadoIncorrectoSolicitud);
             }
+
+            return true;
         }
 
-        private bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
+        public bool ValidarArchivosSubidos(UsuarioGranos usuario, InfoProveedorDataAgroDto infoProveedor)
         {
-
             if (!usuario.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Informe comercial firmado"));
@@ -338,14 +282,28 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        public string ObtenerArchivo(string mailUsuario, string fileKey, int fileID)
+        public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario)
+        {
+            List<ArchivoDto> archivos = new List<ArchivoDto>();
+
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+
+            foreach (var archivo in usuario.Archivos)
+            {
+                archivos.Add(new ArchivoDto(archivo));
+            }
+
+            return archivos;
+        }
+
+        public string ObtenerArchivo(string mailUsuario, int fileID)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 
-            return usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta; ;
+            return usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta;
         }
 
-        public string EliminarArchivo(string mailUsuario, string fileKey, int archivoID)
+        public string EliminarArchivo(string mailUsuario, int archivoID)
         {
             var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
 

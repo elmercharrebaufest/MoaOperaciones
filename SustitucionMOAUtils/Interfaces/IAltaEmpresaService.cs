@@ -14,9 +14,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IAltaEmpresaService
     {
-        List<ProveedorDto> getEmpresas();
+        List<ProveedorDto> GetEmpresas();
 
-        string setEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER);
+        string SetEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER, bool enviarMail);
 
         EstadoAprobacionDto GetEstadoAprobacion(string mail);
     }

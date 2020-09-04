@@ -13,8 +13,8 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerMaterialesDataAgro();
         List<ArchivoDto> ObtenerArchivosSubidos(string mail);
         string EnviarSolicitudUsuario(string mail);
-        string ObtenerArchivo(string mail, string fileKey, int fileID);
-        string EliminarArchivo(string mail, string fileKey, int archivoID);
+        string ObtenerArchivo(string mail, int fileID);
+        string EliminarArchivo(string mail, int archivoID);
         string ObtenerCBUSISA(string mailUsuario);
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario);
 
