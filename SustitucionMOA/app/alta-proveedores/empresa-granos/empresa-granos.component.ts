@@ -56,6 +56,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     data = [];
     autocompleteNotFoundText = "No encontrado";
 
+    //Indira
+    estadoSISA: string = "";
+
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     }
@@ -140,10 +143,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
-        this.obtenerCBUSISA();
+        this.obtenerInfoProveedor();
 
         this.addFieldValue();
         this.addFieldValueAlm();
+
+        console.log(this.estadoSISA);
     }
 
     get email() {
@@ -219,10 +224,22 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    obtenerCBUSISA() {
-        this.subscription = this.service.obtenerCBUSISA().subscribe(
+    // obtenerCBUSISA() {
+    //     this.subscription = this.service.obtenerCBUSISA().subscribe(
+    //         result => {
+    //             this.CBUSISA = result;
+    //         },
+    //         error => {
+    //             this.mensajeComponent.setErrorMsg(error.message);
+    //         }
+    //     );
+    // }
+
+    obtenerInfoProveedor() {
+        this.subscription = this.service.obtenerInfoProveedor().subscribe(
             result => {
-                this.CBUSISA = result;
+                this.CBUSISA = result.ProveedorCBU;
+                this.estadoSISA = result.estadoSISA;
             },
             error => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -290,7 +307,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
 
-        let archivoID: number = archivo.Id; 
+        let archivoID: number = archivo.Id;
         let fileKey: string = archivo.FileKey;
 
         this.subscription = this.service.descargarArchivoSubido(fileKey, archivoID).subscribe(
@@ -344,7 +361,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
 
-        let archivoID: number = this.archivoSeleccionado.Id; 
+        let archivoID: number = this.archivoSeleccionado.Id;
 
         this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado, archivoID).subscribe(
             result => {
@@ -440,7 +457,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     validarInforme() {
-        
+
         if (this.informe.direccion == "" || !this.informe.direccion) {
             this.mensajeError = "No completo la direccion.";
             return true;
@@ -490,16 +507,16 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad productiva.";
                 return true;
             }
-            if (item.ArrendaPropia == null ) {
+            if (item.ArrendaPropia == null) {
                 this.mensajeError = "Debe completar la condicion en todos los items de Capacidad productiva.";
                 return true;
             }
         }
-        for (const item of this.informe.NuevosAcopios) {            
+        for (const item of this.informe.NuevosAcopios) {
             if (item.LocalidadID == null || item.LocalidadID == 0) {
                 this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
                 return true;
-            }            
+            }
             if (item.Toneladas == null || item.Toneladas == 0) {
                 this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad planta.";
                 return true;
@@ -511,5 +528,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
         return false;
     }
+
 }
 
