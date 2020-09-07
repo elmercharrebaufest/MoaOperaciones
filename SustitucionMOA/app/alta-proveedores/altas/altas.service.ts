@@ -49,7 +49,7 @@ export class AltaEmpresaService extends BaseService {
             map(this.extractData));
     }
 
-    public deshabilitarUsuario(empresaId: number, , observacion: string, observacionesProveedor: string): Observable<any> {
+    public deshabilitarUsuario(empresaId: number, observacion: string, observacionesProveedor: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('empresaId', empresaId.toString());
         params.set('observacion', observacion);

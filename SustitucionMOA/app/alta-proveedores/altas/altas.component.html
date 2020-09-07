@@ -67,6 +67,17 @@
                                     Ver Documentacion
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"></button>
+
+                                <button type="button" class="btn btn-info btn-lg"
+                                        (click)="habilitarUsuario(empresa)"
+                                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                                    Habilitar usuario
+                                </button>
+                                <button type="button" class="btn btn-info btn-lg"
+                                        (click)="deshabilitarUsuario(empresa)"
+                                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                                    Deshabilitar usuario
+                                </button>
                             </td>
                         </tr>
                     </tbody>

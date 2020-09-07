@@ -20,8 +20,9 @@ namespace SustitucionMOAUtils.Interfaces
 
         EstadoAprobacionDto GetEstadoAprobacion(string mail);
 
-        string DeshabilitarUsuario(string usuarioMail, int proveedorID, string observacion, string observarcionProveedor)
-                  
-        string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion)
+        string DeshabilitarUsuario(string usuarioMail, int proveedorID, string observacion, string observarcionProveedor);
+
+
+        string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion);
     }
 }
