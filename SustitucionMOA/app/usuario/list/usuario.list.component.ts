@@ -10,6 +10,7 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from './../usuario.service';
+import { Rol } from '../../common/models/rol';
 
 
 
@@ -44,7 +45,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     rolOptions: Array<DropdownOption> = [];
 
-    usuarioSeleccionado: any;
+    rolesUsuarioSeleccionado: Array<Rol> = [];
+    usuarioSeleccionado: any = null;
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -243,6 +245,17 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     abrirModalActivar(usuario: any) {
         this.usuarioSeleccionado = usuario;
+        this.rolesUsuarioSeleccionado = [];
+
+        usuario.Roles.forEach(function (value) {
+            var rolAgregar: Rol = new Rol();
+
+            rolAgregar.Id = value.Id,
+            rolAgregar.Nombre = value.Nombre;
+
+            this.usuarioSeleccionado.Roles.push(rolAgregar);
+        }); 
+
         this.getRolesOptions();
         document.getElementById("openModalHiddenButton").click();
         return false;
@@ -289,7 +302,12 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
 
     agregarRolUsuario() {
-        this.usuarioSeleccionado.Roles.push(this.rolDropdownComponent.select);
+        var rolAgregar: Rol = new Rol();
+
+        rolAgregar.Id = this.rolDropdownComponent.selectedOption,
+        rolAgregar.Nombre = this.rolDropdownComponent.selectedOptionLabel;
+
+        this.usuarioSeleccionado.Roles.push(rolAgregar);
     }
 
 

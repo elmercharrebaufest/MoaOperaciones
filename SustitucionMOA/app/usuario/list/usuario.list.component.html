@@ -85,20 +85,20 @@
                 </button>
                 <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado.Mail || ""}}</h4>
             </div>
+            <div class="col-xs-12 col-sm-6">
+                Roles actuales
+            </div>
             <div class="modal-body">
-                <div class="col-xs-12 col-sm-6">
-                    Roles actuales
-                </div>
-                <div class="col-xs-12 col-sm-6">
-                    <span *ngFor="let rol of usuarioSeleccionado.Roles">
-                        [{{rol.value}}] - {{rol.label}}
+                <div class="col-xs-12 col-sm-12">
+                    <div *ngFor="let rol of rolesUsuarioSeleccionado">
+                        [{{rol.Id}}] - {{rol.Nombre}}
 
                         <button type="button" class="btn btn-info btn-lg"
                                 (click)="quitarRolUsuario(rol)"
                                 style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                             Quitar
                         </button>
-                    </span>
+                    </div>
                 </div>
 
                 <div class="col-xs-6 col-sm-9">
