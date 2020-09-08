@@ -31,5 +31,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RolDropdownDto> GetRoles();
 
         byte[] getDocumento(string nombre);
+        string GuardarRoles(List<int> idRol, int idUsuario);
     }
 }

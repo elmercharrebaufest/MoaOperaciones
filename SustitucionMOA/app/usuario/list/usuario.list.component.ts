@@ -82,7 +82,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
-
     getUsuario() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -242,10 +241,59 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    abrirModalActivar() {
+    abrirModalActivar(usuario: any) {
+        this.usuarioSeleccionado = usuario;
         this.getRolesOptions();
         document.getElementById("openModalHiddenButton").click();
         return false;
+    }
 
+
+    guardarRolesUsuario() {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+
+
+        try {
+            this.service.guardarRolesUsuario(this.usuarioSeleccionado).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getUsuario();
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+
+    cerrarModal() {
+
+    }
+
+
+    agregarRolUsuario() {
+        this.usuarioSeleccionado.Roles.push(this.rolDropdownComponent.select);
+    }
+
+
+    quitarRolUsuario(rol: any) {
+        delete this.usuarioSeleccionado.Roles[rol];
     }
 }

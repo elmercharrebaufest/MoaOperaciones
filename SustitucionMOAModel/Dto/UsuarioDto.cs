@@ -21,6 +21,8 @@ namespace SustitucionMOAModel.Dto
 
         public string Tipo { get; set; }
 
+        public List<RolDropdownDto> Roles { get; set; }
+
 
         public UsuarioDto(Usuario usuario)
         {
@@ -29,12 +31,26 @@ namespace SustitucionMOAModel.Dto
             Habilitado = usuario.Habilitado;
             CUIT = usuario.CUITRegistro;
             CodigoProveedor = usuario.ObtenerCodigoProveedor();
-            var rol = usuario.ObtenerRolPrincipal();
 
-            if (rol != null)
-                Tipo = rol.Codigo;
-            else
-                Tipo = "";
+            switch (usuario.TipoUsuario.NombreCorto)
+            {
+                case "G":
+                case "NG":
+                case "A":
+                    Tipo = "Proveedor";
+                    break;
+                case "CORR":
+                    Tipo = "Corredor";
+                    break;
+                case "CLI":
+                    Tipo = "Cliente";
+                    break;
+                default:
+                    Tipo = "";
+                    break;
+            }
+
+            Roles = usuario.Roles.Select(r => new RolDropdownDto(r)).ToList();
         }
     }
 }

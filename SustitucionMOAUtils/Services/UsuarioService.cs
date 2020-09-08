@@ -469,5 +469,22 @@ namespace SustitucionMOAUtils.Services
         {
             return repositorio.Listar<Rol>().Select(x => new RolDropdownDto(x)).ToList();
         }
+
+        public string GuardarRoles(List<int> idRoles, int idUsuario)
+        {
+            Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+
+            usuario.RemoverRoles();
+            
+            foreach (int idRol in idRoles)
+            {
+                Rol rolAAgregar = repositorio.Obtener<Rol>(r => r.Id == idRol);
+                usuario.AgregarRol(rolAAgregar);
+            }
+            
+            repositorio.GuardarCambios();
+
+            return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail);
+        }
     }
 }

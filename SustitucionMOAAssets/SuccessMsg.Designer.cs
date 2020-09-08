@@ -241,6 +241,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El rol del usuario {{}} ha sido actualizado correctamente..
+        /// </summary>
+        public static string RolesActualizadosOk {
+            get {
+                return ResourceManager.GetString("RolesActualizadosOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El usuario ({0}) ha sido desbloqueado.
         /// </summary>
         public static string UsuarioDesbloqueadoOK {

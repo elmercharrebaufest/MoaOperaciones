@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
 using Newtonsoft.Json;
@@ -75,6 +76,29 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = new { roles = _usuarioService.GetRoles() } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GuardarRoles(List<int> idRoles, int idUsuario)
+        {
+            try
+            {
+                return JsonCustom(new { data = _usuarioService.GuardarRoles(idRoles, idUsuario) });
             }
             catch (InfoCustomException e)
             {

@@ -14,6 +14,19 @@ import { BaseService } from './../common/services/BaseService';
 @Injectable()
 export class UsuarioService extends BaseService {
 
+    guardarRolesUsuario(usuarioSeleccionado: any) {
+        let params: URLSearchParams = new URLSearchParams();
+
+        var idRoles = usuarioSeleccionado.Roles;
+        var idUsuario = usuarioSeleccionado.Id;
+
+        params.set('idRoles', idRoles);
+        params.set('idUsuario', idUsuario);
+        return this.http
+            .get('/api/usuario/GuardarRoles', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
     public cambiarContrasenia(contraseniaActual: string, contraseniaNueva: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('contraseniaActual', contraseniaActual);
