@@ -176,14 +176,24 @@ namespace SustitucionMOAUtils.Services
             };
 
             return ValidarCUITProveedor(ref usuario, proveedor);
-       
+        }
 
-            //usuario.Proveedores.Add(proveedor);
+        public bool RegistrarUsuarioCorredor(Usuario usuario)
+        {
+            Proveedor proveedor = new Proveedor
+            {
+                CUIT = usuario.CUITRegistro,
+                EstadoAprobacion = EstadoAprobacion.AunNoImplementado,
+                Observaciones = "El tipo de usuario seleccionado aún no ha sido implementado. Contactese con su comercial.",
+                CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro)
+            };
 
-            //usuario.Habilitado = true;
+            usuario.Proveedores.Add(proveedor);
 
-            //repositorio.Agregar(usuario);
-            //return repositorio.GuardarCambios() == 1;
+            usuario.Habilitado = true;
+
+            repositorio.Agregar(usuario);
+            return repositorio.GuardarCambios() == 1;
         }
 
         public bool RegistrarUsuarioGenerico(Usuario usuario)
@@ -234,6 +244,11 @@ namespace SustitucionMOAUtils.Services
         public Usuario ObtenerUsuario(string mail, string granosFlag)
         {
             return BuscarUsuarioPorMail(mail);
+        }
+
+        private string FormatearCodigoCorredor(string CUIT)
+        {
+            return string.Concat("c" , CUIT.Substring(2, 8));
         }
     }
 }

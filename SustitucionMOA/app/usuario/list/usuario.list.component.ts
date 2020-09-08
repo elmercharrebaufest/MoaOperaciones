@@ -1,14 +1,15 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { UsuarioService } from './../usuario.service';
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DropdownOption, DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
-import { NavService } from './../../common/services/NavService';
+import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
+import { ModalService } from './../../common/services/ModalService';
+import { NavService } from './../../common/services/NavService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
-import { ModalService } from './../../common/services/ModalService';
-import { Seccion } from './../../common/models/seccion';
+import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
+import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { UsuarioService } from './../usuario.service';
 
 
 
@@ -25,10 +26,14 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    @ViewChild('dropdown_rol')
+    protected rolDropdownComponent: DropdownComponent;
+
     constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
+        this.rolDropdownComponent = new DropdownComponent();
     }
 
     data: any;
@@ -36,6 +41,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     orderDirection: number = 1;
     itemsPerPage = 20;
     filtroUsuarioVendedor: string = "";
+
+    rolOptions: Array<DropdownOption> = [];
+
+    usuarioSeleccionado: any;
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -47,6 +56,32 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
         this.getUsuario();
     }
+
+    getRolesOptions() {
+        try {
+            this.subscriptionDropDowns = this.service.getRoles().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.rolOptions = result.data.roles;
+                        //this.tipoOptions = result.data.tipos;
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
 
     getUsuario() {
         this.mensajeComponent.setMsgsEmpty();
@@ -70,7 +105,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.spinnerComponent.hideIt();
@@ -126,11 +160,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    deshabilitar(usuario: string) {
+    deshabilitar(mailUsuario: string) {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.service.deshabilitarUsuario(usuario).subscribe(
+            this.service.deshabilitarUsuario(mailUsuario).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -158,11 +192,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    habilitar(usuario: string) {
+    habilitar(mailUsuario: string) {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.service.habilitarUsuario(usuario).subscribe(
+            this.service.habilitarUsuario(mailUsuario).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -206,5 +240,12 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             { etiqueta: "Vendedor", valor: usuario.vendedor }
         ]);
         return false;
+    }
+
+    abrirModalActivar() {
+        this.getRolesOptions();
+        document.getElementById("openModalHiddenButton").click();
+        return false;
+
     }
 }

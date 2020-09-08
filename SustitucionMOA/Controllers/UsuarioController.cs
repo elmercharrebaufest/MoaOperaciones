@@ -6,6 +6,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 
@@ -14,8 +15,14 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class UsuarioController : BaseController
     {
-        UsuarioService _usuarioService = new UsuarioService();
         LoginService _loginService = new LoginService();
+
+        private readonly IUsuarioService _usuarioService;
+
+        public UsuarioController (IUsuarioService usuarioService)
+        {
+            _usuarioService = usuarioService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
         public ActionResult getPerfiles()
@@ -40,11 +47,34 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult getUsuarios()
+        public ActionResult GetUsuarios()
         {
             try
             {
-                return JsonCustom(new { data = _usuarioService.getUsuarios() });
+                return JsonCustom(new { data = new { usuarios = _usuarioService.GetUsuarios() } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult GetRoles()
+        {
+            try
+            {
+                return JsonCustom(new { data = new { roles = _usuarioService.GetRoles() } });
             }
             catch (InfoCustomException e)
             {
@@ -155,11 +185,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult deshabilitar(string usuario)
+        public ActionResult deshabilitar(string mailUsuario)
         {
             try
             {
-                return JsonCustom(new { data = _usuarioService.deshabilitar(usuario) });
+                return JsonCustom(new { data = _usuarioService.DeshabilitarUsuario(mailUsuario) });
             }
             catch (ValidationCustomException e)
             {
@@ -172,12 +202,31 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        //public ActionResult deshabilitar(string usuario)
+        //{
+        //    try
+        //    {
+        //        return JsonCustom(new { data = _usuarioService.deshabilitar(usuario) });
+        //    }
+        //    catch (ValidationCustomException e)
+        //    {
+        //        return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult habilitar(string usuario)
+        public ActionResult habilitar(string mailUsuario)
         {
             try
             {
-                return JsonCustom(new { data = _usuarioService.habilitar(usuario) });
+                return JsonCustom(new { data = _usuarioService.HabilitarUsuario(mailUsuario) });
             }
             catch (ValidationCustomException e)
             {
@@ -189,6 +238,24 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        //public ActionResult habilitar(string usuario)
+        //{
+        //    try
+        //    {
+        //        return JsonCustom(new { data = _usuarioService.habilitar(usuario) });
+        //    }
+        //    catch (ValidationCustomException e)
+        //    {
+        //        return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.SELECCIONAR_VENDEDOR)]
         public ActionResult seleccionarVendedor(string vendedor, string descripcion)

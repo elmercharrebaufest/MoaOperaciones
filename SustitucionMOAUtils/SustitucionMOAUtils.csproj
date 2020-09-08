@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="Credentials\CamCredential.cs" />
     <Compile Include="Credentials\DBCredential.cs" />
-    <Compile Include="DBMethods\DBService.cs" />
+    <Compile Include="Email\DBMethods\DBService.cs" />
     <Compile Include="Email\EmailConfig.cs" />
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
@@ -67,6 +67,7 @@
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
     <Compile Include="Interfaces\IAzureB2CService.cs" />
     <Compile Include="Interfaces\IDataAgroService.cs" />
+    <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />

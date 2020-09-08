@@ -1,0 +1,35 @@
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Login;
+using SustitucionMOAModel.Models.WSMapMOA.Usuario;
+using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
+using System.Collections.Generic;
+
+namespace SustitucionMOAUtils.Interfaces
+{
+    public interface IUsuarioService
+    {
+        GetPerfilesResponseMOA getPerfiles();
+
+        List<UsuarioDto> GetUsuarios();
+
+        string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva);
+        LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia);
+
+        string alta(UsuarioAlta usuario);
+
+        string recuperarContrasenia(string usename);
+
+        string desbloquear(string usename);
+
+        string HabilitarUsuario(string usuarioMail);
+
+        string DeshabilitarUsuario(string usuarioMail);
+
+        Rol ObtenerRolPorCodigo(string codigo);
+
+        List<RolDropdownDto> GetRoles();
+
+        byte[] getDocumento(string nombre);
+    }
+}

@@ -34,13 +34,13 @@ namespace SustitucionMOAModel.Entities
 
         public Rol ObtenerRolPrincipal()
         {
-            return Roles.First();
+            return Roles.FirstOrDefault();
         }
 
         public Proveedor ObtenerProveedorActual()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
-            return Proveedores.First();
+            return Proveedores.FirstOrDefault();
         }
 
         public string ObtenerRazonSocial()
@@ -62,7 +62,7 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
+                if (!string.IsNullOrEmpty(ObtenerProveedorActual().CodigoProveedor))
                     return ObtenerProveedorActual().CodigoProveedor;
                 else
                     return "-";
