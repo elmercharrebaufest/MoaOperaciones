@@ -48,4 +48,11 @@ export class PesificacionService extends BaseService {
             .timeoutWith(30000, Observable.throw(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde")))
             .map(this.extractData);
     }
+
+    public getContratos(): Observable<any> {
+        return this.http
+            .get('/api/pesificacion/GetContratos')
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
 }

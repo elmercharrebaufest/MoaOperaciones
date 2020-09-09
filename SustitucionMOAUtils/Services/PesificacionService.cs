@@ -151,5 +151,38 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public List<Contrato> GetContratos(string proveedor)
+        {
+            try
+            {
+
+
+                if (proveedor == null || proveedor == "")
+                {
+                    throw new ValidationCustomException("Debe ingresar un proveedor");
+                }
+
+                PesificacionGetContratosWSMOAResponse responseGet = (PesificacionGetContratosWSMOAResponse)new PesificacionConsumerMOA().request(proveedor);
+                if (responseGet == null || responseGet.Contratos.Count < 1)
+                {
+                    throw new InfoCustomException("No se encontraron contratos para pesificar");
+                }
+
+                return responseGet.Contratos;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
     }
 }

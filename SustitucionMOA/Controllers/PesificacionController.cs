@@ -6,6 +6,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
@@ -64,6 +65,53 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(_pesificacionService.SetContratos(SessionPersister.Proveedor, file));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
+        public ActionResult GetContratos()
+        {
+            try
+            {
+                List<Contrato> result = new List<Contrato>();
+
+                for (int i = 0; i < 30; i++)
+                {
+                    result.Add(new Contrato
+                    {
+                        CantidadPendiente = i,
+                        Fijacion = (30-i).ToString(),
+                        Moneda = "usd",
+                        MontoPendiente = i,
+                        NombreVendedor = "pepe vendedor",
+                        NroContrato = i.ToString(),
+                        Precio = i,
+                        Unidad = "tn",
+                        Vendedor = "pepe vendedor"
+                    });
+                }
+
+
+                return JsonCustom(result);
+                return JsonCustom(_pesificacionService.GetContratos(SessionPersister.Proveedor));
             }
             catch (InfoCustomException e)
             {
