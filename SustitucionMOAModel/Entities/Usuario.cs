@@ -66,7 +66,7 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
+                if (!string.IsNullOrEmpty(ObtenerProveedorActual().CodigoProveedor))
                     return ObtenerProveedorActual().CodigoProveedor;
                 else
                     return "-";
