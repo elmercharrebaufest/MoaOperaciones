@@ -425,14 +425,29 @@ namespace SustitucionMOAUtils.Services
                 using (MemoryStream msNewDoc = new MemoryStream())
                 {
 
-                    document.Open();
-                    //document.Add(new iTextSharp.text.Chunk(""));
-                    foreach (int page in Enumerable.Range(1, 4))
+                    //MP Modifico está lógica para que abra el documento en memoria de otra manera. Hacíendolo así como estaba antes dejó de funcionar
+                    //https://stackoverflow.com/questions/24044799/itextsharp-is-giving-me-the-error-pdf-header-signature-not-found
+                    //document.Open();
+                    ////document.Add(new iTextSharp.text.Chunk(""));
+                    //foreach (int page in Enumerable.Range(1, 4))
+                    //{
+                    //    document.NewPage();
+                    //    document.Add(new iTextSharp.text.Chunk(""));
+                    //}
+                    //document.Close();
+
+                    using (PdfWriter wri = PdfWriter.GetInstance(document, msNewDoc))
                     {
-                        document.NewPage();
-                        document.Add(new iTextSharp.text.Chunk(""));
+                        document.Open();//Open Document to write
+                        foreach (int page in Enumerable.Range(1, 4))
+                        {
+                            document.NewPage();
+                            document.Add(new iTextSharp.text.Chunk(""));
+                        }
+                        document.Close();
+
                     }
-                    document.Close();
+
                     byte[] result = msNewDoc.ToArray();
 
                     using (MemoryStream ms = new MemoryStream())
