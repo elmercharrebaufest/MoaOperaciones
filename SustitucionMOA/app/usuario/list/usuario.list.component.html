@@ -34,6 +34,7 @@
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">Tipo</th>
                             <!--<th tabindex="0" rowspan="1" colspan="1">Desbloquear</th>-->
                             <th tabindex="0" rowspan="1" colspan="1">Hab/Deshab</th>
+                            <th tabindex="0" rowspan="1" colspan="1">Roles</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,8 +47,9 @@
                             <td>
                                 <a class="animate" (click)="deshabilitar(usuario.Mail)" href="#" *ngIf=usuario.Habilitado>Deshabilitar</a>
                                 <a class="animate" (click)="habilitar(usuario.Mail)" href="#" *ngIf=!usuario.Habilitado>Habilitar</a>
-
-                                <a class="animate" (click)="abrirModalActivar(usuario)" href="#">Activar usuario</a>
+                            </td>
+                            <td>
+                                <a class="animate" (click)="abrirModalActivar(usuario)" href="#">Editar roles</a>
                             </td>
                         </tr>
                     </tbody>
@@ -90,15 +92,17 @@
             </div>
             <div class="modal-body">
                 <div class="col-xs-12 col-sm-12">
-                    <div *ngFor="let rol of rolesUsuarioSeleccionado">
-                        [{{rol.Id}}] - {{rol.Nombre}}
+                    <ul>
+                        <li *ngFor="let rol of rolesUsuarioSeleccionado">
+                            [{{rol.Id}}] - {{rol.Nombre}}
 
-                        <button type="button" class="btn btn-info btn-lg"
-                                (click)="quitarRolUsuario(rol)"
-                                style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                            Quitar
-                        </button>
-                    </div>
+                            <button type="button" class="btn btn-info btn-lg"
+                                    (click)="quitarRolUsuario(rol)"
+                                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                                Quitar
+                            </button>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="col-xs-6 col-sm-9">
@@ -113,11 +117,6 @@
                 </button>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-lg"
-                        (click)="cerrarPopupRoles()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                    Cancelar
-                </button>
                 <button type="button" class="btn btn-info btn-lg"
                         (click)="guardarRolesUsuario()"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">

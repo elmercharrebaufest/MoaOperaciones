@@ -14,10 +14,9 @@ import { BaseService } from './../common/services/BaseService';
 @Injectable()
 export class UsuarioService extends BaseService {
 
-    guardarRolesUsuario(usuarioSeleccionado: any) {
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any ) {
         let params: URLSearchParams = new URLSearchParams();
 
-        var idRoles = usuarioSeleccionado.Roles;
         var idUsuario = usuarioSeleccionado.Id;
 
         params.set('idRoles', idRoles);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using SustitucionMOAAssets;
@@ -94,11 +95,12 @@ namespace SustitucionMOA.Controllers
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult GuardarRoles(List<int> idRoles, int idUsuario)
+        public ActionResult GuardarRoles(string idRoles, int idUsuario)
         {
             try
             {
-                return JsonCustom(new { data = _usuarioService.GuardarRoles(idRoles, idUsuario) });
+                List<int> rolesList = idRoles.Split(',').Select(int.Parse).ToList();
+                return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario) });
             }
             catch (InfoCustomException e)
             {

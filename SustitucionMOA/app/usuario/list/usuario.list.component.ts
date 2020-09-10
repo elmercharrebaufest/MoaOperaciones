@@ -225,7 +225,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-
     isBloqueado(bloqueado: string) {
         return bloqueado == "X";
     }
@@ -245,30 +244,29 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     abrirModalActivar(usuario: any) {
         this.usuarioSeleccionado = usuario;
-        this.rolesUsuarioSeleccionado = [];
+        this.rolesUsuarioSeleccionado = new Array<Rol>();
 
-        usuario.Roles.forEach(function (value) {
+        usuario.Roles.forEach(element => {
             var rolAgregar: Rol = new Rol();
 
-            rolAgregar.Id = value.Id,
-            rolAgregar.Nombre = value.Nombre;
+            rolAgregar.Id = element.value;
+            rolAgregar.Nombre = element.label;
 
-            this.usuarioSeleccionado.Roles.push(rolAgregar);
-        }); 
+            this.rolesUsuarioSeleccionado.push(rolAgregar);
+        });
 
         this.getRolesOptions();
         document.getElementById("openModalHiddenButton").click();
         return false;
     }
 
-
     guardarRolesUsuario() {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-
-
+        const idRoles = this.rolesUsuarioSeleccionado.map(({ Id }) => Id);
+    
         try {
-            this.service.guardarRolesUsuario(this.usuarioSeleccionado).subscribe(
+            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -291,15 +289,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
-
-
-    cerrarModal() {
-
-    }
-
 
     agregarRolUsuario() {
         var rolAgregar: Rol = new Rol();
@@ -307,11 +298,16 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         rolAgregar.Id = this.rolDropdownComponent.selectedOption,
         rolAgregar.Nombre = this.rolDropdownComponent.selectedOptionLabel;
 
-        this.usuarioSeleccionado.Roles.push(rolAgregar);
+        this.rolesUsuarioSeleccionado.push(rolAgregar);
+
+        this.rolOptions[this.rolOptions.findIndex(r => r.value.toString() == rolAgregar.Id)];
     }
 
+    quitarRolUsuario(rol: Rol) {
 
-    quitarRolUsuario(rol: any) {
-        delete this.usuarioSeleccionado.Roles[rol];
+        let rolOption = new DropdownOption(rol.Id, rol.Nombre);
+        this.rolOptions.push(rolOption);
+
+        delete this.rolesUsuarioSeleccionado[this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == rol.Id.toString())];
     }
 }
