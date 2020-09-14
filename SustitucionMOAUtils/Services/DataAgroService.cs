@@ -77,7 +77,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!respuesta.HayError)
                 {
-                    if (respuesta.ProveedorMails.Contains(usuario.Mail) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                    if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
                         usuario.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
 
