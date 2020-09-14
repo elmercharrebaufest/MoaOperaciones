@@ -43,9 +43,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     itemsPerPage = 20;
     filtroUsuarioVendedor: string = "";
 
-    rolOptions: Array<DropdownOption> = [];
+    rolOptions: Array<Rol> = [];
+    rolOptionsAll: Array<Rol> = [];
 
     rolesUsuarioSeleccionado: Array<Rol> = [];
+
     usuarioSeleccionado: any = null;
 
     setTabs() {
@@ -55,8 +57,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     ngOnInit() {
         this.setTabs();
         this.securityService.tienePermisoRedirect("ABM USUARIOS");
-        this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
+        this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios')]);
+        //this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
         this.getUsuario();
+        this.getRolesOptions();
     }
 
     getRolesOptions() {
@@ -70,8 +74,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.rolOptions = result.data.roles;
-                        //this.tipoOptions = result.data.tipos;
+                        this.rolOptionsAll = result.data.roles;
                     }
                 },
                 error => {
@@ -242,20 +245,23 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    abrirModalActivar(usuario: any) {
+    abrirModalEditarRoles(usuario: any) {
         this.usuarioSeleccionado = usuario;
         this.rolesUsuarioSeleccionado = new Array<Rol>();
 
+        this.rolOptions = [];
+        this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
+
+        for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
+            this.rolesUsuarioSeleccionado[i].checked = false;
+        }
+
         usuario.Roles.forEach(element => {
-            var rolAgregar: Rol = new Rol();
+            let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
 
-            rolAgregar.Id = element.value;
-            rolAgregar.Nombre = element.label;
-
-            this.rolesUsuarioSeleccionado.push(rolAgregar);
+            this.rolesUsuarioSeleccionado[index].checked = true;
         });
 
-        this.getRolesOptions();
         document.getElementById("openModalHiddenButton").click();
         return false;
     }
@@ -263,7 +269,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     guardarRolesUsuario() {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        const idRoles = this.rolesUsuarioSeleccionado.map(({ Id }) => Id);
+        const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
     
         try {
             this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(
@@ -278,6 +284,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
                         this.getUsuario();
+                        
+                        document.getElementById("closeModal").click();
+
                     }
                 },
                 error => {
@@ -291,23 +300,27 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
         return false; //<-- Prevent Refresh
     }
-
+    /*
     agregarRolUsuario() {
         var rolAgregar: Rol = new Rol();
 
         rolAgregar.Id = this.rolDropdownComponent.selectedOption,
         rolAgregar.Nombre = this.rolDropdownComponent.selectedOptionLabel;
 
+        this.rolDropdownComponent.setInitial();
         this.rolesUsuarioSeleccionado.push(rolAgregar);
 
-        this.rolOptions[this.rolOptions.findIndex(r => r.value.toString() == rolAgregar.Id)];
+        //this.rolOptions[this.rolOptions.findIndex(r => r.value.toString() == rolAgregar.Id.toString())];
+
     }
 
     quitarRolUsuario(rol: Rol) {
 
-        let rolOption = new DropdownOption(rol.Id, rol.Nombre);
-        this.rolOptions.push(rolOption);
+        let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == rol.Id.toString());
 
-        delete this.rolesUsuarioSeleccionado[this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == rol.Id.toString())];
-    }
+        this.rolesUsuarioSeleccionado.splice(index, 1);
+
+
+        //delete this.rolesUsuarioSeleccionado[index];
+    }*/
 }

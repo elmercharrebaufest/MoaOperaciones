@@ -9,15 +9,15 @@ namespace SustitucionMOAModel.Dto
 {
     public class RolDropdownDto
     {
-        public int value { get; set; }
+        public int Id { get; set; }
 
-        public string label { get; set; }
+        public string Nombre { get; set; }
 
 
         public RolDropdownDto(Rol rol)
         {
-            value = rol.Id;
-            label = rol.Nombre;
+            Id = rol.Id;
+            Nombre = rol.Nombre;
         }
     }
 }

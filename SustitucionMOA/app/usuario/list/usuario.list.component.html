@@ -49,7 +49,7 @@
                                 <a class="animate" (click)="habilitar(usuario.Mail)" href="#" *ngIf=!usuario.Habilitado>Habilitar</a>
                             </td>
                             <td>
-                                <a class="animate" (click)="abrirModalActivar(usuario)" href="#">Editar roles</a>
+                                <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">Editar roles</a>
                             </td>
                         </tr>
                     </tbody>
@@ -71,57 +71,40 @@
         <!-- END form-->
     </section>
     <!--End CONTENT-->
-</div>
 
 
-<button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#modalHabilitarUsuario"></button>
-<!-- Modal -->
-<div class="modal fade" id="modalHabilitarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        onClick="cerrarModal()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado.Mail || ""}}</h4>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                Roles actuales
-            </div>
-            <div class="modal-body">
-                <div class="col-xs-12 col-sm-12">
-                    <ul>
-                        <li *ngFor="let rol of rolesUsuarioSeleccionado">
-                            [{{rol.Id}}] - {{rol.Nombre}}
 
-                            <button type="button" class="btn btn-info btn-lg"
-                                    (click)="quitarRolUsuario(rol)"
-                                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                                Quitar
-                            </button>
-                        </li>
-                    </ul>
+    <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#modalHabilitarUsuario"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="modalHabilitarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onClick="cerrarModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
                 </div>
-
-                <div class="col-xs-6 col-sm-9">
-                    <div class="styled-select perfiles-select">
-                        <dropdown #dropdown_rol [tipoDropdown]="'selectInput'" [options]="rolOptions"></dropdown>
+                <div class="modal-body">
+                    <div class="row">
+                        <span *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
+                            <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}" [(ngModel)]="rol.checked">
+                            &nbsp;
+                            <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                        </span>
                     </div>
                 </div>
-                <button type="button" class="btn btn-info btn-lg"
-                        (click)="agregarRolUsuario()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                    Agregar
-                </button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info btn-lg"
-                        (click)="guardarRolesUsuario()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
-                    Guardar
-                </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">Cancelar</button>
+                    <button type="button" class="btn btn-info btn-lg"
+                            (click)="guardarRolesUsuario()"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        Guardar
+                    </button>
+
+                </div>
             </div>
         </div>
     </div>

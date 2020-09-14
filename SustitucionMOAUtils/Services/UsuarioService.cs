@@ -335,6 +335,12 @@ namespace SustitucionMOAUtils.Services
 
             usuario.RemoverRoles();
 
+            var proveedor = usuario.ObtenerProveedorActual();
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.Deshabilitado;
+
+            proveedor.Observaciones = "Su usuario ha sido deshabilitado.";
+
             var rolUsuario = ObtenerRolPorCodigo("DES");
 
             usuario.AgregarRol(rolUsuario);
