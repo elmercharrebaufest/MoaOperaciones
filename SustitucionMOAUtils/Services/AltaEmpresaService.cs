@@ -33,8 +33,6 @@ namespace SustitucionMOAUtils.Services
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AnalisisDeNosis
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.SentenciaFinal
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EdicionRequerida
-                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.DeshabilitadoEnDataAgro
-                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AunNoImplementado
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();

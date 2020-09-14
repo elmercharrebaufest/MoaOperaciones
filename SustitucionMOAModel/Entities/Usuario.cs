@@ -22,16 +22,6 @@ namespace SustitucionMOAModel.Entities
 
         public virtual ICollection<Archivo> Archivos { get; set; }
 
-        //internal Usuario() { }
-
-        //public Usuario(string mail, string CUIT)
-        //{
-        //    Mail = mail;
-        //    CUITRegistro = CUIT;
-        //    Proveedores = new List<Proveedor>();
-        //    Roles = new List<Rol>();
-        //}
-
         public Rol ObtenerRolPrincipal()
         {
             return Roles.FirstOrDefault();

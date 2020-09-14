@@ -124,7 +124,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
+        [Obsolete]
         public string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva)
         {
             try
@@ -162,6 +162,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete]
         public LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia)
         {
             try
@@ -209,6 +210,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete]
         public string alta(UsuarioAlta usuario)
         {
             try
@@ -238,6 +240,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete]
         public string recuperarContrasenia(string usename)
         {
             try
@@ -271,6 +274,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        [Obsolete]
         public string desbloquear(string usename)
         {
             try
@@ -306,8 +310,6 @@ namespace SustitucionMOAUtils.Services
 
         public string HabilitarUsuario(string usuarioMail)
         {
-            int usuarioID = repositorio.Obtener<Entidades.Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
-
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuarioMail);
 
             var proveedor = usuario.ObtenerProveedorActual();
@@ -380,72 +382,6 @@ namespace SustitucionMOAUtils.Services
 
             return ObtenerRolPorCodigo(codigo);
         }
-
-        //public string deshabilitar(string usename)
-        //{
-        //    try
-        //    {
-        //        if (usename == null || usename == "")
-        //        {
-        //            throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Nombre de Usuario"));
-        //        }
-
-        //        LoginWSMOAResponse response = new UsuarioInhabilitarConsumerMOA().request(usename);
-
-        //        if (response.error == "10")
-        //        {
-        //            throw new ValidationCustomException(response.texto == null ? String.Format(ErrorMsg.ErrorUsuarioDeshabilitar, usename) : response.texto);
-        //        }
-
-        //        return String.Format(SuccessMsg.UsuarioDeshabilitadoOK, usename);
-
-        //    }
-        //    catch (InfoCustomException e)
-        //    {
-        //        throw e;
-        //    }
-        //    catch (ValidationCustomException e)
-        //    {
-        //        throw e;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new WSCustomException(ErrorMsg.ErrorWS, e);
-        //    }
-        //}
-
-        //public string habilitar(string usename)
-        //{
-        //    try
-        //    {
-        //        if (usename == null || usename == "")
-        //        {
-        //            throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Nombre de Usuario"));
-        //        }
-
-        //        LoginWSMOAResponse response = new UsuarioHabilitarConsumerMOA().request(usename);
-
-        //        if (response.error == "10")
-        //        {
-        //            throw new ValidationCustomException(response.texto == null ? String.Format(ErrorMsg.ErrorUsuarioDeshabilitar, usename) : response.texto );
-        //        }
-
-        //        return String.Format(SuccessMsg.UsuarioHabilitadoOK, usename);
-
-        //    }
-        //    catch (InfoCustomException e)
-        //    {
-        //        throw e;
-        //    }
-        //    catch (ValidationCustomException e)
-        //    {
-        //        throw e;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new WSCustomException(ErrorMsg.ErrorWS, e);
-        //    }
-        //}
 
         public byte[] getDocumento(string nombre)
         {
