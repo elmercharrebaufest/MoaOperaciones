@@ -38,7 +38,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let usuario of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'usuario' : 'CodigoProveedor' : filtroUsuarioVendedor | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let usuario of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'Mail' : 'CodigoProveedor' : filtroUsuarioVendedor | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td><a (click)="showModalTableResponsive(usuario)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{usuario.Id}}</td>
                             <td><a (click)="showModalTableResponsive(usuario)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{usuario.Mail}}</td>
                             <td>{{usuario.CodigoProveedor}}</td>

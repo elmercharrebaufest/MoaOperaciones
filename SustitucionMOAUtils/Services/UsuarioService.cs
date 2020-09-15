@@ -26,6 +26,7 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
         }
 
+        [Obsolete]
         public GetPerfilesResponseMOA getPerfiles()
         {
             try

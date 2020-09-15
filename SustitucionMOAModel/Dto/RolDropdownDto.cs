@@ -13,7 +13,7 @@ namespace SustitucionMOAModel.Dto
 
         public string Nombre { get; set; }
 
-
+        public RolDropdownDto() { }
         public RolDropdownDto(Rol rol)
         {
             Id = rol.Id;
