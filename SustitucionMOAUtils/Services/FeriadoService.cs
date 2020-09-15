@@ -38,9 +38,10 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                var feriados = new List<DateTime>();
                 if (DataAgroURL.Contains("test"))
                 {
-                    var feriados = new List<DateTime>();
+               
                     string result = "{\"Datos\":[{\"Id\":1,\"Feriado\":\"\\/Date(1577847600000)\\/\"},{\"Id\":2,\"Feriado\":\"\\/Date(1583031600000)\\/\"},{\"Id\":3,\"Feriado\":\"\\/Date(1585710000000)\\/\"},{\"Id\":5,\"Feriado\":\"\\/Date(1588215600000)\\/\"},{\"Id\":4,\"Feriado\":\"\\/Date(1588302000000)\\/\"}],\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false}";
                     dynamic json = JObject.Parse(result);
                     for (int i = 0; i < json.Datos.Count; i++)
@@ -72,7 +73,6 @@ namespace SustitucionMOAUtils.Services
                     var stringContent = task.Result.Content.ReadAsStringAsync();
 
                     dynamic jsonResult = JObject.Parse(stringContent.Result);
-
 
                     for (int i = 0; i < jsonResult.Datos.Count; i++)
                     {
