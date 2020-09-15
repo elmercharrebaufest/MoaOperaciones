@@ -245,8 +245,9 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
             return false;
     }
 
-
     round(num: number) {
         return Math.round(num);
     };
+
 }
+

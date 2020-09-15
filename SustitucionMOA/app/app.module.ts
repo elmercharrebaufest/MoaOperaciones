@@ -151,6 +151,7 @@ import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/esta
 
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
+import { NumericDirective } from "./common/directive/numeric.directive";
 
 @NgModule({
     imports: [
@@ -166,6 +167,7 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
         AutocompleteLibModule
     ],
     declarations: [
+        NumericDirective,
         AppComponent,
         AduanaBaseComponent,
         AltaUsuarioComponent,

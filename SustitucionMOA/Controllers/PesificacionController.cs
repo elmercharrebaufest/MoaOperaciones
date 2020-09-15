@@ -18,7 +18,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult GetFechaPesificacion()
-        {
+        {            
             try
             {
                 return JsonCustom(_pesificacionService.GetFechaPesificacion("yyyy-MM-dd"));
@@ -93,24 +93,24 @@ namespace SustitucionMOA.Controllers
             {
                 List<Contrato> result = new List<Contrato>();
 
-                for (int i = 0; i < 30; i++)
-                {
-                    result.Add(new Contrato
-                    {
-                        CantidadPendiente = i,
-                        Fijacion = (30-i).ToString(),
-                        Moneda = "usd",
-                        MontoPendiente = i,
-                        NombreVendedor = "pepe vendedor",
-                        NroContrato = i.ToString(),
-                        Precio = i,
-                        Unidad = "tn",
-                        Vendedor = "pepe vendedor"
-                    });
-                }
+                //for (int i = 0; i < 30; i++)
+                //{
+                //    result.Add(new Contrato
+                //    {
+                //        CantidadPendiente = i,
+                //        Fijacion = (30-i).ToString(),
+                //        Moneda = "usd",
+                //        MontoPendiente = i,
+                //        NombreVendedor = "pepe vendedor",
+                //        NroContrato = i.ToString(),
+                //        Precio = i,
+                //        Unidad = "tn",
+                //        Vendedor = "pepe vendedor"
+                //    });
+                //}
 
 
-                return JsonCustom(result);
+                //return JsonCustom(result);
                 return JsonCustom(_pesificacionService.GetContratos(SessionPersister.Proveedor));
             }
             catch (InfoCustomException e)
