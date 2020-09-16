@@ -28,7 +28,7 @@ namespace SustitucionMOAUtils.Services
                 TimeSpan ts = TimeSpan.Parse(horaDeCorte);
                 DateTime dateTimeCorte = DateTime.Today.Add(ts);
                 DateTime dateTimePesificacion = dateTimeCorte < DateTime.Now ? DateTime.Today.AddDays(1) : DateTime.Today;
-                dateTimePesificacion=ObtenerProximoDiaHabil(dateTimePesificacion, feriados);
+                dateTimePesificacion = ObtenerProximoDiaHabil(dateTimePesificacion, feriados);
                 Fecha fecha = new Fecha()
                 {
                     HoraDeCorte = horaDeCorte,
@@ -47,10 +47,10 @@ namespace SustitucionMOAUtils.Services
 
         private DateTime ObtenerProximoDiaHabil(DateTime fecha, List<DateTime> feriados)
         {
-            if (feriados.Contains(fecha.Date) || fecha.DayOfWeek == DayOfWeek.Saturday || fecha.DayOfWeek == DayOfWeek.Sunday )
+            if (feriados.Contains(fecha.Date) || fecha.DayOfWeek == DayOfWeek.Saturday || fecha.DayOfWeek == DayOfWeek.Sunday)
             {
                 fecha = fecha.AddDays(1);
-               return ObtenerProximoDiaHabil(fecha, feriados);
+                return ObtenerProximoDiaHabil(fecha, feriados);
             }
             else
             {
@@ -115,12 +115,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new Exception(ErrorMsg.ErrorWS);
                 }
-                if (responseSet != null && responseSet.Log.Count > 0)
+                if (responseSet != null && responseSet.Log.Count > 0 && responseSet.Log[0].Mensaje != "")
                 {
-                    if (responseSet.Log[0].Mensaje != "")
-                    {
-                        throw new InfoCustomException(responseSet.Log[0].Mensaje);
-                    }
+                    throw new InfoCustomException(responseSet.Log[0].Mensaje);
                 }
 
                 return responseSet;
