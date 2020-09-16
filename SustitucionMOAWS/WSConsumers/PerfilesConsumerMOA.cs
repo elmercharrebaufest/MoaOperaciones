@@ -19,7 +19,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 ZMPES6080[] perfiles = new ZMPES6080[] { };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+                service.ClientCredentials.UserName.Password =  SAPCredential.getPassword();
                 Z_MPMF_MOAOP_PERFILESResponse response = service.SI_MPMF_MOAOP_PERFILES(perfiles);
                 PerfilesWSMOAResponse result = map(response);
                 return result;

@@ -74,9 +74,9 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
+                        this.contratos = new Array();
                     } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
+                        this.contratos = new Array();
                     } else {
                         this.contratos = result;
                     }
@@ -134,8 +134,15 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
             return true;
         else
             return false;
+       
     }
 
+    isVisiblePaginacion(): boolean {
+        if (this.contratos != null && this.contratos.length > 0)
+            return true;
+        else
+            return false;
+    }
     orderColumnBy(column: string) {
         if (column == this.orderedByColumn) {
             this.orderDirection = -this.orderDirection;
