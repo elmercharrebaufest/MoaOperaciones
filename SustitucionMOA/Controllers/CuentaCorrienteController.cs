@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 
@@ -14,8 +15,12 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class CuentaCorrienteController : BaseController
     {
-        CuentaCorrienteService _cuentaCorrienteService = new CuentaCorrienteService();
-        PDFService _pdfService = new PDFService();
+        ICuentaCorrienteService _cuentaCorrienteService;
+
+        public CuentaCorrienteController(ICuentaCorrienteService cartaPorteService)
+        {
+            _cuentaCorrienteService = cartaPorteService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CUENTA_CORRIENTE)]
         public ActionResult getCuentasCorrientes(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)

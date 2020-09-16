@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAAssets;
-using SustitucionMOAFotmatter;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.CuentaCorriente;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
 using SustitucionMOAUtils.Export;
-using SustitucionMOAValidator;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class CuentaCorrienteService
+    public class CuentaCorrienteService : ICuentaCorrienteService
     {
         public CuentaCorrienteViewModel getCuentasCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
@@ -79,7 +76,7 @@ namespace SustitucionMOAUtils.Services
                 FechaWS fechas = CommonService.toDate(fechaInicio, fechaFin);
                 CuentaCorrienteExcelWSMOAResponse data = (CuentaCorrienteExcelWSMOAResponse)new CuentaCorrientesExcelConsumerMOA().request("", proveedor, sociedad, fechas, contrato, pago, retencion);
                 validarRespuesta(data);
-                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion",  "Contrato", "Tipo Cambio", "Debe",  "Haber", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
+                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
 
             }
             catch (InfoCustomException e)
@@ -126,7 +123,8 @@ namespace SustitucionMOAUtils.Services
             //return "";
         }
 
-        private string validarRespuesta(CuentaCorrienteWSMOAResponse data) {
+        private string validarRespuesta(CuentaCorrienteWSMOAResponse data)
+        {
             if (data == null)
                 throw new ValidationCustomException(ErrorMsg.Error);
             if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && data.error.codigo != "16" && data.error.codigo != "06")

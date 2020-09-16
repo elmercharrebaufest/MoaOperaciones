@@ -60,6 +60,7 @@
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
