@@ -106,7 +106,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <pagination-template #pT="paginationApi" (pageChange)="p = $event">
+                                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisiblePaginacion()">
                                     <div class="dataTables_paginate paging_simple_numbers">
                                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
                                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
