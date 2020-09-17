@@ -71,7 +71,9 @@ namespace SustitucionMOA
 					},
 
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
-					Scope = $"openid profile offline_access"
+					Scope = $"openid profile offline_access",
+
+					CookieManager = new SameSiteCookieManager(new SystemWebCookieManager())
 				}
 			);
 		}
