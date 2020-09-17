@@ -15,19 +15,19 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class CuentaCorrienteController : BaseController
     {
-        ICuentaCorrienteService _cuentaCorrienteService;
+        readonly ICuentaCorrienteService cuentaCorrienteService;
 
         public CuentaCorrienteController(ICuentaCorrienteService cartaPorteService)
         {
-            _cuentaCorrienteService = cartaPorteService;
+            this.cuentaCorrienteService = cartaPorteService;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CUENTA_CORRIENTE)]
-        public ActionResult getCuentasCorrientes(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public ActionResult GetCuentasCorrientes(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
-                return JsonCustom(_cuentaCorrienteService.getCuentasCorrientes(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
+                return JsonCustom(cuentaCorrienteService.GetCuentasCorrientes(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
             }
             catch (InfoCustomException e)
             {
@@ -50,11 +50,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CUENTA_CORRIENTE)]
-        public ActionResult getCuentasCorrientesAgrupadas(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public ActionResult GetCuentasCorrientesAgrupadas(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
-                return JsonCustom(_cuentaCorrienteService.getCuentasCorrientesAgrupadas(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
+                return JsonCustom(cuentaCorrienteService.GetCuentasCorrientesAgrupadas(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
             }
             catch (InfoCustomException e)
             {
@@ -77,11 +77,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CUENTA_CORRIENTE)]
-        public ActionResult downloadCuentasCorrientes(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public ActionResult DownloadCuentasCorrientes(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
-                return JsonCustom(_cuentaCorrienteService.downloadCuentaCorrientes(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
+                return JsonCustom(cuentaCorrienteService.DownloadCuentaCorrientes(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
             }
             catch (InfoCustomException e)
             {
@@ -104,11 +104,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.DESCARGAR_CUENTA_CORRIENTE)]
-        public ActionResult downloadCuentasCorrientesAgrupadas(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public ActionResult DownloadCuentasCorrientesAgrupadas(string periodo, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
-                return JsonCustom(_cuentaCorrienteService.downloadCuentaCorrientesAgrupadas(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
+                return JsonCustom(cuentaCorrienteService.DownloadCuentaCorrientesAgrupadas(SessionPersister.Proveedor, SessionPersister.Sociedad, fechaInicio, fechaFin, contrato, pago, retencion));
             }
             catch (InfoCustomException e)
             {

@@ -18,6 +18,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente
         public decimal haber { get; set; }
         public string moneda { get; set; }
         public decimal importeArg { get; set; }
+
+        public decimal saldo { get; set; }
         public string agrupador { get; set; }
         public string augbl { get; set; }
         public string xblnr { get; set; }
@@ -32,6 +34,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente
         public DateTime fecVtoDate { get; set; }
         public string haberString { get; set; }
         public string importeArgString { get; set; }
+        public string saldoString { get; set; }
         public string ukursString { get; set; }
 
     }

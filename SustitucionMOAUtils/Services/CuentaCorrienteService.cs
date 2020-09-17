@@ -14,29 +14,41 @@ namespace SustitucionMOAUtils.Services
 {
     public class CuentaCorrienteService : ICuentaCorrienteService
     {
-        public CuentaCorrienteViewModel getCuentasCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public CuentaCorrienteViewModel GetCuentasCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
                 FechaWS fechas = CommonService.toDate(fechaInicio, fechaFin);
-                CuentaCorrienteViewModel dataView = new CuentaCorrienteViewModel();
-                dataView.filtroConcepto = new DropdownContent();
-                dataView.data = (CuentaCorrienteWSMOAResponse)new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fechas, contrato, pago, retencion);
-                dataView.data.msj = validarRespuesta(dataView.data);
+
+                CuentaCorrienteViewModel dataView = new CuentaCorrienteViewModel
+                {
+                    filtroConcepto = new DropdownContent(),
+                    data = (CuentaCorrienteWSMOAResponse)new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fechas, contrato, pago, retencion)
+                };
+
+                dataView.data.msj = ValidarRespuesta(dataView.data);
+
                 try
                 {
-                    dataView.filtroConcepto = new DropdownContent(dataView.data.cuentasCorrientes.GroupBy(i => i.contrato).Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" }).ToList());
+                    dataView.filtroConcepto =
+                            new DropdownContent(
+                                dataView.data.cuentasCorrientes
+                                    .GroupBy(i => i.contrato)
+                                    .Select(x => new DropdownOption { value = x.Key, label = x.Key + " (" + x.Count() + ")" })
+                                    .ToList()
+                            );
                 }
                 catch { }
+
                 return dataView;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -44,24 +56,28 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public CuentaCorrienteAgrupadaViewModel getCuentasCorrientesAgrupadas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public CuentaCorrienteAgrupadaViewModel GetCuentasCorrientesAgrupadas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
                 FechaWS fechas = CommonService.toDate(fechaInicio, fechaFin);
-                CuentaCorrienteAgrupadaViewModel dataView = new CuentaCorrienteAgrupadaViewModel();
-                dataView.filtroConcepto = new DropdownContent();
-                dataView.data = (CuentaCorrienteAgrupadaWSMOAResponse)new CuentaCorrientesAgrupadaConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
-                dataView.data.msj = validarRespuesta(dataView.data);
+                CuentaCorrienteAgrupadaViewModel dataView = new CuentaCorrienteAgrupadaViewModel
+                {
+                    filtroConcepto = new DropdownContent(),
+                    data = (CuentaCorrienteAgrupadaWSMOAResponse)new CuentaCorrientesAgrupadaConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion)
+                };
+
+                dataView.data.msj = ValidarRespuesta(dataView.data);
+
                 return dataView;
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -69,23 +85,25 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string downloadCuentaCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public string DownloadCuentaCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
                 FechaWS fechas = CommonService.toDate(fechaInicio, fechaFin);
+                
                 CuentaCorrienteExcelWSMOAResponse data = (CuentaCorrienteExcelWSMOAResponse)new CuentaCorrientesExcelConsumerMOA().request("", proveedor, sociedad, fechas, contrato, pago, retencion);
-                validarRespuesta(data);
-                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
 
+                ValidarRespuesta(data);
+
+                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -95,25 +113,30 @@ namespace SustitucionMOAUtils.Services
             //return "";
         }
 
-        public string downloadCuentaCorrientesAgrupadas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        public string DownloadCuentaCorrientesAgrupadas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
                 FechaWS fechas = CommonService.toDate(fechaInicio, fechaFin);
+
                 CuentaCorrienteAgrupadaExcelWSMOAResponse data = (CuentaCorrienteAgrupadaExcelWSMOAResponse)new CuentaCorrientesAgrupadaExcelConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
-                validarRespuesta(data);
+                
+                ValidarRespuesta(data);
+                
                 List<CuentaCorrienteAgrupada> list = new List<CuentaCorrienteAgrupada>() { data.cuentasCorrientesSinAgrupar };
+                
                 list.AddRange(data.cuentasCorrientesAgrupadas);
+                
                 return ExcelExport.ToExcelCuentaCorrienteAgrupada(list, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Saldo", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Cuenta Corriente");
 
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException)
             {
-                throw e;
+                throw;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -123,50 +146,94 @@ namespace SustitucionMOAUtils.Services
             //return "";
         }
 
-        private string validarRespuesta(CuentaCorrienteWSMOAResponse data)
+        private string ValidarRespuesta(CuentaCorrienteWSMOAResponse data)
         {
             if (data == null)
+            {
                 throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && data.error.codigo != "16" && data.error.codigo != "06")
+            }
+
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" &&
+                data.error.codigo != "16" && data.error.codigo != "06")
+            {
                 throw new ValidationCustomException(data.error.descripcion);
+            }
+
             if (data.error != null && data.error.codigo == "00" && data.error.descripcion != "")
+            {
                 return data.error.descripcion;
+            }
+
             if (data.cuentasCorrientes == null || data.cuentasCorrientes.Count == 0)
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente"));
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente"));
+            }
+
             return null;
         }
 
-        private string validarRespuesta(CuentaCorrienteAgrupadaWSMOAResponse data)
+        private string ValidarRespuesta(CuentaCorrienteAgrupadaWSMOAResponse data)
         {
             if (data == null)
+            {
                 throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && data.error.codigo != "16" && data.error.codigo != "06")
+            }
+
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && 
+                data.error.codigo != "16" && data.error.codigo != "06")
+            {
                 throw new ValidationCustomException(data.error.descripcion);
+            }
+
             if (data.error != null && data.error.codigo == "00" && data.error.descripcion != "")
+            {
                 return data.error.descripcion;
+            }
+
             if (data.cuentasCorrientesSinAgrupar == null && (data.cuentasCorrientesAgrupadas == null || data.cuentasCorrientesAgrupadas.Count == 0))
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente"));
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente"));
+            }
+
             return null;
         }
 
-        private void validarRespuesta(CuentaCorrienteExcelWSMOAResponse data)
+        private void ValidarRespuesta(CuentaCorrienteExcelWSMOAResponse data)
         {
             if (data == null)
+            {
                 throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && data.error.codigo != "16" && data.error.codigo != "06")
+            }
+
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && 
+                data.error.codigo != "16" && data.error.codigo != "06")
+            {
                 throw new ValidationCustomException(data.error.descripcion);
+            }
+
             if (data.cuentasCorrientes == null || data.cuentasCorrientes.Count == 0)
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "CuentaCorrientes"));
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "CuentaCorrientes"));
+            }
         }
 
-        private void validarRespuesta(CuentaCorrienteAgrupadaExcelWSMOAResponse data)
+        private void ValidarRespuesta(CuentaCorrienteAgrupadaExcelWSMOAResponse data)
         {
             if (data == null)
+            {
                 throw new ValidationCustomException(ErrorMsg.Error);
-            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && data.error.codigo != "16" && data.error.codigo != "06")
+            }
+
+            if (data.error != null && data.error.codigo != null && data.error.codigo != "" && data.error.codigo != "00" && data.error.codigo != "11" && 
+                data.error.codigo != "16" && data.error.codigo != "06")
+            {
                 throw new ValidationCustomException(data.error.descripcion);
+            }
+
             if (data.cuentasCorrientesSinAgrupar == null && (data.cuentasCorrientesAgrupadas == null || data.cuentasCorrientesAgrupadas.Count == 0))
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente"));
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "datos de Cuenta Corriente"));
+            }
         }
     }
 }
