@@ -781,6 +781,7 @@
     <Compile Include="Utils\Globals.cs" />
     <Compile Include="Utils\MsalAppBuilder.cs" />
     <Compile Include="Utils\MSALPerUserMemoryTokenCache.cs" />
+    <Compile Include="Utils\SameSiteCookieManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\aduana\aduana.component.ts" />
