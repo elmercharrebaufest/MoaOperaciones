@@ -116,6 +116,7 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
 import { AppRoutingModule } from './app-routing.module';;
 import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-porte-modal.component'
 
+import { NumericDirective } from "./common/directive/numeric.directive";
 @NgModule({
     imports: [
         BrowserModule,
@@ -129,6 +130,7 @@ import { CartaPorteModalComponent } from './carta-porte/carta-porte-modal/carta-
         ReCaptchaModule
     ],
     declarations: [
+        NumericDirective,
         AppComponent,
         AduanaBaseComponent,
         AltaUsuarioComponent,
