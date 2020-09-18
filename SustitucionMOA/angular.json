@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MOAOperaciones": {
+    "moaOperaciones": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,12 +13,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/MOAOperaciones",
+            "outputPath": "dist/moaOperaciones",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
+            "aot": false,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -37,6 +37,7 @@
                 }
               ],
               "optimization": true,
+              "aot": false,
               "outputHashing": "all",
               "sourceMap": false,
               "extractCss": true,
@@ -62,18 +63,19 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "MOAOperaciones:build"
+            "browserTarget": "moaOperaciones:build",
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "MOAOperaciones:build:production"
+              "browserTarget": "moaOperaciones:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "MOAOperaciones:build"
+            "browserTarget": "moaOperaciones:build"
           }
         },
         "test": {
@@ -110,18 +112,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "MOAOperaciones:serve"
+            "devServerTarget": "moaOperaciones:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "MOAOperaciones:serve:production"
+              "devServerTarget": "moaOperaciones:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "MOAOperaciones",
+  "defaultProject": "moaOperaciones",
   "cli": {
     "analytics": false
   }

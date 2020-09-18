@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -34,6 +35,8 @@ namespace SustitucionMOA.Controllers
         protected readonly IAzureB2CService azureB2CService;
         protected readonly IDataAgroService dataAgroService;
 
+        private static readonly string redirectUrl = ConfigurationManager.AppSettings["SpaUrl"];
+
         // GET: Home
 
         public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService)
@@ -49,14 +52,13 @@ namespace SustitucionMOA.Controllers
             {
                 if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
                 {
-                    return Redirect("/");
+                    return Redirect(redirectUrl);
                 }
 
-                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+                return new FilePathResult(Server.MapPath("~/src/index.html"), "text/html");
             }
             else
             {
-                string redirectUrl = "/";
                 try
                 {
                     HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
@@ -73,7 +75,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Registro()
         {
-            string redirectUrl = "/";
             //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
             try
             {
@@ -102,7 +103,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ResetPassword()
         {
-            string redirectUrl = "/";
             //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
             try
             {
@@ -123,7 +123,7 @@ namespace SustitucionMOA.Controllers
             {
                 if (!Request.IsAuthenticated)
                 {
-                    return Redirect("/");
+                    return Index();
                 }
 
                 string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
@@ -183,37 +183,37 @@ namespace SustitucionMOA.Controllers
                     {
                         if (granosFlag == "G")
                         {
-                            redirectURL = "/alta-empresa-granos";
+                            redirectURL = $"{redirectUrl}/alta-empresa-granos";
                         }
                         else
                         {
-                            redirectURL = "/dato-fiscal/documentacion";
+                            redirectURL = $"{redirectUrl}/dato-fiscal/documentacion";
                         }
                     }
                     else
                     {
-                        redirectURL = "/estado-solicitud";
+                        redirectURL = $"{redirectUrl}/estado-solicitud";
                     }
                 }
                 else
                 {
                     if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
                     {
-                        redirectURL = "/aduana/pesada-online";
+                        redirectURL = $"{redirectUrl}/aduana/pesada-online";
                     }
                     else if (tipoUsuario == "CLIE")
                     {
-                        redirectURL = "/cuenta-corriente/simple";
+                        redirectURL = $"{redirectUrl}/cuenta-corriente/simple";
                     }
                     else
                     {
                         if (granosFlag == "A" || granosFlag == "G")
                         {
-                            redirectURL = "/home";
+                            redirectURL = $"{redirectUrl}/home";
                         }
                         else
                         {
-                            redirectURL = "/home-ngs";
+                            redirectURL = $"{redirectUrl}/home-ngs";
                         }
                     }
                 }

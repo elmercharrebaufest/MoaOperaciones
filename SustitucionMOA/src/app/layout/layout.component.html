@@ -1,0 +1,513 @@
+﻿<modal #myModal tabindex="-1">
+    <modal-header>
+        <h1>{{modalHeader}}</h1>
+    </modal-header>
+    <modal-content>
+        <table *ngIf="showLiquidaciones" id="tableModal"
+            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate layout-liquidaciones-table"
+            cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+            <thead>
+                <tr role="row">
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Carta Porte</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Kgs. Liquidados</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Kgs. Recibidos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let infoItem of modalInfoLiquidacion ; let odd = odd" role="row" [class.odd]="!odd">
+                    <td>{{infoItem.fecha}}</td>
+                    <td>
+                        <a class="animate"
+                            (click)="goToSeccionParamFromModal('/carta-porte/detalle', infoItem.cartaPorte)"
+                            href="#">{{infoItem.cartaPorte}}</a>
+                    </td>
+                    <td>{{infoItem.kgLiquidadosString}}</td>
+                    <td>{{infoItem.kgRecibidosString}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table *ngIf="showComprobantes" id="tableModal"
+            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate " cellspacing="0" role="grid"
+            aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+            <thead>
+                <tr role="row">
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">N&uacute;mero Comprobante</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Importe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let infoItem of modalInfoComprobante ; let odd = odd" role="row" [class.odd]="!odd">
+                    <td>{{infoItem.fechaDoc}}</td>
+                    <td>{{infoItem.nroComprobante}}</td>
+                    <td>{{infoItem.importe}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table *ngIf="showFleteProcedencia" id="tableModal"
+            class="display nowrap dataTable no-footer dtr-inline rounded shadow animate " cellspacing="0" role="grid"
+            aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+            <thead>
+                <tr role="row">
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Carta de Porte</th>
+                    <th tabindex="0" rowspan="1" colspan="1" style="">Importe Flete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let infoItem of modalInfoFleteProcedencia ; let odd = odd" role="row" [class.odd]="!odd">
+                    <td>{{infoItem.fechaIngreso}}</td>
+                    <td>{{infoItem.cartaPorte}}</td>
+                    <td>{{infoItem.importeUsdmString}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <dl class="dl-horizontal" *ngIf="showDetalle">
+            <ng-container *ngFor="let info of modalInfoDetalle">
+                <dt>{{info.etiqueta}}</dt>
+                <dd>{{info.valor}}</dd>
+            </ng-container>
+        </dl>
+        <dl class="dl-horizontal" *ngIf="showNoticias">
+            <dt>T&iacute;tulo:</dt>
+            <dd>{{modalNoticias.cabecera.titulo}}</dd>
+            <dt>Fecha:</dt>
+            <dd>{{modalNoticias.cabecera.fecha}}</dd>
+            <dt>Desc.:</dt>
+            <dd>{{modalNoticias.contenido.contenido}}</dd>
+        </dl>
+        <ng-container *ngIf="showFlete">
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    Factura:
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" [value]="modalInfoFlete.factura"
+                            (input)="modalInfoFlete.factura = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    Fecha de Emisi&oacute;n:
+                    <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+                        <fieldset>
+                            <div>
+                                <div class="input-group date form_datetime" data-date="" data-date-format="yyyy-MM-dd"
+                                    data-link-field="dtp_input_fletes">
+                                    <input type="text" value="{{modalInfoFlete.fechaEmision}}" id="noCursor" readonly />
+                                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                </div>
+                                <input type="hidden" #dtp_input_fletes id="dtp_input_fletes" class="dtp_input_fletes"
+                                    value="{{modalInfoFlete.fechaEmision}}" />
+                                <br />
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    PDF:
+                    <div class="styled-select">
+                        <input type="file" (change)="cargarPDF($event)" placeholder="Cargar PDF" accept=".pdf">
+                    </div>
+                    <br />
+                </div>
+            </div>
+            <div class="row">
+                <mensaje-modal #mensajeModal></mensaje-modal>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <a (click)="guardarTarifas(dtp_input_fletes.value)" href="#" style="text-decoration:none!important">
+                        <div class="btnSection animate">Guardar <span class="fa  fa-floppy-o"></span></div>
+                    </a>
+                </div>
+            </div>
+        </ng-container>
+        <!-- <ng-container *ngIf="showEmpresaCambiarEstado"> -->
+            <!--<div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            Factura:
+            <div class="styled-select">
+                <input type="search" class="" placeholder="" [value]="modalInfoFlete.factura"
+                       (input)="modalInfoFlete.factura = $event.target.value" aria-controls="tableModal">
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            Fecha de Emisi&oacute;n:
+            <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+                <fieldset>
+                    <div>
+                        <div class="input-group date form_datetime" data-date="" data-date-format="yyyy-MM-dd"
+                             data-link-field="dtp_input_fletes">
+                            <input type="text" value="{{modalInfoFlete.fechaEmision}}" id="noCursor" readonly />
+                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                        </div>
+                        <input type="hidden" #dtp_input_fletes id="dtp_input_fletes" class="dtp_input_fletes"
+                               value="{{modalInfoFlete.fechaEmision}}" />
+                        <br />
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            PDF:
+            <div class="styled-select">
+                <input type="file" (change)="cargarPDF($event)" placeholder="Cargar PDF" accept=".pdf">
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <mensaje-modal #mensajeModal></mensaje-modal>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <a (click)="guardarTarifas(dtp_input_fletes.value)" href="#" style="text-decoration:none!important">
+                <div class="btnSection animate">Guardar <span class="fa  fa-floppy-o"></span></div>
+            </a>
+        </div>
+    </div>-->
+            <!-- <div class="row">
+                <div class="col-xs-12">
+                    prueba
+                </div>
+            </div>
+        </ng-container> -->
+    </modal-content>
+    <modal-footer>
+        <div *ngIf="showLiquidaciones" class="col-xs-12">
+            <a (click)="exportExcel(modalLiquidacionContrato, modalLiquidacionSecuencia, modalLiquidacionComprobante)"
+                href="#" style="text-decoration:none!important">
+                <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+            </a>
+        </div>
+
+        <div *ngIf="showFleteProcedencia" class="col-xs-12">
+            <a (click)="exportExcelFleteProcedencia(modalInfoContratoProcedencia)" href="#"
+                style="text-decoration:none!important">
+                <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+            </a>
+        </div>
+    </modal-footer>
+</modal>
+
+<barra-nav id="mySidenav" class="sidebar">
+    <div class="sidebar-wrapper">
+        <div class="logo">
+            <img src="./Content/images/header/logoEndosado.png" class="img-responsive" (click)="clickLogo()">
+        </div>
+        <div class="switch" *ngIf="isAmbos()">
+            <input type="radio" class="switch-input" name="view" value="week" id="week" [checked]="isGranosSelected()"
+                (click)="setGranos()">
+            <label for="week" class="switch-label switch-label-off">GRANOS</label>
+            <input type="radio" class="switch-input" name="view" value="month" id="month"
+                [checked]="isNoGranosSelected()" (click)="setNoGranos()">
+            <label for="month" class="switch-label switch-label-on">NO GRANOS</label>
+            <span class="switch-selection"></span>
+        </div>
+        <nav>
+            <ul class="nav">
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('home')) ? 'active' : ''"
+                        (click)="goToSeccion('/home')" *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()"
+                        href="#">
+                        <!--data-toggle="tab">-->Inicio
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('home-ngs')) ? 'active' : ''"
+                        (click)="goToSeccion('/home-ngs')"
+                        *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" href="#">
+                        <!--data-toggle="tab">-->Inicio
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('contrato')) ? 'active' : ''"
+                        (click)="goToSeccion('/contrato/vigente')"
+                        *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()" href="#">
+                        <!--data-toggle="tab">-->Contratos
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('carta-porte')) ? 'active' : ''"
+                        (click)="goToSeccion('/carta-porte/descarga')"
+                        *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()" href="#">
+                        <!--data-toggle="tab"-->Cartas de Porte
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('liquidacion')) ? 'active' : ''"
+                        (click)="goToSeccion('/liquidacion/aprobada')"
+                        *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranosSelected()" href="#">
+                        <!--data-toggle="tab">-->Liquidaciones
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('comprobante-ngs')) ? 'active' : ''"
+                        (click)="goToSeccion('/comprobante-ngs/aprobada')"
+                        *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()" href="#">
+                        <!--data-toggle="tab">-->Comprobantes
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('pago')) ? 'active' : ''"
+                        (click)="goToSeccion('/pago/emitido')"
+                        *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()" href="#">
+                        <!--data-toggle="tab">-->Pagos
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('pago-ngs')) ? 'active' : ''"
+                        (click)="goToSeccion('/pago-ngs/emitido')"
+                        *ngIf="isAuthorized('CONSULTAR PAGOS NG') && isNoGranosSelected()" href="#">
+                        <!--data-toggle="tab">-->Pagos
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('cuenta-corriente')) ? 'active' : ''"
+                        (click)="goToSeccion('/cuenta-corriente/agrupada')"
+                        *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE')" href="#">
+                        <!--data-toggle="tab">-->Cuenta Corriente
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('dato-fiscal')) ? 'active' : ''"
+                        (click)="goToSeccion('/dato-fiscal/situacion-fiscal')"
+                        *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')" href="#">
+                        <!--data-toggle="tab">-->Datos fiscales
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('usuario')) ? 'active' : ''"
+                        (click)="goToSeccion('/usuario/list')" *ngIf="isAuthorized('ABM USUARIOS')" href="#">
+                        <!--data-toggle="tab">-->Usuarios
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('vendedor')) ? 'active' : ''"
+                        (click)="goToSeccion('/vendedor/status')"
+                        *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()" href="#">
+                        <!--data-toggle="tab">-->Consulta de Vendedor
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('contacto')) ? 'active' : ''"
+                        (click)="goToSeccion('/contacto')" *ngIf="isAuthorized('CONTACTO MAIL')" href="#">
+                        <!--data-toggle="tab">-->Contacto
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
+                        (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
+                        href="#">
+                        <!--data-toggle="tab">-->Aduana
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
+                        (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
+                        <!--data-toggle="tab">-->RYD
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
+                        (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
+                        href="#">
+                        <!--data-toggle="tab">-->RYD Mantenimiento
+                    </a>
+                </li>
+                <li>
+                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('flete')) ? 'active' : ''"
+                        (click)="goToSeccion('/flete/a-facturar')" *ngIf="isAuthorized('CONSULTAR FLETE')" href="#">
+                        <!--data-toggle="tab">-->Fletes
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('factura')) ? 'active' : ''"
+                        (click)="goToSeccion('/factura')"
+                        *ngIf="isAuthorized('CARGAR FACT PROV') && isNoGranosSelected()" href="#">Factura</a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('pesificacion')) ? 'active' : ''"
+                        (click)="goToSeccion('/pesificacion')"
+                        *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()" href="#"> Pesificaci&oacute;n</a>
+                </li>
+                <li>
+                    <a class="animate" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
+                        Registro
+                        de operaciones
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-granos')) ? 'active' : ''"
+                        (click)="goToSeccion('/alta-empresa-granos')"
+                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS')" href="#">
+                        <!--data-toggle="tab">-->Alta Empresa
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-no-granos')) ? 'active' : ''"
+                        (click)="goToSeccion('/alta-empresa-no-granos')"
+                        *ngIf="isNoGranosSelected() && isAuthorized('ALTA EMPRESA NO GRANOS')" href="#">
+                        <!--data-toggle="tab">-->Alta Empresa
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
+                        Registro
+                        de operaciones
+                    </a>
+                </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
+                        (click)="goToSeccion('/altas')" href="#" *ngIf="isAuthorized('ABM EMPRESAS')">
+                        <!--data-toggle="tab">-->Altas Pendientes
+                    </a>
+                </li>
+
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('estado-solicitud')) ? 'active' : ''"
+                        (click)="goToSeccion('/estado-solicitud')" href="#" *ngIf="isAuthorized('ESTADO SOLICITUD')">
+                        <!--data-toggle="tab">-->Estado solicitud
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</barra-nav>
+<div class="main-panel">
+    <div id="coverAll"></div>
+    <!-- Tab panes -->
+    <div class="SubMenu-wrapper" *ngIf="seccionList">
+        <div class="SubMenu myTab clearfix">
+            <div class="tab-content ">
+                <div class="tab-pane fade active in" id="Inicio">
+                    <ul class="nav">
+                        <li *ngFor="let seccion of seccionList"><a class="animate"
+                                [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
+                                (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Tab panes -->
+    <!--User-->
+    <div class="header">
+        <div class="User-wrapper">
+            <div id="UserNotification" class="clearfix"> <span id="notificationOpen" onClick="notificationOpen()"> <span
+                        class="fa fa-bell-o" aria-hidden="true"></span> <span class="badge">{{cantidadNot()}}</span>
+                </span> <span id="notificationClose" onClick="notificationClose()"> <span class="fa fa-times"
+                        aria-hidden="true"></span> <span class="badge">{{cantidadNot()}}</span> </span> </div>
+            <div class="UserBar clearfix">
+                <nav>
+                    <ul class="nav">
+                        <li class="" style="padding-right:10px;" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')"> <a
+                                (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="animate"><span
+                                    class="fa fa-user-circle-o "
+                                    aria-hidden="true"></span><strong>{{nombre}}</strong></a> <span
+                                style="font-weight:normal; ">({{proveedor}}) </span></li>
+                        <li class="" style="padding-right:10px;" *ngIf="!isAuthorized('CONSULTAR DATOS FISCALES')"><span
+                                class="fa fa-user-circle-o " aria-hidden="true"></span><strong>{{nombre}}</strong><span
+                                style="font-weight:normal; ">({{proveedor}}) </span></li>
+                        <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
+                                (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
+                                    class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
+                        <!--<li><a (click)="editarCuenta()" href="#" class="animate"><span
+                                    class="fa fa-key" aria-hidden="true"></span>Editar cuenta</a></li>-->
+                        <li *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
+                                (click)="goToSeccion('/usuario/cambio-vendedor')" class="animate" href="#"><span
+                                    class="fa fa-id-badge" aria-hidden="true"></span>Cambio de vendedor </a></li>
+                        <li><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
+                                    aria-hidden="true"></span>Cerrar sesión</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div id="menuSmall">
+            <div class="logoSmall"> <a href="#Inicio" data-toggle="tab"> <img
+                        src="../Content/images/header/logoSmall.png" class="img-responsive"> </a> </div>
+            <nav>
+                <ul class="nav">
+                    <li id="liHome">
+                        <span class="MenuSmallText"> INICIO</span>
+                        <span (click)="goToSeccion('/home')"
+                            *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()" class="fa fa-home "
+                            aria-hidden="true"></span>
+                        <span (click)="goToSeccion('/home-ngs')"
+                            *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" class="fa fa-home "
+                            aria-hidden="true"></span>
+                    </li>
+                    <li id="liUser"><span class="MenuSmallText">USUARIO</span><span id="userOpenSmall"
+                            onClick="userOpenSmall()" class="fa fa-user-circle-o" aria-hidden="true"></span> <span
+                            id="userCloseSmall" onClick="userCloseSmall()" class="fa fa-times"
+                            aria-hidden="true"></span></li>
+                    <li id="liNoti"><span class="badge">{{cantidadNot()}}</span><span id="notificationOpenSmall"
+                            onClick="notificationOpenSmall()" class="fa fa-bell-o" aria-hidden="true"></span><span
+                            id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times"
+                            aria-hidden="true"></span></li>
+                </ul>
+            </nav>
+            <div class="myMenu"><span class="MenuSmallText"> MENÚ </span><span id="myMenuOpen" class="fa fa-bars"
+                    aria-hidden="true" onClick="openNav()"></span> <span id="myMenuClose" onClick="closeNav()"
+                    class="fa fa-times" aria-hidden="true"></span> </div>
+        </div>
+    </div>
+    <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert"><button
+            type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"
+            aria-hidden="true"></i>{{mensajeError}}</div>
+    <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert"><button
+            type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-down"
+            aria-hidden="true"></i>{{mensajeInfo}}</div>
+    <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
+            aria-hidden="true"></i>{{mensajeSuccess}}</div>
+    <router-outlet></router-outlet>
+</div>
+<header-user id="userSmall" style="display:none">
+    <usuario-small id="usuarioSmall" class="clearfix">
+        <nav class="headerbar">
+            <ul class="nav">
+                <li class="userName" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')"><a
+                        (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="animate"><span
+                            class="fa fa-user-circle-o" aria-hidden="true"></span>{{nombre}}<span
+                            style="font-weight:normal; color:#333">({{proveedor}})</span></a></li>
+                <li class="userName" *ngIf="!isAuthorized('CONSULTAR DATOS FISCALES')"><span class="fa fa-user-circle-o"
+                        aria-hidden="true"></span>{{nombre}}<span
+                        style="font-weight:normal; color:#333">({{proveedor}})</span></li>
+                <li class="userData" *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
+                        (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
+                            class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
+                <li class="userData"><a (click)="goToSeccion('/usuario/cambio-contrasenia')" href="#"
+                        class="animate"><span class="fa fa-key" aria-hidden="true"></span>Cambio de contraseña </a></li>
+                <li class="userData" *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
+                        (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate"><span
+                            class="fa fa-key" aria-hidden="true"></span>Cambio de vendedor </a></li>
+                <li class="userData"><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
+                            aria-hidden="true"></span>Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </usuario-small>
+</header-user>
+<notifications-container id="notificationSmall" style="display:none">
+    <noti-small id="notiSmall" class="clearfix" *ngIf="noticiasNotEmpty()">
+
+        <div *ngFor="let notificacion of noticias.notificaciones" class="notification info">
+            <info-container>{{notificacion.texto}} </info-container>
+        </div>
+
+        <div *ngFor="let noticia of noticias.noticias" class="notification info clickleable"
+            (click)="openModalNoticia(noticia)">
+            <date-container><span class="fa  fa-info-circle " aria-hidden="true"></span> {{noticia.cabecera.fecha}}
+            </date-container>
+            <info-container>{{noticia.cabecera.titulo}} </info-container>
+        </div>
+
+    </noti-small>
+</notifications-container>

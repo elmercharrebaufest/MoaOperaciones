@@ -1,0 +1,392 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Altas de proveedores <strong>Pendientes</strong> </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="row  myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow">
+                <title-caps>Refinar resultados</title-caps>
+                <hr />
+                <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
+                    Por Razon Social/CUIT:
+                    <div class="styled-select ">
+                        <input type="search" class="" placeholder="" [value]=""
+                            aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-6  col-sm-4 col-md-5">
+                    Por Estado:
+                    <div class="styled-select ">
+                        <select [(ngModel)]="selectedEstado" (ngModelChange)="onOptionsSelected()">
+                            <option value="" selected>Todos</option>
+                            <option *ngFor="let x of estados" value="{{x.Value}}">{{x.Value}}</option>
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- End Search-->
+        <!-- Tables-->
+        <div class="row myRow">
+            <div class="clearfix myTables">
+                <mensaje></mensaje>
+                <spinner></spinner>
+                <table *ngIf="isVisible()" id="tableModal"
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table" cellspacing="0"
+                    role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <thead>
+                        <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Id')">ID</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style=""
+                                (click)="orderColumnBy('CodigoProveedor')">Codigo</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">
+                                Razon Social</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Comercial')">
+                                Comercial</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SISAEstadoCuit')">
+                                SISA</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style=""
+                                (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let empresa of dataFiltered | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+                            role="row" [class.odd]="!odd">
+                            <td>{{empresa.Id}}</td>
+                            <td>{{empresa.CodigoProveedor}}</td>
+                            <td>{{empresa.CUIT}}</td>
+                            <td>{{empresa.RazonSocial}}</td>
+                            <td>{{empresa.Comercial}}</td>
+                            <td>{{empresa.SISAEstadoCuit}}</td>
+                            <td>{{empresa.EstadoAprobacionDescripcion}}</td>
+                            <td>
+                                <button type="button" class="btn btn-info btn-lg" (click)="abrirModal(empresa)"
+                                    style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                                    Ver Documentacion
+                                </button>
+                                <button type="button" style="display:none" id="openModalHiddenButton"
+                                    data-toggle="modal" data-target="#myModal"></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <pagination-controls-custom (pageChange)="p = $event" *ngIf="cartaPorteList">
+                </pagination-controls-custom>
+            </div>
+        </div>
+        <!-- END tables-->
+    </section>
+    <!--End CONTENT-->
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
+    style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document" style="width: 1020px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="hidemyModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">{{empresaSeleccionada.RazonSocial}} -
+                    {{empresaSeleccionada.CUIT}}</h4>
+
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+
+                <!-- DETALLE -->
+
+                <div class="content-wraper" style="margin-top:0;padding-top:0">
+
+                    <!--<div class="row titleSection">Razón Social - CUIT</div>-->
+
+                    <div class="row myRow firstSection roundedInfo" id="container">
+                        <mdb-stepper #stepper>
+                            <div class="col-md-5">
+                                <mdb-step name="Step 1" label="Informe comercial">
+                                    <h3>Informe comercial</h3>
+                                    <div class="form-group informe-comercial">
+                                        <div style="flex-direction: column;">
+                                            <label>Informe comercial</label>&nbsp;
+
+                                            <label style="color:red;"
+                                                *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0">
+                                                Sin Adjuntar</label>
+
+                                            <span
+                                                *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
+                                                <a (click)="descargarArchivo(archivo)">
+                                                    {{archivo.Nombre}}
+                                                </a>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </mdb-step>
+                                <mdb-step name="Step 2" label="CBU">
+                                    <h3> Constancia de CBU</h3>
+                                    <div class="form-group">
+                                        <label>
+                                            Constancia de CBU certificada
+                                            por Banco
+                                        </label>&nbsp;
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0">
+                                            Sin Adjuntar</label>
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Constancia de CBU Mercaderia
+                                        </label>&nbsp;
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0">
+                                            Sin Adjuntar</label>
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                </mdb-step>
+                                <mdb-step name="Step 4" label="Documentación">
+                                    <h3>Otros archivos </h3>
+                                    <div class="form-group">
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'otrosArchivos').length === 0">
+                                            Sin Adjuntar</label>
+                                        <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </mdb-step>
+                                <mdb-step name="Step 6" label="Documentación">
+                                    <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
+                                    <div class="form-group"
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                        Estado en SIPER <input type="text" class="form-control" [value]=""
+                                            [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
+                                    </div>
+                                    <div class="form-group"
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion != 2 || !isAuthorized('ABM EMPRESAS OPERADOR')">
+                                        Estado en SIPER: <label>{{empresaSeleccionada.EstadoSIPER}}</label>
+                                    </div>
+                                </mdb-step>
+                            </div>
+                            <div class="col-md-7">
+                                <mdb-step name="Step 3" label="Documentación Impositiva">
+                                    <h3>Documentación Impositiva</h3>
+                                    <div class="form-group">
+                                        <label>Constancia de CUIT</label>&nbsp;
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0">
+                                            Sin Adjuntar</label>
+
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Inscripción en IIBB -local o
+                                            Convenio (CM05
+                                            vigente)
+                                        </label>&nbsp;
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0">
+                                            Sin Adjuntar</label>
+
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención IVA.
+                                        </label>&nbsp;
+
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0">
+                                            Sin Adjuntar</label>
+
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención IIBB.
+                                        </label>
+
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0">
+                                            Sin Adjuntar</label>
+                                        <div
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención SUSS.
+                                        </label>&nbsp;
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0">
+                                            Sin Adjuntar</label>
+
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Certificados de exclusión o
+                                            exención Ganancias.
+                                        </label>&nbsp;
+
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0">
+                                            Sin Adjuntar</label>
+
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            SIPER.
+                                        </label>&nbsp;
+
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin
+                                            Adjuntar</label>
+
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div>
+                                </mdb-step>
+                            </div>
+                        </mdb-stepper>
+                    </div>
+                    <div class="row">
+                        <table id="tableModalHistorial"
+                            class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                            cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                            style="width: 100%; padding:10px 0;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Usuario</th>
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1" style="">Observacion</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let hist of empresaSeleccionada.HistorialAprobaciones ; let odd = odd"
+                                    role="row" [class.odd]="!odd">
+                                    <td>{{hist.EstadoAprobacionDescripcion}}</td>
+                                    <td>{{hist.Usuario}}</td>
+                                    <td>{{hist.Fecha.slice(6,-2) | date: 'dd-MM-yyyy HH:mm'}}</td>
+                                    <td>{{hist.Observacion}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div *ngIf="empresaSeleccionada.Observaciones != ''">
+                            <br /><b>Última notificación enviada al Proveedor:</b>{{empresaSeleccionada.Observaciones}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     ">
+                    <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
+                        <div class="alert alert-danger"><i aria-hidden="true"
+                                class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
+                    </div>
+                    <label style="float:left;">Observaciones internas</label>
+                    <textarea placeholder="Ingrese aqui las observaciones internas" [value]=""
+                        [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
+                </div>
+                <div class="row" style="padding-left: 10px;padding-right: 10px;"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                    <label style="float:left;">Notificaciones para el Proveedor</label>
+                    <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
+                        [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
+                </div>
+                <button type="button" class="btn btn-info btn-lg"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    (click)="cambiarEstado(7)"
+                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Enviar a Análisis de Nosis
+                </button>
+                <button type="button" class="btn btn-info btn-lg"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR')"
+                    (click)="cambiarEstado(8)"
+                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Enviar a Etapa Final
+                </button>
+                <button type="button" class="btn btn-info btn-lg"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    (click)="cambiarEstado(0)"
+                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Aprobar
+                </button>
+                <button type="button" class="btn btn-info btn-lg"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    (click)="cambiarEstado(5)"
+                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Rechazar
+                </button>
+                <button type="button" class="btn btn-info btn-lg"
+                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    (click)="cambiarEstado(4)"
+                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Observar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
