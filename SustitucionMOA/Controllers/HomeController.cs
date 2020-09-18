@@ -50,12 +50,7 @@ namespace SustitucionMOA.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
-                {
-                    return Redirect(redirectUrl);
-                }
-
-                return new FilePathResult(Server.MapPath("~/src/index.html"), "text/html");
+                return Redirect(redirectUrl);
             }
             else
             {
@@ -183,37 +178,37 @@ namespace SustitucionMOA.Controllers
                     {
                         if (granosFlag == "G")
                         {
-                            redirectURL = $"{redirectUrl}/alta-empresa-granos";
+                            redirectURL = "/alta-empresa-granos";
                         }
                         else
                         {
-                            redirectURL = $"{redirectUrl}/dato-fiscal/documentacion";
+                            redirectURL = "/dato-fiscal/documentacion";
                         }
                     }
                     else
                     {
-                        redirectURL = $"{redirectUrl}/estado-solicitud";
+                        redirectURL = "/estado-solicitud";
                     }
                 }
                 else
                 {
                     if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
                     {
-                        redirectURL = $"{redirectUrl}/aduana/pesada-online";
+                        redirectURL = "/aduana/pesada-online";
                     }
                     else if (tipoUsuario == "CLIE")
                     {
-                        redirectURL = $"{redirectUrl}/cuenta-corriente/simple";
+                        redirectURL = "/cuenta-corriente/simple";
                     }
                     else
                     {
                         if (granosFlag == "A" || granosFlag == "G")
                         {
-                            redirectURL = $"{redirectUrl}/home";
+                            redirectURL = "/home";
                         }
                         else
                         {
-                            redirectURL = $"{redirectUrl}/home-ngs";
+                            redirectURL = "/home-ngs";
                         }
                     }
                 }
