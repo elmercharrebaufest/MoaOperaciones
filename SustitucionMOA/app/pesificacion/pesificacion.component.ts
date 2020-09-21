@@ -38,7 +38,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
     }
 
     fecha: any = null;
-    contratos: any = null;
+    contratos: any = new Array<any>();
     contrato: string = "";
     fijacion: string = "";
     cantidad: number = 0;
