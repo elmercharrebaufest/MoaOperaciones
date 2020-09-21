@@ -39,13 +39,13 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
     retencion: string = "";
 
     setTabs() {
-        this.setMenuSeccionTab("cuenta-corriente", "Movimientos");
+        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
     }
 
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Cuenta Corriente'), new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Movimientos'),]);
+        this.navService.setSeccionList([new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'), new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),]);
         this.orderedByColumn = "orden";
         this.orderDirection = 1;
         this.getData();
