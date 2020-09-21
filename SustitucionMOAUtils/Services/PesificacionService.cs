@@ -2,6 +2,7 @@
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -14,18 +15,20 @@ namespace SustitucionMOAUtils.Services
 {
     public class PesificacionService
     {
+        FeriadoService _feriadoService = new FeriadoService();
+
         public Fecha GetFechaPesificacion(string formatoFecha)
         {
             try
             {
-                
+                var feriados = _feriadoService.ObtenerFeriados();
                 string horaDeCorte = ConfigurationManager.AppSettings["HoraCortePesificaciones"];
 
                 //Si se paso la hora de corte la fecha minima es manana, caso contrario es hoy
                 TimeSpan ts = TimeSpan.Parse(horaDeCorte);
                 DateTime dateTimeCorte = DateTime.Today.Add(ts);
                 DateTime dateTimePesificacion = dateTimeCorte < DateTime.Now ? DateTime.Today.AddDays(1) : DateTime.Today;
-
+                dateTimePesificacion = ObtenerProximoDiaHabil(dateTimePesificacion, feriados);
                 Fecha fecha = new Fecha()
                 {
                     HoraDeCorte = horaDeCorte,
@@ -39,6 +42,19 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        private DateTime ObtenerProximoDiaHabil(DateTime fecha, List<DateTime> feriados)
+        {
+            if (feriados.Contains(fecha.Date) || fecha.DayOfWeek == DayOfWeek.Saturday || fecha.DayOfWeek == DayOfWeek.Sunday)
+            {
+                fecha = fecha.AddDays(1);
+                return ObtenerProximoDiaHabil(fecha, feriados);
+            }
+            else
+            {
+                return fecha;
             }
         }
 
@@ -95,7 +111,11 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 PesificacionSetContratosWSMOAResponse responseSet = (PesificacionSetContratosWSMOAResponse)new PesificacionGuardarConsumerMOA().request(comprobantes.ToArray());
-                if (responseSet == null || responseSet.Log.Count < 1)
+                if (responseSet == null)
+                {
+                    throw new Exception(ErrorMsg.ErrorWS);
+                }
+                if (responseSet != null && responseSet.Log.Count > 0 && responseSet.Log[0].Mensaje != "")
                 {
                     throw new InfoCustomException(responseSet.Log[0].Mensaje);
                 }
@@ -137,6 +157,39 @@ namespace SustitucionMOAUtils.Services
                 file.SaveAs(targetPath);
 
                 return SuccessMsg.EnvioMsjOk;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<Contrato> GetContratos(string proveedor)
+        {
+            try
+            {
+
+
+                if (proveedor == null || proveedor == "")
+                {
+                    throw new ValidationCustomException("Debe ingresar un proveedor");
+                }
+
+                PesificacionGetContratosWSMOAResponse responseGet = (PesificacionGetContratosWSMOAResponse)new PesificacionConsumerMOA().request(proveedor);
+                if (responseGet == null || responseGet.Contratos.Count < 1)
+                {
+                    throw new InfoCustomException("No se encontraron contratos para pesificar");
+                }
+
+                return responseGet.Contratos;
             }
             catch (InfoCustomException e)
             {

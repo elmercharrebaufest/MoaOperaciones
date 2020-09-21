@@ -374,6 +374,7 @@
     <TypeScriptCompile Include="app\aduana\pesada\detalle\pesada.detalle.component.ts" />
     <TypeScriptCompile Include="app\aduana\pesada\historica\pesada.historica.component.ts" />
     <TypeScriptCompile Include="app\aduana\pesada\online\pesada.online.component.ts" />
+    <TypeScriptCompile Include="app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="app\app-routing.module.ts" />
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
