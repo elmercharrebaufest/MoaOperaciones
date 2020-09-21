@@ -63,6 +63,7 @@
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

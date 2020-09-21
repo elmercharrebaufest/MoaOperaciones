@@ -42,7 +42,7 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
     granosSelected: string;
 
     setTabs() {
-        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
+        this.setMenuSeccionTab("cuenta-corriente", "Detalle de pagos");
     }
 
     isVisible(): boolean {
@@ -83,7 +83,7 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
     }
 
     showModalTableAgrupadaResponsive(CuentaCorriente: any, agrupador: string) {
-        this.modalService.openModalTableResponsive("Cuenta Corriente", [
+        this.modalService.openModalTableResponsive("Detalle de pagos", [
             { etiqueta: "Agrupador", valor: agrupador },
             { etiqueta: "F. Emisión", valor: CuentaCorriente.docDate },
             { etiqueta: "Descripción", valor: CuentaCorriente.descripcion },

@@ -69,6 +69,8 @@ namespace SustitucionMOAWS.WSConsumers
                     haberString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.HABER, "$"),
                     importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
                     importeArgString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.IMPORTE_ARP, "$"),
+                    saldo = cuentaCorrienteInfo.SALDO,
+                    saldoString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.SALDO, "$"),
                     moneda = cuentaCorrienteInfo.MONEDA,
                     orden = i++,
                     ukurs = cuentaCorrienteInfo.UKURS,

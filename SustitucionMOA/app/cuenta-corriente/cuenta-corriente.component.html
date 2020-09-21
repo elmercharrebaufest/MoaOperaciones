@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Movimientos</div>
+            <div class="col-xs-12 col-sm-10 ">Cuenta Corriente</div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
@@ -68,6 +68,7 @@
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ukurs')">TC</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('debe')">Debe</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('haber')">Haber</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('haber')">Saldo</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,6 +82,7 @@
                             <td>{{cuentaCorriente.ukursString}}</td>
                             <td>{{cuentaCorriente.debeString}}</td>
                             <td>{{cuentaCorriente.haberString}}</td>
+                            <td>{{cuentaCorriente.saldoString}}</td>
                         </tr>
                     </tbody>
                 </table>

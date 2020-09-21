@@ -61,6 +61,9 @@ namespace SustitucionMOA.App_Start
             //kernel.Load(new WebNinjectModule());
 
             kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
+
+            kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
+
         }
     }
 }
