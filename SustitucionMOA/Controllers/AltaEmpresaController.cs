@@ -95,52 +95,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult HabilitarUsuario(int empresaId, string observacion)
-        {
-            try
-            {
-                return JsonCustom(new { data = altaEmpresaService.HabilitarUsuario(ClaimsPrincipalExtension.GetClaimValue("emails"), empresaId, observacion) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult DeshabilitarUsuario(int empresaId, string observacion, string observacionParaElProveedor)
-        {
-            try
-            {
-                return JsonCustom(new { data = altaEmpresaService.DeshabilitarUsuario(ClaimsPrincipalExtension.GetClaimValue("emails"), empresaId, observacion, observacionParaElProveedor) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-
+        
         public ActionResult getEstados()
         {
             try

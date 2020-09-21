@@ -39,23 +39,4 @@ export class AltaEmpresaService extends BaseService {
             .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(
                 map(this.extractData));
     }
-
-    public habilitarUsuario(empresaId: number, observacion: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('empresaId', empresaId.toString());
-        params.set('observacion', observacion);
-        return this.http
-            .get('/api/AltaEmpresa/HabilitarUsuario', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
-    }
-
-    public deshabilitarUsuario(empresaId: number, observacion: string, observacionesProveedor: string): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('empresaId', empresaId.toString());
-        params.set('observacion', observacion);
-        params.set('observacionParaElProveedor', observacionesProveedor);
-        return this.http
-            .get('/api/AltaEmpresa/DeshabilitarUsuario', { search: params, headers: this.headers }).pipe(
-                map(this.extractData));
-    }
 }
