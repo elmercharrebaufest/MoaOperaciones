@@ -340,8 +340,7 @@
                 </li>
                 <li>
                     <a class="animate" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
-                        Registro
-                        de operaciones
+                        Registro de operaciones
                     </a>
                 </li>
                 <li>
@@ -359,18 +358,11 @@
                     </a>
                 </li>
                 <li>
-                    <a class="animate" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
-                        Registro
-                        de operaciones
-                    </a>
-                </li>
-                <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
                        (click)="goToSeccion('/altas')" href="#" *ngIf="isAuthorized('ABM EMPRESAS')">
                         <!--data-toggle="tab">-->Altas Pendientes
                     </a>
                 </li>
-
                 <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('estado-solicitud')) ? 'active' : ''"
                        (click)="goToSeccion('/estado-solicitud')" href="#"  *ngIf="isAuthorized('ESTADO SOLICITUD')" >
