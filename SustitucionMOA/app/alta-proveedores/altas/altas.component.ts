@@ -189,7 +189,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-
     abrirModal(empresa: Empresa) {
         this.empresaSeleccionada = empresa;
         this.observaciones = "";

@@ -14,6 +14,18 @@ import { BaseService } from './../common/services/BaseService';
 @Injectable()
 export class UsuarioService extends BaseService {
 
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any ) {
+        let params: URLSearchParams = new URLSearchParams();
+
+        var idUsuario = usuarioSeleccionado.Id;
+
+        params.set('idRoles', idRoles);
+        params.set('idUsuario', idUsuario);
+        return this.http
+            .get('/api/usuario/GuardarRoles', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
     public cambiarContrasenia(contraseniaActual: string, contraseniaNueva: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('contraseniaActual', contraseniaActual);
@@ -50,17 +62,17 @@ export class UsuarioService extends BaseService {
             map(this.extractData));
     }
 
-    public deshabilitarUsuario(usuario: string): Observable<any> {
+    public deshabilitarUsuario(mailUsuario: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
-        params.set('usuario', usuario);
+        params.set('mailUsuario', mailUsuario);
         return this.http
             .get('/api/usuario/deshabilitar', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 
-    public habilitarUsuario(usuario: string): Observable<any> {
+    public habilitarUsuario(mailUsuario: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
-        params.set('usuario', usuario);
+        params.set('mailUsuario', mailUsuario);
         return this.http
             .get('/api/usuario/habilitar', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
@@ -74,4 +86,11 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/seleccionarVendedor', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
+
+    public getRoles(): Observable<any> {
+        return this.http
+            .get('/api/usuario/getRoles', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
 }

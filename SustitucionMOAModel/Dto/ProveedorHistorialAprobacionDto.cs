@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -16,6 +17,17 @@ namespace SustitucionMOAModel.Dto
         public string EstadoAprobacionDescripcion { get; set; }
         public string Observacion { get; set; }
         public DateTime Fecha { get; set; }
+
+        public ProveedorHistorialAprobacionDto() { }
+
+        public ProveedorHistorialAprobacionDto(ProveedorHistorialAprobacion historial)
+        {
+            Id = historial.Id;
+            EstadoAprobacionDescripcion = historial.EstadoAprobacion.ToString();
+            Fecha = historial.Fecha;
+            Observacion = historial.Observacion;
+            Usuario = historial.Usuario.Mail;
+        }
 
     }
 }
