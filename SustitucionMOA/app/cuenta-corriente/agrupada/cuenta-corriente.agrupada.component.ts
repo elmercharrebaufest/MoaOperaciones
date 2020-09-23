@@ -1,19 +1,15 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
-import { SlicePipe } from '@angular/common';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { CuentaCorrienteAgrupadaService } from './../cuenta-corriente.service';
-import { CuentaCorrienteBaseComponent } from './../cuenta-corriente.component';
-import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
-import { ListBaseComponent } from './../../common/base-components/list-base-component'
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { DropdownComponent, DropdownOption } from './../../common/view-child/dropdown/dropdown.component';
-import { NavService } from './../../common/services/NavService';
+﻿import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/catch';
+import { Seccion } from '../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { NavService } from './../../common/services/NavService';
+import { SecurityService } from './../../common/services/SecurityService';
+import { SessionDataService } from './../../common/services/SessionDataService';
+import { CuentaCorrienteBaseComponent } from './../cuenta-corriente.component';
+import { CuentaCorrienteAgrupadaService } from './../cuenta-corriente.service';
 
 @Component({
     selector: 'app-cuenta-corriente-agrupada',
@@ -92,6 +88,20 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
             { etiqueta: "Importe AR$", valor: CuentaCorriente.importeArgString }
         ]);
         return false;
+    }
+
+
+
+    ngOnInit() {
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList(
+            [
+                new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
+            ]
+        );
+
     }
 
 }

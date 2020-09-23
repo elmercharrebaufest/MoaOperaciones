@@ -1,18 +1,15 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { CuentaCorrienteService } from './cuenta-corriente.service';
-import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
-import { ListBaseComponent } from './../common/base-components/list-base-component'
-import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
-import { SessionDataService } from './../common/services/SessionDataService';
-import { SecurityService } from './../common/services/SecurityService';
-import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
-import { NavService } from './../common/services/NavService';
-import { FloatMsgService } from './../common/services/FloatMsgService';
-import { Seccion } from './../common/models/Seccion';
-import { ModalService } from './../common/services/ModalService';
-import 'rxjs/add/operator/catch';
+﻿import { Component } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import 'rxjs/add/observable/throw';
+import 'rxjs/add/operator/catch';
+import { ListBaseComponent } from './../common/base-components/list-base-component';
+import { Seccion } from './../common/models/Seccion';
+import { FloatMsgService } from './../common/services/FloatMsgService';
+import { ModalService } from './../common/services/ModalService';
+import { NavService } from './../common/services/NavService';
+import { SecurityService } from './../common/services/SecurityService';
+import { SessionDataService } from './../common/services/SessionDataService';
+import { CuentaCorrienteService } from './cuenta-corriente.service';
 
 @Component({
     selector: 'app-cuenta-corriente',
@@ -45,7 +42,13 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'), new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),]);
+        this.navService.setSeccionList(
+            [
+                new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
+            ]
+        );
+
         this.orderedByColumn = "orden";
         this.orderDirection = 1;
         this.getData();
@@ -96,7 +99,7 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                }else if (result.error != undefined && result.error != "") {
+                } else if (result.error != undefined && result.error != "") {
                     this.floatMsgService.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
@@ -165,7 +168,7 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
                     var valueString = valueInt.toString();
                     var cantCeros = 4 - valueString.length;
                     var pagoFormat = "";
-                    for (var i = 0; i < cantCeros; i++){
+                    for (var i = 0; i < cantCeros; i++) {
                         pagoFormat += "0";
                     }
                     pagoFormat += valueString
