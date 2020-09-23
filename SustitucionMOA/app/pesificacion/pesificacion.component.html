@@ -40,7 +40,7 @@
                                 Cantidad (Kg): *
                                 <div class="styled-select ">
                                     <input type="number" class="fourRounded" placeholder="" aria-controls="tableModal" [(ngModel)]="cantidad"
-                                           numeric decimals="0" >
+                                           numeric decimals="0">
 
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                             <div class="row myRow cargaDeDatosBtn">
                                 <div class="col-xs-12 col-sm-6 col-sm-offset-6">
                                     <spinner-small></spinner-small>
-                                    <a  href="#" style="text-decoration:none!important"  id="openModalHiddenButton" data-toggle="modal" data-target="#myModalConfirmacion" *ngIf="this.visibleEnviar">
+                                    <a href="#" style="text-decoration:none!important" id="openModalHiddenButton" data-toggle="modal" data-target="#myModalConfirmacion" *ngIf="this.visibleEnviar">
                                         <div class="btnSection animate">Enviar <span class="fa fa-play "></span></div>
                                     </a>
                                 </div>
@@ -89,7 +89,7 @@
                     <div role="tabpanel" class="tab-pane fade" id="pendiente">
                         <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
                             <div class="col-xs-12">
-                                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table" *ngIf=" isVisiblePaginacion()"
                                        cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                                     <thead>
                                         <tr role="row">
@@ -106,6 +106,10 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div *ngIf="!isVisiblePaginacion()" class="col-xs-12">
+                                    <div class="alert alert-warning"><i aria-hidden="true" class="fa fa-thumbs-o-down"></i>No hay contratos para mostrar </div>
+                                </div>
+
                                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisiblePaginacion()">
                                     <div class="dataTables_paginate paging_simple_numbers">
                                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
@@ -151,25 +155,25 @@
                         <mdb-stepper #stepper>
                             <div class="col-md-12">
                                 <mdb-step name="Step 1" label="Informe comercial">
-                                    <h3>Está seguro que desea Pesificar el Contrato: {{contrato}}, Fijación: {{fijacion}} por {{cantidad}} kilos?</h3>
-                                    
+                                    <h3>Está seguro que desea Pesificar el Contrato: {{contrato}}, Fijación: {{fijacion}}  , por {{cantidad}} kilos?</h3>
+
                                 </mdb-step>
-                               
+
                             </div>
                         </mdb-stepper>
                     </div>
-                  
+
                 </div>
             </div>
             <div class="modal-footer">
-               
-                <button type="button" class="btn btn-info btn-lg"  *ngIf="this.visibleEnviar"
-                       (click)="guardarPesificaciones()" 
+
+                <button data-dismiss="modal" type="button" class="btn btn-info btn-lg" *ngIf="this.visibleEnviar"
+                        (click)="guardarPesificaciones()"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Aceptar
                 </button>
                 <button type="button" class="btn btn-info btn-lg" *ngIf="this.visibleEnviar"
-                        data-dismiss="modal" 
+                        data-dismiss="modal" id="cerrarModalConfirmar" name="cerrarModalConfirmar"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Cancelar
                 </button>

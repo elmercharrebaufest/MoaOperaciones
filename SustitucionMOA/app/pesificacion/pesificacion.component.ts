@@ -36,7 +36,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         this.spinnerComponent = new SpinnerComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
-
+    
     fecha: any = null;
     contratos: any = new Array<any>();
     contrato: string = "";
@@ -152,7 +152,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-    guardarPesificaciones() {
+    guardarPesificaciones() {        
         this.spinnerSmallComponent.showIt();
         this.visibleEnviar = false;
 
@@ -178,6 +178,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
             result => {
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
+                this.getListaContratos();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -185,17 +186,17 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
-                    this.getListaContratos();
+                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");                    
                 }
+
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 this.mensajeComponent.setErrorMsg(error.message);
-                return false;
             }
         );
+        document.getElementById("cerrarModalConfirmar").click();
         return false;
     }
 

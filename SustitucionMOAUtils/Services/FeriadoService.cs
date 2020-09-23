@@ -53,7 +53,7 @@ namespace SustitucionMOAUtils.Services
                     for (int i = 0; i < jsonResult.Datos.Count; i++)
                     {
                         DateTime fecha = jsonResult.Datos[i].Feriado;
-                        feriados.Add(fecha);
+                        feriados.Add(fecha.Date);
                     }
                     return feriados;
                 }
