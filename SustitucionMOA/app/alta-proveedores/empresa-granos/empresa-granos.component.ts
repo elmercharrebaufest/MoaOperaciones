@@ -14,7 +14,6 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
-import { ContactoComercial } from '../../common/models/contactoComercial';
 
 @Component({
     selector: 'app-empresa-granos',

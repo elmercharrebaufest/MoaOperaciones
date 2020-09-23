@@ -152,7 +152,8 @@ import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/esta
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { ArchivoPipe } from "./common/pipes/archivos.pipe";
 
-import { NumericDirective } from "./common/directive/numeric.directive";
+import { NumericDirective } from "./common/directive/numeric.directive";;
+import { EmpresaCorredorComponent } from './alta-proveedores/empresa-corredor/empresa-corredor.component'
 
 @NgModule({
     imports: [
@@ -251,7 +252,8 @@ import { NumericDirective } from "./common/directive/numeric.directive";
         CuitInvalidoComponent,
         ProveedorDetalleComponent,
         EstadoSolicitudComponent,
-        ArchivoPipe
+        ArchivoPipe,
+        EmpresaCorredorComponent
     ],
     providers: [
         DatePipe,

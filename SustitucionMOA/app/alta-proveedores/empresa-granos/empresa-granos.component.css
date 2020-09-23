@@ -225,3 +225,7 @@ input::-webkit-inner-spin-button {
 #declaracionJurada {
   margin: 10px;
 }
+
+.ng-autocomplete {
+    width: 200px;
+}
