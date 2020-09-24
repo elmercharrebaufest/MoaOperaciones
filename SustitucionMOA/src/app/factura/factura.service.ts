@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
+import { environment } from '../../environments/environment';
 
 
 @Injectable()

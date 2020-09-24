@@ -20,14 +20,15 @@ import { OrderedColumn } from "./pipes/orderedColumn";
 import { ShortenStringPipe } from "./pipes/shortenString";
 import { BaseComponent } from './base-components/base-component';
 import { ListBaseComponent } from './base-components/list-base-component';
+import { ArchivoPipe } from './pipes/archivos.pipe';
 var SharedModule = /** @class */ (function () {
     function SharedModule() {
     }
     SharedModule = __decorate([
         NgModule({
             imports: [CommonModule, FormsModule],
-            declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent],
-            exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe,
+            declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
+            exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
                 CommonModule, FormsModule]
         })
     ], SharedModule);

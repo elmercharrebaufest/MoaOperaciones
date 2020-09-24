@@ -10,6 +10,7 @@ import { HistorialAprobaciones } from './Empresa'
 
 import { Formatter } from './../../common/formatter/Formatter';
 import { BaseService } from './../../common/services/BaseService';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class AltaEmpresaService extends BaseService {

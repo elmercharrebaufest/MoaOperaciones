@@ -8,6 +8,7 @@ import { MensajeComponent } from './common/view-child/mensaje/mensaje.component'
 import { SpinnerSmallComponent } from './common/view-child/spinner-small/spinner-small.component';
 import { map } from 'rxjs/operators';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
+import { environment } from '../environments/environment';
 
 @Component({
     selector: 'my-app',
@@ -69,7 +70,7 @@ export class AppComponent {
                 } else {
                     if (result.error != undefined && result.error != "") {
                         alert(result.error);
-                        location.href = "/SignOut";
+                        location.href = "/";
                     } 
                     else {
                         this.loginUser(result);

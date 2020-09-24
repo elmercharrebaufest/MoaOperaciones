@@ -69,7 +69,7 @@ var AppComponent = /** @class */ (function () {
             else {
                 if (result.error != undefined && result.error != "") {
                     alert(result.error);
-                    location.href = "/SignOut";
+                    location.href = "/";
                 }
                 else {
                     _this.loginUser(result);

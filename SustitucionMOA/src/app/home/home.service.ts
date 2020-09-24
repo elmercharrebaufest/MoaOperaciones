@@ -5,6 +5,7 @@ import {map, timeoutWith} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { BaseService } from './../common/services/BaseService';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class HomeService extends BaseService {

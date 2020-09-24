@@ -11,6 +11,7 @@ import { Http, Response, URLSearchParams } from '@angular/http';
 import "rxjs/add/observable/defer";
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class RYDService extends BaseService {

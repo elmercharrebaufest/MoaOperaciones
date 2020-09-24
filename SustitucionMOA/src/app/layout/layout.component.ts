@@ -256,7 +256,7 @@ export class LayoutComponent implements OnDestroy {
     }
 
     isAmbos() {
-        return this.granosFlag == "A" && this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG ');
+        return this.granosFlag == "A" && this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG');
     }
 
     setGranos() {

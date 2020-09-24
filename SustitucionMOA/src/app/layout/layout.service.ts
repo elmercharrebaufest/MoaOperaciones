@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class LayoutService extends BaseService {

@@ -118,7 +118,7 @@ namespace SustitucionMOA.Controllers
             {
                 if (!Request.IsAuthenticated)
                 {
-                    return Index();
+                    throw new ValidationCustomException("Su sesión ha expirado. Por favor, ingrese nuevamente.");
                 }
 
                 string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
