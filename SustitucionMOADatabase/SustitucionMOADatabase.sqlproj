@@ -77,8 +77,13 @@
     <Build Include="DBO\Tables\Usuario.sql" />
     <Build Include="DBO\Tables\UsuarioGranos.sql" />
     <Build Include="DBO\Tables\UsuarioNoGranos.sql" />
+    <Build Include="DBO\Tables\UsuarioRelacionConEmpleados.sql" />
+    <Build Include="DBO\Tables\UsuarioRelacionConFuncionarios.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
   </ItemGroup>
 </Project>

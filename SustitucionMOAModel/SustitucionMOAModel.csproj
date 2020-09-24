@@ -61,6 +61,8 @@
     <Compile Include="Entities\Partido.cs" />
     <Compile Include="Entities\ProveedorHistorialAprobacion.cs" />
     <Compile Include="Entities\Provincia.cs" />
+    <Compile Include="Entities\UsuarioRelacionConEmpleados.cs" />
+    <Compile Include="Entities\UsuarioRelacionConFuncionarios.cs" />
     <Compile Include="Enums\EstadoAprobacion.cs" />
     <Compile Include="Entities\PermisoPorRol.cs" />
     <Compile Include="Entities\Proveedor.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Models\DataAgro\NuevoAcopio.cs" />
     <Compile Include="Models\DataAgro\NuevoProduccion.cs" />
     <Compile Include="Models\Usuario.cs" />
+    <Compile Include="Models\ViewModel\AltaEmpresa\AltaEmpresaViewModel.cs" />
     <Compile Include="Models\ViewModel\CartaPorteViewModel.cs" />
     <Compile Include="Models\ViewModel\ContratosNoCumplidosViewModel.cs" />
     <Compile Include="Models\ViewModel\CuentaCorriente\CuentaCorrienteViewModel.cs" />

@@ -13,6 +13,8 @@ import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/s
 import { Empresa } from './Empresa';
 import { release } from 'os';
 import { Archivo } from '../../common/models/archivo';
+import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
+import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
 
 
 @Component({
@@ -53,6 +55,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     listaArchivos: Array<Archivo> = [];
 
+    empleados: Array<RelacionConEmpleados> = [];
+    funcionarios: Array<RelacionConFuncionarios> = [];
+    relacionConEmpleados: string = "";
+    relacionConFuncionarios: string = "";
     ngOnInit(): void {
         this.getEstados();
     }
@@ -198,6 +204,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
         this.obtenerArchivosSubidos(empresa.Mail);
+        this.cargarSolicitudUsuario(empresa.Mail);
         document.getElementById("openModalHiddenButton").click();
         return false;
     }
@@ -245,5 +252,38 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.dataFiltered = this.data;
         }
 
+    }
+
+    cargarSolicitudUsuario(mail: string) {
+        this.subscription = this.service.cargarSolicitudUsuario(mail).subscribe(
+            result => {
+                if (result.VinculoConEmpleadosDeMolinos != null) {
+                    if (result.VinculoConEmpleadosDeMolinos) {
+                        this.relacionConEmpleados = "Si";
+                    } else {
+                        this.relacionConEmpleados = "No";
+                    }
+
+                    if (result.VinculoConFuncionariosPublicos) {
+                        this.relacionConFuncionarios = "Si";
+                    } else {
+                        this.relacionConFuncionarios = "No";
+                    }
+
+                    this.empleados = result.Empleados;
+                    this.funcionarios = result.Funcionarios;
+                }
+
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+    isVisibleTablaFuncionarios(): boolean {
+        return this.relacionConFuncionarios == "Si";
+    }
+    isVisibleTablaEmpleados(): boolean {
+        return this.relacionConEmpleados == "Si";
     }
 }

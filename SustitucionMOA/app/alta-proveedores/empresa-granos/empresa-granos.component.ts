@@ -45,6 +45,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     private newAttribute: NuevoProduccion = new NuevoProduccion();
     relacionConEmpleadosChecked: boolean = null;
     relacionConFuncionariosChecked: boolean = null;
+    codigoConductaVisto: boolean = false;
     codigoDeConducta: boolean = false;
     materialesData: any = null;
     CBUSISA: string = "";
@@ -60,7 +61,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
     mensajeError: string = "";
-
+    tryDoctype: string = "";
     keyword = 'Nombre';
     data = [];
     autocompleteNotFoundText = "No encontrado";
@@ -152,12 +153,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
+        this.cargarSolicitudUsuario();
         this.obtenerInfoProveedor();
 
         this.addFieldValue();
         this.addFieldValueAlm();
 
-        console.log(this.estadoSISA);
     }
 
     get email() {
@@ -430,7 +431,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.enviarSolicitud().subscribe(
+        var datos = {
+            Empleados: this.empleados,
+            Funcionarios: this.funcionarios,
+            VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
+            VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
+        };
+        this.subscription = this.service.enviarSolicitud(datos).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -587,7 +594,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     validarTyC() {
-        
+
         if (this.relacionConEmpleadosChecked == null) {
             this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Empleados de Molinos agro S.A.");
             return true;
@@ -662,6 +669,50 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             return true;
         }
         return false;
+    }
+
+    abrirCodigoConducta(siempre:boolean) {
+        if (this.codigoConductaVisto == false || siempre) {
+            this.codigoConductaVisto = true;
+            var filePath = location.origin + "/Documentacion/CodigoDeConductaParaProveedoresMOA.pdf";
+            console.log(filePath);
+            var url = location.origin + "/officetohtml/popup.html?filePath=" + filePath;
+            this.tryDoctype = url;
+            document.getElementById("iframeConducta").setAttribute("src", url);
+            document.getElementById("openModalconductaModal").click();
+        }
+    }
+
+    cargarSolicitudUsuario() {
+        this.subscription = this.service.cargarSolicitudUsuario().subscribe(
+            result => {
+                if (result.VinculoConEmpleadosDeMolinos != null) {
+                    this.codigoConductaVisto = true;
+                    this.codigoDeConducta = true;
+
+                    this.relacionConEmpleadosChecked = result.VinculoConEmpleadosDeMolinos;
+                    if (result.VinculoConEmpleadosDeMolinos) {
+                        document.getElementById("radioEmpleadosSi").setAttribute('checked', 'true');
+                    } else {
+                        document.getElementById("radioEmpleadosNo").setAttribute('checked', 'true');
+                    }
+
+                    this.relacionConFuncionariosChecked = result.VinculoConFuncionariosPublicos;
+                    if (result.VinculoConFuncionariosPublicos) {
+                        document.getElementById("radioFuncionariosSi").setAttribute('checked', 'true');
+                    } else {
+                        document.getElementById("radioFuncionariosNo").setAttribute('checked', 'true');
+                    }
+
+                    this.empleados = result.Empleados;
+                    this.funcionarios = result.Funcionarios;
+                }
+
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
     }
 }
 

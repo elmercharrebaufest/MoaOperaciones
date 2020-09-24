@@ -40,4 +40,10 @@ export class AltaEmpresaService extends BaseService {
                 map(this.extractData));
     }
 
+    cargarSolicitudUsuario(): Observable<any> {
+        return this.http
+            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario')
+            .pipe(map(this.extractData));
+    }
+
 }

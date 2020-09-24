@@ -510,6 +510,7 @@
     <Content Include="officetohtml\include\SheetJS\xlsx.full.min.js" />
     <Content Include="officetohtml\include\verySimpleImageViewer\css\jquery.verySimpleImageViewer.css" />
     <Content Include="officetohtml\include\verySimpleImageViewer\js\jquery.verySimpleImageViewer.js" />
+    <Content Include="officetohtml\popup.html" />
     <Content Include="officetohtml\index.html" />
     <Content Include="officetohtml\lang.html" />
     <Content Include="officetohtml\layout\index.html" />
@@ -689,6 +690,7 @@
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff2" />
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
     <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
+    <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

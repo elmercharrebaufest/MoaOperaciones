@@ -20,13 +20,13 @@
         font-family: inherit;
         font-weight: 500;
         line-height: 1.1;
-        color: inherit;
+        color: #003399;
         /*margin-top: 20px;
         margin-bottom: 10px;*/
         font-size: 24px;
         border: none;
         background: none;
-         width: 98%;
+        width: 98%;
         text-align: left;
     }
 
@@ -378,14 +378,14 @@
                             <div class="form-group form-check">
                                 <label style="display:inline-block;">
                                     No
-                                    <input type="radio" name="radioEmpleados" value="false" (change)="relacionConEmpleadosCheckNo($event)">
+                                    <input type="radio" name="radioEmpleados" id="radioEmpleadosNo" value="false" (change)="relacionConEmpleadosCheckNo($event)">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
                             <div class="form-group form-check">
                                 <label style="display:inline-block;">
                                     Si
-                                    <input type="radio" name="radioEmpleados" value="true" (change)="relacionConEmpleadosCheckSi($event)">
+                                    <input type="radio" name="radioEmpleados" id="radioEmpleadosSi" value="true" (change)="relacionConEmpleadosCheckSi($event)">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
@@ -405,7 +405,7 @@
                                         <tr *ngFor="let field of empleados; let i = index">
 
                                             <td width="100px">
-                                                <input [(ngModel)]="field.NombreProveedora" class="form-control" type="text"
+                                                <input [(ngModel)]="field.NombreProveedora" class="form-control" type="text"  style="font-weight: 300;"
                                                        name="{{field.NombreProveedora}}" />
                                             </td>
                                             <td width="100px">
@@ -465,7 +465,7 @@
                                         <div class="form-group form-check">
                                             <label style="display:inline-block;">
                                                 Si
-                                                <input type="radio" name="radioFuncionarios" value="true" (change)="relacionConFuncionariosCheckSi($event)">
+                                                <input type="radio" name="radioFuncionarios" id="radioFuncionariosSi" value="true" (change)="relacionConFuncionariosCheckSi($event)">
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
@@ -473,7 +473,7 @@
                                     <div class="col-md-6 text-center">
                                         <label style="display:inline-block;">
                                             No
-                                            <input type="radio" name="radioFuncionarios" value="false" (change)="relacionConFuncionariosCheckNo($event)">
+                                            <input type="radio" name="radioFuncionarios" id="radioFuncionariosNo" value="false" (change)="relacionConFuncionariosCheckNo($event)">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -515,7 +515,7 @@
                                         <tr *ngFor="let field of funcionarios; let i = index">
 
                                             <td width="100px">
-                                                <input [(ngModel)]="field.NombreFirma" class="form-control" type="text"
+                                                <input [(ngModel)]="field.NombreFirma" class="form-control" type="text" style="font-weight: 300;"
                                                        name="{{field.NombreFirma}}" />
                                             </td>
                                             <td width="100px">
@@ -557,7 +557,7 @@
                 </div>
                 <div class="card z-depth-0 bordered">
                     <div class="card-header" id="headingThree">
-                        <h5 class="mb-0">
+                        <h5 class="mb-0"  (click)="abrirCodigoConducta()">
                             <button class="titulos collapsed" type="button" data-toggle="collapse"
                                     data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                 Aceptación del Código de Conducta *
@@ -568,7 +568,9 @@
                         <div class="card-body">
                             <div>
                                 <p>
-                                    Declaramos que hemos leído el Código de Conducta de Proveedores de Molinos agro S.A.,
+                                    Declaramos que hemos leído el
+                                    <a (click)="abrirCodigoConducta(true)" class="trigger-btn" >Código de Conducta de Proveedores de Molinos agro S.A.</a>
+                                    ,
                                     de cuyo contenido nos notificamos y declaramos comprender y aceptar.
                                     <br />
                                     Asimismo, manifestamos que:
@@ -608,9 +610,6 @@
             </mdb-step>
         </mdb-stepper>
     </div>
-
-
-
 
     <!-- Modal confirmar eliminar -->
     <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"
@@ -991,4 +990,30 @@
         </div>
     </div>
     <!-- end modal informe comercial-->
+    <!-- Modal Codigo de Conducta-->
+    <a href="#conductaModal" style="display:none;" class="trigger-btn" id="openModalconductaModal" data-toggle="modal">Click to Open Conducta Modal</a>
+    <div class="modal fade" id="conductaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Código de Conducta</h4>
+                </div>
+                <div class="modal-body">
+                    <div style="width:870px; height:800px;">
+                        <iframe id="iframeConducta" width="870" height="800"></iframe>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal Codigo de Conducta-->
 </div>
