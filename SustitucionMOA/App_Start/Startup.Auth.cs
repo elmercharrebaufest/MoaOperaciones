@@ -69,11 +69,12 @@ namespace SustitucionMOA
 						NameClaimType = "name",
 						ValidateIssuer = false
 					},
+					
+					CookieManager = new SameSiteCookieManager(new SystemWebCookieManager()),
 
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
 					Scope = $"openid profile offline_access"
 
-					//CookieManager = new SameSiteCookieManager(new SystemWebCookieManager())
 				}
 			);
 		}

@@ -55,7 +55,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     data = [];
     autocompleteNotFoundText = "No encontrado";
 
-    //Indira
     estadoSISA: string = "";
 
     selectEventProduccion(item, index) {

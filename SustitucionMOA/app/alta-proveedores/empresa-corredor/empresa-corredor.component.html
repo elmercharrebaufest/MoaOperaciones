@@ -2,347 +2,11 @@
     <div class="row titleSection">Alta Proveedores</div>
     <mensaje #msjEmpresaGranos></mensaje>
     <spinner-small></spinner-small>
+
+
     <div class="row myRow firstSection roundedInfo" id="container">
-        <h3>Carta de presentación</h3>
-        <div class="form-group informe-comercial">
-            <div>
-                <p>Complete el informe comercial</p>
-                <!-- Button trigger modal -->
-                <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                        class="btn-custom btn-azul">
-                    Completar informe Comercial
-                </button>
-            </div>
-            <div style="flex-direction: column;">
-                <label class="informe-firmado label" for="informeComercialFirmado">
-                    Informe comercial <strong>completo y firmado *</strong> <span class="adjuntar">Adjuntar</span>
-                </label>
-                <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
-                       (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+        <!-- Modal informe comercial-->
 
-                <label style="color:red;"
-                       *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0">
-                    Sin
-                    Adjuntar
-                </label>
-
-                <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
-                    <a (click)="descargarArchivo(archivo )">
-                        {{archivo.Nombre}}
-                    </a>
-
-                    <a style="color:red;" (click)="eliminarArchivo(archivo)"
-                       title="Eliminar Adjunto">Eliminar</a>
-                </span>
-                <div>
-                    <p>
-                        Recordá que deberás enviar el original <strong>completo y firmado </strong> a nuestras
-                        oficinas
-                    </p>
-                </div>
-            </div>
-        </div>
-        <h3> Constancia de CBU</h3>
-        <div class="form-group">
-            <div>
-                CBU informado en SISA: {{CBUSISA}}
-            </div>
-            <br />
-
-            <label class="label" for="constanciaCBU">
-                Constancia de CBU certificada cuenta AFIP o SISA <strong>*</strong><span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
-                   (change)="handleFileInput($event.target.files, 'constanciaCBU')">
-
-            <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0">
-                Sin Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-
-            <div>
-                <p>
-                    Recordá que deberás enviar el original <strong>completo y firmado </strong> a nuestras
-                    oficinas
-                </p>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="label" for="constanciaCBUMercaderia">
-                Constancia de CBU certificada cuenta Mercaderia <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
-                   (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
-
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-
-        </div>
-        <h3>Documentación Impositiva</h3>
-        <div class="form-group">
-            <label style="font-weight: 100 !important;" for="constanciaCUIT">
-                Constancia de CUIT <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
-                   (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
-
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-        </div>
-        <div class="form-group">
-            <label class="label" for="inscripcionIIBB">
-                Inscripción en IIBB -local o
-                Convenio (CM05
-                vigente) <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
-                   (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
-
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-        </div>
-        <div class="form-group">
-            <label class="label" for="certificadoExclusionIVA">
-                Certificados de exclusión o exención IVA <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
-                   (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
-
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-        </div>
-        <div class="form-group">
-            <label class="label" for="certificadoExclusionIIBB">
-                Certificados de exclusión o exención en IIBB <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
-                   multiple (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="label" for="certificadoExclusionSUSS">
-                Certificados de exclusión o exención en SUSS <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
-                   (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-        </div>
-        <div class="form-group">
-            <label class="label" for="certificadoExclusionGanancias">
-                Certificados de exclusión o exención en Ganancias <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
-                   (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
-
-            <label style="color:red;"
-                   *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
-                <a (click)="descargarArchivo(archivo )">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-        </div>
-        <div class="form-group">
-            <label class="label" for="SIPER">
-                SIPER <strong [ngClass]="{'hidden': estadoSISA == '1'}">*</strong> <span class="adjuntar">Adjuntar</span>
-            </label>
-            <input style="display:none" type="file" class="form-control-file" id="SIPER"
-                   (change)="handleFileInput($event.target.files, 'SIPER')">
-
-            <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0">
-                Sin
-                Adjuntar
-            </label>
-
-            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
-                <a (click)="descargarArchivo(archivo)">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </span>
-
-        </div>
-        <h3>
-            Otros archivos
-            <label class="label" for="otrosArchivos">
-                <span class="adjuntar">
-                    Adjuntar
-                </span>
-            </label>
-        </h3>
-        <div class="form-group">
-
-            <input style="display:none" type="file" class="form-control-file" id="otrosArchivos" multiple
-                   (change)="handleFileInput($event.target.files, 'otrosArchivos')">
-
-
-            <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
-                <a (click)="descargarArchivo(archivo)">
-                    {{archivo.Nombre}}
-                </a>
-
-                <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
-            </div>
-
-
-        </div>
-        <div>
-            <p><strong>*</strong> Los campos marcados son obligatorios</p>
-        </div>
-        <div class="step-actions enviar">
-            <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                    data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-            <input type="submit" (click)="onSubmit()" class="btn-custom btn-azul" value="Enviar">
-        </div>
-    </div>
-
-
-
-
-    <!-- Modal confirmar eliminar -->
-    <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"
-       style="display:none;">Click to Open Confirm Modal</a>
-    <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">Esta seguro?</h4>
-                </div>
-                <div class="modal-body modal-notificacion">
-                    <p>
-                        ¿Realmente desea eliminar el adjunto {{nombreArchivoSeleccionado}}?
-                    </p>
-
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger"
-                            (click)="eliminarArchivoSeleccionado()">
-                        Eliminar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- modal notificacion -->
-    <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-            data-target="#modalNotificación"></button>
-    <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                            onClick="abrirModal()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
-                </div>
-                <div class="modal-body modal-notificacion">
-                    <p>¡Su solicitud fue enviada con éxito!</p>
-                    <p>Un asesor le informará el estado de su registro.</p>
-                    <p>¡Muchas gracias!</p>
-
-                </div>
-                <div class="modal-footer">
-                    <a class="btn-azul btn-custom" (click)="redirigirAEstado()">Aceptar</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end modal notificacion -->
-
-
-    <!-- Modal informe comercial-->
-    <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-            data-target="#myModal"></button>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -379,7 +43,7 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="Antigüedad en la actividad" [(ngModel)]="cartaPresentacion.antiguedad"
+                                               placeholder="Antigüedad en la actividad" [(ngModel)]="cartaPresentacion.antiguedadActividad"
                                                maxlength="100" />
                                     </div>
                                 </div>
@@ -388,11 +52,11 @@
                             <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
-                                        Razón social vendedor 
+                                        Razón social vendedor
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="Razón social vendedor" [(ngModel)]="cartaPresentacion.razonSocial"
+                                               placeholder="Razón social vendedor" [(ngModel)]="cartaPresentacion.razonSocialVendedor"
                                                maxlength="100" />
                                     </div>
                                 </div>
@@ -401,7 +65,7 @@
                             <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
-                                        Antecedes comerciales 
+                                        Antecedes comerciales
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
@@ -417,9 +81,12 @@
                                         Actividad
                                     </div>
                                     <div class="formulario-input">
-                                        <input type="text" class="form-control"
-                                               placeholder="CUIT Vendedor" [(ngModel)]="cartaPresentacion.cuitVendedor"
-                                               maxlength="100" />
+                                        <select [(ngModel)]="cartaPresentacion.actividadId"
+                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                            <option value="1">Productor</option>
+                                            <option value="2">Acopiador</option>
+                                            <option value="3">Otros</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -431,7 +98,7 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="CUIT Vendedor" [(ngModel)]="cartaPresentacion.cuitVendedor"
+                                               placeholder="Mail de contacto" [(ngModel)]="cartaPresentacion.mailContacto"
                                                maxlength="100" />
                                     </div>
                                 </div>
@@ -444,7 +111,7 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="CUIT Vendedor" [(ngModel)]="cartaPresentacion.cuitVendedor"
+                                               placeholder="Telefono de contacto" [(ngModel)]="cartaPresentacion.telefonoContacto"
                                                maxlength="100" />
                                     </div>
                                 </div>
@@ -477,7 +144,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let field of cartaPresentacion.NuevosCampos; let i = index">
+                                    <tr *ngFor="let field of cartaPresentacion.nuevosCampos; let i = index">
                                         <td width="140px">
                                             <div class="formulario-input">
                                                 <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
@@ -492,20 +159,18 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden"
-                                                   id="localidad_{{i}}" style="font-weight: 100 !important;">
+                                            <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden" style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                             (selected)='selectEventProduccion($event, i)'
+                                                             (selected)='selectEventCampo($event, i)'
                                                              [(ngModel)]="field.Localidad"
-                                                             (inputChanged)='onChangeSearchProduccion($event)'
-                                                             (inputFocused)='selectEventProduccion($event)'
+                                                             (inputChanged)='onChangeLocalidad($event)'
                                                              [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
                                                              [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
 
                                             <ng-template #itemTemplate let-item>
-                                                <a [innerHTML]="item.Nombre"></a>
+                                                <a [innerHTML]="item"></a>
                                             </ng-template>
 
                                             <ng-template #notFoundTemplate let-notFound>
@@ -529,7 +194,7 @@
                                         </td>
                                         <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
-                                                    (click)="deleteFieldValue(i)">
+                                                    (click)="borrarCampo(i)">
                                                 Eliminar
                                             </button>
                                         </td>
@@ -539,7 +204,7 @@
 
                             </table>
                             <div class="btn-add-container">
-                                <button class="btn-add btn-custom" type="button" (click)="addFieldValue()">
+                                <button class="btn-add btn-custom" type="button" (click)="agregarCampo()">
                                     Agregar
                                 </button>
 
@@ -561,7 +226,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let acopio of cartaPresentacion.NuevosAcopios; let i = index">
+                                    <tr *ngFor="let acopio of cartaPresentacion.nuevosAcopios; let i = index">
 
                                         <td>
                                             <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text"
@@ -570,11 +235,10 @@
                                             <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
                                                    id="localidadalm_{{i}}" style="font-weight: 100 !important;">
 
-                                            <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                             (selected)='selectEventAlmacenamiento($event, i)'
+                                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                                             (selected)='selectEventAcopio($event, i)'
                                                              [(ngModel)]="acopio.Localidad"
-                                                             (inputChanged)='onChangeSearchAlmacenamiento($event)'
-                                                             (inputFocused)='selectEventAlmacenamiento($event)'
+                                                             (inputChanged)='onChangeLocalidad($event)'
                                                              [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
                                                              [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
@@ -599,7 +263,7 @@
                                         </td>
                                         <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
-                                                    (click)="deleteFieldValueAlm(i)">
+                                                    (click)="borrarAcopio(i)">
                                                 Eliminar
                                             </button>
                                         </td>
@@ -607,7 +271,7 @@
                                 </tbody>
                             </table>
                             <div class="btn-add-container">
-                                <button class="btn-add btn-custom" type="button" (click)="addFieldValueAlm()">
+                                <button class="btn-add btn-custom" type="button" (click)="agregarAcopio()">
                                     Agregar
                                 </button>
                             </div>

@@ -113,38 +113,31 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                informeComercialJson = informeComercialJson.Replace("nia", "ña");
-                var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
+                var cartaPresentacion = JsonConvert.DeserializeObject<CartaDePresentacion>(informeComercialJson);
 
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                userMail = userMail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : userMail;
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-
-                var proveedor = usuario.ObtenerProveedorActual();
-
-                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail);
-
-                if (infoProveedor.ProveedorClasificacion == "Productor")
+                if (cartaPresentacion.Actividad == "Productor")
                 {
-                    if (!informeComercial.NuevosCampos.Any())
+                    if (!cartaPresentacion.NuevosCampos.Any())
                     {
-                        throw new ValidationCustomException("Para generar el informe comercial debe informar los campos");
+                        throw new ValidationCustomException("Para generar la carta de presentacion debe informar los campos");
                     }
                 }
 
-                informeComercial.ContactoComercial.Email1 = userMail;
-                informeComercial.ProveedorId = (int)proveedor.IdDataAgro;
-                informeComercial.InformeComercialId = 0;
-
-                informeComercial.ComercialID = (int)proveedor.IdComercialDataAgro;
-
-                if (informeComercial.NuevosCampos != null)
+                if (cartaPresentacion.Actividad == "Productor")
                 {
-                    foreach (var nuevosCampos in informeComercial.NuevosCampos)
+                    if (!cartaPresentacion.NuevosCampos.Any())
                     {
-                        informeComercial.Materiales.Add(new ParamInformeComercialMaterial
+                        throw new ValidationCustomException("Para generar la carta de presentacion debe informar los almacenamientos");
+                    }
+                }
+
+                if (cartaPresentacion.NuevosCampos != null)
+                {
+                    foreach (var nuevosCampos in cartaPresentacion.NuevosCampos)
+                    {
+                        cartaPresentacion.Materiales.Add(new ParamInformeComercialMaterial
                         {
                             MaterialId = nuevosCampos.MaterialId,
                             Toneladas = nuevosCampos.Toneladas
@@ -152,7 +145,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail);
+                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, userMail);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
