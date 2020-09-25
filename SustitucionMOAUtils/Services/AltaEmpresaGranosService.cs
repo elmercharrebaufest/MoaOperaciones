@@ -321,7 +321,7 @@ namespace SustitucionMOAUtils.Services
 
         public InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario)
         {
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             var proveedor = usuario.ObtenerProveedorActual();
 

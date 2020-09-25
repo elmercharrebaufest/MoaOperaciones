@@ -11,7 +11,7 @@
                         <p>Complete el informe comercial</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-                            class="btn-custom btn-azul">
+                                class="btn-custom btn-azul">
                             Completar informe Comercial
                         </button>
                         <!--<button type="button" class="btn-custom btn-azul">
@@ -20,15 +20,16 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Informe comercial <strong>completo y firmado *</strong> <span
-                                class="adjuntar">Adjuntar</span>
+                            Informe comercial <strong>completo y firmado *</strong> <span class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
-                            (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                               (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
 
                         <label style="color:red;"
-                            *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0"> Sin
-                            Adjuntar</label>
+                               *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0">
+                            Sin
+                            Adjuntar
+                        </label>
 
                         <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
                             <a (click)="descargarArchivo(archivo )">
@@ -36,12 +37,57 @@
                             </a>
 
                             <a style="color:red;" (click)="eliminarArchivo(archivo)"
-                                title="Eliminar Adjunto">Eliminar</a>
+                               title="Eliminar Adjunto">Eliminar</a>
                         </span>
 
                         <div>
                             <p>
                                 Recordá que deberás enviar el original <strong>completo y firmado </strong> a nuestras
+                                oficinas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </mdb-step>
+            <mdb-step name="Step 1" label="Carta de presentación">
+                <h3>Carta de presentación</h3>
+                <div class="form-group informe-comercial">
+                    <div>
+                        <p>Complete el informe comercial</p>
+                        <!-- Button trigger modal -->
+                        <button type="button" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal" data-target="#modalCartaPresentacion"
+                                class="btn-custom btn-azul">
+                            Completar Carta de presentación
+                        </button>
+                        <!--<button type="button" class="btn-custom btn-azul">
+                            Descargar
+                        </button>-->
+                    </div>
+                    <div style="flex-direction: column;">
+                        <label class="informe-firmado label" for="cartaDePresentacionFirmada">
+                            Carta de presentación <strong>completa y firmada *</strong> <span class="adjuntar">Adjuntar</span>
+                        </label>
+                        <input style="display:none" type="file" class="form-control-file" id="cartaDePresentacionFirmada"
+                               (change)="handleFileInput($event.target.files, 'cartaDePresentacionFirmada')">
+
+                        <label style="color:red;"
+                               *ngIf="(listaArchivos | archivosFilterPipe:'cartaDePresentacionFirmada').length === 0">
+                            Sin
+                            Adjuntar
+                        </label>
+
+                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'cartaDePresentacionFirmada'">
+                            <a (click)="descargarArchivo(archivo )">
+                                {{archivo.Nombre}}
+                            </a>
+
+                            <a style="color:red;" (click)="eliminarArchivo(archivo)"
+                               title="Eliminar Adjunto">Eliminar</a>
+                        </span>
+
+                        <div>
+                            <p>
+                                Recordá que deberás enviar la original <strong>completa y firmada </strong> a nuestras
                                 oficinas
                             </p>
                         </div>
@@ -57,14 +103,14 @@
                     <br />
 
                     <label class="label" for="constanciaCBU">
-                        Constancia de CBU certificada cuenta AFIP o SISA <strong>*</strong><span
-                            class="adjuntar">Adjuntar</span>
+                        Constancia de CBU certificada cuenta AFIP o SISA <strong>*</strong><span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
-                        (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                           (change)="handleFileInput($event.target.files, 'constanciaCBU')">
 
                     <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0">
-                        Sin Adjuntar</label>
+                        Sin Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
                         <a (click)="descargarArchivo(archivo )">
@@ -87,11 +133,13 @@
                         Constancia de CBU certificada cuenta Mercaderia <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBUMercaderia"
-                        (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
+                           (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
 
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0"> Sin
-                        Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
                         <a (click)="descargarArchivo(archivo )">
@@ -110,10 +158,10 @@
                         Constancia de CUIT <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
-                        (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                           (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0"> Sin Adjuntar</label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
                         <a (click)="descargarArchivo(archivo )">
@@ -130,11 +178,13 @@
                         vigente) <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
-                        (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                           (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
 
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0"> Sin
-                        Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
                         <a (click)="descargarArchivo(archivo )">
@@ -149,11 +199,13 @@
                         Certificados de exclusión o exención IVA <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIVA"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
+                           (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
 
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0"> Sin
-                        Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
                         <a (click)="descargarArchivo(archivo )">
@@ -168,10 +220,12 @@
                         Certificados de exclusión o exención en IIBB <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionIIBB"
-                        multiple (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+                           multiple (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0"> Sin
-                        Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
                         <a (click)="descargarArchivo(archivo )">
@@ -186,10 +240,12 @@
                         Certificados de exclusión o exención en SUSS <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionSUSS"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+                           (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0"> Sin
-                        Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
                         <a (click)="descargarArchivo(archivo )">
@@ -204,11 +260,13 @@
                         Certificados de exclusión o exención en Ganancias <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="certificadoExclusionGanancias"
-                        (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
+                           (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
 
                     <label style="color:red;"
-                        *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0"> Sin
-                        Adjuntar</label>
+                           *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
                         <a (click)="descargarArchivo(archivo )">
@@ -220,14 +278,15 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        SIPER <strong [ngClass]="{'hidden': estadoSISA == '1'}">*</strong> <span
-                            class="adjuntar">Adjuntar</span>
+                        SIPER <strong [ngClass]="{'hidden': estadoSISA == '1'}">*</strong> <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
-                        (change)="handleFileInput($event.target.files, 'SIPER')">
+                           (change)="handleFileInput($event.target.files, 'SIPER')">
 
-                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin
-                        Adjuntar</label>
+                    <label style="color:red;" *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0">
+                        Sin
+                        Adjuntar
+                    </label>
 
                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
                         <a (click)="descargarArchivo(archivo)">
@@ -251,7 +310,7 @@
                 <div class="form-group">
 
                     <input style="display:none" type="file" class="form-control-file" id="otrosArchivos" multiple
-                        (change)="handleFileInput($event.target.files, 'otrosArchivos')">
+                           (change)="handleFileInput($event.target.files, 'otrosArchivos')">
 
 
                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
@@ -293,7 +352,7 @@
                 </div>
                 <div class="step-actions enviar">
                     <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                        data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                            data-target="#modalNotificación" class="btn-custom btn-azul"></button>
                     <input type="submit" (click)="onSubmit()" class="btn-custom btn-azul" value="Enviar">
                 </div>
             </mdb-step>
@@ -305,9 +364,9 @@
 
     <!-- Modal confirmar eliminar -->
     <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"
-        style="display:none;">Click to Open Confirm Modal</a>
+       style="display:none;">Click to Open Confirm Modal</a>
     <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -325,7 +384,9 @@
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-danger"
-                        (click)="eliminarArchivoSeleccionado()">Eliminar</button>
+                            (click)="eliminarArchivoSeleccionado()">
+                        Eliminar
+                    </button>
                 </div>
             </div>
         </div>
@@ -333,14 +394,14 @@
 
     <!-- modal notificacion -->
     <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-        data-target="#modalNotificación"></button>
+            data-target="#modalNotificación"></button>
     <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                        onClick="abrirModal()">
+                            onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
@@ -360,14 +421,14 @@
     <!-- end modal notificacion -->
     <!-- Modal informe comercial-->
     <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-        data-target="#myModal"></button>
+            data-target="#myModal"></button>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                        onClick="abrirModal()">
+                            onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
@@ -386,8 +447,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="direccion" class="form-control"
-                                            placeholder="Direccion (100 caracteres)" [(ngModel)]="informe.direccion"
-                                            maxlength="100" />
+                                               placeholder="Direccion (100 caracteres)" [(ngModel)]="informe.direccion"
+                                               maxlength="100" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -396,8 +457,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
-                                            placeholder="Codigo Postal (20 caracteres)"
-                                            [(ngModel)]="informe.codigoPostal" maxlength="20" />
+                                               placeholder="Codigo Postal (20 caracteres)"
+                                               [(ngModel)]="informe.codigoPostal" maxlength="20" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -406,14 +467,14 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input [(ngModel)]="informe.localidadId" class="form-control" type="hidden"
-                                            id="localidadinf" style="font-weight: 100 !important;">
+                                               id="localidadinf" style="font-weight: 100 !important;">
 
                                         <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                            (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
-                                            (inputChanged)='onChangeSearchInforme($event)'
-                                            (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
-                                            [notFoundText]="autocompleteNotFoundText"
-                                            [notFoundTemplate]="notFoundTemplate">
+                                                         (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
+                                                         (inputChanged)='onChangeSearchInforme($event)'
+                                                         (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
+                                                         [notFoundText]="autocompleteNotFoundText"
+                                                         [notFoundTemplate]="notFoundTemplate">
                                         </ng-autocomplete>
 
                                         <ng-template #itemTemplate let-item>
@@ -437,8 +498,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="direccion" class="form-control"
-                                            placeholder="Apellido (50 caracteres)"
-                                            [(ngModel)]="informe.ContactoComercial.Apellido" maxlength="50" />
+                                               placeholder="Apellido (50 caracteres)"
+                                               [(ngModel)]="informe.ContactoComercial.Apellido" maxlength="50" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -447,8 +508,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
-                                            placeholder="Nombres (50 caracteres)"
-                                            [(ngModel)]="informe.ContactoComercial.Nombres" maxlength="50" />
+                                               placeholder="Nombres (50 caracteres)"
+                                               [(ngModel)]="informe.ContactoComercial.Nombres" maxlength="50" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -457,8 +518,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="direccion" class="form-control"
-                                            placeholder="Puesto (50 caracteres)"
-                                            [(ngModel)]="informe.ContactoComercial.Puesto" maxlength="50" />
+                                               placeholder="Puesto (50 caracteres)"
+                                               [(ngModel)]="informe.ContactoComercial.Puesto" maxlength="50" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -467,8 +528,8 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" id="codigoPostal" class="form-control"
-                                            placeholder="Telefono (100 caracteres)"
-                                            [(ngModel)]="informe.ContactoComercial.Telefono1" maxlength="100" />
+                                               placeholder="Telefono (100 caracteres)"
+                                               [(ngModel)]="informe.ContactoComercial.Telefono1" maxlength="100" />
                                     </div>
                                 </div>
                             </div>
@@ -481,8 +542,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <input type="text" id="ClienteAnt" class="input-custom"
-                                        placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
-                                        maxlength="100" />
+                                           placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
+                                           maxlength="100" />
                                 </div>
                             </div>
 
@@ -492,8 +553,8 @@
                                 </div>
                                 <div class="formulario-input">
                                     <textarea id="Comentarios" class="input-custom"
-                                        placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
-                                        maxlength="300"></textarea>
+                                              placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
+                                              maxlength="300"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -502,7 +563,7 @@
                                 <p class="table-title">
                                     Campaña:
                                     <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
-                                        class="dropdown-granos">
+                                            class="dropdown-granos">
                                         <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
                                             {{camp.CampaniaActual}}
                                         </option>
@@ -528,27 +589,27 @@
                                         <td width="140px">
                                             <div class="formulario-input">
                                                 <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
-                                                    class="dropdown-granos">
+                                                        class="dropdown-granos">
                                                     <option *ngFor="let material of listaMateriales"
-                                                        value="{{material.Id}}">
+                                                            value="{{material.Id}}">
                                                         {{material.Descripcion}}
                                                     </option>
                                                 </select>
                                                 <input [(ngModel)]="field.CampaniaId" class="form-control" type="text"
-                                                    value="0" name="{{field.CampaniaId}}" style="display:none;" />
+                                                       value="0" name="{{field.CampaniaId}}" style="display:none;" />
                                             </div>
                                         </td>
                                         <td>
                                             <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden"
-                                                id="localidad_{{i}}" style="font-weight: 100 !important;">
+                                                   id="localidad_{{i}}" style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                (selected)='selectEventProduccion($event, i)'
-                                                [(ngModel)]="field.Localidad"
-                                                (inputChanged)='onChangeSearchProduccion($event)'
-                                                (inputFocused)='selectEventProduccion($event)'
-                                                [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
-                                                [notFoundTemplate]="notFoundTemplate">
+                                                             (selected)='selectEventProduccion($event, i)'
+                                                             [(ngModel)]="field.Localidad"
+                                                             (inputChanged)='onChangeSearchProduccion($event)'
+                                                             (inputFocused)='selectEventProduccion($event)'
+                                                             [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                             [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
 
                                             <ng-template #itemTemplate let-item>
@@ -561,22 +622,22 @@
                                         </td>
                                         <td width="100px">
                                             <input [(ngModel)]="field.Hectareas" class="form-control" type="number"
-                                                name="{{field.Hectareas}}" />
+                                                   name="{{field.Hectareas}}" />
                                         </td>
                                         <td width="100px">
                                             <input [(ngModel)]="field.Toneladas" class="form-control" type="number"
-                                                name="{{field.Toneladas}}" />
+                                                   name="{{field.Toneladas}}" />
                                         </td>
                                         <td width="75px">
                                             <select [(ngModel)]="field.ArrendaPropia"
-                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                    class="dropdown-granos ng-pristine ng-valid ng-touched">
                                                 <option value="true">Propio</option>
                                                 <option value="false">Alquilado</option>
                                             </select>
                                         </td>
                                         <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
-                                                (click)="deleteFieldValue(i)">
+                                                    (click)="deleteFieldValue(i)">
                                                 Eliminar
                                             </button>
                                         </td>
@@ -612,18 +673,18 @@
 
                                         <td>
                                             <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text"
-                                                value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
+                                                   value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
 
                                             <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
-                                                id="localidadalm_{{i}}" style="font-weight: 100 !important;">
+                                                   id="localidadalm_{{i}}" style="font-weight: 100 !important;">
 
                                             <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                                (selected)='selectEventAlmacenamiento($event, i)'
-                                                [(ngModel)]="acopio.Localidad"
-                                                (inputChanged)='onChangeSearchAlmacenamiento($event)'
-                                                (inputFocused)='selectEventAlmacenamiento($event)'
-                                                [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
-                                                [notFoundTemplate]="notFoundTemplate">
+                                                             (selected)='selectEventAlmacenamiento($event, i)'
+                                                             [(ngModel)]="acopio.Localidad"
+                                                             (inputChanged)='onChangeSearchAlmacenamiento($event)'
+                                                             (inputFocused)='selectEventAlmacenamiento($event)'
+                                                             [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                             [notFoundTemplate]="notFoundTemplate">
                                             </ng-autocomplete>
 
                                             <ng-template #itemTemplate let-item>
@@ -639,14 +700,14 @@
                                         </td>
                                         <td width="75px">
                                             <select [(ngModel)]="acopio.ArrendaPropia"
-                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                    class="dropdown-granos ng-pristine ng-valid ng-touched">
                                                 <option value="true">Propio</option>
                                                 <option value="false">Alquilado</option>
                                             </select>
                                         </td>
                                         <td width="75px">
                                             <button class="btn-remove btn-custom" type="button"
-                                                (click)="deleteFieldValueAlm(i)">
+                                                    (click)="deleteFieldValueAlm(i)">
                                                 Eliminar
                                             </button>
                                         </td>
@@ -664,13 +725,15 @@
                 <div class="modal-footer">
                     <div class="formulario" style="width:100%;text-align: center;">
                         <div *ngIf="mensajeError != ''" class="formulario-input;">
-                            <div class="alert alert-danger"><i aria-hidden="true"
-                                    class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
+                            <div class="alert alert-danger">
+                                <i aria-hidden="true"
+                                   class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+                            </div>
                         </div>
                         <div class="formulario-input">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             <a class="btn btn-primary" id="InformeComercialDescargar"
-                                (click)="generarInformeComercial()">Guardar y Descargar</a>
+                               (click)="generarInformeComercial()">Guardar y Descargar</a>
                         </div>
                     </div>
                 </div>
@@ -678,4 +741,300 @@
         </div>
     </div>
     <!-- end modal informe comercial-->
+    <!-- Modal Carta presentacion-->
+
+    <button type="button" style="display:none" id="cerrarCartaDePrestacionModal" data-toggle="modal"
+            data-target="#modalCartaPresentacion"></button>
+    <div class="modal fade" id="modalCartaPresentacion" tabindex="-1" role="dialog" aria-labelledby="cartaDePresentacionLabel"
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="cartaDePresentacionLabel">Carta de presentación</h4>
+                </div>
+                <div class="modal-body">
+                    <spinner-small #spinnerModal></spinner-small>
+                    <div class="tab-pane" id="tab2">
+                        <div class="formulario">
+                            <div class="titulo">
+                                Domicilio Actividad
+                            </div>
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        CUIT Vendedor
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="CUIT Vendedor" [(ngModel)]="cartaPresentacion.cuitVendedor"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Antigüedad en la actividad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Antigüedad en la actividad" [(ngModel)]="cartaPresentacion.antiguedadActividad"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Razón social vendedor
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Razón social vendedor" [(ngModel)]="cartaPresentacion.razonSocialVendedor"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Antecedes comerciales
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Antecedes comerciales" [(ngModel)]="cartaPresentacion.antecedentesComerciales"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Actividad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <select [(ngModel)]="cartaPresentacion.actividadId"
+                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                            <option value="1">Productor</option>
+                                            <option value="2">Acopiador</option>
+                                            <option value="3">Otros</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Mail de contacto
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Mail de contacto" [(ngModel)]="cartaPresentacion.mailContacto"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Telefono de contacto
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Telefono de contacto" [(ngModel)]="cartaPresentacion.telefonoContacto"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-12">
+                                <p class="table-title">
+                                    Campaña:
+                                    <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
+                                            class="dropdown-granos">
+                                        <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
+                                            {{camp.CampaniaActual}}
+                                        </option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="col-12">
+                                <p class="table-title">Capacidad productiva</p>
+                            </div>
+                            <table class="table table-striped table-bordered table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Grano</th>
+                                        <th>Localidad</th>
+                                        <th>Has</th>
+                                        <th>TNs</th>
+                                        <th>Condicion</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let field of cartaPresentacion.nuevosCampos; let i = index">
+                                        <td width="140px">
+                                            <div class="formulario-input">
+                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
+                                                        class="dropdown-granos">
+                                                    <option *ngFor="let material of listaMateriales"
+                                                            value="{{material.Id}}">
+                                                        {{material.Descripcion}}
+                                                    </option>
+                                                </select>
+                                                <input [(ngModel)]="field.CampaniaId" class="form-control" type="text"
+                                                       value="0" name="{{field.CampaniaId}}" style="display:none;" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden" style="font-weight: 100 !important;">
+
+                                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                                             (selected)='selectEventCampoCartaPresentacion($event, i)'
+                                                             [(ngModel)]="field.Localidad"
+                                                             (inputChanged)='onChangeLocalidad($event)'
+                                                             [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                             [notFoundTemplate]="notFoundTemplate">
+                                            </ng-autocomplete>
+
+                                            <ng-template #itemTemplate let-item>
+                                                <a [innerHTML]="item.Nombre"></a>
+                                            </ng-template>
+
+                                            <ng-template #notFoundTemplate let-notFound>
+                                                <div [innerHTML]="notFound"></div>
+                                            </ng-template>
+                                        </td>
+                                        <td width="100px">
+                                            <input [(ngModel)]="field.Hectareas" class="form-control" type="number"
+                                                   name="{{field.Hectareas}}" />
+                                        </td>
+                                        <td width="100px">
+                                            <input [(ngModel)]="field.Toneladas" class="form-control" type="number"
+                                                   name="{{field.Toneladas}}" />
+                                        </td>
+                                        <td width="75px">
+                                            <select [(ngModel)]="field.ArrendaPropia"
+                                                    class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                <option value="true">Propio</option>
+                                                <option value="false">Alquilado</option>
+                                            </select>
+                                        </td>
+                                        <td width="75px">
+                                            <button class="btn-remove btn-custom" type="button"
+                                                    (click)="borrarCampoCartaPresentacion(i)">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+                            <div class="btn-add-container">
+                                <button class="btn-add btn-custom" type="button" (click)="agregarCampoCartaPresentacion()">
+                                    Agregar
+                                </button>
+
+                            </div>
+                        </div>
+
+                        <!-- TABLA 2 -->
+                        <div>
+                            <div>
+                                <p class="table-title">Capacidad planta</p>
+                            </div>
+                            <table class="table table-striped table-bordered table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Localidad</th>
+                                        <th>TNs</th>
+                                        <th>Condición</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let acopio of cartaPresentacion.nuevosAcopios; let i = index">
+
+                                        <td>
+                                            <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text"
+                                                   value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
+
+                                            <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
+                                                   id="localidadalm_{{i}}" style="font-weight: 100 !important;">
+
+                                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                                             (selected)='selectEventAcopioCartaPresentacion($event, i)'
+                                                             [(ngModel)]="acopio.Localidad"
+                                                             (inputChanged)='onChangeLocalidad($event)'
+                                                             [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
+                                                             [notFoundTemplate]="notFoundTemplate">
+                                            </ng-autocomplete>
+
+                                            <ng-template #itemTemplate let-item>
+                                                <a [innerHTML]="item.Nombre"></a>
+                                            </ng-template>
+
+                                            <ng-template #notFoundTemplate let-notFound>
+                                                <div [innerHTML]="notFound"></div>
+                                            </ng-template>
+                                        </td>
+                                        <td width="100px">
+                                            <input [(ngModel)]="acopio.Toneladas" class="form-control" type="number" />
+                                        </td>
+                                        <td width="75px">
+                                            <select [(ngModel)]="acopio.ArrendaPropia"
+                                                    class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                <option value="true">Propio</option>
+                                                <option value="false">Alquilado</option>
+                                            </select>
+                                        </td>
+                                        <td width="75px">
+                                            <button class="btn-remove btn-custom" type="button"
+                                                    (click)="borrarAcopioCartaPresentacion(i)">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="btn-add-container">
+                                <button class="btn-add btn-custom" type="button" (click)="agregarAcopioCartaPresentacion()">
+                                    Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="formulario" style="width:100%;text-align: center;">
+                        <div *ngIf="mensajeError != ''" class="formulario-input;">
+                            <div class="alert alert-danger">
+                                <i aria-hidden="true"
+                                   class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+                            </div>
+                        </div>
+                        <div class="formulario-input">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <a class="btn btn-primary" id="CartaPresentacionDescargar"
+                               (click)="generarCartaPresentacion()">Guardar y Descargar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end modal carta de presentanción -->
+
 </div>

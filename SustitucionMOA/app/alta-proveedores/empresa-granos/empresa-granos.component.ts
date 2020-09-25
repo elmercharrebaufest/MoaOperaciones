@@ -14,6 +14,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
+import { CartaPresentacion } from '../../common/models/cartaPresentacion';
 
 @Component({
     selector: 'app-empresa-granos',
@@ -47,12 +48,19 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaArchivos: Array<Archivo> = [];
 
     informe = new InformeComercial();
+
+
+    cartaPresentacion = new CartaPresentacion();
+    private nuevoAtributoCampo: NuevoProduccion = new NuevoProduccion();
+    private nuevoAtributoAcompio: NuevoAcopio = new NuevoAcopio();
+
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
     mensajeError: string = "";
 
     keyword = 'Nombre';
     data = [];
+    localidades: any = [];
     autocompleteNotFoundText = "No encontrado";
 
     estadoSISA: string = "";
@@ -146,7 +154,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.addFieldValue();
         this.addFieldValueAlm();
 
-        console.log(this.estadoSISA);
+        this.agregarCampoCartaPresentacion()
+        this.agregarAcopioCartaPresentacion()
     }
 
     get email() {
@@ -455,6 +464,174 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     validarInforme() {
+
+        if (this.informe.direccion == "" || !this.informe.direccion) {
+            this.mensajeError = "No completo la direccion.";
+            return true;
+        }
+        if (!this.informe.codigoPostal || this.informe.codigoPostal == "") {
+            this.mensajeError = "No completo el codigo postal.";
+            return true;
+        }
+        if (!this.informe.localidadId || this.informe.localidadId == null || this.informe.localidadId == 0) {
+            this.mensajeError = "No completo la Localidad en Domicilio Actividad.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Apellido || this.informe.ContactoComercial.Apellido == "") {
+            this.mensajeError = "No completo el Apellido del contacto.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Nombres || this.informe.ContactoComercial.Nombres == "") {
+            this.mensajeError = "No completo el Nombre del contacto.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Puesto || this.informe.ContactoComercial.Puesto == "") {
+            this.mensajeError = "No completo el Puesto del contacto.";
+            return true;
+        }
+        if (!this.informe.ContactoComercial.Telefono1 || this.informe.ContactoComercial.Telefono1 == "") {
+            this.mensajeError = "No completo el Telefono del contacto.";
+            return true;
+        }
+        if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
+            this.mensajeError = "No completo la Campa�a Actual.";
+            return true;
+        }
+        for (const item of this.informe.NuevosCampos) {
+            if (item.MaterialId == null || item.MaterialId == 0) {
+                this.mensajeError = "Debe completar el grano en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.LocalidadId == null || item.LocalidadId == 0) {
+                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.Hectareas == null || item.Hectareas == 0) {
+                this.mensajeError = "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.Toneladas == null || item.Toneladas == 0) {
+                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.ArrendaPropia == null) {
+                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad productiva.";
+                return true;
+            }
+        }
+        for (const item of this.informe.NuevosAcopios) {
+            if (item.LocalidadID == null || item.LocalidadID == 0) {
+                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
+                return true;
+            }
+            if (item.Toneladas == null || item.Toneladas == 0) {
+                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                return true;
+            }
+            if (item.ArrendaPropia == null) {
+                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad planta.";
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    agregarCampoCartaPresentacion() {
+        this.cartaPresentacion.nuevosCampos.push(this.nuevoAtributoCampo)
+        this.nuevoAtributoCampo = new NuevoProduccion();
+    }
+
+    borrarCampoCartaPresentacion(index) {
+        this.cartaPresentacion.nuevosCampos.splice(index, 1);
+    }
+
+    agregarAcopioCartaPresentacion() {
+        this.cartaPresentacion.nuevosAcopios.push(this.nuevoAtributoAcompio)
+        this.nuevoAtributoAcompio = new NuevoAcopio();
+    }
+    borrarAcopioCartaPresentacion(index) {
+        this.cartaPresentacion.nuevosAcopios.splice(index, 1);
+    }
+
+    selectEventCampoCartaPresentacion(item, index) {
+        this.cartaPresentacion.nuevosCampos[index].LocalidadId = item.LocalidadId;
+    }
+
+    selectEventAcopioCartaPresentacion(item, index) {
+        this.cartaPresentacion.nuevosAcopios[index].LocalidadID = item.LocalidadId;
+    }
+
+    onChangeLocalidad(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.localidades = result;
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
+    generarCartaPresentacion() {
+        this.spinnerModal.showIt();
+        this.unsubscribe();
+        this.cartaPresentacion.nuevosAcopios.forEach(campo => {
+            campo.CampaniaID = this.campaniaActual;
+        });
+        this.cartaPresentacion.nuevosCampos.forEach(campo => {
+            campo.CampaniaId = this.campaniaActual;
+        });
+
+        this.cartaPresentacion.campaniaID = this.campaniaActual;
+
+        if (this.validarCartaPresentacion()) {
+            this.spinnerModal.hideIt();
+            return;
+        }
+
+        this.mensajeError = "";
+        this.subscription = this.service.generarCartaPresentacion(this.cartaPresentacion).subscribe(
+            result => {
+                this.spinnerModal.hideIt();
+                if (result.error) {
+                    this.mensajeError = result.error;
+                } else {
+                    var byteArray = new Uint8Array(result.data);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = "Informe comercial" + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+
+                        return false;
+                    }
+                }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+                this.mensajeError = error.message;
+
+            }
+        );
+    }
+
+
+    validarCartaPresentacion() {
+
+        return false;
 
         if (this.informe.direccion == "" || !this.informe.direccion) {
             this.mensajeError = "No completo la direccion.";

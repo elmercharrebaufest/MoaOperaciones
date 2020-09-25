@@ -22,7 +22,15 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ResultadoValidarProveedorComercial ValidarCUIT(string CUIT)
         {
-            return service.ValidarProveedorComercial(CUIT); ;
+            try
+            {
+                return service.ValidarProveedorComercial(CUIT); 
+            }
+            //Significa que no estamos conectados
+            catch
+            {
+                return null;
+            }
         }
     }
 
