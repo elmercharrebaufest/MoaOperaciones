@@ -118,7 +118,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 if (responseSet != null && responseSet.Log.Count > 0 && responseSet.Log[0].Mensaje != "")
                 {
-                    throw new InfoCustomException(responseSet.Log[0].Mensaje);
+                    //throw new InfoCustomException(responseSet.Log[0].Mensaje);
+                    throw new InfoCustomException(ErrorMsg.Error);
                 }
 
                 return responseSet;

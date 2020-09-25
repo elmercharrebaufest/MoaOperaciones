@@ -155,9 +155,7 @@
                         <mdb-stepper #stepper>
                             <div class="col-md-12">
                                 <mdb-step name="Step 1" label="Informe comercial">
-                                    <h3>Está seguro que desea Pesificar el Contrato: {{contrato}}, Fijación: {{fijacion}}  , por {{cantidad}} kilos?</h3>
-
-                                </mdb-step>
+                                    <h3>¿Está seguro que desea Pesificar el Contrato: {{contrato}}, Fijación: {{fijacion}} <label *ngIf="fijacion == ''">-</label> , por {{cantidad}} kilos?</h3> </mdb-step>
 
                             </div>
                         </mdb-stepper>
