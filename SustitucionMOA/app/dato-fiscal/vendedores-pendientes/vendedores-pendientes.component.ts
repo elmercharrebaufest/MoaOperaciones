@@ -11,13 +11,13 @@ import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 
 
-
 @Component({
-    selector: 'list',
-    templateUrl: `./app/dato-fiscal/vendedor/dato-fiscal.vendedor.component.html?v=${new Date().getTime()}`,
+  selector: 'app-vendedores-pendientes',
+    templateUrl: './app/dato-fiscal/vendedores-pendientes/vendedores-pendientes.component.html',
+    styleUrls: ['./app/dato-fiscal/vendedores-pendientes/vendedores-pendientes.component.css'],
     providers: [DatoFiscalService]
 })
-export class VendedoresListComponent extends BaseComponent implements OnInit {
+export class VendedoresPendientesComponent extends BaseComponent implements OnInit {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -25,7 +25,8 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    constructor(protected service: DatoFiscalService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: DatoFiscalService, protected navService: NavService, protected securityService: SecurityService,
+        protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -39,7 +40,7 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
     filtroNroVendedor: string = "";
 
     setTabs() {
-        this.setMenuSeccionTab("dato-fiscal", "Mis Vendedores");
+        this.setMenuSeccionTab("dato-fiscal", "Vendedores pendientes");
     }
 
     ngOnInit() {
@@ -67,12 +68,12 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.getVendedores("", "").subscribe(
+            this.subscription = this.service.getVendedoresPendientes("", "").subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                    }else if (result.error != undefined && result.error != "") {
+                    } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);

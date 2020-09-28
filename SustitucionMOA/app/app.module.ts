@@ -153,7 +153,8 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { ArchivoPipe } from "./common/pipes/archivos.pipe";
 
 import { NumericDirective } from "./common/directive/numeric.directive";;
-import { EmpresaCorredorComponent } from './alta-proveedores/empresa-corredor/empresa-corredor.component'
+import { EmpresaCorredorComponent } from './alta-proveedores/empresa-corredor/empresa-corredor.component';
+import { VendedoresPendientesComponent } from './dato-fiscal/vendedores-pendientes/vendedores-pendientes.component'
 
 @NgModule({
     imports: [
@@ -254,7 +255,8 @@ import { EmpresaCorredorComponent } from './alta-proveedores/empresa-corredor/em
         EstadoSolicitudComponent,
         ArchivoPipe,
         EmpresaCorredorComponent
-    ],
+,
+        VendedoresPendientesComponent    ],
     providers: [
         DatePipe,
         SessionDataService,

@@ -26,21 +26,22 @@ namespace SustitucionMOAWS.WSConsumers
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
                 string error = service.SI_MPMF_MOAOP_DETALLES_VENDEDOR(proveedor, vendedor, ref cabeceras, ref convenios, ref cuentas, ref exenciones, out actividades);
-                VendedorDetalleWSMOAResponse result = map(error, cabeceras, convenios, cuentas, exenciones, actividades);
+                VendedorDetalleWSMOAResponse result = Map(error, cabeceras, convenios, cuentas, exenciones, actividades);
                 return result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw;
             }
 
         }
 
-        private VendedorDetalleWSMOAResponse map(string error, ZMPES4470[] cabeceras, ZMPES4430[] convenios, ZMPES4460[] cuentas, ZMPES4450[] exenciones, ZMPTE3420[] actividades)
+        private VendedorDetalleWSMOAResponse Map(string error, ZMPES4470[] cabeceras, ZMPES4430[] convenios, ZMPES4460[] cuentas, ZMPES4450[] exenciones, ZMPTE3420[] actividades)
         {
-            VendedorDetalleWSMOAResponse result = new VendedorDetalleWSMOAResponse();
-            
-            result.error = error;
+            VendedorDetalleWSMOAResponse result = new VendedorDetalleWSMOAResponse
+            {
+                error = error
+            };
 
             foreach (ZMPES4470 cabecera in cabeceras)
             {

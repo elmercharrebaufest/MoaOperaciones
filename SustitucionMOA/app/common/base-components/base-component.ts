@@ -57,7 +57,7 @@ export class BaseComponent implements OnDestroy{
     }
 
     isCorredor() {
-        return this.tipoUsuario == "CORR";
+        return this.tipoUsuario.toUpperCase() == "CORR" || this.tipoUsuario.toUpperCase() == "NUECORR";
     }
 
 }

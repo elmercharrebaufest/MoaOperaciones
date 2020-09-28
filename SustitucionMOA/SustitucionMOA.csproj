@@ -255,6 +255,8 @@
     <Content Include="app\cuenta-corriente\cuenta-corriente.component.html" />
     <Content Include="app\dato-fiscal\dato-fiscal.component.html" />
     <Content Include="app\dato-fiscal\documentacion\documentacion.component.html" />
+    <Content Include="app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.css" />
+    <Content Include="app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.html" />
     <Content Include="app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.html" />
     <Content Include="app\error\error.no-autorizado.component.html" />
     <Content Include="app\factura\factura.component.html" />
@@ -876,6 +878,8 @@
     <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.component.ts" />
     <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.service.ts" />
     <TypeScriptCompile Include="app\dato-fiscal\documentacion\documentacion.component.ts" />
+    <TypeScriptCompile Include="app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.spec.ts" />
+    <TypeScriptCompile Include="app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.ts" />
     <TypeScriptCompile Include="app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.ts" />
     <TypeScriptCompile Include="app\error\error.no-autorizado.component.ts" />
     <TypeScriptCompile Include="app\factura\factura.component.ts" />

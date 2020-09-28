@@ -70,6 +70,7 @@
     <Compile Include="Interfaces\IDataAgroService.cs" />
     <Compile Include="Interfaces\IRolService.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
+    <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />

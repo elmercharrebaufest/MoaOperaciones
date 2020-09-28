@@ -33,6 +33,17 @@ export class DatoFiscalService extends BaseService{
             map(this.extractData),);
     }
 
+
+    public getVendedoresPendientes(fecha_inicio: string, fecha_fin: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        return this.http
+            .get('/api/vendedor/getVendedoresPendientes', { search: params }).pipe(
+                timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))),
+                map(this.extractData));
+    }
+
     //Se vuelve a la solucion de tener la documentacion dentro del proyecto.
     /*public getDocumento(nombre: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
