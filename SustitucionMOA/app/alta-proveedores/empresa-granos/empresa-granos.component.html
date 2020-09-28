@@ -537,24 +537,28 @@
                                 Antecedentes comerciales
                             </div>
                             <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Clientes anteriores
-                                </div>
-                                <div class="formulario-input">
-                                    <input type="text" id="ClienteAnt" class="input-custom"
-                                           placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
-                                           maxlength="100" />
+                                <div class="col-md-3">
+                                    <div class="formulario-label">
+                                        Clientes anteriores
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" id="ClienteAnt" class="form-control"
+                                               placeholder="Clientes (100 caracteres)" [(ngModel)]="informe.ClienteAnt"
+                                               maxlength="100" />
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="formulario-campo">
-                                <div class="formulario-label">
-                                    Otros comentarios
-                                </div>
-                                <div class="formulario-input">
-                                    <textarea id="Comentarios" class="input-custom"
-                                              placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
-                                              maxlength="300"></textarea>
+                                <div class="col-md-12">
+                                    <div class="formulario-label">
+                                        Otros comentarios
+                                    </div>
+                                    <div class="formulario-input">
+                                        <textarea id="Comentarios" class="form-control"
+                                                  placeholder="Comentarios (300 caracteres)" [(ngModel)]="informe.Comentarios"
+                                                  maxlength="300"></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -773,9 +777,7 @@
                                                maxlength="100" />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Antigüedad en la actividad
@@ -786,9 +788,7 @@
                                                maxlength="100" />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Razón social vendedor
@@ -799,9 +799,7 @@
                                                maxlength="100" />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Antecedes comerciales
@@ -812,9 +810,7 @@
                                                maxlength="100" />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Actividad
@@ -828,9 +824,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Mail de contacto
@@ -841,9 +835,7 @@
                                                maxlength="100" />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Telefono de contacto
@@ -856,8 +848,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="col-12">
+                        <div class="row" >
+                            <div class="col-xs-12">
+                                <br />
+                            </div>
+                        </div>
+                        <div class="formulario row">
+                            <div class="formulario-label col-xs-12">
                                 <p class="table-title">
                                     Campaña:
                                     <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
@@ -868,7 +865,10 @@
                                     </select>
                                 </p>
                             </div>
-                            <div class="col-12">
+                        </div>
+
+                        <div  class="formulario">
+                            <div>
                                 <p class="table-title">Capacidad productiva</p>
                             </div>
                             <table class="table table-striped table-bordered table-custom">
@@ -951,7 +951,7 @@
                         </div>
 
                         <!-- TABLA 2 -->
-                        <div>
+                        <div  class="formulario"> 
                             <div>
                                 <p class="table-title">Capacidad planta</p>
                             </div>

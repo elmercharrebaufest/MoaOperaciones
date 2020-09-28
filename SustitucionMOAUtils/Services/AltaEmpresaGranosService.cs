@@ -321,20 +321,27 @@ namespace SustitucionMOAUtils.Services
 
         public InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario)
         {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
-            var proveedor = usuario.ObtenerProveedorActual();
-
-            ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-
-            var info = new InfoProveedorDataAgroDto
+            try
             {
-                ProveedorCBU = result.ProveedorCBU,
-                ProveedorClasificacion = result.ProveedorClasificacion,
-                estadoSISA = result.ProveedorSISACodCategoria
-            };
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            return info;
+                var proveedor = usuario.ObtenerProveedorActual();
+
+                ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
+                var info = new InfoProveedorDataAgroDto
+                {
+                    ProveedorCBU = result.ProveedorCBU,
+                    ProveedorClasificacion = result.ProveedorClasificacion,
+                    estadoSISA = result.ProveedorSISACodCategoria
+                };
+
+                return info;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public byte[] GenerarCartaDePresentacion(CartaDePresentacion cartadePresentacion, string mailUsuario)
