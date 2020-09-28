@@ -493,6 +493,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Pesificacion\" />
     <Folder Include="Template\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
