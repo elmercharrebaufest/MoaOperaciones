@@ -281,6 +281,8 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
+    <Content Include="Documentacion\Código de Conducta para Proveedores MOA.pdf" />
+    <Content Include="Documentacion\Instructivo - Pago de Tasa Municipal con Mercado Pago.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
