@@ -344,12 +344,15 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public byte[] GenerarCartaDePresentacion(CartaDePresentacion cartadePresentacion, string mailUsuario)
+        public byte[] GenerarCartaDePresentacion(RptCartaDePresentacionInfo cartadePresentacion, string mailUsuario)
         {
             try
             {
-                var urlCartaPresentacion = string.Concat(DataAgroURL, "/InformeComercial/Listar");
+                var urlCartaPresentacion = string.Concat(DataAgroURL, "/CartaDePresentacion/Generar");
                 var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+
+
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 

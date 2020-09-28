@@ -2,6 +2,7 @@
 import { NuevoAcopio } from "./nuevoAcopio";
 
 export class CartaPresentacion {
+    /*
     public cuitVendedor: string;
     public razonSocialVendedor: string;
     public actividadID: number;
@@ -14,6 +15,25 @@ export class CartaPresentacion {
     public mailContacto: string;
 
     public telefonoContacto: string;
+    */
+
+    public corredorBolsa: number;
+    public corredorNroRegistro: string;
+
+    public vendedorCuit: string;
+    public vendedorRazonSocial: string;
+    public vendedorDomicilioFiscal: string;
+    public vendedorActividad: string;
+
+    public campaniaID: number;
+
+    public vendedorAntiguedadEnActividad: string;
+    public vendedorAntecedentesComerciales: string;
+    public vendedorMailContacto: string;
+    public vendedorTelefonoContacto: string;
+    public vendedorDomicilioReal: string;
+    public vendedorCosecha: string;
+
 
     public nuevosCampos: NuevoProduccion[];
     public nuevosAcopios: NuevoAcopio[]; 

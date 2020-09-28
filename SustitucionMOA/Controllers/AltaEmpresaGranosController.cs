@@ -113,11 +113,18 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var cartaPresentacion = JsonConvert.DeserializeObject<CartaDePresentacion>(cartaPresentacionJson);
-
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                if (cartaPresentacion.Actividad == "Productor")
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedorActual();
+
+                var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
+
+                cartaPresentacion.corredorCuit = proveedor.CUIT;
+                cartaPresentacion.corredorRazonSocial = proveedor.RazonSocial;
+
+                if (cartaPresentacion.vendedorActividad == "Productor")
                 {
                     if (!cartaPresentacion.NuevosCampos.Any())
                     {
@@ -125,23 +132,11 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                if (cartaPresentacion.Actividad == "Productor")
+                if (cartaPresentacion.vendedorActividad == "Productor")
                 {
                     if (!cartaPresentacion.NuevosCampos.Any())
                     {
                         throw new ValidationCustomException("Para generar la carta de presentacion debe informar los almacenamientos");
-                    }
-                }
-
-                if (cartaPresentacion.NuevosCampos != null)
-                {
-                    foreach (var nuevosCampos in cartaPresentacion.NuevosCampos)
-                    {
-                        cartaPresentacion.Materiales.Add(new ParamInformeComercialMaterial
-                        {
-                            MaterialId = nuevosCampos.MaterialId,
-                            Toneladas = nuevosCampos.Toneladas
-                        });
                     }
                 }
 

@@ -9,7 +9,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IAltaEmpresaGranosService
     {
         byte[] GenerarInformeComercial(ParamInformeComercial informeComercial, string mailUsuario);
-        byte[] GenerarCartaDePresentacion(CartaDePresentacion cartadePresentacion, string mailUsuario);
+        byte[] GenerarCartaDePresentacion(RptCartaDePresentacionInfo cartadePresentacion, string mailUsuario);
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario);
         string ObtenerMaterialesDataAgro();
         List<ArchivoDto> ObtenerArchivosSubidos(string mail);

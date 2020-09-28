@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Models.DataAgro
 {
-    public class CartaDePresentacion
+    public class RptCartaDePresentacionInfo
     {
+
+        /*
         public int ProveedorId { get; set; }
-        public List<ParamInformeComercialMaterial> Materiales { get; set; }
+        
         public string CUITVendedor { get; set; }
         public string RazonSocialVendedor { get; set; }
         public int ActividadID { get; set; }
@@ -21,10 +23,27 @@ namespace SustitucionMOAModel.Models.DataAgro
 
         public string MailContacto { get; set; }
         public int? TelefonoContacto { get; set; }
+        */
 
-        public CartaDePresentacion()
+        public string corredorCuit { get; set; }
+        public string corredorRazonSocial { get; set; }
+        public string corredorBolsa { get; set; }
+        public string corredorNroRegistro { get; set; }
+        public string vendedorCuit { get; set; }
+        public string vendedorRazonSocial { get; set; }
+        public string vendedorDomicilioFiscal { get; set; }
+        public string vendedorActividad { get; set; }
+        public string vendedorAntiguedadEnActividad { get; set; }
+        public string vendedorAntecedentesComerciales { get; set; }
+        public string vendedorMailContacto { get; set; }
+        public string vendedorTelefonoContacto { get; set; }
+        public string vendedorDomicilioReal { get; set; }
+        public string vendedorCosecha { get; set; }
+
+
+        public RptCartaDePresentacionInfo()
         {
-            Materiales = new List<ParamInformeComercialMaterial>();
+        
             NuevosCampos = new List<NuevoProduccion>();
             NuevosAcopios = new List<NuevoAcopio>();
         }

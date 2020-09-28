@@ -764,19 +764,87 @@
                     <div class="tab-pane" id="tab2">
                         <div class="formulario">
                             <div class="titulo">
-                                Domicilio Actividad
+                                Corredor
                             </div>
                             <div class="formulario-campo">
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
-                                        CUIT Vendedor
+                                        Bolsa
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="CUIT Vendedor" [(ngModel)]="cartaPresentacion.cuitVendedor"
+                                               placeholder="Bolsa" [(ngModel)]="cartaPresentacion.corredorBolsa"
                                                maxlength="100" />
                                     </div>
                                 </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Nro registro:
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Nro registro" [(ngModel)]="cartaPresentacion.corredorNroRegistro"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="formulario">
+
+                            <div class="titulo">
+                                Vendedor
+                            </div>
+                            <div class="formulario-campo">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        CUIT
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="CUIT Vendedor" [(ngModel)]="cartaPresentacion.vendedorCuit"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Razón social
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Razón social vendedor" [(ngModel)]="cartaPresentacion.vendedorRazonSocial"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Domicilio fiscal
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Domicilio fiscal" [(ngModel)]="cartaPresentacion.vendedorDomicilioFiscal"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Actividad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <select [(ngModel)]="cartaPresentacion.vendedorActividad"
+                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                            <option value="Productor" selected>Productor</option>
+                                            <option value="Acopiador">Acopiador</option>
+                                            <option value="Otros">Otros</option>
+                                        </select>
+                                    </div>
+                                </div>
+
 
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
@@ -784,21 +852,11 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="Antigüedad en la actividad" [(ngModel)]="cartaPresentacion.antiguedadActividad"
+                                               placeholder="Antigüedad en la actividad" [(ngModel)]="cartaPresentacion.vendedorAntiguedadEnActividad"
                                                maxlength="100" />
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="formulario-label">
-                                        Razón social vendedor
-                                    </div>
-                                    <div class="formulario-input">
-                                        <input type="text" class="form-control"
-                                               placeholder="Razón social vendedor" [(ngModel)]="cartaPresentacion.razonSocialVendedor"
-                                               maxlength="100" />
-                                    </div>
-                                </div>
 
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
@@ -806,24 +864,11 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="Antecedes comerciales" [(ngModel)]="cartaPresentacion.antecedentesComerciales"
+                                               placeholder="Antecedes comerciales" [(ngModel)]="cartaPresentacion.vendedorAntecedentesComerciales"
                                                maxlength="100" />
                                     </div>
                                 </div>
 
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="formulario-label">
-                                        Actividad
-                                    </div>
-                                    <div class="formulario-input">
-                                        <select [(ngModel)]="cartaPresentacion.actividadId"
-                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
-                                            <option value="1">Productor</option>
-                                            <option value="2">Acopiador</option>
-                                            <option value="3">Otros</option>
-                                        </select>
-                                    </div>
-                                </div>
 
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
@@ -831,24 +876,34 @@
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="Mail de contacto" [(ngModel)]="cartaPresentacion.mailContacto"
+                                               placeholder="Mail de contacto" [(ngModel)]="cartaPresentacion.vendedorMailContacto"
                                                maxlength="100" />
                                     </div>
                                 </div>
 
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
-                                        Telefono de contacto
+                                        Teléfono de contacto
                                     </div>
                                     <div class="formulario-input">
                                         <input type="text" class="form-control"
-                                               placeholder="Telefono de contacto" [(ngModel)]="cartaPresentacion.telefonoContacto"
+                                               placeholder="Teléfono de contacto" [(ngModel)]="cartaPresentacion.vendedorTelefonoContacto"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Domicilio real
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Domicilio real" [(ngModel)]="cartaPresentacion.vendedorDomicilioReal"
                                                maxlength="100" />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row" >
+                        <div class="row">
                             <div class="col-xs-12">
                                 <br />
                             </div>
@@ -867,7 +922,7 @@
                             </div>
                         </div>
 
-                        <div  class="formulario">
+                        <div class="formulario">
                             <div>
                                 <p class="table-title">Capacidad productiva</p>
                             </div>
@@ -951,7 +1006,7 @@
                         </div>
 
                         <!-- TABLA 2 -->
-                        <div  class="formulario"> 
+                        <div class="formulario">
                             <div>
                                 <p class="table-title">Capacidad planta</p>
                             </div>

@@ -537,7 +537,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
 
-
     agregarCampoCartaPresentacion() {
         this.cartaPresentacion.nuevosCampos.push(this.nuevoAtributoCampo)
         this.nuevoAtributoCampo = new NuevoProduccion();
