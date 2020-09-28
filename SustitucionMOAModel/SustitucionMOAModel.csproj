@@ -51,6 +51,7 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
+    <Compile Include="Models\DataAgro\CartaDePresentacion.cs" />
     <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />

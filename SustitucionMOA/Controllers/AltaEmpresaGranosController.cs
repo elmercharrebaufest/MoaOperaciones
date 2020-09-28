@@ -31,7 +31,7 @@ namespace SustitucionMOA.Controllers
             this.altaEmpresaService = altaEmpresaService;
             this.repositorio = repositorio;
         }
-       
+
         public ActionResult GenerarInformeComercial(string informeComercialJson)
         {
             try
@@ -77,6 +77,75 @@ namespace SustitucionMOA.Controllers
                 }
 
                 var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail);
+
+                //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
+                PDFResponse result = new PDFResponse
+                {
+                    pdf = new Pdf()
+                    {
+                        data = FileArray
+                    }
+                };
+
+                return JsonCustom(result.pdf);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson)
+        {
+            try
+            {
+                var cartaPresentacion = JsonConvert.DeserializeObject<CartaDePresentacion>(cartaPresentacionJson);
+
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                if (cartaPresentacion.Actividad == "Productor")
+                {
+                    if (!cartaPresentacion.NuevosCampos.Any())
+                    {
+                        throw new ValidationCustomException("Para generar la carta de presentacion debe informar los campos");
+                    }
+                }
+
+                if (cartaPresentacion.Actividad == "Productor")
+                {
+                    if (!cartaPresentacion.NuevosCampos.Any())
+                    {
+                        throw new ValidationCustomException("Para generar la carta de presentacion debe informar los almacenamientos");
+                    }
+                }
+
+                if (cartaPresentacion.NuevosCampos != null)
+                {
+                    foreach (var nuevosCampos in cartaPresentacion.NuevosCampos)
+                    {
+                        cartaPresentacion.Materiales.Add(new ParamInformeComercialMaterial
+                        {
+                            MaterialId = nuevosCampos.MaterialId,
+                            Toneladas = nuevosCampos.Toneladas
+                        });
+                    }
+                }
+
+                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, userMail);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
@@ -166,13 +235,13 @@ namespace SustitucionMOA.Controllers
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
-                
+
                 var fileKey = Request.Form.Get("fileKey");
 
                 List<string> errores = new List<string>();
 
                 for (int i = 0; i < Request.Files.Count; i++)
-                { 
+                {
                     var fileSubido = Request.Files[i];
 
                     if (fileSubido.ContentLength > 0)
@@ -190,7 +259,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                if ( errores.Count > 0)
+                if (errores.Count > 0)
                 {
                     return JsonCustom(new { info = errores });
                 }
@@ -249,12 +318,36 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ObtenerInfoProveedor(string mail)
         {
+            try
+            {
+                if (string.IsNullOrEmpty(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-            if (string.IsNullOrEmpty(mail))
-                mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail));
 
-            return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 

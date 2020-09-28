@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
-
-
-
-
 import "rxjs/add/observable/defer";
-import { Formatter } from './../formatter/Formatter';
 
 @Injectable()
 export class SecurityService {

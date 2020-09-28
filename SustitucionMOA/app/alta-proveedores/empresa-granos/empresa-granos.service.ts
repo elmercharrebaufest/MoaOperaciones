@@ -7,6 +7,7 @@ import 'rxjs/add/operator/map';
 import { debounceTime, map, timeoutWith } from 'rxjs/operators';
 import { InformeComercial } from '../../common/models/informeComercial';
 import { BaseService } from './../../common/services/BaseService';
+import { CartaPresentacion } from '../../common/models/cartaPresentacion';
 
 @Injectable()
 export class EmpresaGranosService extends BaseService {
@@ -45,6 +46,16 @@ export class EmpresaGranosService extends BaseService {
         payload.append("informeComercialJson", JSON.stringify(informeComercial));
         return this.http
             .post('/api/AltaEmpresaGranos/GenerarInformeComercial', payload)
+            .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+
+    generarCartaPresentacion(cartaPresentacion: CartaPresentacion): Observable<any> {
+        let payload = new FormData();
+        payload.append("cartaPresentacionJson", JSON.stringify(cartaPresentacion));
+        return this.http
+            .post('/api/AltaEmpresaGranos/GenerarCartaPresentacion', payload)
             .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }

@@ -70,168 +70,171 @@ import { EmpresaNoGranosComponent } from "./alta-proveedores/empresa-no-granos/e
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { ProveedorDetalleComponent } from "./alta-proveedores/proveedor-detalle/proveedor-detalle.component";
 import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/estado-solicitud.component";
+import { EmpresaCorredorComponent } from "./alta-proveedores/empresa-corredor/empresa-corredor.component";
 
 const appRoutes: Routes = [
-  //{ path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
-  { path: "documentacion", component: DocumentacionComponent },
-  {
-    path: "usuario/registro",
-    component: RegistroUsuarioComponent,
-    canActivate: [LoginGuard],
-  },
-  {
-    path: "usuario/recuperar-contrasenia",
-    component: RecuperarContraseniaComponent,
-    canActivate: [LoginGuard],
-  },
-  {
-    path: "",
-    component: LayoutComponent,
-    canActivateChild: [LoginGuard],
-    children: [
-      { path: "", component: HomeComponent },
-      { path: "aduana/pesada/detalle", component: PesadaDetalleComponent },
-      { path: "aduana/pesada-online", component: PesadaOnlineComponent },
-      { path: "aduana/pesada-historica", component: PesadaHistoricaComponent },
-      {
-        path: "aduana/informacion-meteorologica",
-        component: InformacionMeteorologicaComponent,
-      },
-      {
-        path: "aduana/camara-consolidacion",
-        component: CamaraConsolidacionComponent,
-      },
-      { path: "aduana/camara-muelle", component: CamaraMuelleComponent },
-      { path: "carta-porte", component: CartaPorteBaseComponent },
-      { path: "carta-porte/descarga", component: CartaPorteDescargaComponent },
-      {
-        path: "carta-porte/aplicacion",
-        component: CartaPorteAplicacionComponent,
-      },
-      {
-        path: "carta-porte/detalle/:id",
-        component: CartaPorteDetalleComponent,
-      },
-      {
-        path: "carta-porte/formulario",
-        component: CartaPorteFormularioComponent,
-      },
-      { path: "comprobante-ngs", component: LiquidacionNGAprobadaComponent },
-      {
-        path: "comprobante-ngs/aprobada",
-        component: LiquidacionNGAprobadaComponent,
-      },
-      {
-        path: "comprobante-ngs/observada",
-        component: LiquidacionNGObservadaComponent,
-      },
-      /*{ path: 'comprobante-ngs/paga', component: LiquidacionNGPagaComponent },*/
-      { path: "contrato", component: ContratoVigenteComponent },
-      { path: "contrato/vigente", component: ContratoVigenteComponent },
-      { path: "contrato/fijacion", component: ContratoFijacionComponent },
-      { path: "contrato/ampliacion", component: ContratoAmpliacionComponent },
-      { path: "contrato/anulacion", component: ContratoAnulacionComponent },
-      { path: "contrato/detalle/:id", component: ContratoDetalleComponent },
-      {
-        path: "contrato/detalle-fijacion/:id/:id2",
-        component: ContratoDetalleFijacionComponent,
-      },
-      { path: "contacto", component: ContactoMailComponent },
-      { path: "cuenta-corriente", component: CuentaCorrienteBaseComponent },
-      {
-        path: "cuenta-corriente/simple",
-        component: CuentaCorrienteBaseComponent,
-      },
-      {
-        path: "cuenta-corriente/simple/:id",
-        component: CuentaCorrienteBaseComponent,
-      },
-      {
-        path: "cuenta-corriente/agrupada",
-        component: CuentaCorrienteAgrupadaComponent,
-      },
-      {
-        path: "cuenta-corriente/agrupada/:id",
-        component: CuentaCorrienteAgrupadaComponent,
-      },
-      {
-        path: "dato-fiscal/situacion-fiscal",
-        component: DatoFiscalBaseComponent,
-      },
-      {
-        path: "dato-fiscal/situacion-fiscal/:id",
-        component: DatoFiscalBaseComponent,
-      },
-      {
-        path: "dato-fiscal/situacion-fiscal/:id/:id2",
-        component: DatoFiscalBaseComponent,
-      },
-      { path: "dato-fiscal/documentacion", component: DocumentacionComponent },
-      { path: "dato-fiscal/vendedor", component: VendedoresListComponent },
-      { path: "flete", component: FleteAFacturarComponent },
-      { path: "flete/a-facturar", component: FleteAFacturarComponent },
-      { path: "flete/facturado", component: FleteFacturadoComponent },
-      { path: "flete/pendiente", component: FletePendienteComponent },
-      { path: "home", component: HomeComponent },
-      { path: "home-ngs", component: HomeNGSComponent },
-      { path: "liquidacion", component: LiquidacionAprobadaComponent },
-      { path: "liquidacion/aprobada", component: LiquidacionAprobadaComponent },
-      {
-        path: "liquidacion/observada",
-        component: LiquidacionObservadaComponent,
-      },
-      { path: "liquidacion/paga", component: LiquidacionPagaComponent },
-      {
-        path: "liquidacion/proforma/:id",
-        component: LiquidacionProformaComponent,
-      },
-      { path: "no-autorizado", component: NoAutorizadoComponent },
-      { path: "pago", component: PagoComponent },
-      { path: "pago-ngs/emitido", component: PagoEmitidoNGSComponent },
-      { path: "pago/emitido", component: PagoEmitidoComponent },
-      { path: "pago/detalle/:id", component: PagoDetalleComponent },
-      { path: "ryd", component: CargaPesadasComponent },
-      { path: "ryd/carga-pesada", component: CargaPesadasComponent },
-      { path: "ryd/informe", component: InformeComponent },
-      { path: "ryd/listado-pesadas", component: ListadoPesadasComponent },
-      {
-        path: "ryd-mantenimiento/balanzas",
-        component: RYDMantenimientoBalanzaComponent,
-      },
-      {
-        path: "ryd-mantenimiento/commodities",
-        component: RYDMantenimientoCommoditiesComponent,
-      },
-      {
-        path: "ryd-mantenimiento/exportadores",
-        component: RYDMantenimientoExportadorComponent,
-      },
-      { path: "usuario/alta", component: AltaUsuarioComponent },
-      { path: "usuario/list", component: UsuarioListComponent },
-      {
-        path: "usuario/cambio-contrasenia",
-        component: CambioContraseniaComponent,
-      },
-      {
-        path: "usuario/cambio-vendedor",
-        component: UsuarioCambioVendedorComponent,
-      },
-      { path: "ryd-mantenimiento", component: RYDMantenimientoBaseComponent },
-      { path: "vendedor/status", component: VendedorStatusComponent },
-      { path: "factura", component: FacturaComponent },
-      { path: "pesificacion", component: PesificacionComponent },
-      { path: "alta-empresa-granos", component: EmpresaGranosComponent },
-        { path: "estado-solicitud", component: EstadoSolicitudComponent },
-      { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
-      { path: "altas", component: AltasComponent },
-      { path: "proveedor-detalle", component: ProveedorDetalleComponent },
-    ],
-  },
-  { path: "**", component: HomeComponent },
+    //{ path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+    { path: "documentacion", component: DocumentacionComponent },
+    {
+        path: "usuario/registro",
+        component: RegistroUsuarioComponent,
+        canActivate: [LoginGuard],
+    },
+    {
+        path: "usuario/recuperar-contrasenia",
+        component: RecuperarContraseniaComponent,
+        canActivate: [LoginGuard],
+    },
+    {
+        path: "",
+        component: LayoutComponent,
+        canActivateChild: [LoginGuard],
+        children: [
+            { path: "", component: HomeComponent },
+            { path: "aduana/pesada/detalle", component: PesadaDetalleComponent },
+            { path: "aduana/pesada-online", component: PesadaOnlineComponent },
+            { path: "aduana/pesada-historica", component: PesadaHistoricaComponent },
+            {
+                path: "aduana/informacion-meteorologica",
+                component: InformacionMeteorologicaComponent,
+            },
+            {
+                path: "aduana/camara-consolidacion",
+                component: CamaraConsolidacionComponent,
+            },
+            { path: "aduana/camara-muelle", component: CamaraMuelleComponent },
+            { path: "carta-porte", component: CartaPorteBaseComponent },
+            { path: "carta-porte/descarga", component: CartaPorteDescargaComponent },
+            {
+                path: "carta-porte/aplicacion",
+                component: CartaPorteAplicacionComponent,
+            },
+            {
+                path: "carta-porte/detalle/:id",
+                component: CartaPorteDetalleComponent,
+            },
+            {
+                path: "carta-porte/formulario",
+                component: CartaPorteFormularioComponent,
+            },
+            { path: "comprobante-ngs", component: LiquidacionNGAprobadaComponent },
+            {
+                path: "comprobante-ngs/aprobada",
+                component: LiquidacionNGAprobadaComponent,
+            },
+            {
+                path: "comprobante-ngs/observada",
+                component: LiquidacionNGObservadaComponent,
+            },
+            /*{ path: 'comprobante-ngs/paga', component: LiquidacionNGPagaComponent },*/
+            { path: "contrato", component: ContratoVigenteComponent },
+            { path: "contrato/vigente", component: ContratoVigenteComponent },
+            { path: "contrato/fijacion", component: ContratoFijacionComponent },
+            { path: "contrato/ampliacion", component: ContratoAmpliacionComponent },
+            { path: "contrato/anulacion", component: ContratoAnulacionComponent },
+            { path: "contrato/detalle/:id", component: ContratoDetalleComponent },
+            {
+                path: "contrato/detalle-fijacion/:id/:id2",
+                component: ContratoDetalleFijacionComponent,
+            },
+            { path: "contacto", component: ContactoMailComponent },
+            { path: "cuenta-corriente", component: CuentaCorrienteBaseComponent },
+            {
+                path: "cuenta-corriente/simple",
+                component: CuentaCorrienteBaseComponent,
+            },
+            {
+                path: "cuenta-corriente/simple/:id",
+                component: CuentaCorrienteBaseComponent,
+            },
+            {
+                path: "cuenta-corriente/agrupada",
+                component: CuentaCorrienteAgrupadaComponent,
+            },
+            {
+                path: "cuenta-corriente/agrupada/:id",
+                component: CuentaCorrienteAgrupadaComponent,
+            },
+            {
+                path: "dato-fiscal/situacion-fiscal",
+                component: DatoFiscalBaseComponent,
+            },
+            {
+                path: "dato-fiscal/situacion-fiscal/:id",
+                component: DatoFiscalBaseComponent,
+            },
+            {
+                path: "dato-fiscal/situacion-fiscal/:id/:id2",
+                component: DatoFiscalBaseComponent,
+            },
+            { path: "dato-fiscal/documentacion", component: DocumentacionComponent },
+            { path: "dato-fiscal/vendedor", component: VendedoresListComponent },
+            { path: "flete", component: FleteAFacturarComponent },
+            { path: "flete/a-facturar", component: FleteAFacturarComponent },
+            { path: "flete/facturado", component: FleteFacturadoComponent },
+            { path: "flete/pendiente", component: FletePendienteComponent },
+            { path: "home", component: HomeComponent },
+            { path: "home-ngs", component: HomeNGSComponent },
+            { path: "liquidacion", component: LiquidacionAprobadaComponent },
+            { path: "liquidacion/aprobada", component: LiquidacionAprobadaComponent },
+            {
+                path: "liquidacion/observada",
+                component: LiquidacionObservadaComponent,
+            },
+            { path: "liquidacion/paga", component: LiquidacionPagaComponent },
+            {
+                path: "liquidacion/proforma/:id",
+                component: LiquidacionProformaComponent,
+            },
+            { path: "no-autorizado", component: NoAutorizadoComponent },
+            { path: "pago", component: PagoComponent },
+            { path: "pago-ngs/emitido", component: PagoEmitidoNGSComponent },
+            { path: "pago/emitido", component: PagoEmitidoComponent },
+            { path: "pago/detalle/:id", component: PagoDetalleComponent },
+            { path: "ryd", component: CargaPesadasComponent },
+            { path: "ryd/carga-pesada", component: CargaPesadasComponent },
+            { path: "ryd/informe", component: InformeComponent },
+            { path: "ryd/listado-pesadas", component: ListadoPesadasComponent },
+            {
+                path: "ryd-mantenimiento/balanzas",
+                component: RYDMantenimientoBalanzaComponent,
+            },
+            {
+                path: "ryd-mantenimiento/commodities",
+                component: RYDMantenimientoCommoditiesComponent,
+            },
+            {
+                path: "ryd-mantenimiento/exportadores",
+                component: RYDMantenimientoExportadorComponent,
+            },
+            { path: "usuario/alta", component: AltaUsuarioComponent },
+            { path: "usuario/list", component: UsuarioListComponent },
+            {
+                path: "usuario/cambio-contrasenia",
+                component: CambioContraseniaComponent,
+            },
+            {
+                path: "usuario/cambio-vendedor",
+                component: UsuarioCambioVendedorComponent,
+            },
+            { path: "ryd-mantenimiento", component: RYDMantenimientoBaseComponent },
+            { path: "vendedor/status", component: VendedorStatusComponent },
+            { path: "factura", component: FacturaComponent },
+            { path: "pesificacion", component: PesificacionComponent },
+            { path: "alta-empresa-granos", component: EmpresaGranosComponent },
+            { path: "estado-solicitud", component: EstadoSolicitudComponent },
+            { path: "alta-empresa-corredor", component: EmpresaCorredorComponent },
+            { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
+            { path: "altas", component: AltasComponent },
+            { path: "proveedor-detalle", component: ProveedorDetalleComponent },
+
+        ],
+    },
+    { path: "**", component: HomeComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes)],
-  exports: [RouterModule],
+    imports: [RouterModule.forRoot(appRoutes)],
+    exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

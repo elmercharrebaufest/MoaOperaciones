@@ -59,11 +59,6 @@ namespace SustitucionMOAUtils.Services
 
                 string downloadKey = "";
 
-                httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(informeComercial); //myDetails is my class object.
                 var buffer = Encoding.UTF8.GetBytes(content);
                 var byteContent = new ByteArrayContent(buffer);
@@ -286,7 +281,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<ArchivoDto> archivos = new List<ArchivoDto>();
 
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             foreach (var archivo in usuario.Archivos)
             {
@@ -298,14 +293,14 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerArchivo(string mailUsuario, int fileID)
         {
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             return usuario.Archivos.Where(f => f.Id.Equals(fileID)).FirstOrDefault().Ruta;
         }
 
         public string EliminarArchivo(string mailUsuario, int archivoID)
         {
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
             string rutaArchivo = "";
@@ -326,20 +321,101 @@ namespace SustitucionMOAUtils.Services
 
         public InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario)
         {
-            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
-
-            var proveedor = usuario.ObtenerProveedorActual();
-
-            ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-
-            var info = new InfoProveedorDataAgroDto
+            try
             {
-                ProveedorCBU = result.ProveedorCBU,
-                ProveedorClasificacion = result.ProveedorClasificacion,
-                estadoSISA = result.ProveedorSISACodCategoria
-            };
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            return info;
+                var proveedor = usuario.ObtenerProveedorActual();
+
+                ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
+                var info = new InfoProveedorDataAgroDto
+                {
+                    ProveedorCBU = result.ProveedorCBU,
+                    ProveedorClasificacion = result.ProveedorClasificacion,
+                    estadoSISA = result.ProveedorSISACodCategoria
+                };
+
+                return info;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public byte[] GenerarCartaDePresentacion(CartaDePresentacion cartadePresentacion, string mailUsuario)
+        {
+            try
+            {
+                var urlCartaPresentacion = string.Concat(DataAgroURL, "/InformeComercial/Listar");
+                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+                ValidarEstadoSolicitud(usuario.ObtenerProveedorActual());
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                string downloadKey = "";
+
+                var content = JsonConvert.SerializeObject(cartadePresentacion); 
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(urlCartaPresentacion, byteContent);
+
+                    task.Wait();
+
+                    var response = task.Result;
+
+                    var stringContent = response.Content.ReadAsStringAsync();
+
+                    dynamic jsonResult = JObject.Parse(stringContent.Result);
+
+                    if (bool.Parse(jsonResult.HayErrores.ToString()))
+                    {
+                        throw new InfoCustomException(jsonResult.Errores[0].Message);
+                    }
+
+                    downloadKey = jsonResult.DownloadKey;
+
+
+                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
+
+                    WebClient clienteDescarga = new WebClient
+                    {
+                        Credentials = new NetworkCredential(userName, password, dominio)
+                    };
+
+                    byte[] InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+
+                    return InformeComercialPDF;
+
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
         }
     }
 }

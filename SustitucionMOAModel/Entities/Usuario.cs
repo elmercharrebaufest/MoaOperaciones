@@ -85,6 +85,7 @@ namespace SustitucionMOAModel.Entities
                 Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("NUECORR")).Any() ||
                 !Habilitado;
         }
 
