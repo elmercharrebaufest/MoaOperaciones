@@ -231,8 +231,8 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                     this.getListaContratos();
+                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");                   
                 }
             },
             error => {
