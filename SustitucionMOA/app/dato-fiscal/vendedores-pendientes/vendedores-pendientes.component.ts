@@ -39,6 +39,9 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
     filtroVendedor: string = "";
     filtroNroVendedor: string = "";
 
+    nuevoVendedorRazonSocial: string = "";
+    nuevoVendedorCUIT: string = "";
+
     setTabs() {
         this.setMenuSeccionTab("dato-fiscal", "Vendedores pendientes");
     }
@@ -60,15 +63,15 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
             secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
 
         this.navService.setSeccionList(secciones);
-        this.getUsuario();
+        this.getVendedores();
     }
 
-    getUsuario() {
+    getVendedores() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.getVendedoresPendientes("", "").subscribe(
+            this.subscription = this.service.getVendedoresPendientes().subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -78,7 +81,7 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.data = result.data.vendedores;
+                        this.data = result.data;
                     }
                 },
                 error => {
@@ -108,4 +111,36 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
             this.orderedByColumn = column;
         }
     }
+
+    solicitarAltaProveedor() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.data = result.data.vendedores;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+
+    }
+
 }

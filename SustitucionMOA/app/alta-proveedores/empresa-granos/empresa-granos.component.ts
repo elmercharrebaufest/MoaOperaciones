@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { Archivo } from '../../common/models/archivo';
 import { InformeComercial } from '../../common/models/informeComercial';
@@ -63,6 +64,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     localidades: any = [];
     autocompleteNotFoundText = "No encontrado";
 
+    provedorId: number = 0;
+
     estadoSISA: string = "";
 
     selectEventProduccion(item, index) {
@@ -122,7 +125,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
     }
 
-    constructor(protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: EmpresaGranosService, protected navService: NavService, private route: ActivatedRoute, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
     }
@@ -156,6 +159,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.agregarCampoCartaPresentacion()
         this.agregarAcopioCartaPresentacion()
+
+        this.route.params.forEach((params: Params) => {
+            if (params['id'] > 0)
+                this.provedorId = params['id'];
+        });
     }
 
     get email() {
@@ -255,7 +263,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     generarInformeComercial() {
-
         this.spinnerModal.showIt();
         this.unsubscribe();
         this.informe.NuevosAcopios.forEach(campo => {

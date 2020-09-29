@@ -12,6 +12,8 @@ namespace SustitucionMOAUtils.Interfaces
         VendedoresWSMOAResponse GetVendedores(string proveedor, string fechaInicio, string fechaFin);
         VendedorHabilitadoWSMOAResponse GetVendedorStatus(string cuit, string user);
         List<ProveedorDto> GetVendedoresPendientes(string mailUsuario);
+
+        string AgregarVendedor(string mailUsuario, string cuit, string razonSocial);
     }
 
 }

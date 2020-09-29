@@ -286,6 +286,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ya existe un vendedor con el mismo CUIT.
+        /// </summary>
+        public static string ErrorVendedorRepetido {
+            get {
+                return ResourceManager.GetString("ErrorVendedorRepetido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Temporalmente fuera servicio, vuelva a intentarlo en unos minutos.
         /// </summary>
         public static string ErrorWS {

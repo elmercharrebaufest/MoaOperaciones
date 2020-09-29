@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
-using SustitucionMOAWS.WSConsumers;
-using Models = SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
-using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAModel.Dto;
-using Entities = SustitucionMOAModel.Entities;
-using System.Linq;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.WSConsumers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Entities = SustitucionMOAModel.Entities;
+using Models = SustitucionMOAModel.Models;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -110,12 +112,11 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-
         public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario)
         {
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
-            var proveedores = usuario.Proveedores.Where(x => x.EstadoAprobacion != SustitucionMOAModel.Enums.EstadoAprobacion.Aprobado);
+            var proveedores = usuario.Proveedores.Where(x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
 
             List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
 
@@ -124,6 +125,40 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
             }
             return proveedorDtos;
+        }
+
+        public string AgregarVendedor(string mailUsuario, string cuit, string razonSocial)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            if (cuit == null || cuit == "")
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
+            }
+
+            if (razonSocial == null || razonSocial == "")
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Razon Social"));
+            }
+
+            if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
+            {
+                throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
+            }
+
+            var nuevoVendedor = new Proveedor
+            {
+                CUIT = cuit,
+                RazonSocial = razonSocial,
+                Mail = usuario.Mail,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+            };
+
+            usuario.Proveedores.Add(nuevoVendedor);
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.AltaVendedorOK;
         }
     }
 }

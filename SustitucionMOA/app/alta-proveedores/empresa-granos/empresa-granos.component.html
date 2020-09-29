@@ -4,7 +4,7 @@
     <spinner-small></spinner-small>
     <div class="row myRow firstSection roundedInfo" id="container">
         <mdb-stepper #stepper>
-            <mdb-step name="Step 1" label="Informe comercial">
+            <mdb-step name="Step 1" label="Informe comercial" [hidden]="provedorId > 0">
                 <h3>Informe comercial</h3>
                 <div class="form-group informe-comercial">
                     <div>
@@ -49,11 +49,11 @@
                     </div>
                 </div>
             </mdb-step>
-            <mdb-step name="Step 1" label="Carta de presentación">
+            <mdb-step name="Step 1" label="Carta de presentación" [hidden]="provedorId == 0">
                 <h3>Carta de presentación</h3>
                 <div class="form-group informe-comercial">
                     <div>
-                        <p>Complete el informe comercial</p>
+                        <p>Complete la carta de presentación</p>
                         <!-- Button trigger modal -->
                         <button type="button" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal" data-target="#modalCartaPresentacion"
                                 class="btn-custom btn-azul">

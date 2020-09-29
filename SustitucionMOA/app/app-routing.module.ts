@@ -224,6 +224,10 @@ const appRoutes: Routes = [
             { path: "factura", component: FacturaComponent },
             { path: "pesificacion", component: PesificacionComponent },
             { path: "alta-empresa-granos", component: EmpresaGranosComponent },
+            {
+                path: "alta-empresa-granos/:id",
+                component: EmpresaGranosComponent,
+            },
             { path: "estado-solicitud", component: EstadoSolicitudComponent },
             { path: "alta-empresa-corredor", component: EmpresaCorredorComponent },
             { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },

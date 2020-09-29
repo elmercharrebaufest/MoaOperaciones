@@ -70,6 +70,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Se ha generado el vendedor correctamente.
+        /// </summary>
+        public static string AltaVendedorOK {
+            get {
+                return ResourceManager.GetString("AltaVendedorOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Documento borrado correctamente.
         /// </summary>
         public static string ArchivoBorrado {
