@@ -107,26 +107,7 @@ export class EmpresaCorredorComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
 
         this.unsubscribe();
-        this.subscription = this.service.postFile(files, fileKey).subscribe(
-            result => {
-                this.spinnerSmallComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    this.mensajeComponent.setMsgsEmpty();
-                    this.mensajeComponent.setSuccessMsg(result.data);
-                    this.obtenerArchivosSubidos();
-                }
-            },
-            error => {
-                this.spinnerSmallComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
+
     }
 
     obtenerMateriales() {
@@ -229,7 +210,7 @@ export class EmpresaCorredorComponent extends ListBaseComponent {
 
         let archivoID: number = this.archivoSeleccionado.Id;
 
-        this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado, archivoID).subscribe(
+        this.subscription = this.service.eliminarArchivoSubido(archivoID).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {

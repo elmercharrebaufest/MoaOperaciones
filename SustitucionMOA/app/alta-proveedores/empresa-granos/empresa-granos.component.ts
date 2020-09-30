@@ -64,9 +64,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     localidades: any = [];
     autocompleteNotFoundText = "No encontrado";
 
-    provedorId: number = 0;
+    proveedorId: number = 0;
 
     estadoSISA: string = "";
+
+    esCorredor : boolean = false;
 
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
@@ -146,6 +148,17 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+
+        let tipoUsuario = sessionStorage.getItem("tipoUsuario").toUpperCase()
+        
+        this.esCorredor = (tipoUsuario == "CORR" || tipoUsuario == "NUECORR");
+
+
+        this.route.params.forEach((params: Params) => {
+            if (params['id'] > 0)
+                this.proveedorId = params['id'];
+        });
+
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
@@ -159,11 +172,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.agregarCampoCartaPresentacion()
         this.agregarAcopioCartaPresentacion()
-
-        this.route.params.forEach((params: Params) => {
-            if (params['id'] > 0)
-                this.provedorId = params['id'];
-        });
     }
 
     get email() {
@@ -179,7 +187,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
 
         this.unsubscribe();
-        this.subscription = this.service.postFile(files, fileKey).subscribe(
+        this.subscription = this.service.postFile(files, fileKey, this.proveedorId).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -251,7 +259,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     // }
 
     obtenerInfoProveedor() {
-        this.subscription = this.service.obtenerInfoProveedor().subscribe(
+        this.subscription = this.service.obtenerInfoProveedor(this.proveedorId).subscribe(
             result => {
                 this.CBUSISA = result.ProveedorCBU;
                 this.estadoSISA = result.estadoSISA;
@@ -377,7 +385,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         let archivoID: number = this.archivoSeleccionado.Id;
 
-        this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado, archivoID).subscribe(
+        this.subscription = this.service.eliminarArchivoSubido(archivoID, this.proveedorId).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -403,7 +411,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     obtenerArchivosSubidos() {
-        this.subscription = this.service.obtenerArchivosSubidos().subscribe(
+        this.subscription = this.service.obtenerArchivosSubidos("", this.proveedorId).subscribe(
             result => {
                 this.listaArchivos = new Array();
 
@@ -431,7 +439,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.enviarSolicitud().subscribe(
+        this.subscription = this.service.enviarSolicitud(this.proveedorId).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {

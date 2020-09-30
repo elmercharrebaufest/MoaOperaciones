@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Entities
         public int? IdComercialDataAgro { get; set; }
         public string EstadoSIPER { get; set; }
 
+        public virtual ICollection<Archivo> Archivos { get; set; }
 
         [InverseProperty("Proveedores")]
         public virtual ICollection<Usuario> UsuariosAsociados { get; set; }

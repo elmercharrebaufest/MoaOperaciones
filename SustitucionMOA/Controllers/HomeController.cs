@@ -179,7 +179,7 @@ namespace SustitucionMOA.Controllers
 
                 if (esNuevoUsuario)
                 {
-                    if (usuario.ObtenerProveedorActual().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                    if (usuario.ObtenerProveedor().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                     {
                         if (granosFlag == "G")
                         {

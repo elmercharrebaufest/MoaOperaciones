@@ -20,25 +20,34 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
-        public virtual ICollection<Archivo> Archivos { get; set; }
+        //public virtual ICollection<Archivo> Archivos { get; set; }
 
         public Rol ObtenerRolPrincipal()
         {
             return Roles.FirstOrDefault();
         }
 
-        public Proveedor ObtenerProveedorActual()
+        public Proveedor ObtenerProveedor()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
             return Proveedores.FirstOrDefault();
         }
 
+        public Proveedor ObtenerProveedorPorId(int proveedorId)
+        {
+            if (proveedorId > 0)
+                return Proveedores.Where(p => p.Id == proveedorId).FirstOrDefault();
+            else
+                return Proveedores.FirstOrDefault();
+        }
+
+
         public string ObtenerRazonSocial()
         {
             if (Proveedores.Count >= 1 )
             {
-                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
-                    return ObtenerProveedorActual().RazonSocial;
+                if (!string.IsNullOrEmpty(ObtenerProveedor().RazonSocial))
+                    return ObtenerProveedor().RazonSocial;
                 else
                     return "No definido";
             }
@@ -52,8 +61,8 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                if (!string.IsNullOrEmpty(ObtenerProveedorActual().CodigoProveedor))
-                    return ObtenerProveedorActual().CodigoProveedor;
+                if (!string.IsNullOrEmpty(ObtenerProveedor().CodigoProveedor))
+                    return ObtenerProveedor().CodigoProveedor;
                 else
                     return "-";
             }

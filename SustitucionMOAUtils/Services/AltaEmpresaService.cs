@@ -256,7 +256,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mail);
 
-                Proveedor proveedor = usuario.ObtenerProveedorActual();
+                Proveedor proveedor = usuario.ObtenerProveedor();
 
                 EstadoAprobacionDto estadoAprobacionDto = new EstadoAprobacionDto
                 {

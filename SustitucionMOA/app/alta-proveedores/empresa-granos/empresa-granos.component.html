@@ -4,7 +4,7 @@
     <spinner-small></spinner-small>
     <div class="row myRow firstSection roundedInfo" id="container">
         <mdb-stepper #stepper>
-            <mdb-step name="Step 1" label="Informe comercial" [hidden]="provedorId > 0">
+            <mdb-step name="Step 1" label="Informe comercial" [hidden]="esCorredor">
                 <h3>Informe comercial</h3>
                 <div class="form-group informe-comercial">
                     <div>
@@ -49,7 +49,7 @@
                     </div>
                 </div>
             </mdb-step>
-            <mdb-step name="Step 1" label="Carta de presentación" [hidden]="provedorId == 0">
+            <mdb-step name="Step 1" label="Carta de presentación" [hidden]="!esCorredor">
                 <h3>Carta de presentación</h3>
                 <div class="form-group informe-comercial">
                     <div>

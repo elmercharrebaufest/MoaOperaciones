@@ -38,11 +38,11 @@ namespace SustitucionMOATest.Services
         {
             string fileKey = "Prueba";
             string rutaArchivoProveedores = "C:/Archivos";
-            UsuarioGranos usuarioGranos = new UsuarioGranos { CUITRegistro = "123", Id = 10 };
+            Proveedor proveedor = new Proveedor { CUIT = "123", Id = 10 };
 
             var expected = "C:/Archivos/123/10/Prueba";
 
-            var result = target.ArmarRutaCarpeta(fileKey, rutaArchivoProveedores, usuarioGranos);
+            var result = target.ArmarRutaCarpeta(fileKey, rutaArchivoProveedores, proveedor);
 
             Assert.AreEqual(expected, result);
         }
@@ -86,7 +86,7 @@ namespace SustitucionMOATest.Services
             usuarioGranos.Archivos.Add(new Archivo { FileKey = FileKeys.InformeComercialFirmado });
             usuarioGranos.Archivos.Add(new Archivo { FileKey = FileKeys.ConstanciaCBU });
 
-            var infoProveedor = new InfoProveedorDataAgroDto { estadoSISA = "2" };
+            var infoProveedor = new InfoProveedorDataAgroDto { EstadoSISA = "2" };
 
             var ex = Assert.Throws<ValidationCustomException>(() => target.ValidarArchivosSubidos(usuarioGranos, infoProveedor));
 
@@ -102,7 +102,7 @@ namespace SustitucionMOATest.Services
 
             usuarioGranos.Archivos.Add(new Archivo { FileKey = FileKeys.InformeComercialFirmado });
             usuarioGranos.Archivos.Add(new Archivo { FileKey = FileKeys.ConstanciaCBU });
-            var infoProveedor = new InfoProveedorDataAgroDto { estadoSISA = "1" };
+            var infoProveedor = new InfoProveedorDataAgroDto { EstadoSISA = "1" };
 
             var result = target.ValidarArchivosSubidos(usuarioGranos, infoProveedor);
 
@@ -142,7 +142,7 @@ namespace SustitucionMOATest.Services
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
-                estadoSISA = "1"
+                EstadoSISA = "1"
             };
 
             var infoDataAgro = new ResultadoValidarProveedorComercial

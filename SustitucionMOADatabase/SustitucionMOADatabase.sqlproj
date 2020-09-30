@@ -81,4 +81,7 @@
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
+  </ItemGroup>
 </Project>
