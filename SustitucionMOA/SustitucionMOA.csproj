@@ -425,9 +425,9 @@
     <TypeScriptCompile Include="app\contrato\detalle\contrato.detalle.component.ts" />
     <TypeScriptCompile Include="app\contrato\fijacion\contrato.fijacion.component.ts" />
     <TypeScriptCompile Include="app\contrato\vigente\contrato.vigente.component.ts" />
-    <TypeScriptCompile Include="app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.ts" />
-    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente.component.ts" />
-    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente.service.ts" />
+    <TypeScriptCompile Include="app\cuenta-corriente\agrupada\cuenta-corriente.agrupada2.component.ts" />
+    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente2.component.ts" />
+    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente2.service.ts" />
     <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.component.ts" />
     <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.service.ts" />
     <TypeScriptCompile Include="app\dato-fiscal\documentacion\documentacion.component.ts" />
@@ -464,8 +464,8 @@
     <TypeScriptCompile Include="app\pago\no-granos\emitido\pago.no-granos.emitido.component.ts" />
     <TypeScriptCompile Include="app\pago\pago.component.ts" />
     <TypeScriptCompile Include="app\pago\pago.service.ts" />
-    <TypeScriptCompile Include="app\pesificacion\pesificacion.component.ts" />
-    <TypeScriptCompile Include="app\pesificacion\pesificacion.service.ts" />
+    <TypeScriptCompile Include="app\pesificacion\pesificacion2.component.ts" />
+    <TypeScriptCompile Include="app\pesificacion\pesificacion2.service.ts" />
     <TypeScriptCompile Include="app\ryd-mantenimiento\balanzas\balanzas.component.ts" />
     <TypeScriptCompile Include="app\ryd-mantenimiento\commodities\commodities.component.ts" />
     <TypeScriptCompile Include="app\ryd-mantenimiento\exportadores\exportadores.component.ts" />

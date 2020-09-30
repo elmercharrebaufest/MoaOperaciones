@@ -24,8 +24,8 @@ import { ContratoVigenteComponent } from './contrato/vigente/contrato.vigente.co
 import { ContratoDetalleComponent } from './contrato/detalle/contrato.detalle.component';
 import { ContratoDetalleFijacionComponent } from './contrato/detalle-fijacion/contrato.detalle-fijacion.component';
 import { ContactoMailComponent } from './contacto-mail/contacto-mail.component';
-import { CuentaCorrienteBaseComponent } from './cuenta-corriente/cuenta-corriente.component';
-import { CuentaCorrienteAgrupadaComponent } from './cuenta-corriente/agrupada/cuenta-corriente.agrupada.component';
+import { CuentaCorrienteBaseComponent } from './cuenta-corriente/cuenta-corriente2.component';
+import { CuentaCorrienteAgrupadaComponent } from './cuenta-corriente/agrupada/cuenta-corriente.agrupada2.component';
 import { DatoFiscalBaseComponent } from './dato-fiscal/dato-fiscal.component';
 import { DocumentacionComponent } from './dato-fiscal/documentacion/documentacion.component';
 import { FleteBaseComponent } from './flete/flete.component';
@@ -67,7 +67,7 @@ import { UsuarioCambioVendedorComponent } from './usuario/cambio-vendedor/usuari
 import { VendedoresListComponent } from './dato-fiscal/vendedor/dato-fiscal.vendedor.component';
 import { VendedorStatusComponent } from './vendedor/vendedor_status.component';
 import { FacturaComponent } from './factura/factura.component';
-import { PesificacionComponent } from './pesificacion/pesificacion.component';
+import { PesificacionComponent } from './pesificacion/pesificacion2.component';
 
 import { FiltroFechaComponent } from './common/view-child/filtro-fecha/filtro-fecha.component';
 import { DropdownComponent } from './common/view-child/dropdown/dropdown.component';
@@ -91,7 +91,7 @@ import { RYDInformeService, RYDListadoPesadasService } from './ryd/ryd.service';
 import { LayoutService } from './layout/layout.service';
 import { LiquidacionService, LiquidacionAprobadaService, LiquidacionObservadaService, LiquidacionPagaService, LiquidacionNGAprobadaService, LiquidacionNGObservadaService, LiquidacionNGPagaService, LiquidacionProformaService } from './liquidacion/liquidacion.service';
 import { PagoService, PagoEmitidoService, PagoEmitidoNGService } from './pago/pago.service';
-import { CuentaCorrienteService, CuentaCorrienteAgrupadaService } from './cuenta-corriente/cuenta-corriente.service';
+import { CuentaCorrienteService, CuentaCorrienteAgrupadaService } from './cuenta-corriente/cuenta-corriente2.service';
 import { ContactoMailService } from './contacto-mail/contacto-mail.service';
 import { UsuarioService } from './usuario/usuario.service';
 import { RYDMantenimientoService, RYDMantenimientoBalanzaService, RYDMantenimientoCommoditiesService, RYDMantenimientoExportadorService } from './ryd-mantenimiento/ryd-mantenimiento.service';

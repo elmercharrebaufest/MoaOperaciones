@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/catch';
 import { Seccion } from '../../common/models/seccion';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { ModalService } from './../../common/services/ModalService';
-import { NavService } from './../../common/services/NavService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { CuentaCorrienteBaseComponent } from './../cuenta-corriente.component';
-import { CuentaCorrienteAgrupadaService } from './../cuenta-corriente.service';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { ModalService } from '../../common/services/ModalService';
+import { NavService } from '../../common/services/NavService';
+import { SecurityService } from '../../common/services/SecurityService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { CuentaCorrienteBaseComponent } from '../cuenta-corriente2.component';
+import { CuentaCorrienteAgrupadaService } from '../cuenta-corriente2.service';
 
 @Component({
     selector: 'app-cuenta-corriente-agrupada',

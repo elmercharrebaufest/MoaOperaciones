@@ -9,7 +9,7 @@ import { ModalService } from './../common/services/ModalService';
 import { NavService } from './../common/services/NavService';
 import { SecurityService } from './../common/services/SecurityService';
 import { SessionDataService } from './../common/services/SessionDataService';
-import { CuentaCorrienteService } from './cuenta-corriente.service';
+import { CuentaCorrienteService } from './cuenta-corriente2.service';
 
 @Component({
     selector: 'app-cuenta-corriente',

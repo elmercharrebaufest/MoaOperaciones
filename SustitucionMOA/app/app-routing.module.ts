@@ -19,8 +19,8 @@ import { ContratoVigenteComponent } from './contrato/vigente/contrato.vigente.co
 import { ContratoDetalleComponent } from './contrato/detalle/contrato.detalle.component';
 import { ContratoDetalleFijacionComponent } from './contrato/detalle-fijacion/contrato.detalle-fijacion.component';
 import { ContactoMailComponent } from './contacto-mail/contacto-mail.component';
-import { CuentaCorrienteBaseComponent } from './cuenta-corriente/cuenta-corriente.component';
-import { CuentaCorrienteAgrupadaComponent } from './cuenta-corriente/agrupada/cuenta-corriente.agrupada.component';
+import { CuentaCorrienteBaseComponent } from './cuenta-corriente/cuenta-corriente2.component';
+import { CuentaCorrienteAgrupadaComponent } from './cuenta-corriente/agrupada/cuenta-corriente.agrupada2.component';
 import { DatoFiscalBaseComponent } from './dato-fiscal/dato-fiscal.component';
 import { DocumentacionComponent } from './dato-fiscal/documentacion/documentacion.component';
 import { FleteBaseComponent } from './flete/flete.component';
@@ -63,7 +63,7 @@ import { UsuarioCambioVendedorComponent } from './usuario/cambio-vendedor/usuari
 import { VendedoresListComponent } from './dato-fiscal/vendedor/dato-fiscal.vendedor.component';
 import { VendedorStatusComponent } from './vendedor/vendedor_status.component';
 import { FacturaComponent } from './factura/factura.component';
-import { PesificacionComponent } from './pesificacion/pesificacion.component';
+import { PesificacionComponent } from './pesificacion/pesificacion2.component';
 
 
 const appRoutes: Routes = [

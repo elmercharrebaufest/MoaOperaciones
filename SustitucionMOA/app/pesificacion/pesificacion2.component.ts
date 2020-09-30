@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
-import { PesificacionService } from './pesificacion.service';
+import { PesificacionService } from './pesificacion2.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NavService } from './../common/services/NavService';
 import { SecurityService } from './../common/services/SecurityService';

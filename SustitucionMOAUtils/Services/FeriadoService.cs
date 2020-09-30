@@ -13,22 +13,20 @@ namespace SustitucionMOAUtils.Services
 {
     public class FeriadoService : IFeriadoService
     {
-
         private readonly string DataAgroURL;
 
         public FeriadoService()
         {
-
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
-
         public List<DateTime> ObtenerFeriados()
         {
+            var feriados = new List<DateTime>();
             try
             {
-                var feriados = new List<DateTime>();
-              
+
+
                 var urlBusquedaMateriales = string.Concat(DataAgroURL, "/FechaFeriado/Buscar");
 
                 string userName = DataAgroWSCredential.getUserName();
@@ -60,18 +58,16 @@ namespace SustitucionMOAUtils.Services
             }
             catch (InfoCustomException)
             {
-                throw;
+                return feriados;
             }
             catch (ValidationCustomException)
             {
-                throw;
+                return feriados;
             }
             catch (Exception e)
             {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+                return feriados;
             }
         }
-
-
     }
 }
