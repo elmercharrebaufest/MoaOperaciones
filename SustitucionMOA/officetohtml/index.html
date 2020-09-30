@@ -140,7 +140,8 @@
                         var datos = {
                             fileKey: parametros.get("fileKey"),
                             mail: parametros.get("mail"),
-                            archivoId: parametros.get("archivoId")
+                            archivoId: parametros.get("archivoId"),
+                            proveedorId: parametros.get("proveedorId")
                         };
                         $.ajax({
                             async: false,
@@ -153,7 +154,7 @@
                                 result = data;
                                 var byteArray = new Uint8Array(result.FileContents);
                                 var blob = new Blob([byteArray], { type: 'application/octet-stream' });
-                                const dT = new DataTransfer();                                
+                                const dT = new DataTransfer();
                                 dT.items.add(new File([blob], result.FileDownloadName));
                                 console.log(4);
                                 url = window.URL.createObjectURL(blob);

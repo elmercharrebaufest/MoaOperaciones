@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Windows.Markup.Localizer;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -86,13 +87,31 @@ namespace SustitucionMOAUtils.Services
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
                 {
-                    UsuarioGranos usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == proveedor.Mail);
 
-                    usuario.RemoverRoles();
+                    var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+                    var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
-                    Rol rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
+                    switch (usuario.TipoUsuario.Nombre)
+                    {
+                        case "Granos":
+                            usuario.RemoverRoles();
+                            usuario.AgregarRol(rolUsuarioGranos);
 
-                    usuario.AgregarRol(rolUsuarioGranos);
+                            break;
+
+                        case "Corredor":
+                            var rolCorredor = ObtenerRolPorCodigo("CORR");
+
+                            if(!usuario.Roles.Contains(rolCorredor))
+                                usuario.AgregarRol(rolCorredor);
+
+
+                            if (!usuario.Roles.Contains(rolUsuarioGranos))
+                                usuario.AgregarRol(rolUsuarioGranos);
+
+                            break;
+                    }
+
                 }
 
                 if (estado == EstadoAprobacion.Rechazado || estado == EstadoAprobacion.EdicionRequerida)

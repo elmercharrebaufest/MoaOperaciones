@@ -119,7 +119,7 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-                var proveedor = usuario.Proveedores.Where(p => p.Id == proveedorId).FirstOrDefault();
+                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
                 var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
 
@@ -349,14 +349,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string mail, int archivoID, int proveedorId)
+        public ActionResult DescargarArchivo(string mail, int archivoID, int? proveedorId)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID, proveedorId);
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID, proveedorId ?? 0);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);

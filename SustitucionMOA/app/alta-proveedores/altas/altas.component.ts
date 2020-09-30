@@ -196,13 +196,13 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        this.obtenerArchivosSubidos(empresa.Mail);
+        this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
     }
 
-    obtenerArchivosSubidos(mail: string) {
-        this.subscription = this.service.obtenerArchivosSubidos(mail).subscribe(
+    obtenerArchivosSubidos(mail: string, proveedorId : number) {
+        this.subscription = this.service.obtenerArchivosSubidos(mail, proveedorId).subscribe(
             result => {
                 this.listaArchivos = new Array();
 
@@ -227,8 +227,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
         let archivoId: number = archivo.Id;
         let fileKey: string = archivo.FileKey
+        let proveedorId: number = this.empresaSeleccionada.Id;
 
-        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString());
+        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString());
         var url = "/officetohtml/index.html?param=" + param;
         var link = document.createElement("a");
         document.body.appendChild(link);

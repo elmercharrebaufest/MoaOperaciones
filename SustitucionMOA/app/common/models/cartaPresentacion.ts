@@ -17,7 +17,7 @@ export class CartaPresentacion {
     public telefonoContacto: string;
     */
 
-    public corredorBolsa: number;
+    public corredorBolsa: string;
     public corredorNroRegistro: string;
 
     public vendedorCuit: string;

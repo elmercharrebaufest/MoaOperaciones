@@ -52,9 +52,11 @@ export class EmpresaGranosService extends BaseService {
     }
 
 
-    generarCartaPresentacion(cartaPresentacion: CartaPresentacion): Observable<any> {
+    generarCartaPresentacion(cartaPresentacion: CartaPresentacion, proveedorId?: number): Observable<any> {
         let payload = new FormData();
         payload.append("cartaPresentacionJson", JSON.stringify(cartaPresentacion));
+        payload.append('proveedorId', proveedorId.toString());
+
         return this.http
             .post('/api/AltaEmpresaGranos/GenerarCartaPresentacion', payload)
             .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))

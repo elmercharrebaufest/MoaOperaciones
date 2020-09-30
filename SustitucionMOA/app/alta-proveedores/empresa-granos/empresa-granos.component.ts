@@ -247,17 +247,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    // obtenerCBUSISA() {
-    //     this.subscription = this.service.obtenerCBUSISA().subscribe(
-    //         result => {
-    //             this.CBUSISA = result;
-    //         },
-    //         error => {
-    //             this.mensajeComponent.setErrorMsg(error.message);
-    //         }
-    //     );
-    // }
-
     obtenerInfoProveedor() {
         this.subscription = this.service.obtenerInfoProveedor(this.proveedorId).subscribe(
             result => {
@@ -610,7 +599,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
 
         this.mensajeError = "";
-        this.subscription = this.service.generarCartaPresentacion(this.cartaPresentacion).subscribe(
+        this.subscription = this.service.generarCartaPresentacion(this.cartaPresentacion, this.proveedorId).subscribe(
             result => {
                 this.spinnerModal.hideIt();
                 if (result.error) {
@@ -620,13 +609,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     var blob = new Blob([byteArray], { type: 'application/pdf' });
                     if (window.navigator.msSaveOrOpenBlob) {
                         // IE11
-                        window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
+                        window.navigator.msSaveOrOpenBlob(blob, "Carta presentación - " + this.cartaPresentacion.vendedorRazonSocial + ".pdf");
                     } else {
                         var url = window.URL.createObjectURL(blob);
                         var link = document.createElement("a");
                         document.body.appendChild(link);
                         link.href = url;
-                        link.download = "Informe comercial" + ".pdf"
+                        link.download = "Carta presentación - " + this.cartaPresentacion.vendedorRazonSocial+ ".pdf"
                         link.click();
                         setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
 
@@ -645,41 +634,54 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     validarCartaPresentacion() {
 
-        return false;
+        //Corredor
+        if (this.cartaPresentacion.corredorBolsa == "" || !this.cartaPresentacion.corredorBolsa) {
+            this.mensajeError = "No completo el campo bolsa .";
+            return true;
+        }
 
-        if (this.informe.direccion == "" || !this.informe.direccion) {
-            this.mensajeError = "No completo la direccion.";
+        if (this.cartaPresentacion.corredorNroRegistro == "" || !this.cartaPresentacion.corredorNroRegistro) {
+            this.mensajeError = "No completo el número de registro.";
             return true;
         }
-        if (!this.informe.codigoPostal || this.informe.codigoPostal == "") {
-            this.mensajeError = "No completo el codigo postal.";
+
+        //Vendedor
+        if (this.cartaPresentacion.vendedorCuit == "" || !this.cartaPresentacion.vendedorCuit) {
+            this.mensajeError = "No completo el CUIT del vendedor.";
             return true;
         }
-        if (!this.informe.localidadId || this.informe.localidadId == null || this.informe.localidadId == 0) {
-            this.mensajeError = "No completo la Localidad en Domicilio Actividad.";
+
+        if (this.cartaPresentacion.vendedorRazonSocial == "" || !this.cartaPresentacion.vendedorRazonSocial) {
+            this.mensajeError = "No completo la razón social del vendedor .";
             return true;
         }
-        if (!this.informe.ContactoComercial.Apellido || this.informe.ContactoComercial.Apellido == "") {
-            this.mensajeError = "No completo el Apellido del contacto.";
+
+        if (this.cartaPresentacion.vendedorDomicilioFiscal == "" || !this.cartaPresentacion.vendedorDomicilioFiscal) {
+            this.mensajeError = "No completo el domicilio fiscal.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Nombres || this.informe.ContactoComercial.Nombres == "") {
-            this.mensajeError = "No completo el Nombre del contacto.";
+        if (this.cartaPresentacion.vendedorActividad == "" || !this.cartaPresentacion.vendedorActividad) {
+            this.mensajeError = "No seleccionó la actividad.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Puesto || this.informe.ContactoComercial.Puesto == "") {
-            this.mensajeError = "No completo el Puesto del contacto.";
+
+        if (this.cartaPresentacion.vendedorMailContacto == "" || !this.cartaPresentacion.vendedorMailContacto) {
+            this.mensajeError = "No completo el mail de contacto.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Telefono1 || this.informe.ContactoComercial.Telefono1 == "") {
-            this.mensajeError = "No completo el Telefono del contacto.";
+
+        if (this.cartaPresentacion.vendedorTelefonoContacto == "" || !this.cartaPresentacion.vendedorTelefonoContacto) {
+            this.mensajeError = "No completo el teléfono de contacto.";
             return true;
         }
-        if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
-            this.mensajeError = "No completo la Campa�a Actual.";
+
+
+        if (this.cartaPresentacion.campaniaID == 0 || !this.cartaPresentacion.campaniaID) {
+            this.mensajeError = "No completo la Campaña Actual.";
             return true;
         }
-        for (const item of this.informe.NuevosCampos) {
+
+        for (const item of this.cartaPresentacion.nuevosCampos) {
             if (item.MaterialId == null || item.MaterialId == 0) {
                 this.mensajeError = "Debe completar el grano en todos los items de Capacidad productiva.";
                 return true;
@@ -701,7 +703,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 return true;
             }
         }
-        for (const item of this.informe.NuevosAcopios) {
+
+        for (const item of this.cartaPresentacion.nuevosAcopios) {
             if (item.LocalidadID == null || item.LocalidadID == 0) {
                 this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
                 return true;

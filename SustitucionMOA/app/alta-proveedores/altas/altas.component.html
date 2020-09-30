@@ -45,14 +45,19 @@
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Id')">ID</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=""
+                                (click)="orderColumnBy('Mail')">Usuario</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style=""
                                 (click)="orderColumnBy('CodigoProveedor')">Codigo</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">
-                                Razon Social</th>
+                                Razon Social
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Comercial')">
-                                Comercial</th>
+                                Comercial
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SISAEstadoCuit')">
-                                SISA</th>
+                                SISA
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style=""
                                 (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
@@ -62,6 +67,7 @@
                         <tr *ngFor="let empresa of dataFiltered | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td>{{empresa.Id}}</td>
+                            <td>{{empresa.Mail}}</td>
                             <td>{{empresa.CodigoProveedor}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial}}</td>
@@ -70,11 +76,11 @@
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-lg" (click)="abrirModal(empresa)"
-                                    style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
                                     Ver Documentacion
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton"
-                                    data-toggle="modal" data-target="#myModal"></button>
+                                        data-toggle="modal" data-target="#myModal"></button>
                             </td>
                         </tr>
                     </tbody>

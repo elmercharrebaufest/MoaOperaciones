@@ -796,6 +796,7 @@
                             </div>
                             <div class="formulario-campo">
 
+
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         CUIT
@@ -819,6 +820,21 @@
                                     </div>
                                 </div>
 
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Actividad
+                                    </div>
+                                    <div class="formulario-input">
+                                        <select [(ngModel)]="cartaPresentacion.vendedorActividad" [value]="Productor"
+                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                            <option value="Productor" selected>Productor</option>
+                                            <option value="Acopiador">Acopiador</option>
+                                            <option value="Otros">Otros</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Domicilio fiscal
@@ -829,23 +845,6 @@
                                                maxlength="100" />
                                     </div>
                                 </div>
-
-
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="formulario-label">
-                                        Actividad
-                                    </div>
-                                    <div class="formulario-input">
-                                        <select [(ngModel)]="cartaPresentacion.vendedorActividad"
-                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
-                                            <option value="Productor" selected>Productor</option>
-                                            <option value="Acopiador">Acopiador</option>
-                                            <option value="Otros">Otros</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
                                         Antigüedad en la actividad
@@ -913,7 +912,7 @@
                                 <p class="table-title">
                                     Campaña:
                                     <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
-                                            class="dropdown-granos">
+                                            class="dropdown-granos" [value]=listaCampanias[0]>
                                         <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
                                             {{camp.CampaniaActual}}
                                         </option>

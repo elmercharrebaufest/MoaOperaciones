@@ -70,7 +70,6 @@ import { EmpresaNoGranosComponent } from "./alta-proveedores/empresa-no-granos/e
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { ProveedorDetalleComponent } from "./alta-proveedores/proveedor-detalle/proveedor-detalle.component";
 import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/estado-solicitud.component";
-import { EmpresaCorredorComponent } from "./alta-proveedores/empresa-corredor/empresa-corredor.component";
 import { VendedoresPendientesComponent } from "./dato-fiscal/vendedores-pendientes/vendedores-pendientes.component";
 
 const appRoutes: Routes = [
@@ -229,7 +228,6 @@ const appRoutes: Routes = [
                 component: EmpresaGranosComponent,
             },
             { path: "estado-solicitud", component: EstadoSolicitudComponent },
-            { path: "alta-empresa-corredor", component: EmpresaCorredorComponent },
             { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
             { path: "altas", component: AltasComponent },
             { path: "proveedor-detalle", component: ProveedorDetalleComponent },

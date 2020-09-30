@@ -299,9 +299,19 @@ namespace SustitucionMOAUtils.Services
 
             ValidarEstadoSolicitud(proveedor);
 
-            if (!ValidarArchivosSubidos(proveedor, infoProveedor))
+            if (usuario.TipoUsuario.Nombre == "Corredor")
             {
-                return ErrorMsg.ErrorCompleteCampo;
+                if (!ValidarArchivosSubidosCorredor(proveedor, infoProveedor))
+                {
+                    return ErrorMsg.ErrorCompleteCampo;
+                }
+            }
+            else
+            {
+                if (!ValidarArchivosSubidos(proveedor, infoProveedor))
+                {
+                    return ErrorMsg.ErrorCompleteCampo;
+                }
             }
 
             proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
@@ -326,6 +336,29 @@ namespace SustitucionMOAUtils.Services
             if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.InformeComercialFirmado))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Informe comercial firmado"));
+            }
+
+            if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCBU))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
+            }
+
+            if (infoProveedor.EstadoSISA != "1")
+            {
+                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+                }
+            }
+
+            return true;
+        }
+
+        public bool ValidarArchivosSubidosCorredor(Proveedor proveedor, InfoProveedorDataAgroDto infoProveedor)
+        {
+            if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.CartaDePresentacionFirmada))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Carta de presentación firmada"));
             }
 
             if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCBU))
