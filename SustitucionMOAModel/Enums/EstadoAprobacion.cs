@@ -10,7 +10,8 @@
         Rechazado,
         AunNoImplementado,
         AnalisisDeNosis,
-        SentenciaFinal
+        SentenciaFinal,
+        Deshabilitado
     }
 
     public static class EstadoDeAprobacionExtensions
@@ -33,6 +34,8 @@
                     return "Rechazado";
                 case EstadoAprobacion.AunNoImplementado:
                     return "Tipo de usuario no implementado";
+                case EstadoAprobacion.Deshabilitado:
+                    return "Deshabilitado";
                 default:
                     return "Estado desconocido";
             }

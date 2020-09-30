@@ -1,11 +1,7 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -27,5 +23,23 @@ namespace SustitucionMOAModel.Dto
         public string Comercial { get; set; }
         public string SISAEstadoCuit { get; set; }
         public string EstadoSIPER { get; set; }
+
+        public ProveedorDto() { }
+        public ProveedorDto(Proveedor proveedor)
+        {
+            CodigoProveedor = proveedor.CodigoProveedor ?? "";
+            CUIT = proveedor.CUIT;
+            EstadoAprobacion = proveedor.EstadoAprobacion;
+            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToString();
+            Id = proveedor.Id;
+            IdComercialDataAgro = proveedor.IdComercialDataAgro;
+            IdDataAgro = proveedor.IdDataAgro;
+            Mail = proveedor.Mail ?? "";
+            Observaciones = proveedor.Observaciones;
+            RazonSocial = proveedor.RazonSocial ?? "";
+            Comercial = proveedor.UsuariosAsociados.Count() > 0 ? (proveedor.UsuariosAsociados.First() as UsuarioGranos).Comercial : "";
+            EstadoSIPER = proveedor.EstadoSIPER;
+            HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
+        }
     }
 }

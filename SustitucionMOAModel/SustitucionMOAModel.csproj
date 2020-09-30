@@ -51,10 +51,13 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
+    <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />
     <Compile Include="Dto\ProveedorHistorialAprobacionDto.cs" />
     <Compile Include="Dto\ProveedorDto.cs" />
+    <Compile Include="Dto\RolDropdownDto.cs" />
+    <Compile Include="Dto\UsuarioDto.cs" />
     <Compile Include="Entities\Archivo.cs" />
     <Compile Include="Entities\Contacto.cs" />
     <Compile Include="Entities\Localidad.cs" />

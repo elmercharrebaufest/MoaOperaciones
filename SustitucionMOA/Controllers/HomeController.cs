@@ -148,8 +148,8 @@ namespace SustitucionMOA.Controllers
 
                 try
                 {
-                    //if (!Globals.EsLocal)
-                    //{
+                    if (!Globals.EsLocal)
+                    {
                         if (!esNuevoUsuario)
                         {
                             noticias = _loginService.getNoticias(proveedor);
@@ -163,7 +163,7 @@ namespace SustitucionMOA.Controllers
                                 noticias.cantidad += noticias.notificaciones.Count;
                             }
                         }
-                    //}
+                    }
                 }
                 catch (Exception e)
                 {

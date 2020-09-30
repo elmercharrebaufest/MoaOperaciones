@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
+using System.Linq;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -26,25 +22,15 @@ namespace SustitucionMOAModel.Entities
 
         public virtual ICollection<Archivo> Archivos { get; set; }
 
-        //internal Usuario() { }
-
-        //public Usuario(string mail, string CUIT)
-        //{
-        //    Mail = mail;
-        //    CUITRegistro = CUIT;
-        //    Proveedores = new List<Proveedor>();
-        //    Roles = new List<Rol>();
-        //}
-
         public Rol ObtenerRolPrincipal()
         {
-            return Roles.First();
+            return Roles.FirstOrDefault();
         }
 
         public Proveedor ObtenerProveedorActual()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
-            return Proveedores.First();
+            return Proveedores.FirstOrDefault();
         }
 
         public string ObtenerRazonSocial()
@@ -98,7 +84,8 @@ namespace SustitucionMOAModel.Entities
             return
                 Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
-                Roles.Where(r => r.Codigo.Equals("NOIMP")).Any(); 
+                Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
+                !Habilitado;
         }
 
         public void RemoverRoles()
@@ -110,5 +97,6 @@ namespace SustitucionMOAModel.Entities
         {
             Roles.Add(rol);
         }
+
     }
 }
