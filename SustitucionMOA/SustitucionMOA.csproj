@@ -193,7 +193,7 @@
     <Content Include="app\pago\detalle\pago.detalle.component.html" />
     <Content Include="app\pago\emitido\pago.emitido.component.html" />
     <Content Include="app\pago\no-granos\emitido\pago.no-granos.emitido.component.html" />
-    <Content Include="app\pesificacion\pesificacion.component.html" />
+    <Content Include="app\pesificacion\pesificacion2.component.html" />
     <Content Include="app\ryd-mantenimiento\balanzas\balanzas.component.html" />
     <Content Include="app\ryd-mantenimiento\commodities\commodities.component.html" />
     <Content Include="app\ryd-mantenimiento\exportadores\exportadores.component.html" />
