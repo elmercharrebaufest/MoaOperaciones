@@ -36,12 +36,16 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         this.spinnerComponent = new SpinnerComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
-
+    
     fecha: any = null;
+    contratos: any = new Array<any>();
     contrato: string = "";
     fijacion: string = "";
     cantidad: number = 0;
     file: any = null;
+    visibleEnviar: boolean = true;
+    itemsPerPage = "10";
+    orderedByColumn: string = "NroContrato";
 
     ngOnInit() {
         this.setTabs();
@@ -56,6 +60,40 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("PESIFICACION");
+    }
+
+    getListaContratos() {
+        this.mensajeComponent.setMsgsEmpty();
+        //this.spinnerComponent.showIt();
+        this.data = null;
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.getContratos().subscribe(
+                result => {
+                    //this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.contratos = new Array();
+                    } else if (result.info != undefined) {
+                        this.contratos = new Array();
+                    } else {
+                        this.contratos = result;
+                    }
+                },
+                error => {
+                    //this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            //this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
     }
 
     initForm() {
@@ -78,6 +116,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                     this.contrato = "";
                     this.fijacion = "";
                     this.cantidad = 0;
+                    this.getListaContratos();
                 }
             },
             error => {
@@ -95,21 +134,41 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
             return true;
         else
             return false;
+       
     }
 
+    isVisiblePaginacion(): boolean {
+        if (this.contratos != null && this.contratos.length > 0)
+            return true;
+        else
+            return false;
+    }
+    orderColumnBy(column: string) {
+        if (column == this.orderedByColumn) {
+            this.orderDirection = -this.orderDirection;
+        } else {
+            this.orderDirection = 1;
+            this.orderedByColumn = column;
+        }
+    }
 
-    guardarPesificaciones() {
+    guardarPesificaciones() {        
         this.spinnerSmallComponent.showIt();
+        this.visibleEnviar = false;
+
         this.mensajeComponent.setMsgsEmpty();
 
         if (this.contrato == null || this.contrato == "") {
             this.spinnerSmallComponent.hideIt();
+            this.visibleEnviar = true;
+
             this.mensajeComponent.setErrorMsg("Debe ingresar un contrato");
             return false;
         }
 
         if (this.cantidad == null || this.cantidad <= 0) {
             this.spinnerSmallComponent.hideIt();
+            this.visibleEnviar = true;
             this.mensajeComponent.setErrorMsg("Debe ingresar una cantidad mayor a 0");
             return false;
         }
@@ -118,6 +177,8 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
+                this.visibleEnviar = true;
+                this.getListaContratos();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -125,15 +186,17 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
+                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");                    
                 }
+
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
+                this.visibleEnviar = true;
                 this.mensajeComponent.setErrorMsg(error.message);
-                return false;
             }
         );
+        document.getElementById("cerrarModalConfirmar").click();
         return false;
     }
 
@@ -146,10 +209,12 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
 
     cargaMasiva() {
         this.spinnerSmallComponent.showIt();
+        this.visibleEnviar = false;
         this.mensajeComponent.setMsgsEmpty();
 
         if (this.file == null || !this.esCSV(this.file.name)) {
             this.spinnerSmallComponent.hideIt();
+            this.visibleEnviar = true;
             this.mensajeComponent.setErrorMsg("Debe seleccionar un archivo .csv valido");
             return false;
         }
@@ -158,6 +223,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         this.subscription = this.service.setMassiveData(this.file).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
+                this.visibleEnviar = true;
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -165,11 +231,13 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
+                    this.getListaContratos();
+                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");                   
                 }
             },
             error => {
                 this.spinnerSmallComponent.hideIt();
+                this.visibleEnviar = true;
                 this.mensajeComponent.setErrorMsg(error.message);
                 return false;
             }
@@ -184,4 +252,10 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         else
             return false;
     }
+
+    round(num: number) {
+        return Math.round(num);
+    };
+
 }
+

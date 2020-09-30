@@ -150,7 +150,10 @@
                 <li><a class="animate menuDerecha" [ngClass]="(isSelectedMenu('comprobante-ngs')) ? 'active' : ''" (click)="goToSeccion('/comprobante-ngs/aprobada')" *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()" href="#"> <!--data-toggle="tab">-->Comprobantes</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('pago')) ? 'active' : ''" (click)="goToSeccion('/pago/emitido')" *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()" href="#"> <!--data-toggle="tab">-->Pagos</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('pago-ngs')) ? 'active' : ''" (click)="goToSeccion('/pago-ngs/emitido')" *ngIf="isAuthorized('CONSULTAR PAGOS NG') && isNoGranosSelected()" href="#"> <!--data-toggle="tab">-->Pagos</a></li>
-                <li><a class="animate menuDerecha" [ngClass]="(isSelectedMenu('cuenta-corriente')) ? 'active' : ''" (click)="goToSeccion('/cuenta-corriente/agrupada')" *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE')" href="#"> <!--data-toggle="tab">-->Cuenta Corriente</a></li>
+                
+                <li><a class="animate menuDerecha" [ngClass]="(isSelectedMenu('cuenta-corriente')) ? 'active' : ''" (click)="goToSeccion('/cuenta-corriente/simple')" *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE')" href="#"> <!--data-toggle="tab">-->Cuenta Corriente</a></li>
+
+
                 <li><a class="animate" [ngClass]="(isSelectedMenu('dato-fiscal')) ? 'active' : ''" (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')" href="#"> <!--data-toggle="tab">-->Datos fiscales</a></li>
                 <li><a class="animate menuDerecha" [ngClass]="(isSelectedMenu('usuario')) ? 'active' : ''" (click)="goToSeccion('/usuario/list')" *ngIf="isAuthorized('ABM USUARIOS')" href="#"> <!--data-toggle="tab">-->Usuarios</a></li>
                 <li><a class="animate" [ngClass]="(isSelectedMenu('vendedor')) ? 'active' : ''" (click)="goToSeccion('/vendedor/status')" *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()" href="#"> <!--data-toggle="tab">-->Consulta de Vendedor</a></li>
