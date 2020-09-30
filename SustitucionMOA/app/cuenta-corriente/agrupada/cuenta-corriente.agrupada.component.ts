@@ -101,7 +101,7 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
                 new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
             ]
         );
-
+        this.getData();
     }
 
 }
