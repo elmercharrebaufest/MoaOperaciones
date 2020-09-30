@@ -789,6 +789,9 @@
     <Compile Include="Utils\SameSiteCookieManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
+    <TypeScriptCompile Include="src\app\common\models\pesificacionContrato.ts" />
+    <TypeScriptCompile Include="src\app\common\models\rol.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

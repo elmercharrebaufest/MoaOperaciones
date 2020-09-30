@@ -26,6 +26,14 @@ var UsuarioService = /** @class */ (function (_super) {
     function UsuarioService() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    UsuarioService.prototype.guardarRolesUsuario = function (usuarioSeleccionado, idRoles) {
+        var params = new URLSearchParams();
+        var idUsuario = usuarioSeleccionado.Id;
+        params.set('idRoles', idRoles);
+        params.set('idUsuario', idUsuario);
+        return this.http
+            .get('/api/usuario/GuardarRoles', { search: params, headers: this.headers }).pipe(map(this.extractData));
+    };
     UsuarioService.prototype.cambiarContrasenia = function (contraseniaActual, contraseniaNueva) {
         var params = new URLSearchParams();
         params.set('contraseniaActual', contraseniaActual);
@@ -52,15 +60,15 @@ var UsuarioService = /** @class */ (function (_super) {
         return this.http
             .get('/api/usuario/desbloquear', { search: params, headers: this.headers }).pipe(map(this.extractData));
     };
-    UsuarioService.prototype.deshabilitarUsuario = function (usuario) {
+    UsuarioService.prototype.deshabilitarUsuario = function (mailUsuario) {
         var params = new URLSearchParams();
-        params.set('usuario', usuario);
+        params.set('mailUsuario', mailUsuario);
         return this.http
             .get('/api/usuario/deshabilitar', { search: params, headers: this.headers }).pipe(map(this.extractData));
     };
-    UsuarioService.prototype.habilitarUsuario = function (usuario) {
+    UsuarioService.prototype.habilitarUsuario = function (mailUsuario) {
         var params = new URLSearchParams();
-        params.set('usuario', usuario);
+        params.set('mailUsuario', mailUsuario);
         return this.http
             .get('/api/usuario/habilitar', { search: params, headers: this.headers }).pipe(map(this.extractData));
     };
@@ -70,6 +78,10 @@ var UsuarioService = /** @class */ (function (_super) {
         params.set('descripcion', descripcion);
         return this.http
             .get('/api/usuario/seleccionarVendedor', { search: params, headers: this.headers }).pipe(map(this.extractData));
+    };
+    UsuarioService.prototype.getRoles = function () {
+        return this.http
+            .get('/api/usuario/getRoles', { headers: this.headers }).pipe(map(this.extractData));
     };
     UsuarioService = __decorate([
         Injectable()

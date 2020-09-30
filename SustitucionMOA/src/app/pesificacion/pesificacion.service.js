@@ -58,6 +58,12 @@ var PesificacionService = /** @class */ (function (_super) {
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     };
+    PesificacionService.prototype.getContratos = function () {
+        return this.http
+            .get('/api/pesificacion/GetContratos')
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    };
     PesificacionService = __decorate([
         Injectable()
     ], PesificacionService);

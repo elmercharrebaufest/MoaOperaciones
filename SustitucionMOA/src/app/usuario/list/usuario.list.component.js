@@ -21,16 +21,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Component, ViewChild } from '@angular/core';
-import { UsuarioService } from './../usuario.service';
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
-import { NavService } from './../../common/services/NavService';
+import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
+import { ModalService } from './../../common/services/ModalService';
+import { NavService } from './../../common/services/NavService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
-import { ModalService } from './../../common/services/ModalService';
-import { Seccion } from './../../common/models/seccion';
+import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
+import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { UsuarioService } from './../usuario.service';
 var UsuarioListComponent = /** @class */ (function (_super) {
     __extends(UsuarioListComponent, _super);
     function UsuarioListComponent(service, navService, securityService, sessionDataService, floatMsgService, modalService) {
@@ -45,8 +46,13 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         _this.orderDirection = 1;
         _this.itemsPerPage = 20;
         _this.filtroUsuarioVendedor = "";
+        _this.rolOptions = [];
+        _this.rolOptionsAll = [];
+        _this.rolesUsuarioSeleccionado = [];
+        _this.usuarioSeleccionado = null;
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
+        _this.rolDropdownComponent = new DropdownComponent();
         return _this;
     }
     UsuarioListComponent.prototype.setTabs = function () {
@@ -55,8 +61,34 @@ var UsuarioListComponent = /** @class */ (function (_super) {
     UsuarioListComponent.prototype.ngOnInit = function () {
         this.setTabs();
         this.securityService.tienePermisoRedirect("ABM USUARIOS");
-        this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
+        this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios')]);
+        //this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
         this.getUsuario();
+        this.getRolesOptions();
+    };
+    UsuarioListComponent.prototype.getRolesOptions = function () {
+        var _this = this;
+        try {
+            this.subscriptionDropDowns = this.service.getRoles().subscribe(function (result) {
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    _this.rolOptionsAll = result.data.roles;
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
     };
     UsuarioListComponent.prototype.getUsuario = function () {
         var _this = this;
@@ -133,12 +165,12 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         }
         return false; //<-- Prevent Refresh
     };
-    UsuarioListComponent.prototype.deshabilitar = function (usuario) {
+    UsuarioListComponent.prototype.deshabilitar = function (mailUsuario) {
         var _this = this;
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.service.deshabilitarUsuario(usuario).subscribe(function (result) {
+            this.service.deshabilitarUsuario(mailUsuario).subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -164,12 +196,12 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         }
         return false; //<-- Prevent Refresh
     };
-    UsuarioListComponent.prototype.habilitar = function (usuario) {
+    UsuarioListComponent.prototype.habilitar = function (mailUsuario) {
         var _this = this;
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.service.habilitarUsuario(usuario).subscribe(function (result) {
+            this.service.habilitarUsuario(mailUsuario).subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -209,6 +241,58 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         ]);
         return false;
     };
+    UsuarioListComponent.prototype.abrirModalEditarRoles = function (usuario) {
+        var _this = this;
+        this.usuarioSeleccionado = usuario;
+        this.rolesUsuarioSeleccionado = new Array();
+        this.rolOptions = [];
+        this.rolOptionsAll.forEach(function (val) { return _this.rolesUsuarioSeleccionado.push(Object.assign({}, val)); });
+        for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
+            this.rolesUsuarioSeleccionado[i].checked = false;
+        }
+        usuario.Roles.forEach(function (element) {
+            var index = _this.rolesUsuarioSeleccionado.findIndex(function (r) { return r.Id.toString() == element.Id.toString(); });
+            _this.rolesUsuarioSeleccionado[index].checked = true;
+        });
+        document.getElementById("openModalHiddenButton").click();
+        return false;
+    };
+    UsuarioListComponent.prototype.guardarRolesUsuario = function () {
+        var _this = this;
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        var idRoles = this.rolesUsuarioSeleccionado.filter(function (r) { return r.checked; }).map(function (_a) {
+            var Id = _a.Id;
+            return Id;
+        });
+        try {
+            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(function (result) {
+                _this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    _this.mensajeComponent.setSuccessMsg(result.data);
+                    _this.getUsuario();
+                    document.getElementById("closeModal").click();
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    };
     __decorate([
         ViewChild(MensajeComponent),
         __metadata("design:type", MensajeComponent)
@@ -217,6 +301,10 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         ViewChild(SpinnerComponent),
         __metadata("design:type", SpinnerComponent)
     ], UsuarioListComponent.prototype, "spinnerComponent", void 0);
+    __decorate([
+        ViewChild('dropdown_rol'),
+        __metadata("design:type", DropdownComponent)
+    ], UsuarioListComponent.prototype, "rolDropdownComponent", void 0);
     UsuarioListComponent = __decorate([
         Component({
             selector: 'app-usuario-list',

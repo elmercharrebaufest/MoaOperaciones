@@ -45,10 +45,14 @@ var PesificacionComponent = /** @class */ (function (_super) {
         _this.route = route;
         _this.router = router;
         _this.fecha = null;
+        _this.contratos = null;
         _this.contrato = "";
         _this.fijacion = "";
         _this.cantidad = 0;
         _this.file = null;
+        _this.visibleEnviar = true;
+        _this.itemsPerPage = "10";
+        _this.orderedByColumn = "NroContrato";
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
         _this.spinnerSmallComponent = new SpinnerSmallComponent();
@@ -65,6 +69,39 @@ var PesificacionComponent = /** @class */ (function (_super) {
     };
     PesificacionComponent.prototype.checkPermisos = function () {
         this.securityService.tienePermisoRedirect("PESIFICACION");
+    };
+    PesificacionComponent.prototype.getListaContratos = function () {
+        var _this = this;
+        this.mensajeComponent.setMsgsEmpty();
+        //this.spinnerComponent.showIt();
+        this.data = null;
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.getContratos().subscribe(function (result) {
+                //this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.contratos = new Array();
+                }
+                else if (result.info != undefined) {
+                    _this.contratos = new Array();
+                }
+                else {
+                    _this.contratos = result;
+                }
+            }, function (error) {
+                //this.spinnerComponent.hideIt();
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            //this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     };
     PesificacionComponent.prototype.initForm = function () {
         var _this = this;
@@ -89,6 +126,7 @@ var PesificacionComponent = /** @class */ (function (_super) {
                 _this.contrato = "";
                 _this.fijacion = "";
                 _this.cantidad = 0;
+                _this.getListaContratos();
             }
         }, function (error) {
             _this.spinnerComponent.hideIt();
@@ -103,23 +141,42 @@ var PesificacionComponent = /** @class */ (function (_super) {
         else
             return false;
     };
+    PesificacionComponent.prototype.isVisiblePaginacion = function () {
+        if (this.contratos != null && this.contratos.length > 0)
+            return true;
+        else
+            return false;
+    };
+    PesificacionComponent.prototype.orderColumnBy = function (column) {
+        if (column == this.orderedByColumn) {
+            this.orderDirection = -this.orderDirection;
+        }
+        else {
+            this.orderDirection = 1;
+            this.orderedByColumn = column;
+        }
+    };
     PesificacionComponent.prototype.guardarPesificaciones = function () {
         var _this = this;
         this.spinnerSmallComponent.showIt();
+        this.visibleEnviar = false;
         this.mensajeComponent.setMsgsEmpty();
         if (this.contrato == null || this.contrato == "") {
             this.spinnerSmallComponent.hideIt();
+            this.visibleEnviar = true;
             this.mensajeComponent.setErrorMsg("Debe ingresar un contrato");
             return false;
         }
         if (this.cantidad == null || this.cantidad <= 0) {
             this.spinnerSmallComponent.hideIt();
+            this.visibleEnviar = true;
             this.mensajeComponent.setErrorMsg("Debe ingresar una cantidad mayor a 0");
             return false;
         }
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
+            _this.visibleEnviar = true;
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
@@ -131,9 +188,11 @@ var PesificacionComponent = /** @class */ (function (_super) {
             }
             else {
                 _this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
+                _this.getListaContratos();
             }
         }, function (error) {
             _this.spinnerSmallComponent.hideIt();
+            _this.visibleEnviar = true;
             _this.mensajeComponent.setErrorMsg(error.message);
             return false;
         });
@@ -148,15 +207,18 @@ var PesificacionComponent = /** @class */ (function (_super) {
     PesificacionComponent.prototype.cargaMasiva = function () {
         var _this = this;
         this.spinnerSmallComponent.showIt();
+        this.visibleEnviar = false;
         this.mensajeComponent.setMsgsEmpty();
         if (this.file == null || !this.esCSV(this.file.name)) {
             this.spinnerSmallComponent.hideIt();
+            this.visibleEnviar = true;
             this.mensajeComponent.setErrorMsg("Debe seleccionar un archivo .csv valido");
             return false;
         }
         this.unsubscribe();
         this.subscription = this.service.setMassiveData(this.file).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
+            _this.visibleEnviar = true;
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
@@ -168,9 +230,11 @@ var PesificacionComponent = /** @class */ (function (_super) {
             }
             else {
                 _this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
+                _this.getListaContratos();
             }
         }, function (error) {
             _this.spinnerSmallComponent.hideIt();
+            _this.visibleEnviar = true;
             _this.mensajeComponent.setErrorMsg(error.message);
             return false;
         });
@@ -183,6 +247,10 @@ var PesificacionComponent = /** @class */ (function (_super) {
         else
             return false;
     };
+    PesificacionComponent.prototype.round = function (num) {
+        return Math.round(num);
+    };
+    ;
     __decorate([
         ViewChild(MensajeComponent),
         __metadata("design:type", MensajeComponent)
