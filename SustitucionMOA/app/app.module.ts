@@ -153,6 +153,8 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { ArchivoPipe } from "./common/pipes/archivos.pipe";
 
 import { NumericDirective } from "./common/directive/numeric.directive";
+import { CrearContratoAPrecioComponent } from "./crear-contrato/aprecio/crear-contrato.aprecio.component";
+import { CrearContratoAFijarComponent } from "./crear-contrato/afijar/crear-contrato.afijar.component";
 
 @NgModule({
     imports: [
@@ -184,6 +186,8 @@ import { NumericDirective } from "./common/directive/numeric.directive";
         ContratoBaseComponent,
         ContratoAmpliacionComponent,
         ContratoAnulacionComponent,
+        CrearContratoAPrecioComponent,
+        CrearContratoAFijarComponent,
         ContratoFijacionComponent,
         ContratoVigenteComponent,
         ContratoDetalleComponent,

@@ -243,6 +243,8 @@
     <Content Include="app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="app\common\view-child\spinner\spinner.component.html" />
     <Content Include="app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="app\crear-contrato\afijar\crear-contrato.afijar.component.html" />
+    <Content Include="app\crear-contrato\aprecio\crear-contrato.aprecio.component.html" />
     <Content Include="app\contrato\ampliacion\contrato.ampliacion.component.html" />
     <Content Include="app\contrato\anulacion\contrato.anulacion.component.html" />
     <Content Include="app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.html" />
@@ -744,6 +746,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
+    <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CartaPorteController.cs" />
@@ -857,6 +860,10 @@
     <TypeScriptCompile Include="app\common\view-child\spinner\spinner.component.ts" />
     <TypeScriptCompile Include="app\contacto-mail\contacto-mail.component.ts" />
     <TypeScriptCompile Include="app\contacto-mail\contacto-mail.service.ts" />
+    <TypeScriptCompile Include="app\crear-contrato\afijar\crear-contrato.afijar.component.ts" />
+    <TypeScriptCompile Include="app\crear-contrato\crear-contrato.component.ts" />
+    <TypeScriptCompile Include="app\crear-contrato\crear-contrato.service.ts" />
+    <TypeScriptCompile Include="app\crear-contrato\aprecio\crear-contrato.aprecio.component.ts" />
     <TypeScriptCompile Include="app\contrato\ampliacion\contrato.ampliacion.component.ts" />
     <TypeScriptCompile Include="app\contrato\anulacion\contrato.anulacion.component.ts" />
     <TypeScriptCompile Include="app\contrato\contrato.component.ts" />

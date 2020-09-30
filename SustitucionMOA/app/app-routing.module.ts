@@ -70,7 +70,8 @@ import { EmpresaNoGranosComponent } from "./alta-proveedores/empresa-no-granos/e
 import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { ProveedorDetalleComponent } from "./alta-proveedores/proveedor-detalle/proveedor-detalle.component";
 import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/estado-solicitud.component";
-
+import { CrearContratoAPrecioComponent } from "./crear-contrato/aprecio/crear-contrato.aprecio.component";
+import { CrearContratoAFijarComponent } from "./crear-contrato/afijar/crear-contrato.afijar.component";
 const appRoutes: Routes = [
   //{ path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
   { path: "documentacion", component: DocumentacionComponent },
@@ -131,6 +132,8 @@ const appRoutes: Routes = [
       { path: "contrato/fijacion", component: ContratoFijacionComponent },
       { path: "contrato/ampliacion", component: ContratoAmpliacionComponent },
       { path: "contrato/anulacion", component: ContratoAnulacionComponent },
+      { path: "crear-contrato/aprecio", component: CrearContratoAPrecioComponent },
+      { path: "crear-contrato/afijar", component: CrearContratoAFijarComponent },
       { path: "contrato/detalle/:id", component: ContratoDetalleComponent },
       {
         path: "contrato/detalle-fijacion/:id/:id2",
