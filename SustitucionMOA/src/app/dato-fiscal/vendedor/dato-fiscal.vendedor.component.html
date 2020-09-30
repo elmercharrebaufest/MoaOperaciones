@@ -42,7 +42,10 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let vendedor of data | orderedColumn : {property: orderedByColumn, direction: orderDirection}  | customFilter : 'descVendedor' : filtroVendedor | customFilter : 'idVendedor' : filtroNroVendedor | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td><a class="animate" (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', vendedor.idVendedor, vendedor.descVendedor)" href="#">{{vendedor.descVendedor}}</a></td>
+                            <td>
+                                <a ngIf="isCorredor()" class="animate" (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', vendedor.idVendedor, vendedor.descVendedor)" href="#">{{vendedor.descVendedor}}</a>
+                                <label ngIf="!isCorredor()">{{vendedor.descVendedor}}</label>
+                            </td>
                             <td>{{vendedor.idVendedor}}</td>
                             <td>{{vendedor.estado}}</td>
                         </tr>

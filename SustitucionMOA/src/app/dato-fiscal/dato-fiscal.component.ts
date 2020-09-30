@@ -75,7 +75,7 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
             secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
 
-        if (this.isAuthorized("CONSULTAR VENDEDORES") && this.isCorredor())
+        if (this.isAuthorized("CONSULTAR VENDEDORES") )
             secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
 
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
@@ -158,4 +158,7 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
         return false;
     }
 
+    isMultifirma(){
+        return this.tipoUsuario == "GRANM";
+    }
 }
