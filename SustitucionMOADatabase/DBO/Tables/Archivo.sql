@@ -3,7 +3,7 @@ CREATE TABLE [dbo].[Archivo](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[FileKey] [nvarchar](max) NULL,
 	[Ruta] [nvarchar](max) NULL,
-	[Usuario_Id] [int] NULL,
+	[Proveedor_Id] [int] NULL,
  CONSTRAINT [PK_dbo.Archivo] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -11,10 +11,10 @@ CREATE TABLE [dbo].[Archivo](
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[Archivo]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Archivo_dbo.Usuario_Usuario_Id] FOREIGN KEY([Usuario_Id])
-REFERENCES [dbo].[Usuario] ([Id])
+ALTER TABLE [dbo].[Archivo]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Archivo_dbo.Proveedor_Proveedor_Id] FOREIGN KEY([Proveedor_Id])
+REFERENCES [dbo].[Proveedor] ([Id])
 GO
 
-ALTER TABLE [dbo].[Archivo] CHECK CONSTRAINT [FK_dbo.Archivo_dbo.Usuario_Usuario_Id]
+ALTER TABLE [dbo].[Archivo] CHECK CONSTRAINT [FK_dbo.Archivo_dbo.Proveedor_Proveedor_Id]
 GO
 

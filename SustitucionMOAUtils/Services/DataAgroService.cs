@@ -134,10 +134,17 @@ namespace SustitucionMOAUtils.Services
 
         public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT)
         {
+            try
+            {
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
 
-            ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+                return respuesta;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
-            return respuesta;
         }
 
 

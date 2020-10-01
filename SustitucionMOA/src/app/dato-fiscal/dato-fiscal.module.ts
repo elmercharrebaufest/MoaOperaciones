@@ -7,6 +7,7 @@ import { DatoFiscalService } from './dato-fiscal.service';
 import { DatoFiscalBaseComponent } from './dato-fiscal.component';
 import { VendedoresListComponent } from './vendedor/dato-fiscal.vendedor.component';
 import { DocumentacionComponent } from './documentacion/documentacion.component';
+import { VendedoresPendientesComponent } from './vendedores-pendientes/vendedores-pendientes.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { DocumentacionComponent } from './documentacion/documentacion.component'
     declarations: [
       DatoFiscalBaseComponent,
       VendedoresListComponent,
-      DocumentacionComponent
+      DocumentacionComponent,
+      VendedoresPendientesComponent
     ],
     providers: [
         DatoFiscalService

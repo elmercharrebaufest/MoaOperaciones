@@ -366,6 +366,12 @@
                         <!--data-toggle="tab">-->Estado solicitud
                     </a>
                 </li>
+                <li>
+                    <a class="animate" [ngClass]="(isSelectedMenu('empresa-corredor')) ? 'active' : ''"
+                        (click)="goToSeccion('/alta-empresa-corredor')" href="#">
+                        Alta Corredor
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

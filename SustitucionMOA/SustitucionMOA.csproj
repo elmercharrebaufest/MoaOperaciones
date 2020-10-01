@@ -252,6 +252,8 @@
     <Content Include="src\app\cuenta-corriente\cuenta-corriente.component.html" />
     <Content Include="src\app\dato-fiscal\dato-fiscal.component.html" />
     <Content Include="src\app\dato-fiscal\documentacion\documentacion.component.html" />
+    <Content Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.css" />
+    <Content Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.html" />
     <Content Include="src\app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.html" />
     <Content Include="src\app\error\error.no-autorizado.component.html" />
     <Content Include="src\app\factura\factura.component.html" />
@@ -509,6 +511,7 @@
     <Content Include="officetohtml\include\SheetJS\xlsx.full.min.js" />
     <Content Include="officetohtml\include\verySimpleImageViewer\css\jquery.verySimpleImageViewer.css" />
     <Content Include="officetohtml\include\verySimpleImageViewer\js\jquery.verySimpleImageViewer.js" />
+    <Content Include="officetohtml\popup.html" />
     <Content Include="officetohtml\index.html" />
     <Content Include="officetohtml\lang.html" />
     <Content Include="officetohtml\layout\index.html" />
@@ -688,6 +691,7 @@
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff2" />
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
+    <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -790,8 +794,15 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
+    <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\pesificacionContrato.ts" />
+    <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
+    <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal.module.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

@@ -5,9 +5,12 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -16,11 +19,13 @@ namespace SustitucionMOAUtils.Services
 
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly IRolService rolService;
 
-        public AzureB2CService(IRepositorio repositorio, IDataAgroService dataAgroService)
+        public AzureB2CService(IRepositorio repositorio, IDataAgroService dataAgroService, RolService rolService)
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
+            this.rolService = rolService;
         }
 
         public Usuario LoguearUsuario(string mail, string CUIT, string granosFlag)
@@ -72,9 +77,7 @@ namespace SustitucionMOAUtils.Services
                 case "corredor":
                     Usuario usuarioCorredor = new Usuario { Mail = mail, CUITRegistro = CUIT };
 
-                    usuarioCorredor.TipoUsuario = ObtenerTipoPorNombreCorto("CORR");
-
-                    RegistrarUsuarioGenerico(ref usuarioCorredor);
+                    RegistrarUsuarioCorredor(ref usuarioCorredor);
 
                     usuario = usuarioCorredor;
                     break;
@@ -110,10 +113,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
-        {
-            return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
-        }
 
         public bool RegistrarUsuarioGranos(ref UsuarioGranos usuario)
         {
@@ -126,27 +125,68 @@ namespace SustitucionMOAUtils.Services
             return ValidarCUITProveedor(ref usuario, proveedor);
         }
 
-        public bool RegistrarUsuarioCorredor(Usuario usuario)
+        public bool RegistrarUsuarioCorredor(ref Usuario usuario)
         {
+            var infoProveedor = ObtenerInfoProveedorDA(usuario.CUITRegistro);
+
             Proveedor proveedor = new Proveedor
             {
                 CUIT = usuario.CUITRegistro,
-                EstadoAprobacion = EstadoAprobacion.AunNoImplementado,
-                Observaciones = "El tipo de usuario seleccionado aún no ha sido implementado. Contactese con su comercial.",
                 CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro)
             };
 
-            usuario.Proveedores.Add(proveedor);
+            usuario.Roles = new List<Rol>();
+            usuario.Proveedores = new List<Proveedor>();
+            usuario.TipoUsuario = ObtenerTipoPorNombreCorto("CORR");
 
+            proveedor.Mail = usuario.Mail;
+
+            if (!infoProveedor.HayError)
+            {
+                if (infoProveedor.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                {
+                    //usuario.Comercial = string.Concat(infoProveedor.ComercialNombres, " ", infoProveedor.ComercialApellido);
+
+                    proveedor.IdComercialDataAgro = infoProveedor.ComercialId;
+                    proveedor.IdDataAgro = infoProveedor.ProveedorId;
+                    proveedor.RazonSocial = infoProveedor.ProveedorRazonSocial;
+                    proveedor.CodigoProveedor = FormatearCodigoCorredor(proveedor.CUIT);
+
+                    infoProveedor.ProveedorOperando = false;
+                    Rol rolUsuario = rolService.ObtenerRolPorCodigo(infoProveedor.ProveedorOperando ? "GRAN" : "NUECORR");
+
+                    proveedor.EstadoAprobacion = infoProveedor.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+
+                    usuario.Roles.Add(rolUsuario);
+                }
+                else
+                {
+                    Rol rolDesabilitado = rolService.ObtenerRolPorCodigo("DDAG");
+                    usuario.Roles.Add(rolDesabilitado);
+
+                    proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                    proveedor.Observaciones = "El mail del registro no está dentro de los mails registrados en Data Agro.";
+                }
+            }
+            else
+            {
+                Rol rolDesabilitado = rolService.ObtenerRolPorCodigo("DDAG");
+                usuario.Roles.Add(rolDesabilitado);
+                proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
+            }
+
+            usuario.Proveedores.Add(proveedor);
             usuario.Habilitado = true;
 
             repositorio.Agregar(usuario);
+
             return repositorio.GuardarCambios() == 1;
         }
         
         public bool RegistrarUsuarioGenerico(ref Usuario usuario)
         {
-            Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
+            Rol rolUsuarioNoImplementado = rolService.ObtenerRolPorCodigo("NOIMP");
 
             usuario.Roles = new List<Rol>
             {
@@ -180,34 +220,13 @@ namespace SustitucionMOAUtils.Services
             return dataAgroService.ValidarCUITProveedorGranos(ref usuario, proveedor);
         }
 
-        public bool ExisteProveedor(Proveedor proveedor)
-        {
-            return (repositorio.Existe<Proveedor>(u => u.CUIT == u.CUIT));
-        }
+        public ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT);
 
-        public bool RegistrarProveedor(Proveedor proveedor)
-        {
-            if (!ExisteProveedor(proveedor))
-            {
-                repositorio.Agregar(proveedor);
-                return repositorio.GuardarCambios() == 1;
-            }
+        public Usuario ObtenerUsuario(string mail, string granosFlag) => BuscarUsuarioPorMail(mail);
 
-            return true;
-        }
-        public Rol ObtenerRolPorCodigo(string codigo)
-        {
-            return repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
-        }
+        private string FormatearCodigoCorredor(string CUIT) => string.Concat("C", CUIT.Substring(2, 8));
 
-        public Usuario ObtenerUsuario(string mail, string granosFlag)
-        {
-            return BuscarUsuarioPorMail(mail);
-        }
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
 
-        private string FormatearCodigoCorredor(string CUIT)
-        {
-            return string.Concat("c" , CUIT.Substring(2, 8));
-        }
     }
 }

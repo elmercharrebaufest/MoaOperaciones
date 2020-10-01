@@ -55,6 +55,10 @@ var AltasComponent = /** @class */ (function (_super) {
         _this.observacionesProveedor = "";
         _this.mensajeError = "";
         _this.listaArchivos = [];
+        _this.empleados = [];
+        _this.funcionarios = [];
+        _this.relacionConEmpleados = "";
+        _this.relacionConFuncionarios = "";
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
         return _this;
@@ -199,13 +203,14 @@ var AltasComponent = /** @class */ (function (_super) {
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        this.obtenerArchivosSubidos(empresa.Mail);
+        this.cargarSolicitudUsuario(empresa.Mail);
+        this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
     };
-    AltasComponent.prototype.obtenerArchivosSubidos = function (mail) {
+    AltasComponent.prototype.obtenerArchivosSubidos = function (mail, proveedorId) {
         var _this = this;
-        this.subscription = this.service.obtenerArchivosSubidos(mail).subscribe(function (result) {
+        this.subscription = this.service.obtenerArchivosSubidos(mail, proveedorId).subscribe(function (result) {
             _this.listaArchivos = new Array();
             result.forEach(function (element) {
                 var archivo = new Archivo();
@@ -223,7 +228,8 @@ var AltasComponent = /** @class */ (function (_super) {
             this.spinnerSmallComponent = new SpinnerSmallComponent();
         var archivoId = archivo.Id;
         var fileKey = archivo.FileKey;
-        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString());
+        var proveedorId = this.empresaSeleccionada.Id;
+        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString());
         var url = "/officetohtml/index.html?param=" + param;
         var link = document.createElement("a");
         document.body.appendChild(link);
@@ -239,6 +245,35 @@ var AltasComponent = /** @class */ (function (_super) {
         else {
             this.dataFiltered = this.data;
         }
+    };
+    AltasComponent.prototype.cargarSolicitudUsuario = function (mail) {
+        var _this = this;
+        this.subscription = this.service.cargarSolicitudUsuario(mail).subscribe(function (result) {
+            if (result.VinculoConEmpleadosDeMolinos != null) {
+                if (result.VinculoConEmpleadosDeMolinos) {
+                    _this.relacionConEmpleados = "Si";
+                }
+                else {
+                    _this.relacionConEmpleados = "No";
+                }
+                if (result.VinculoConFuncionariosPublicos) {
+                    _this.relacionConFuncionarios = "Si";
+                }
+                else {
+                    _this.relacionConFuncionarios = "No";
+                }
+                _this.empleados = result.Empleados;
+                _this.funcionarios = result.Funcionarios;
+            }
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
+    AltasComponent.prototype.isVisibleTablaFuncionarios = function () {
+        return this.relacionConFuncionarios == "Si";
+    };
+    AltasComponent.prototype.isVisibleTablaEmpleados = function () {
+        return this.relacionConEmpleados == "Si";
     };
     __decorate([
         ViewChild(MensajeComponent),

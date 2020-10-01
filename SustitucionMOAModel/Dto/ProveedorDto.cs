@@ -37,7 +37,16 @@ namespace SustitucionMOAModel.Dto
             Mail = proveedor.Mail ?? "";
             Observaciones = proveedor.Observaciones;
             RazonSocial = proveedor.RazonSocial ?? "";
-            Comercial = proveedor.UsuariosAsociados.Count() > 0 ? (proveedor.UsuariosAsociados.First() as UsuarioGranos).Comercial : "";
+            Comercial = "";
+
+            if (proveedor.UsuariosAsociados.Count() > 0)
+            {
+                if (proveedor.UsuariosAsociados.First() is UsuarioGranos)
+                {
+                    Comercial = (proveedor.UsuariosAsociados.First() as UsuarioGranos).Comercial;
+                }
+            }
+
             EstadoSIPER = proveedor.EstadoSIPER;
             HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
         }

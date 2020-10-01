@@ -1,0 +1,133 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Dato Fiscal: <strong>Vendedores</strong> </div>
+
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info col-xs-12 col-sm-11" (click)="solicitarAltaProveedor()" data-toggle="modal"
+                        data-target="#modalNuevoVendedor"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none; justify-content: center;">
+                    Solicitar Alta <span class="fa fa-file-image-o" style="padding-left: 10px;"></span>
+                </button>
+
+                <button type="button" style="display:none" id="openModalHiddenButton" ></button>
+            </div>
+        </div>
+        <!--End Title-->
+        <div class="row myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <title-caps>Refinar resultados</title-caps>
+                <hr>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    Por Vendedor:
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" [value]="filtroVendedor" (input)="filtroVendedor = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    Por Nro. Vendedor:
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" [value]="filtroNroVendedor" (input)="filtroNroVendedor = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row myRow">
+            <div class="clearfix myTables">
+
+                <mensaje></mensaje>
+                <spinner></spinner>
+
+                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate " cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <thead>
+                        <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">Razon Social</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">Estado </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" > </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let vendedor of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                            <td>{{vendedor.CUIT}}</td>
+                            <td>{{vendedor.RazonSocial}}</td>
+                            <td>{{vendedor.EstadoAprobacionDescripcion}}</td>
+                            <td>
+                                <button (click)="goToSeccionParam('/alta-empresa-granos', vendedor.Id)">
+                                    Completar alta
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                        </span>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                    </div>
+                </pagination-template>
+            </div>
+        </div>
+        <!-- END tables-->
+        <!-- END form-->
+        <!-- Modal -->
+        <div class="modal fade" id="modalNuevoVendedor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onClick="abrirModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Nuevo vendedor </h4>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="formulario">
+                            <div class="formulario-campo">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        CUIT
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="CUIT" [(ngModel)]="nuevoVendedorCUIT"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
+                                        Razón social:
+                                    </div>
+                                    <div class="formulario-input">
+                                        <input type="text" class="form-control"
+                                               placeholder="Razón social" [(ngModel)]="nuevoVendedorRazonSocial"
+                                               maxlength="100" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info col-xs-12 col-sm-11" (click)="solicitarAltaProveedor()">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!--End CONTENT-->
+</div>

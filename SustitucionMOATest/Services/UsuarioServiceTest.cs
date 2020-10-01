@@ -101,7 +101,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
             Assert.AreEqual(expected, result);
-            Assert.AreEqual(EstadoAprobacion.Aprobado, resultUser.ObtenerProveedorActual().EstadoAprobacion);
+            Assert.AreEqual(EstadoAprobacion.Aprobado, resultUser.ObtenerProveedor().EstadoAprobacion);
             Assert.AreEqual(true, resultUser.Habilitado);
 
         }
@@ -169,7 +169,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
             Assert.AreEqual(expected, result);
-            Assert.AreEqual(EstadoAprobacion.Deshabilitado, resultUser.ObtenerProveedorActual().EstadoAprobacion);
+            Assert.AreEqual(EstadoAprobacion.Deshabilitado, resultUser.ObtenerProveedor().EstadoAprobacion);
             Assert.AreEqual(false, resultUser.Habilitado);
         }
 

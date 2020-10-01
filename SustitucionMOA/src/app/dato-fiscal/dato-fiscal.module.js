@@ -13,6 +13,7 @@ import { DatoFiscalService } from './dato-fiscal.service';
 import { DatoFiscalBaseComponent } from './dato-fiscal.component';
 import { VendedoresListComponent } from './vendedor/dato-fiscal.vendedor.component';
 import { DocumentacionComponent } from './documentacion/documentacion.component';
+import { VendedoresPendientesComponent } from './vendedores-pendientes/vendedores-pendientes.component';
 var DatoFiscalModule = /** @class */ (function () {
     function DatoFiscalModule() {
     }
@@ -27,7 +28,8 @@ var DatoFiscalModule = /** @class */ (function () {
             declarations: [
                 DatoFiscalBaseComponent,
                 VendedoresListComponent,
-                DocumentacionComponent
+                DocumentacionComponent,
+                VendedoresPendientesComponent
             ],
             providers: [
                 DatoFiscalService

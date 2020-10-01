@@ -22,6 +22,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { Archivo } from '../../common/models/archivo';
 import { InformeComercial } from '../../common/models/informeComercial';
@@ -36,21 +37,33 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
+import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
+import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
+import { CartaPresentacion } from '../../common/models/cartaPresentacion';
 var EmpresaGranosComponent = /** @class */ (function (_super) {
     __extends(EmpresaGranosComponent, _super);
-    function EmpresaGranosComponent(service, navService, sessionDataService, securityService, floatMsgService, modalService) {
+    function EmpresaGranosComponent(service, navService, route, sessionDataService, securityService, floatMsgService, modalService) {
         var _this = _super.call(this, service, navService, sessionDataService, securityService, floatMsgService, modalService) || this;
         _this.service = service;
         _this.navService = navService;
+        _this.route = route;
         _this.sessionDataService = sessionDataService;
         _this.securityService = securityService;
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
         _this.listaMateriales = [];
         _this.listaCampanias = [];
+        _this.empleados = [];
+        _this.funcionarios = [];
         // private acopiosArray: Array<NuevoAcopio> = [];
+        _this.newAttributeEmpleados = new RelacionConEmpleados();
+        _this.newAttributeFuncionarios = new RelacionConFuncionarios();
         _this.newAttributeAlm = new NuevoAcopio();
         _this.newAttribute = new NuevoProduccion();
+        _this.relacionConEmpleadosChecked = null;
+        _this.relacionConFuncionariosChecked = null;
+        _this.codigoConductaVisto = false;
+        _this.codigoDeConducta = false;
         _this.materialesData = null;
         _this.CBUSISA = "";
         _this.nombreArchivoSeleccionado = "";
@@ -59,14 +72,20 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         _this.archivoSeleccionado = null;
         _this.listaArchivos = [];
         _this.informe = new InformeComercial();
+        _this.cartaPresentacion = new CartaPresentacion();
+        _this.nuevoAtributoCampo = new NuevoProduccion();
+        _this.nuevoAtributoAcompio = new NuevoAcopio();
         _this.searchTerm = new FormControl();
         _this.myLocalidades = [];
         _this.mensajeError = "";
+        _this.tryDoctype = "";
         _this.keyword = 'Nombre';
         _this.data = [];
+        _this.localidades = [];
         _this.autocompleteNotFoundText = "No encontrado";
-        //Indira
+        _this.proveedorId = 0;
         _this.estadoSISA = "";
+        _this.esCorredor = false;
         _this.mensajeComponent = new MensajeComponent();
         return _this;
     }
@@ -120,15 +139,24 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
     };
     EmpresaGranosComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        var tipoUsuario = sessionStorage.getItem("tipoUsuario").toUpperCase();
+        this.esCorredor = (tipoUsuario == "CORR" || tipoUsuario == "NUECORR");
+        this.route.params.forEach(function (params) {
+            if (params['id'] > 0)
+                _this.proveedorId = params['id'];
+        });
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
+        this.cargarSolicitudUsuario();
         this.obtenerInfoProveedor();
         this.addFieldValue();
         this.addFieldValueAlm();
-        console.log(this.estadoSISA);
+        this.agregarCampoCartaPresentacion();
+        this.agregarAcopioCartaPresentacion();
     };
     Object.defineProperty(EmpresaGranosComponent.prototype, "email", {
         get: function () {
@@ -149,7 +177,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.postFile(files, fileKey).subscribe(function (result) {
+        this.subscription = this.service.postFile(files, fileKey, this.proveedorId).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
@@ -205,19 +233,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });
     };
-    // obtenerCBUSISA() {
-    //     this.subscription = this.service.obtenerCBUSISA().subscribe(
-    //         result => {
-    //             this.CBUSISA = result;
-    //         },
-    //         error => {
-    //             this.mensajeComponent.setErrorMsg(error.message);
-    //         }
-    //     );
-    // }
     EmpresaGranosComponent.prototype.obtenerInfoProveedor = function () {
         var _this = this;
-        this.subscription = this.service.obtenerInfoProveedor().subscribe(function (result) {
+        this.subscription = this.service.obtenerInfoProveedor(this.proveedorId).subscribe(function (result) {
             _this.CBUSISA = result.ProveedorCBU;
             _this.estadoSISA = result.estadoSISA;
         }, function (error) {
@@ -327,7 +345,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         var archivoID = this.archivoSeleccionado.Id;
-        this.subscription = this.service.eliminarArchivoSubido(this.fileKeySeleccionado, archivoID).subscribe(function (result) {
+        this.subscription = this.service.eliminarArchivoSubido(archivoID, this.proveedorId).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
@@ -352,7 +370,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.obtenerArchivosSubidos = function () {
         var _this = this;
-        this.subscription = this.service.obtenerArchivosSubidos().subscribe(function (result) {
+        this.subscription = this.service.obtenerArchivosSubidos("", this.proveedorId).subscribe(function (result) {
             _this.listaArchivos = new Array();
             result.forEach(function (element) {
                 var archivo = new Archivo();
@@ -371,10 +389,20 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.onSubmit = function () {
         var _this = this;
+        if (this.validarTyC()) {
+            this.spinnerModal.hideIt();
+            return;
+        }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.enviarSolicitud().subscribe(function (result) {
+        var datos = {
+            Empleados: this.empleados,
+            Funcionarios: this.funcionarios,
+            VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
+            VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
+        };
+        this.subscription = this.service.enviarSolicitud(datos, this.proveedorId).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
@@ -481,6 +509,314 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         }
         return false;
     };
+    EmpresaGranosComponent.prototype.addFieldValueEmpleados = function () {
+        this.empleados.push(this.newAttributeEmpleados);
+        this.newAttributeEmpleados = new RelacionConEmpleados();
+    };
+    EmpresaGranosComponent.prototype.deleteFieldValueEmpleados = function (index) {
+        this.empleados.splice(index, 1);
+    };
+    EmpresaGranosComponent.prototype.isVisibleTablaEmpleados = function () {
+        return this.relacionConEmpleadosChecked;
+    };
+    EmpresaGranosComponent.prototype.relacionConEmpleadosCheckSi = function (event) {
+        this.relacionConEmpleadosChecked = true;
+        if (this.empleados.length == 0) {
+            this.addFieldValueEmpleados();
+        }
+    };
+    EmpresaGranosComponent.prototype.relacionConEmpleadosCheckNo = function (event) {
+        this.relacionConEmpleadosChecked = false;
+    };
+    EmpresaGranosComponent.prototype.addFieldValueFuncionarios = function () {
+        this.funcionarios.push(this.newAttributeFuncionarios);
+        this.newAttributeFuncionarios = new RelacionConFuncionarios();
+    };
+    EmpresaGranosComponent.prototype.deleteFieldValueFuncionarios = function (index) {
+        this.funcionarios.splice(index, 1);
+    };
+    EmpresaGranosComponent.prototype.isVisibleTablaFuncionarios = function () {
+        return this.relacionConFuncionariosChecked;
+    };
+    EmpresaGranosComponent.prototype.relacionConFuncionariosCheckSi = function (event) {
+        this.relacionConFuncionariosChecked = true;
+        if (this.funcionarios.length == 0) {
+            this.addFieldValueFuncionarios();
+        }
+    };
+    EmpresaGranosComponent.prototype.relacionConFuncionariosCheckNo = function (event) {
+        this.relacionConFuncionariosChecked = false;
+    };
+    EmpresaGranosComponent.prototype.validarTyC = function () {
+        if (this.relacionConEmpleadosChecked == null) {
+            this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Empleados de Molinos agro S.A.");
+            return true;
+        }
+        if (this.relacionConEmpleadosChecked == false) {
+            this.empleados = [];
+        }
+        if (this.relacionConEmpleadosChecked == true) {
+            if (this.empleados.length == 0) {
+                this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Empleados de Molinos agro S.A.");
+            }
+            else {
+                for (var _i = 0, _a = this.empleados; _i < _a.length; _i++) {
+                    var item = _a[_i];
+                    if (item.NombreProveedora == null || item.NombreProveedora == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                    if (item.CargoProveedora == null || item.CargoProveedora == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                    if (item.NombreMolinos == null || item.NombreMolinos == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                    if (item.Vinculo == null || item.Vinculo == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el vinculo en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                }
+            }
+        }
+        if (this.relacionConFuncionariosChecked == null) {
+            this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Funcionarios Públicos");
+            return true;
+        }
+        if (this.relacionConFuncionariosChecked == false) {
+            this.funcionarios = [];
+        }
+        if (this.relacionConFuncionariosChecked == true) {
+            if (this.funcionarios.length == 0) {
+                this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Funcionarios Públicos");
+            }
+            else {
+                for (var _b = 0, _c = this.funcionarios; _b < _c.length; _b++) {
+                    var item = _c[_b];
+                    if (item.NombreFirma == null || item.NombreFirma == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.CargoFirma == null || item.CargoFirma == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.NombreFuncionario == null || item.NombreFuncionario == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.CargoFuncionario == null || item.CargoFuncionario == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.Vinculo == null || item.Vinculo == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el vinculo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                }
+            }
+        }
+        if (this.codigoDeConducta == false) {
+            this.mensajeComponent.setErrorMsg("Debe aceptar el Código de Conducta de Proveedores de Molinos agro S.A.");
+            return true;
+        }
+        return false;
+    };
+    EmpresaGranosComponent.prototype.abrirCodigoConducta = function (siempre) {
+        if (this.codigoConductaVisto == false || siempre) {
+            this.codigoConductaVisto = true;
+            var filePath = location.origin + "/Documentacion/CodigoDeConductaParaProveedoresMOA.pdf";
+            console.log(filePath);
+            var url = location.origin + "/officetohtml/popup.html?filePath=" + filePath;
+            this.tryDoctype = url;
+            document.getElementById("iframeConducta").setAttribute("src", url);
+            document.getElementById("openModalconductaModal").click();
+        }
+    };
+    EmpresaGranosComponent.prototype.cargarSolicitudUsuario = function () {
+        var _this = this;
+        this.subscription = this.service.cargarSolicitudUsuario().subscribe(function (result) {
+            if (result.VinculoConEmpleadosDeMolinos != null) {
+                _this.codigoConductaVisto = true;
+                _this.codigoDeConducta = true;
+                _this.relacionConEmpleadosChecked = result.VinculoConEmpleadosDeMolinos;
+                if (result.VinculoConEmpleadosDeMolinos) {
+                    document.getElementById("radioEmpleadosSi").setAttribute('checked', 'true');
+                }
+                else {
+                    document.getElementById("radioEmpleadosNo").setAttribute('checked', 'true');
+                }
+                _this.relacionConFuncionariosChecked = result.VinculoConFuncionariosPublicos;
+                if (result.VinculoConFuncionariosPublicos) {
+                    document.getElementById("radioFuncionariosSi").setAttribute('checked', 'true');
+                }
+                else {
+                    document.getElementById("radioFuncionariosNo").setAttribute('checked', 'true');
+                }
+                _this.empleados = result.Empleados;
+                _this.funcionarios = result.Funcionarios;
+            }
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
+    EmpresaGranosComponent.prototype.agregarCampoCartaPresentacion = function () {
+        this.cartaPresentacion.nuevosCampos.push(this.nuevoAtributoCampo);
+        this.nuevoAtributoCampo = new NuevoProduccion();
+    };
+    EmpresaGranosComponent.prototype.borrarCampoCartaPresentacion = function (index) {
+        this.cartaPresentacion.nuevosCampos.splice(index, 1);
+    };
+    EmpresaGranosComponent.prototype.agregarAcopioCartaPresentacion = function () {
+        this.cartaPresentacion.nuevosAcopios.push(this.nuevoAtributoAcompio);
+        this.nuevoAtributoAcompio = new NuevoAcopio();
+    };
+    EmpresaGranosComponent.prototype.borrarAcopioCartaPresentacion = function (index) {
+        this.cartaPresentacion.nuevosAcopios.splice(index, 1);
+    };
+    EmpresaGranosComponent.prototype.selectEventCampoCartaPresentacion = function (item, index) {
+        this.cartaPresentacion.nuevosCampos[index].LocalidadId = item.LocalidadId;
+    };
+    EmpresaGranosComponent.prototype.selectEventAcopioCartaPresentacion = function (item, index) {
+        this.cartaPresentacion.nuevosAcopios[index].LocalidadID = item.LocalidadId;
+    };
+    EmpresaGranosComponent.prototype.onChangeLocalidad = function (term) {
+        var _this = this;
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(function (result) {
+                _this.localidades = result;
+            }, function (error) {
+                _this.spinnerSmallComponent.hideIt();
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+    };
+    EmpresaGranosComponent.prototype.generarCartaPresentacion = function () {
+        var _this = this;
+        this.spinnerModal.showIt();
+        this.unsubscribe();
+        this.cartaPresentacion.nuevosAcopios.forEach(function (campo) {
+            campo.CampaniaID = _this.campaniaActual;
+        });
+        this.cartaPresentacion.nuevosCampos.forEach(function (campo) {
+            campo.CampaniaId = _this.campaniaActual;
+        });
+        this.cartaPresentacion.campaniaID = this.campaniaActual;
+        if (this.validarCartaPresentacion()) {
+            this.spinnerModal.hideIt();
+            return;
+        }
+        this.mensajeError = "";
+        this.subscription = this.service.generarCartaPresentacion(this.cartaPresentacion, this.proveedorId).subscribe(function (result) {
+            _this.spinnerModal.hideIt();
+            if (result.error) {
+                _this.mensajeError = result.error;
+            }
+            else {
+                var byteArray = new Uint8Array(result.data);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // IE11
+                    window.navigator.msSaveOrOpenBlob(blob, "Carta presentación - " + _this.cartaPresentacion.vendedorRazonSocial + ".pdf");
+                }
+                else {
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement("a");
+                    document.body.appendChild(link);
+                    link.href = url;
+                    link.download = "Carta presentación - " + _this.cartaPresentacion.vendedorRazonSocial + ".pdf";
+                    link.click();
+                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    return false;
+                }
+            }
+        }, function (error) {
+            _this.spinnerModal.hideIt();
+            _this.mensajeError = error.message;
+        });
+    };
+    EmpresaGranosComponent.prototype.validarCartaPresentacion = function () {
+        //Corredor
+        if (this.cartaPresentacion.corredorBolsa == "" || !this.cartaPresentacion.corredorBolsa) {
+            this.mensajeError = "No completo el campo bolsa .";
+            return true;
+        }
+        if (this.cartaPresentacion.corredorNroRegistro == "" || !this.cartaPresentacion.corredorNroRegistro) {
+            this.mensajeError = "No completo el número de registro.";
+            return true;
+        }
+        //Vendedor
+        if (this.cartaPresentacion.vendedorCuit == "" || !this.cartaPresentacion.vendedorCuit) {
+            this.mensajeError = "No completo el CUIT del vendedor.";
+            return true;
+        }
+        if (this.cartaPresentacion.vendedorRazonSocial == "" || !this.cartaPresentacion.vendedorRazonSocial) {
+            this.mensajeError = "No completo la razón social del vendedor .";
+            return true;
+        }
+        if (this.cartaPresentacion.vendedorDomicilioFiscal == "" || !this.cartaPresentacion.vendedorDomicilioFiscal) {
+            this.mensajeError = "No completo el domicilio fiscal.";
+            return true;
+        }
+        if (this.cartaPresentacion.vendedorActividad == "" || !this.cartaPresentacion.vendedorActividad) {
+            this.mensajeError = "No seleccionó la actividad.";
+            return true;
+        }
+        if (this.cartaPresentacion.vendedorMailContacto == "" || !this.cartaPresentacion.vendedorMailContacto) {
+            this.mensajeError = "No completo el mail de contacto.";
+            return true;
+        }
+        if (this.cartaPresentacion.vendedorTelefonoContacto == "" || !this.cartaPresentacion.vendedorTelefonoContacto) {
+            this.mensajeError = "No completo el teléfono de contacto.";
+            return true;
+        }
+        if (this.cartaPresentacion.campaniaID == 0 || !this.cartaPresentacion.campaniaID) {
+            this.mensajeError = "No completo la Campaña Actual.";
+            return true;
+        }
+        for (var _i = 0, _a = this.cartaPresentacion.nuevosCampos; _i < _a.length; _i++) {
+            var item = _a[_i];
+            if (item.MaterialId == null || item.MaterialId == 0) {
+                this.mensajeError = "Debe completar el grano en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.LocalidadId == null || item.LocalidadId == 0) {
+                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.Hectareas == null || item.Hectareas == 0) {
+                this.mensajeError = "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.Toneladas == null || item.Toneladas == 0) {
+                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                return true;
+            }
+            if (item.ArrendaPropia == null) {
+                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad productiva.";
+                return true;
+            }
+        }
+        for (var _b = 0, _c = this.cartaPresentacion.nuevosAcopios; _b < _c.length; _b++) {
+            var item = _c[_b];
+            if (item.LocalidadID == null || item.LocalidadID == 0) {
+                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
+                return true;
+            }
+            if (item.Toneladas == null || item.Toneladas == 0) {
+                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                return true;
+            }
+            if (item.ArrendaPropia == null) {
+                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad planta.";
+                return true;
+            }
+        }
+        return false;
+    };
     __decorate([
         ViewChild("msjEmpresaGranos"),
         __metadata("design:type", MensajeComponent)
@@ -500,7 +836,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             styleUrls: ['empresa-granos.component.css', '../../../../Content/css/bootstrap.min.css'],
             providers: [EmpresaGranosService]
         }),
-        __metadata("design:paramtypes", [EmpresaGranosService, NavService, SessionDataService, SecurityService, FloatMsgService, ModalService])
+        __metadata("design:paramtypes", [EmpresaGranosService, NavService, ActivatedRoute, SessionDataService, SecurityService, FloatMsgService, ModalService])
     ], EmpresaGranosComponent);
     return EmpresaGranosComponent;
 }(ListBaseComponent));

@@ -39,20 +39,25 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <table *ngIf="isVisible()" id="tableModal"
-                    class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table" cellspacing="0"
-                    role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                       class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table" cellspacing="0"
+                       role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Id')">ID</th>
                             <th tabindex="0" rowspan="1" colspan="1" style=""
+                                (click)="orderColumnBy('Mail')">Usuario</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style=""
                                 (click)="orderColumnBy('CodigoProveedor')">Codigo</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">
-                                Razon Social</th>
+                                Razon Social
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Comercial')">
-                                Comercial</th>
+                                Comercial
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SISAEstadoCuit')">
-                                SISA</th>
+                                SISA
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style=""
                                 (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
@@ -62,6 +67,7 @@
                         <tr *ngFor="let empresa of dataFiltered | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
                             <td>{{empresa.Id}}</td>
+                            <td>{{empresa.Mail}}</td>
                             <td>{{empresa.CodigoProveedor}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial}}</td>
@@ -70,11 +76,11 @@
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-lg" (click)="abrirModal(empresa)"
-                                    style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
+                                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
                                     Ver Documentacion
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton"
-                                    data-toggle="modal" data-target="#myModal"></button>
+                                        data-toggle="modal" data-target="#myModal"></button>
                             </td>
                         </tr>
                     </tbody>
@@ -90,15 +96,17 @@
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
-    style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+     style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="hidemyModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">{{empresaSeleccionada.RazonSocial}} -
-                    {{empresaSeleccionada.CUIT}}</h4>
+                <h4 class="modal-title" id="myModalLabel">
+                    {{empresaSeleccionada.RazonSocial}} -
+                    {{empresaSeleccionada.CUIT}}
+                </h4>
 
             </div>
             <div class="modal-body" style="padding-top:0;">
@@ -119,11 +127,11 @@
                                             <label>Informe comercial</label>&nbsp;
 
                                             <label style="color:red;"
-                                                *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0">
-                                                Sin Adjuntar</label>
+                                                   *ngIf="(listaArchivos | archivosFilterPipe:'informeComercialFirmado').length === 0">
+                                                Sin Adjuntar
+                                            </label>
 
-                                            <span
-                                                *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
+                                            <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
                                                 <a (click)="descargarArchivo(archivo)">
                                                     {{archivo.Nombre}}
                                                 </a>
@@ -140,10 +148,10 @@
                                             por Banco
                                         </label>&nbsp;
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0">
-                                            Sin Adjuntar</label>
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBU').length === 0">
+                                            Sin Adjuntar
+                                        </label>
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBU'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -154,10 +162,10 @@
                                             Constancia de CBU Mercaderia
                                         </label>&nbsp;
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0">
-                                            Sin Adjuntar</label>
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia').length === 0">
+                                            Sin Adjuntar
+                                        </label>
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -168,8 +176,9 @@
                                     <h3>Otros archivos </h3>
                                     <div class="form-group">
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'otrosArchivos').length === 0">
-                                            Sin Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'otrosArchivos').length === 0">
+                                            Sin Adjuntar
+                                        </label>
                                         <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
@@ -180,12 +189,12 @@
                                 <mdb-step name="Step 6" label="Documentación">
                                     <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
                                     <div class="form-group"
-                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                         *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                         Estado en SIPER <input type="text" class="form-control" [value]=""
-                                            [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
+                                                               [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
                                     </div>
                                     <div class="form-group"
-                                        *ngIf="empresaSeleccionada.EstadoAprobacion != 2 || !isAuthorized('ABM EMPRESAS OPERADOR')">
+                                         *ngIf="empresaSeleccionada.EstadoAprobacion != 2 || !isAuthorized('ABM EMPRESAS OPERADOR')">
                                         Estado en SIPER: <label>{{empresaSeleccionada.EstadoSIPER}}</label>
                                     </div>
                                 </mdb-step>
@@ -196,11 +205,11 @@
                                     <div class="form-group">
                                         <label>Constancia de CUIT</label>&nbsp;
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0">
-                                            Sin Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0">
+                                            Sin Adjuntar
+                                        </label>
 
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -213,11 +222,11 @@
                                             vigente)
                                         </label>&nbsp;
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0">
-                                            Sin Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0">
+                                            Sin Adjuntar
+                                        </label>
 
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -230,11 +239,11 @@
                                         </label>&nbsp;
 
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0">
-                                            Sin Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0">
+                                            Sin Adjuntar
+                                        </label>
 
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -247,10 +256,10 @@
                                         </label>
 
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0">
-                                            Sin Adjuntar</label>
-                                        <div
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0">
+                                            Sin Adjuntar
+                                        </label>
+                                        <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -262,11 +271,11 @@
                                             exención SUSS.
                                         </label>&nbsp;
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0">
-                                            Sin Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0">
+                                            Sin Adjuntar
+                                        </label>
 
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -279,11 +288,11 @@
                                         </label>&nbsp;
 
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0">
-                                            Sin Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0">
+                                            Sin Adjuntar
+                                        </label>
 
-                                        <span
-                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
+                                        <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
@@ -295,8 +304,10 @@
                                         </label>&nbsp;
 
                                         <label style="color:red;"
-                                            *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0"> Sin
-                                            Adjuntar</label>
+                                               *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0">
+                                            Sin
+                                            Adjuntar
+                                        </label>
 
                                         <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
                                             <a (click)="descargarArchivo(archivo)">
@@ -309,10 +320,137 @@
                         </mdb-stepper>
                     </div>
                     <div class="row">
+                        <div  id="accordionExample">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h5>
+                                        <button class="titulos " type="button" >
+                                            Vínculos a declarar con Empleados de Molinos agro S.A.
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseOne"  aria-labelledby="headingOne" >
+                                    <div class="card-body">
+                                        
+                                        <div class="form-group form-check">
+                                            <label style="display:inline-block;">
+                                                {{relacionConEmpleados}}
+                                                <input type="radio" checked="checked" readonly="readonly">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        
+                                        <div *ngIf="isVisibleTablaEmpleados()">
+
+                                            <table class="table table-striped table-bordered table-custom cssTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th><b>Nombre y Apellido</b> <br /><label style="font-weight:100;">(integrante de la Firma Proveedora)</label></th>
+                                                        <th><b>Cargo y/o Función</b> <br /><label style="font-weight:100;">en la Firma Proveedora</label></th>
+                                                        <th><b>Nombre y Apellido</b> <br /><label style="font-weight:100;">(integrante de Molinos agro)</label></th>
+                                                        <th><b>Vínculo</b><br /><label style="font-weight:100;">(Comercial, personal, parentesco, deudor, acreedor, etc.)</label></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let field of empleados; let i = index">
+
+                                                        <td width="100px" style="font-weight:300;">
+                                                            {{field.NombreProveedora}}                                                            
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.CargoProveedora}}
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.NombreMolinos}}
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.Vinculo}}
+                                                        </td>
+
+                                                    </tr>
+
+                                                </tbody>
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="headingTwo">
+                                    <h5>
+                                        <button class="titulos">
+                                            Vínculos a declarar con Funcionarios Públicos
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseTwo" aria-labelledby="headingTwo" >
+                                    <div class="card-body">                                        
+                                        <div class="form-group form-check">
+                                            <label style="display:inline-block;">
+                                                {{relacionConFuncionarios}}
+                                                <input type="radio" checked="checked" readonly="readonly">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+
+
+                                        <div *ngIf="isVisibleTablaFuncionarios()">
+
+                                            <table class="table table-striped table-bordered table-custom cssTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Identificación del integrante de la Firma</th>
+                                                        <th colspan="2">Identificación del Funcionario Público</th>
+                                                        <th>Tipo de vínculo</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><label style="font-weight:100;">Nombre y Apellido</label></th>
+                                                        <th><label style="font-weight:100;">Cargo y/o Función</label></th>
+                                                        <th><label style="font-weight:100;">Nombre y Apellido</label></th>
+                                                        <th><label style="font-weight:100;">Ámbito donde desempeña sus funciones / Cargo</label></th>
+                                                        <th><label style="font-weight:100;">Comercial, personal, parentesco, deudor, acreedor, pleito pendiente, etc.</label></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let field of funcionarios; let i = index">
+
+                                                        <td width="100px"  style="font-weight:300;">
+                                                            {{field.NombreFirma}}
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.CargoFirma}}
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.NombreFuncionario}}
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.CargoFuncionario}}
+                                                        </td>
+                                                        <td width="100px">
+                                                            {{field.Vinculo}}
+                                                        </td>
+
+                                                    </tr>
+
+                                                </tbody>
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="row">
                         <table id="tableModalHistorial"
-                            class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
-                            cellspacing="0" role="grid" aria-describedby="tableModal_info"
-                            style="width: 100%; padding:10px 0;">
+                               class="display nowrap dataTable no-footer dtr-inline rounded shadow ccpp-table"
+                               cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                               style="width: 100%; padding:10px 0;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
@@ -343,47 +481,49 @@
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      ">
                     <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
-                        <div class="alert alert-danger"><i aria-hidden="true"
-                                class="fa fa-exclamation-triangle"></i>{{mensajeError}}</div>
+                        <div class="alert alert-danger">
+                            <i aria-hidden="true"
+                               class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+                        </div>
                     </div>
                     <label style="float:left;">Observaciones internas</label>
                     <textarea placeholder="Ingrese aqui las observaciones internas" [value]=""
-                        [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
+                              [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-right: 10px;"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                     *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
                     <label style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
-                        [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
+                              [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
                 </div>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
-                    (click)="cambiarEstado(7)"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(7)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Enviar a Análisis de Nosis
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR')"
-                    (click)="cambiarEstado(8)"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR')"
+                        (click)="cambiarEstado(8)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Enviar a Etapa Final
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
-                    (click)="cambiarEstado(0)"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(0)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Aprobar
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
-                    (click)="cambiarEstado(5)"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(5)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Rechazar
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
-                    (click)="cambiarEstado(4)"
-                    style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(4)"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Observar
                 </button>
             </div>

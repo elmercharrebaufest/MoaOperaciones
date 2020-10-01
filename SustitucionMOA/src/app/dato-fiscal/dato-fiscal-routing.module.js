@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import { DatoFiscalBaseComponent } from './dato-fiscal.component';
 import { DocumentacionComponent } from './documentacion/documentacion.component';
 import { VendedoresListComponent } from './vendedor/dato-fiscal.vendedor.component';
+import { VendedoresPendientesComponent } from './vendedores-pendientes/vendedores-pendientes.component';
 var routes = [
     { path: '', redirectTo: '/situacion-fiscal', pathMatch: 'full' },
     { path: "situacion-fiscal", component: DatoFiscalBaseComponent, },
@@ -16,6 +17,7 @@ var routes = [
     { path: "situacion-fiscal/:id/:id2", component: DatoFiscalBaseComponent, },
     { path: "documentacion", component: DocumentacionComponent },
     { path: "vendedor", component: VendedoresListComponent },
+    { path: "vendedores-pendientes", component: VendedoresPendientesComponent },
 ];
 var DatoFiscalRoutingModule = /** @class */ (function () {
     function DatoFiscalRoutingModule() {

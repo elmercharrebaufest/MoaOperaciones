@@ -44,6 +44,11 @@ var AltaEmpresaService = /** @class */ (function (_super) {
         return this.http
             .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(map(this.extractData));
     };
+    AltaEmpresaService.prototype.cargarSolicitudUsuario = function () {
+        return this.http
+            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario')
+            .pipe(map(this.extractData));
+    };
     AltaEmpresaService = __decorate([
         Injectable()
     ], AltaEmpresaService);

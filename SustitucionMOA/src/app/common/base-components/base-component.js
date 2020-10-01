@@ -52,7 +52,7 @@ var BaseComponent = /** @class */ (function () {
         return this.securityService.tienePermiso(permiso);
     };
     BaseComponent.prototype.isCorredor = function () {
-        return this.tipoUsuario == "CORR";
+        return this.tipoUsuario.toUpperCase() == "CORR" || this.tipoUsuario.toUpperCase() == "NUECORR";
     };
     BaseComponent = __decorate([
         Component({

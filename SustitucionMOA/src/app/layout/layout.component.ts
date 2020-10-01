@@ -461,7 +461,7 @@ export class LayoutComponent implements OnDestroy {
     }
 
     isCorr() {
-        return this.tipoUsuario == "CORR";
+        return this.tipoUsuario.toUpperCase() == "CORR" || this.tipoUsuario.toUpperCase() == "NUECORR";
     }
 
     public unsubscribe() {

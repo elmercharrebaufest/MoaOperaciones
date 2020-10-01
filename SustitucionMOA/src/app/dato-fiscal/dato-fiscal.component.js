@@ -75,6 +75,8 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
             secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
             secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
+        // if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
+        secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
         this.navService.setSeccionList(secciones);
         this.getData();
     };

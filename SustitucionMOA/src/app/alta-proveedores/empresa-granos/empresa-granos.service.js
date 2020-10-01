@@ -30,13 +30,14 @@ var EmpresaGranosService = /** @class */ (function (_super) {
     function EmpresaGranosService() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    EmpresaGranosService.prototype.postFile = function (files, fileKey) {
+    EmpresaGranosService.prototype.postFile = function (files, fileKey, proveedorId) {
         var formData = new FormData();
         for (var i = 0; i < files.length; i++) {
             var fileToUpload = files.item(i);
             formData.append('file', fileToUpload, fileToUpload.name);
         }
         formData.append('fileKey', fileKey);
+        formData.append('proveedorId', proveedorId.toString());
         return this.http.post('/api/AltaEmpresaGranos/GuardarArchivo', formData).pipe(map(this.extractData));
     };
     EmpresaGranosService.prototype.searchLocalidad = function (term) {
@@ -60,6 +61,15 @@ var EmpresaGranosService = /** @class */ (function (_super) {
             .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     };
+    EmpresaGranosService.prototype.generarCartaPresentacion = function (cartaPresentacion, proveedorId) {
+        var payload = new FormData();
+        payload.append("cartaPresentacionJson", JSON.stringify(cartaPresentacion));
+        payload.append('proveedorId', proveedorId.toString());
+        return this.http
+            .post('/api/AltaEmpresaGranos/GenerarCartaPresentacion', payload)
+            .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    };
     EmpresaGranosService.prototype.obtenerMateriales = function () {
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
@@ -72,7 +82,7 @@ var EmpresaGranosService = /** @class */ (function (_super) {
             .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers })
             .pipe(map(this.extractData));
     };
-    EmpresaGranosService.prototype.obtenerArchivosSubidos = function (mail) {
+    EmpresaGranosService.prototype.obtenerArchivosSubidos = function (mail, proveedorId) {
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
@@ -82,36 +92,64 @@ var EmpresaGranosService = /** @class */ (function (_super) {
         this.headers.append('Pragma', 'no-cache');
         var params = new URLSearchParams();
         params.set('mail', mail);
+        params.set('proveedorId', proveedorId.toString());
         return this.http
             .get('/api/AltaEmpresaGranos/ObtenerArchivosSubidos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
-    EmpresaGranosService.prototype.obtenerInfoProveedor = function () {
+    EmpresaGranosService.prototype.obtenerInfoProveedor = function (proveedorId) {
+        var params = new URLSearchParams();
+        params.set('mail', "");
+        params.set('proveedorId', proveedorId.toString());
         return this.http
-            .get('/api/AltaEmpresaGranos/ObtenerInfoProveedor')
+            .get('/api/AltaEmpresaGranos/ObtenerInfoProveedor', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
-    EmpresaGranosService.prototype.descargarArchivoSubido = function (fileKey, archivoID) {
+    EmpresaGranosService.prototype.descargarArchivoSubido = function (fileKey, archivoID, proveedorId) {
         var params = new URLSearchParams();
-        params.set('fileKey', fileKey);
         params.set('mail', "");
         params.set('archivoID', archivoID.toString());
+        params.set('proveedorId', proveedorId.toString());
         return this.http
             .get('/api/AltaEmpresaGranos/DescargarArchivo', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
-    EmpresaGranosService.prototype.enviarSolicitud = function () {
-        var params = new URLSearchParams();
+    //enviarSolicitud(): Observable<any> {
+    //    let params: URLSearchParams = new URLSearchParams();
+    //    return this.http
+    //        .get('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', { search: params, headers: this.headers })
+    //        .pipe(map(this.extractData));
+    //}
+    EmpresaGranosService.prototype.enviarSolicitud = function (datos, proveedorId) {
+        var payload = new FormData();
+        payload.append("datosJson", JSON.stringify(datos));
+        payload.append("proveedorId", proveedorId.toString());
         return this.http
-            .get('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', { search: params, headers: this.headers })
+            .post('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', payload)
+            .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     };
-    EmpresaGranosService.prototype.eliminarArchivoSubido = function (fileKey, archivoID) {
+    EmpresaGranosService.prototype.eliminarArchivoSubido = function (archivoID, proveedorId) {
         var params = new URLSearchParams();
-        params.set('fileKey', fileKey);
         params.set('archivoID', archivoID.toString());
+        params.set('proveedorId', proveedorId.toString());
         return this.http
             .get('/api/AltaEmpresaGranos/EliminarArchivo', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    };
+    EmpresaGranosService.prototype.cargarSolicitudUsuario = function (mail, proveedorId) {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('mail', mail);
+        params.set('proveedorId', proveedorId.toString());
+        return this.http
+            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
     EmpresaGranosService = __decorate([

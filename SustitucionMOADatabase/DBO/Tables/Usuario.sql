@@ -4,6 +4,7 @@ CREATE TABLE [dbo].[Usuario](
 	[CUITRegistro] [nvarchar](max) NULL,
 	[Habilitado] [bit] NOT NULL,
 	[TipoUsuario_Id] [int] NULL,
+
  CONSTRAINT [PK_dbo.Usuario] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

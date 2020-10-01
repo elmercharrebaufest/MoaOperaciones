@@ -140,10 +140,15 @@ a:hover {
   text-align: start !important;
 }
 
-#myModal {
-  overflow: scroll !important;
-  bottom: -85px !important;
-  margin-top: 0;
+#myModal, #modalCartaPresentacion {
+    overflow: scroll !important;
+    bottom: -85px !important;
+    margin-top: 0;
+}
+#conductaModal {
+    overflow: scroll !important;
+    bottom: -85px !important;
+    margin-top: 0;
 }
 
 .formulario-campo {
@@ -224,4 +229,8 @@ input::-webkit-inner-spin-button {
 
 #declaracionJurada {
   margin: 10px;
+}
+
+.ng-autocomplete {
+    width: 200px;
 }

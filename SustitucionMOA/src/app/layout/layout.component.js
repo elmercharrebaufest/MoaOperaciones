@@ -350,7 +350,7 @@ var LayoutComponent = /** @class */ (function () {
         }
     };
     LayoutComponent.prototype.isCorr = function () {
-        return this.tipoUsuario == "CORR";
+        return this.tipoUsuario.toUpperCase() == "CORR" || this.tipoUsuario.toUpperCase() == "NUECORR";
     };
     LayoutComponent.prototype.unsubscribe = function () {
         if (this.subscription != undefined)
