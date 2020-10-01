@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -34,6 +35,8 @@ namespace SustitucionMOA.Controllers
         protected readonly IAzureB2CService azureB2CService;
         protected readonly IDataAgroService dataAgroService;
 
+        private static readonly string redirectUrl = ConfigurationManager.AppSettings["SpaUrl"];
+
         // GET: Home
 
         public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService)
@@ -47,16 +50,10 @@ namespace SustitucionMOA.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login")
-                {
-                    return Redirect("/");
-                }
-
-                return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+                return Redirect(redirectUrl);
             }
             else
             {
-                string redirectUrl = "/";
                 try
                 {
                     HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
@@ -73,7 +70,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Registro()
         {
-            string redirectUrl = "/";
             //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
             try
             {
@@ -102,7 +98,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ResetPassword()
         {
-            string redirectUrl = "/";
             //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
             try
             {
@@ -123,7 +118,7 @@ namespace SustitucionMOA.Controllers
             {
                 if (!Request.IsAuthenticated)
                 {
-                    return Redirect("/");
+                    throw new ValidationCustomException("Su sesión ha expirado. Por favor, ingrese nuevamente.");
                 }
 
                 string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
@@ -179,7 +174,7 @@ namespace SustitucionMOA.Controllers
 
                 if (esNuevoUsuario)
                 {
-                    if (usuario.ObtenerProveedorActual().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                    if (usuario.ObtenerProveedor().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                     {
                         if (granosFlag == "G")
                         {

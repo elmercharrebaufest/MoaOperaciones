@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Enums
     public static class FileKeys
     {
         public const string InformeComercialFirmado = "informeComercialFirmado";
+        public const string CartaDePresentacionFirmada = "cartaDePresentacionFirmada";
         public const string ConstanciaCUIT = "constanciaCUIT";
         public const string ConstanciaCBU = "constanciaCBU";
         public const string ConstanciaCBUMercaderia = "constanciaCBUMercaderia";

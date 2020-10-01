@@ -69,11 +69,12 @@ namespace SustitucionMOA
 						NameClaimType = "name",
 						ValidateIssuer = false
 					},
+					
+					CookieManager = new SameSiteCookieManager(new SystemWebCookieManager()),
 
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
-					Scope = $"openid profile offline_access",
+					Scope = $"openid profile offline_access"
 
-					CookieManager = new SameSiteCookieManager(new SystemWebCookieManager())
 				}
 			);
 		}
@@ -178,7 +179,10 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsUserNameType, mail));
 				notification.AddClaim(new Claim(Globals.ClaimsNombreType, usuario.ObtenerRazonSocial()));
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
-				notification.AddClaim(new Claim(Globals.ClaimsGranosFlagType, usuario.TipoUsuario.NombreCorto));
+
+				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
+
+				notification.AddClaim(new Claim(Globals.ClaimsGranosFlagType, tipoGranos));
 				notification.AddClaim(new Claim(Globals.ClaimsSociedadType, "MOA"));
 				notification.AddClaim(new Claim(Globals.ClaimsEsNuevoUsuarioType, usuario.EsNuevoUsuario().ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, usuario.ObtenerRolPrincipal().Codigo));

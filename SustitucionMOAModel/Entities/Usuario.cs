@@ -15,30 +15,40 @@ namespace SustitucionMOAModel.Entities
 
         public virtual TipoUsuario TipoUsuario { get; set; }
 
+
         [InverseProperty("UsuariosAsociados")]
         public virtual ICollection<Proveedor> Proveedores { get; set; }
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
 
-        public virtual ICollection<Archivo> Archivos { get; set; }
+        //public virtual ICollection<Archivo> Archivos { get; set; }
 
         public Rol ObtenerRolPrincipal()
         {
             return Roles.FirstOrDefault();
         }
 
-        public Proveedor ObtenerProveedorActual()
+        public Proveedor ObtenerProveedor()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
             return Proveedores.FirstOrDefault();
         }
 
+        public Proveedor ObtenerProveedorPorId(int proveedorId)
+        {
+            if (proveedorId > 0)
+                return Proveedores.Where(p => p.Id == proveedorId).FirstOrDefault();
+            else
+                return Proveedores.FirstOrDefault();
+        }
+
+
         public string ObtenerRazonSocial()
         {
             if (Proveedores.Count >= 1 )
             {
-                if (!string.IsNullOrEmpty(ObtenerProveedorActual().RazonSocial))
-                    return ObtenerProveedorActual().RazonSocial;
+                if (!string.IsNullOrEmpty(ObtenerProveedor().RazonSocial))
+                    return ObtenerProveedor().RazonSocial;
                 else
                     return "No definido";
             }
@@ -52,8 +62,8 @@ namespace SustitucionMOAModel.Entities
         {
             if (Proveedores.Count >= 1)
             {
-                if (!string.IsNullOrEmpty(ObtenerProveedorActual().CodigoProveedor))
-                    return ObtenerProveedorActual().CodigoProveedor;
+                if (!string.IsNullOrEmpty(ObtenerProveedor().CodigoProveedor))
+                    return ObtenerProveedor().CodigoProveedor;
                 else
                     return "-";
             }
@@ -85,6 +95,7 @@ namespace SustitucionMOAModel.Entities
                 Roles.Where(r => r.Codigo.Equals("NUEG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("NUECORR")).Any() ||
                 !Habilitado;
         }
 

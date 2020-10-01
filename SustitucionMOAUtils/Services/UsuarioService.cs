@@ -313,7 +313,7 @@ namespace SustitucionMOAUtils.Services
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuarioMail);
 
-            var proveedor = usuario.ObtenerProveedorActual();
+            var proveedor = usuario.ObtenerProveedor();
             
             proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
@@ -338,7 +338,7 @@ namespace SustitucionMOAUtils.Services
 
             usuario.RemoverRoles();
 
-            var proveedor = usuario.ObtenerProveedorActual();
+            var proveedor = usuario.ObtenerProveedor();
 
             proveedor.EstadoAprobacion = EstadoAprobacion.Deshabilitado;
 

@@ -6,6 +6,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOARepositorio;
@@ -31,7 +32,7 @@ namespace SustitucionMOA.Controllers
             this.altaEmpresaService = altaEmpresaService;
             this.repositorio = repositorio;
         }
-       
+
         public ActionResult GenerarInformeComercial(string informeComercialJson)
         {
             try
@@ -46,9 +47,11 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
 
-                var proveedor = usuario.ObtenerProveedorActual();
+                var proveedor = usuario.ObtenerProveedor();
 
-                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail);
+                var proveedorId = proveedor.Id;
+
+                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, 0);
 
                 if (infoProveedor.ProveedorClasificacion == "Productor")
                 {
@@ -76,7 +79,71 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail);
+                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail, proveedorId);
+
+                //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
+                PDFResponse result = new PDFResponse
+                {
+                    pdf = new Pdf()
+                    {
+                        data = FileArray
+                    }
+                };
+
+                return JsonCustom(result.pdf);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
+        {
+            try
+            {
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+
+                var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
+
+                cartaPresentacion.corredorCuit = proveedor.CUIT;
+                cartaPresentacion.corredorRazonSocial = proveedor.RazonSocial;
+
+                if (cartaPresentacion.vendedorActividad == "Productor")
+                {
+                    if (!cartaPresentacion.NuevosCampos.Any())
+                    {
+                        throw new ValidationCustomException("Para generar la carta de presentacion debe informar los campos");
+                    }
+                }
+
+                if (cartaPresentacion.vendedorActividad == "Productor")
+                {
+                    if (!cartaPresentacion.NuevosCampos.Any())
+                    {
+                        throw new ValidationCustomException("Para generar la carta de presentacion debe informar los almacenamientos");
+                    }
+                }
+
+                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, userMail, proveedorId);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
@@ -166,18 +233,20 @@ namespace SustitucionMOA.Controllers
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
-                
+
                 var fileKey = Request.Form.Get("fileKey");
+
+                var proveedorId = int.Parse(Request.Form.Get("proveedorId"));
 
                 List<string> errores = new List<string>();
 
                 for (int i = 0; i < Request.Files.Count; i++)
-                { 
+                {
                     var fileSubido = Request.Files[i];
 
                     if (fileSubido.ContentLength > 0)
                     {
-                        var result = altaEmpresaService.GuardarArchivo(fileSubido, fileKey, mail);
+                        var result = altaEmpresaService.GuardarArchivo(fileSubido, fileKey, mail, proveedorId);
 
                         if (!result.Equals(SuccessMsg.ArchivoSubidoOK))
                         {
@@ -190,7 +259,7 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                if ( errores.Count > 0)
+                if (errores.Count > 0)
                 {
                     return JsonCustom(new { info = errores });
                 }
@@ -218,14 +287,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerArchivosSubidos(string mail)
+        public ActionResult ObtenerArchivosSubidos(string mail, int proveedorId)
         {
             try
             {
                 if (string.IsNullOrEmpty(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail));
+                return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail, proveedorId));
             }
             catch (InfoCustomException e)
             {
@@ -247,28 +316,23 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerInfoProveedor(string mail)
-        {
-
-            if (string.IsNullOrEmpty(mail))
-                mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-            //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-            return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail));
-        }
-
-
-        public ActionResult ObtenerCBUSISA()
+        public ActionResult ObtenerInfoProveedor(string mail, int proveedorId)
         {
             try
             {
-                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                if (string.IsNullOrEmpty(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(altaEmpresaService.ObtenerCBUSISA(mail));
+                return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail, proveedorId));
+
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
@@ -286,14 +350,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string fileKey, string mail, int archivoID)
+        public ActionResult DescargarArchivo(string mail, int archivoID, int proveedorId)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
-                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID);
+
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID, proveedorId);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);
@@ -306,13 +370,13 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult EliminarArchivo(string fileKey, int archivoID)
+        public ActionResult EliminarArchivo(int archivoID, int proveedorId)
         {
             try
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                string result = altaEmpresaService.EliminarArchivo(mail, archivoID);
+                string result = altaEmpresaService.EliminarArchivo(mail, archivoID, proveedorId);
 
                 return JsonCustom(result);
             }
@@ -336,14 +400,48 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult EnviarSolicitudUsuario()
+        [HttpPost]
+        public ActionResult EnviarSolicitudUsuario(int proveedorId, string datosJson)
         {
             try
             {
+                var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
+
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
-                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail));
+                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, altaEmpresa));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+       
+        public ActionResult CargarSolicitudUsuario(string mail, int proveedorId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                AltaEmpresaViewModel result = altaEmpresaService.CargarSolicitudUsuario(mail, proveedorId);
+                return JsonCustom(result);
             }
             catch (InfoCustomException e)
             {

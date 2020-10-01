@@ -198,4 +198,7 @@
   <data name="ErrorArchivoRepetido" xml:space="preserve">
     <value>Ya existe un archivo con el mismo nombre.</value>
   </data>
+  <data name="ErrorVendedorRepetido" xml:space="preserve">
+    <value>Ya existe un vendedor con el mismo CUIT</value>
+  </data>
 </root>

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -65,7 +65,6 @@
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Identity.Client, Version=4.17.1.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
@@ -200,93 +199,95 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
-    <Content Include="app\aduana\camara\muelle\camara.muelle.component.html" />
-    <Content Include="app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
-    <Content Include="app\aduana\pesada\detalle\pesada.detalle.component.html" />
-    <Content Include="app\aduana\pesada\historica\pesada.historica.component.html" />
-    <Content Include="app\aduana\pesada\online\pesada.online.component.html" />
-    <Content Include="app\alta-proveedores\altas\altas.component.css" />
-    <Content Include="app\alta-proveedores\altas\altas.component.html" />
-    <Content Include="app\alta-proveedores\altas\altas.component.js" />
-    <Content Include="app\alta-proveedores\altas\altas.component.spec.js" />
-    <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.css" />
-    <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.html" />
-    <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.js" />
-    <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js" />
-    <Content Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.css" />
-    <Content Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.html" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.css" />
-    <Content Include="app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.css" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
-    <Content Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.css" />
-    <Content Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.html" />
-    <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.css" />
-    <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.html" />
-    <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js" />
-    <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.js" />
-    <Content Include="app\app.component.html" />
-    <Content Include="app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
-    <Content Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
-    <Content Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.html" />
-    <Content Include="app\carta-porte\carta-porte.component.html" />
-    <Content Include="app\carta-porte\descarga\carta-porte.descarga.component.html" />
-    <Content Include="app\carta-porte\detalle\carta-porte.detalle.component.html" />
-    <Content Include="app\carta-porte\formulario\carta-porte.formulario.component.html" />
-    <Content Include="app\common\view-child\dropdown\dropdown.component.html" />
-    <Content Include="app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
-    <Content Include="app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
-    <Content Include="app\common\view-child\mensaje\mensaje.component.html" />
-    <Content Include="app\common\view-child\spinner-small\spinner-small.component.html" />
-    <Content Include="app\common\view-child\spinner\spinner.component.html" />
-    <Content Include="app\contacto-mail\contacto-mail.component.html" />
-    <Content Include="app\contrato\ampliacion\contrato.ampliacion.component.html" />
-    <Content Include="app\contrato\anulacion\contrato.anulacion.component.html" />
-    <Content Include="app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.html" />
-    <Content Include="app\contrato\detalle\contrato.detalle.component.html" />
-    <Content Include="app\contrato\fijacion\contrato.fijacion.component.html" />
-    <Content Include="app\contrato\vigente\contrato.vigente.component.html" />
-    <Content Include="app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.html" />
-    <Content Include="app\cuenta-corriente\cuenta-corriente.component.html" />
-    <Content Include="app\dato-fiscal\dato-fiscal.component.html" />
-    <Content Include="app\dato-fiscal\documentacion\documentacion.component.html" />
-    <Content Include="app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.html" />
-    <Content Include="app\error\error.no-autorizado.component.html" />
-    <Content Include="app\factura\factura.component.html" />
-    <Content Include="app\flete\a-facturar\flete.a-facturar.component.html" />
-    <Content Include="app\flete\facturado\flete.facturado.component.html" />
-    <Content Include="app\flete\pendiente\flete.pendiente.component.html" />
-    <Content Include="app\home\home.component.html" />
-    <Content Include="app\home\no-granos\home.no-granos.component.html" />
-    <Content Include="app\layout\layout.component.html" />
-    <Content Include="app\liquidacion\aprobada\liquidacion.aprobada.component.html" />
-    <Content Include="app\liquidacion\no-granos\aprobada\liquidacion.no-granos.aprobada.component.html" />
-    <Content Include="app\liquidacion\no-granos\observada\liquidacion.no-granos.observada.component.html" />
-    <Content Include="app\liquidacion\no-granos\paga\liquidacion.no-granos.paga.component.html" />
-    <Content Include="app\liquidacion\observada\liquidacion.observada.component.html" />
-    <Content Include="app\liquidacion\paga\liquidacion.paga.component.html" />
-    <Content Include="app\liquidacion\proforma\liquidacion.proforma.component.html" />
-    <Content Include="app\login\login.component.html" />
-    <Content Include="app\login\recuperar-contrasenia\login.recuperar-contrasenia.component.html" />
-    <Content Include="app\login\registro\login.registro.component.html" />
-    <Content Include="app\pago\detalle\pago.detalle.component.html" />
-    <Content Include="app\pago\emitido\pago.emitido.component.html" />
-    <Content Include="app\pago\no-granos\emitido\pago.no-granos.emitido.component.html" />
-    <Content Include="app\pesificacion\pesificacion.component.html" />
-    <Content Include="app\ryd-mantenimiento\balanzas\balanzas.component.html" />
-    <Content Include="app\ryd-mantenimiento\commodities\commodities.component.html" />
-    <Content Include="app\ryd-mantenimiento\exportadores\exportadores.component.html" />
-    <Content Include="app\ryd\carga-pesadas\carga-pesadas.component.html" />
-    <Content Include="app\ryd\informe\informe.component.html" />
-    <Content Include="app\ryd\listado-pesadas\listado-pesadas.component.html" />
-    <Content Include="app\usuario\alta\usuario.alta.component.html" />
-    <Content Include="app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
-    <Content Include="app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />
-    <Content Include="app\usuario\list\usuario.list.component.html" />
-    <Content Include="app\vendedor\vendedor_status.component.html" />
+    <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
+    <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
+    <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
+    <Content Include="src\app\aduana\pesada\detalle\pesada.detalle.component.html" />
+    <Content Include="src\app\aduana\pesada\historica\pesada.historica.component.html" />
+    <Content Include="src\app\aduana\pesada\online\pesada.online.component.html" />
+    <Content Include="src\app\alta-proveedores\altas\altas.component.css" />
+    <Content Include="src\app\alta-proveedores\altas\altas.component.html" />
+    <Content Include="src\app\alta-proveedores\altas\altas.component.js" />
+    <Content Include="src\app\alta-proveedores\altas\altas.component.spec.js" />
+    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.css" />
+    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.html" />
+    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.js" />
+    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js" />
+    <Content Include="src\app\alta-proveedores\detalle-empresa\detalle-empresa.component.css" />
+    <Content Include="src\app\alta-proveedores\detalle-empresa\detalle-empresa.component.html" />
+    <Content Include="src\app\alta-proveedores\empresa-granos\empresa-granos.component.css" />
+    <Content Include="src\app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.css" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
+    <Content Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.css" />
+    <Content Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.html" />
+    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.css" />
+    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.html" />
+    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js" />
+    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.js" />
+    <Content Include="src\app\app.component.html" />
+    <Content Include="src\app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
+    <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
+    <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.html" />
+    <Content Include="src\app\carta-porte\carta-porte.component.html" />
+    <Content Include="src\app\carta-porte\descarga\carta-porte.descarga.component.html" />
+    <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
+    <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
+    <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
+    <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
+    <Content Include="src\app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
+    <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
+    <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
+    <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
+    <Content Include="src\app\contrato\anulacion\contrato.anulacion.component.html" />
+    <Content Include="src\app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.html" />
+    <Content Include="src\app\contrato\detalle\contrato.detalle.component.html" />
+    <Content Include="src\app\contrato\fijacion\contrato.fijacion.component.html" />
+    <Content Include="src\app\contrato\vigente\contrato.vigente.component.html" />
+    <Content Include="src\app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.html" />
+    <Content Include="src\app\cuenta-corriente\cuenta-corriente.component.html" />
+    <Content Include="src\app\dato-fiscal\dato-fiscal.component.html" />
+    <Content Include="src\app\dato-fiscal\documentacion\documentacion.component.html" />
+    <Content Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.css" />
+    <Content Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.html" />
+    <Content Include="src\app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.html" />
+    <Content Include="src\app\error\error.no-autorizado.component.html" />
+    <Content Include="src\app\factura\factura.component.html" />
+    <Content Include="src\app\flete\a-facturar\flete.a-facturar.component.html" />
+    <Content Include="src\app\flete\facturado\flete.facturado.component.html" />
+    <Content Include="src\app\flete\pendiente\flete.pendiente.component.html" />
+    <Content Include="src\app\home\home.component.html" />
+    <Content Include="src\app\home\no-granos\home.no-granos.component.html" />
+    <Content Include="src\app\layout\layout.component.html" />
+    <Content Include="src\app\liquidacion\aprobada\liquidacion.aprobada.component.html" />
+    <Content Include="src\app\liquidacion\no-granos\aprobada\liquidacion.no-granos.aprobada.component.html" />
+    <Content Include="src\app\liquidacion\no-granos\observada\liquidacion.no-granos.observada.component.html" />
+    <Content Include="src\app\liquidacion\no-granos\paga\liquidacion.no-granos.paga.component.html" />
+    <Content Include="src\app\liquidacion\observada\liquidacion.observada.component.html" />
+    <Content Include="src\app\liquidacion\paga\liquidacion.paga.component.html" />
+    <Content Include="src\app\liquidacion\proforma\liquidacion.proforma.component.html" />
+    <Content Include="src\app\login\login.component.html" />
+    <Content Include="src\app\login\recuperar-contrasenia\login.recuperar-contrasenia.component.html" />
+    <Content Include="src\app\login\registro\login.registro.component.html" />
+    <Content Include="src\app\pago\detalle\pago.detalle.component.html" />
+    <Content Include="src\app\pago\emitido\pago.emitido.component.html" />
+    <Content Include="src\app\pago\no-granos\emitido\pago.no-granos.emitido.component.html" />
+    <Content Include="src\app\pesificacion\pesificacion.component.html" />
+    <Content Include="src\app\ryd-mantenimiento\balanzas\balanzas.component.html" />
+    <Content Include="src\app\ryd-mantenimiento\commodities\commodities.component.html" />
+    <Content Include="src\app\ryd-mantenimiento\exportadores\exportadores.component.html" />
+    <Content Include="src\app\ryd\carga-pesadas\carga-pesadas.component.html" />
+    <Content Include="src\app\ryd\informe\informe.component.html" />
+    <Content Include="src\app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
+    <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
+    <Content Include="src\app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />
+    <Content Include="src\app\usuario\list\usuario.list.component.html" />
+    <Content Include="src\app\vendedor\vendedor_status.component.html" />
     <Content Include="config.html" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\font-awesome.css" />
@@ -321,7 +322,7 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
-    <Content Include="favicon.ico" />
+    <Content Include="src\favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="officetohtml\demos.html" />
@@ -510,6 +511,7 @@
     <Content Include="officetohtml\include\SheetJS\xlsx.full.min.js" />
     <Content Include="officetohtml\include\verySimpleImageViewer\css\jquery.verySimpleImageViewer.css" />
     <Content Include="officetohtml\include\verySimpleImageViewer\js\jquery.verySimpleImageViewer.js" />
+    <Content Include="officetohtml\popup.html" />
     <Content Include="officetohtml\index.html" />
     <Content Include="officetohtml\lang.html" />
     <Content Include="officetohtml\layout\index.html" />
@@ -560,14 +562,14 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />
-    <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.js.map" />
-    <Content Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js.map" />
-    <Content Include="app\alta-proveedores\altas\altas.component.js.map" />
-    <Content Include="app\alta-proveedores\altas\altas.component.spec.js.map" />
-    <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js.map" />
-    <Content Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.js.map" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />
+    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.js.map" />
+    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js.map" />
+    <Content Include="src\app\alta-proveedores\altas\altas.component.js.map" />
+    <Content Include="src\app\alta-proveedores\altas\altas.component.spec.js.map" />
+    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js.map" />
+    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.js.map" />
     <Content Include="officetohtml\files\demo.docx" />
     <Content Include="officetohtml\files\demo.pdf" />
     <Content Include="officetohtml\files\demo.pptx" />
@@ -688,7 +690,8 @@
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff" />
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff2" />
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
-    <Content Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
+    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
+    <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -700,6 +703,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="src\styles.css" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -722,6 +726,11 @@
       <DependentUpon>QA.DeployParameters.xml</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="tsconfig.app.json" />
+    <Content Include="tsconfig.spec.json" />
+    <Content Include="tslint.json" />
+    <Content Include="src\proxy.conf.json" />
+    <Content Include="src\web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -730,7 +739,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="index.html" />
+    <Content Include="src\index.html" />
     <Content Include="systemjs.config.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -784,151 +793,166 @@
     <Compile Include="Utils\SameSiteCookieManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app\aduana\aduana.component.ts" />
-    <TypeScriptCompile Include="app\aduana\aduana.service.ts" />
-    <TypeScriptCompile Include="app\aduana\camara\consolidacion\camara.consolidacion.component.ts" />
-    <TypeScriptCompile Include="app\aduana\camara\muelle\camara.muelle.component.ts" />
-    <TypeScriptCompile Include="app\aduana\informacion-meteorologica\informacion-meteorologica.component.ts" />
-    <TypeScriptCompile Include="app\aduana\pesada\detalle\pesada.detalle.component.ts" />
-    <TypeScriptCompile Include="app\aduana\pesada\historica\pesada.historica.component.ts" />
-    <TypeScriptCompile Include="app\aduana\pesada\online\pesada.online.component.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\altas\altas.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\altas\altas.component.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\cuit-invalido\cuit-invalido.component.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\detalle-empresa\detalle-empresa.component.ts" />
-    <TypeScriptCompile Include="app\common\models\rol.ts" />
-    <TypeScriptCompile Include="app\common\pipes\archivos.pipe.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.component.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-granos\empresa-granos.service.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.service.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\estado-solicitud\estado-solicitud.component.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.ts" />
-    <TypeScriptCompile Include="app\common\directive\numeric.directive.ts" />
-    <TypeScriptCompile Include="app\common\models\archivo.ts" />
-    <TypeScriptCompile Include="app\common\models\contactoComercial.ts" />
-    <TypeScriptCompile Include="app\common\models\informeComercial.ts" />
-    <TypeScriptCompile Include="app\common\models\material.ts" />
-    <TypeScriptCompile Include="app\common\models\nuevoAcopio.ts" />
-    <TypeScriptCompile Include="app\common\models\nuevoProduccion.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.ts" />
-    <TypeScriptCompile Include="app\app-routing.module.ts" />
-    <TypeScriptCompile Include="app\app.component.ts" />
-    <TypeScriptCompile Include="app\app.module.ts" />
-    <TypeScriptCompile Include="app\carta-porte\aplicacion\carta-porte.aplicacion2.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.spec.ts" />
-    <TypeScriptCompile Include="app\carta-porte\carta-porte-modal\carta-porte-modal.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\carta-porte.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\carta-porte2.service.ts" />
-    <TypeScriptCompile Include="app\carta-porte\descarga\carta-porte.descarga2.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\detalle\carta-porte.detalle2.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.component.ts" />
-    <TypeScriptCompile Include="app\carta-porte\formulario\carta-porte.formulario.ts" />
-    <TypeScriptCompile Include="app\common\base-components\base-component.ts" />
-    <TypeScriptCompile Include="app\common\base-components\list-base-component.ts" />
-    <TypeScriptCompile Include="app\common\formatter\Formatter.ts" />
-    <TypeScriptCompile Include="app\common\models\fechaWS.ts" />
-    <TypeScriptCompile Include="app\common\models\filtro-agrupador.ts" />
-    <TypeScriptCompile Include="app\common\models\seccion.ts" />
-    <TypeScriptCompile Include="app\common\pipes\customFilterContain.ts" />
-    <TypeScriptCompile Include="app\common\pipes\customFilterOr.ts" />
-    <TypeScriptCompile Include="app\common\pipes\orderedColumn.ts" />
-    <TypeScriptCompile Include="app\common\pipes\shortenString.ts" />
-    <TypeScriptCompile Include="app\common\security\login-guard.ts" />
-    <TypeScriptCompile Include="app\common\services\BaseService.ts" />
-    <TypeScriptCompile Include="app\common\services\DataService.ts" />
-    <TypeScriptCompile Include="app\common\services\FloatMsgService.ts" />
-    <TypeScriptCompile Include="app\common\services\ModalService.ts" />
-    <TypeScriptCompile Include="app\common\services\NavService.ts" />
-    <TypeScriptCompile Include="app\common\services\SecurityService.ts" />
-    <TypeScriptCompile Include="app\common\services\ServiceLocator.ts" />
-    <TypeScriptCompile Include="app\common\services\SessionDataService.ts" />
-    <TypeScriptCompile Include="app\common\view-child\dropdown\dropdown.component.ts" />
-    <TypeScriptCompile Include="app\common\view-child\filtro-fecha\filtro-fecha.component.ts" />
-    <TypeScriptCompile Include="app\common\view-child\mensaje-modal\mensaje-modal.component.ts" />
-    <TypeScriptCompile Include="app\common\view-child\mensaje\mensaje.component.ts" />
-    <TypeScriptCompile Include="app\common\pipes\customFilter.ts" />
-    <TypeScriptCompile Include="app\common\view-child\spinner-small\spinner-small.component.ts" />
-    <TypeScriptCompile Include="app\common\view-child\spinner\spinner.component.ts" />
-    <TypeScriptCompile Include="app\contacto-mail\contacto-mail.component.ts" />
-    <TypeScriptCompile Include="app\contacto-mail\contacto-mail.service.ts" />
-    <TypeScriptCompile Include="app\contrato\ampliacion\contrato.ampliacion.component.ts" />
-    <TypeScriptCompile Include="app\contrato\anulacion\contrato.anulacion.component.ts" />
-    <TypeScriptCompile Include="app\contrato\contrato.component.ts" />
-    <TypeScriptCompile Include="app\contrato\contrato.service.ts" />
-    <TypeScriptCompile Include="app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.ts" />
-    <TypeScriptCompile Include="app\contrato\detalle\contrato.detalle.component.ts" />
-    <TypeScriptCompile Include="app\contrato\fijacion\contrato.fijacion.component.ts" />
-    <TypeScriptCompile Include="app\contrato\vigente\contrato.vigente.component.ts" />
-    <TypeScriptCompile Include="app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.ts" />
-    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente.component.ts" />
-    <TypeScriptCompile Include="app\cuenta-corriente\cuenta-corriente.service.ts" />
-    <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.component.ts" />
-    <TypeScriptCompile Include="app\dato-fiscal\dato-fiscal.service.ts" />
-    <TypeScriptCompile Include="app\dato-fiscal\documentacion\documentacion.component.ts" />
-    <TypeScriptCompile Include="app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.ts" />
-    <TypeScriptCompile Include="app\error\error.no-autorizado.component.ts" />
-    <TypeScriptCompile Include="app\factura\factura.component.ts" />
-    <TypeScriptCompile Include="app\factura\factura.service.ts" />
-    <TypeScriptCompile Include="app\flete\a-facturar\flete.a-facturar.component.ts" />
-    <TypeScriptCompile Include="app\flete\facturado\flete.facturado.component.ts" />
-    <TypeScriptCompile Include="app\flete\flete.component.ts" />
-    <TypeScriptCompile Include="app\flete\flete.service.ts" />
-    <TypeScriptCompile Include="app\flete\pendiente\flete.pendiente.component.ts" />
-    <TypeScriptCompile Include="app\home\home.component.ts" />
-    <TypeScriptCompile Include="app\home\home.service.ts" />
-    <TypeScriptCompile Include="app\home\no-granos\home.no-granos.component.ts" />
-    <TypeScriptCompile Include="app\layout\layout.component.ts" />
-    <TypeScriptCompile Include="app\layout\layout.service.ts" />
-    <TypeScriptCompile Include="app\liquidacion\aprobada\liquidacion.aprobada.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\liquidacion.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\liquidacion.service.ts" />
-    <TypeScriptCompile Include="app\liquidacion\no-granos\aprobada\liquidacion.no-granos.aprobada.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\no-granos\liquidacion.no-granos.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\no-granos\observada\liquidacion.no-granos.observada.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\no-granos\paga\liquidacion.no-granos.paga.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\observada\liquidacion.observada.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\paga\liquidacion.paga.component.ts" />
-    <TypeScriptCompile Include="app\liquidacion\proforma\liquidacion.proforma.component.ts" />
-    <TypeScriptCompile Include="app\login\login.component.ts" />
-    <TypeScriptCompile Include="app\login\login.service.ts" />
-    <TypeScriptCompile Include="app\login\recuperar-contrasenia\login.recuperar-contrasenia.component.ts" />
-    <TypeScriptCompile Include="app\login\registro\login.registro.component.ts" />
-    <TypeScriptCompile Include="app\pago\detalle\pago.detalle.component.ts" />
-    <TypeScriptCompile Include="app\pago\emitido\pago.emitido.component.ts" />
-    <TypeScriptCompile Include="app\pago\no-granos\emitido\pago.no-granos.emitido.component.ts" />
-    <TypeScriptCompile Include="app\pago\pago.component.ts" />
-    <TypeScriptCompile Include="app\pago\pago.service.ts" />
-    <TypeScriptCompile Include="app\pesificacion\pesificacion.component.ts" />
-    <TypeScriptCompile Include="app\pesificacion\pesificacion.service.ts" />
-    <TypeScriptCompile Include="app\ryd-mantenimiento\balanzas\balanzas.component.ts" />
-    <TypeScriptCompile Include="app\ryd-mantenimiento\commodities\commodities.component.ts" />
-    <TypeScriptCompile Include="app\ryd-mantenimiento\exportadores\exportadores.component.ts" />
-    <TypeScriptCompile Include="app\ryd-mantenimiento\ryd-mantenimiento.component.ts" />
-    <TypeScriptCompile Include="app\ryd-mantenimiento\ryd-mantenimiento.ts" />
-    <TypeScriptCompile Include="app\ryd-mantenimiento\ryd-mantenimiento.service.ts" />
-    <TypeScriptCompile Include="app\ryd\carga-pesadas\carga-pesadas.component.ts" />
-    <TypeScriptCompile Include="app\ryd\informe\informe.component.ts" />
-    <TypeScriptCompile Include="app\ryd\listado-pesadas\listado-pesadas.component.ts" />
-    <TypeScriptCompile Include="app\ryd\ryd.component.ts" />
-    <TypeScriptCompile Include="app\ryd\ryd.service.ts" />
-    <TypeScriptCompile Include="app\ryd\ryd.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\altas\altas.service.ts" />
-    <TypeScriptCompile Include="app\alta-proveedores\altas\empresa.ts" />
-    <TypeScriptCompile Include="app\usuario\alta\usuario.alta.component.ts" />
-    <TypeScriptCompile Include="app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.ts" />
-    <TypeScriptCompile Include="app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.ts" />
-    <TypeScriptCompile Include="app\usuario\list\usuario.list.component.ts" />
-    <TypeScriptCompile Include="app\usuario\usuario.service.ts" />
-    <TypeScriptCompile Include="app\usuario\usuario.ts" />
-    <TypeScriptCompile Include="app\vendedor\vendedor_status.component.ts" />
-    <TypeScriptCompile Include="app\vendedor\vendedor_status.service.ts" />
-    <TypeScriptCompile Include="main.ts" />
+    <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
+    <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
+    <TypeScriptCompile Include="src\app\common\models\pesificacionContrato.ts" />
+    <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
+    <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
+    <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal.module.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.ts" />
+    <TypeScriptCompile Include="src\polyfills.ts" />
+    <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
+    <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />
+    <TypeScriptCompile Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.ts" />
+    <TypeScriptCompile Include="src\app\aduana\camara\muelle\camara.muelle.component.ts" />
+    <TypeScriptCompile Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.ts" />
+    <TypeScriptCompile Include="src\app\aduana\pesada\detalle\pesada.detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\aduana\pesada\historica\pesada.historica.component.ts" />
+    <TypeScriptCompile Include="src\app\aduana\pesada\online\pesada.online.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\altas\altas.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\altas\altas.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\detalle-empresa\detalle-empresa.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\detalle-empresa\detalle-empresa.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared.module.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\archivos.pipe.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-granos\empresa-granos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-granos\empresa-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-granos\empresa-granos.service.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.service.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\common\models\archivo.ts" />
+    <TypeScriptCompile Include="src\app\common\models\contactoComercial.ts" />
+    <TypeScriptCompile Include="src\app\common\models\informeComercial.ts" />
+    <TypeScriptCompile Include="src\app\common\models\material.ts" />
+    <TypeScriptCompile Include="src\app\common\models\nuevoAcopio.ts" />
+    <TypeScriptCompile Include="src\app\common\models\nuevoProduccion.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\app.component.ts" />
+    <TypeScriptCompile Include="src\app\app.module.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\aplicacion\carta-porte.aplicacion2.component.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\carta-porte.component.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\carta-porte2.service.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\descarga\carta-porte.descarga2.component.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\detalle\carta-porte.detalle2.component.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\formulario\carta-porte.formulario.component.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\formulario\carta-porte.formulario.ts" />
+    <TypeScriptCompile Include="src\app\common\base-components\base-component.ts" />
+    <TypeScriptCompile Include="src\app\common\base-components\list-base-component.ts" />
+    <TypeScriptCompile Include="src\app\common\formatter\Formatter.ts" />
+    <TypeScriptCompile Include="src\app\common\models\fechaWS.ts" />
+    <TypeScriptCompile Include="src\app\common\models\filtro-agrupador.ts" />
+    <TypeScriptCompile Include="src\app\common\models\seccion.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\customFilterContain.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\customFilterOr.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\orderedColumn.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\shortenString.ts" />
+    <TypeScriptCompile Include="src\app\common\security\login-guard.ts" />
+    <TypeScriptCompile Include="src\app\common\services\BaseService.ts" />
+    <TypeScriptCompile Include="src\app\common\services\DataService.ts" />
+    <TypeScriptCompile Include="src\app\common\services\FloatMsgService.ts" />
+    <TypeScriptCompile Include="src\app\common\services\ModalService.ts" />
+    <TypeScriptCompile Include="src\app\common\services\NavService.ts" />
+    <TypeScriptCompile Include="src\app\common\services\SecurityService.ts" />
+    <TypeScriptCompile Include="src\app\common\services\ServiceLocator.ts" />
+    <TypeScriptCompile Include="src\app\common\services\SessionDataService.ts" />
+    <TypeScriptCompile Include="src\app\common\view-child\dropdown\dropdown.component.ts" />
+    <TypeScriptCompile Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.ts" />
+    <TypeScriptCompile Include="src\app\common\view-child\mensaje-modal\mensaje-modal.component.ts" />
+    <TypeScriptCompile Include="src\app\common\view-child\mensaje\mensaje.component.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\customFilter.ts" />
+    <TypeScriptCompile Include="src\app\common\view-child\spinner-small\spinner-small.component.ts" />
+    <TypeScriptCompile Include="src\app\common\view-child\spinner\spinner.component.ts" />
+    <TypeScriptCompile Include="src\app\contacto-mail\contacto-mail.component.ts" />
+    <TypeScriptCompile Include="src\app\contacto-mail\contacto-mail.service.ts" />
+    <TypeScriptCompile Include="src\app\contrato\ampliacion\contrato.ampliacion.component.ts" />
+    <TypeScriptCompile Include="src\app\contrato\anulacion\contrato.anulacion.component.ts" />
+    <TypeScriptCompile Include="src\app\contrato\contrato-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\contrato\contrato.component.ts" />
+    <TypeScriptCompile Include="src\app\contrato\contrato.service.ts" />
+    <TypeScriptCompile Include="src\app\contrato\contrato.module.ts" />
+    <TypeScriptCompile Include="src\app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.ts" />
+    <TypeScriptCompile Include="src\app\contrato\detalle\contrato.detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\contrato\fijacion\contrato.fijacion.component.ts" />
+    <TypeScriptCompile Include="src\app\contrato\vigente\contrato.vigente.component.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\cuenta-corriente.component.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\cuenta-corriente.service.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal.component.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal.service.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\documentacion\documentacion.component.ts" />
+    <TypeScriptCompile Include="src\app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.ts" />
+    <TypeScriptCompile Include="src\app\error\error.no-autorizado.component.ts" />
+    <TypeScriptCompile Include="src\app\factura\factura.component.ts" />
+    <TypeScriptCompile Include="src\app\factura\factura.service.ts" />
+    <TypeScriptCompile Include="src\app\flete\a-facturar\flete.a-facturar.component.ts" />
+    <TypeScriptCompile Include="src\app\flete\facturado\flete.facturado.component.ts" />
+    <TypeScriptCompile Include="src\app\flete\flete.component.ts" />
+    <TypeScriptCompile Include="src\app\flete\flete.service.ts" />
+    <TypeScriptCompile Include="src\app\flete\pendiente\flete.pendiente.component.ts" />
+    <TypeScriptCompile Include="src\app\home\home.component.ts" />
+    <TypeScriptCompile Include="src\app\home\home.service.ts" />
+    <TypeScriptCompile Include="src\app\home\no-granos\home.no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\layout\layout.component.ts" />
+    <TypeScriptCompile Include="src\app\layout\layout.service.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\aprobada\liquidacion.aprobada.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\liquidacion.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\liquidacion.service.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\aprobada\liquidacion.no-granos.aprobada.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion.no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\observada\liquidacion.no-granos.observada.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\no-granos\paga\liquidacion.no-granos.paga.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\observada\liquidacion.observada.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\paga\liquidacion.paga.component.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\proforma\liquidacion.proforma.component.ts" />
+    <TypeScriptCompile Include="src\app\login\login.component.ts" />
+    <TypeScriptCompile Include="src\app\login\login.service.ts" />
+    <TypeScriptCompile Include="src\app\login\recuperar-contrasenia\login.recuperar-contrasenia.component.ts" />
+    <TypeScriptCompile Include="src\app\login\registro\login.registro.component.ts" />
+    <TypeScriptCompile Include="src\app\pago\detalle\pago.detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\pago\emitido\pago.emitido.component.ts" />
+    <TypeScriptCompile Include="src\app\pago\no-granos\emitido\pago.no-granos.emitido.component.ts" />
+    <TypeScriptCompile Include="src\app\pago\pago.component.ts" />
+    <TypeScriptCompile Include="src\app\pago\pago.service.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificacion.component.ts" />
+    <TypeScriptCompile Include="src\app\pesificacion\pesificacion.service.ts" />
+    <TypeScriptCompile Include="src\app\ryd-mantenimiento\balanzas\balanzas.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd-mantenimiento\commodities\commodities.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd-mantenimiento\exportadores\exportadores.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd-mantenimiento\ryd-mantenimiento.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd-mantenimiento\ryd-mantenimiento.ts" />
+    <TypeScriptCompile Include="src\app\ryd-mantenimiento\ryd-mantenimiento.service.ts" />
+    <TypeScriptCompile Include="src\app\ryd\carga-pesadas\carga-pesadas.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd\informe\informe.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd\listado-pesadas\listado-pesadas.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd\ryd.component.ts" />
+    <TypeScriptCompile Include="src\app\ryd\ryd.service.ts" />
+    <TypeScriptCompile Include="src\app\ryd\ryd.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\altas\altas.service.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\altas\empresa.ts" />
+    <TypeScriptCompile Include="src\app\usuario\alta\usuario.alta.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\list\usuario.list.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\usuario.service.ts" />
+    <TypeScriptCompile Include="src\app\usuario\usuario.ts" />
+    <TypeScriptCompile Include="src\app\vendedor\vendedor_status.component.ts" />
+    <TypeScriptCompile Include="src\app\vendedor\vendedor_status.service.ts" />
+    <TypeScriptCompile Include="src\environments\environment.prod.ts" />
+    <TypeScriptCompile Include="src\environments\environment.ts" />
+    <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\test.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
@@ -994,6 +1018,8 @@
           <DevelopmentServerPort>58280</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:58280/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:58280/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -1008,10 +1034,10 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
