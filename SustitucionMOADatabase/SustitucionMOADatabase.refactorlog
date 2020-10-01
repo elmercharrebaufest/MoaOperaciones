@@ -6,5 +6,18 @@
     <Property Name="ParentElementName" Value="[dbo].[Archivo]" />
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Proveedor_Id" />
+  <Operation Name="Rename Refactor" Key="91abcad4-57d5-4030-b409-45825aad39c4" ChangeDateTime="09/23/2020 21:17:33">
+    <Property Name="ElementName" Value="[dbo].[UsuarioGranos].[VinculoConFuncionariosPublicos]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UsuarioGranos]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VinculoConEmpleadosDeMolinos" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ea5c21c9-8006-4462-97a4-b67adfb5d00c" ChangeDateTime="09/23/2020 21:17:36">
+    <Property Name="ElementName" Value="[dbo].[UsuarioGranos].[h]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UsuarioGranos]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VinculoConFuncionariosPublicos" />
   </Operation>
 </Operations>

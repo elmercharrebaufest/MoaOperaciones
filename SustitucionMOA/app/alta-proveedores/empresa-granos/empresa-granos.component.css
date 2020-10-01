@@ -145,6 +145,11 @@ a:hover {
     bottom: -85px !important;
     margin-top: 0;
 }
+#conductaModal {
+    overflow: scroll !important;
+    bottom: -85px !important;
+    margin-top: 0;
+}
 
 .formulario-campo {
   padding: 10px 0;

@@ -5,6 +5,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
@@ -200,7 +201,9 @@ namespace SustitucionMOATest.Services
             {
                 Mail = mailUsuario,
                 Archivos = new List<Archivo>(),
-                Proveedores = new List<Proveedor>()
+                Proveedores = new List<Proveedor>(),
+                RelacionConEmpleados = new List<UsuarioRelacionConEmpleados>(),
+                RelacionConFuncionarios = new List<UsuarioRelacionConFuncionarios>(),
             };
 
             var proveedorOk = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente, CUIT = "233333333333" };
@@ -217,8 +220,19 @@ namespace SustitucionMOATest.Services
                 .Returns(usuarioGranosOk);
 
             dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>())).Returns(infoDataAgro);
+            List<AltaEmpresaEmpleadosViewModel> Empleados = new List<AltaEmpresaEmpleadosViewModel>();
+            Empleados.Add(new AltaEmpresaEmpleadosViewModel { Vinculo = "", CargoProveedora = "", NombreMolinos = "", NombreProveedora = "" });
+            List<AltaEmpresaFuncionariosViewModel> Funcionarios = new List<AltaEmpresaFuncionariosViewModel>();
+            Funcionarios.Add(new AltaEmpresaFuncionariosViewModel { CargoFirma = "", CargoFuncionario = "", NombreFirma = "", NombreFuncionario = "", Vinculo = "" });
 
-            var result = target.EnviarSolicitudUsuario(mailUsuario);
+            var altaempresa = new AltaEmpresaViewModel
+            {
+                VinculoConEmpleadosDeMolinos = false,
+                VinculoConFuncionariosPublicos = false,
+                Empleados = Empleados,
+                Funcionarios = Funcionarios
+            };
+            var result = target.EnviarSolicitudUsuario(mailUsuario, altaempresa);
 
             var expected = SuccessMsg.ValidacionPendienteOK;
 
@@ -318,6 +332,54 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()), Times.Once);
 
             Assert.AreEqual(expected, result);
+        }
+
+
+        [Test]
+        public void CargarSolicitudUsuarioTest()
+        {
+
+            var mailUsuario = "existente@mail.com";
+
+            var usuarioGranosOk = new UsuarioGranos
+            {
+                Mail = mailUsuario,
+                Archivos = new List<Archivo>(),
+                Proveedores = new List<Proveedor>(),
+                RelacionConEmpleados = new List<UsuarioRelacionConEmpleados>(),
+                RelacionConFuncionarios = new List<UsuarioRelacionConFuncionarios> { new UsuarioRelacionConFuncionarios { CargoFirma = "", CargoFuncionario = "", Id = 1, NombreFirma = "", NombreFuncionario = "", Usuario_Id = 1, Vinculo = "" } },
+                VinculoConEmpleadosDeMolinos = false,
+                VinculoConFuncionariosPublicos = true
+            };
+
+            var proveedorOk = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente, CUIT = "233333333333" };
+
+            usuarioGranosOk.Proveedores.Add(proveedorOk);
+
+            usuarioGranosOk.Archivos.Add(new Archivo { FileKey = FileKeys.InformeComercialFirmado });
+            usuarioGranosOk.Archivos.Add(new Archivo { FileKey = FileKeys.ConstanciaCBU });
+
+            usuarioGranosOk.Mail = mailUsuario;
+
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()))
+                .Returns(usuarioGranosOk);
+
+
+            var result = target.CargarSolicitudUsuario(mailUsuario);
+
+            var expected = new AltaEmpresaViewModel
+            {
+                VinculoConEmpleadosDeMolinos = usuarioGranosOk.VinculoConEmpleadosDeMolinos,
+                VinculoConFuncionariosPublicos = usuarioGranosOk.VinculoConFuncionariosPublicos,
+                Empleados = usuarioGranosOk.RelacionConEmpleados.Select(a => new AltaEmpresaEmpleadosViewModel { CargoProveedora = a.CargoProveedora, NombreMolinos = a.NombreMolinos, NombreProveedora = a.NombreProveedora, Vinculo = a.Vinculo }).ToList(),
+                Funcionarios = usuarioGranosOk.RelacionConFuncionarios.Select(a => new AltaEmpresaFuncionariosViewModel { CargoFirma = a.CargoFirma, CargoFuncionario = a.CargoFuncionario, NombreFirma = a.NombreFirma, NombreFuncionario = a.NombreFuncionario, Vinculo = a.Vinculo }).ToList()
+            };
+
+            Assert.AreEqual(expected.VinculoConEmpleadosDeMolinos, result.VinculoConEmpleadosDeMolinos);
+            Assert.AreEqual(expected.VinculoConFuncionariosPublicos, result.VinculoConFuncionariosPublicos);
+            Assert.AreEqual(expected.Empleados.Count, result.Empleados.Count);
+            Assert.AreEqual(expected.Funcionarios.Count, result.Funcionarios.Count);
         }
     }
 }

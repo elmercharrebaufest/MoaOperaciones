@@ -14,6 +14,14 @@ namespace SustitucionMOAModel.Entities
         public bool Habilitado { get; set; }
 
         public virtual TipoUsuario TipoUsuario { get; set; }
+        public bool? VinculoConEmpleadosDeMolinos { get; set; }
+        public bool? VinculoConFuncionariosPublicos { get; set; }
+
+        [InverseProperty("Usuario")]
+        public virtual ICollection<UsuarioRelacionConEmpleados> RelacionConEmpleados { get; set; }
+
+        [InverseProperty("Usuario")]
+        public virtual ICollection<UsuarioRelacionConFuncionarios> RelacionConFuncionarios { get; set; }
 
         [InverseProperty("UsuariosAsociados")]
         public virtual ICollection<Proveedor> Proveedores { get; set; }

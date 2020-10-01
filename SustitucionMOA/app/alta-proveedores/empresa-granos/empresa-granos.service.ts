@@ -116,12 +116,19 @@ export class EmpresaGranosService extends BaseService {
     }
 
 
-    enviarSolicitud(proveedorId: number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('proveedorId', proveedorId.toString());
+    //enviarSolicitud(): Observable<any> {
+    //    let params: URLSearchParams = new URLSearchParams();
+    //    return this.http
+    //        .get('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', { search: params, headers: this.headers })
+    //        .pipe(map(this.extractData));
+    //}
 
+    enviarSolicitud(datos: any): Observable<any> {
+        let payload = new FormData();
+        payload.append("datosJson", JSON.stringify(datos));
         return this.http
-            .get('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', { search: params, headers: this.headers })
+            .post('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', payload)
+            .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -132,6 +139,21 @@ export class EmpresaGranosService extends BaseService {
 
         return this.http
             .get('/api/AltaEmpresaGranos/EliminarArchivo', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
+    cargarSolicitudUsuario(mail?: string): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('mail', mail);
+        return this.http
+            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
 

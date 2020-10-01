@@ -39,4 +39,11 @@ export class AltaEmpresaService extends BaseService {
             .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(
                 map(this.extractData));
     }
+
+    cargarSolicitudUsuario(): Observable<any> {
+        return this.http
+            .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario')
+            .pipe(map(this.extractData));
+    }
+
 }

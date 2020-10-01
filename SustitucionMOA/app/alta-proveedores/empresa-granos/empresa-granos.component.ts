@@ -15,7 +15,12 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 import { EmpresaGranosService } from './empresa-granos.service';
+import { ContactoComercial } from '../../common/models/contactoComercial';
+import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
+import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
+import { forEach } from '@angular/router/src/utils/collection';
 import { CartaPresentacion } from '../../common/models/cartaPresentacion';
+
 
 @Component({
     selector: 'app-empresa-granos',
@@ -33,11 +38,17 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     listaMateriales: Array<Material> = [];
     listaCampanias: any = [];
     campaniaActual: number;
-
+    empleados: Array<RelacionConEmpleados> = [];
+    funcionarios: Array<RelacionConFuncionarios> = [];
     // private acopiosArray: Array<NuevoAcopio> = [];
+    private newAttributeEmpleados: RelacionConEmpleados = new RelacionConEmpleados();
+    private newAttributeFuncionarios: RelacionConFuncionarios = new RelacionConFuncionarios();
     private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
     private newAttribute: NuevoProduccion = new NuevoProduccion();
-
+    relacionConEmpleadosChecked: boolean = null;
+    relacionConFuncionariosChecked: boolean = null;
+    codigoConductaVisto: boolean = false;
+    codigoDeConducta: boolean = false;
     materialesData: any = null;
     CBUSISA: string = "";
 
@@ -58,7 +69,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
     mensajeError: string = "";
-
+    tryDoctype: string = "";
     keyword = 'Nombre';
     data = [];
     localidades: any = [];
@@ -165,6 +176,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.obtenerMateriales();
         this.obtenerArchivosSubidos();
+        this.cargarSolicitudUsuario();
         this.obtenerInfoProveedor();
 
         this.addFieldValue();
@@ -425,10 +437,20 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     onSubmit() {
+        if (this.validarTyC()) {
+            this.spinnerModal.hideIt();
+            return;
+        }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.enviarSolicitud(this.proveedorId).subscribe(
+        var datos = {
+            Empleados: this.empleados,
+            Funcionarios: this.funcionarios,
+            VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
+            VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
+        };
+        this.subscription = this.service.enviarSolicitud(datos).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
@@ -540,6 +562,171 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         return false;
     }
 
+    addFieldValueEmpleados() {
+        this.empleados.push(this.newAttributeEmpleados)
+        this.newAttributeEmpleados = new RelacionConEmpleados();
+    }
+
+    deleteFieldValueEmpleados(index) {
+        this.empleados.splice(index, 1);
+    }
+
+    isVisibleTablaEmpleados(): boolean {
+        return this.relacionConEmpleadosChecked;
+    }
+    relacionConEmpleadosCheckSi(event) {
+        this.relacionConEmpleadosChecked = true;
+        if (this.empleados.length == 0) {
+            this.addFieldValueEmpleados();
+        }
+    }
+    relacionConEmpleadosCheckNo(event) {
+        this.relacionConEmpleadosChecked = false;
+    }
+
+    addFieldValueFuncionarios() {
+        this.funcionarios.push(this.newAttributeFuncionarios)
+        this.newAttributeFuncionarios = new RelacionConFuncionarios();
+    }
+
+    deleteFieldValueFuncionarios(index) {
+        this.funcionarios.splice(index, 1);
+    }
+
+    isVisibleTablaFuncionarios(): boolean {
+        return this.relacionConFuncionariosChecked;
+    }
+    relacionConFuncionariosCheckSi(event) {
+        this.relacionConFuncionariosChecked = true;
+        if (this.funcionarios.length == 0) {
+            this.addFieldValueFuncionarios();
+        }
+    }
+    relacionConFuncionariosCheckNo(event) {
+        this.relacionConFuncionariosChecked = false;
+    }
+
+    validarTyC() {
+
+        if (this.relacionConEmpleadosChecked == null) {
+            this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Empleados de Molinos agro S.A.");
+            return true;
+        }
+        if (this.relacionConEmpleadosChecked == false) {
+            this.empleados = [];
+        }
+        if (this.relacionConEmpleadosChecked == true) {
+            if (this.empleados.length == 0) {
+                this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Empleados de Molinos agro S.A.");
+            } else {
+                for (const item of this.empleados) {
+                    if (item.NombreProveedora == null || item.NombreProveedora == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                    if (item.CargoProveedora == null || item.CargoProveedora == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                    if (item.NombreMolinos == null || item.NombreMolinos == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+                    if (item.Vinculo == null || item.Vinculo == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el vinculo en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
+                        return true;
+                    }
+
+                }
+            }
+        }
+
+        if (this.relacionConFuncionariosChecked == null) {
+            this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Funcionarios Públicos");
+            return true;
+        }
+        if (this.relacionConFuncionariosChecked == false) {
+            this.funcionarios = [];
+        }
+        if (this.relacionConFuncionariosChecked == true) {
+            if (this.funcionarios.length == 0) {
+                this.mensajeComponent.setErrorMsg("Debe completar Vínculos a declarar con Funcionarios Públicos");
+            } else {
+                for (const item of this.funcionarios) {
+                    if (item.NombreFirma == null || item.NombreFirma == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.CargoFirma == null || item.CargoFirma == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.NombreFuncionario == null || item.NombreFuncionario == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.CargoFuncionario == null || item.CargoFuncionario == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+                    if (item.Vinculo == null || item.Vinculo == "") {
+                        this.mensajeComponent.setErrorMsg("Debe completar el vinculo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
+                        return true;
+                    }
+
+                }
+            }
+        }
+        if (this.codigoDeConducta == false) {
+            this.mensajeComponent.setErrorMsg("Debe aceptar el Código de Conducta de Proveedores de Molinos agro S.A.");
+            return true;
+        }
+        return false;
+    }
+
+    abrirCodigoConducta(siempre:boolean) {
+        if (this.codigoConductaVisto == false || siempre) {
+            this.codigoConductaVisto = true;
+            var filePath = location.origin + "/Documentacion/CodigoDeConductaParaProveedoresMOA.pdf";
+            console.log(filePath);
+            var url = location.origin + "/officetohtml/popup.html?filePath=" + filePath;
+            this.tryDoctype = url;
+            document.getElementById("iframeConducta").setAttribute("src", url);
+            document.getElementById("openModalconductaModal").click();
+        }
+    }
+
+    cargarSolicitudUsuario() {
+        this.subscription = this.service.cargarSolicitudUsuario().subscribe(
+            result => {
+                if (result.VinculoConEmpleadosDeMolinos != null) {
+                    this.codigoConductaVisto = true;
+                    this.codigoDeConducta = true;
+
+                    this.relacionConEmpleadosChecked = result.VinculoConEmpleadosDeMolinos;
+                    if (result.VinculoConEmpleadosDeMolinos) {
+                        document.getElementById("radioEmpleadosSi").setAttribute('checked', 'true');
+                    } else {
+                        document.getElementById("radioEmpleadosNo").setAttribute('checked', 'true');
+                    }
+
+                    this.relacionConFuncionariosChecked = result.VinculoConFuncionariosPublicos;
+                    if (result.VinculoConFuncionariosPublicos) {
+                        document.getElementById("radioFuncionariosSi").setAttribute('checked', 'true');
+                    } else {
+                        document.getElementById("radioFuncionariosNo").setAttribute('checked', 'true');
+                    }
+
+                    this.empleados = result.Empleados;
+                    this.funcionarios = result.Funcionarios;
+                }
+
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
 
     agregarCampoCartaPresentacion() {
         this.cartaPresentacion.nuevosCampos.push(this.nuevoAtributoCampo)

@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
@@ -248,7 +249,7 @@ namespace SustitucionMOAUtils.Services
                 if (File.Exists(rutaArchivo))
                 {
                     return ErrorMsg.ErrorArchivoRepetido;
-                }    
+                }
 
                 Directory.CreateDirectory(rutaCarpeta);
 
@@ -289,8 +290,9 @@ namespace SustitucionMOAUtils.Services
             return string.Concat(rutaArchivosProveedores, "/", proveedor.CUIT, "/", proveedor.Id, "/", fileKey);
         }
 
-        public string EnviarSolicitudUsuario(string mailUsuario, int proveedorID)
+        public string EnviarSolicitudUsuario(string mailUsuario, AltaEmpresaViewModel altaEmpresa)
         {
+            var proveedorID = 0;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorID);
@@ -316,6 +318,36 @@ namespace SustitucionMOAUtils.Services
 
             proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
 
+            usuario.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
+            usuario.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;
+
+            repositorio.RemoverTodos(usuario.RelacionConEmpleados.ToList());
+            repositorio.RemoverTodos(usuario.RelacionConFuncionarios.ToList());
+            foreach (var item in altaEmpresa.Empleados)
+            {
+                usuario.RelacionConEmpleados.Add(
+                    new UsuarioRelacionConEmpleados
+                    {
+                        CargoProveedora = item.CargoProveedora,
+                        NombreMolinos = item.NombreMolinos,
+                        NombreProveedora = item.NombreProveedora,
+                        Usuario_Id = usuario.Id,
+                        Vinculo = item.Vinculo
+                    });
+            }
+            foreach (var item in altaEmpresa.Funcionarios)
+            {
+                usuario.RelacionConFuncionarios.Add(
+                    new UsuarioRelacionConFuncionarios
+                    {
+                        CargoFirma = item.CargoFirma,
+                        CargoFuncionario = item.CargoFuncionario,
+                        NombreFirma = item.NombreFirma,
+                        NombreFuncionario = item.NombreFuncionario,
+                        Usuario_Id = usuario.Id,
+                        Vinculo = item.Vinculo
+                    });
+            }
             repositorio.GuardarCambios();
 
             return SuccessMsg.ValidacionPendienteOK;
@@ -416,7 +448,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.Archivos.Remove(archivoEliminar);
 
             repositorio.Remover(archivoEliminar);
-       
+
             repositorio.GuardarCambios();
             if (File.Exists(rutaArchivo))
             {
@@ -450,6 +482,16 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-      
+        public AltaEmpresaViewModel CargarSolicitudUsuario(string mail)
+        {
+            AltaEmpresaViewModel altaEmpresa = new AltaEmpresaViewModel();
+            var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+            altaEmpresa.VinculoConEmpleadosDeMolinos = usuario.VinculoConEmpleadosDeMolinos;
+            altaEmpresa.VinculoConFuncionariosPublicos = usuario.VinculoConFuncionariosPublicos;
+            altaEmpresa.Empleados = usuario.RelacionConEmpleados.Select(a => new AltaEmpresaEmpleadosViewModel { CargoProveedora = a.CargoProveedora, NombreMolinos = a.NombreMolinos, NombreProveedora = a.NombreProveedora, Vinculo = a.Vinculo }).ToList();
+            altaEmpresa.Funcionarios = usuario.RelacionConFuncionarios.Select(a => new AltaEmpresaFuncionariosViewModel { CargoFirma = a.CargoFirma, CargoFuncionario = a.CargoFuncionario, NombreFirma = a.NombreFirma, NombreFuncionario = a.NombreFuncionario, Vinculo = a.Vinculo }).ToList();
+
+            return altaEmpresa;
+        }
     }
 }
