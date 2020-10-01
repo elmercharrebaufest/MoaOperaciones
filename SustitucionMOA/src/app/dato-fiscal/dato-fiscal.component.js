@@ -20,18 +20,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { DatoFiscalService } from './dato-fiscal.service';
-import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
-import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
-import { NavService } from './../common/services/NavService';
-import { FloatMsgService } from './../common/services/FloatMsgService';
-import { SecurityService } from './../common/services/SecurityService';
-import { Seccion } from './../common/models/Seccion';
-import { BaseComponent } from './../common/base-components/base-component';
-import { SessionDataService } from './../common/services/SessionDataService';
-import { ModalService } from './../common/services/ModalService';
+import { Component, ViewChild } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+import { DatoFiscalService } from "./dato-fiscal.service";
+import { SpinnerComponent } from "./../common/view-child/spinner/spinner.component";
+import { MensajeComponent } from "./../common/view-child/mensaje/mensaje.component";
+import { NavService } from "./../common/services/NavService";
+import { FloatMsgService } from "./../common/services/FloatMsgService";
+import { SecurityService } from "./../common/services/SecurityService";
+import { Seccion } from "./../common/models/Seccion";
+import { BaseComponent } from "./../common/base-components/base-component";
+import { SessionDataService } from "./../common/services/SessionDataService";
+import { ModalService } from "./../common/services/ModalService";
 var DatoFiscalBaseComponent = /** @class */ (function (_super) {
     __extends(DatoFiscalBaseComponent, _super);
     function DatoFiscalBaseComponent(service, navService, securityService, sessionDataService, floatMsgService, modalService, route, router) {
@@ -47,8 +47,10 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
         _this.titulo = "";
         _this.nombre = "";
         _this.proveedor = "";
-        _this.itemsPerPage = sessionStorage.getItem("itemsPerPage") ? sessionStorage.getItem("itemsPerPage") : "10";
-        _this.dropdownType = 'numberItems';
+        _this.itemsPerPage = sessionStorage.getItem("itemsPerPage")
+            ? sessionStorage.getItem("itemsPerPage")
+            : "10";
+        _this.dropdownType = "numberItems";
         _this.spinnerComponent = new SpinnerComponent();
         _this.mensajeComponent = new MensajeComponent();
         _this.nombre = sessionStorage.getItem("nombre");
@@ -70,13 +72,13 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
         //this.service.getTitulo().subscribe(titulo => this.titulo = titulo);
         var secciones = [];
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
+            secciones.push(new Seccion("/dato-fiscal/situacion-fiscal", "dato-fiscal", "Mi Situacion Fiscal"));
         if (this.isAuthorized("CONSULTAR VENDEDORES"))
-            secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
+            secciones.push(new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores"));
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
-        // if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
-        secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+            secciones.push(new Seccion("/dato-fiscal/documentacion", "dato-fiscal", "Documentacion"));
+        if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
+            secciones.push(new Seccion("/dato-fiscal/vendedores-pendientes", "dato-fiscal", "Vendedores pendientes"));
         this.navService.setSeccionList(secciones);
         this.getData();
     };
@@ -90,12 +92,16 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         this.route.params.forEach(function (params) {
-            _this.vendedorId = params['id'];
-            if (params['id2'] != undefined && params['id2'] != "" && params['id2'] != null) {
-                _this.nombre = params['id2'];
-                _this.proveedor = params['id'];
+            _this.vendedorId = params["id"];
+            if (params["id2"] != undefined &&
+                params["id2"] != "" &&
+                params["id2"] != null) {
+                _this.nombre = params["id2"];
+                _this.proveedor = params["id"];
             }
-            _this.subscription = _this.service.getDatosFiscales(_this.vendedorId).subscribe(function (result) {
+            _this.subscription = _this.service
+                .getDatosFiscales(_this.vendedorId)
+                .subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -160,9 +166,9 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
     ], DatoFiscalBaseComponent.prototype, "spinnerComponent", void 0);
     DatoFiscalBaseComponent = __decorate([
         Component({
-            selector: 'app-dato-fiscal',
+            selector: "app-dato-fiscal",
             templateUrl: "dato-fiscal.component.html",
-            providers: [DatoFiscalService]
+            providers: [DatoFiscalService],
         }),
         __metadata("design:paramtypes", [DatoFiscalService,
             NavService,

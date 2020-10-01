@@ -125,7 +125,7 @@
             </div>
         </ng-container>
         <!-- <ng-container *ngIf="showEmpresaCambiarEstado"> -->
-            <!--<div class="row">
+        <!--<div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
             Factura:
             <div class="styled-select">
@@ -170,7 +170,7 @@
             </a>
         </div>
     </div>-->
-            <!-- <div class="row">
+        <!-- <div class="row">
                 <div class="col-xs-12">
                     prueba
                 </div>
@@ -343,14 +343,7 @@
                 <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-granos')) ? 'active' : ''"
                         (click)="goToSeccion('/alta-empresa-granos')"
-                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS')" href="#">
-                        <!--data-toggle="tab">-->Alta Empresa
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-no-granos')) ? 'active' : ''"
-                        (click)="goToSeccion('/alta-empresa-no-granos')"
-                        *ngIf="isNoGranosSelected() && isAuthorized('ALTA EMPRESA NO GRANOS')" href="#">
+                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')" href="#">
                         <!--data-toggle="tab">-->Alta Empresa
                     </a>
                 </li>
@@ -362,14 +355,11 @@
                 </li>
                 <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('estado-solicitud')) ? 'active' : ''"
-                        (click)="goToSeccion('/estado-solicitud')" href="#" *ngIf="isAuthorized('ESTADO SOLICITUD')">
+                       (click)="goToSeccion('/estado-solicitud')" href="#"
+                       *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                         <!--data-toggle="tab">-->Estado solicitud
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('empresa-corredor')) ? 'active' : ''"
-                        (click)="goToSeccion('/alta-empresa-corredor')" href="#">
-                        Alta Corredor
+
+                       
                     </a>
                 </li>
             </ul>

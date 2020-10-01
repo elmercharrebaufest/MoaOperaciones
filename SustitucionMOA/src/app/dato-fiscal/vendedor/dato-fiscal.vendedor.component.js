@@ -20,17 +20,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewChild } from '@angular/core';
-import { DatoFiscalService } from './../dato-fiscal.service';
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { NavService } from './../../common/services/NavService';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { Seccion } from './../../common/models/seccion';
-import { BaseComponent } from './../../common/base-components/base-component';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { ModalService } from './../../common/services/ModalService';
+import { Component, ViewChild } from "@angular/core";
+import { DatoFiscalService } from "./../dato-fiscal.service";
+import { MensajeComponent } from "./../../common/view-child/mensaje/mensaje.component";
+import { SpinnerComponent } from "./../../common/view-child/spinner/spinner.component";
+import { NavService } from "./../../common/services/NavService";
+import { FloatMsgService } from "./../../common/services/FloatMsgService";
+import { SecurityService } from "./../../common/services/SecurityService";
+import { Seccion } from "./../../common/models/seccion";
+import { BaseComponent } from "./../../common/base-components/base-component";
+import { SessionDataService } from "./../../common/services/SessionDataService";
+import { ModalService } from "./../../common/services/ModalService";
 var VendedoresListComponent = /** @class */ (function (_super) {
     __extends(VendedoresListComponent, _super);
     function VendedoresListComponent(service, navService, securityService, sessionDataService, floatMsgService, modalService) {
@@ -58,13 +58,13 @@ var VendedoresListComponent = /** @class */ (function (_super) {
         this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
         var secciones = [];
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
-        if (this.isAuthorized("CONSULTAR VENDEDORES") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
+            secciones.push(new Seccion("/dato-fiscal/situacion-fiscal", "dato-fiscal", "Mi Situacion Fiscal"));
+        if (this.isAuthorized("CONSULTAR VENDEDORES"))
+            secciones.push(new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores"));
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
-        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+            secciones.push(new Seccion("/dato-fiscal/documentacion", "dato-fiscal", "Documentacion"));
+        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
+            secciones.push(new Seccion("/dato-fiscal/vendedores-pendientes", "dato-fiscal", "Vendedores pendientes"));
         this.navService.setSeccionList(secciones);
         this.getUsuario();
     };
@@ -122,11 +122,16 @@ var VendedoresListComponent = /** @class */ (function (_super) {
     ], VendedoresListComponent.prototype, "spinnerComponent", void 0);
     VendedoresListComponent = __decorate([
         Component({
-            selector: 'list',
+            selector: "list",
             templateUrl: "dato-fiscal.vendedor.component.html",
-            providers: [DatoFiscalService]
+            providers: [DatoFiscalService],
         }),
-        __metadata("design:paramtypes", [DatoFiscalService, NavService, SecurityService, SessionDataService, FloatMsgService, ModalService])
+        __metadata("design:paramtypes", [DatoFiscalService,
+            NavService,
+            SecurityService,
+            SessionDataService,
+            FloatMsgService,
+            ModalService])
     ], VendedoresListComponent);
     return VendedoresListComponent;
 }(BaseComponent));

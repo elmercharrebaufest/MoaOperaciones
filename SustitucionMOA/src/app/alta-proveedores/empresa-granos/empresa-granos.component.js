@@ -162,14 +162,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         get: function () {
             return this.firstFormGroup.get('email');
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
         get: function () {
             return this.secondFormGroup.get('password');
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     EmpresaGranosComponent.prototype.handleFileInput = function (files, fileKey) {

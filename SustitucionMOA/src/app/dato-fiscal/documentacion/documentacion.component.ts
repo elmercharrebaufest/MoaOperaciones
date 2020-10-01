@@ -1,54 +1,76 @@
-import { Component, OnInit } from '@angular/core';
-import { DatoFiscalService } from './../dato-fiscal.service';
-import { NavService } from './../../common/services/NavService';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { Seccion } from './../../common/models/seccion';
-import { BaseComponent } from './../../common/base-components/base-component';
-import { ModalService } from './../../common/services/ModalService';
-
-
+import { Component, OnInit } from "@angular/core";
+import { DatoFiscalService } from "./../dato-fiscal.service";
+import { NavService } from "./../../common/services/NavService";
+import { FloatMsgService } from "./../../common/services/FloatMsgService";
+import { SessionDataService } from "./../../common/services/SessionDataService";
+import { SecurityService } from "./../../common/services/SecurityService";
+import { Seccion } from "./../../common/models/seccion";
+import { BaseComponent } from "./../../common/base-components/base-component";
+import { ModalService } from "./../../common/services/ModalService";
 
 @Component({
-    selector: 'documentacion',
-    templateUrl: `documentacion.component.html`,
-    providers: [DatoFiscalService]
+  selector: "documentacion",
+  templateUrl: `documentacion.component.html`,
+  providers: [DatoFiscalService],
 })
-export class DocumentacionComponent extends BaseComponent implements OnInit{
+export class DocumentacionComponent extends BaseComponent implements OnInit {
+  constructor(
+    protected service: DatoFiscalService,
+    protected navService: NavService,
+    protected securityService: SecurityService,
+    protected floatMsgService: FloatMsgService,
+    protected modalService: ModalService
+  ) {
+    super(navService, securityService, floatMsgService, modalService);
+  }
 
-    constructor(protected service: DatoFiscalService, protected navService: NavService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(navService, securityService, floatMsgService, modalService);
-    }
+  tipoUsuario: string;
 
-    tipoUsuario: string;
+  setTabs() {
+    this.setMenuSeccionTab("dato-fiscal", "Documentacion");
+  }
 
-    setTabs() {
-        this.setMenuSeccionTab("dato-fiscal", "Documentacion");
-    }
+  ngOnInit() {
+    //this.service.getTitulo().subscribe(titulo => this.titulo = titulo);
+    this.setTabs();
+    var secciones = [];
+    if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
+      secciones.push(
+        new Seccion(
+          "/dato-fiscal/situacion-fiscal",
+          "dato-fiscal",
+          "Mi Situacion Fiscal"
+        )
+      );
 
-    ngOnInit() {
-        //this.service.getTitulo().subscribe(titulo => this.titulo = titulo);
-        this.setTabs();
-        var secciones = [];
-        if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
+    if (this.isAuthorized("CONSULTAR VENDEDORES"))
+      secciones.push(
+        new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores")
+      );
 
-        if (this.isAuthorized("CONSULTAR VENDEDORES") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
+    if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
+      secciones.push(
+        new Seccion(
+          "/dato-fiscal/documentacion",
+          "dato-fiscal",
+          "Documentacion"
+        )
+      );
 
-        if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
+    if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
+      secciones.push(
+        new Seccion(
+          "/dato-fiscal/vendedores-pendientes",
+          "dato-fiscal",
+          "Vendedores pendientes"
+        )
+      );
 
-        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+    this.navService.setSeccionList(secciones);
+  }
 
-        this.navService.setSeccionList(secciones);
-
-    }
-
-    // Se vuelve a la solucion de tener la documentacion dentro del proyecto
-    /*getDocumento(nombre:string) {
+  // Se vuelve a la solucion de tener la documentacion dentro del proyecto
+  /*getDocumento(nombre:string) {
         this.unsubscribe();
         try {
             this.subscription = this.service.getDocumento(nombre).subscribe(

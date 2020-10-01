@@ -33,8 +33,12 @@ namespace SustitucionMOATest.Services
         {
             var mailUsuario = "existente@mail.com";
 
+
+            int proveedorId = 1;
+
             var proveedor = new Proveedor
             {
+                Id = proveedorId,
                 EstadoAprobacion = EstadoAprobacion.Aprobado,
                 Observaciones = "Test",
                 RazonSocial = "RS",
@@ -52,38 +56,46 @@ namespace SustitucionMOATest.Services
                     .Setup(y => y.Obtener<Proveedor>(It.IsAny<int>()))
                     .Returns(new Proveedor
                     {
-                        Id = 1,
+                        Id = proveedorId,
                         EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
                         RazonSocial = "RS",
                         Mail = mailUsuario
                     });
 
             repositorioMock
-                    .Setup(y => y.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()))
-                    .Returns(new UsuarioGranos
+                    .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                    .Returns(new Usuario
                     {
                         Id = 1,
                         Mail = mailUsuario,
+                        TipoUsuario = new TipoUsuario { Id = 1, Nombre = "Granos" },
                         Roles = new List<Rol> { new Rol { Nombre = "Nuevo granos", Codigo = "NUEG" } }
                     });
 
+
             repositorioMock
-                    .Setup(y => y.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
-                    .Returns(new Rol { Id = 1, Nombre = "Granos", Codigo = "GRAN" });
+              .Setup(y => y.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
+              .Returns(new Rol
+              {
+                  Id = 1,
+                  Nombre = "Granos",
+                  Codigo = "GRAN"
+              });
 
 
+     
             var expected = string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
 
             var observacion = "";
             var observacionParaElProveedor = "";
             var estadoSIPER = "";
 
-            var result = target.SetEstadoAprobacion(1, EstadoAprobacion.Aprobado, observacion, mailUsuario, observacionParaElProveedor, estadoSIPER, false);
+            var result = target.SetEstadoAprobacion(proveedorId, EstadoAprobacion.Aprobado, observacion, mailUsuario, observacionParaElProveedor, estadoSIPER, false);
 
 
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<UsuarioGranos, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()), Times.Once);
 

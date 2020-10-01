@@ -20,17 +20,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewChild } from '@angular/core';
-import { DatoFiscalService } from './../dato-fiscal.service';
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { NavService } from './../../common/services/NavService';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { Seccion } from './../../common/models/seccion';
-import { BaseComponent } from './../../common/base-components/base-component';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { ModalService } from './../../common/services/ModalService';
+import { Component, ViewChild } from "@angular/core";
+import { DatoFiscalService } from "./../dato-fiscal.service";
+import { MensajeComponent } from "./../../common/view-child/mensaje/mensaje.component";
+import { SpinnerComponent } from "./../../common/view-child/spinner/spinner.component";
+import { NavService } from "./../../common/services/NavService";
+import { FloatMsgService } from "./../../common/services/FloatMsgService";
+import { SecurityService } from "./../../common/services/SecurityService";
+import { Seccion } from "./../../common/models/seccion";
+import { BaseComponent } from "./../../common/base-components/base-component";
+import { SessionDataService } from "./../../common/services/SessionDataService";
+import { ModalService } from "./../../common/services/ModalService";
 var VendedoresPendientesComponent = /** @class */ (function (_super) {
     __extends(VendedoresPendientesComponent, _super);
     function VendedoresPendientesComponent(service, navService, securityService, sessionDataService, floatMsgService, modalService) {
@@ -60,13 +60,13 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
         var secciones = [];
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
-        if (this.isAuthorized("CONSULTAR VENDEDORES") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
+            secciones.push(new Seccion("/dato-fiscal/situacion-fiscal", "dato-fiscal", "Mi Situacion Fiscal"));
+        if (this.isAuthorized("CONSULTAR VENDEDORES"))
+            secciones.push(new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores"));
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
-        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+            secciones.push(new Seccion("/dato-fiscal/documentacion", "dato-fiscal", "Documentacion"));
+        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
+            secciones.push(new Seccion("/dato-fiscal/vendedores-pendientes", "dato-fiscal", "Vendedores pendientes"));
         this.navService.setSeccionList(secciones);
         this.getVendedores();
     };
@@ -120,7 +120,9 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT).subscribe(function (result) {
+            this.subscription = this.service
+                .agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT)
+                .subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -154,13 +156,17 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
     ], VendedoresPendientesComponent.prototype, "spinnerComponent", void 0);
     VendedoresPendientesComponent = __decorate([
         Component({
-            selector: 'app-vendedores-pendientes',
-            templateUrl: 'vendedores-pendientes.component.html',
-            styleUrls: ['vendedores-pendientes.component.css'],
-            providers: [DatoFiscalService]
+            selector: "app-vendedores-pendientes",
+            templateUrl: "vendedores-pendientes.component.html",
+            styleUrls: ["vendedores-pendientes.component.css"],
+            providers: [DatoFiscalService],
         }),
-        __metadata("design:paramtypes", [DatoFiscalService, NavService, SecurityService,
-            SessionDataService, FloatMsgService, ModalService])
+        __metadata("design:paramtypes", [DatoFiscalService,
+            NavService,
+            SecurityService,
+            SessionDataService,
+            FloatMsgService,
+            ModalService])
     ], VendedoresPendientesComponent);
     return VendedoresPendientesComponent;
 }(BaseComponent));
