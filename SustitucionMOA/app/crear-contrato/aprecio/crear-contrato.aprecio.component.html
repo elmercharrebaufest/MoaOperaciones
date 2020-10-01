@@ -107,7 +107,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="destino">Destiono</label>
-                    <select class="form-control" name="destino">
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -115,14 +115,14 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="material">Material</label>
-                    <select class="form-control" name="material">
+                    <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId">
                         <option *ngFor="let item of materiales" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
 
                 </div>
                 <div class="form-group col-md-6">
                     <label for="camania">Campaña</label>
-                    <select class="form-control" name="campania">
+                    <select class="form-control" name="campania" [(ngModel)]="contrato.CampanaId">
                         <option *ngFor="let item of campanias" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -130,15 +130,15 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="cantidad">Cantidad (Kg.)</label>
-                    <input type="text" class="form-control" name="cantidad"  numeric decimals="0">
+                    <input type="text" class="form-control" name="cantidad"  numeric decimals="0" [(ngModel)]="contrato.Cantidad">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="precio">Precio</label>
-                    <input type="text" class="form-control" name="precio"  numeric decimals="2">
+                    <input type="text" class="form-control" name="precio"  numeric decimals="2"  [(ngModel)]="contrato.Precio">
                 </div>
                 <div class="form-group col-md-2">
                     <label for="moneda">Moneda</label>
-                    <select class="form-control" name="moneda">
+                    <select class="form-control" name="moneda"  [(ngModel)]="contrato.MonedaId">
                         <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -146,18 +146,18 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="condVend">Condicion vendedor</label>
-                    <select class="form-control" name="moneda">
+                    <select class="form-control" name="condVend"  [(ngModel)]="contrato.ClasificacionId">
                         <option *ngFor="let item of condicionVendedor" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="localidad">Localidad</label>                    
-                    <input [(ngModel)]="contrato" class="form-control" type="hidden"
+                    <input [(ngModel)]="contrato.LocalidadId" class="form-control" type="hidden"
                            id="localidadinf" style="font-weight: 100 !important;">
-                    <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                     (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
-                                     (inputChanged)='onChangeSearchInforme($event)'
-                                     (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
+                    <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                     (selected)='selectEventLocalidad($event)' [(ngModel)]="contrato.LocalidadId"
+                                     (inputChanged)='onChangeSearchLocalidad($event)'
+                                     (inputFocused)='selectEventLocalidad($event)' [itemTemplate]="itemTemplate"
                                      [notFoundText]="autocompleteNotFoundText"
                                      [notFoundTemplate]="notFoundTemplate">
                     </ng-autocomplete>
@@ -174,7 +174,8 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="boleto">Boleto</label>
-                    <select class="form-control" name="boleto">
+                    <select class="form-control" name="boleto"  [(ngModel)]="contrato.BoletoId" (ngModelChange)="onBoletoSelected()">
+                        
                         <option value="1">Confirma</option>
                         <option value="2">Físico</option>
                         <option value="3">Ninguno</option>
@@ -184,8 +185,9 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="bolsa">Bolsa</label>
-                    <select class="form-control" name="bolsa">
-                        <option *ngFor="let item of bolsas" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    <select class="form-control" name="bolsa" [(ngModel)]="contrato.BolsaId">
+                        
+                        <option *ngFor="let item of bolsasSelect" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
             </div>
@@ -193,14 +195,14 @@
             <div class="row">
                 <div class="form-group col-md-12">
                     <label class="switch">
-                        <input type="checkbox">
+                        <input type="checkbox" [(ngModel)]="contrato.PagoDiferido">
                         <span class="slider round"></span>
 
                     </label><label class="labelSwitch"> Pago diferido</label>
                 </div>
                 <div class="form-group col-md-12">
                     <label class="switch">
-                        <input type="checkbox">
+                        <input type="checkbox" [(ngModel)]="contrato.Dolarizado">
                         <span class="slider round"></span>
 
                     </label><label class="labelSwitch"> Dolarizado</label>

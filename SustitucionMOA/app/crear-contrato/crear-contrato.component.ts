@@ -32,9 +32,12 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     destinos: any = new Array();
     campanias: any = new Array();
     //boletos: any =  new Array();
-    bolsas: any = new Array();
+    bolsasSelect: any = new Array();
+    bolsasConfirma: any = new Array();
+    bolsasFisico: any = new Array();
+    bolsasCarta: any = new Array();
     condicionVendedor: any = new Array();
-    contrato: any = "";
+    
 
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CREAR CONTRATOS"); }
@@ -76,7 +79,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                             Id: element.Id,
                             Descripcion: element.Descripcion
                         }
-                        this.bolsas.push(el);
+                        this.bolsasConfirma.push(el);
+                        if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
+                            this.bolsasFisico.push(el);
+                        if (element.Descripcion == "Bs As")
+                            this.bolsasCarta.push(el);
                     });
                     obj.Datos.Clasificacion.forEach(element => {
                         let el = {
@@ -117,10 +124,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         return false;
     }
 
-
-    //setFiltroVendedor(vendedor: string) {
-    //    this.vendedorSelected = vendedor;
-    //}
+    
 
     //isVisible(): boolean {
     //    if (this.data && this.data.contratosInfo.length != 0)
@@ -129,16 +133,5 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     //        return false;
     //}
 
-    //protected vaciarFiltros() {
-    //    this.filtroProducto = null;
-    //    this.filtroVendedor = null;
-    //    this.filtroContrato = "";
-    //    this.productoSelected = "";
-    //    this.vendedorSelected = "";
-    //}
-
-    //protected cargarFiltrosVariables(result: any) {
-    //    if (result.filtroProducto != undefined) this.filtroProducto = result.filtroProducto.options;
-    //    if (result.filtroVendedor != undefined) this.filtroVendedor = result.filtroVendedor.options;
-    //}
+    
 }

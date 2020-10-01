@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
+import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
 
 @Component({
     selector: 'app-crear-contrato-aprecio',
@@ -9,22 +10,47 @@ import { CrearContratoService, CrearContratoAPrecioService } from './../crear-co
 })
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
-    
+    contrato: ContratoAPrecio = new ContratoAPrecio();
+    localidades = [];
+    keyword = 'Nombre';
+    autocompleteNotFoundText = "No encontrado";
+
     setTabs() {
         this.setMenuSeccionTab("crear-contrato", "A Precio");
     }
 
-    //showModalTableResponsive(Contrato: any) {
-    //    this.modalService.openModalTableResponsive("Contrato Vigente", [
-    //        { etiqueta: "Último Movimiento", valor: Contrato.fecha },
-    //        { etiqueta: "Contrato Molinos", valor: Contrato.nroContrato },
-    //        { etiqueta: "Contrato Proveedor", valor: Contrato.contrvend },
-    //        { etiqueta: "Estado Boleto", valor: Contrato.estado },
-    //        { etiqueta: "Producto", valor: Contrato.material },
-    //        { etiqueta: "Pactado", valor: Contrato.cantKilosString },
-    //        { etiqueta: "Entregado", valor: Contrato.aplicacionesString },
-    //        { etiqueta: "Liquidado", valor: Contrato.liquidadoString }
-    //    ]);
-    //    return false;
-    //}
+    selectEventLocalidad(item) {
+        this.contrato.LocalidadId = item.LocalidadId;
+    }
+
+    onChangeSearchLocalidad(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(
+                result => {
+                    this.localidades = result;
+                },
+                error => {                   
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
+    onBoletoSelected() {
+        this.contrato.BolsaId = 0;        
+        if (this.contrato.BoletoId == 1) {
+            this.bolsasSelect = this.bolsasConfirma;
+        }
+        if (this.contrato.BoletoId == 2) {
+            this.bolsasSelect = this.bolsasFisico;
+        } 
+        if (this.contrato.BoletoId == 3) {
+            this.bolsasSelect = [];
+        }
+        if (this.contrato.BoletoId == 4) {
+            this.bolsasSelect = this.bolsasCarta;
+        } 
+    }
+
 }
