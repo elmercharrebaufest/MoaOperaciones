@@ -231,7 +231,6 @@
     <Content Include="src\app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
     <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
     <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.html" />
-    <Content Include="src\app\carta-porte\carta-porte.component.html" />
     <Content Include="src\app\carta-porte\descarga\carta-porte.descarga.component.html" />
     <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
@@ -793,16 +792,28 @@
     <Compile Include="Utils\SameSiteCookieManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\app\carta-porte\carta-porte-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\carta-porte\carta-porte.module.ts" />
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\pesificacionContrato.ts" />
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\cuenta-corriente-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\cuenta-corriente.module.ts" />
     <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal-routing.module.ts" />
     <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal.module.ts" />
     <TypeScriptCompile Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.spec.ts" />
     <TypeScriptCompile Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.ts" />
+    <TypeScriptCompile Include="src\app\factura\factura-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\factura\factura.module.ts" />
+    <TypeScriptCompile Include="src\app\flete\flete-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\flete\flete.module.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\liquidacion-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\liquidacion\liquidacion.module.ts" />
+    <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />
