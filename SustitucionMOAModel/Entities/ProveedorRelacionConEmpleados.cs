@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
-    [Table("UsuarioRelacionConEmpleados")]
-    public class UsuarioRelacionConEmpleados
+    [Table("ProveedorRelacionConEmpleados")]
+    public class ProveedorRelacionConEmpleados
     {
         [Key]
         public int Id { get; set; }
-        public int Usuario_Id { get; set; }
+        public int Proveedor_Id { get; set; }
         public string NombreProveedora { get; set; }
         public string CargoProveedora { get; set; }
         public string NombreMolinos { get; set; }
         public string Vinculo { get; set; }
 
-        [ForeignKey("Usuario_Id")]
-        public virtual Usuario Usuario { get; set; }
+        [ForeignKey("Proveedor_Id")]
+        public virtual Proveedor Proveedor { get; set; }
 
     }
 }

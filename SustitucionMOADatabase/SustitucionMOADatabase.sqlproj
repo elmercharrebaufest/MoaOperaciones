@@ -77,8 +77,8 @@
     <Build Include="DBO\Tables\Usuario.sql" />
     <Build Include="DBO\Tables\UsuarioGranos.sql" />
     <Build Include="DBO\Tables\UsuarioNoGranos.sql" />
-    <Build Include="DBO\Tables\UsuarioRelacionConEmpleados.sql" />
-    <Build Include="DBO\Tables\UsuarioRelacionConFuncionarios.sql" />
+    <Build Include="DBO\Tables\ProveedorRelacionConEmpleados.sql" />
+    <Build Include="DBO\Tables\ProveedorRelacionConFuncionarios.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

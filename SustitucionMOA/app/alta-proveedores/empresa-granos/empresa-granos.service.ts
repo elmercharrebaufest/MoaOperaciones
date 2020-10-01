@@ -123,9 +123,11 @@ export class EmpresaGranosService extends BaseService {
     //        .pipe(map(this.extractData));
     //}
 
-    enviarSolicitud(datos: any): Observable<any> {
+    enviarSolicitud(datos: any, proveedorId:number): Observable<any> {
         let payload = new FormData();
         payload.append("datosJson", JSON.stringify(datos));
+        payload.append("proveedorId", proveedorId.toString());
+
         return this.http
             .post('/api/AltaEmpresaGranos/EnviarSolicitudUsuario', payload)
             .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
@@ -142,7 +144,7 @@ export class EmpresaGranosService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    cargarSolicitudUsuario(mail?: string): Observable<any> {
+    cargarSolicitudUsuario(mail?: string, proveedorId? : number): Observable<any> {
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
@@ -152,6 +154,7 @@ export class EmpresaGranosService extends BaseService {
         this.headers.append('Pragma', 'no-cache');
         let params: URLSearchParams = new URLSearchParams();
         params.set('mail', mail);
+        params.set('proveedorId', proveedorId.toString());
         return this.http
             .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario', { search: params, headers: this.headers })
             .pipe(map(this.extractData));

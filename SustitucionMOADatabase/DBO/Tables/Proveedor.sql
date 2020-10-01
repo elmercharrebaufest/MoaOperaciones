@@ -9,6 +9,8 @@ CREATE TABLE [dbo].[Proveedor](
 	[IdDataAgro] [int] NULL,
 	[IdComercialDataAgro] [int] NULL,
  [EstadoSIPER] VARCHAR(MAX) NULL, 
+ 	 [VinculoConEmpleadosDeMolinos] BIT NULL, 
+    [VinculoConFuncionariosPublicos] BIT NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

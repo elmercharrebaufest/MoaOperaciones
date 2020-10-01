@@ -65,8 +65,8 @@
     <Compile Include="Entities\Partido.cs" />
     <Compile Include="Entities\ProveedorHistorialAprobacion.cs" />
     <Compile Include="Entities\Provincia.cs" />
-    <Compile Include="Entities\UsuarioRelacionConEmpleados.cs" />
-    <Compile Include="Entities\UsuarioRelacionConFuncionarios.cs" />
+    <Compile Include="Entities\ProveedorRelacionConEmpleados.cs" />
+    <Compile Include="Entities\ProveedorRelacionConFuncionarios.cs" />
     <Compile Include="Enums\EstadoAprobacion.cs" />
     <Compile Include="Entities\PermisoPorRol.cs" />
     <Compile Include="Entities\Proveedor.cs" />

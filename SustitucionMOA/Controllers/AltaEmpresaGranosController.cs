@@ -350,14 +350,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarArchivo(string mail, int archivoID, int? proveedorId)
+        public ActionResult DescargarArchivo(string mail, int archivoID, int proveedorId)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID, proveedorId ?? 0);
+                string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID, proveedorId);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
                 string fileName = Path.GetFileName(rutaArchivoSubido);
@@ -401,7 +401,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnviarSolicitudUsuario(string datosJson)
+        public ActionResult EnviarSolicitudUsuario(int proveedorId, string datosJson)
         {
             try
             {
@@ -410,7 +410,7 @@ namespace SustitucionMOA.Controllers
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
-                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail,altaEmpresa));
+                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, altaEmpresa));
             }
             catch (InfoCustomException e)
             {
@@ -433,14 +433,14 @@ namespace SustitucionMOA.Controllers
         }
 
        
-        public ActionResult CargarSolicitudUsuario(string mail)
+        public ActionResult CargarSolicitudUsuario(string mail, int proveedorId)
         {
             try
             {
                 if (string.IsNullOrEmpty(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                AltaEmpresaViewModel result = altaEmpresaService.CargarSolicitudUsuario(mail);
+                AltaEmpresaViewModel result = altaEmpresaService.CargarSolicitudUsuario(mail, proveedorId);
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)

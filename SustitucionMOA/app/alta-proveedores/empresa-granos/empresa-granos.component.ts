@@ -450,7 +450,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
             VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
         };
-        this.subscription = this.service.enviarSolicitud(datos).subscribe(
+        this.subscription = this.service.enviarSolicitud(datos, this.proveedorId).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {

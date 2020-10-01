@@ -202,8 +202,8 @@ namespace SustitucionMOATest.Services
                 Mail = mailUsuario,
                 Archivos = new List<Archivo>(),
                 Proveedores = new List<Proveedor>(),
-                RelacionConEmpleados = new List<UsuarioRelacionConEmpleados>(),
-                RelacionConFuncionarios = new List<UsuarioRelacionConFuncionarios>(),
+                RelacionConEmpleados = new List<ProveedorRelacionConEmpleados>(),
+                RelacionConFuncionarios = new List<ProveedorRelacionConFuncionarios>(),
             };
 
             var proveedorOk = new Proveedor { EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente, CUIT = "233333333333" };
@@ -346,8 +346,8 @@ namespace SustitucionMOATest.Services
                 Mail = mailUsuario,
                 Archivos = new List<Archivo>(),
                 Proveedores = new List<Proveedor>(),
-                RelacionConEmpleados = new List<UsuarioRelacionConEmpleados>(),
-                RelacionConFuncionarios = new List<UsuarioRelacionConFuncionarios> { new UsuarioRelacionConFuncionarios { CargoFirma = "", CargoFuncionario = "", Id = 1, NombreFirma = "", NombreFuncionario = "", Usuario_Id = 1, Vinculo = "" } },
+                RelacionConEmpleados = new List<ProveedorRelacionConEmpleados>(),
+                RelacionConFuncionarios = new List<ProveedorRelacionConFuncionarios> { new ProveedorRelacionConFuncionarios { CargoFirma = "", CargoFuncionario = "", Id = 1, NombreFirma = "", NombreFuncionario = "", Proveedor_Id = 1, Vinculo = "" } },
                 VinculoConEmpleadosDeMolinos = false,
                 VinculoConFuncionariosPublicos = true
             };

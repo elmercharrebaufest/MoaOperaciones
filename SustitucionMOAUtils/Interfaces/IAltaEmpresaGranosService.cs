@@ -14,10 +14,10 @@ namespace SustitucionMOAUtils.Interfaces
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario, int proveedorId);
         string ObtenerMaterialesDataAgro();
         List<ArchivoDto> ObtenerArchivosSubidos(string mail, int proveedorId);
-        string EnviarSolicitudUsuario(string mail, AltaEmpresaViewModel altaEmpresa);
+        string EnviarSolicitudUsuario(string mail, int proveedorId, AltaEmpresaViewModel altaEmpresa);
         string ObtenerArchivo(string mail, int archivoID, int proveedorId);
         string EliminarArchivo(string mail, int archivoID, int proveedorId);
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId);
-        AltaEmpresaViewModel CargarSolicitudUsuario(string mail);
+        AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId);
     }
 }
