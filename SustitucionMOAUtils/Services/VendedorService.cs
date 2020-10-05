@@ -151,7 +151,8 @@ namespace SustitucionMOAUtils.Services
                 CUIT = cuit,
                 RazonSocial = razonSocial,
                 Mail = usuario.Mail,
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                CodigoProveedor = FormatearCodigoProveedor(cuit)
             };
 
             usuario.Proveedores.Add(nuevoVendedor);
@@ -159,6 +160,39 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.AltaVendedorOK;
+        }
+
+        public string EliminarVendedor(string mailUsuario, int proveedorId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+
+            if (proveedor.EstadoAprobacion != EstadoAprobacion.DocumentacionPendiente)
+            {
+                throw new ValidationCustomException("No se puede elimianr el vendedor debido a que su estado no es \"Documentación pendiente\".");
+            }
+
+            if (proveedor.HistorialAprobaciones != null)
+            {
+                if (proveedor.HistorialAprobaciones.Any())
+                {
+                    throw new ValidationCustomException("No se puede eliminar el vendedor debido a que ya fue enviada su solicitud.");
+                }
+            }
+
+            usuario.Proveedores.Remove(proveedor);
+
+            repositorio.Remover<Proveedor>(proveedor.Id);
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.VendedorBorradoOK;
+        }
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return CUIT.Substring(2, 8);
         }
     }
 }

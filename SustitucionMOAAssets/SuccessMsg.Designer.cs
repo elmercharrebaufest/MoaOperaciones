@@ -293,5 +293,14 @@ namespace SustitucionMOAAssets {
                 return ResourceManager.GetString("ValidacionPendienteOK", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El vendedor se ha borrado correctamente.
+        /// </summary>
+        public static string VendedorBorradoOK {
+            get {
+                return ResourceManager.GetString("VendedorBorradoOK", resourceCulture);
+            }
+        }
     }
 }

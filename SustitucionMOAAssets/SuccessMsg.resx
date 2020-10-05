@@ -195,4 +195,7 @@
   <data name="ValidacionPendienteOK" xml:space="preserve">
     <value>Su usuario ha sido marcado para revisar por un administrador. Le informaremos por mail cuando pueda entrar.</value>
   </data>
+  <data name="VendedorBorradoOK" xml:space="preserve">
+    <value>El vendedor se ha borrado correctamente</value>
+  </data>
 </root>

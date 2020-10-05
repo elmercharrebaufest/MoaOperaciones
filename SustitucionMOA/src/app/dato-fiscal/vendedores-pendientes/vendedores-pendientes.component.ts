@@ -22,8 +22,14 @@ export class VendedoresPendientesComponent
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
 
+  @ViewChild("mensajeModal")
+  protected mensajeModalComponent: MensajeComponent;
+
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
+
+  @ViewChild("spinnerModal")
+  protected spinnerModalComponent: SpinnerComponent;
 
   constructor(
     protected service: DatoFiscalService,
@@ -35,7 +41,10 @@ export class VendedoresPendientesComponent
   ) {
     super(navService, securityService, floatMsgService, modalService);
     this.mensajeComponent = new MensajeComponent();
+    this.mensajeModalComponent = new MensajeComponent();
+
     this.spinnerComponent = new SpinnerComponent();
+    this.spinnerModalComponent = new SpinnerComponent();
   }
 
   data: any;
@@ -55,6 +64,7 @@ export class VendedoresPendientesComponent
   ngOnInit() {
     this.setTabs();
     this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
+
     var secciones = [];
     if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
       secciones.push(
@@ -79,7 +89,7 @@ export class VendedoresPendientesComponent
         )
       );
 
-    if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
+    if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
       secciones.push(
         new Seccion(
           "/dato-fiscal/vendedores-pendientes",
@@ -138,30 +148,69 @@ export class VendedoresPendientesComponent
   }
 
   solicitarAltaProveedor() {
-    this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
+    this.mensajeModalComponent.setMsgsEmpty();
+    this.spinnerModalComponent.showIt();
     this.unsubscribe();
     try {
       this.subscription = this.service
         .agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT)
         .subscribe(
           (result) => {
-            this.spinnerComponent.hideIt();
+            this.spinnerModalComponent.hideIt();
             if (result.logout == true) {
               this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
-              this.mensajeComponent.setErrorMsg(result.error);
+              this.mensajeModalComponent.setErrorMsg(result.error);
             } else if (result.info != undefined) {
-              this.mensajeComponent.setInfoMsg(result.info);
+              this.mensajeModalComponent.setInfoMsg(result.info);
             } else {
-              this.data = result.data.vendedores;
+              this.getVendedores();
+              this.mensajeComponent.setSuccessMsg(result.data);
+              this.nuevoVendedorRazonSocial = "";
+              this.nuevoVendedorCUIT = "";
+
+              document.getElementById("modalToggleButton").click();
             }
           },
           (error) => {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(error.message);
+            this.spinnerModalComponent.hideIt();
+            this.mensajeModalComponent.setErrorMsg(error.message);
           }
         );
+    } catch (e) {
+      this.spinnerModalComponent.hideIt();
+      this.mensajeModalComponent.setErrorMsg(e);
+    }
+  }
+
+  eliminarVendedor(proveedorId: number) {
+    this.mensajeComponent.setMsgsEmpty();
+    this.spinnerComponent.showIt();
+    this.unsubscribe();
+    try {
+      this.subscription = this.service.eliminarVendedor(proveedorId).subscribe(
+        (result) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+              this.getVendedores();
+
+              setTimeout(function () {
+                  this.mensajeComponent.setSuccessMsg(result.data);
+              }, 100);
+            
+          }
+        },
+        (error) => {
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
+        }
+      );
     } catch (e) {
       this.spinnerComponent.hideIt();
       this.mensajeComponent.setErrorMsg(e);

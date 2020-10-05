@@ -57,7 +57,7 @@ export class DocumentacionComponent extends BaseComponent implements OnInit {
         )
       );
 
-    if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
+    if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
       secciones.push(
         new Seccion(
           "/dato-fiscal/vendedores-pendientes",

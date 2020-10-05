@@ -39,6 +39,7 @@
     "ng2-bootstrap-modal": "^1.0.1",
     "ng2-bs3-modal": "^0.15.0",
     "ng2-select": "^2.0.0",
+    "ngx-mask": "^6.5.18",
     "ngx-modal": "0.0.29",
     "ngx-pagination": "^3.0.3",
     "ngx-smart-modal": "^7.4.1",

@@ -17,11 +17,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { Injectable } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
-import { throwError as observableThrowError } from 'rxjs';
-import { map, timeoutWith } from 'rxjs/operators';
-import { BaseService } from './../common/services/BaseService';
+import { Injectable } from "@angular/core";
+import { URLSearchParams } from "@angular/http";
+import { throwError as observableThrowError } from "rxjs";
+import { map, timeoutWith } from "rxjs/operators";
+import { BaseService } from "./../common/services/BaseService";
 var DatoFiscalService = /** @class */ (function (_super) {
     __extends(DatoFiscalService, _super);
     function DatoFiscalService() {
@@ -29,31 +29,47 @@ var DatoFiscalService = /** @class */ (function (_super) {
     }
     DatoFiscalService.prototype.getDatosFiscales = function (vendedor) {
         var params = new URLSearchParams();
-        params.set('vendedor', vendedor);
+        params.set("vendedor", vendedor);
         return this.http
-            .get('/api/vendedor/getDatoFiscales', { search: params, headers: this.headers })
+            .get("/api/vendedor/getDatoFiscales", {
+            search: params,
+            headers: this.headers,
+        })
             .pipe(map(this.extractData));
     };
     DatoFiscalService.prototype.getVendedores = function (fecha_inicio, fecha_fin) {
         var params = new URLSearchParams();
-        params.set('fechaInicio', fecha_inicio);
-        params.set('fechaFin', fecha_fin);
+        params.set("fechaInicio", fecha_inicio);
+        params.set("fechaFin", fecha_fin);
         return this.http
-            .get('/api/vendedor/getVendedores', { search: params })
+            .get("/api/vendedor/getVendedores", {
+            search: params,
+            headers: this.headers,
+        })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))), map(this.extractData));
     };
     DatoFiscalService.prototype.getVendedoresPendientes = function () {
         var params = new URLSearchParams();
         return this.http
-            .get('/api/vendedor/getVendedoresPendientes', { search: params })
+            .get("/api/vendedor/getVendedoresPendientes", {
+            search: params,
+            headers: this.headers,
+        })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))), map(this.extractData));
     };
     DatoFiscalService.prototype.agregarVendedor = function (nuevoVendedorRazonSocial, nuevoVendedorCUIT) {
         var params = new URLSearchParams();
-        params.set('cuit', nuevoVendedorCUIT);
-        params.set('razonSocial', nuevoVendedorRazonSocial);
+        params.set("cuit", nuevoVendedorCUIT);
+        params.set("razonSocial", nuevoVendedorRazonSocial);
         return this.http
-            .get('/api/vendedor/agregarVendedor', { search: params })
+            .get("/api/vendedor/agregarVendedor", { search: params })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))), map(this.extractData));
+    };
+    DatoFiscalService.prototype.eliminarVendedor = function (proveedorId) {
+        var params = new URLSearchParams();
+        params.set("proveedorId", proveedorId.toString());
+        return this.http
+            .get("/api/vendedor/eliminarVendedor", { search: params })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))), map(this.extractData));
     };
     DatoFiscalService = __decorate([

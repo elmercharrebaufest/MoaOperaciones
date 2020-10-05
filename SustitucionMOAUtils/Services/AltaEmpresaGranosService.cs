@@ -120,6 +120,9 @@ namespace SustitucionMOAUtils.Services
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
+                cartadePresentacion.vendedorCuit = proveedor.CUIT;
+                cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
+
                 ValidarEstadoSolicitud(proveedor);
 
                 string userName = DataAgroWSCredential.getUserName();

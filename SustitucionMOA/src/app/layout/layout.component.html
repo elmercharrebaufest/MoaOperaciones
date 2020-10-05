@@ -343,7 +343,8 @@
                 <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-granos')) ? 'active' : ''"
                         (click)="goToSeccion('/alta-empresa-granos')"
-                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')" href="#">
+                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')"
+                        href="#">
                         <!--data-toggle="tab">-->Alta Empresa
                     </a>
                 </li>
@@ -355,11 +356,11 @@
                 </li>
                 <li>
                     <a class="animate" [ngClass]="(isSelectedMenu('estado-solicitud')) ? 'active' : ''"
-                       (click)="goToSeccion('/estado-solicitud')" href="#"
-                       *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                        (click)="goToSeccion('/estado-solicitud')" href="#"
+                        *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                         <!--data-toggle="tab">-->Estado solicitud
 
-                       
+
                     </a>
                 </li>
             </ul>

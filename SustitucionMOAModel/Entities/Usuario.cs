@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -109,5 +110,12 @@ namespace SustitucionMOAModel.Entities
             Roles.Add(rol);
         }
 
+        public void RemoverRol(string rol)
+        {
+            var rolRemover = Roles.Where(r => r.Codigo == rol).FirstOrDefault();
+
+            if (rolRemover != null)
+                Roles.Remove(rolRemover);
+        }
     }
 }

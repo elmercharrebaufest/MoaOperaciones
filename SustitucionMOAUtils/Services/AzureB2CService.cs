@@ -132,6 +132,7 @@ namespace SustitucionMOAUtils.Services
             Proveedor proveedor = new Proveedor
             {
                 CUIT = usuario.CUITRegistro,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
                 CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro)
             };
 
@@ -155,7 +156,7 @@ namespace SustitucionMOAUtils.Services
                     infoProveedor.ProveedorOperando = false;
                     Rol rolUsuario = rolService.ObtenerRolPorCodigo(infoProveedor.ProveedorOperando ? "GRAN" : "NUECORR");
 
-                    proveedor.EstadoAprobacion = infoProveedor.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                    proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
                     usuario.Roles.Add(rolUsuario);
                 }
