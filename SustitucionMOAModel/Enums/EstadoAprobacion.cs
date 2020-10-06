@@ -36,6 +36,10 @@
                     return "Tipo de usuario no implementado";
                 case EstadoAprobacion.Deshabilitado:
                     return "Deshabilitado";
+                case EstadoAprobacion.AnalisisDeNosis:
+                    return "Analisis de Nosis";
+                case EstadoAprobacion.SentenciaFinal:
+                    return "Sentencia Final";
                 default:
                     return "Estado desconocido";
             }

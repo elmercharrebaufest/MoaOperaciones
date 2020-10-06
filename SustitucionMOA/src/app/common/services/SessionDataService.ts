@@ -71,7 +71,7 @@ export class SessionDataService {
 
         let logoutURL = window.location.origin + '/SignOut';
 
-        window.location.href = logoutURL;
+        window.location.href = "http://localhost:58280/SignOut";
     }
 
     editarCuenta() {

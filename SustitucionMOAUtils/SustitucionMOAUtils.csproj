@@ -68,7 +68,6 @@
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
     <Compile Include="Interfaces\IAzureB2CService.cs" />
     <Compile Include="Interfaces\IDataAgroService.cs" />
-    <Compile Include="Interfaces\IRolService.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Logger\Log.cs" />
@@ -93,7 +92,6 @@
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
-    <Compile Include="Services\RolService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />
     <Compile Include="Services\UsuarioService.cs" />

@@ -11,209 +11,232 @@ import { SessionDataService } from "./../../common/services/SessionDataService";
 import { ModalService } from "./../../common/services/ModalService";
 
 @Component({
-  selector: "app-vendedores-pendientes",
-  templateUrl: "vendedores-pendientes.component.html",
-  styleUrls: ["vendedores-pendientes.component.css"],
-  providers: [DatoFiscalService],
+    selector: "app-vendedores-pendientes",
+    templateUrl: "vendedores-pendientes.component.html",
+    styleUrls: ["vendedores-pendientes.component.css"],
+    providers: [DatoFiscalService],
 })
 export class VendedoresPendientesComponent
-  extends BaseComponent
-  implements OnInit {
-  @ViewChild(MensajeComponent)
-  protected mensajeComponent: MensajeComponent;
+    extends BaseComponent
+    implements OnInit {
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
 
-  @ViewChild("mensajeModal")
-  protected mensajeModalComponent: MensajeComponent;
+    @ViewChild("mensajeModal")
+    protected mensajeModalComponent: MensajeComponent;
 
-  @ViewChild(SpinnerComponent)
-  protected spinnerComponent: SpinnerComponent;
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
-  @ViewChild("spinnerModal")
-  protected spinnerModalComponent: SpinnerComponent;
+    @ViewChild("spinnerModal")
+    protected spinnerModalComponent: SpinnerComponent;
 
-  constructor(
-    protected service: DatoFiscalService,
-    protected navService: NavService,
-    protected securityService: SecurityService,
-    protected sessionDataService: SessionDataService,
-    protected floatMsgService: FloatMsgService,
-    protected modalService: ModalService
-  ) {
-    super(navService, securityService, floatMsgService, modalService);
-    this.mensajeComponent = new MensajeComponent();
-    this.mensajeModalComponent = new MensajeComponent();
+    constructor(
+        protected service: DatoFiscalService,
+        protected navService: NavService,
+        protected securityService: SecurityService,
+        protected sessionDataService: SessionDataService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService
+    ) {
+        super(navService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.mensajeModalComponent = new MensajeComponent();
 
-    this.spinnerComponent = new SpinnerComponent();
-    this.spinnerModalComponent = new SpinnerComponent();
-  }
+        this.spinnerComponent = new SpinnerComponent();
+        this.spinnerModalComponent = new SpinnerComponent();
+    }
 
-  data: any;
-  orderedByColumn: string = "vendedor";
-  orderDirection: number = 1;
-  itemsPerPage = 20;
-  filtroVendedor: string = "";
-  filtroNroVendedor: string = "";
+    data: any;
+    orderedByColumn: string = "vendedor";
+    orderDirection: number = 1;
+    itemsPerPage = 20;
+    filtroVendedor: string = "";
+    filtroNroVendedor: string = "";
 
-  nuevoVendedorRazonSocial: string = "";
-  nuevoVendedorCUIT: string = "";
+    nuevoVendedorRazonSocial: string = "";
+    nuevoVendedorCUIT: string = "";
 
-  setTabs() {
-    this.setMenuSeccionTab("dato-fiscal", "Vendedores pendientes");
-  }
+    setTabs() {
+        this.setMenuSeccionTab("dato-fiscal", "Vendedores pendientes");
+    }
 
-  ngOnInit() {
-    this.setTabs();
-    this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
+    ngOnInit() {
+        this.setTabs();
+        this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
 
-    var secciones = [];
-    if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-      secciones.push(
-        new Seccion(
-          "/dato-fiscal/situacion-fiscal",
-          "dato-fiscal",
-          "Mi Situacion Fiscal"
-        )
-      );
+        var secciones = [];
+        if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/situacion-fiscal",
+                    "dato-fiscal",
+                    "Mi Situacion Fiscal"
+                )
+            );
 
-    if (this.isAuthorized("CONSULTAR VENDEDORES"))
-      secciones.push(
-        new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores")
-      );
+        if (this.isAuthorized("CONSULTAR VENDEDORES"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/vendedor",
+                    "dato-fiscal",
+                    "Mis Vendedores"
+                )
+            );
 
-    if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-      secciones.push(
-        new Seccion(
-          "/dato-fiscal/documentacion",
-          "dato-fiscal",
-          "Documentacion"
-        )
-      );
+        if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/documentacion",
+                    "dato-fiscal",
+                    "Documentacion"
+                )
+            );
 
-    if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
-      secciones.push(
-        new Seccion(
-          "/dato-fiscal/vendedores-pendientes",
-          "dato-fiscal",
-          "Vendedores pendientes"
-        )
-      );
+        if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/vendedores-pendientes",
+                    "dato-fiscal",
+                    "Vendedores pendientes"
+                )
+            );
 
-    this.navService.setSeccionList(secciones);
-    this.getVendedores();
-  }
+        this.navService.setSeccionList(secciones);
+        this.getVendedores();
+    }
 
-  getVendedores() {
-    this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
-    this.unsubscribe();
-    try {
-      this.subscription = this.service.getVendedoresPendientes().subscribe(
-        (result) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-            this.data = result.data;
-          }
-        },
-        (error) => {
-          this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
+    getVendedores() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service
+                .getVendedoresPendientes()
+                .subscribe(
+                    (result) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.data = result.data;
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
         }
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.mensajeComponent.setErrorMsg(e);
-      return false; //<-- Prevent Refresh
+
+        return false; //<-- Prevent Refresh
     }
 
-    return false; //<-- Prevent Refresh
-  }
-
-  isVisible() {
-    return this.data && this.data.length != 0;
-  }
-
-  orderColumnBy(column: string) {
-    if (column == this.orderedByColumn) {
-      this.orderDirection = -this.orderDirection;
-    } else {
-      this.orderDirection = 1;
-      this.orderedByColumn = column;
+    isVisible() {
+        return this.data && this.data.length != 0;
     }
-  }
 
-  solicitarAltaProveedor() {
-    this.mensajeModalComponent.setMsgsEmpty();
-    this.spinnerModalComponent.showIt();
-    this.unsubscribe();
-    try {
-      this.subscription = this.service
-        .agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT)
-        .subscribe(
-          (result) => {
-            this.spinnerModalComponent.hideIt();
-            if (result.logout == true) {
-              this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-              this.mensajeModalComponent.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-              this.mensajeModalComponent.setInfoMsg(result.info);
-            } else {
-              this.getVendedores();
-              this.mensajeComponent.setSuccessMsg(result.data);
-              this.nuevoVendedorRazonSocial = "";
-              this.nuevoVendedorCUIT = "";
-
-              document.getElementById("modalToggleButton").click();
-            }
-          },
-          (error) => {
-            this.spinnerModalComponent.hideIt();
-            this.mensajeModalComponent.setErrorMsg(error.message);
-          }
-        );
-    } catch (e) {
-      this.spinnerModalComponent.hideIt();
-      this.mensajeModalComponent.setErrorMsg(e);
-    }
-  }
-
-  eliminarVendedor(proveedorId: number) {
-    this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
-    this.unsubscribe();
-    try {
-      this.subscription = this.service.eliminarVendedor(proveedorId).subscribe(
-        (result) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-              this.getVendedores();
-
-              setTimeout(function () {
-                  this.mensajeComponent.setSuccessMsg(result.data);
-              }, 100);
-            
-          }
-        },
-        (error) => {
-          this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
+    orderColumnBy(column: string) {
+        if (column == this.orderedByColumn) {
+            this.orderDirection = -this.orderDirection;
+        } else {
+            this.orderDirection = 1;
+            this.orderedByColumn = column;
         }
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.mensajeComponent.setErrorMsg(e);
     }
-  }
+
+    solicitarAltaProveedor() {
+        this.mensajeModalComponent.setMsgsEmpty();
+        this.spinnerModalComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service
+                .agregarVendedor(
+                    this.nuevoVendedorRazonSocial,
+                    this.nuevoVendedorCUIT
+                )
+                .subscribe(
+                    (result) => {
+                        this.spinnerModalComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeModalComponent.setErrorMsg(
+                                result.error
+                            );
+                        } else if (result.info != undefined) {
+                            this.mensajeModalComponent.setInfoMsg(result.info);
+                        } else {
+                            this.getVendedores();
+                            this.mensajeComponent.setSuccessMsg(result.data);
+                            this.nuevoVendedorRazonSocial = "";
+                            this.nuevoVendedorCUIT = "";
+
+                            document.getElementById("modalToggleButton").click();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerModalComponent.hideIt();
+                        this.mensajeModalComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerModalComponent.hideIt();
+            this.mensajeModalComponent.setErrorMsg(e);
+        }
+    }
+
+    eliminarVendedor(proveedorId: number) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service
+                .eliminarVendedor(proveedorId)
+                .subscribe(
+                    (result) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.getVendedores();
+
+                            setTimeout(function () {
+                                this.mensajeComponent.setSuccessMsg(
+                                    result.data
+                                );
+                            }, 100);
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
 }

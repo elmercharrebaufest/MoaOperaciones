@@ -8,6 +8,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -154,6 +155,31 @@ namespace SustitucionMOAUtils.Services
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 CodigoProveedor = FormatearCodigoProveedor(cuit)
             };
+
+            if (usuario.TipoUsuario.Nombre == "Granos" || true)
+            {
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(cuit);
+
+                if (!respuesta.HayError)
+                {
+                    if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase))
+                    {
+                        nuevoVendedor.IdComercialDataAgro = respuesta.ComercialId;
+                        nuevoVendedor.IdDataAgro = respuesta.ProveedorId;
+                        nuevoVendedor.RazonSocial = respuesta.ProveedorRazonSocial;
+
+                        nuevoVendedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                    }
+                    else
+                    {
+                        throw new InfoCustomException("El mail del registro no está dentro de los mails registrados en Data Agro.");
+                    }
+                }
+                else
+                {
+                    throw new InfoCustomException("El proveedor no está habilitado en Data Agro.");
+                }
+            }
 
             usuario.Proveedores.Add(nuevoVendedor);
 

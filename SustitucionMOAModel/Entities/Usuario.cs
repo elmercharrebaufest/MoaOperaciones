@@ -35,6 +35,11 @@ namespace SustitucionMOAModel.Entities
             return Proveedores.FirstOrDefault();
         }
 
+        public Proveedor ObtenerCorredor()
+        {
+            return Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+        }
+
         public Proveedor ObtenerProveedorPorId(int proveedorId)
         {
             if (proveedorId > 0)
