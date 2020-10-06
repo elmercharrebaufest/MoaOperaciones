@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Models.DataAgro;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface ICrearContratoService
     {
         string ObteneDatosContrato();
+        string CrearContratoAPrecio(ContratoAPrecio contratoAPrecio);
+        string ObtenerDatosCompraNet(int proveedorId);
     }
 }
