@@ -22,10 +22,12 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
+        protected readonly IDataAgroService dataAgroService;
 
-        public VendedorService(IRepositorio repositorio)
+        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
         }
 
         public VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor)
@@ -111,20 +113,32 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<ProveedorDto> GetVendedores(string mailUsuario)
+        {
+            return GetVendedores(mailUsuario, null);
+        }
 
         public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario)
         {
-            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
-
-            var proveedores = usuario.Proveedores.Where(x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
-
-            List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
+            List<ProveedorDto> proveedorDtos = GetVendedores(mailUsuario, x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
 
             if (proveedorDtos.Count == 0)
             {
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
             }
             return proveedorDtos;
+        }
+
+        private List<ProveedorDto> GetVendedores(string mailUsuario, Func<Proveedor, bool> filtro = null)
+        {
+            var proveedores = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario).Proveedores.ToList();
+
+            if(filtro != null)
+            {
+                proveedores = proveedores.Where(filtro).ToList();
+            }
+
+            return proveedores.Select(x => new ProveedorDto(x)).ToList();
         }
 
         public string AgregarVendedor(string mailUsuario, string cuit, string razonSocial)
@@ -153,6 +167,8 @@ namespace SustitucionMOAUtils.Services
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
             };
+
+            if (!usuario.EsCorredor()) dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
 
             usuario.Proveedores.Add(nuevoVendedor);
 

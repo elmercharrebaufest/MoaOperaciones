@@ -99,6 +99,11 @@ namespace SustitucionMOAModel.Entities
                 !Habilitado;
         }
 
+        public bool EsCorredor()
+        {
+            return TipoUsuario.NombreCorto == "CORR";
+        }
+
         public void RemoverRoles()
         {
             Roles.Clear();

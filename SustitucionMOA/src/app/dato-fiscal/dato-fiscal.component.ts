@@ -75,13 +75,13 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
             secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
 
-        if (this.isAuthorized("CONSULTAR VENDEDORES") )
+        if (this.isAuthorized("CONSULTAR VENDEDORES"))
             secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
 
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
             secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
 
-        // if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
+        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
             secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
         
         this.navService.setSeccionList(secciones);
@@ -159,9 +159,5 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
             { etiqueta: "Descripcion", valor: Convenio.descripcion },
         ]);
         return false;
-    }
-
-    isMultifirma(){
-        return this.tipoUsuario == "GRANM";
     }
 }

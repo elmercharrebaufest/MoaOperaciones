@@ -75,8 +75,8 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
             secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
             secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
-        // if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
-        secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
+            secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
         this.navService.setSeccionList(secciones);
         this.getData();
     };
@@ -146,9 +146,6 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
             { etiqueta: "Descripcion", valor: Convenio.descripcion },
         ]);
         return false;
-    };
-    DatoFiscalBaseComponent.prototype.isMultifirma = function () {
-        return this.tipoUsuario == "GRANM";
     };
     __decorate([
         ViewChild(MensajeComponent),
