@@ -166,6 +166,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     @ViewChild("spinnerModal")
     protected spinnerModal: SpinnerSmallComponent;
 
+    @ViewChild("spinnerCartaPresentacion")
+    protected spinnerCartaPresentacion: SpinnerSmallComponent;
+
     checkPermisos() {
         this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
     }
@@ -905,7 +908,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     generarCartaPresentacion() {
-        this.spinnerModal.showIt();
+        this.spinnerCartaPresentacion.showIt();
         this.unsubscribe();
         this.cartaPresentacion.nuevosAcopios.forEach((campo) => {
             campo.CampaniaID = this.campaniaActual;
@@ -917,7 +920,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.cartaPresentacion.campaniaID = this.campaniaActual;
 
         if (this.validarCartaPresentacion()) {
-            this.spinnerModal.hideIt();
+            this.spinnerCartaPresentacion.hideIt();
             return;
         }
 
@@ -926,7 +929,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             .generarCartaPresentacion(this.cartaPresentacion, this.proveedorId)
             .subscribe(
                 (result) => {
-                    this.spinnerModal.hideIt();
+                    this.spinnerCartaPresentacion.hideIt();
                     if (result.error) {
                         this.mensajeError = result.error;
                     } else {
@@ -956,7 +959,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     }
                 },
                 (error) => {
-                    this.spinnerModal.hideIt();
+                    this.spinnerCartaPresentacion.hideIt();
                     this.mensajeError = error.message;
                 }
             );

@@ -72,8 +72,8 @@
                                     Ver alta
                                 </button>
                                 <br>
-                                <button (click)="eliminarVendedor(vendedor.Id)"
-                                    [hidden]="vendedor.EstadoAprobacionDescripcion != 'Documentación pendiente'" class="
+                                <button (click)="eliminarVendedor(vendedor.Id)" *ngIf="vendedor.EstadoAprobacion == 1"
+                                    class="
                                     btn btn-info buttonEliminar">
                                     Eliminar
                                 </button>

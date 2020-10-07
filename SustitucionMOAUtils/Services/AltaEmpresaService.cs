@@ -60,7 +60,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                enviarMail = false;
                 Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 if (proveedor == null)

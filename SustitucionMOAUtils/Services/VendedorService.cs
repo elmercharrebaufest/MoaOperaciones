@@ -156,7 +156,7 @@ namespace SustitucionMOAUtils.Services
                 CodigoProveedor = FormatearCodigoProveedor(cuit)
             };
 
-            if (usuario.TipoUsuario.Nombre == "Granos" || true)
+            if (usuario.TipoUsuario.Nombre == "Granos")
             {
                 ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(cuit);
 

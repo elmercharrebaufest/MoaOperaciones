@@ -42,24 +42,24 @@
                     role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Id')">ID</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Mail')">Usuario
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Id')">ID</th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Mail')">Usuario
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=""
-                                (click)="orderColumnBy('CodigoProveedor')">Codigo</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('CUIT')">CUIT</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('RazonSocial')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">Codigo
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CUIT')">CUIT</th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('RazonSocial')">
                                 Razon Social
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Comercial')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Comercial')">
                                 Comercial
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SISAEstadoCuit')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('SISAEstadoCuit')">
                                 SISA
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style=""
+                            <th tabindex="0" rowspan="1" colspan="1"
                                 (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Acciones</th>
+                            <th tabindex="0" rowspan="1" colspan="1">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -539,6 +539,11 @@
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
                 </div>
+
+                <div class="col-xs-12" style="align-items: center;">
+                    <spinner-small #spinnerModal></spinner-small>
+                </div>
+
                 <button type="button" class="btn btn-info btn-lg"
                     *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
                     (click)="cambiarEstado(7)"

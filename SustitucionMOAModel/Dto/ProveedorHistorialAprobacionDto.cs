@@ -29,5 +29,25 @@ namespace SustitucionMOAModel.Dto
             Usuario = historial.Usuario.Mail;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is ProveedorHistorialAprobacionDto dto &&
+                   Id == dto.Id &&
+                   Usuario == dto.Usuario &&
+                   EstadoAprobacionDescripcion == dto.EstadoAprobacionDescripcion &&
+                   Observacion == dto.Observacion &&
+                   Fecha == dto.Fecha;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1815923877;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Usuario);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(EstadoAprobacionDescripcion);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Observacion);
+            hashCode = hashCode * -1521134295 + Fecha.GetHashCode();
+            return hashCode;
+        }
     }
 }
