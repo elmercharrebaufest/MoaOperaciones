@@ -163,12 +163,12 @@ var AltasComponent = /** @class */ (function (_super) {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
-        this.spinnerComponent.showIt();
+        this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(function (result) {
                 _this.getEmpresa();
-                _this.spinnerComponent.hideIt();
+                _this.spinnerModal.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
                 }
@@ -190,7 +190,7 @@ var AltasComponent = /** @class */ (function (_super) {
             });
         }
         catch (e) {
-            this.spinnerComponent.hideIt();
+            this.spinnerModal.hideIt();
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
@@ -287,6 +287,10 @@ var AltasComponent = /** @class */ (function (_super) {
         ViewChild("smallSpinner"),
         __metadata("design:type", SpinnerSmallComponent)
     ], AltasComponent.prototype, "spinnerSmallComponent", void 0);
+    __decorate([
+        ViewChild("spinnerModal"),
+        __metadata("design:type", SpinnerSmallComponent)
+    ], AltasComponent.prototype, "spinnerModal", void 0);
     AltasComponent = __decorate([
         Component({
             selector: 'app-altas',
