@@ -30,7 +30,7 @@ namespace SustitucionMOAModel.Dto
             CodigoProveedor = proveedor.CodigoProveedor ?? "";
             CUIT = proveedor.CUIT;
             EstadoAprobacion = proveedor.EstadoAprobacion;
-            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToString();
+            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString();
             Id = proveedor.Id;
             IdComercialDataAgro = proveedor.IdComercialDataAgro;
             IdDataAgro = proveedor.IdDataAgro;
@@ -48,7 +48,11 @@ namespace SustitucionMOAModel.Dto
             }
 
             EstadoSIPER = proveedor.EstadoSIPER;
-            HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
+
+            if (proveedor.HistorialAprobaciones != null)
+                HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
+            else
+                HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
         }
     }
 }

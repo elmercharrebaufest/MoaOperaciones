@@ -203,7 +203,7 @@ var AltasComponent = /** @class */ (function (_super) {
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        this.cargarSolicitudUsuario(empresa.Mail);
+        this.cargarSolicitudUsuario(empresa.Mail, empresa.Id);
         this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
@@ -246,9 +246,9 @@ var AltasComponent = /** @class */ (function (_super) {
             this.dataFiltered = this.data;
         }
     };
-    AltasComponent.prototype.cargarSolicitudUsuario = function (mail) {
+    AltasComponent.prototype.cargarSolicitudUsuario = function (mail, proveedorId) {
         var _this = this;
-        this.subscription = this.service.cargarSolicitudUsuario(mail).subscribe(function (result) {
+        this.subscription = this.service.cargarSolicitudUsuario(mail, proveedorId).subscribe(function (result) {
             if (result.VinculoConEmpleadosDeMolinos != null) {
                 if (result.VinculoConEmpleadosDeMolinos) {
                     _this.relacionConEmpleados = "Si";

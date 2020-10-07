@@ -20,26 +20,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { ListBaseComponent } from '../../common/base-components/list-base-component';
-import { Archivo } from '../../common/models/archivo';
-import { InformeComercial } from '../../common/models/informeComercial';
-import { Material } from '../../common/models/material';
-import { NuevoAcopio } from '../../common/models/nuevoAcopio';
-import { NuevoProduccion } from '../../common/models/nuevoProduccion';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { ModalService } from '../../common/services/ModalService';
-import { NavService } from '../../common/services/NavService';
-import { SecurityService } from '../../common/services/SecurityService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
-import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
-import { EmpresaGranosService } from './empresa-granos.service';
-import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
-import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
-import { CartaPresentacion } from '../../common/models/cartaPresentacion';
+import { Component, ViewChild } from "@angular/core";
+import { FormControl } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { ListBaseComponent } from "../../common/base-components/list-base-component";
+import { Archivo } from "../../common/models/archivo";
+import { InformeComercial } from "../../common/models/informeComercial";
+import { Material } from "../../common/models/material";
+import { NuevoAcopio } from "../../common/models/nuevoAcopio";
+import { NuevoProduccion } from "../../common/models/nuevoProduccion";
+import { FloatMsgService } from "../../common/services/FloatMsgService";
+import { ModalService } from "../../common/services/ModalService";
+import { NavService } from "../../common/services/NavService";
+import { SecurityService } from "../../common/services/SecurityService";
+import { SessionDataService } from "../../common/services/SessionDataService";
+import { MensajeComponent } from "../../common/view-child/mensaje/mensaje.component";
+import { SpinnerSmallComponent } from "../../common/view-child/spinner-small/spinner-small.component";
+import { EmpresaGranosService } from "./empresa-granos.service";
+import { RelacionConEmpleados } from "../../common/models//RelacionConEmpleados";
+import { RelacionConFuncionarios } from "../../common/models/relacionConFuncionarios";
+import { CartaPresentacion } from "../../common/models/cartaPresentacion";
 var EmpresaGranosComponent = /** @class */ (function (_super) {
     __extends(EmpresaGranosComponent, _super);
     function EmpresaGranosComponent(service, navService, route, sessionDataService, securityService, floatMsgService, modalService) {
@@ -79,7 +79,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         _this.myLocalidades = [];
         _this.mensajeError = "";
         _this.tryDoctype = "";
-        _this.keyword = 'Nombre';
+        _this.keyword = "Nombre";
         _this.data = [];
         _this.localidades = [];
         _this.autocompleteNotFoundText = "No encontrado";
@@ -134,17 +134,18 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             });
         }
     };
-    EmpresaGranosComponent.prototype.checkPermisos = function () { this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS"); };
+    EmpresaGranosComponent.prototype.checkPermisos = function () {
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
+    };
     EmpresaGranosComponent.prototype.setTabs = function () {
         this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
     };
     EmpresaGranosComponent.prototype.ngOnInit = function () {
         var _this = this;
-        var tipoUsuario = sessionStorage.getItem("tipoUsuario").toUpperCase();
-        this.esCorredor = (tipoUsuario == "CORR" || tipoUsuario == "NUECORR");
+        this.esCorredor = this.securityService.tienePermiso("CONSULTAR VENDEDOR PENDIENTES");
         this.route.params.forEach(function (params) {
-            if (params['id'] > 0)
-                _this.proveedorId = params['id'];
+            if (params["id"] > 0)
+                _this.proveedorId = params["id"];
         });
         this.setTabs();
         this.checkPermisos();
@@ -160,14 +161,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     Object.defineProperty(EmpresaGranosComponent.prototype, "email", {
         get: function () {
-            return this.firstFormGroup.get('email');
+            return this.firstFormGroup.get("email");
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
         get: function () {
-            return this.secondFormGroup.get('password');
+            return this.secondFormGroup.get("password");
         },
         enumerable: true,
         configurable: true
@@ -177,12 +178,15 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.postFile(files, fileKey, this.proveedorId).subscribe(function (result) {
+        this.subscription = this.service
+            .postFile(files, fileKey, this.proveedorId)
+            .subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
-            else if (result.error != undefined && result.error != "") {
+            else if (result.error != undefined &&
+                result.error != "") {
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
@@ -212,7 +216,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                 _this.listaMateriales.push(mat);
                 var cam = {
                     CampaniaActual: element.CampaniaActual,
-                    CampaniaIdActual: element.CampaniaIdActual
+                    CampaniaIdActual: element.CampaniaIdActual,
                 };
                 _this.listaCampanias.push(cam);
             });
@@ -224,7 +228,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                     map.set(item.CampaniaIdActual, true); // set any value to Map
                     listaCampanias2.push({
                         CampaniaActual: item.CampaniaActual,
-                        CampaniaIdActual: item.CampaniaIdActual
+                        CampaniaIdActual: item.CampaniaIdActual,
                     });
                 }
             }
@@ -235,7 +239,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.obtenerInfoProveedor = function () {
         var _this = this;
-        this.subscription = this.service.obtenerInfoProveedor(this.proveedorId).subscribe(function (result) {
+        this.subscription = this.service
+            .obtenerInfoProveedor(this.proveedorId)
+            .subscribe(function (result) {
             _this.CBUSISA = result.ProveedorCBU;
             _this.estadoSISA = result.estadoSISA;
         }, function (error) {
@@ -264,14 +270,18 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             return;
         }
         this.mensajeError = "";
-        this.subscription = this.service.generarInformeComercial(this.informe).subscribe(function (result) {
+        this.subscription = this.service
+            .generarInformeComercial(this.informe)
+            .subscribe(function (result) {
             _this.spinnerModal.hideIt();
             if (result.error) {
                 _this.mensajeError = result.error;
             }
             else {
                 var byteArray = new Uint8Array(result.data);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                var blob = new Blob([byteArray], {
+                    type: "application/pdf",
+                });
                 if (window.navigator.msSaveOrOpenBlob) {
                     // IE11
                     window.navigator.msSaveOrOpenBlob(blob, "Informe comercial" + ".pdf");
@@ -283,7 +293,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                     link.href = url;
                     link.download = "Informe comercial" + ".pdf";
                     link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    setTimeout(function () {
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
                     return false;
                 }
             }
@@ -299,12 +311,15 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.unsubscribe();
         var archivoID = archivo.Id;
         var fileKey = archivo.FileKey;
-        this.subscription = this.service.descargarArchivoSubido(fileKey, archivoID).subscribe(function (result) {
+        this.subscription = this.service
+            .descargarArchivoSubido(fileKey, archivoID)
+            .subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
-            else if (result.error != undefined && result.error != "") {
+            else if (result.error != undefined &&
+                result.error != "") {
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
@@ -312,7 +327,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             }
             else {
                 var byteArray = new Uint8Array(result.FileContents);
-                var blob = new Blob([byteArray], { type: 'application/octet-stream' });
+                var blob = new Blob([byteArray], {
+                    type: "application/octet-stream",
+                });
                 if (window.navigator.msSaveOrOpenBlob) {
                     // IE11
                     window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
@@ -324,7 +341,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                     link.href = url;
                     link.download = result.FileDownloadName;
                     link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    setTimeout(function () {
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
                     return false;
                 }
             }
@@ -345,12 +364,15 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         var archivoID = this.archivoSeleccionado.Id;
-        this.subscription = this.service.eliminarArchivoSubido(archivoID, this.proveedorId).subscribe(function (result) {
+        this.subscription = this.service
+            .eliminarArchivoSubido(archivoID, this.proveedorId)
+            .subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
-            else if (result.error != undefined && result.error != "") {
+            else if (result.error != undefined &&
+                result.error != "") {
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
@@ -361,7 +383,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                 _this.fileKeySeleccionado = "";
                 _this.nombreArchivoSeleccionado = "";
                 _this.descripcionSeleccionado = "";
-                document.getElementById("openModalConfirmModal").click();
+                document
+                    .getElementById("openModalConfirmModal")
+                    .click();
             }
         }, function (error) {
             _this.spinnerSmallComponent.hideIt();
@@ -370,7 +394,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.obtenerArchivosSubidos = function () {
         var _this = this;
-        this.subscription = this.service.obtenerArchivosSubidos("", this.proveedorId).subscribe(function (result) {
+        this.subscription = this.service
+            .obtenerArchivosSubidos("", this.proveedorId)
+            .subscribe(function (result) {
             _this.listaArchivos = new Array();
             result.forEach(function (element) {
                 var archivo = new Archivo();
@@ -382,7 +408,12 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         });
     };
     EmpresaGranosComponent.prototype.redirigirAEstado = function () {
-        this.navService.navegarSeccion('/estado-solicitud');
+        if (this.esCorredor) {
+            this.navService.navegarSeccion("/dato-fiscal/vendedores-pendientes");
+        }
+        else {
+            this.navService.navegarSeccion("/estado-solicitud");
+        }
     };
     EmpresaGranosComponent.prototype.buscarArchivoPorFileKey = function (fileKey) {
         return this.listaArchivos.find(function (x) { return x.FileKey == fileKey; }).Nombre;
@@ -402,12 +433,15 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
             VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
         };
-        this.subscription = this.service.enviarSolicitud(datos, this.proveedorId).subscribe(function (result) {
+        this.subscription = this.service
+            .enviarSolicitud(datos, this.proveedorId)
+            .subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
-            else if (result.error != undefined && result.error != "") {
+            else if (result.error != undefined &&
+                result.error != "") {
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
@@ -415,7 +449,9 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             }
             else {
                 _this.mensajeComponent.setMsgsEmpty();
-                document.getElementById("openModalNotificacion").click();
+                document
+                    .getElementById("openModalNotificacion")
+                    .click();
             }
         }, function (error) {
             _this.spinnerSmallComponent.hideIt();
@@ -445,23 +481,30 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             this.mensajeError = "No completo el codigo postal.";
             return true;
         }
-        if (!this.informe.localidadId || this.informe.localidadId == null || this.informe.localidadId == 0) {
-            this.mensajeError = "No completo la Localidad en Domicilio Actividad.";
+        if (!this.informe.localidadId ||
+            this.informe.localidadId == null ||
+            this.informe.localidadId == 0) {
+            this.mensajeError =
+                "No completo la Localidad en Domicilio Actividad.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Apellido || this.informe.ContactoComercial.Apellido == "") {
+        if (!this.informe.ContactoComercial.Apellido ||
+            this.informe.ContactoComercial.Apellido == "") {
             this.mensajeError = "No completo el Apellido del contacto.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Nombres || this.informe.ContactoComercial.Nombres == "") {
+        if (!this.informe.ContactoComercial.Nombres ||
+            this.informe.ContactoComercial.Nombres == "") {
             this.mensajeError = "No completo el Nombre del contacto.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Puesto || this.informe.ContactoComercial.Puesto == "") {
+        if (!this.informe.ContactoComercial.Puesto ||
+            this.informe.ContactoComercial.Puesto == "") {
             this.mensajeError = "No completo el Puesto del contacto.";
             return true;
         }
-        if (!this.informe.ContactoComercial.Telefono1 || this.informe.ContactoComercial.Telefono1 == "") {
+        if (!this.informe.ContactoComercial.Telefono1 ||
+            this.informe.ContactoComercial.Telefono1 == "") {
             this.mensajeError = "No completo el Telefono del contacto.";
             return true;
         }
@@ -472,38 +515,46 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         for (var _i = 0, _a = this.informe.NuevosCampos; _i < _a.length; _i++) {
             var item = _a[_i];
             if (item.MaterialId == null || item.MaterialId == 0) {
-                this.mensajeError = "Debe completar el grano en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar el grano en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.LocalidadId == null || item.LocalidadId == 0) {
-                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar la localidad en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.Hectareas == null || item.Hectareas == 0) {
-                this.mensajeError = "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar las Hectareas en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar las Toneladas en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar la condicion en todos los items de Capacidad productiva.";
                 return true;
             }
         }
         for (var _b = 0, _c = this.informe.NuevosAcopios; _b < _c.length; _b++) {
             var item = _c[_b];
             if (item.LocalidadID == null || item.LocalidadID == 0) {
-                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
+                this.mensajeError =
+                    "Debe completar la localidad en todos los items de Capacidad planta.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                this.mensajeError =
+                    "Debe completar las Toneladas en todos los items de Capacidad planta.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad planta.";
+                this.mensajeError =
+                    "Debe completar la condicion en todos los items de Capacidad planta.";
                 return true;
             }
         }
@@ -562,15 +613,18 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             else {
                 for (var _i = 0, _a = this.empleados; _i < _a.length; _i++) {
                     var item = _a[_i];
-                    if (item.NombreProveedora == null || item.NombreProveedora == "") {
+                    if (item.NombreProveedora == null ||
+                        item.NombreProveedora == "") {
                         this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
                         return true;
                     }
-                    if (item.CargoProveedora == null || item.CargoProveedora == "") {
+                    if (item.CargoProveedora == null ||
+                        item.CargoProveedora == "") {
                         this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
                         return true;
                     }
-                    if (item.NombreMolinos == null || item.NombreMolinos == "") {
+                    if (item.NombreMolinos == null ||
+                        item.NombreMolinos == "") {
                         this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro.");
                         return true;
                     }
@@ -603,11 +657,13 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                         this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
                         return true;
                     }
-                    if (item.NombreFuncionario == null || item.NombreFuncionario == "") {
+                    if (item.NombreFuncionario == null ||
+                        item.NombreFuncionario == "") {
                         this.mensajeComponent.setErrorMsg("Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos.");
                         return true;
                     }
-                    if (item.CargoFuncionario == null || item.CargoFuncionario == "") {
+                    if (item.CargoFuncionario == null ||
+                        item.CargoFuncionario == "") {
                         this.mensajeComponent.setErrorMsg("Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos.");
                         return true;
                     }
@@ -627,9 +683,12 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     EmpresaGranosComponent.prototype.abrirCodigoConducta = function (siempre) {
         if (this.codigoConductaVisto == false || siempre) {
             this.codigoConductaVisto = true;
-            var filePath = location.origin + "/Documentacion/CodigoDeConductaParaProveedoresMOA.pdf";
+            var filePath = location.origin +
+                "/Documentacion/CodigoDeConductaParaProveedoresMOA.pdf";
             console.log(filePath);
-            var url = location.origin + "/officetohtml/popup.html?filePath=" + filePath;
+            var url = location.origin +
+                "/officetohtml/popup.html?filePath=" +
+                filePath;
             this.tryDoctype = url;
             document.getElementById("iframeConducta").setAttribute("src", url);
             document.getElementById("openModalconductaModal").click();
@@ -641,19 +700,29 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             if (result.VinculoConEmpleadosDeMolinos != null) {
                 _this.codigoConductaVisto = true;
                 _this.codigoDeConducta = true;
-                _this.relacionConEmpleadosChecked = result.VinculoConEmpleadosDeMolinos;
+                _this.relacionConEmpleadosChecked =
+                    result.VinculoConEmpleadosDeMolinos;
                 if (result.VinculoConEmpleadosDeMolinos) {
-                    document.getElementById("radioEmpleadosSi").setAttribute('checked', 'true');
+                    document
+                        .getElementById("radioEmpleadosSi")
+                        .setAttribute("checked", "true");
                 }
                 else {
-                    document.getElementById("radioEmpleadosNo").setAttribute('checked', 'true');
+                    document
+                        .getElementById("radioEmpleadosNo")
+                        .setAttribute("checked", "true");
                 }
-                _this.relacionConFuncionariosChecked = result.VinculoConFuncionariosPublicos;
+                _this.relacionConFuncionariosChecked =
+                    result.VinculoConFuncionariosPublicos;
                 if (result.VinculoConFuncionariosPublicos) {
-                    document.getElementById("radioFuncionariosSi").setAttribute('checked', 'true');
+                    document
+                        .getElementById("radioFuncionariosSi")
+                        .setAttribute("checked", "true");
                 }
                 else {
-                    document.getElementById("radioFuncionariosNo").setAttribute('checked', 'true');
+                    document
+                        .getElementById("radioFuncionariosNo")
+                        .setAttribute("checked", "true");
                 }
                 _this.empleados = result.Empleados;
                 _this.funcionarios = result.Funcionarios;
@@ -677,10 +746,12 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.cartaPresentacion.nuevosAcopios.splice(index, 1);
     };
     EmpresaGranosComponent.prototype.selectEventCampoCartaPresentacion = function (item, index) {
-        this.cartaPresentacion.nuevosCampos[index].LocalidadId = item.LocalidadId;
+        this.cartaPresentacion.nuevosCampos[index].LocalidadId =
+            item.LocalidadId;
     };
     EmpresaGranosComponent.prototype.selectEventAcopioCartaPresentacion = function (item, index) {
-        this.cartaPresentacion.nuevosAcopios[index].LocalidadID = item.LocalidadId;
+        this.cartaPresentacion.nuevosAcopios[index].LocalidadID =
+            item.LocalidadId;
     };
     EmpresaGranosComponent.prototype.onChangeLocalidad = function (term) {
         var _this = this;
@@ -710,26 +781,32 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             return;
         }
         this.mensajeError = "";
-        this.subscription = this.service.generarCartaPresentacion(this.cartaPresentacion, this.proveedorId).subscribe(function (result) {
+        this.subscription = this.service
+            .generarCartaPresentacion(this.cartaPresentacion, this.proveedorId)
+            .subscribe(function (result) {
             _this.spinnerModal.hideIt();
             if (result.error) {
                 _this.mensajeError = result.error;
             }
             else {
                 var byteArray = new Uint8Array(result.data);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                var blob = new Blob([byteArray], {
+                    type: "application/pdf",
+                });
                 if (window.navigator.msSaveOrOpenBlob) {
                     // IE11
-                    window.navigator.msSaveOrOpenBlob(blob, "Carta presentación - " + _this.cartaPresentacion.vendedorRazonSocial + ".pdf");
+                    window.navigator.msSaveOrOpenBlob(blob, "Carta presentación.pdf");
                 }
                 else {
                     var url = window.URL.createObjectURL(blob);
                     var link = document.createElement("a");
                     document.body.appendChild(link);
                     link.href = url;
-                    link.download = "Carta presentación - " + _this.cartaPresentacion.vendedorRazonSocial + ".pdf";
+                    link.download = "Carta presentación.pdf";
                     link.click();
-                    setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    setTimeout(function () {
+                        window.URL.revokeObjectURL(url);
+                    }, 0);
                     return false;
                 }
             }
@@ -740,78 +817,85 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.validarCartaPresentacion = function () {
         //Corredor
-        if (this.cartaPresentacion.corredorBolsa == "" || !this.cartaPresentacion.corredorBolsa) {
+        if (this.cartaPresentacion.corredorBolsa == "" ||
+            !this.cartaPresentacion.corredorBolsa) {
             this.mensajeError = "No completo el campo bolsa .";
             return true;
         }
-        if (this.cartaPresentacion.corredorNroRegistro == "" || !this.cartaPresentacion.corredorNroRegistro) {
+        if (this.cartaPresentacion.corredorNroRegistro == "" ||
+            !this.cartaPresentacion.corredorNroRegistro) {
             this.mensajeError = "No completo el número de registro.";
             return true;
         }
         //Vendedor
-        if (this.cartaPresentacion.vendedorCuit == "" || !this.cartaPresentacion.vendedorCuit) {
-            this.mensajeError = "No completo el CUIT del vendedor.";
-            return true;
-        }
-        if (this.cartaPresentacion.vendedorRazonSocial == "" || !this.cartaPresentacion.vendedorRazonSocial) {
-            this.mensajeError = "No completo la razón social del vendedor .";
-            return true;
-        }
-        if (this.cartaPresentacion.vendedorDomicilioFiscal == "" || !this.cartaPresentacion.vendedorDomicilioFiscal) {
+        if (this.cartaPresentacion.vendedorDomicilioFiscal == "" ||
+            !this.cartaPresentacion.vendedorDomicilioFiscal) {
             this.mensajeError = "No completo el domicilio fiscal.";
             return true;
         }
-        if (this.cartaPresentacion.vendedorActividad == "" || !this.cartaPresentacion.vendedorActividad) {
+        if (this.cartaPresentacion.vendedorActividad == "" ||
+            !this.cartaPresentacion.vendedorActividad) {
             this.mensajeError = "No seleccionó la actividad.";
             return true;
         }
-        if (this.cartaPresentacion.vendedorMailContacto == "" || !this.cartaPresentacion.vendedorMailContacto) {
+        if (this.cartaPresentacion.vendedorMailContacto == "" ||
+            !this.cartaPresentacion.vendedorMailContacto) {
             this.mensajeError = "No completo el mail de contacto.";
             return true;
         }
-        if (this.cartaPresentacion.vendedorTelefonoContacto == "" || !this.cartaPresentacion.vendedorTelefonoContacto) {
+        if (this.cartaPresentacion.vendedorTelefonoContacto == "" ||
+            !this.cartaPresentacion.vendedorTelefonoContacto) {
             this.mensajeError = "No completo el teléfono de contacto.";
             return true;
         }
-        if (this.cartaPresentacion.campaniaID == 0 || !this.cartaPresentacion.campaniaID) {
+        if (this.cartaPresentacion.campaniaID == 0 ||
+            !this.cartaPresentacion.campaniaID) {
             this.mensajeError = "No completo la Campaña Actual.";
             return true;
         }
         for (var _i = 0, _a = this.cartaPresentacion.nuevosCampos; _i < _a.length; _i++) {
             var item = _a[_i];
             if (item.MaterialId == null || item.MaterialId == 0) {
-                this.mensajeError = "Debe completar el grano en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar el grano en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.LocalidadId == null || item.LocalidadId == 0) {
-                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar la localidad en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.Hectareas == null || item.Hectareas == 0) {
-                this.mensajeError = "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar las Hectareas en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar las Toneladas en todos los items de Capacidad productiva.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad productiva.";
+                this.mensajeError =
+                    "Debe completar la condicion en todos los items de Capacidad productiva.";
                 return true;
             }
         }
         for (var _b = 0, _c = this.cartaPresentacion.nuevosAcopios; _b < _c.length; _b++) {
             var item = _c[_b];
             if (item.LocalidadID == null || item.LocalidadID == 0) {
-                this.mensajeError = "Debe completar la localidad en todos los items de Capacidad planta.";
+                this.mensajeError =
+                    "Debe completar la localidad en todos los items de Capacidad planta.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError = "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                this.mensajeError =
+                    "Debe completar las Toneladas en todos los items de Capacidad planta.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError = "Debe completar la condicion en todos los items de Capacidad planta.";
+                this.mensajeError =
+                    "Debe completar la condicion en todos los items de Capacidad planta.";
                 return true;
             }
         }
@@ -831,12 +915,21 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     ], EmpresaGranosComponent.prototype, "spinnerModal", void 0);
     EmpresaGranosComponent = __decorate([
         Component({
-            selector: 'app-empresa-granos',
-            templateUrl: 'empresa-granos.component.html',
-            styleUrls: ['empresa-granos.component.css', '../../../../Content/css/bootstrap.min.css'],
-            providers: [EmpresaGranosService]
+            selector: "app-empresa-granos",
+            templateUrl: "empresa-granos.component.html",
+            styleUrls: [
+                "empresa-granos.component.css",
+                "../../../../Content/css/bootstrap.min.css",
+            ],
+            providers: [EmpresaGranosService],
         }),
-        __metadata("design:paramtypes", [EmpresaGranosService, NavService, ActivatedRoute, SessionDataService, SecurityService, FloatMsgService, ModalService])
+        __metadata("design:paramtypes", [EmpresaGranosService,
+            NavService,
+            ActivatedRoute,
+            SessionDataService,
+            SecurityService,
+            FloatMsgService,
+            ModalService])
     ], EmpresaGranosComponent);
     return EmpresaGranosComponent;
 }(ListBaseComponent));

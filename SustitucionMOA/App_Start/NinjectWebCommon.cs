@@ -75,8 +75,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IVendedorService>().To(typeof(VendedorService)).InScope(ctx => OperationContext.Current);
 
 
-            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
-            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InThreadScope();
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InThreadScope();
         }
     }
 }

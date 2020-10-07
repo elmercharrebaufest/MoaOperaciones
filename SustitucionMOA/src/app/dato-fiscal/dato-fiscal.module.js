@@ -4,16 +4,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SharedModule } from '../common/shared.module';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { DatoFiscalRoutingModule } from './dato-fiscal-routing.module';
-import { DatoFiscalService } from './dato-fiscal.service';
-import { DatoFiscalBaseComponent } from './dato-fiscal.component';
-import { VendedoresListComponent } from './vendedor/dato-fiscal.vendedor.component';
-import { DocumentacionComponent } from './documentacion/documentacion.component';
-import { VendedoresPendientesComponent } from './vendedores-pendientes/vendedores-pendientes.component';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { SharedModule } from "../common/shared.module";
+import { NgxPaginationModule } from "ngx-pagination";
+import { DatoFiscalRoutingModule } from "./dato-fiscal-routing.module";
+import { DatoFiscalService } from "./dato-fiscal.service";
+import { DatoFiscalBaseComponent } from "./dato-fiscal.component";
+import { VendedoresListComponent } from "./vendedor/dato-fiscal.vendedor.component";
+import { DocumentacionComponent } from "./documentacion/documentacion.component";
+import { VendedoresPendientesComponent } from "./vendedores-pendientes/vendedores-pendientes.component";
+import { NgxMaskModule } from "ngx-mask";
 var DatoFiscalModule = /** @class */ (function () {
     function DatoFiscalModule() {
     }
@@ -23,17 +24,16 @@ var DatoFiscalModule = /** @class */ (function () {
                 CommonModule,
                 DatoFiscalRoutingModule,
                 SharedModule,
-                NgxPaginationModule
+                NgxPaginationModule,
+                NgxMaskModule.forRoot(),
             ],
             declarations: [
                 DatoFiscalBaseComponent,
                 VendedoresListComponent,
                 DocumentacionComponent,
-                VendedoresPendientesComponent
+                VendedoresPendientesComponent,
             ],
-            providers: [
-                DatoFiscalService
-            ],
+            providers: [DatoFiscalService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         })
     ], DatoFiscalModule);

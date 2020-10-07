@@ -1,13 +1,13 @@
 ﻿import { DatePipe } from "@angular/common";
 import {
-    CUSTOM_ELEMENTS_SCHEMA, NgModule,
-
-    NO_ERRORS_SCHEMA
+  CUSTOM_ELEMENTS_SCHEMA,
+  NgModule,
+  NO_ERRORS_SCHEMA,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
-import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { AutocompleteLibModule } from "angular-ng-autocomplete";
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
@@ -18,8 +18,8 @@ import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { EmpresaGranosComponent } from "./alta-proveedores/empresa-granos/empresa-granos.component";
 import { EmpresaGranosService } from "./alta-proveedores/empresa-granos/empresa-granos.service";
 import { EmpresaNoGranosComponent } from "./alta-proveedores/empresa-no-granos/empresa-no-granos.component";
-import { EstadoSolicitudComponent } from './alta-proveedores/estado-solicitud/estado-solicitud.component';
-import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/estado-solicitud.service';
+import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/estado-solicitud.component";
+import { EstadoSolicitudService } from "./alta-proveedores/estado-solicitud/estado-solicitud.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginGuard } from "./common/security/login-guard";
@@ -45,53 +45,53 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        HttpModule,
-        AppRoutingModule,
-        FormsModule,
-        NgxPaginationModule,
-        SelectModule,
-        ModalModule,
-        Ng2AutoCompleteModule,
-        ReCaptchaModule,
-        AutocompleteLibModule,
-        SharedModule
-    ],
-    declarations: [
-        AppComponent,
-        ContactoMailComponent,
-        HomeComponent,
-        HomeNGSComponent,
-        LayoutComponent,
-        NoAutorizadoComponent,
-        UsuarioListComponent,
-        UsuarioCambioVendedorComponent,
-        VendedorStatusComponent,
-        PesificacionComponent,
-        EmpresaGranosComponent,
-        EmpresaNoGranosComponent,
-        AltasComponent,
-        EstadoSolicitudComponent
-    ],
-    providers: [
-        DatePipe,
-        SessionDataService,
-        NavService,
-        FloatMsgService,
-        LoginGuard,
-        DataService,
-        AduanaService,
-        LayoutService,
-        UsuarioService,
-        VendedorStatusService,
-        ServiceLocator,
-        ModalService,
-        SecurityService,
-        EmpresaGranosService,
-        EstadoSolicitudService
-    ],
-    bootstrap: [AppComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  imports: [
+    BrowserModule,
+    HttpModule,
+    AppRoutingModule,
+    FormsModule,
+    NgxPaginationModule,
+    SelectModule,
+    ModalModule,
+    Ng2AutoCompleteModule,
+    ReCaptchaModule,
+    AutocompleteLibModule,
+    SharedModule,
+  ],
+  declarations: [
+    AppComponent,
+    ContactoMailComponent,
+    HomeComponent,
+    HomeNGSComponent,
+    LayoutComponent,
+    NoAutorizadoComponent,
+    UsuarioListComponent,
+    UsuarioCambioVendedorComponent,
+    VendedorStatusComponent,
+    PesificacionComponent,
+    EmpresaGranosComponent,
+    EmpresaNoGranosComponent,
+    AltasComponent,
+    EstadoSolicitudComponent,
+  ],
+  providers: [
+    DatePipe,
+    SessionDataService,
+    NavService,
+    FloatMsgService,
+    LoginGuard,
+    DataService,
+    AduanaService,
+    LayoutService,
+    UsuarioService,
+    VendedorStatusService,
+    ServiceLocator,
+    ModalService,
+    SecurityService,
+    EmpresaGranosService,
+    EstadoSolicitudService,
+  ],
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

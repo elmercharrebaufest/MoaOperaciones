@@ -15,6 +15,8 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetVendedoresPendientes(string mailUsuario);
 
         string AgregarVendedor(string mailUsuario, string cuit, string razonSocial);
+
+        string EliminarVendedor(string mailUsuario, int proveedorId);
     }
 
 }

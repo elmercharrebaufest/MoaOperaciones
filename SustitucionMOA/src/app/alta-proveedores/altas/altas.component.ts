@@ -201,7 +201,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        this.cargarSolicitudUsuario(empresa.Mail);
+        this.cargarSolicitudUsuario(empresa.Mail, empresa.Id);
         this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
@@ -253,8 +253,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     }
 
-    cargarSolicitudUsuario(mail: string) {
-        this.subscription = this.service.cargarSolicitudUsuario(mail).subscribe(
+    cargarSolicitudUsuario(mail: string, proveedorId: number) {
+        this.subscription = this.service.cargarSolicitudUsuario(mail, proveedorId).subscribe(
             result => {
                 if (result.VinculoConEmpleadosDeMolinos != null) {
                     if (result.VinculoConEmpleadosDeMolinos) {

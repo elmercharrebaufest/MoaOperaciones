@@ -20,14 +20,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component } from '@angular/core';
-import { DatoFiscalService } from './../dato-fiscal.service';
-import { NavService } from './../../common/services/NavService';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { Seccion } from './../../common/models/seccion';
-import { BaseComponent } from './../../common/base-components/base-component';
-import { ModalService } from './../../common/services/ModalService';
+import { Component } from "@angular/core";
+import { DatoFiscalService } from "./../dato-fiscal.service";
+import { NavService } from "./../../common/services/NavService";
+import { FloatMsgService } from "./../../common/services/FloatMsgService";
+import { SecurityService } from "./../../common/services/SecurityService";
+import { Seccion } from "./../../common/models/seccion";
+import { BaseComponent } from "./../../common/base-components/base-component";
+import { ModalService } from "./../../common/services/ModalService";
 var DocumentacionComponent = /** @class */ (function (_super) {
     __extends(DocumentacionComponent, _super);
     function DocumentacionComponent(service, navService, securityService, floatMsgService, modalService) {
@@ -47,22 +47,26 @@ var DocumentacionComponent = /** @class */ (function (_super) {
         this.setTabs();
         var secciones = [];
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
+            secciones.push(new Seccion("/dato-fiscal/situacion-fiscal", "dato-fiscal", "Mi Situacion Fiscal"));
         if (this.isAuthorized("CONSULTAR VENDEDORES"))
-            secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
+            secciones.push(new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores"));
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
-        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS"))
-            secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+            secciones.push(new Seccion("/dato-fiscal/documentacion", "dato-fiscal", "Documentacion"));
+        if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
+            secciones.push(new Seccion("/dato-fiscal/vendedores-pendientes", "dato-fiscal", "Vendedores pendientes"));
         this.navService.setSeccionList(secciones);
     };
     DocumentacionComponent = __decorate([
         Component({
-            selector: 'documentacion',
+            selector: "documentacion",
             templateUrl: "documentacion.component.html",
-            providers: [DatoFiscalService]
+            providers: [DatoFiscalService],
         }),
-        __metadata("design:paramtypes", [DatoFiscalService, NavService, SecurityService, FloatMsgService, ModalService])
+        __metadata("design:paramtypes", [DatoFiscalService,
+            NavService,
+            SecurityService,
+            FloatMsgService,
+            ModalService])
     ], DocumentacionComponent);
     return DocumentacionComponent;
 }(BaseComponent));
