@@ -8,6 +8,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;

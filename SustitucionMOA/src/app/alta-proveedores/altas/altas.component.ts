@@ -33,6 +33,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
     @ViewChild("smallSpinner")
     protected spinnerSmallComponent: SpinnerSmallComponent;
 
+    @ViewChild("spinnerModal")
+    protected spinnerModal: SpinnerSmallComponent;
+
+
     constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securytiService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
@@ -60,6 +64,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     relacionConFuncionarios: string = "";
     ngOnInit(): void {
         this.getEstados();
+
     }
 
     verDetalle() {
@@ -158,13 +163,13 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
-        this.spinnerComponent.showIt();
+        this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(
                 result => {
                     this.getEmpresa();
-                    this.spinnerComponent.hideIt();
+                    this.spinnerModal.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -186,7 +191,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
             );
         } catch (e) {
-            this.spinnerComponent.hideIt();
+            this.spinnerModal.hideIt();
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
@@ -207,7 +212,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false;
     }
 
-    obtenerArchivosSubidos(mail: string, proveedorId : number) {
+    obtenerArchivosSubidos(mail: string, proveedorId: number) {
         this.subscription = this.service.obtenerArchivosSubidos(mail, proveedorId).subscribe(
             result => {
                 this.listaArchivos = new Array();

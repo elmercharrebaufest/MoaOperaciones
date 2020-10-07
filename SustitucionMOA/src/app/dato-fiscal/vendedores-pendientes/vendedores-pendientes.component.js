@@ -78,12 +78,15 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.getVendedoresPendientes().subscribe(function (result) {
+            this.subscription = this.service
+                .getVendedoresPendientes()
+                .subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
                 }
-                else if (result.error != undefined && result.error != "") {
+                else if (result.error != undefined &&
+                    result.error != "") {
                     _this.mensajeComponent.setErrorMsg(result.error);
                 }
                 else if (result.info != undefined) {
@@ -129,7 +132,8 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
                 }
-                else if (result.error != undefined && result.error != "") {
+                else if (result.error != undefined &&
+                    result.error != "") {
                     _this.mensajeModalComponent.setErrorMsg(result.error);
                 }
                 else if (result.info != undefined) {
@@ -158,12 +162,15 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.eliminarVendedor(proveedorId).subscribe(function (result) {
+            this.subscription = this.service
+                .eliminarVendedor(proveedorId)
+                .subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
                 }
-                else if (result.error != undefined && result.error != "") {
+                else if (result.error != undefined &&
+                    result.error != "") {
                     _this.mensajeComponent.setErrorMsg(result.error);
                 }
                 else if (result.info != undefined) {

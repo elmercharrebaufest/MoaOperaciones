@@ -16,16 +16,13 @@ namespace SustitucionMOAUtils.Services
 {
     public class AzureB2CService : IAzureB2CService
     {
-
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
-        protected readonly IRolService rolService;
 
-        public AzureB2CService(IRepositorio repositorio, IDataAgroService dataAgroService, RolService rolService)
+        public AzureB2CService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
-            this.rolService = rolService;
         }
 
         public Usuario LoguearUsuario(string mail, string CUIT, string granosFlag)
@@ -146,23 +143,29 @@ namespace SustitucionMOAUtils.Services
             {
                 if (infoProveedor.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                 {
-                    //usuario.Comercial = string.Concat(infoProveedor.ComercialNombres, " ", infoProveedor.ComercialApellido);
-
                     proveedor.IdComercialDataAgro = infoProveedor.ComercialId;
                     proveedor.IdDataAgro = infoProveedor.ProveedorId;
                     proveedor.RazonSocial = infoProveedor.ProveedorRazonSocial;
                     proveedor.CodigoProveedor = FormatearCodigoCorredor(proveedor.CUIT);
-
-                    infoProveedor.ProveedorOperando = false;
-                    Rol rolUsuario = rolService.ObtenerRolPorCodigo(infoProveedor.ProveedorOperando ? "GRAN" : "NUECORR");
-
                     proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
-                    usuario.Roles.Add(rolUsuario);
+                    if (infoProveedor.ProveedorOperando)
+                    {
+                        var rolGranos = ObtenerRolPorCodigo("GRAN");
+                        var rolCorredor = ObtenerRolPorCodigo("CORR");
+
+                        usuario.AgregarRol(rolGranos);
+                        usuario.AgregarRol(rolCorredor);
+                    }
+                    else
+                    {
+                        var rolNuevoCorredor = ObtenerRolPorCodigo("NUECORR");
+                        usuario.AgregarRol(rolNuevoCorredor);
+                    }
                 }
                 else
                 {
-                    Rol rolDesabilitado = rolService.ObtenerRolPorCodigo("DDAG");
+                    Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
 
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
@@ -171,7 +174,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                Rol rolDesabilitado = rolService.ObtenerRolPorCodigo("DDAG");
+                Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                 usuario.Roles.Add(rolDesabilitado);
                 proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                 proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
@@ -187,7 +190,7 @@ namespace SustitucionMOAUtils.Services
         
         public bool RegistrarUsuarioGenerico(ref Usuario usuario)
         {
-            Rol rolUsuarioNoImplementado = rolService.ObtenerRolPorCodigo("NOIMP");
+            Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
 
             usuario.Roles = new List<Rol>
             {
@@ -229,5 +232,6 @@ namespace SustitucionMOAUtils.Services
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
 
+        private Rol ObtenerRolPorCodigo(string codigo) => repositorio.Obtener<Rol>(u => u.Codigo.Equals(codigo));
     }
 }

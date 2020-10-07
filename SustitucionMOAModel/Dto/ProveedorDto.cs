@@ -54,5 +54,42 @@ namespace SustitucionMOAModel.Dto
             else
                 HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ProveedorDto dto &&
+                   Id == dto.Id &&
+                   CUIT == dto.CUIT &&
+                   RazonSocial == dto.RazonSocial &&
+                   CodigoProveedor == dto.CodigoProveedor &&
+                   Mail == dto.Mail &&
+                   EstadoAprobacion == dto.EstadoAprobacion &&
+                   Observaciones == dto.Observaciones &&
+                   IdDataAgro == dto.IdDataAgro &&
+                   IdComercialDataAgro == dto.IdComercialDataAgro &&
+                   EstadoAprobacionDescripcion == dto.EstadoAprobacionDescripcion &&
+                   Comercial == dto.Comercial &&
+                   SISAEstadoCuit == dto.SISAEstadoCuit &&
+                   EstadoSIPER == dto.EstadoSIPER;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1873437470;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUIT);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocial);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CodigoProveedor);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Mail);
+            hashCode = hashCode * -1521134295 + EstadoAprobacion.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Observaciones);
+            hashCode = hashCode * -1521134295 + IdDataAgro.GetHashCode();
+            hashCode = hashCode * -1521134295 + IdComercialDataAgro.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(EstadoAprobacionDescripcion);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comercial);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(SISAEstadoCuit);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(EstadoSIPER);
+            return hashCode;
+        }
     }
 }

@@ -1,12 +1,12 @@
 {
-    "/api/*": {
-      "target": "http://localhost:58280",
-      "secure": false,
-      "logLevel": "debug"
-    },
-    "/SignOut": {
-      "target": "http://localhost:58280",
-      "secure": false,
-      "logLevel": "debug"
-    }
+  "/api/*": {
+    "target": "http://localhost:58280",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/SignOut": {
+    "target": "http://localhost:58280",
+    "secure": false,
+    "logLevel": "debug"
   }
+}

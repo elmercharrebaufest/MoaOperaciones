@@ -120,12 +120,14 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
+                var corredor = usuario.ObtenerCorredor();
+
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
                 var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
 
-                cartaPresentacion.corredorCuit = proveedor.CUIT;
-                cartaPresentacion.corredorRazonSocial = proveedor.RazonSocial;
+                cartaPresentacion.corredorCuit = corredor.CUIT;
+                cartaPresentacion.corredorRazonSocial = corredor.RazonSocial;
 
                 if (cartaPresentacion.vendedorActividad == "Productor")
                 {
