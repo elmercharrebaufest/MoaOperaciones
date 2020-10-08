@@ -9,11 +9,14 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IVendedorService
     {
         VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor);
+        List<ProveedorDto> GetVendedores(string mailUsuario);
         VendedoresWSMOAResponse GetVendedores(string proveedor, string fechaInicio, string fechaFin);
         VendedorHabilitadoWSMOAResponse GetVendedorStatus(string cuit, string user);
         List<ProveedorDto> GetVendedoresPendientes(string mailUsuario);
 
         string AgregarVendedor(string mailUsuario, string cuit, string razonSocial);
+
+        string EliminarVendedor(string mailUsuario, int proveedorId);
     }
 
 }

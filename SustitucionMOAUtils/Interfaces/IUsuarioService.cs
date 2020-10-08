@@ -32,5 +32,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         byte[] getDocumento(string nombre);
         string GuardarRoles(List<int> idRol, int idUsuario);
+        List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
     }
 }

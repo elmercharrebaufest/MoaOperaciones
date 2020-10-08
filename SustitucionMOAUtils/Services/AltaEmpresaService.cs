@@ -102,6 +102,8 @@ namespace SustitucionMOAUtils.Services
                         case "Corredor":
                             var rolCorredor = ObtenerRolPorCodigo("CORR");
 
+                            usuario.RemoverRol("NUECORR");
+
                             if(!usuario.Roles.Contains(rolCorredor))
                                 usuario.AgregarRol(rolCorredor);
 

@@ -163,12 +163,12 @@ var AltasComponent = /** @class */ (function (_super) {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
-        this.spinnerComponent.showIt();
+        this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(function (result) {
                 _this.getEmpresa();
-                _this.spinnerComponent.hideIt();
+                _this.spinnerModal.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
                 }
@@ -190,7 +190,7 @@ var AltasComponent = /** @class */ (function (_super) {
             });
         }
         catch (e) {
-            this.spinnerComponent.hideIt();
+            this.spinnerModal.hideIt();
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
@@ -203,7 +203,7 @@ var AltasComponent = /** @class */ (function (_super) {
         this.mensajeError = "";
         this.floatMsgService.setMsgsEmpty();
         this.unsubscribe();
-        this.cargarSolicitudUsuario(empresa.Mail);
+        this.cargarSolicitudUsuario(empresa.Mail, empresa.Id);
         this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
@@ -246,9 +246,9 @@ var AltasComponent = /** @class */ (function (_super) {
             this.dataFiltered = this.data;
         }
     };
-    AltasComponent.prototype.cargarSolicitudUsuario = function (mail) {
+    AltasComponent.prototype.cargarSolicitudUsuario = function (mail, proveedorId) {
         var _this = this;
-        this.subscription = this.service.cargarSolicitudUsuario(mail).subscribe(function (result) {
+        this.subscription = this.service.cargarSolicitudUsuario(mail, proveedorId).subscribe(function (result) {
             if (result.VinculoConEmpleadosDeMolinos != null) {
                 if (result.VinculoConEmpleadosDeMolinos) {
                     _this.relacionConEmpleados = "Si";
@@ -287,6 +287,10 @@ var AltasComponent = /** @class */ (function (_super) {
         ViewChild("smallSpinner"),
         __metadata("design:type", SpinnerSmallComponent)
     ], AltasComponent.prototype, "spinnerSmallComponent", void 0);
+    __decorate([
+        ViewChild("spinnerModal"),
+        __metadata("design:type", SpinnerSmallComponent)
+    ], AltasComponent.prototype, "spinnerModal", void 0);
     AltasComponent = __decorate([
         Component({
             selector: 'app-altas',

@@ -1,35 +1,50 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { DatoFiscalService } from './../dato-fiscal.service';
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { NavService } from './../../common/services/NavService';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { Seccion } from './../../common/models/seccion';
-import { BaseComponent } from './../../common/base-components/base-component';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { ModalService } from './../../common/services/ModalService';
-
+import { Component, ViewChild, OnInit } from "@angular/core";
+import { DatoFiscalService } from "./../dato-fiscal.service";
+import { MensajeComponent } from "./../../common/view-child/mensaje/mensaje.component";
+import { SpinnerComponent } from "./../../common/view-child/spinner/spinner.component";
+import { NavService } from "./../../common/services/NavService";
+import { FloatMsgService } from "./../../common/services/FloatMsgService";
+import { SecurityService } from "./../../common/services/SecurityService";
+import { Seccion } from "./../../common/models/seccion";
+import { BaseComponent } from "./../../common/base-components/base-component";
+import { SessionDataService } from "./../../common/services/SessionDataService";
+import { ModalService } from "./../../common/services/ModalService";
 
 @Component({
-  selector: 'app-vendedores-pendientes',
-    templateUrl: 'vendedores-pendientes.component.html',
-    styleUrls: ['vendedores-pendientes.component.css'],
-    providers: [DatoFiscalService]
+    selector: "app-vendedores-pendientes",
+    templateUrl: "vendedores-pendientes.component.html",
+    styleUrls: ["vendedores-pendientes.component.css"],
+    providers: [DatoFiscalService],
 })
-export class VendedoresPendientesComponent extends BaseComponent implements OnInit {
-
+export class VendedoresPendientesComponent
+    extends BaseComponent
+    implements OnInit {
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
+
+    @ViewChild("mensajeModal")
+    protected mensajeModalComponent: MensajeComponent;
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    constructor(protected service: DatoFiscalService, protected navService: NavService, protected securityService: SecurityService,
-        protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    @ViewChild("spinnerModal")
+    protected spinnerModalComponent: SpinnerComponent;
+
+    constructor(
+        protected service: DatoFiscalService,
+        protected navService: NavService,
+        protected securityService: SecurityService,
+        protected sessionDataService: SessionDataService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService
+    ) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
+        this.mensajeModalComponent = new MensajeComponent();
+
         this.spinnerComponent = new SpinnerComponent();
+        this.spinnerModalComponent = new SpinnerComponent();
     }
 
     data: any;
@@ -49,18 +64,43 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
     ngOnInit() {
         this.setTabs();
         this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
+
         var secciones = [];
         if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion('/dato-fiscal/situacion-fiscal', 'dato-fiscal', 'Mi Situacion Fiscal'));
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/situacion-fiscal",
+                    "dato-fiscal",
+                    "Mi Situacion Fiscal"
+                )
+            );
 
-        if (this.isAuthorized("CONSULTAR VENDEDORES") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedor', 'dato-fiscal', 'Mis Vendedores'));
+        if (this.isAuthorized("CONSULTAR VENDEDORES"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/vendedor",
+                    "dato-fiscal",
+                    "Mis Vendedores"
+                )
+            );
 
         if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion('/dato-fiscal/documentacion', 'dato-fiscal', 'Documentacion'));
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/documentacion",
+                    "dato-fiscal",
+                    "Documentacion"
+                )
+            );
 
-        if (this.isAuthorized("CONSULTAR VENDEDOR STATUS") && this.isCorredor())
-            secciones.push(new Seccion('/dato-fiscal/vendedores-pendientes', 'dato-fiscal', 'Vendedores pendientes'));
+        if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/vendedores-pendientes",
+                    "dato-fiscal",
+                    "Vendedores pendientes"
+                )
+            );
 
         this.navService.setSeccionList(secciones);
         this.getVendedores();
@@ -71,25 +111,29 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.getVendedoresPendientes().subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.data = result.data;
+            this.subscription = this.service
+                .getVendedoresPendientes()
+                .subscribe(
+                    (result) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.data = result.data;
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-
-            );
+                );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
@@ -113,34 +157,86 @@ export class VendedoresPendientesComponent extends BaseComponent implements OnIn
     }
 
     solicitarAltaProveedor() {
+        this.mensajeModalComponent.setMsgsEmpty();
+        this.spinnerModalComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service
+                .agregarVendedor(
+                    this.nuevoVendedorRazonSocial,
+                    this.nuevoVendedorCUIT
+                )
+                .subscribe(
+                    (result) => {
+                        this.spinnerModalComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeModalComponent.setErrorMsg(
+                                result.error
+                            );
+                        } else if (result.info != undefined) {
+                            this.mensajeModalComponent.setInfoMsg(result.info);
+                        } else {
+                            this.getVendedores();
+                            this.mensajeComponent.setSuccessMsg(result.data);
+                            this.nuevoVendedorRazonSocial = "";
+                            this.nuevoVendedorCUIT = "";
+
+                            document.getElementById("modalToggleButton").click();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerModalComponent.hideIt();
+                        this.mensajeModalComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerModalComponent.hideIt();
+            this.mensajeModalComponent.setErrorMsg(e);
+        }
+    }
+
+    eliminarVendedor(proveedorId: number) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
         try {
-            this.subscription = this.service.agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.data = result.data.vendedores;
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
+            this.subscription = this.service
+                .eliminarVendedor(proveedorId)
+                .subscribe(
+                    (result) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.getVendedores();
 
-            );
+                            setTimeout(function () {
+                                this.mensajeComponent.setSuccessMsg(
+                                    result.data
+                                );
+                            }, 100);
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
-
     }
-
 }

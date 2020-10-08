@@ -20,10 +20,12 @@ namespace SustitucionMOAUtils.Services
     public class UsuarioService : IUsuarioService
     {
         protected readonly IRepositorio repositorio;
+        protected readonly IVendedorService vendedorService;
 
-        public UsuarioService(IRepositorio repositorio)
+        public UsuarioService(IRepositorio repositorio, IVendedorService vendedorService)
         {
             this.repositorio = repositorio;
+            this.vendedorService = vendedorService;
         }
 
         [Obsolete]
@@ -428,6 +430,11 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail);
+        }
+
+        public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
+        {
+            return vendedorService.GetVendedores(usuarioMail);
         }
     }
 }

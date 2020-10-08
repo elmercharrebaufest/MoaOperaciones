@@ -70,7 +70,7 @@ export class AppComponent {
                 } else {
                     if (result.error != undefined && result.error != "") {
                         alert(result.error);
-                        location.href = "/";
+                        location.href = window.location.origin + '/SignOut';
                     } 
                     else {
                         this.loginUser(result);

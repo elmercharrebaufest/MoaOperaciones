@@ -174,20 +174,27 @@ namespace SustitucionMOA.Controllers
 
                 if (esNuevoUsuario)
                 {
-                    if (usuario.ObtenerProveedor().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                    if (usuario.TipoUsuario.Nombre == "Corredor")
                     {
-                        if (granosFlag == "G")
-                        {
-                            redirectURL = "/alta-empresa-granos";
-                        }
-                        else
-                        {
-                            redirectURL = "/dato-fiscal/documentacion";
-                        }
+                        redirectURL = "/dato-fiscal/vendedores-pendientes";
                     }
                     else
                     {
-                        redirectURL = "/estado-solicitud";
+                        if (usuario.ObtenerProveedor().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                        {
+                            if (granosFlag == "G")
+                            {
+                                redirectURL = "/alta-empresa-granos";
+                            }
+                            else
+                            {
+                                redirectURL = "/dato-fiscal/documentacion";
+                            }
+                        }
+                        else
+                        {
+                            redirectURL = "/estado-solicitud";
+                        }
                     }
                 }
                 else

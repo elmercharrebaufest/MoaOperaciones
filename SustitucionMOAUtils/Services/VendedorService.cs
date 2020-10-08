@@ -8,6 +8,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,12 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
+        protected readonly IDataAgroService dataAgroService;
 
-        public VendedorService(IRepositorio repositorio)
+        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
         }
 
         public VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor)
@@ -111,20 +114,32 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<ProveedorDto> GetVendedores(string mailUsuario)
+        {
+            return GetVendedores(mailUsuario, null);
+        }
 
         public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario)
         {
-            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
-
-            var proveedores = usuario.Proveedores.Where(x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
-
-            List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
+            List<ProveedorDto> proveedorDtos = GetVendedores(mailUsuario, x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
 
             if (proveedorDtos.Count == 0)
             {
                 throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
             }
             return proveedorDtos;
+        }
+
+        private List<ProveedorDto> GetVendedores(string mailUsuario, Func<Proveedor, bool> filtro = null)
+        {
+            var proveedores = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario).Proveedores.ToList();
+
+            if(filtro != null)
+            {
+                proveedores = proveedores.Where(filtro).ToList();
+            }
+
+            return proveedores.Select(x => new ProveedorDto(x)).ToList();
         }
 
         public string AgregarVendedor(string mailUsuario, string cuit, string razonSocial)
@@ -151,14 +166,50 @@ namespace SustitucionMOAUtils.Services
                 CUIT = cuit,
                 RazonSocial = razonSocial,
                 Mail = usuario.Mail,
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                CodigoProveedor = FormatearCodigoProveedor(cuit)
             };
+
+            if (!usuario.EsCorredor()) dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
 
             usuario.Proveedores.Add(nuevoVendedor);
 
             repositorio.GuardarCambios();
 
             return SuccessMsg.AltaVendedorOK;
+        }
+
+        public string EliminarVendedor(string mailUsuario, int proveedorId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+
+            if (proveedor.EstadoAprobacion != EstadoAprobacion.DocumentacionPendiente)
+            {
+                throw new ValidationCustomException("No se puede elimianr el vendedor debido a que su estado no es \"Documentación pendiente\".");
+            }
+
+            if (proveedor.HistorialAprobaciones != null)
+            {
+                if (proveedor.HistorialAprobaciones.Any())
+                {
+                    throw new ValidationCustomException("No se puede eliminar el vendedor debido a que ya fue enviada su solicitud.");
+                }
+            }
+
+            usuario.Proveedores.Remove(proveedor);
+
+            repositorio.Remover<Proveedor>(proveedor.Id);
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.VendedorBorradoOK;
+        }
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return CUIT.Substring(2, 8);
         }
     }
 }

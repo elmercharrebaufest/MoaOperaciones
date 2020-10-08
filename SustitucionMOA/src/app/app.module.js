@@ -5,11 +5,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { DatePipe } from "@angular/common";
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA, } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
-import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { AutocompleteLibModule } from "angular-ng-autocomplete";
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
 import { SelectModule } from "ng2-select";
@@ -20,8 +20,8 @@ import { AltasComponent } from "./alta-proveedores/altas/altas.component";
 import { EmpresaGranosComponent } from "./alta-proveedores/empresa-granos/empresa-granos.component";
 import { EmpresaGranosService } from "./alta-proveedores/empresa-granos/empresa-granos.service";
 import { EmpresaNoGranosComponent } from "./alta-proveedores/empresa-no-granos/empresa-no-granos.component";
-import { EstadoSolicitudComponent } from './alta-proveedores/estado-solicitud/estado-solicitud.component';
-import { EstadoSolicitudService } from './alta-proveedores/estado-solicitud/estado-solicitud.service';
+import { EstadoSolicitudComponent } from "./alta-proveedores/estado-solicitud/estado-solicitud.component";
+import { EstadoSolicitudService } from "./alta-proveedores/estado-solicitud/estado-solicitud.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LoginGuard } from "./common/security/login-guard";
@@ -61,7 +61,7 @@ var AppModule = /** @class */ (function () {
                 Ng2AutoCompleteModule,
                 ReCaptchaModule,
                 AutocompleteLibModule,
-                SharedModule
+                SharedModule,
             ],
             declarations: [
                 AppComponent,
@@ -77,7 +77,7 @@ var AppModule = /** @class */ (function () {
                 EmpresaGranosComponent,
                 EmpresaNoGranosComponent,
                 AltasComponent,
-                EstadoSolicitudComponent
+                EstadoSolicitudComponent,
             ],
             providers: [
                 DatePipe,
@@ -94,7 +94,7 @@ var AppModule = /** @class */ (function () {
                 ModalService,
                 SecurityService,
                 EmpresaGranosService,
-                EstadoSolicitudService
+                EstadoSolicitudService,
             ],
             bootstrap: [AppComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

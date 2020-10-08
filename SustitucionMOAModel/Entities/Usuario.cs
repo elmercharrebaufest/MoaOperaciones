@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -32,6 +33,11 @@ namespace SustitucionMOAModel.Entities
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
             return Proveedores.FirstOrDefault();
+        }
+
+        public Proveedor ObtenerCorredor()
+        {
+            return Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
         }
 
         public Proveedor ObtenerProveedorPorId(int proveedorId)
@@ -99,6 +105,11 @@ namespace SustitucionMOAModel.Entities
                 !Habilitado;
         }
 
+        public bool EsCorredor()
+        {
+            return TipoUsuario.NombreCorto == "CORR";
+        }
+
         public void RemoverRoles()
         {
             Roles.Clear();
@@ -109,5 +120,12 @@ namespace SustitucionMOAModel.Entities
             Roles.Add(rol);
         }
 
+        public void RemoverRol(string rol)
+        {
+            var rolRemover = Roles.Where(r => r.Codigo == rol).FirstOrDefault();
+
+            if (rolRemover != null)
+                Roles.Remove(rolRemover);
+        }
     }
 }

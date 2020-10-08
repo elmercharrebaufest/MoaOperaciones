@@ -50,38 +50,39 @@ var appRoutes = [
             //   component: CamaraConsolidacionComponent,
             // },
             // { path: "aduana/camara-muelle", component: CamaraMuelleComponent },
-            { path: "carta-porte",
-                loadChildren: './carta-porte/carta-porte.module#CartaPorteModule'
-            },
-            { path: "comprobante-ngs",
-                loadChildren: './liquidacion/no-granos/liquidacion-no-granos.module#LiquidacionNoGranosModule'
+            {
+                path: "carta-porte",
+                loadChildren: "./carta-porte/carta-porte.module#CartaPorteModule",
             },
             {
-                path: 'contrato',
-                loadChildren: './contrato/contrato.module#ContratoModule'
+                path: "comprobante-ngs",
+                loadChildren: "./liquidacion/no-granos/liquidacion-no-granos.module#LiquidacionNoGranosModule",
+            },
+            {
+                path: "contrato",
+                loadChildren: "./contrato/contrato.module#ContratoModule",
             },
             { path: "contacto", component: ContactoMailComponent },
-            { path: "cuenta-corriente",
-                loadChildren: './cuenta-corriente/cuenta-corriente.module#CuentaCorrienteModule'
+            {
+                path: "cuenta-corriente",
+                loadChildren: "./cuenta-corriente/cuenta-corriente.module#CuentaCorrienteModule",
             },
             {
                 path: "dato-fiscal",
-                loadChildren: './dato-fiscal/dato-fiscal.module#DatoFiscalModule'
+                loadChildren: "./dato-fiscal/dato-fiscal.module#DatoFiscalModule",
             },
-            { path: "flete",
-                loadChildren: './flete/flete.module#FleteModule'
-            },
+            { path: "flete", loadChildren: "./flete/flete.module#FleteModule" },
             { path: "home", component: HomeComponent },
             { path: "home-ngs", component: HomeNGSComponent },
-            { path: "liquidacion",
-                loadChildren: './liquidacion/liquidacion.module#LiquidacionModule'
+            {
+                path: "liquidacion",
+                loadChildren: "./liquidacion/liquidacion.module#LiquidacionModule",
             },
             { path: "no-autorizado", component: NoAutorizadoComponent },
-            { path: "pago",
-                loadChildren: './pago/pago.module#PagoModule'
-            },
-            { path: "pago-ngs",
-                loadChildren: './pago/no-granos/pago-no-granos.module#PagoNoGranosModule'
+            { path: "pago", loadChildren: "./pago/pago.module#PagoModule" },
+            {
+                path: "pago-ngs",
+                loadChildren: "./pago/no-granos/pago-no-granos.module#PagoNoGranosModule",
             },
             // { path: "usuario/alta", component: AltaUsuarioComponent },
             { path: "usuario/list", component: UsuarioListComponent },
@@ -94,9 +95,16 @@ var appRoutes = [
                 component: UsuarioCambioVendedorComponent,
             },
             { path: "vendedor/status", component: VendedorStatusComponent },
-            { path: "factura", loadChildren: './factura/factura.module#FacturaModule' },
+            {
+                path: "factura",
+                loadChildren: "./factura/factura.module#FacturaModule",
+            },
             { path: "pesificacion", component: PesificacionComponent },
             { path: "alta-empresa-granos", component: EmpresaGranosComponent },
+            {
+                path: "alta-empresa-granos/:id",
+                component: EmpresaGranosComponent,
+            },
             { path: "estado-solicitud", component: EstadoSolicitudComponent },
             { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
             { path: "altas", component: AltasComponent },
