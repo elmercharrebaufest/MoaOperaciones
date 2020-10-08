@@ -15,6 +15,6 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarCUITProveedorGranos(ref UsuarioGranos usuario, Proveedor proveedor);
         string ObtenerCBUProveedor(string CUITproveedor);
         ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT);
-
+        void ValidarNuevoProveedorMultifirma(ref Proveedor nuevoProveedor);
     }
 }

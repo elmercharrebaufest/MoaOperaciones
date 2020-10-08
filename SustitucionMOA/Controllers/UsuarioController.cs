@@ -22,13 +22,34 @@ namespace SustitucionMOA.Controllers
             _usuarioService = usuarioService;
         }
 
-
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
         public ActionResult GetUsuarios()
         {
             try
             {
                 return JsonCustom(new { data = new { usuarios = _usuarioService.GetUsuarios() } });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_VENDEDORES)]
+        public ActionResult GetVendedores()
+        {
+            try
+            {
+                return JsonCustom(new { data = new { usuarios = _usuarioService.GetVendedoresUsuario(SessionPersister.User.username) } });
             }
             catch (InfoCustomException e)
             {

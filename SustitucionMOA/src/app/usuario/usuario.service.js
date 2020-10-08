@@ -52,7 +52,7 @@ var UsuarioService = /** @class */ (function (_super) {
     };
     UsuarioService.prototype.getUsuarios = function () {
         return this.http
-            .get('/api/usuario/getUsuarios', { headers: this.headers }).pipe(map(this.extractData));
+            .get('/api/usuario/getVendedores', { headers: this.headers }).pipe(map(this.extractData));
     };
     UsuarioService.prototype.desbloquearUsuario = function (usuario) {
         var params = new URLSearchParams();

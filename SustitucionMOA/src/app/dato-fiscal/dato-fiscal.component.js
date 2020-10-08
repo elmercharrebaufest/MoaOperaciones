@@ -153,9 +153,6 @@ var DatoFiscalBaseComponent = /** @class */ (function (_super) {
         ]);
         return false;
     };
-    DatoFiscalBaseComponent.prototype.isMultifirma = function () {
-        return this.tipoUsuario == "GRANM";
-    };
     __decorate([
         ViewChild(MensajeComponent),
         __metadata("design:type", MensajeComponent)

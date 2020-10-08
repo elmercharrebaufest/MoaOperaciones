@@ -176,16 +176,12 @@ export class DatoFiscalBaseComponent extends BaseComponent implements OnInit {
     return false;
   }
 
-  showModalTableConveniosMultilateralesResponsive(Convenio: any) {
-    this.modalService.openModalTableResponsive("Convenio Multilateral", [
-      { etiqueta: "Provincia", valor: Convenio.provincia },
-      { etiqueta: "Coeficiente", valor: Convenio.coeficiente },
-      { etiqueta: "Descripcion", valor: Convenio.descripcion },
-    ]);
-    return false;
-  }
-
-  isMultifirma() {
-    return this.tipoUsuario == "GRANM";
-  }
+    showModalTableConveniosMultilateralesResponsive(Convenio: any) {
+        this.modalService.openModalTableResponsive("Convenio Multilateral", [
+            { etiqueta: "Provincia", valor: Convenio.provincia },
+            { etiqueta: "Coeficiente", valor: Convenio.coeficiente },
+            { etiqueta: "Descripcion", valor: Convenio.descripcion },
+        ]);
+        return false;
+    }
 }

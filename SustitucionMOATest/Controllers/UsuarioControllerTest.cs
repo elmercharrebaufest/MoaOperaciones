@@ -2,11 +2,15 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Threading;
 using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
@@ -23,6 +27,19 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             usuarioServiceMock = new Mock<IUsuarioService>();
+
+            var fakeIdentity = new GenericIdentity("User");
+
+            var claims = (ClaimsIdentity)fakeIdentity;
+
+            claims.AddClaim(new Claim(Globals.ClaimsUserNameType, "mail@mail.com"));
+            claims.AddClaim(new Claim(Globals.ClaimsNombreType, "mail"));
+
+            var principal = new GenericPrincipal(fakeIdentity, null);
+
+            Thread.CurrentPrincipal = principal;
+
+            target = new UsuarioController(usuarioServiceMock.Object);
         }
 
         [Test]
@@ -34,8 +51,6 @@ namespace SustitucionMOATest.Controllers
                                                 new RolDropdownDto { Id = 3, Nombre = "Rol 3" }};
 
             usuarioServiceMock.Setup(s => s.GetRoles()).Returns(listaRoles);
-
-            target = new UsuarioController(usuarioServiceMock.Object);
 
             JsonResult resultado = (JsonResult)target.GetRoles();
 
@@ -63,9 +78,6 @@ namespace SustitucionMOATest.Controllers
                                 )
                     )
                 .Returns(successMessage); ;
-
-
-            target = new UsuarioController(usuarioServiceMock.Object);
 
             var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1);
 
@@ -96,8 +108,6 @@ namespace SustitucionMOATest.Controllers
                     )
                 .Returns(successMessage); ;
 
-            target = new UsuarioController(usuarioServiceMock.Object);
-
             var resultado = (JsonResult)target.Habilitar(userMail);
 
             resultJson = JsonConvert.SerializeObject(resultado.Data);
@@ -127,8 +137,6 @@ namespace SustitucionMOATest.Controllers
                     )
                 .Returns(successMessage); ;
 
-            target = new UsuarioController(usuarioServiceMock.Object);
-
             var resultado = (JsonResult)target.Deshabilitar(userMail);
 
             resultJson = JsonConvert.SerializeObject(resultado.Data);
@@ -142,6 +150,31 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
         }
 
+        [Test]
+        public void GetVendedoresTest()
+        {
+            var userMail = "mail@mail.com";
+            var respuesta = new List<ProveedorDto>();
+            usuarioServiceMock.
+                Setup(s =>
+                        s.GetVendedoresUsuario(
+                                It.Is<string>(i => i == userMail)
+                                )
+                    )
+                .Returns(respuesta);
+
+            var resultado = (JsonResult)target.GetVendedores();
+
+            resultJson = JsonConvert.SerializeObject(resultado.Data);
+
+            var expected = new { data = new { usuarios = respuesta } };
+
+            expectedJson = JsonConvert.SerializeObject(expected);
+
+            Console.WriteLine(resultJson);
+            Assert.NotNull(resultado);
+            Assert.AreEqual(expectedJson, resultJson);
+        }
 
     }
 }

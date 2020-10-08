@@ -1,9 +1,11 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
@@ -16,13 +18,15 @@ namespace SustitucionMOATest.Services
 
         private UsuarioService target;
         private Mock<IRepositorio> repositorioMock;
+        private Mock<IVendedorService> vendedorServiceMock;
 
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
-            target = new UsuarioService(repositorioMock.Object);
+            vendedorServiceMock = new Mock<IVendedorService>();
+            target = new UsuarioService(repositorioMock.Object, vendedorServiceMock.Object);
         }
 
         [Test]
@@ -205,6 +209,21 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(expected, result);
             Assert.AreEqual(2, resultUser.Roles.Count);
+        }
+
+        [Test]
+        public void GetVendedoresUsuarioTest()
+        {
+            var mailUsuario = "existente@mail.com";
+            var respuesta = new List<ProveedorDto>();
+
+            vendedorServiceMock.Setup(x => x.GetVendedores(It.IsAny<string>())).Returns(respuesta);
+
+            var result = target.GetVendedoresUsuario(mailUsuario);
+
+            vendedorServiceMock.Verify(x => x.GetVendedores(It.IsAny<string>()), Times.Once);
+
+            Assert.AreEqual(result, respuesta);
         }
     }
 }

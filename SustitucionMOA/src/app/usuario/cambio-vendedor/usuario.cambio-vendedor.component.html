@@ -36,9 +36,9 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let usuario of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'usuario' : 'vendedor' : filtroUsuarioVendedor | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td>{{usuario.usuario}}</td>
-                            <td>{{usuario.vendedor}}</td>
-                            <td><a class="animate" (click)="seleccionarVendedor(usuario.vendedor, usuario.descripcion)" href="#"><span class="fa  fa-check-circle"></span></a></td>
+                            <td>{{usuario.RazonSocial}}</td>
+                            <td>{{usuario.CodigoProveedor}}</td>
+                            <td><a class="animate" (click)="seleccionarVendedor(usuario.CodigoProveedor, usuario.RazonSocial)" href="#"><span class="fa  fa-check-circle"></span></a></td>
                         </tr>
                     </tbody>
                 </table>

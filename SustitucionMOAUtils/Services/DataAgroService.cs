@@ -147,6 +147,33 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+        public void ValidarNuevoProveedorMultifirma(ref Proveedor proveedor)
+        {
+            var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
+            if (!respuesta.HayError)
+            {
+                if (respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                {
+                    proveedor.IdComercialDataAgro = respuesta.ComercialId;
+                    proveedor.IdDataAgro = respuesta.ProveedorId;
+                    proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
+                    proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+
+                    proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                }
+                else
+                {
+                    proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                    proveedor.Observaciones = "El mail del registro no está dentro de los mails registrados en Data Agro.";
+                }
+            }
+            else
+            {
+                proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
+            }
+        }
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
         {
