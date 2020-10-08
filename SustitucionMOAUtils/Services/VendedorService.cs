@@ -116,7 +116,7 @@ namespace SustitucionMOAUtils.Services
 
         public List<ProveedorDto> GetVendedores(string mailUsuario)
         {
-            return GetVendedores(mailUsuario, null);
+            return GetVendedores(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
         }
 
         public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario)

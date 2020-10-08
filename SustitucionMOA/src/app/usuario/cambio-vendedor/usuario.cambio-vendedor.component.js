@@ -63,7 +63,7 @@ var UsuarioCambioVendedorComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         try {
             this.unsubscribe();
-            this.subscription = this.service.getUsuarios().subscribe(function (result) {
+            this.subscription = this.service.getVendedores().subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();

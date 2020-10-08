@@ -1,5 +1,5 @@
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class UsuarioService extends BaseService {
 
-    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any ) {
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any) {
         let params: URLSearchParams = new URLSearchParams();
 
         var idUsuario = usuarioSeleccionado.Id;
@@ -31,27 +31,33 @@ export class UsuarioService extends BaseService {
         params.set('contraseniaActual', contraseniaActual);
         params.set('contraseniaNueva', contraseniaNueva);
         return this.http
-            .get('/api/usuario/cambiarContrasenia', { search: params, headers: this.headers  }).pipe(
-            map(this.extractData));
+            .get('/api/usuario/cambiarContrasenia', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
     }
 
     public alta(usuario: Usuario): Observable<any> {
         let body = JSON.stringify(usuario);
         return this.http
             .post('/api/usuario/alta', body, this.headersPost).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
     public getPerfiles(): Observable<any> {
         return this.http
             .get('/api/usuario/getPerfiles', { headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
     public getUsuarios(): Observable<any> {
         return this.http
+            .get('/api/usuario/getUsuarios', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    public getVendedores(): Observable<any> {
+        return this.http
             .get('/api/usuario/getVendedores', { headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
     public desbloquearUsuario(usuario: string): Observable<any> {
@@ -59,7 +65,7 @@ export class UsuarioService extends BaseService {
         params.set('usuario', usuario);
         return this.http
             .get('/api/usuario/desbloquear', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
     public deshabilitarUsuario(mailUsuario: string): Observable<any> {
@@ -67,7 +73,7 @@ export class UsuarioService extends BaseService {
         params.set('mailUsuario', mailUsuario);
         return this.http
             .get('/api/usuario/deshabilitar', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
     public habilitarUsuario(mailUsuario: string): Observable<any> {
@@ -75,16 +81,16 @@ export class UsuarioService extends BaseService {
         params.set('mailUsuario', mailUsuario);
         return this.http
             .get('/api/usuario/habilitar', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
-   
+
     public seleccionarVendedor(vendedor: string, descripcion: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('vendedor', vendedor);
         params.set('descripcion', descripcion);
         return this.http
             .get('/api/usuario/seleccionarVendedor', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
     public getRoles(): Observable<any> {

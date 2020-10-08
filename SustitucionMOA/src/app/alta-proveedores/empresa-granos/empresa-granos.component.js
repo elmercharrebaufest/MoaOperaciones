@@ -163,14 +163,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         get: function () {
             return this.firstFormGroup.get("email");
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
         get: function () {
             return this.secondFormGroup.get("password");
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     EmpresaGranosComponent.prototype.handleFileInput = function (files, fileKey) {
@@ -767,7 +767,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.generarCartaPresentacion = function () {
         var _this = this;
-        this.spinnerModal.showIt();
+        this.spinnerCartaPresentacion.showIt();
         this.unsubscribe();
         this.cartaPresentacion.nuevosAcopios.forEach(function (campo) {
             campo.CampaniaID = _this.campaniaActual;
@@ -777,14 +777,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         });
         this.cartaPresentacion.campaniaID = this.campaniaActual;
         if (this.validarCartaPresentacion()) {
-            this.spinnerModal.hideIt();
+            this.spinnerCartaPresentacion.hideIt();
             return;
         }
         this.mensajeError = "";
         this.subscription = this.service
             .generarCartaPresentacion(this.cartaPresentacion, this.proveedorId)
             .subscribe(function (result) {
-            _this.spinnerModal.hideIt();
+            _this.spinnerCartaPresentacion.hideIt();
             if (result.error) {
                 _this.mensajeError = result.error;
             }
@@ -811,7 +811,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                 }
             }
         }, function (error) {
-            _this.spinnerModal.hideIt();
+            _this.spinnerCartaPresentacion.hideIt();
             _this.mensajeError = error.message;
         });
     };
@@ -913,6 +913,10 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         ViewChild("spinnerModal"),
         __metadata("design:type", SpinnerSmallComponent)
     ], EmpresaGranosComponent.prototype, "spinnerModal", void 0);
+    __decorate([
+        ViewChild("spinnerCartaPresentacion"),
+        __metadata("design:type", SpinnerSmallComponent)
+    ], EmpresaGranosComponent.prototype, "spinnerCartaPresentacion", void 0);
     EmpresaGranosComponent = __decorate([
         Component({
             selector: "app-empresa-granos",

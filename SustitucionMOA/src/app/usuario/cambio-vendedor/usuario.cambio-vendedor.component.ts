@@ -52,7 +52,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         this.spinnerComponent.showIt();
         try {
             this.unsubscribe();
-            this.subscription = this.service.getUsuarios().subscribe(
+            this.subscription = this.service.getVendedores().subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {

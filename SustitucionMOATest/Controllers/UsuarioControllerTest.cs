@@ -5,6 +5,7 @@ using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace SustitucionMOATest.Controllers
 
         private UsuarioController target;
         private Mock<IUsuarioService> usuarioServiceMock;
+        private Mock<IRepositorio> repositorioMock;
         private string expectedJson;
         private string resultJson;
 
@@ -27,6 +29,7 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             usuarioServiceMock = new Mock<IUsuarioService>();
+            repositorioMock = new Mock<IRepositorio>();
 
             var fakeIdentity = new GenericIdentity("User");
 
@@ -39,7 +42,7 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new UsuarioController(usuarioServiceMock.Object);
+            target = new UsuarioController(usuarioServiceMock.Object, repositorioMock.Object);
         }
 
         [Test]
