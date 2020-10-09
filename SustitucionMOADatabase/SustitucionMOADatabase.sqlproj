@@ -88,4 +88,7 @@
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\UpdateRolesEditables.sql" />
+  </ItemGroup>
 </Project>
