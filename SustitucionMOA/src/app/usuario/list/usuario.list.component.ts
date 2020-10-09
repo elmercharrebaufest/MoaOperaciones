@@ -259,7 +259,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         usuario.Roles.forEach(element => {
             let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
 
-            this.rolesUsuarioSeleccionado[index].checked = true;
+            if (index > -1)
+                this.rolesUsuarioSeleccionado[index].checked = true;
         });
 
         document.getElementById("openModalHiddenButton").click();

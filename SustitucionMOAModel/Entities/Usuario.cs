@@ -126,6 +126,11 @@ namespace SustitucionMOAModel.Entities
             Roles.Clear();
         }
 
+        public void RemoverRolesEditables()
+        {
+            Roles = Roles.Where(r => !r.EsEditable).ToList();
+        }
+
         public void AgregarRol(Rol rol)
         {
             Roles.Add(rol);

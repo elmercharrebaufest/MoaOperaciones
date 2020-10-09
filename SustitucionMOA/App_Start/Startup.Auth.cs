@@ -187,9 +187,16 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsEsNuevoUsuarioType, usuario.EsNuevoUsuario().ToString()));
 				notification.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, usuario.ObtenerRolPrincipal().Codigo));
 
-				foreach (var permiso in usuario.ObtenerPermisos())
+                if (usuario.EstaHabilitado())
+				{
+					foreach (var permiso in usuario.ObtenerPermisos())
+					{
+						notification.AddClaim(new Claim(Globals.ClaimsPermisosType, permiso));
+					}
+				}
+                else
                 {
-					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, permiso));
+					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, "ESTADO SOLICITUD"));
 				}
 			}
 			catch (Exception e)

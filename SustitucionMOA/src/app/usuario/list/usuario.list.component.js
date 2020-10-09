@@ -252,7 +252,8 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         }
         usuario.Roles.forEach(function (element) {
             var index = _this.rolesUsuarioSeleccionado.findIndex(function (r) { return r.Id.toString() == element.Id.toString(); });
-            _this.rolesUsuarioSeleccionado[index].checked = true;
+            if (index > -1)
+                _this.rolesUsuarioSeleccionado[index].checked = true;
         });
         document.getElementById("openModalHiddenButton").click();
         return false;
