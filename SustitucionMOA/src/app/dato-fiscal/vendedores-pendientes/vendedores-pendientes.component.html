@@ -67,8 +67,10 @@
                             <td>{{vendedor.EstadoAprobacionDescripcion}}</td>
                             <td>{{vendedor.Observaciones}}</td>
                             <td>
-                                <button (click)="goToSeccionParam('/alta-empresa-granos', vendedor.Id)"
-                                    class="btn btn-info button">
+                                <button (click)="goToSeccionParam('/alta-empresa-granos', vendedor.Id)" *ngIf="vendedor.EstadoAprobacion != 3 && 
+                                vendedor.EstadoAprobacion != 5 &&
+                                vendedor.EstadoAprobacion != 6 &&
+                                vendedor.EstadoAprobacion != 9 " class="btn btn-info button">
                                     Ver alta
                                 </button>
                                 <br>

@@ -66,8 +66,10 @@ var SessionDataService = /** @class */ (function () {
         this.setPermisos(null);
         this.setNoticias(null);
         sessionStorage.clear();
-        var logoutURL = window.location.origin + '/SignOut';
-        window.location.href = "http://localhost:58280/SignOut";
+        var logoutURL = window.location.origin;
+        logoutURL = logoutURL.replace("/web/", "");
+        logoutURL += '/SignOut';
+        window.location.href = logoutURL;
     };
     SessionDataService.prototype.editarCuenta = function () {
         var logoutURL = window.location.origin + '/EditarCuenta';

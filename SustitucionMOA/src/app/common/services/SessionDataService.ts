@@ -69,9 +69,12 @@ export class SessionDataService {
         this.setNoticias(null);
         sessionStorage.clear();
 
-        let logoutURL = window.location.origin + '/SignOut';
+        let logoutURL = window.location.origin;
 
-        window.location.href = "http://localhost:58280/SignOut";
+        logoutURL = logoutURL.replace("/web/", "");
+
+        logoutURL += '/SignOut';
+        window.location.href = logoutURL;
     }
 
     editarCuenta() {
