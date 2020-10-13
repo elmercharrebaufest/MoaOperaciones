@@ -20,6 +20,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="SpaUrl Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SpaUrl']
+                           /@value" />
+	</parameter>
+	
 	<parameter name="EsLocal Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='EsLocal']
