@@ -50,7 +50,13 @@ export class UsuarioService extends BaseService {
 
     public getUsuarios(): Observable<any> {
         return this.http
-            .get('/api/usuario/GetUsuarios', { headers: this.headers }).pipe(
+            .get('/api/usuario/getUsuarios', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    public getVendedores(): Observable<any> {
+        return this.http
+            .get('/api/usuario/getVendedores', { headers: this.headers }).pipe(
                 map(this.extractData));
     }
 

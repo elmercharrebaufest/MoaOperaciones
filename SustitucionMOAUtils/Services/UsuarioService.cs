@@ -321,11 +321,9 @@ namespace SustitucionMOAUtils.Services
 
             usuario.Habilitado = true;
 
-            var rolUsuario = ObtenerRolPorTipo(usuario.TipoUsuario.NombreCorto);
+            //usuario.RemoverRoles();
 
-            usuario.RemoverRoles();
-
-            usuario.AgregarRol(rolUsuario);
+            usuario.RemoverRol("DES");
 
             repositorio.GuardarCambios();
 
@@ -338,7 +336,7 @@ namespace SustitucionMOAUtils.Services
 
             usuario.Habilitado = false;
 
-            usuario.RemoverRoles();
+            //usuario.RemoverRoles();
 
             var proveedor = usuario.ObtenerProveedor();
 
@@ -412,15 +410,15 @@ namespace SustitucionMOAUtils.Services
 
         public List<RolDropdownDto> GetRoles()
         {
-            return repositorio.Listar<Rol>().Select(x => new RolDropdownDto(x)).ToList();
+            return repositorio.Listar<Rol>().Where(r => r.EsEditable).Select(x => new RolDropdownDto(x)).ToList();
         }
 
         public string GuardarRoles(List<int> idRoles, int idUsuario)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
-            usuario.RemoverRoles();
-            
+            usuario.RemoverRolesEditables();
+
             foreach (int idRol in idRoles)
             {
                 Rol rolAAgregar = repositorio.Obtener<Rol>(r => r.Id == idRol);

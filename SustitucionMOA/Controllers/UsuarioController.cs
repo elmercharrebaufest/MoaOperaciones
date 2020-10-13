@@ -1,11 +1,16 @@
-﻿using SustitucionMOAAssets;
+﻿using SustitucionMOA.Utils;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -16,10 +21,12 @@ namespace SustitucionMOA.Controllers
         //LoginService _loginService = new LoginService();
 
         private readonly IUsuarioService _usuarioService;
+        private readonly IRepositorio repositorio;
 
-        public UsuarioController (IUsuarioService usuarioService)
+        public UsuarioController (IUsuarioService usuarioService, IRepositorio repositorio)
         {
-            _usuarioService = usuarioService;
+            this._usuarioService = usuarioService;
+            this.repositorio = repositorio;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
@@ -157,12 +164,33 @@ namespace SustitucionMOA.Controllers
                 if (vendedor == null)
                     return Json(new { error = String.Format(ErrorMsg.ErrorValorNuloVacio, "Vendedor") }, JsonRequestBehavior.AllowGet);
 
-                //TODO: Ver como vamos a pisar esto
-                //SessionPersister.Proveedor = vendedor;
-                //if (SessionPersister.User != null)
-                //{
-                //    SessionPersister.User.nombre = descripcion;
-                //}
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
+
+                if (!usuario.TieneProveedor(vendedor))
+                {
+                    throw new ValidationCustomException("Proveedor incorrecto");
+                }
+
+                // get context of the authentication manager
+                var authenticationManager = HttpContext.GetOwinContext().Authentication;
+
+                // create a new identity from the old one
+                var identity = new ClaimsIdentity(User.Identity);
+
+                // update claim value
+                identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorType));
+                identity.AddClaim(new Claim(Globals.ClaimsProveedorType, vendedor));
+
+                // tell the authentication manager to use this new identity
+                authenticationManager.AuthenticationResponseGrant =
+                    new Microsoft.Owin.Security.AuthenticationResponseGrant(
+                        new ClaimsPrincipal(identity),
+                        new Microsoft.Owin.Security.AuthenticationProperties { IsPersistent = true }
+                    );
+
+
                 return JsonCustom(new { vendedor = vendedor, descripcion = descripcion });
 
             }

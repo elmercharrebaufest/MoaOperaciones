@@ -49,6 +49,17 @@ namespace SustitucionMOAModel.Entities
         }
 
 
+        public bool TieneProveedor(string codigoProveedor)
+        {
+            //Los administradores pueden elegir impersonarse como cualquier proveedor
+            if (Roles.Where(r => r.Codigo == "ADM").Any())
+            {
+                return true;
+            }
+
+            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).Any();
+        }
+
         public string ObtenerRazonSocial()
         {
             if (Proveedores.Count >= 1 )
@@ -113,6 +124,11 @@ namespace SustitucionMOAModel.Entities
         public void RemoverRoles()
         {
             Roles.Clear();
+        }
+
+        public void RemoverRolesEditables()
+        {
+            Roles = Roles.Where(r => !r.EsEditable).ToList();
         }
 
         public void AgregarRol(Rol rol)
