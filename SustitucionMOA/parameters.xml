@@ -80,6 +80,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="ida:SignUpAndSignInPolicyId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:SignUpAndSignInPolicyId']
+                           /@value" />
+	</parameter>
+
 	<parameter name="ida:EditProfilePolicyId Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='ida:EditProfilePolicyId']

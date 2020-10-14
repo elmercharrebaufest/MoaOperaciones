@@ -20,6 +20,9 @@
 	<setParameter name="ida:AadInstance Config" value="https://moagroqa.b2clogin.com/tfp/{0}/{1}" />
 	<setParameter name="ida:SignUpPolicyId Config" value="B2C_1_Registro" />
 	<setParameter name="ida:SignInPolicyId Config" value="B2C_1_IniciodeSesion" />
+	
+	<setParameter name="ida:SignUpAndSignInPolicyId Config" value="B2C_1_IniciodeSesion" />
+	
 	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
 	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 

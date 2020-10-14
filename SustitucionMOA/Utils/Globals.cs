@@ -16,12 +16,12 @@ namespace SustitucionMOA.Utils
         //public static string ServiceUrl = ConfigurationManager.AppSettings["api:TaskServiceUrl"];
 
         // B2C policy identifiers
-        public static string SignInPolicyId = ConfigurationManager.AppSettings["ida:SignInPolicyId"];
-        public static string SignUpPolicyId = ConfigurationManager.AppSettings["ida:SignUpPolicyId"];
+        public static string SignUpAndSignInPolicyId = ConfigurationManager.AppSettings["ida:SignUpAndSignInPolicyId"];
+        
         public static string EditProfilePolicyId = ConfigurationManager.AppSettings["ida:EditProfilePolicyId"];
         public static string ResetPasswordPolicyId = ConfigurationManager.AppSettings["ida:ResetPasswordPolicyId"];
 
-        public static string DefaultPolicy = SignInPolicyId;
+        public static string DefaultPolicy = SignUpAndSignInPolicyId;
 
         //// API Scopes
         //public static string ApiIdentifier = ConfigurationManager.AppSettings["api:ApiIdentifier"];
