@@ -196,6 +196,35 @@ var AltasComponent = /** @class */ (function (_super) {
         }
         return false; //<-- Prevent Refresh
     };
+    AltasComponent.prototype.handleFileInput = function (files, fileKey) {
+        var _this = this;
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerModal.showIt();
+        this.unsubscribe();
+        this.subscription = this.service
+            .postFile(files, fileKey, this.empresaSeleccionada.Id)
+            .subscribe(function (result) {
+            _this.spinnerModal.hideIt();
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined &&
+                result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                _this.mensajeComponent.setMsgsEmpty();
+                _this.mensajeComponent.setSuccessMsg(result.data);
+                _this.obtenerArchivosSubidos(_this.empresaSeleccionada.Mail, _this.empresaSeleccionada.Id);
+            }
+        }, function (error) {
+            _this.spinnerModal.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
     AltasComponent.prototype.abrirModal = function (empresa) {
         this.empresaSeleccionada = empresa;
         this.observaciones = "";
@@ -274,6 +303,33 @@ var AltasComponent = /** @class */ (function (_super) {
     };
     AltasComponent.prototype.isVisibleTablaEmpleados = function () {
         return this.relacionConEmpleados == "Si";
+    };
+    AltasComponent.prototype.eliminarArchivo = function (archivo) {
+        var _this = this;
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerModal.showIt();
+        this.unsubscribe();
+        this.subscription = this.service
+            .eliminarArchivoSubido(archivo.Id, this.empresaSeleccionada.Id)
+            .subscribe(function (result) {
+            _this.spinnerModal.hideIt();
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined &&
+                result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                _this.obtenerArchivosSubidos(_this.empresaSeleccionada.Mail, _this.empresaSeleccionada.Id);
+            }
+        }, function (error) {
+            _this.spinnerModal.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
     };
     __decorate([
         ViewChild(MensajeComponent),

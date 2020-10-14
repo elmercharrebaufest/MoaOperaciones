@@ -21,5 +21,6 @@ namespace SustitucionMOAModel.Enums
         public const string SIPER = "SIPER";
         public const string DocumentacionEnBolsa = "documentacionEnBolsa";
         public const string OtrosArchivos = "otrosArchivos";
+        public const string ArchivosInternos = "archivosInternos";
     }
 }

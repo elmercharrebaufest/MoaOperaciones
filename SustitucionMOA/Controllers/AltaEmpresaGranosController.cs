@@ -293,10 +293,19 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (string.IsNullOrEmpty(mail))
-                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var esOperador = false;
 
-                return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail, proveedorId));
+                //Si viene con un mail, significa que está siendo consultado por un operador, por lo tanto paso todos los archivos
+                if (string.IsNullOrEmpty(mail))
+                {
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                }
+                else
+                {
+                    esOperador = true;
+                }
+
+                return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail, proveedorId, esOperador));
             }
             catch (InfoCustomException e)
             {

@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarCartaDePresentacion(RptCartaDePresentacionInfo cartadePresentacion, string mailUsuario, int proveedorId);
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario, int proveedorId);
         string ObtenerMaterialesDataAgro();
-        List<ArchivoDto> ObtenerArchivosSubidos(string mail, int proveedorId);
+        List<ArchivoDto> ObtenerArchivosSubidos(string mail, int proveedorId, bool esOperador);
         string EnviarSolicitudUsuario(string mail, int proveedorId, AltaEmpresaViewModel altaEmpresa);
         string ObtenerArchivo(string mail, int archivoID, int proveedorId);
         string EliminarArchivo(string mail, int archivoID, int proveedorId);
