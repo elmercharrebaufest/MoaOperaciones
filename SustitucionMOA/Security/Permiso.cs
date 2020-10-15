@@ -100,6 +100,8 @@
 
         public const string ESTADO_SOLICITUD = "ESTADO SOLICITUD";
 
+        /* PERMISOS CREAR CONTRATO */
+        public const string CREAR_CONTRATO = "CREAR CONTRATOS";
 
     }
 }

@@ -1,0 +1,282 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+import { Component } from '@angular/core';
+import { CrearContratoBaseComponent } from './../crear-contrato.component';
+import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
+import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
+var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
+    __extends(CrearContratoAPrecioComponent, _super);
+    function CrearContratoAPrecioComponent() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.contrato = new ContratoAPrecio();
+        _this.fechaInicio = new Date().toLocaleDateString('en-GB');
+        _this.fechaFin = new Date().toLocaleDateString('en-GB');
+        return _this;
+    }
+    CrearContratoAPrecioComponent.prototype.ngOnInit = function () {
+        _super.prototype.ngOnInit.call(this);
+        this.obteneDatosContrato(this.contrato);
+    };
+    CrearContratoAPrecioComponent.prototype.ngAfterViewInit = function () {
+        var hoy = new Date();
+        var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+        var hoymesqueviene = this.service.ObtenerFechaHasta(hoysinhora);
+        this.contrato.FechaDesde = hoysinhora;
+        this.contrato.FechaHasta = hoymesqueviene;
+        $(document).on("mouseover", '.form_datetime_Inicio', function () {
+            $('.form_datetime_Inicio').datetimepicker({
+                format: 'dd/mm/yyyy',
+                language: 'es',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0,
+                showMeridian: 1,
+                pickTime: false,
+                minView: 2,
+                maxView: 4
+            }).on('changeDate', function (ev) {
+                if (ev.date.valueOf()) {
+                    var fechaBase = new Date(ev.date.valueOf());
+                    var hoy = fechaBase != undefined ? fechaBase : new Date();
+                    var anio = hoy.getFullYear();
+                    var mesPost = hoy.getMonth() + 2;
+                    var dia = hoy.getDate();
+                    var ultimoDia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
+                    if (dia === 1) {
+                        dia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
+                        mesPost = hoy.getMonth() + 1;
+                    }
+                    if (dia === ultimoDia || (mesPost === 2 && dia >= 29)) {
+                        dia = new Date(anio, mesPost, 0).getDate();
+                    }
+                    if (mesPost === 13) {
+                        mesPost = 1;
+                        anio += 1;
+                    }
+                    var messtring = "" + mesPost;
+                    if (mesPost < 10) {
+                        messtring = "0" + mesPost.toString();
+                    }
+                    var diastring = "" + dia;
+                    if (dia < 10) {
+                        diastring = "0" + dia.toString();
+                    }
+                    $("#noCursor2").val(diastring + '/' + messtring + '/' + anio);
+                }
+            });
+        });
+        $(document).on("mouseover", '.form_datetime_Fin', function () {
+            $('.form_datetime_Fin').datetimepicker({
+                format: 'dd/mm/yyyy',
+                language: 'es',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0,
+                showMeridian: 1,
+                pickTime: false,
+                minView: 2,
+                maxView: 4
+            });
+        });
+        this.fechaInicio = hoysinhora.toLocaleDateString('en-GB');
+        this.fechaFin = hoymesqueviene.toLocaleDateString('en-GB');
+    };
+    CrearContratoAPrecioComponent.prototype.setTabs = function () {
+        this.setMenuSeccionTab("crear-contrato", "A Precio");
+    };
+    CrearContratoAPrecioComponent.prototype.selectEventLocalidad = function (item) {
+        this.contrato.LocalidadId = item.LocalidadId;
+        this.contrato.ProvinciaId = item.ProvinciaId;
+        if (item.ProvinciaId != 1) {
+            this.contrato.EstablecimientoPropio = null;
+        }
+    };
+    CrearContratoAPrecioComponent.prototype.onChangeSearchLocalidad = function (term) {
+        var _this = this;
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.searchLocalidad(term).subscribe(function (result) {
+                _this.localidades = result;
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+    };
+    CrearContratoAPrecioComponent.prototype.onBoletoSelected = function () {
+        this.contrato.BolsaId = 0;
+        if (this.contrato.BoletoId == 1) {
+            this.bolsasSelect = this.bolsasConfirma;
+        }
+        if (this.contrato.BoletoId == 2) {
+            this.bolsasSelect = this.bolsasFisico;
+        }
+        if (this.contrato.BoletoId == 3) {
+            this.bolsasSelect = [];
+        }
+        if (this.contrato.BoletoId == 4) {
+            this.bolsasSelect = this.bolsasCarta;
+        }
+    };
+    CrearContratoAPrecioComponent.prototype.changePagoDiferido = function (event) {
+        this.contrato.DolarizadoTercero = false;
+    };
+    CrearContratoAPrecioComponent.prototype.changeDolarizado = function (event) {
+        this.contrato.PagoDiferidoTercero = false;
+    };
+    CrearContratoAPrecioComponent.prototype.changeMoneda = function (event) {
+        this.contrato.PagoDiferidoTercero = false;
+        this.contrato.DolarizadoTercero = false;
+    };
+    CrearContratoAPrecioComponent.prototype.isVisiblePagoDiferido = function () {
+        return this.contrato.MonedaId == "ARP  ";
+    };
+    CrearContratoAPrecioComponent.prototype.isVisibleDolarizado = function () {
+        return this.contrato.MonedaId == "USDM ";
+    };
+    CrearContratoAPrecioComponent.prototype.isVisibleBolsa = function () {
+        return this.contrato.BoletoId != 3;
+    };
+    CrearContratoAPrecioComponent.prototype.isVisibleEstablecimiento = function () {
+        return this.contrato.ProvinciaId == 1;
+    };
+    CrearContratoAPrecioComponent.prototype.grabarContratoAPrecio = function () {
+        var _this = this;
+        if (!this.validarContrato()) {
+            return false;
+        }
+        var hoy = new Date();
+        var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+        var dateParts = $("#noCursor").val().split("/");
+        this.contrato.FechaDesde = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+        dateParts = $("#noCursor2").val().split("/");
+        this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+        this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+        this.contrato.FechaOperacion = hoysinhora;
+        this.contrato.Fecha = hoy;
+        this.contrato.Id = 0;
+        this.contrato.EstadoId = 9;
+        this.contrato.ProvinciaId;
+        this.contrato.TipoNegocioId = 2;
+        if (this.contrato.MaterialId == 1) {
+            this.contrato.StandardDeCalidadId = 2;
+        }
+        if (this.contrato.MaterialId == 2) {
+            this.contrato.StandardDeCalidadId = 7;
+        }
+        if (this.contrato.MaterialId == 3) {
+            this.contrato.StandardDeCalidadId = 3;
+        }
+        if (this.contrato.MaterialId == 4) {
+            this.contrato.StandardDeCalidadId = 5;
+        }
+        if (this.contrato.MaterialId == 5) {
+            this.contrato.StandardDeCalidadId = 5;
+        }
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        console.log(this.contrato);
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(function (result) {
+                _this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    var obj = JSON.parse(result);
+                    if (obj.HayError) {
+                        var errores_1 = "";
+                        obj.Errores.forEach(function (element) {
+                            errores_1 = errores_1 + element.Message + " - ";
+                        });
+                        _this.mensajeComponent.setErrorMsg(errores_1);
+                    }
+                    else {
+                        _this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                    }
+                }
+            }, function (error) {
+                _this.spinnerComponent.hideIt();
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    };
+    CrearContratoAPrecioComponent.prototype.validarContrato = function () {
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Dolarizado.");
+            return false;
+        }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Pago Diferido.");
+            return false;
+        }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            return false;
+        }
+        return true;
+    };
+    CrearContratoAPrecioComponent.prototype.changePlanCanje = function (event) {
+        this.contrato.Consignatario = false;
+    };
+    CrearContratoAPrecioComponent.prototype.changeConsignatario = function (event) {
+        this.contrato.PlanCanje = false;
+    };
+    CrearContratoAPrecioComponent.prototype.changeClasificacion = function (event) {
+        if (this.contrato.ClasificacionId == 1) {
+            this.contrato.PlanCanje = false;
+            this.contrato.Consignatario = false;
+        }
+    };
+    CrearContratoAPrecioComponent.prototype.isNotProductor = function (event) {
+        if (this.contrato.ClasificacionId == 1) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    };
+    CrearContratoAPrecioComponent = __decorate([
+        Component({
+            selector: 'app-crear-contrato-aprecio',
+            templateUrl: "./app/crear-contrato/aprecio/crear-contrato.aprecio.component.html?v=" + new Date().getTime(),
+            providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
+        })
+    ], CrearContratoAPrecioComponent);
+    return CrearContratoAPrecioComponent;
+}(CrearContratoBaseComponent));
+export { CrearContratoAPrecioComponent };
+//# sourceMappingURL=crear-contrato.aprecio.component.js.map

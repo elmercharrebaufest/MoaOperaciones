@@ -64,6 +64,7 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaEmpresaGranosService>().To(typeof(AltaEmpresaGranosService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<ICrearContratoService>().To(typeof(CrearContratoService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaEmpresaService>().To(typeof(AltaEmpresaService)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<IAzureB2CService>().To(typeof(AzureB2CService)).InScope(ctx => OperationContext.Current);

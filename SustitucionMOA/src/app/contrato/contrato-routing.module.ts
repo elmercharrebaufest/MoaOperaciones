@@ -7,6 +7,9 @@ import { ContratoFijacionComponent } from './fijacion/contrato.fijacion.componen
 import { ContratoAnulacionComponent } from './anulacion/contrato.anulacion.component';
 import { ContratoDetalleComponent } from './detalle/contrato.detalle.component';
 import { ContratoDetalleFijacionComponent } from './detalle-fijacion/contrato.detalle-fijacion.component';
+import { CrearContratoAPrecioComponent } from '../crear-contrato/aprecio/crear-contrato.aprecio.component';
+import { CrearContratoAFijarComponent } from '../crear-contrato/afijar/crear-contrato.afijar.component';
+import { CrearContratoBaseComponent } from '../crear-contrato/crear-contrato.component';
 
 
 const routes: Routes = [
@@ -17,6 +20,10 @@ const routes: Routes = [
     { path: "anulacion", component: ContratoAnulacionComponent },
     { path: "detalle/:id", component: ContratoDetalleComponent },
     { path: "detalle-fijacion/:id/:id2", component: ContratoDetalleFijacionComponent },
+    { path: "crear", component: CrearContratoBaseComponent },
+    { path: "crear/aprecio", component: CrearContratoAPrecioComponent },
+    { path: "crear/afijar", component: CrearContratoAFijarComponent },
+
 ];
 
 @NgModule({

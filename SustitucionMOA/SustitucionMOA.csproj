@@ -412,6 +412,8 @@
     <Content Include="src\app\contrato\detalle\contrato.detalle.component.html" />
     <Content Include="src\app\contrato\fijacion\contrato.fijacion.component.html" />
     <Content Include="src\app\contrato\vigente\contrato.vigente.component.html" />
+    <Content Include="src\app\crear-contrato\afijar\crear-contrato.afijar.component.html" />
+    <Content Include="src\app\crear-contrato\aprecio\crear-contrato.aprecio.component.html" />
     <Content Include="src\app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.html" />
     <Content Include="src\app\cuenta-corriente\cuenta-corriente.component.html" />
     <Content Include="src\app\dato-fiscal\dato-fiscal.component.html" />
@@ -1025,6 +1027,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
+    <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CartaPorteController.cs" />
@@ -1069,10 +1072,16 @@
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte.module.ts" />
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
+    <TypeScriptCompile Include="src\app\common\models\contratoAFijar.ts" />
+    <TypeScriptCompile Include="src\app\common\models\contratoAPrecio.ts" />
     <TypeScriptCompile Include="src\app\common\models\pesificacionContrato.ts" />
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\afijar\crear-contrato.afijar.component.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\aprecio\crear-contrato.aprecio.component.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.component.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.service.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\cuenta-corriente-routing.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\cuenta-corriente.module.ts" />
     <TypeScriptCompile Include="src\app\dato-fiscal\dato-fiscal-routing.module.ts" />
