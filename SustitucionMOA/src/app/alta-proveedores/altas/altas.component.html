@@ -207,6 +207,37 @@
                                         </div>
                                     </div>
                                 </mdb-step>
+                                <mdb-step name="Step 4" label="Documentación">
+                                    <h3>Documentacion Interna
+                                        <label class="label" for="archivosInternos">
+                                            <span class="adjuntar">
+                                                Adjuntar
+                                            </span>
+                                        </label>
+                                    </h3>
+                                    <div class="form-group">
+
+                                        <input style="display:none" type="file" class="form-control-file"
+                                            id="archivosInternos" multiple
+                                            (change)="handleFileInput($event.target.files, 'archivosInternos')">
+
+
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'archivosInternos').length === 0">
+                                            Sin Adjuntar
+                                        </label>
+                                        <div
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'archivosInternos'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+
+                                            <a style="color:red;" (click)="eliminarArchivo(archivo)"
+                                                title="Eliminar Adjunto">Eliminar</a>
+
+                                        </div>
+                                    </div>
+                                </mdb-step>
                                 <mdb-step name="Step 6" label="Documentación">
                                     <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
                                     <div class="form-group"

@@ -96,7 +96,6 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()), Times.Once);
 
 
             var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
@@ -189,7 +188,7 @@ namespace SustitucionMOATest.Services
               {
                   Id = 1,
                   Mail = mailUsuario,
-                  Roles = new List<Rol> { new Rol { Nombre = "DESHABILITADO EN DATAAGRO", Codigo = "DDAG" } },
+                  Roles = new List<Rol> { new Rol { Nombre = "DESHABILITADO EN DATAAGRO", Codigo = "DDAG", EsEditable = true } },
                   TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
               });
 
