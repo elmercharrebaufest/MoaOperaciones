@@ -46,6 +46,11 @@ a:hover {
   text-shadow: #00000096 2px 1px !important;
 }
 
+.requerido {
+  color: red;
+  font-weight: bold;
+}
+
 a:hover {
   text-decoration: none;
 }
@@ -234,3 +239,70 @@ input::-webkit-inner-spin-button {
 .ng-autocomplete {
     width: 200px;
 }
+
+    .ng-autocomplete {
+        width: 200px;
+    }
+
+    .cssTable td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .cssTable thead th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .titulos {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-font-smoothing: antialiased;
+        box-sizing: border-box;
+        font-family: inherit;
+        font-weight: 500;
+        line-height: 1.1;
+        color: #003399;
+        /*margin-top: 20px;
+        margin-bottom: 10px;*/
+        font-size: 24px;
+        border: none;
+        background: none;
+        width: 98%;
+        text-align: left;
+    }
+
+    .card {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        /*background-color: #fff;*/
+        background-clip: border-box;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+        width: 98%;
+        text-align: left;
+    }
+
+    .titulos {
+        position: relative;
+    }
+
+    .titulos::after {
+        content: "\f107";
+        color: #333;
+        top: -2px;
+        right: 0px;
+        position: absolute;
+        font-family: "FontAwesome"
+    }
+
+    .titulos[aria-expanded="true"]::after {
+        content: "\f106";
+    }

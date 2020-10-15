@@ -169,6 +169,8 @@ var EmpresaGranosService = /** @class */ (function (_super) {
         params.set("mail", mail);
         if (proveedorId)
             params.set("proveedorId", proveedorId.toString());
+        else
+            params.set("proveedorId", "0");
         return this.http
             .get("/api/AltaEmpresaGranos/CargarSolicitudUsuario", {
             search: params,

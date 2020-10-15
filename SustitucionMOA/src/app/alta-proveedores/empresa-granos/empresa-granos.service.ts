@@ -226,7 +226,10 @@ export class EmpresaGranosService extends BaseService {
         let params: URLSearchParams = new URLSearchParams();
         params.set("mail", mail);
 
-        if (proveedorId) params.set("proveedorId", proveedorId.toString());
+        if (proveedorId)
+            params.set("proveedorId", proveedorId.toString());
+        else    
+            params.set("proveedorId", "0");
 
         return this.http
             .get("/api/AltaEmpresaGranos/CargarSolicitudUsuario", {

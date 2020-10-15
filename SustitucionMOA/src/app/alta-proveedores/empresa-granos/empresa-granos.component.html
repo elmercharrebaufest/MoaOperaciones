@@ -1,72 +1,3 @@
-<style>
-    .ng-autocomplete {
-        width: 200px;
-    }
-
-    .cssTable td {
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .cssTable thead th {
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    .titulos {
-        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        -webkit-font-smoothing: antialiased;
-        box-sizing: border-box;
-        font-family: inherit;
-        font-weight: 500;
-        line-height: 1.1;
-        color: #003399;
-        /*margin-top: 20px;
-        margin-bottom: 10px;*/
-        font-size: 24px;
-        border: none;
-        background: none;
-        width: 98%;
-        text-align: left;
-    }
-
-    .card {
-        position: relative;
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        min-width: 0;
-        word-wrap: break-word;
-        /*background-color: #fff;*/
-        background-clip: border-box;
-        border: 1px solid rgba(0, 0, 0, .125);
-        border-radius: .25rem;
-        width: 98%;
-        text-align: left;
-    }
-
-    .titulos {
-        position: relative;
-    }
-
-    .titulos::after {
-        content: "\f107";
-        color: #333;
-        top: -2px;
-        right: 0px;
-        position: absolute;
-        font-family: "FontAwesome"
-    }
-
-    .titulos[aria-expanded="true"]::after {
-        content: "\f106";
-    }
-</style>
-
 <div class="content-wraper">
     <div class="row titleSection">Alta Proveedores</div>
     <mensaje #msjEmpresaGranos></mensaje>
@@ -89,8 +20,8 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="informeComercialFirmado">
-                            Informe comercial <strong>completo y firmado *</strong> <span
-                                class="adjuntar">Adjuntar</span>
+                            Informe comercial <strong>completo y firmado <span class="requerido">*</span></strong>
+                            <span class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file" id="informeComercialFirmado"
                             (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
@@ -135,8 +66,8 @@
                     </div>
                     <div style="flex-direction: column;">
                         <label class="informe-firmado label" for="cartaDePresentacionFirmada">
-                            Carta de presentación <strong>completa y firmada *</strong> <span
-                                class="adjuntar">Adjuntar</span>
+                            Carta de presentación <strong>completa y firmada <span class="requerido">*</span></strong>
+                            <span class="adjuntar">Adjuntar</span>
                         </label>
                         <input style="display:none" type="file" class="form-control-file"
                             id="cartaDePresentacionFirmada"
@@ -175,7 +106,7 @@
                     <br />
 
                     <label class="label" for="constanciaCBU">
-                        Constancia de CBU certificada cuenta AFIP o SISA <strong>*</strong><span
+                        Constancia de CBU certificada cuenta AFIP o SISA <span class="requerido">*</span><span
                             class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
@@ -351,8 +282,9 @@
                 </div>
                 <div class="form-group">
                     <label class="label" for="SIPER">
-                        SIPER <strong [ngClass]="{'hidden': estadoSISA == '1'}">*</strong> <span
-                            class="adjuntar">Adjuntar</span>
+                        SIPER
+                        <span *ngIf="estadoSISA != '1'" class="requerido">*</span>
+                        <span class="adjuntar">Adjuntar</span>
                     </label>
                     <input style="display:none" type="file" class="form-control-file" id="SIPER"
                         (change)="handleFileInput($event.target.files, 'SIPER')">
@@ -395,15 +327,6 @@
                         <a style="color:red;" (click)="eliminarArchivo(archivo)" title="Eliminar Adjunto">Eliminar</a>
                     </div>
 
-
-                    <!--<a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" (click)="descargarArchivo('otrosArchivos')">
-                        Ver
-                        archivo subido
-                    </a>-->
-                    &nbsp;
-                    <!--<a *ngIf="nombreArchivoDocumentacionEnBolsa != ''" style="color:red;"
-                       (click)="eliminarArchivo('documentacionEnBolsa')" title="Eliminar Adjunto">Eliminar</a>
-                    <label style="color:red;" *ngIf="nombreArchivoDocumentacionEnBolsa == ''">Sin Adjuntar</label>-->
                 </div>
             </mdb-step>
 
@@ -413,7 +336,7 @@
                         <h5 class="mb-0">
                             <button class="titulos " type="button" data-toggle="collapse" data-target="#collapseOne"
                                 aria-expanded="false" aria-controls="collapseOne">
-                                Vínculos a declarar con Empleados de Molinos agro S.A.*
+                                Vínculos a declarar con Empleados de Molinos agro S.A.<span class="requerido">*</span>
                             </button>
                         </h5>
                     </div>
@@ -506,7 +429,7 @@
                         <h5 class="mb-0">
                             <button class="collapsed titulos" type="button" data-toggle="collapse"
                                 data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Vínculos a declarar con Funcionarios Públicos *
+                                Vínculos a declarar con Funcionarios Públicos <span class="requerido">*</span>
                             </button>
                         </h5>
                     </div>
@@ -629,7 +552,7 @@
                         <h5 class="mb-0" (click)="abrirCodigoConducta()">
                             <button class="titulos collapsed" type="button" data-toggle="collapse"
                                 data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Aceptación del Código de Conducta *
+                                Aceptación del Código de Conducta <span class="requerido">*</span>
                             </button>
                         </h5>
                     </div>
@@ -674,7 +597,7 @@
                 <br />
                 <div class="row">
                     <div class="col-md-12">
-                        <p><strong>*</strong> Los campos marcados son obligatorios</p>
+                        <p><span class="requerido">*</span> Los campos marcados son obligatorios</p>
                     </div>
                 </div>
                 <div class="step-actions enviar">

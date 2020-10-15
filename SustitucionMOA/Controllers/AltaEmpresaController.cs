@@ -104,7 +104,7 @@ namespace SustitucionMOA.Controllers
                 {
                     new KeyValuePair<int, string>((int)EstadoAprobacion.AprobacionPendiente, EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
                     new KeyValuePair<int, string>((int)EstadoAprobacion.AnalisisDeNosis, EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.SentenciaFinal, EstadoAprobacion.SentenciaFinal.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.EtapaFinal, EstadoAprobacion.EtapaFinal.ToFriendlyString()),
                     new KeyValuePair<int, string>((int)EstadoAprobacion.EdicionRequerida, EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
                     new KeyValuePair<int, string>((int)EstadoAprobacion.DeshabilitadoEnDataAgro, EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<int, string>((int)EstadoAprobacion.AunNoImplementado, EstadoAprobacion.AunNoImplementado.ToFriendlyString())

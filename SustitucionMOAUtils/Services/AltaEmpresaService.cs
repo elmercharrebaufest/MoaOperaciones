@@ -32,7 +32,7 @@ namespace SustitucionMOAUtils.Services
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
                                  x => (int)x.EstadoAprobacion == (int)EstadoAprobacion.AprobacionPendiente
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AnalisisDeNosis
-                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.SentenciaFinal
+                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EtapaFinal
                                 || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EdicionRequerida
                                 );
 

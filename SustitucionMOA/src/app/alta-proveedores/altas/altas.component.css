@@ -43,3 +43,13 @@
 .accordion {
     padding-bottom: 20px;
 }
+
+.btn-close {
+  color: white !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.btn-close:hover {
+  text-shadow: #00000096 2px 1px !important;
+}
