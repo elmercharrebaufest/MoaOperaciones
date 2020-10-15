@@ -11,6 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         string ObteneDatosContrato();
         string CrearContratoAPrecio(ContratoAPrecio contratoAPrecio);
+        string CrearContratoAFijar(ContratoAFijar contratoAPrecio);
         string ObtenerDatosCompraNet(int proveedorId);
     }
 }

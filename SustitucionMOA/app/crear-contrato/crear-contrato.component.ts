@@ -49,6 +49,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     bolsasFisico: any = new Array();
     bolsasCarta: any = new Array();
     condicionVendedor: any = new Array();
+    condicionFijacion: any = new Array();    
     datosCompraNet: any = null;
 
 
@@ -134,7 +135,13 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         }
                         this.monedas.push(el);
                     });
-
+                    obj.Datos.Condicion.forEach(element => {
+                        let el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        }
+                        this.condicionFijacion.push(el);
+                    });
                     this.obtenerDatosCompraNet(contrato);
 
                 }

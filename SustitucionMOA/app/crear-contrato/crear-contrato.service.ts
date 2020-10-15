@@ -9,6 +9,7 @@ import { Http, Response, URLSearchParams } from '@angular/http';
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 import { ContratoAPrecio } from '../common/models/contratoAPrecio';
+import { ContratoAFijar } from '../common/models/contratoAFijar';
 
 
 @Injectable()
@@ -92,6 +93,15 @@ export class CrearContratoService extends BaseService {
         //    dia = "0" + dia.toString();
         //}
         return new Date(anio, mesPost, dia);// dia + '-' + mesPost + '-' + anio;
+    }
+
+    grabarContratoAFijar(contrato: ContratoAFijar): Observable<any> {
+        let payload = new FormData();
+        payload.append("contrato", JSON.stringify(contrato));
+        return this.http
+            .post('/api/CrearContrato/CrearContratoAFijar', payload)
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 }
 

@@ -160,5 +160,51 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult CrearContratoAFijar(string contrato)
+        {
+            try
+            {
+                contrato = contrato.Replace("nia", "ña");
+                var contratoAPrecio = JsonConvert.DeserializeObject<ContratoAFijar>(contrato);
+
+
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedorActual();
+
+                contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
+                contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+                contratoAPrecio.ComercialCreadorId = null;
+                contratoAPrecio.MonedaSustentable = "USDM ";
+                contratoAPrecio.ContratoSAP = "";
+                contratoAPrecio.CantidadCamiones = null;
+
+
+                string result = crearContratoService.CrearContratoAFijar(contratoAPrecio);
+
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
