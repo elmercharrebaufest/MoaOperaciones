@@ -30,13 +30,15 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => (int)x.EstadoAprobacion == (int)EstadoAprobacion.AprobacionPendiente
-                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.AnalisisDeNosis
-                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EtapaFinal
-                                || (int)x.EstadoAprobacion == (int)EstadoAprobacion.EdicionRequerida
+                                 x => x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                                || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                                || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                                || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                                || x.EstadoAprobacion == EstadoAprobacion.Aprobado
+                                || x.EstadoAprobacion == EstadoAprobacion.Rechazado
                                 );
 
-                List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
+                List<ProveedorDto> proveedorDtos = repositorio.Listar<Proveedor>().Select(x => new ProveedorDto(x)).ToList();
 
                 if (proveedorDtos.Count == 0)
                 {

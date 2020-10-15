@@ -150,7 +150,7 @@ namespace SustitucionMOATest.Services
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
-                ProveedorSISACodCategoria = "1"
+                ProveedorSISAEstadoCuit = "1"
             };
 
             var mailUsuario = "existente@mail.com";
@@ -205,7 +205,7 @@ namespace SustitucionMOATest.Services
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
-                ProveedorSISACodCategoria = "1"
+                ProveedorSISAEstadoCuit = "1"
             };
             var mailUsuario = "existente@mail.com";
 

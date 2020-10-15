@@ -36,19 +36,10 @@ namespace SustitucionMOA.Controllers
                 var empresas = altaEmpresaService.GetEmpresas();
                 foreach (var item in empresas)
                 {
-
-                    if (item.EstadoAprobacion != EstadoAprobacion.AunNoImplementado &&
-                        item.EstadoAprobacion != EstadoAprobacion.DeshabilitadoEnDataAgro)
+                    ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
+                    if (result != null)
                     {
-                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
-                        if (result != null)
-                        {
-                            item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
-                        }
-                    }
-                    else
-                    {
-                        item.SISAEstadoCuit = "";
+                        item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
                     }
 
                     item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
@@ -106,8 +97,8 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<int, string>((int)EstadoAprobacion.AnalisisDeNosis, EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
                     new KeyValuePair<int, string>((int)EstadoAprobacion.EtapaFinal, EstadoAprobacion.EtapaFinal.ToFriendlyString()),
                     new KeyValuePair<int, string>((int)EstadoAprobacion.EdicionRequerida, EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.DeshabilitadoEnDataAgro, EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.AunNoImplementado, EstadoAprobacion.AunNoImplementado.ToFriendlyString())
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.DeshabilitadoEnDataAgro, EstadoAprobacion.Aprobado.ToFriendlyString()),
+                    new KeyValuePair<int, string>((int)EstadoAprobacion.AunNoImplementado, EstadoAprobacion.Rechazado.ToFriendlyString())
                 };
                 return JsonCustom(new { data = estados });
             }
