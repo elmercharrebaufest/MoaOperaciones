@@ -176,15 +176,15 @@
                     </select>
                 </div>
                 <!--<div class="form-group col-md-4">
-        <label for="precio">Precio</label>
-        <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
-    </div>
-    <div class="form-group col-md-2">
-        <label for="moneda">Moneda</label>
-        <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
-            <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
-        </select>
-    </div>-->
+            <label for="precio">Precio</label>
+            <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+        </div>
+        <div class="form-group col-md-2">
+            <label for="moneda">Moneda</label>
+            <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+            </select>
+        </div>-->
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
@@ -209,7 +209,7 @@
                         </label><label class="labelSwitch"> Plan Canje</label>
                     </div>
                 </div>
-                
+
             </div>
             <div class="row">
 
@@ -262,7 +262,7 @@
                     </select>
                 </div>
             </div>
-            
+
             <!--<label class="subtitulo">Condiciones De Pago</label>
     <div class="row">
         <div class="col-md-6">
@@ -298,6 +298,10 @@
                 <div class="col-md-6">
                     <label for="ObservacionTercero">Observaciones</label>
                     <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+                </div>
+            
+                <div class="col-md-6">
+                    <label style="padding-top: 41px;">10% por multa de incumplimiento</label>
                 </div>
             </div>
             <div class="row">
