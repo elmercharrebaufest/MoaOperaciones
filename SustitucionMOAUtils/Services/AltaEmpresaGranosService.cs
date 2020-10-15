@@ -472,7 +472,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     ProveedorCBU = result.ProveedorCBU,
                     ProveedorClasificacion = result.ProveedorClasificacion,
-                    EstadoSISA = result.ProveedorSISACodCategoria
+                    EstadoSISA = result.ProveedorSISAEstadoCuit
                 };
 
                 return info;

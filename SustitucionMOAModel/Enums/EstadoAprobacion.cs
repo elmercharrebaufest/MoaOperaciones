@@ -10,7 +10,7 @@
         Rechazado,
         AunNoImplementado,
         AnalisisDeNosis,
-        SentenciaFinal,
+        EtapaFinal,
         Deshabilitado
     }
 
@@ -38,8 +38,8 @@
                     return "Deshabilitado";
                 case EstadoAprobacion.AnalisisDeNosis:
                     return "Analisis de Nosis";
-                case EstadoAprobacion.SentenciaFinal:
-                    return "Sentencia Final";
+                case EstadoAprobacion.EtapaFinal:
+                    return "Etapa Final";
                 default:
                     return "Estado desconocido";
             }
