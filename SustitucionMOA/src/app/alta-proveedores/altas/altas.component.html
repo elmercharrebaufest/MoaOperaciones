@@ -226,7 +226,9 @@
                                 </mdb-step>
                                 <mdb-step name="Step 4" label="Documentación">
                                     <h3>Documentacion Interna
-                                        <label class="label" for="archivosInternos">
+                                        <label class="label" for="archivosInternos"
+                                            *ngIf="[2,7,8].includes(empresaSeleccionada.EstadoAprobacion) && 
+                                            (isAuthorized('ABM EMPRESAS OPERADOR') || isAuthorized('ABM EMPRESAS APROBADOR'))">
                                             <span class="adjuntar">
                                                 Adjuntar
                                             </span>
