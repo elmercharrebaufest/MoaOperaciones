@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,6 +24,8 @@ namespace SustitucionMOAModel.Dto
         public string Comercial { get; set; }
         public string SISAEstadoCuit { get; set; }
         public string EstadoSIPER { get; set; }
+
+        public DateTime? UltimaEdicion { get; set; }
 
         public ProveedorDto() { }
         public ProveedorDto(Proveedor proveedor)
@@ -49,10 +52,16 @@ namespace SustitucionMOAModel.Dto
 
             EstadoSIPER = proveedor.EstadoSIPER;
 
-            if (proveedor.HistorialAprobaciones != null)
+            if (proveedor.HistorialAprobaciones != null && proveedor.HistorialAprobaciones.Count() > 0)
+            {
+                UltimaEdicion = proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha;
                 HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();
+            }
             else
+            {
+                UltimaEdicion = null;
                 HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
+            }
         }
 
         public override bool Equals(object obj)

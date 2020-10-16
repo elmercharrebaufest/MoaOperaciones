@@ -74,6 +74,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
+
                 proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
                     {

@@ -350,6 +350,23 @@ namespace SustitucionMOAUtils.Services
                         Vinculo = item.Vinculo
                     });
             }
+
+            if (proveedor.HistorialAprobaciones == null)
+            {
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+            }
+
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                    Observacion = "Envía solicitud",
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuario.Id
+                }
+            );
+
             repositorio.GuardarCambios();
 
             return SuccessMsg.ValidacionPendienteOK;

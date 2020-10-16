@@ -63,6 +63,9 @@
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('EstadoSIPER')">
                                 Estado Siper
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('UltimaEdicion')">
+                                Ultima Edición
+                            </th>
 
                             <th tabindex="0" rowspan="1" colspan="1"
                                 (click)="orderColumnBy('EstadoAprobacionDescripcion')">
@@ -81,6 +84,11 @@
                             <td>{{empresa.Comercial || "-"}}</td>
                             <td>{{empresa.SISAEstadoCuit || "-"}}</td>
                             <td>{{empresa.EstadoSIPER || "-"}}</td>
+                            <td>
+                                {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy HH:mm') : "" }}
+                            </td>
+
+
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-lg" (click)="abrirModal(empresa)"
