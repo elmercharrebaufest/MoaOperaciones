@@ -12,6 +12,7 @@
     Comercial: string;
     HistorialAprobaciones: any;
     SISAEstadoCuit: string;
+    UltimaEdicion: Date;
     EstadoSIPER: string;
 }
 

@@ -42,12 +42,15 @@
                     role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Id')">ID</th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Mail')">Usuario
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Mail')">
+                                Usuario
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">Codigo
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                                Codigo
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CUIT')">CUIT</th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CUIT')">
+                                CUIT
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('RazonSocial')">
                                 Razon Social
                             </th>
@@ -57,26 +60,40 @@
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('SISAEstadoCuit')">
                                 SISA
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('EstadoSIPER')">
+                                Estado Siper
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('UltimaEdicion')">
+                                Ultima Edición
+                            </th>
+
                             <th tabindex="0" rowspan="1" colspan="1"
-                                (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado</th>
-                            <th tabindex="0" rowspan="1" colspan="1">Acciones</th>
+                                (click)="orderColumnBy('EstadoAprobacionDescripcion')">
+                                Estado
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let empresa of dataFiltered | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
-                            <td>{{empresa.Id}}</td>
                             <td>{{empresa.Mail}}</td>
-                            <td>{{empresa.CodigoProveedor}}</td>
+                            <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
-                            <td>{{empresa.RazonSocial}}</td>
-                            <td>{{empresa.Comercial}}</td>
-                            <td>{{empresa.SISAEstadoCuit}}</td>
+                            <td>{{empresa.RazonSocial || "-"}}</td>
+                            <td>{{empresa.Comercial || "-"}}</td>
+                            <td>{{empresa.SISAEstadoCuit || "-"}}</td>
+                            <td>{{empresa.EstadoSIPER || "-"}}</td>
+                            <td>
+                                {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy HH:mm') : "" }}
+                            </td>
+
+
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
                                 <button type="button" class="btn btn-info btn-lg" (click)="abrirModal(empresa)"
                                     style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
-                                    Ver Documentacion
+                                    Ver
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton"
                                     data-toggle="modal" data-target="#myModal"></button>
@@ -99,7 +116,7 @@
     <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="hidemyModal">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
@@ -113,9 +130,6 @@
                 <!-- DETALLE -->
 
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
-
-                    <!--<div class="row titleSection">Razón Social - CUIT</div>-->
-
                     <div class="row myRow firstSection roundedInfo" id="container">
                         <mdb-stepper #stepper>
                             <div class="col-md-5">
@@ -207,6 +221,37 @@
                                             <a (click)="descargarArchivo(archivo)">
                                                 {{archivo.Nombre}}
                                             </a>
+                                        </div>
+                                    </div>
+                                </mdb-step>
+                                <mdb-step name="Step 4" label="Documentación">
+                                    <h3>Documentacion Interna
+                                        <label class="label" for="archivosInternos">
+                                            <span class="adjuntar">
+                                                Adjuntar
+                                            </span>
+                                        </label>
+                                    </h3>
+                                    <div class="form-group">
+
+                                        <input style="display:none" type="file" class="form-control-file"
+                                            id="archivosInternos" multiple
+                                            (change)="handleFileInput($event.target.files, 'archivosInternos')">
+
+
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'archivosInternos').length === 0">
+                                            Sin Adjuntar
+                                        </label>
+                                        <div
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'archivosInternos'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+
+                                            <a style="color:red;" (click)="eliminarArchivo(archivo)"
+                                                title="Eliminar Adjunto">Eliminar</a>
+
                                         </div>
                                     </div>
                                 </mdb-step>
@@ -497,10 +542,10 @@
                             style="width: 100%; padding:10px 0;">
                             <thead>
                                 <tr role="row">
-                                    <th tabindex="0" rowspan="1" colspan="1" style="">Estado</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="">Usuario</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="">Fecha</th>
-                                    <th tabindex="0" rowspan="1" colspan="1" style="">Observacion</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Estado</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Usuario</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Observacion</th>
                                 </tr>
                             </thead>
                             <tbody>

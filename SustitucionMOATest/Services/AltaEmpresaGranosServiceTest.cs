@@ -150,7 +150,7 @@ namespace SustitucionMOATest.Services
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
-                ProveedorSISACodCategoria = "1"
+                ProveedorSISAEstadoCuit = "1"
             };
 
             var mailUsuario = "existente@mail.com";
@@ -184,6 +184,11 @@ namespace SustitucionMOATest.Services
                 .Returns(usuarioGranosOk);
 
 
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
+
             dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>())).Returns(infoDataAgro);
 
             target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
@@ -200,7 +205,7 @@ namespace SustitucionMOATest.Services
             {
                 ProveedorCBU = "1234",
                 ProveedorClasificacion = "Productor",
-                ProveedorSISACodCategoria = "1"
+                ProveedorSISAEstadoCuit = "1"
             };
             var mailUsuario = "existente@mail.com";
 
@@ -234,6 +239,12 @@ namespace SustitucionMOATest.Services
             repositorioMock
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuarioGranosOk);
+
+
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
 
             dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>())).Returns(infoDataAgro);
             List<AltaEmpresaEmpleadosViewModel> Empleados = new List<AltaEmpresaEmpleadosViewModel>();
@@ -307,9 +318,15 @@ namespace SustitucionMOATest.Services
               .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
               .Returns(usuarioGranosOk);
 
+
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
+
             target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
 
-            var result = target.ObtenerArchivosSubidos(mailUsuario, proveedorId);
+            var result = target.ObtenerArchivosSubidos(mailUsuario, proveedorId, false);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Archivo>()), Times.Never);
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
@@ -363,6 +380,13 @@ namespace SustitucionMOATest.Services
               .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
               .Returns(usuarioGranosOk);
 
+
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
+
+
             target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
 
             var result = target.ObtenerArchivo(mailUsuario, 2, proveedorId);
@@ -413,6 +437,12 @@ namespace SustitucionMOATest.Services
             repositorioMock
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
                 .Returns(usuarioOk);
+
+
+            repositorioMock
+              .Setup(x => x.Obtener<Proveedor>(It.IsAny<int>()))
+              .Returns(proveedorOk);
+
 
             var result = target.CargarSolicitudUsuario(mailUsuario, proveedorId);
 

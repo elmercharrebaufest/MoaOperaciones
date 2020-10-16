@@ -199,6 +199,39 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    
+    handleFileInput(files: FileList, fileKey: string) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerModal.showIt();
+
+        this.unsubscribe();
+        this.subscription = this.service
+            .postFile(files, fileKey, this.empresaSeleccionada.Id)
+            .subscribe(
+                (result) => {
+                    this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.obtenerArchivosSubidos(this.empresaSeleccionada.Mail, this.empresaSeleccionada.Id);
+                    }
+                },
+                (error) => {
+                    this.spinnerModal.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+    }
+
     abrirModal(empresa: Empresa) {
         this.empresaSeleccionada = empresa;
         this.observaciones = "";
@@ -289,5 +322,35 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
     isVisibleTablaEmpleados(): boolean {
         return this.relacionConEmpleados == "Si";
+    }
+
+     eliminarArchivo(archivo :Archivo) {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerModal.showIt();
+        this.unsubscribe();
+
+        this.subscription = this.service
+            .eliminarArchivoSubido(archivo.Id, this.empresaSeleccionada.Id)
+            .subscribe(
+                (result) => {
+                    this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.obtenerArchivosSubidos(this.empresaSeleccionada.Mail, this.empresaSeleccionada.Id);
+                    }
+                },
+                (error) => {
+                    this.spinnerModal.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
     }
 }

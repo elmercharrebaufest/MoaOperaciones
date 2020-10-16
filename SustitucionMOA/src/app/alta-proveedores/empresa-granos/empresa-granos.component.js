@@ -86,9 +86,50 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         _this.proveedorId = 0;
         _this.estadoSISA = "";
         _this.esCorredor = false;
+        _this.esMultiFirma = false;
         _this.mensajeComponent = new MensajeComponent();
         return _this;
     }
+    EmpresaGranosComponent.prototype.checkPermisos = function () {
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
+    };
+    EmpresaGranosComponent.prototype.setTabs = function () {
+        this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
+    };
+    EmpresaGranosComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.esCorredor = sessionStorage.getItem("tipoUsuario") === "CORR";
+        this.esMultiFirma = this.securityService.tienePermiso("CONSULTAR VENDEDOR PENDIENTES");
+        this.route.params.forEach(function (params) {
+            if (params["id"] > 0)
+                _this.proveedorId = params["id"];
+        });
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([]);
+        this.obtenerMateriales();
+        this.obtenerArchivosSubidos();
+        this.cargarSolicitudUsuario();
+        this.obtenerInfoProveedor();
+        this.addFieldValue();
+        this.addFieldValueAlm();
+        this.agregarCampoCartaPresentacion();
+        this.agregarAcopioCartaPresentacion();
+    };
+    Object.defineProperty(EmpresaGranosComponent.prototype, "email", {
+        get: function () {
+            return this.firstFormGroup.get("email");
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
+        get: function () {
+            return this.secondFormGroup.get("password");
+        },
+        enumerable: false,
+        configurable: true
+    });
     EmpresaGranosComponent.prototype.selectEventProduccion = function (item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     };
@@ -134,45 +175,6 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             });
         }
     };
-    EmpresaGranosComponent.prototype.checkPermisos = function () {
-        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
-    };
-    EmpresaGranosComponent.prototype.setTabs = function () {
-        this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
-    };
-    EmpresaGranosComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.esCorredor = this.securityService.tienePermiso("CONSULTAR VENDEDOR PENDIENTES");
-        this.route.params.forEach(function (params) {
-            if (params["id"] > 0)
-                _this.proveedorId = params["id"];
-        });
-        this.setTabs();
-        this.checkPermisos();
-        this.navService.setSeccionList([]);
-        this.obtenerMateriales();
-        this.obtenerArchivosSubidos();
-        this.cargarSolicitudUsuario();
-        this.obtenerInfoProveedor();
-        this.addFieldValue();
-        this.addFieldValueAlm();
-        this.agregarCampoCartaPresentacion();
-        this.agregarAcopioCartaPresentacion();
-    };
-    Object.defineProperty(EmpresaGranosComponent.prototype, "email", {
-        get: function () {
-            return this.firstFormGroup.get("email");
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
-        get: function () {
-            return this.secondFormGroup.get("password");
-        },
-        enumerable: false,
-        configurable: true
-    });
     EmpresaGranosComponent.prototype.handleFileInput = function (files, fileKey) {
         var _this = this;
         this.mensajeComponent.setMsgsEmpty();
@@ -243,7 +245,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             .obtenerInfoProveedor(this.proveedorId)
             .subscribe(function (result) {
             _this.CBUSISA = result.ProveedorCBU;
-            _this.estadoSISA = result.estadoSISA;
+            _this.estadoSISA = result.EstadoSISA;
         }, function (error) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -408,7 +410,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         });
     };
     EmpresaGranosComponent.prototype.redirigirAEstado = function () {
-        if (this.esCorredor) {
+        if (this.esMultiFirma) {
             this.navService.navegarSeccion("/dato-fiscal/vendedores-pendientes");
         }
         else {
@@ -512,49 +514,41 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             this.mensajeError = "No completo la Campa�a Actual.";
             return true;
         }
+        var filaError = 0;
         for (var _i = 0, _a = this.informe.NuevosCampos; _i < _a.length; _i++) {
             var item = _a[_i];
+            filaError++;
             if (item.MaterialId == null || item.MaterialId == 0) {
-                this.mensajeError =
-                    "Debe completar el grano en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar el grano en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
             if (item.LocalidadId == null || item.LocalidadId == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad productiva.";
-                return true;
-            }
-            if (item.Hectareas == null || item.Hectareas == 0) {
-                this.mensajeError =
-                    "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar la localidad en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar las toneladas en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar la condicion en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
         }
+        filaError = 0;
         for (var _b = 0, _c = this.informe.NuevosAcopios; _b < _c.length; _b++) {
             var item = _c[_b];
+            filaError++;
             if (item.LocalidadID == null || item.LocalidadID == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad planta.";
+                this.mensajeError = "Debe completar la localidad en la fila " + filaError + " de capacidad planta.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                this.mensajeError = "Debe completar las Toneladas en la fila " + filaError + "  de capacidad planta.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad planta.";
+                this.mensajeError = "Debe completar la condicion en la fila " + filaError + " de capacidad planta.";
                 return true;
             }
         }
@@ -696,7 +690,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.cargarSolicitudUsuario = function () {
         var _this = this;
-        this.subscription = this.service.cargarSolicitudUsuario().subscribe(function (result) {
+        this.subscription = this.service.cargarSolicitudUsuario("", this.proveedorId).subscribe(function (result) {
             if (result.VinculoConEmpleadosDeMolinos != null) {
                 _this.codigoConductaVisto = true;
                 _this.codigoDeConducta = true;
@@ -853,49 +847,40 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             this.mensajeError = "No completo la Campaña Actual.";
             return true;
         }
+        var filaError = 0;
         for (var _i = 0, _a = this.cartaPresentacion.nuevosCampos; _i < _a.length; _i++) {
             var item = _a[_i];
+            filaError++;
             if (item.MaterialId == null || item.MaterialId == 0) {
-                this.mensajeError =
-                    "Debe completar el grano en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar el grano en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
             if (item.LocalidadId == null || item.LocalidadId == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad productiva.";
-                return true;
-            }
-            if (item.Hectareas == null || item.Hectareas == 0) {
-                this.mensajeError =
-                    "Debe completar las Hectareas en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar la localidad en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar las toneladas en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad productiva.";
+                this.mensajeError = "Debe completar la condicion en la fila " + filaError + " de capacidad productiva.";
                 return true;
             }
         }
+        filaError = 0;
         for (var _b = 0, _c = this.cartaPresentacion.nuevosAcopios; _b < _c.length; _b++) {
             var item = _c[_b];
             if (item.LocalidadID == null || item.LocalidadID == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad planta.";
+                this.mensajeError = "Debe completar la localidad en la fila " + filaError + " de capacidad planta.";
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                this.mensajeError = "Debe completar las Toneladas en la fila " + filaError + "  de capacidad planta.";
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad planta.";
+                this.mensajeError = "Debe completar la condicion en la fila " + filaError + " de capacidad planta.";
                 return true;
             }
         }

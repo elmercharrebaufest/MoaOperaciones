@@ -73,7 +73,6 @@ namespace SustitucionMOA.Controllers
             //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
             try
             {
-                HttpContext.GetOwinContext().Set("Policy", Globals.SignUpPolicyId);
                 HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
             }
             //Ignoramos esta excepción porque la da cuando carga recursos

@@ -80,6 +80,84 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     esCorredor: boolean = false;
 
+    esMultiFirma: boolean = false;
+
+    constructor(
+        protected service: EmpresaGranosService,
+        protected navService: NavService,
+        private route: ActivatedRoute,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService
+    ) {
+        super(
+            service,
+            navService,
+            sessionDataService,
+            securityService,
+            floatMsgService,
+            modalService
+        );
+        this.mensajeComponent = new MensajeComponent();
+    }
+
+    @ViewChild("msjEmpresaGranos")
+    protected mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerSmallComponent)
+    public spinnerSmallComponent: SpinnerSmallComponent;
+
+    @ViewChild("spinnerModal")
+    protected spinnerModal: SpinnerSmallComponent;
+
+    @ViewChild("spinnerCartaPresentacion")
+    protected spinnerCartaPresentacion: SpinnerSmallComponent;
+
+    checkPermisos() {
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
+    }
+
+    setTabs() {
+        this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
+    }
+
+    ngOnInit() {
+        this.esCorredor = sessionStorage.getItem("tipoUsuario") === "CORR";
+
+        this.esMultiFirma = this.securityService.tienePermiso(
+            "CONSULTAR VENDEDOR PENDIENTES"
+        );
+
+        this.route.params.forEach((params: Params) => {
+            if (params["id"] > 0) this.proveedorId = params["id"];
+        });
+
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([]);
+
+        this.obtenerMateriales();
+        this.obtenerArchivosSubidos();
+        this.cargarSolicitudUsuario();
+        this.obtenerInfoProveedor();
+
+        this.addFieldValue();
+        this.addFieldValueAlm();
+
+        this.agregarCampoCartaPresentacion();
+        this.agregarAcopioCartaPresentacion();
+    }
+
+    get email() {
+        return this.firstFormGroup.get("email");
+    }
+    get password() {
+        return this.secondFormGroup.get("password");
+    }
+
+
+    
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     }
@@ -135,78 +213,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 }
             );
         }
-    }
-
-    constructor(
-        protected service: EmpresaGranosService,
-        protected navService: NavService,
-        private route: ActivatedRoute,
-        protected sessionDataService: SessionDataService,
-        protected securityService: SecurityService,
-        protected floatMsgService: FloatMsgService,
-        protected modalService: ModalService
-    ) {
-        super(
-            service,
-            navService,
-            sessionDataService,
-            securityService,
-            floatMsgService,
-            modalService
-        );
-        this.mensajeComponent = new MensajeComponent();
-    }
-
-    @ViewChild("msjEmpresaGranos")
-    protected mensajeComponent: MensajeComponent;
-
-    @ViewChild(SpinnerSmallComponent)
-    public spinnerSmallComponent: SpinnerSmallComponent;
-
-    @ViewChild("spinnerModal")
-    protected spinnerModal: SpinnerSmallComponent;
-
-    @ViewChild("spinnerCartaPresentacion")
-    protected spinnerCartaPresentacion: SpinnerSmallComponent;
-
-    checkPermisos() {
-        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
-    }
-
-    setTabs() {
-        this.setMenuSeccionTab("alta-empresa", "Alta Empresa");
-    }
-
-    ngOnInit() {
-        this.esCorredor = this.securityService.tienePermiso(
-            "CONSULTAR VENDEDOR PENDIENTES"
-        );
-
-        this.route.params.forEach((params: Params) => {
-            if (params["id"] > 0) this.proveedorId = params["id"];
-        });
-
-        this.setTabs();
-        this.checkPermisos();
-        this.navService.setSeccionList([]);
-
-        this.obtenerMateriales();
-        this.obtenerArchivosSubidos();
-        this.cargarSolicitudUsuario();
-        this.obtenerInfoProveedor();
-
-        this.addFieldValue();
-        this.addFieldValueAlm();
-
-        this.agregarCampoCartaPresentacion();
-        this.agregarAcopioCartaPresentacion();
-    }
-
-    get email() {
-        return this.firstFormGroup.get("email");
-    }
-    get password() {
-        return this.secondFormGroup.get("password");
     }
 
     handleFileInput(files: FileList, fileKey: string) {
@@ -284,7 +290,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             .subscribe(
                 (result) => {
                     this.CBUSISA = result.ProveedorCBU;
-                    this.estadoSISA = result.estadoSISA;
+                    this.estadoSISA = result.EstadoSISA;
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -422,6 +428,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
 
+
         let archivoID: number = this.archivoSeleccionado.Id;
 
         this.subscription = this.service
@@ -475,7 +482,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     redirigirAEstado() {
-        if (this.esCorredor) {
+        if (this.esMultiFirma) {
             this.navService.navegarSeccion(
                 "/dato-fiscal/vendedores-pendientes"
             );
@@ -598,47 +605,45 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             this.mensajeError = "No completo la Campa�a Actual.";
             return true;
         }
+
+
+        var filaError = 0;
+
         for (const item of this.informe.NuevosCampos) {
+            filaError++;
             if (item.MaterialId == null || item.MaterialId == 0) {
-                this.mensajeError =
-                    "Debe completar el grano en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar el grano en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
             if (item.LocalidadId == null || item.LocalidadId == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
-            if (item.Hectareas == null || item.Hectareas == 0) {
-                this.mensajeError =
-                    "Debe completar las Hectareas en todos los items de Capacidad productiva.";
-                return true;
-            }
+        
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar las toneladas en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
         }
+
+        filaError = 0;
+        
         for (const item of this.informe.NuevosAcopios) {
+            filaError++;
             if (item.LocalidadID == null || item.LocalidadID == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad planta.";
+                this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                this.mensajeError = `Debe completar las Toneladas en la fila ${filaError}  de capacidad planta.`;
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad planta.";
+                this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
         }
@@ -825,7 +830,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     cargarSolicitudUsuario() {
-        this.subscription = this.service.cargarSolicitudUsuario().subscribe(
+        this.subscription = this.service.cargarSolicitudUsuario("", this.proveedorId).subscribe(
             (result) => {
                 if (result.VinculoConEmpleadosDeMolinos != null) {
                     this.codigoConductaVisto = true;
@@ -1023,48 +1028,42 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             return true;
         }
 
+        var filaError = 0;
+
         for (const item of this.cartaPresentacion.nuevosCampos) {
+            filaError++;
             if (item.MaterialId == null || item.MaterialId == 0) {
-                this.mensajeError =
-                    "Debe completar el grano en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar el grano en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
             if (item.LocalidadId == null || item.LocalidadId == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
-            if (item.Hectareas == null || item.Hectareas == 0) {
-                this.mensajeError =
-                    "Debe completar las Hectareas en todos los items de Capacidad productiva.";
-                return true;
-            }
+        
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar las toneladas en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad productiva.";
+                this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
         }
 
+        filaError = 0;
+
         for (const item of this.cartaPresentacion.nuevosAcopios) {
             if (item.LocalidadID == null || item.LocalidadID == 0) {
-                this.mensajeError =
-                    "Debe completar la localidad en todos los items de Capacidad planta.";
+                this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError =
-                    "Debe completar las Toneladas en todos los items de Capacidad planta.";
+                this.mensajeError = `Debe completar las Toneladas en la fila ${filaError}  de capacidad planta.`;
                 return true;
             }
             if (item.ArrendaPropia == null) {
-                this.mensajeError =
-                    "Debe completar la condicion en todos los items de Capacidad planta.";
+                this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
         }

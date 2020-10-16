@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Logger;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -182,10 +183,12 @@ namespace SustitucionMOA
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
 
+				string tipoUsuario = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI" ? usuario.TipoUsuario.NombreCorto : "PROV";
+
 				notification.AddClaim(new Claim(Globals.ClaimsGranosFlagType, tipoGranos));
 				notification.AddClaim(new Claim(Globals.ClaimsSociedadType, "MOA"));
 				notification.AddClaim(new Claim(Globals.ClaimsEsNuevoUsuarioType, usuario.EsNuevoUsuario().ToString()));
-				notification.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, usuario.ObtenerRolPrincipal().Codigo));
+				notification.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, tipoUsuario));
 
                 if (usuario.EstaHabilitado())
 				{

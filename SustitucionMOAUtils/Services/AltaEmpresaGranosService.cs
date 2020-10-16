@@ -118,7 +118,7 @@ namespace SustitucionMOAUtils.Services
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 cartadePresentacion.vendedorCuit = proveedor.CUIT;
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
@@ -240,9 +240,10 @@ namespace SustitucionMOAUtils.Services
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-                ValidarEstadoSolicitud(proveedor);
+                if (fileKey != FileKeys.ArchivosInternos)
+                    ValidarEstadoSolicitud(proveedor);
 
                 string rutaCarpeta = ArmarRutaCarpeta(fileKey, rutaArchivosProveedores, proveedor);
 
@@ -349,6 +350,23 @@ namespace SustitucionMOAUtils.Services
                         Vinculo = item.Vinculo
                     });
             }
+
+            if (proveedor.HistorialAprobaciones == null)
+            {
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+            }
+
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                    Observacion = "Envía solicitud",
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuario.Id
+                }
+            );
+
             repositorio.GuardarCambios();
 
             return SuccessMsg.ValidacionPendienteOK;
@@ -410,15 +428,16 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId)
+        public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId, bool esOperador)
         {
             List<ArchivoDto> archivos = new List<ArchivoDto>();
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-            foreach (var archivo in proveedor.Archivos)
+
+            foreach (var archivo in proveedor.Archivos.Where(a => a.FileKey != (!esOperador ? FileKeys.ArchivosInternos : "")))
             {
                 archivos.Add(new ArchivoDto(archivo));
             }
@@ -430,7 +449,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
             return proveedor.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault().Ruta;
         }
@@ -438,13 +457,15 @@ namespace SustitucionMOAUtils.Services
         public string EliminarArchivo(string mailUsuario, int archivoID, int proveedorId)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
-
-            ValidarEstadoSolicitud(proveedor);
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            
             string rutaArchivo = "";
 
-
             var archivoEliminar = proveedor.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault();
+            
+            if (archivoEliminar.FileKey != FileKeys.ArchivosInternos)
+                ValidarEstadoSolicitud(proveedor);
+
             rutaArchivo = archivoEliminar.Ruta;
             proveedor.Archivos.Remove(archivoEliminar);
 
@@ -464,7 +485,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
 
@@ -472,7 +493,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     ProveedorCBU = result.ProveedorCBU,
                     ProveedorClasificacion = result.ProveedorClasificacion,
-                    EstadoSISA = result.ProveedorSISACodCategoria
+                    EstadoSISA = result.ProveedorSISAEstadoCuit
                 };
 
                 return info;
@@ -488,7 +509,7 @@ namespace SustitucionMOAUtils.Services
             AltaEmpresaViewModel altaEmpresa = new AltaEmpresaViewModel();
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mail);
 
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
             altaEmpresa.VinculoConEmpleadosDeMolinos = proveedor.VinculoConEmpleadosDeMolinos;
             altaEmpresa.VinculoConFuncionariosPublicos = proveedor.VinculoConFuncionariosPublicos;
