@@ -38,7 +38,7 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
                                 );
 
-                List<ProveedorDto> proveedorDtos = repositorio.Listar<Proveedor>().Select(x => new ProveedorDto(x)).ToList();
+                List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
 
                 if (proveedorDtos.Count == 0)
                 {
