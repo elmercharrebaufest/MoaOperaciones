@@ -20,14 +20,12 @@ $('document').ready(function () {
     $(".attrEntry.row > .error").remove();
     $(".attrEntry.row").append("<div class=\"error itemLevel\" role=\"alert\"></div>");
 
-    $("#continue").html('Registrarse');
     $("#emailVerificationControl_but_send_code").html('Verificar e-mail');
 
     $("#email_ver_but_resend").html('Enviar código nuevo');
 
     $("#email_ver_but_verify").html('Verificar código');
 
-    $("#continue").removeAttr("disabled");
     $("label[for='email']").html('Ingrese su e-mail');
     $("#email").attr('placeholder', 'Ingrese su e-mail');
 
@@ -44,4 +42,17 @@ $('document').ready(function () {
     $(".verificationControlContent > .buttons").prepend("<div class=\"verificationSuccessText\" role=\"alert\">" + success + "</div>");
     $(".verificationControlContent > .buttons").prepend("<div class=\"verificationErrorText error\" role=\"alert\">" + error + "</div>");
 
+    $("#continue").prop("disabled", false);
+    $('#email_ver_but_send').text("Enviar Código");
+    $('#email_ver_but_verify').text("Verificar");
+    $('#email_ver_but_resend').text("Nuevo Código");
+    $('#email_ver_but_edit').text("Cambiar e-mail");
+
+    $('#email_ver_but_edit').click(function () {
+        $('input#email').prop('disabled', false);
+    })
+
+    $('#email_ver_but_verify').click(function () {
+        $('#continue').prop('disabled', false);
+    })
 });

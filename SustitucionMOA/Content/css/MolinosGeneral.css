@@ -36,7 +36,7 @@ body {
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
   font-weight: 300;
-  background: #e9e8e8;
+  background: #F4F4F4;
   overflow-x: hidden;
 }
 body .wrapper {
@@ -251,7 +251,7 @@ LOGIN*/
   left: 2px;
   width: 120px;
   height: 22px;
-  background: #e9e8e8;
+  background: #F4F4F4;
   -webkit-transition: left 0.25s ease-out;
   -moz-transition: left 0.25s ease-out;
   -o-transition: left 0.25s ease-out;
@@ -361,12 +361,11 @@ SIDEBAR*/
 /*Header*/
 .header {
   background: #fff !important;
-  border-top: 8px solid #172f8f;
   display: flow-root;
   overflow: hidden;
   position: fixed;
   top: 0px;
-  height: 128px;
+  height: 103px;
   width: calc(100% - 260px);
   display: flow-root;
   z-index: 8;
@@ -452,13 +451,9 @@ SIDEBAR*/
   padding-right: 5px;
 }
 .SubMenu-wrapper {
-  position: fixed;
-  width: calc(100% - 260px);
-  height: 38px;
-  margin-top: 90px;
-  background: #a0b5ab;
+  height: 30px;
+  margin-top: 131px;
   padding-left: 35px;
-  z-index: 9;
 }
 .SubMenu {
   width: 100%;
@@ -478,34 +473,32 @@ SIDEBAR*/
 }
 .SubMenu li {
   display: inline-block !important;
-  height: 38px;
+  height: 30px;
 }
 .SubMenu li a,
 .SubMenu .form-control {
   display: inline-block !important;
-  background: #647a6f;
-  color: #d1e5d9;
+  color: #959595;
   font-weight: 300;
-  font-size: 16px;
-  height: 38px;
-  padding: 10px 10px;
-  border-left: #172f8f 8px solid;
+  font-size: 14px;
+  height: 30px;
+  padding: 2px 20px;
+  border-bottom: #707070 1px solid;
+  border-left: #707070 1px solid;
+  border-right: #707070 1px solid;
 }
-.SubMenu li a:hover {
-  background: #046a38 !important;
-  color: #fff;
-  border-left: #172f8f 8px solid;
-}
+.SubMenu li a:hover,
 .SubMenu li a:active,
 .SubMenu li a:focus,
 .SubMenu li a.active {
-  background: #e9e8e8 !important;
-  color: #1c1e1d !important;
-  border-left: #fff 8px solid;
+  background: none !important;
+  color: #075088;
+  font-weight: bold;
+  border-bottom: #075088 3px solid;
 }
 .SubMenu ul > .active > a,
 .SubMenu ul > .active > a:focus {
-  background: #e9e8e8 !important;
+  background: red;
   color: #1c1e1d;
   border-left: #fff 8px solid;
 }
@@ -768,7 +761,6 @@ Header Mobile */
 
 /*CONTENT*/
 .content-wraper {
-  margin-top: 128px;
   padding-left: 35px;
   padding-right: 35px;
   padding-top: 25px;
@@ -779,7 +771,7 @@ Header Mobile */
 }
 .titleSection {
   font-size: 30px;
-  border-bottom: 5px solid #007933;
+  border-bottom: 1px solid #707070;
   padding-bottom: 5px;
   margin-left: 0px;
   margin-right: 0px;
@@ -823,10 +815,10 @@ Header Mobile */
 .btnSection {
   background: #fff;
   color: #000;
-  width: 100%;
+  width: 132px;
+  height: 38px;
   font-size: 16px;
-  line-height: 1.2;
-  padding: 6px 7px;
+  padding: 10px 10px;
   border-radius: 5px 5px 5px 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   -webkit-border-radius: 5px 5px 5px 5px;
@@ -841,10 +833,10 @@ Header Mobile */
   filter: alpha(opacity=70); /* For IE8 and earlier */
   cursor: pointer;
 }
-.btnSection .fa {
+.btnSection .fa,
+.btnSection img {
   float: right;
   font-size: 17px;
-  padding-top: 1px;
   color: #3f4845;
 }
 .print,
@@ -930,7 +922,9 @@ Header Mobile */
 title-caps {
   width: 100%;
   height: auto;
-  font-size: 2rem;
+  font-size: 21px;
+  font-weight: bold;
+  color: white;
   text-transform: uppercase;
   padding-left: 15px;
 }
@@ -943,6 +937,7 @@ title-caps {
 .mySearch .rounded,
 .roundedInfo .rounded {
   padding-bottom: 20px;
+  padding-top: 0px;
 }
 #showSearch,
 #hideSearch {
@@ -998,8 +993,8 @@ textarea:focus {
 .styled-select select,
 .styled-select input {
   font-family: "Roboto Condensed", Arial, sans-serif;
-  background-color: #f0f0f0;
-  border: none;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
   height: 29px;
   padding: 5px;
   width: 100%;
@@ -3233,4 +3228,16 @@ a.PagoTablaLink:hover {
   color: #000;
   text-decoration: underline;
   transition: all 0.25s ease-out;
+}
+
+.align-right{
+  float: right;
+}
+
+.search-header{
+  padding: 10px;
+  background-color: #959595;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-bottom: 10px;
 }

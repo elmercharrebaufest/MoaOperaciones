@@ -181,14 +181,14 @@
         <div *ngIf="showLiquidaciones" class="col-xs-12">
             <a (click)="exportExcel(modalLiquidacionContrato, modalLiquidacionSecuencia, modalLiquidacionComprobante)"
                 href="#" style="text-decoration:none!important">
-                <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
             </a>
         </div>
 
         <div *ngIf="showFleteProcedencia" class="col-xs-12">
             <a (click)="exportExcelFleteProcedencia(modalInfoContratoProcedencia)" href="#"
                 style="text-decoration:none!important">
-                <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
             </a>
         </div>
     </modal-footer>
@@ -369,21 +369,6 @@
 </barra-nav>
 <div class="main-panel">
     <div id="coverAll"></div>
-    <!-- Tab panes -->
-    <div class="SubMenu-wrapper" *ngIf="seccionList">
-        <div class="SubMenu myTab clearfix">
-            <div class="tab-content ">
-                <div class="tab-pane fade active in" id="Inicio">
-                    <ul class="nav">
-                        <li *ngFor="let seccion of seccionList"><a class="animate"
-                                [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
-                                (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END Tab panes -->
     <!--User-->
     <div class="header">
         <div class="User-wrapper">
@@ -457,6 +442,21 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
             aria-hidden="true"></i>{{mensajeSuccess}}</div>
+    <!-- Tab panes -->
+    <div class="SubMenu-wrapper" *ngIf="seccionList">
+        <div class="SubMenu myTab clearfix">
+            <div class="tab-content ">
+                <div class="tab-pane fade active in" id="Inicio">
+                    <ul class="nav">
+                        <li *ngFor="let seccion of seccionList"><a class="animate"
+                                [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
+                                (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Tab panes -->
     <router-outlet></router-outlet>
 </div>
 <header-user id="userSmall" style="display:none">
