@@ -33,9 +33,13 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         this.mensajeComponent = new MensajeComponent();
 
     }
+    esCorredorEnDataAgro: boolean = false;
     localidad: any;
     localidades = [];
+    proveedor: any;
+    proveedores = [];
     keyword = 'Nombre';
+    keyword2 = "RazonSocial";
     autocompleteNotFoundText = "No encontrado";
 
     datosContrato: any = new Array();
@@ -49,7 +53,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     bolsasFisico: any = new Array();
     bolsasCarta: any = new Array();
     condicionVendedor: any = new Array();
-    condicionFijacion: any = new Array();    
+    condicionFijacion: any = new Array();
     datosCompraNet: any = null;
 
 
@@ -139,7 +143,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         }
                         this.condicionFijacion.push(el);
                     });
-                    this.obtenerDatosCompraNet(contrato);
+                    this.validarDirecto(contrato);
 
                 }
             },
@@ -152,9 +156,40 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         return false;
     }
 
-    obtenerDatosCompraNet(contrato) {
+    validarDirecto(contrato) {
         this.unsubscribe();
-        this.subscription = this.service.obtenerDatosCompraNet().subscribe(
+        this.subscription = this.service.validarDirecto().subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    let obj = JSON.parse(result);
+                    if (obj != null && obj > 0) {
+                        contrato.CorredorId = obj;
+                        this.esCorredorEnDataAgro = true;
+                    } else {
+                        this.obtenerDatosCompraNet(contrato, "");
+                        this.esCorredorEnDataAgro = false;
+                    }
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+
+        );
+
+        return false;
+    }
+
+    obtenerDatosCompraNet(contrato, idProveedorDataAgro) {
+        this.unsubscribe();
+        this.subscription = this.service.obtenerDatosCompraNet(idProveedorDataAgro).subscribe(
             result => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -188,9 +223,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
 
                     contrato.LocalidadId = obj.LocalidadId;
                     contrato.ProvinciaId = obj.ProvinciaId;
-                    if (obj.ProvinciaId == 1) {
+                    if (obj.ProvinciaId != null) {
                         this.localidad = obj.Localidad + " (" + obj.Provincia + ")";
-                        
+                    } else {
+                        this.localidad = null;
                     }
                     if (obj.ProvinciaId != 1) {
                         contrato.EstablecimientoPropio = null;
@@ -200,8 +236,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     contrato.MonedaId = this.monedas[0].Id;
                     contrato.MaterialId = this.materiales[0].Id;
                     contrato.CampanaId = this.campanias[0].Id;
-
                 }
+
             },
             error => {
                 this.spinnerComponent.hideIt();
@@ -211,6 +247,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         );
 
         return false;
+    }
+
+    isVisibleProveedor(): boolean {
+        return this.esCorredorEnDataAgro == true;
     }
 
 }

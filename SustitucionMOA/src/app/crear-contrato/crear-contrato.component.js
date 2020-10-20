@@ -41,8 +41,11 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.securityService = securityService;
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
+        _this.esCorredorEnDataAgro = false;
         _this.localidades = [];
+        _this.proveedores = [];
         _this.keyword = 'Nombre';
+        _this.keyword2 = "RazonSocial";
         _this.autocompleteNotFoundText = "No encontrado";
         _this.datosContrato = new Array();
         _this.materiales = new Array();
@@ -66,8 +69,8 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([
-            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+            new Seccion('/contrato/crear/aprecio', 'crear-contrato', 'A Precio'),
+            new Seccion('/contrato/crear/afijar', 'crear-contrato', 'A Fijar'),
         ]);
         //this.obteneDatosContrato();
     };
@@ -147,7 +150,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     };
                     _this.condicionFijacion.push(el);
                 });
-                _this.obtenerDatosCompraNet(contrato);
+                _this.validarDirecto(contrato);
             }
         }, function (error) {
             _this.spinnerComponent.hideIt();
@@ -155,10 +158,40 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         });
         return false;
     };
-    CrearContratoBaseComponent.prototype.obtenerDatosCompraNet = function (contrato) {
+    CrearContratoBaseComponent.prototype.validarDirecto = function (contrato) {
         var _this = this;
         this.unsubscribe();
-        this.subscription = this.service.obtenerDatosCompraNet().subscribe(function (result) {
+        this.subscription = this.service.validarDirecto().subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = JSON.parse(result);
+                if (obj != null && obj > 0) {
+                    contrato.CorredorId = obj;
+                    _this.esCorredorEnDataAgro = true;
+                }
+                else {
+                    _this.obtenerDatosCompraNet(contrato, "");
+                    _this.esCorredorEnDataAgro = false;
+                }
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    CrearContratoBaseComponent.prototype.obtenerDatosCompraNet = function (contrato, idProveedorDataAgro) {
+        var _this = this;
+        this.unsubscribe();
+        this.subscription = this.service.obtenerDatosCompraNet(idProveedorDataAgro).subscribe(function (result) {
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
@@ -192,8 +225,11 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 }
                 contrato.LocalidadId = obj.LocalidadId;
                 contrato.ProvinciaId = obj.ProvinciaId;
-                if (obj.ProvinciaId == 1) {
+                if (obj.ProvinciaId != null) {
                     _this.localidad = obj.Localidad + " (" + obj.Provincia + ")";
+                }
+                else {
+                    _this.localidad = null;
                 }
                 if (obj.ProvinciaId != 1) {
                     contrato.EstablecimientoPropio = null;
@@ -209,6 +245,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false;
+    };
+    CrearContratoBaseComponent.prototype.isVisibleProveedor = function () {
+        return this.esCorredorEnDataAgro == true;
     };
     __decorate([
         ViewChild(MensajeComponent),

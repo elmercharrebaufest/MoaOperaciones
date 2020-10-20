@@ -175,6 +175,29 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         this.fechafFin = hoymesqueviene.toLocaleDateString('en-GB');
         //--
     };
+    CrearContratoAFijarComponent.prototype.selectEventProveedor = function (item) {
+        this.contrato.ProveedorId = item.Id;
+        console.log("prov: ", item.Id);
+        if (item != null && item.Id != null && item.Id > 0) {
+            this.obtenerDatosCompraNet(this.contrato, item.Id);
+        }
+    };
+    CrearContratoAFijarComponent.prototype.onChangeSearchProveedor = function (term) {
+        var _this = this;
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(function (result) {
+                var resultlist = JSON.parse(result);
+                _this.proveedores = resultlist.map(function (prov) {
+                    return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit };
+                });
+                //this.proveedores = JSON.parse(result);                },
+                (function (error) {
+                    _this.mensajeComponent.setErrorMsg(error.message);
+                });
+            });
+        }
+    };
     CrearContratoAFijarComponent.prototype.selectEventLocalidad = function (item) {
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
@@ -322,6 +345,42 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         //    this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
         //    return false;
         //}
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
+            return false;
+        }
+        if (this.contrato.DestinoId == null || this.contrato.DestinoId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Destino.");
+            return false;
+        }
+        if (this.contrato.MaterialId == null || this.contrato.MaterialId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Material.");
+            return false;
+        }
+        if (this.contrato.CampanaId == null || this.contrato.CampanaId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Campaña.");
+            return false;
+        }
+        if (this.contrato.ClasificacionId == null || this.contrato.ClasificacionId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Condicion vendedor.");
+            return false;
+        }
+        if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
+            return false;
+        }
+        if (this.contrato.BoletoId == null || this.contrato.BoletoId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Boleto.");
+            return false;
+        }
+        if ((this.contrato.BolsaId == null || this.contrato.BolsaId == undefined) && this.contrato.BoletoId != 3) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
+            return false;
+        }
+        //if (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "") {
+        //    this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+        //    return false;
+        //}
         return true;
     };
     CrearContratoAFijarComponent.prototype.changePlanCanje = function (event) {
@@ -347,7 +406,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     CrearContratoAFijarComponent = __decorate([
         Component({
             selector: 'app-crear-contrato-afijar',
-            templateUrl: "./app/crear-contrato/afijar/crear-contrato.afijar.component.html?v=" + new Date().getTime(),
+            templateUrl: "crear-contrato.afijar.component.html",
             providers: [{ provide: CrearContratoService, useClass: CrearContratoAFijarService }]
         })
     ], CrearContratoAFijarComponent);

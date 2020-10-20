@@ -99,6 +99,26 @@
         <mensaje></mensaje>
         <fieldset class="fieldset">
             <label class="subtitulo">Condiciones Generales</label>
+            <div class="form-group col-md-12" *ngIf="isVisibleProveedor()">
+                <label for="Proveedorid" class="font-weight-bold">Proveedor</label>
+                <input [(ngModel)]="contrato.Proveedorid" class="form-control" type="hidden"
+                       id="proveedorinf" style="font-weight: 100 !important;">
+                <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
+                                 (selected)='selectEventProveedor($event)' [(ngModel)]="proveedor"
+                                 (inputChanged)='onChangeSearchProveedor($event)'
+                                 (inputFocused)='selectEventProveedor($event)' [itemTemplate]="itemTemplate2"
+                                 [notFoundText]="autocompleteNotFoundText"
+                                 [notFoundTemplate]="notFoundTemplate2">
+                </ng-autocomplete>
+
+                <ng-template #itemTemplate2 let-item>
+                    <a [innerHTML]="item.RazonSocial"></a>
+                </ng-template>
+
+                <ng-template #notFoundTemplate2 let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                </ng-template>
+            </div>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="tipocontrato" class="font-weight-bold">Tipo de contrato</label>

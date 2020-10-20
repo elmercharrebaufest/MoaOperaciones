@@ -39,7 +39,7 @@ var CrearContratoService = /** @class */ (function (_super) {
             .get('/api/CrearContrato/ObteneDatosContrato', { headers: this.headers })
             .pipe(map(this.extractData));
     };
-    CrearContratoService.prototype.obtenerDatosCompraNet = function () {
+    CrearContratoService.prototype.obtenerDatosCompraNet = function (idProveedorDataAgro) {
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
@@ -47,8 +47,10 @@ var CrearContratoService = /** @class */ (function (_super) {
         this.headers.append('Cache-control', 'no-store');
         this.headers.append('Expires', '0');
         this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('idProveedorDataAgro', idProveedorDataAgro);
         return this.http
-            .get('/api/CrearContrato/ObtenerDatosCompraNet', { headers: this.headers })
+            .get('/api/CrearContrato/ObtenerDatosCompraNet', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
     CrearContratoService.prototype.searchLocalidad = function (term) {
@@ -103,6 +105,31 @@ var CrearContratoService = /** @class */ (function (_super) {
         return this.http
             .post('/api/CrearContrato/CrearContratoAFijar', payload)
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    };
+    CrearContratoService.prototype.buscarProveedoresConCorredor = function (term) {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('filtro', term);
+        return this.http.get('/api/CrearContrato/BuscarProveedoresConCorredor', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    };
+    CrearContratoService.prototype.validarDirecto = function () {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        return this.http
+            .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
             .pipe(map(this.extractData));
     };
     CrearContratoService = __decorate([
