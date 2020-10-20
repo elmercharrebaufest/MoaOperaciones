@@ -3,45 +3,46 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Contrato: <strong>Fijaciones</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>Contratos: Fijaciones</strong> </div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
             </div>
         </div>
         <!--End Title-->
         <!--Search-->
-        <div class="row  myRow firstSection mySearch">
+        <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr>
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                    Ver:
+                    <p>Ver</p>
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
                 </div>
-                
+
                 <div id="searchVendedor" class="col-xs-12 col-sm-6 col-md-15">
-                    Por Vendedor:
+                    <p>Por Vendedor</p>
                     <div class="styled-select">
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroVendedor" (select)="setFiltroVendedor($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
-                    Por Producto:
+                    <p>Por Producto</p>
                     <div class="styled-select">
                         <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto" (select)="setFiltroProducto($event)"></dropdown>
                     </div>
                 </div>
                 <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
-                    Por Contrato:
+                    <p>Por Contrato</p>
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" [value]="filtroContrato" (input)="filtroContrato = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
-                    Mostrar:
+                    <p>Mostrar</p>
                     <div class="styled-select">
                         <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
                     </div>
