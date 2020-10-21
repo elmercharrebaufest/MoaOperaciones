@@ -2583,10 +2583,12 @@ fa-file-word-o {
   color: #ef1e24;
 }
 .datos {
-  padding-left: 0px;
-  padding-right: 20px !important;
+  border-radius: 11px;
+  background: white;
+  padding: 12px 42px 20px 20px !important;
   font-size: 16px;
   color: #3f4845;
+  box-shadow: 0px 3px 6px #00000029;
 }
 /*.documentacion title-caps{font-weight:400}*/
 .datos span {
@@ -2596,38 +2598,63 @@ fa-file-word-o {
   line-height: 1;
 }
 .datos .datoMail {
-  font-weight: 700;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
   line-height: 1;
   width: 100%;
+  margin-top: 15px;
 }
 .datos .datoMail .fa {
-  font-size: 25px;
+  font-size: 35px;
   color: #04753e;
+  margin-right: 20px;
 }
-.datos .datoMail span {
-  display: none;
+.datos title-caps span{
+  font-size: 40px;
+  padding-left: 8px;
+  margin-right: 20px;
 }
 .datos .datoMail p {
-  margin-bottom: 0px;
-  color: #04753e;
+  font-size: 16px;
+  color: #707070;
   word-wrap: break-word;
 }
-.datos .datoMail .fa-mobile {
-  font-size: 35px;
+.datos .datoMail .info{
+  padding-top: 5px;
+  display: flex;
+  flex-direction: column;
 }
 .datos .fa-caret-right {
   color: #04753e;
   margin-right: 10px;
 }
+.datos .direcciones{
+  display: flex;
+  flex-direction: column;
+}
+.datos .direcciones p{
+  font-size: 18px;
+  word-wrap: break-word;
+  color: #959595;
+  font-weight: normal;
+  margin: 5px 0px;
+}
 .documentos p {
   font-size: 16px;
   margin-bottom: 0px;
+  color: #959595;
+  font-weight: normal;
 }
 .documentos title-caps {
   font-weight: 700;
 }
 .documentos {
   color: #3f4845;
+}
+.documentos .titulo{
+  margin-bottom: 10px;
 }
 .documento .fa {
   font-size: 25px;
@@ -2651,7 +2678,7 @@ fa-file-word-o {
   font-size: 15px;
   width: 100%;
   background: #fff;
-  border-left: 8px #04753e solid;
+  border-radius: 11px;
   padding: 10px;
   display: block;
   line-height: 1.2;
@@ -2675,9 +2702,14 @@ fa-file-word-o {
   -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
   box-shadow: 3px 3px 3px -3px rgba(0, 0, 0, 0.45);
 }
-
-.documentos .myRow {
-  margin-bottom: 40px;
+.documento .doc-header{
+  border-bottom: 2px solid #707070;
+  margin-bottom: 5px;
+}
+.documento .doc-description{
+  color: #959595;
+  font-weight: normal;
+  margin: 10px 0px 5px 0px;
 }
 
 @media (max-width: 767px) {
@@ -2696,7 +2728,6 @@ fa-file-word-o {
   }
   #Datos {
     padding-top: 20px;
-    background: #dcdcdc;
     padding: 10px;
   }
   .documentos .myRow {
@@ -3435,4 +3466,8 @@ div.panel-body a.active{
 
 .sola a{
   width: 100%;
+}
+
+.blue {
+  color: #075088 !important;
 }

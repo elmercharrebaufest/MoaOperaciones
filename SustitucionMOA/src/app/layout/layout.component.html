@@ -289,54 +289,54 @@
                     <div id="collapseMO" class="collapse" aria-labelledby="misOperaciones" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('contrato')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/contrato/vigente')"
                                      href="#">
                                     <!--data-toggle="tab">-->Contratos
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('carta-porte')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/carta-porte/descarga')"
                                      href="#">
                                     <!--data-toggle="tab"-->Cartas de Porte
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('liquidacion')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/liquidacion/aprobada')"
                                      href="#">
                                     <!--data-toggle="tab">-->Liquidaciones
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('comprobante-ngs')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/comprobante-ngs/aprobada')"
                                      href="#">
                                     <!--data-toggle="tab">-->Comprobantes
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR PAGOS NG') && isNoGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('pago-ngs')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/pago-ngs/emitido')"
                                      href="#">
                                     <!--data-toggle="tab">-->Pagos
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CARGAR FACT PROV') && isNoGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('factura')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/factura')"
                                      href="#">Factura</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isNoGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('cuenta-corriente')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/cuenta-corriente/agrupada')"
                                      href="#">
                                     <!--data-toggle="tab">-->Cuenta Corriente
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR FLETE') && isNoGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('flete')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/flete/a-facturar')"  href="#">
                                     <!--data-toggle="tab">-->Fletes
                                 </a>
@@ -353,14 +353,14 @@
                     <div id="collapseIF" class="collapse" aria-labelledby="infoFinanciera" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('cuenta-corriente')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/cuenta-corriente/agrupada')"
                                      href="#">
                                     <!--data-toggle="tab">-->Cuenta Corriente
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('pago')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/pago/emitido')"
                                      href="#">
                                     <!--data-toggle="tab">-->Pagos
@@ -378,25 +378,25 @@
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()">
-                                <a class="" [ngClass]="(isSelectedMenu('vendedor')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/vendedor/status')"
                                      href="#">
                                     <!--data-toggle="tab">-->Consulta de Vendedor
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR FLETE')">
-                                <a class="" [ngClass]="(isSelectedMenu('flete')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/flete/a-facturar')"  href="#">
                                     <!--data-toggle="tab">-->Fletes
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
-                                <a class="" [ngClass]="(isSelectedMenu('pesificacion')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/pesificacion')"
                                      href="#"> Pesificaci&oacute;n</a>
                             </div>
                             <div>
-                                <a class="" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
+                                <a (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
                                     Registro de operaciones
                                 </a>
                             </div>
@@ -412,21 +412,21 @@
                     <div id="collapseDoc" class="collapse" aria-labelledby="documentacion" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
-                                <a class="" [ngClass]="(isSelectedMenu('dato-fiscal')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/dato-fiscal/situacion-fiscal')"
                                      href="#">
                                     <!--data-toggle="tab">-->Mi situaci&oacute;n fiscal
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
-                                <a class="" [ngClass]="(isSelectedMenu('dato-fiscal')) ? 'active' : ''"
+                                <a
                                     (click)="goToSeccion('/dato-fiscal/documentacion')"
                                      href="#">
                                     <!--data-toggle="tab">-->{{isGranosSelected() ? 'Documentos e Informaci&oacute;n &uacute;til' : 'Documentos'}}
                                 </a>
                             </div>
                             <div *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
-                                <a class="" [ngClass]="(isSelectedMenu('alta-empresa-granos')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/alta-empresa-granos')"
                                     
                                     href="#">
@@ -434,7 +434,7 @@
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
-                                <a class="" [ngClass]="(isSelectedMenu('estado-solicitud')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/estado-solicitud')" href="#"
                                     >
                                     <!--data-toggle="tab">-->Estado solicitud
@@ -445,7 +445,7 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading seccion" role="tab" id="contacto">
-                        <a class="link-header collapsed" data-toggle="collapse" [ngClass]="(isSelectedMenu('contacto')) ? 'active' : ''"
+                        <a class="link-header collapsed" data-toggle="collapse"
                             (click)="goToSeccion('/contacto')" *ngIf="isAuthorized('CONTACTO MAIL')" href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
@@ -460,7 +460,7 @@
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('ABM EMPRESAS')">
-                                <a class="" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
+                                <a 
                                     (click)="goToSeccion('/altas')" href="#" >
                                     <!--data-toggle="tab">-->Altas Pendientes
                                 </a>
