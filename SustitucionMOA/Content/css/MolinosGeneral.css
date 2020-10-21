@@ -28,6 +28,12 @@ body {
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("/content/fonts/Roboto-Regular.ttf");
+  font-style: normal;
+}
+
 body {
   font-size: 14px;
   font-family: "Roboto Condensed", Arial, sans-serif;
@@ -3072,21 +3078,37 @@ table.dataTable.order-column.hover tbody tr:hover {
 }
 
 /*---------BEGIN: Modal---------*/
-.modal-header {
+/* .modal-header {
   background-color: #007933;
   color: #fff;
   border-left: 8px solid #172972;
+} */
+
+.modal-header {
+  padding: 10px;
+  background-color: #959595;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-family: "Roboto Condensed", Arial, sans-serif!important;
+  text-transform: uppercase !important;
+  color:#FFFFFF !important;
+  font-size: 21px !important;
+  font-weight: bold !important;
 }
 
 .close {
   float: right;
   font-size: 21px;
-  font-weight: 700;
   line-height: 1;
   color: #fff;
   text-shadow: none;
   opacity: 1;
 }
+
 
 modal-content > dl.dl-horizontal {
   font-size: 16px;
@@ -3259,6 +3281,7 @@ a.PagoTablaLink:hover {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   margin-bottom: 20px;
+  font-size: 15px;
 }
 
 i.arrow{
