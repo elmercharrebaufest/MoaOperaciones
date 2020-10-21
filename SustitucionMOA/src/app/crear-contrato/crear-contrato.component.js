@@ -66,8 +66,8 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([
-            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+            new Seccion('/contrato/crear/aprecio', 'crear-contrato', 'A Precio'),
+            new Seccion('/contrato/crear/afijar', 'crear-contrato', 'A Fijar'),
         ]);
         //this.obteneDatosContrato();
     };

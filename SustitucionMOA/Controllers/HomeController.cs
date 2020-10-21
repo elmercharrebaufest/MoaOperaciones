@@ -93,6 +93,10 @@ namespace SustitucionMOA.Controllers
                 HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
                 Request.GetOwinContext().Authentication.GetAuthenticationTypes();
             }
+            else
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+            }
         }
 
         public ActionResult ResetPassword()

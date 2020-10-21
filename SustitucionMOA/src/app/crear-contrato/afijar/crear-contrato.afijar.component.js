@@ -347,7 +347,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     CrearContratoAFijarComponent = __decorate([
         Component({
             selector: 'app-crear-contrato-afijar',
-            templateUrl: "./app/crear-contrato/afijar/crear-contrato.afijar.component.html?v=" + new Date().getTime(),
+            templateUrl: "crear-contrato.afijar.component.html",
             providers: [{ provide: CrearContratoService, useClass: CrearContratoAFijarService }]
         })
     ], CrearContratoAFijarComponent);

@@ -32,6 +32,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
     }
     CrearContratoAPrecioComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
+        console.log("inicia el componente");
         this.obteneDatosContrato(this.contrato);
     };
     CrearContratoAPrecioComponent.prototype.ngAfterViewInit = function () {
@@ -272,7 +273,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
     CrearContratoAPrecioComponent = __decorate([
         Component({
             selector: 'app-crear-contrato-aprecio',
-            templateUrl: "./app/crear-contrato/aprecio/crear-contrato.aprecio.component.html?v=" + new Date().getTime(),
+            templateUrl: "crear-contrato.aprecio.component.html",
             providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
         })
     ], CrearContratoAPrecioComponent);
