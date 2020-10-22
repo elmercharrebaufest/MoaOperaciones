@@ -1459,19 +1459,16 @@ Texto con recuadro gris*/
 }
 .msf .rowInfoGrey p {
   font-weight: 400;
-  font-size: 17px;
+  font-size: 18px;
+  color: #959595 !important;
 }
 .msf .rowInfoGrey strong {
-  text-transform: uppercase;
   font-size: 18px;
 }
 .msf .rowInfoGrey span {
   padding-bottom: 10px;
   float: left;
   width: 100%;
-}
-.msf .rowInfoGrey p strong {
-  color: #172f8f !important;
 }
 .msf .rowInfoGrey {
   background: none !important;
@@ -3470,4 +3467,18 @@ div.panel-body a.active{
 
 .blue {
   color: #075088 !important;
+}
+
+#datosFiscales{
+  margin-top: 12px;
+}
+
+#datosFiscales div{
+  margin-bottom: 10px;
+}
+
+#datosFiscales p{
+  color: #707070;
+  margin: 0;
+  font-weight: normal;
 }
