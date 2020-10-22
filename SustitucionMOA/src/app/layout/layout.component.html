@@ -181,255 +181,312 @@
         <div *ngIf="showLiquidaciones" class="col-xs-12">
             <a (click)="exportExcel(modalLiquidacionContrato, modalLiquidacionSecuencia, modalLiquidacionComprobante)"
                 href="#" style="text-decoration:none!important">
-                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
             </a>
         </div>
 
         <div *ngIf="showFleteProcedencia" class="col-xs-12">
             <a (click)="exportExcelFleteProcedencia(modalInfoContratoProcedencia)" href="#"
                 style="text-decoration:none!important">
-                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
             </a>
         </div>
     </modal-footer>
 </modal>
-
-<barra-nav id="mySidenav" class="sidebar">
-    <div class="sidebar-wrapper">
-        <div class="logo">
-            <img src="./Content/images/header/logoEndosado.png" class="img-responsive" (click)="clickLogo()">
-        </div>
-        <div class="switch" *ngIf="isAmbos()">
-            <input type="radio" class="switch-input" name="view" value="week" id="week" [checked]="isGranosSelected()"
-                (click)="setGranos()">
-            <label for="week" class="switch-label switch-label-off">GRANOS</label>
-            <input type="radio" class="switch-input" name="view" value="month" id="month"
-                [checked]="isNoGranosSelected()" (click)="setNoGranos()">
-            <label for="month" class="switch-label switch-label-on">NO GRANOS</label>
-            <span class="switch-selection"></span>
-        </div>
-        <nav>
-            <ul class="nav">
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('home')) ? 'active' : ''"
-                        (click)="goToSeccion('/home')" *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()"
-                        href="#">
-                        <!--data-toggle="tab">-->Inicio
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('home-ngs')) ? 'active' : ''"
-                        (click)="goToSeccion('/home-ngs')"
-                        *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" href="#">
-                        <!--data-toggle="tab">-->Inicio
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('contrato')) ? 'active' : ''"
-                        (click)="goToSeccion('/contrato/vigente')"
-                        *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()" href="#">
-                        <!--data-toggle="tab">-->Contratos
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('carta-porte')) ? 'active' : ''"
-                        (click)="goToSeccion('/carta-porte/descarga')"
-                        *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()" href="#">
-                        <!--data-toggle="tab"-->Cartas de Porte
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('liquidacion')) ? 'active' : ''"
-                        (click)="goToSeccion('/liquidacion/aprobada')"
-                        *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranosSelected()" href="#">
-                        <!--data-toggle="tab">-->Liquidaciones
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('comprobante-ngs')) ? 'active' : ''"
-                        (click)="goToSeccion('/comprobante-ngs/aprobada')"
-                        *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()" href="#">
-                        <!--data-toggle="tab">-->Comprobantes
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('pago')) ? 'active' : ''"
-                        (click)="goToSeccion('/pago/emitido')"
-                        *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()" href="#">
-                        <!--data-toggle="tab">-->Pagos
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('pago-ngs')) ? 'active' : ''"
-                        (click)="goToSeccion('/pago-ngs/emitido')"
-                        *ngIf="isAuthorized('CONSULTAR PAGOS NG') && isNoGranosSelected()" href="#">
-                        <!--data-toggle="tab">-->Pagos
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('cuenta-corriente')) ? 'active' : ''"
-                        (click)="goToSeccion('/cuenta-corriente/agrupada')"
-                        *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE')" href="#">
-                        <!--data-toggle="tab">-->Cuenta Corriente
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('dato-fiscal')) ? 'active' : ''"
-                        (click)="goToSeccion('/dato-fiscal/situacion-fiscal')"
-                        *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')" href="#">
-                        <!--data-toggle="tab">-->Datos fiscales
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('usuario')) ? 'active' : ''"
-                        (click)="goToSeccion('/usuario/list')" *ngIf="isAuthorized('ABM USUARIOS')" href="#">
-                        <!--data-toggle="tab">-->Usuarios
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('vendedor')) ? 'active' : ''"
-                        (click)="goToSeccion('/vendedor/status')"
-                        *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()" href="#">
-                        <!--data-toggle="tab">-->Consulta de Vendedor
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('contacto')) ? 'active' : ''"
-                        (click)="goToSeccion('/contacto')" *ngIf="isAuthorized('CONTACTO MAIL')" href="#">
-                        <!--data-toggle="tab">-->Contacto
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
-                        (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
-                        href="#">
-                        <!--data-toggle="tab">-->Aduana
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
-                        (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
-                        <!--data-toggle="tab">-->RYD
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
-                        (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
-                        href="#">
-                        <!--data-toggle="tab">-->RYD Mantenimiento
-                    </a>
-                </li>
-                <li>
-                    <a class="animate menuDerecha" [ngClass]="(isSelectedMenu('flete')) ? 'active' : ''"
-                        (click)="goToSeccion('/flete/a-facturar')" *ngIf="isAuthorized('CONSULTAR FLETE')" href="#">
-                        <!--data-toggle="tab">-->Fletes
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('factura')) ? 'active' : ''"
-                        (click)="goToSeccion('/factura')"
-                        *ngIf="isAuthorized('CARGAR FACT PROV') && isNoGranosSelected()" href="#">Factura</a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('pesificacion')) ? 'active' : ''"
-                        (click)="goToSeccion('/pesificacion')"
-                        *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()" href="#"> Pesificaci&oacute;n</a>
-                </li>
-                <li>
-                    <a class="animate" (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
-                        Registro de operaciones
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('alta-empresa-granos')) ? 'active' : ''"
-                        (click)="goToSeccion('/alta-empresa-granos')"
-                        *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')"
-                        href="#">
-                        <!--data-toggle="tab">-->Alta Empresa
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('app-altas')) ? 'active' : ''"
-                        (click)="goToSeccion('/altas')" href="#" *ngIf="isAuthorized('ABM EMPRESAS')">
-                        <!--data-toggle="tab">-->Altas Pendientes
-                    </a>
-                </li>
-                <li>
-                    <a class="animate" [ngClass]="(isSelectedMenu('estado-solicitud')) ? 'active' : ''"
-                        (click)="goToSeccion('/estado-solicitud')" href="#"
-                        *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
-                        <!--data-toggle="tab">-->Estado solicitud
-
-
-                    </a>
-                </li>
-            </ul>
-        </nav>
+<!--User-->
+<div class="header">
+    <div class="logo">
+        <img src="/Content/images/header/logo.png" class="img-responsive" (click)="clickLogo()">
     </div>
-</barra-nav>
-<div class="main-panel">
-    <div id="coverAll"></div>
-    <!--User-->
-    <div class="header">
-        <div class="User-wrapper">
-            <div id="UserNotification" class="clearfix"> <span id="notificationOpen" onClick="notificationOpen()"> <span
-                        class="fa fa-bell-o" aria-hidden="true"></span> <span class="badge">{{cantidadNot()}}</span>
-                </span> <span id="notificationClose" onClick="notificationClose()"> <span class="fa fa-times"
-                        aria-hidden="true"></span> <span class="badge">{{cantidadNot()}}</span> </span> </div>
-            <div class="UserBar clearfix">
-                <nav>
-                    <ul class="nav">
-                        <li class="" style="padding-right:10px;" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')"> <a
-                                (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="animate"><span
-                                    class="fa fa-user-circle-o "
-                                    aria-hidden="true"></span><strong>{{nombre}}</strong></a> <span
-                                style="font-weight:normal; ">({{proveedor}}) </span></li>
-                        <li class="" style="padding-right:10px;" *ngIf="!isAuthorized('CONSULTAR DATOS FISCALES')"><span
-                                class="fa fa-user-circle-o " aria-hidden="true"></span><strong>{{nombre}}</strong><span
-                                style="font-weight:normal; ">({{proveedor}}) </span></li>
-                        <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
-                                (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
-                                    class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
-                        <!--<li><a (click)="editarCuenta()" href="#" class="animate"><span
-                                    class="fa fa-key" aria-hidden="true"></span>Editar cuenta</a></li>-->
-                        <li *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
-                                (click)="goToSeccion('/usuario/cambio-vendedor')" class="animate" href="#"><span
-                                    class="fa fa-id-badge" aria-hidden="true"></span>Cambio de vendedor </a></li>
-                        <li><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
-                                    aria-hidden="true"></span>Cerrar sesión</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-        <div id="menuSmall">
-            <div class="logoSmall"> <a href="#Inicio" data-toggle="tab"> <img
-                        src="../Content/images/header/logoSmall.png" class="img-responsive"> </a> </div>
+    <div class="User-wrapper">
+
+        <div class="UserBar clearfix">
             <nav>
                 <ul class="nav">
-                    <li id="liHome">
-                        <span class="MenuSmallText"> INICIO</span>
-                        <span (click)="goToSeccion('/home')"
-                            *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()" class="fa fa-home "
-                            aria-hidden="true"></span>
-                        <span (click)="goToSeccion('/home-ngs')"
-                            *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" class="fa fa-home "
-                            aria-hidden="true"></span>
+                    <li class="" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
+                        <div class="user-info-container">
+                            <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="user-name">
+                                <strong>{{nombre}}</strong>
+                            </a>
+                            <span class="user-code">C&oacute;digo de proveedor {{proveedor}} </span>
+                        </div>
                     </li>
-                    <li id="liUser"><span class="MenuSmallText">USUARIO</span><span id="userOpenSmall"
-                            onClick="userOpenSmall()" class="fa fa-user-circle-o" aria-hidden="true"></span> <span
-                            id="userCloseSmall" onClick="userCloseSmall()" class="fa fa-times"
-                            aria-hidden="true"></span></li>
-                    <li id="liNoti"><span class="badge">{{cantidadNot()}}</span><span id="notificationOpenSmall"
-                            onClick="notificationOpenSmall()" class="fa fa-bell-o" aria-hidden="true"></span><span
-                            id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times"
-                            aria-hidden="true"></span></li>
+                    <!-- <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
+                            (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
+                                class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
+                    <li><a (click)="editarCuenta()" href="#" class="animate"><span
+                                class="fa fa-key" aria-hidden="true"></span>Editar cuenta</a></li>
+                    <li *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
+                            (click)="goToSeccion('/usuario/cambio-vendedor')" class="animate" href="#"><span
+                                class="fa fa-id-badge" aria-hidden="true"></span>Cambio de vendedor </a></li>
+                    <li><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
+                                aria-hidden="true"></span>Cerrar sesión</a></li> -->
+                    <li>
+                        <div id="UserNotification" class="clearfix"> <span id="notificationOpen"
+                                onClick="notificationOpen()"> <span class="fa fa-bell-o" aria-hidden="true"></span>
+                                <span class="badge">{{cantidadNot()}}</span>
+                            </span> <span id="notificationClose" onClick="notificationClose()"> <span
+                                    class="fa fa-bell-o" aria-hidden="true"></span> <span
+                                    class="badge">{{cantidadNot()}}</span> </span>
+                        </div>
+                    </li>
+                    <li id="liUser"><span id="userOpenSmall" onClick="userOpenSmall()" class="fa fa-user-circle-o"
+                            aria-hidden="true"></span> <span id="userCloseSmall" onClick="userCloseSmall()"
+                            class="fa fa-user-circle-o" aria-hidden="true"></span>
+                    </li>
                 </ul>
             </nav>
-            <div class="myMenu"><span class="MenuSmallText"> MENÚ </span><span id="myMenuOpen" class="fa fa-bars"
-                    aria-hidden="true" onClick="openNav()"></span> <span id="myMenuClose" onClick="closeNav()"
-                    class="fa fa-times" aria-hidden="true"></span> </div>
         </div>
     </div>
+    <div id="menuSmall">
+        <div class="logoSmall"> <a href="#Inicio" data-toggle="tab"> <img src="../Content/images/header/logoSmall.png"
+                    class="img-responsive"> </a> </div>
+        <nav>
+            <ul class="nav">
+                <li id="liHome">
+                    <span class="MenuSmallText"> INICIO</span>
+                    <span (click)="goToSeccion('/home')" *ngIf="isAuthorized('CONSULTAR HOME') && isGranosSelected()"
+                        class="fa fa-home " aria-hidden="true"></span>
+                    <span (click)="goToSeccion('/home-ngs')"
+                        *ngIf="isAuthorized('CONSULTAR HOME NG') && isNoGranosSelected()" class="fa fa-home "
+                        aria-hidden="true"></span>
+                </li>
+                <li id="liUser"><span class="MenuSmallText">USUARIO</span><span id="userOpenSmall"
+                        onClick="userOpenSmall()" class="fa fa-user-circle-o" aria-hidden="true"></span> <span
+                        id="userCloseSmall" onClick="userCloseSmall()" class="fa fa-times" aria-hidden="true"></span>
+                </li>
+                <li id="liNoti"><span class="badge">{{cantidadNot()}}</span><span id="notificationOpenSmall"
+                        onClick="notificationOpenSmall()" class="fa fa-bell-o" aria-hidden="true"></span><span
+                        id="notificationCloseSmall" onClick="notificationCloseSmall()" class="fa fa-times"
+                        aria-hidden="true"></span></li>
+            </ul>
+        </nav>
+        <div class="myMenu"><span class="MenuSmallText"> MENÚ </span><span id="myMenuOpen" class="fa fa-bars"
+                aria-hidden="true" onClick="openNav()"></span> <span id="myMenuClose" onClick="closeNav()"
+                class="fa fa-times" aria-hidden="true"></span> </div>
+    </div>
+</div>
+<div class="main-panel">
+    <!-- Navegación -->
+    <barra-nav id="mySidenav" class="sidebar">
+        <div class="sidebar-wrapper">
+            <div class="switch" *ngIf="isAmbos()">
+                <input type="radio" class="switch-input" name="view" value="week" id="week"
+                    [checked]="isGranosSelected()" (click)="setGranos()">
+                <label for="week" class="switch-label switch-label-off">GRANOS</label>
+                <input type="radio" class="switch-input" name="view" value="month" id="month"
+                    [checked]="isNoGranosSelected()" (click)="setNoGranos()">
+                <label for="month" class="switch-label switch-label-on">NO GRANOS</label>
+                <span class="switch-selection"></span>
+            </div>
+            <div id="accordionMenu" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading seccion" role="tab" id="misOperaciones">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseMO" aria-expanded="false" aria-controls="collapseMO">
+                            Mis Operaciones <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseMO" class="collapse" aria-labelledby="misOperaciones" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/contrato/vigente')" href="#">
+                                    <!--data-toggle="tab">-->Contratos
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()">
+                                <a (click)="goToSeccion('/carta-porte/descarga')" href="#">
+                                    <!--data-toggle="tab"-->Cartas de Porte
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranosSelected()">
+                                <a (click)="goToSeccion('/liquidacion/aprobada')" href="#">
+                                    <!--data-toggle="tab">-->Liquidaciones
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()">
+                                <a (click)="goToSeccion('/comprobante-ngs/aprobada')" href="#">
+                                    <!--data-toggle="tab">-->Comprobantes
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR PAGOS NG') && isNoGranosSelected()">
+                                <a (click)="goToSeccion('/pago-ngs/emitido')" href="#">
+                                    <!--data-toggle="tab">-->Pagos
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CARGAR FACT PROV') && isNoGranosSelected()">
+                                <a (click)="goToSeccion('/factura')" href="#">Factura</a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isNoGranosSelected()">
+                                <a (click)="goToSeccion('/cuenta-corriente/agrupada')" href="#">
+                                    <!--data-toggle="tab">-->Cuenta Corriente
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR FLETE') && isNoGranosSelected()">
+                                <a (click)="goToSeccion('/flete/a-facturar')" href="#">
+                                    <!--data-toggle="tab">-->Fletes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" *ngIf="isGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="infoFinanciera">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseIF" aria-expanded="false" aria-controls="collapseIF">
+                            Informaci&oacute;n Financiera <span class="glyphicon glyphicon-chevron-down"
+                                aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseIF" class="collapse" aria-labelledby="infoFinanciera" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isGranosSelected()">
+                                <a (click)="goToSeccion('/cuenta-corriente/agrupada')" href="#">
+                                    <!--data-toggle="tab">-->Cuenta Corriente
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR PAGOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/pago/emitido')" href="#">
+                                    <!--data-toggle="tab">-->Pagos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" *ngIf="isGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="operar">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseO" aria-expanded="false" aria-controls="collapseO">
+                            Operar <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()">
+                                <a (click)="goToSeccion('/vendedor/status')" href="#">
+                                    <!--data-toggle="tab">-->Consulta de Vendedor
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR FLETE')">
+                                <a (click)="goToSeccion('/flete/a-facturar')" href="#">
+                                    <!--data-toggle="tab">-->Fletes
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
+                                <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
+                            </div>
+                            <div>
+                                <a (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
+                                    Registro de operaciones
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading seccion" role="tab" id="documentacion">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
+                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span
+                                class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseDoc" class="collapse" aria-labelledby="documentacion" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
+                                <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#">
+                                    <!--data-toggle="tab">-->Mi situaci&oacute;n fiscal
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
+                                <a (click)="goToSeccion('/dato-fiscal/documentacion')" href="#">
+                                    <!--data-toggle="tab">-->{{isGranosSelected() ? 'Documentos e Informaci&oacute;n &uacute;til' : 'Documentos'}}
+                                </a>
+                            </div>
+                            <div
+                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                                <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
+                                    <!--data-toggle="tab">-->Alta Empresa
+                                </a>
+                            </div>
+                            <div
+                                *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                                <a (click)="goToSeccion('/estado-solicitud')" href="#">
+                                    <!--data-toggle="tab">-->Estado solicitud
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading seccion" role="tab" id="contacto">
+                        <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
+                            *ngIf="isAuthorized('CONTACTO MAIL')" href="#" data-parent="#accordionMenu">
+                            <!--data-toggle="tab">-->Contacto
+                        </a>
+                    </div>
+                </div>
+                <div class="panel panel-default" *ngIf="isAuthorized('ABM USUARIOS')">
+                    <div class="panel-heading seccion" role="tab" id="usuarios">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
+                            Usuarios <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('ABM USUARIOS')">
+                                <a (click)="goToSeccion('/usuario/list')" href="#">
+                                    Listado
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('ABM EMPRESAS')">
+                                <a (click)="goToSeccion('/altas')" href="#">
+                                    <!--data-toggle="tab">-->Altas Pendientes
+                                </a>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- DEPRECADO! -->
+                <!-- <nav>
+                <ul class="nav">
+                    
+
+
+                    <li>
+                        <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
+                            (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
+                            href="#">
+                            data-toggle="tab">Aduana
+                        </a>
+                    </li>
+                    <li>
+                        <a class="animate " [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
+                            (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
+                            data-toggle="tab">RYD
+                        </a>
+                    </li>
+                    <li>
+                        <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
+                            (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
+                            href="#">
+                            data-toggle="tab">RYD Mantenimiento
+                        </a>
+                    </li>
+
+
+
+
+                </ul>
+            </nav> -->
+            </div>
+        </div>
+    </barra-nav>
     <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert"><button
             type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"
@@ -459,32 +516,33 @@
     <!-- END Tab panes -->
     <router-outlet></router-outlet>
 </div>
-<header-user id="userSmall" style="display:none">
+<header-user id="userSmall" style="display:none; margin-right: 25px;">
     <usuario-small id="usuarioSmall" class="clearfix">
-        <nav class="headerbar">
-            <ul class="nav">
-                <li class="userName" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')"><a
-                        (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="animate"><span
-                            class="fa fa-user-circle-o" aria-hidden="true"></span>{{nombre}}<span
-                            style="font-weight:normal; color:#333">({{proveedor}})</span></a></li>
-                <li class="userName" *ngIf="!isAuthorized('CONSULTAR DATOS FISCALES')"><span class="fa fa-user-circle-o"
-                        aria-hidden="true"></span>{{nombre}}<span
-                        style="font-weight:normal; color:#333">({{proveedor}})</span></li>
-                <li class="userData" *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
-                        (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
-                            class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
-                <li class="userData"><a (click)="goToSeccion('/usuario/cambio-contrasenia')" href="#"
-                        class="animate"><span class="fa fa-key" aria-hidden="true"></span>Cambio de contraseña </a></li>
-                <li class="userData" *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
-                        (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate"><span
-                            class="fa fa-key" aria-hidden="true"></span>Cambio de vendedor </a></li>
-                <li class="userData"><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
-                            aria-hidden="true"></span>Cerrar sesión</a></li>
-            </ul>
-        </nav>
+        <div class="headerbar">
+            <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')">
+                <a (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate">
+                    Documentación<span class="fa fa-file-text" aria-hidden="true"></span>
+                </a>
+            </div>
+            <!-- <div class="col-md-12 col-sm-12 userData">
+                <a (click)="goToSeccion('/usuario/cambio-contrasenia')" href="#" class="animate">
+                    Cambio de contraseña<span aria-hidden="true"><img src="/Content/images/header/key-solid.svg" style="width: 16px; height: 16px; color: #959595;" alt="clave"/></span>
+                </a>
+            </div> -->
+            <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('SELECCIONAR VENDEDOR')">
+                <a (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate">
+                    Cambio de vendedor<span class="fa fa-id-card" aria-hidden="true"></span>
+                </a>
+            </div>
+            <div class="col-md-12 col-sm-12 userData no-border">
+                <a (click)="cerrarSesion()" href="#" class="animate">
+                    Cerrar sesión<span class="fa fa-sign-out" aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
     </usuario-small>
 </header-user>
-<notifications-container id="notificationSmall" style="display:none">
+<notifications-container id="notificationSmall" style="display:none; margin-right: 125px;">
     <noti-small id="notiSmall" class="clearfix" *ngIf="noticiasNotEmpty()">
 
         <div *ngFor="let notificacion of noticias.notificaciones" class="notification info">

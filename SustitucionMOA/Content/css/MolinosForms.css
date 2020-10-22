@@ -398,11 +398,11 @@ th.switch {
   margin-top: 20px;
   padding-right: 0px;
 }
-
 .squareInfo title-caps {
   padding-left: 0px;
   color: #1e1e20;
   text-transform: inherit;
+  font-size: 24px;
 }
 .mySearch hr,
 .roundedInfo hr {
