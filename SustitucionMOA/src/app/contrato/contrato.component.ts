@@ -43,7 +43,7 @@ export class ContratoBaseComponent extends ListBaseComponent {
                 new Seccion('/contrato/fijacion', 'contrato', 'Fijaciones'),
                 new Seccion('/contrato/ampliacion', 'contrato', 'Ampliaciones'),
                 new Seccion('/contrato/anulacion', 'contrato', 'Anulaciones'),
-                new Seccion('/contrato/crear/aprecio', 'contrato', 'Crear')
+                //new Seccion('/contrato/crear/aprecio', 'contrato', 'Crear')
             ]
         );
         this.getData();

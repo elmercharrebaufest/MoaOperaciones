@@ -50,7 +50,13 @@ var ContratoBaseComponent = /** @class */ (function (_super) {
     ContratoBaseComponent.prototype.ngOnInit = function () {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/contrato/vigente', 'contrato', 'Vigentes'), new Seccion('/contrato/fijacion', 'contrato', 'Fijaciones'), new Seccion('/contrato/ampliacion', 'contrato', 'Ampliaciones'), new Seccion('/contrato/anulacion', 'contrato', 'Anulaciones'), new Seccion('/crear-contrato/aprecio', 'contrato', 'Crear')]);
+        this.navService.setSeccionList([
+            new Seccion('/contrato/vigente', 'contrato', 'Vigentes'),
+            new Seccion('/contrato/fijacion', 'contrato', 'Fijaciones'),
+            new Seccion('/contrato/ampliacion', 'contrato', 'Ampliaciones'),
+            new Seccion('/contrato/anulacion', 'contrato', 'Anulaciones'),
+            new Seccion('/contrato/crear/aprecio', 'contrato', 'Crear')
+        ]);
         this.getData();
     };
     ContratoBaseComponent.prototype.setFiltroProducto = function (producto) {

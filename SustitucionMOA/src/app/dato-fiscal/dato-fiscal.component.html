@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>{{nombre}}</strong> <span *ngIf="proveedor !=''">({{proveedor}})</span></div>
+            <div class="col-xs-12 col-sm-10 "><strong>Mi situaci&oacute;n fiscal</strong></div>
             <!--<div class="col-xs-12 col-sm-2">
                 <a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
@@ -16,89 +16,103 @@
             <mensaje></mensaje>
             <spinner></spinner>
         </div>
+        <!-- col-xs-12 col-sm-3 col-md-2  rowInfoGrey animate -->
         <div class="row myRow firstSection roundedInfo" *ngIf="datosFiscales">
-            <div class="col-xs-12 col-sm-3 col-md-2  rowInfoGrey animate">
-                <div class="row myRow squareInfo">
-                    <span>
-                        <p> <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Estado SISA: </p>
-                        <strong style="width:100%">{{datosFiscales.cabeceras[0].rg2300}}</strong>
-                    </span> <span>
-                        <p> <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Proveedor Nº: </p>
-                        <strong style="width:100%">{{datosFiscales.cabeceras[0].proveedor}}</strong>
-                    </span> <span>
-                        <p> <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> CUIT: </p>
-                        <strong style="width:100%">{{datosFiscales.cabeceras[0].cuit}}</strong>
-                    </span> <span>
-                        <p> <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Situaci&oacute;n Categor&iacute;as SISA Activas: </p>
-                        <p *ngFor="let categoria of datosFiscales.cabeceras[0].categorias"><strong style="width:100%">{{categoria}}</strong></p>
-                    </span>
+            <div class="col-xs-12 col-sm-5 col-md-4 squareInfo animate datos">
+                <div class="row myRow">
+                    <title-caps class="blue">
+                        {{nombre}} ({{proveedor}})
+                    </title-caps>
+                    <div id="datosFiscales">
+                        <div>
+                            <p class="blue"><strong>Estado SISA:</strong></p>
+                            <p style="width:100%">{{datosFiscales.cabeceras[0].rg2300}}</p>
+                        </div>
+                        <div>
+                            <p class="blue"><strong>Proveedor Nº:</strong> </p>
+                            <p style="width:100%">{{datosFiscales.cabeceras[0].proveedor}}</p>
+                        </div>
+                        <div>
+                            <p class="blue"><strong>CUIT:</strong> </p>
+                            <p style="width:100%">{{datosFiscales.cabeceras[0].cuit}}</p>
+                        </div>
+                        <div>
+                            <p class="blue"><strong>Situaci&oacute;n Categor&iacute;as SISA Activas:</strong> </p>
+                            <span *ngFor="let categoria of datosFiscales.cabeceras[0].categorias"><p style="width:100%">{{categoria}}</p></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="row myRow squareInfo">
+                <hr class="hideMobile">
+                <div class="row myRow">
                     <div id="showCaracteristicas" class="showBtn btnSection btnInfo animate" onClick="showCaracteristicas()">
                         <div>
                             <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                         </div>
-                        <div>Otros datos</div>
+                        <div class="blue">Otros datos</div>
                     </div>
                     <div id="hideCaracteristicas" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeCaracteristicas()">
                         <div>
                             <li class="fa fa-times" aria-hidden="true"></li>
                         </div>
-                        <div>Otros datos</div>
+                        <div class="blue">Otros datos</div>
                     </div>
-                    <title-caps class="hideMobile">Otros datos</title-caps>
-                    <hr class="hideMobile">
+                    <title-caps class="hideMobile blue">Otros datos</title-caps>
+                    
                     <div id="caracteristicas" class="rowInfoGrey clearfix hideMobile">
                         <div class="row myRow">
                             <span>
-                                <p>Dirección fiscal: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].calleFiscal}} - {{datosFiscales.cabeceras[0].locaFiscal}} - {{datosFiscales.cabeceras[0].provFiscal}} - {{datosFiscales.cabeceras[0].cpFiscal}}</strong>
-                            </span> <span>
-                                <p>Domicilio de envío de documentación: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].calleEnvio}} - {{datosFiscales.cabeceras[0].locaEnvio}} - {{datosFiscales.cabeceras[0].provEnvio}} - {{datosFiscales.cabeceras[0].cpEnvio}}</strong>
-                            </span> <span>
-                                <p>Categoría fiscal para retención: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].cateFiscalRet}}</strong>
-                            </span> <span>
-                                <p>Nro. De Insc. IIBB: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].nroInscIibb}}</strong>
-                            </span> <span>
-                                <p>Tributa por diferencia de precio: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].tribuDifPrecio}}</strong>
+                                <p><strong>Dirección fiscal: </strong></p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].calleFiscal}} - {{datosFiscales.cabeceras[0].locaFiscal}} - {{datosFiscales.cabeceras[0].provFiscal}} - {{datosFiscales.cabeceras[0].cpFiscal}}</p>
                             </span>
                             <span>
-                                <p>Fecha Form 1276: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].fecha1276}}</strong>
+                                <p><strong>Domicilio de envío de documentación:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].calleEnvio}} - {{datosFiscales.cabeceras[0].locaEnvio}} - {{datosFiscales.cabeceras[0].provEnvio}} - {{datosFiscales.cabeceras[0].cpEnvio}}</p>
                             </span>
                             <span>
-                                <p>Año CM05: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].cm05}}</strong>
+                                <p><strong>Categoría fiscal para retención:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].cateFiscalRet}}</p>
                             </span>
                             <span>
-                                <p>Fecha Act. Legajo: </p>
-                                <strong style="width:100%">{{datosFiscales.cabeceras[0].fechaLegajo}}</strong>
+                                <p><strong>Nro. De Insc. IIBB:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].nroInscIibb}}</p>
+                            </span>
+                            <span>
+                                <p><strong>Tributa por diferencia de precio:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].tribuDifPrecio}}</p>
+                            </span>
+                            <span>
+                                <p><strong>Fecha Form 1276:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].fecha1276}}</p>
+                            </span>
+                            <span>
+                                <p><strong>Año CM05:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].cm05}}</p>
+                            </span>
+                            <span>
+                                <p><strong>Fecha Act. Legajo:</strong> </p>
+                                <p style="width:100%">{{datosFiscales.cabeceras[0].fechaLegajo}}</p>
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-9 col-md-10 animate">
+            <div class="col-xs-12 col-sm-7 col-md-8 animate">
                 <!--Exenciones-->
                 <div class="row myRow">
                     <div id="showExenciones" class="showBtn btnSection btnInfo animate" onClick="showExenciones()">
                         <div>
                             <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                         </div>
-                        <div>Exenciones</div>
+                        <div class="blue">Exenciones</div>
                     </div>
                     <div id="hideExenciones" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeExenciones()">
                         <div>
                             <li class="fa fa-times" aria-hidden="true"></li>
                         </div>
-                        <div>Exenciones</div>
+                        <div class="blue">Exenciones</div>
                     </div>
                     <div class="row titleSection titleSectionNoBorder hideMobile">
-                        <div class="col-xs-12 col-sm-12">Exenciones</div>
+                        <div class="col-xs-12 col-sm-12 blue">Exenciones</div>
                     </div>
 
                     <div id="myExenciones" class="row myRow hideMobile">
@@ -136,16 +150,16 @@
                         <div>
                             <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                         </div>
-                        <div>Cuentas Habilitadas</div>
+                        <div class="blue">Cuentas Habilitadas</div>
                     </div>
                     <div id="hideCuentasHabilitadas" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeCuentasHabilitadas()">
                         <div>
                             <li class="fa fa-times" aria-hidden="true"></li>
                         </div>
-                        <div>Cuentas Habilitadas</div>
+                        <div class="blue">Cuentas Habilitadas</div>
                     </div>
                     <div class="row titleSection titleSectionNoBorder hideMobile">
-                        <div class="col-xs-12 col-sm-12">Cuentas Habilitadas</div>
+                        <div class="col-xs-12 col-sm-12 blue">Cuentas Habilitadas</div>
                     </div>
 
                     <div id="myCuentasHabilitadas" class="row myRow hideMobile">
@@ -177,16 +191,16 @@
                         <div>
                             <li class="fa fa-angle-double-right" aria-hidden="true"></li>
                         </div>
-                        <div>Convenios Multilaterales</div>
+                        <div class="blue">Convenios Multilaterales</div>
                     </div>
                     <div id="hideConveniosMultilaterales" class="hideBtn btnSection btnInfo animate btnInfoClose" onClick="closeConveniosMultilaterales()">
                         <div>
                             <li class="fa fa-times" aria-hidden="true"></li>
                         </div>
-                        <div>Convenios Multilaterales</div>
+                        <div class="blue">Convenios Multilaterales</div>
                     </div>
                     <div class="row titleSection titleSectionNoBorder hideMobile">
-                        <div class="col-xs-12 col-sm-12">Convenios Multilaterales</div>
+                        <div class="col-xs-12 col-sm-12 blue">Convenios Multilaterales</div>
                     </div>
 
                     <div id="myConveniosMultilaterales" class="row myRow hideMobile">

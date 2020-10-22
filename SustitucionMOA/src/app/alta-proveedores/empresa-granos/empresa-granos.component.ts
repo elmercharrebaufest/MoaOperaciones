@@ -74,6 +74,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     localidades: any = [];
     autocompleteNotFoundText = "No encontrado";
 
+    private selectUndefinedOptionValue:any;
     proveedorId: number = 0;
 
     estadoSISA: string = "";

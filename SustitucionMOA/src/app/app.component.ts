@@ -65,12 +65,12 @@ export class AppComponent {
                     } else if (result.url == undefined || result.url == "") {
                         this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
                     } else {
-                        location.href = result.url;
+                        window.location.href = result.url;
                     }
                 } else {
                     if (result.error != undefined && result.error != "") {
                         alert(result.error);
-                        location.href = window.location.origin + '/SignOut';
+                        window.location.href = window.location.origin + '/SignOut';
                     } 
                     else {
                         this.loginUser(result);
@@ -97,6 +97,10 @@ export class AppComponent {
         this.sessionDataService.setGranosFlag(result.granosFlag);
 
         sessionStorage.setItem("granosSelected", result.granosFlag);
+
+
+
+        
         this.navService.navegarSeccion(result.redirectURL);
 
         //La URL a donde direccionamos ahora la traemos del controller. Esto es para no tener que estan pasando tantas variables que no nos interesan acá

@@ -199,171 +199,61 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dist\carta-porte-carta-porte-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\bootstrap.min.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\font-awesome.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\font-awesome.min.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\loader.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\MolinosForms.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\MolinosGeneral.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\ng2-select.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\normalize.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\css\tables.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\dataTables.responsive.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\jquery.dataTables.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\jquery.dataTables.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\responsive.dataTables.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\sort_asc.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\sort_both.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\datatables_files\sort_desc.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\fontawesome-webfont.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\buttons\search.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\login.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\loginSmall.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logoEndosado.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logoLogin.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logoOLD.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logoSmall.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logo_.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\sideBack.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\bootstrap-datetimepicker.es.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\bootstrap-datetimepicker.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\bootstrap.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\bootstrap.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\jquery.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\molinos.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\js\trmix.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\contrato-contrato-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\dato-fiscal-dato-fiscal-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\factura-factura-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\favicon.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\flete-flete-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\glyphicons-halflings-regular.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\liquidacion-liquidacion-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\main.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\pago-no-granos-pago-no-granos-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\pago-pago-module.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\polyfills.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\runtime.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\styles.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\vendor.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="dist\carta-porte-carta-porte-module.js" />
+    <Content Include="dist\Content\css\bootstrap.min.css" />
+    <Content Include="dist\Content\css\font-awesome.css" />
+    <Content Include="dist\Content\css\font-awesome.min.css" />
+    <Content Include="dist\Content\css\loader.css" />
+    <Content Include="dist\Content\css\MolinosForms.css" />
+    <Content Include="dist\Content\css\MolinosGeneral.css" />
+    <Content Include="dist\Content\css\ng2-select.css" />
+    <Content Include="dist\Content\css\normalize.css" />
+    <Content Include="dist\Content\css\tables.css" />
+    <Content Include="dist\Content\datatables_files\dataTables.responsive.js" />
+    <Content Include="dist\Content\datatables_files\jquery.dataTables.css" />
+    <Content Include="dist\Content\datatables_files\jquery.dataTables.js" />
+    <Content Include="dist\Content\datatables_files\responsive.dataTables.css" />
+    <Content Include="dist\Content\datatables_files\sort_asc.png" />
+    <Content Include="dist\Content\datatables_files\sort_both.png" />
+    <Content Include="dist\Content\datatables_files\sort_desc.png" />
+    <Content Include="dist\Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="dist\Content\images\buttons\EXPORT.svg" />
+    <Content Include="dist\Content\images\buttons\search.png" />
+    <Content Include="dist\Content\images\header\login.jpg" />
+    <Content Include="dist\Content\images\header\loginSmall.jpg" />
+    <Content Include="dist\Content\images\header\logo.png" />
+    <Content Include="dist\Content\images\header\logoLogin.png" />
+    <Content Include="dist\Content\images\header\logoOLD.png" />
+    <Content Include="dist\Content\images\header\logoSmall.png" />
+    <Content Include="dist\Content\images\header\logo_.png" />
+    <Content Include="dist\Content\images\header\sideBack.jpg" />
+    <Content Include="dist\Content\js\bootstrap-datetimepicker.es.js" />
+    <Content Include="dist\Content\js\bootstrap-datetimepicker.js" />
+    <Content Include="dist\Content\js\bootstrap.js" />
+    <Content Include="dist\Content\js\bootstrap.min.js" />
+    <Content Include="dist\Content\js\jquery.js" />
+    <Content Include="dist\Content\js\molinos.js" />
+    <Content Include="dist\Content\js\trmix.min.js" />
+    <Content Include="dist\contrato-contrato-module.js" />
+    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js" />
+    <Content Include="dist\dato-fiscal-dato-fiscal-module.js" />
+    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js" />
+    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js" />
+    <Content Include="dist\factura-factura-module.js" />
+    <Content Include="dist\favicon.ico" />
+    <Content Include="dist\flete-flete-module.js" />
+    <Content Include="dist\glyphicons-halflings-regular.svg" />
+    <Content Include="dist\index.html" />
+    <Content Include="dist\liquidacion-liquidacion-module.js" />
+    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js" />
+    <Content Include="dist\main.js" />
+    <Content Include="dist\pago-no-granos-pago-no-granos-module.js" />
+    <Content Include="dist\pago-pago-module.js" />
+    <Content Include="dist\polyfills.js" />
+    <Content Include="dist\runtime.js" />
+    <Content Include="dist\styles.js" />
+    <Content Include="dist\vendor.js" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -858,114 +748,42 @@
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
-    <Content Include="dist\carta-porte-carta-porte-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\files\InformeComercial.doc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\fontawesome-webfont.eot">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\fontawesome-webfont.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\fontawesome-webfont.woff">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\fontawesome-webfont.woff2">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\FontAwesome.otf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.eot">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.woff">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.woff2">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\RobotoCondensed-Bold.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\RobotoCondensed-Light.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\fonts\RobotoCondensed-Regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\Content\images\header\logoEndosado.ai">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\contrato-contrato-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\dato-fiscal-dato-fiscal-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\factura-factura-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\flete-flete-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\glyphicons-halflings-regular.eot">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\glyphicons-halflings-regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\glyphicons-halflings-regular.woff">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\glyphicons-halflings-regular.woff2">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\liquidacion-liquidacion-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\main.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\pago-no-granos-pago-no-granos-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\pago-pago-module.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\polyfills.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\runtime.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\styles.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\vendor.js.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="dist\web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="dist\carta-porte-carta-porte-module.js.map" />
+    <Content Include="dist\Content\files\InformeComercial.doc" />
+    <Content Include="dist\Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="dist\Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="dist\Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="dist\Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="dist\Content\fonts\FontAwesome.otf" />
+    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="dist\Content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="dist\Content\fonts\RobotoCondensed-Bold.ttf" />
+    <Content Include="dist\Content\fonts\RobotoCondensed-Light.ttf" />
+    <Content Include="dist\Content\fonts\RobotoCondensed-Regular.ttf" />
+    <Content Include="dist\Content\images\header\logoEndosado.ai" />
+    <Content Include="dist\contrato-contrato-module.js.map" />
+    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js.map" />
+    <Content Include="dist\dato-fiscal-dato-fiscal-module.js.map" />
+    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js.map" />
+    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js.map" />
+    <Content Include="dist\factura-factura-module.js.map" />
+    <Content Include="dist\flete-flete-module.js.map" />
+    <Content Include="dist\glyphicons-halflings-regular.eot" />
+    <Content Include="dist\glyphicons-halflings-regular.ttf" />
+    <Content Include="dist\glyphicons-halflings-regular.woff" />
+    <Content Include="dist\glyphicons-halflings-regular.woff2" />
+    <Content Include="dist\liquidacion-liquidacion-module.js.map" />
+    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js.map" />
+    <Content Include="dist\main.js.map" />
+    <Content Include="dist\pago-no-granos-pago-no-granos-module.js.map" />
+    <Content Include="dist\pago-pago-module.js.map" />
+    <Content Include="dist\polyfills.js.map" />
+    <Content Include="dist\runtime.js.map" />
+    <Content Include="dist\styles.js.map" />
+    <Content Include="dist\vendor.js.map" />
+    <Content Include="dist\web.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

@@ -63,13 +63,13 @@ var AppComponent = /** @class */ (function () {
                     _this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
                 }
                 else {
-                    location.href = result.url;
+                    window.location.href = result.url;
                 }
             }
             else {
                 if (result.error != undefined && result.error != "") {
                     alert(result.error);
-                    location.href = window.location.origin + '/SignOut';
+                    window.location.href = window.location.origin + '/SignOut';
                 }
                 else {
                     _this.loginUser(result);

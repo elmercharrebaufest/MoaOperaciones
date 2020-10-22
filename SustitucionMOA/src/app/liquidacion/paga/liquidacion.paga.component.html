@@ -3,20 +3,21 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Liquidaci&oacute;n: <strong>Pagas</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>Liquidaci&oacute;n: Pagas</strong> </div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
             </div>
         </div>
         <!--End Title-->
         <!--Search-->
-        <div class="row  myRow firstSection mySearch">
+        <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr />
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
@@ -71,13 +72,13 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate liquidacion-paga-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('emitidoDate')">Vencimiento</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('tipo')">Tipo</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('comprobante')">Comprobante</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('producto')">Producto</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('liquidado')">Liquidacion</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('importe')">Total</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('contrato')">Contrato</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('emitidoDate')">Vencimiento<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'emitidoDate' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'emitidoDate' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('tipo')">Tipo<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'tipo' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'tipo' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('comprobante')">Comprobante<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'comprobante' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'comprobante' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('producto')">Producto<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('liquidado')">Liquidacion<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'liquidado' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'liquidado' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('importe')">Total<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'importe' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'importe' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('contrato')">Contrato<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection < 0 }"></i></span></th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Ver CCPPs</th>
                         </tr>
                     </thead>
