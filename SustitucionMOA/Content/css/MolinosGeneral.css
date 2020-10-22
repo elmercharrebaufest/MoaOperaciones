@@ -3600,8 +3600,19 @@ div.panel-body a.active{
   border: none;
 }
 
-#boletos{
-  color: #232323;
-  background: white;
-  padding: 24px;
+.calidadTitle{
+  color: #707070;
+  font-size: 22px;
+}
+
+.calidad tfoot{
+  background: rgb(149, 149, 149, 0.36);
+}
+
+.calidad tfoot p{
+  margin: 0;
+}
+
+.calidad{
+  margin-bottom: 10px;
 }
