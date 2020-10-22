@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix fletesAFacturar">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10">Fletes: <strong>Viajes pendientes</strong> </div>
+            <div class="col-xs-12 col-sm-10"><strong>Fletes: Viajes pendientes</strong> </div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
@@ -12,10 +12,11 @@
             </div>
         </div>
         <!--End Title-->
-        <div class="row  myRow mySearch espacios-sm">
+        <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr/>
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
