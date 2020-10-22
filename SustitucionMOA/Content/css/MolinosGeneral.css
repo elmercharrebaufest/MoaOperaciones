@@ -1055,13 +1055,16 @@ textarea {
   height: auto;
   resize: none;
   font-family: "Roboto Condensed", Arial, sans-serif;
-  background-color: #f0f0f0;
-  border: none;
   padding: 5px;
   width: 100%;
   border-radius: 4px 4px 4px 4px;
   -moz-border-radius: 4px 4px 4px 4px;
   -webkit-border-radius: 4px 4px 4px 4px;
+  background-color: white;
+  border: 1px solid #DDDDDD;
+  color: #818A91;
+  font-weight: normal;
+  font-size: 16px;
 }
 
 .searchVerSelect {
@@ -3504,4 +3507,49 @@ div.panel-body a.active{
   color: #707070;
   margin: 0;
   font-weight: normal;
+}
+
+.btn-custom {
+  padding: 5px;
+  height: 36px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: none;
+  box-shadow: 0px 2px 2px #0000003D;
+  margin: 0 10px !important;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: white !important;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.btn-grande {
+  width: 201px;
+}
+
+.btn-mediano {
+  width:146px;
+}
+
+.btn-chico {
+  width:98px
+}
+
+.btn-remove {
+  background: #DD441E;
+}
+
+.btn-add {
+  background: #075088;
+  margin: 0;
+}
+
+.btn-cerrar {
+  background: #959595;
+}
+
+.btn-guardar {
+  background: #009688;
 }
