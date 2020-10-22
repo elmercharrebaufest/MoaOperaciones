@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, Renderer, ViewChild } from '@angular/core';
+import { Component, Renderer, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router } from "@angular/router";
 import { LayoutService } from './layout.service';
 import { SessionDataService } from './../common/services/SessionDataService';
@@ -18,7 +18,7 @@ import { SecurityService } from './../common/services/SecurityService';
 import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mensaje-modal.component';
 import { LoginGuard } from './../common/security/login-guard';
 var LayoutComponent = /** @class */ (function () {
-    function LayoutComponent(service, sessionDataService, navService, loginGuard, router, renderer, modalService, securityService, floatMsgService) {
+    function LayoutComponent(service, sessionDataService, navService, loginGuard, router, renderer, modalService, securityService, floatMsgService, cd) {
         var _this = this;
         this.service = service;
         this.sessionDataService = sessionDataService;
@@ -29,6 +29,7 @@ var LayoutComponent = /** @class */ (function () {
         this.modalService = modalService;
         this.securityService = securityService;
         this.floatMsgService = floatMsgService;
+        this.cd = cd;
         this.noticiasCantidad = 0;
         this.showLiquidaciones = false;
         this.showComprobantes = false;
@@ -36,6 +37,7 @@ var LayoutComponent = /** @class */ (function () {
         this.showFlete = false;
         this.showNoticias = false;
         this.showFleteProcedencia = false;
+        this.tieneSecciones = false;
         this.menuActive = 'home';
         this.mensajeError = '';
         this.mensajeInfo = '';
@@ -75,6 +77,8 @@ var LayoutComponent = /** @class */ (function () {
         });
         navService.seccionList$.subscribe(function (seccionList) {
             _this.seccionList = seccionList;
+            _this.tieneSecciones = seccionList.length > 0;
+            _this.cd.detectChanges();
         });
         navService.seccionActive$.subscribe(function (seccionActive) {
             _this.seccionActive = seccionActive;
@@ -405,7 +409,10 @@ var LayoutComponent = /** @class */ (function () {
             templateUrl: "layout.component.html",
             providers: [LayoutService]
         }),
-        __metadata("design:paramtypes", [LayoutService, SessionDataService, NavService, LoginGuard, Router, Renderer, ModalService, SecurityService, FloatMsgService])
+        __metadata("design:paramtypes", [LayoutService, SessionDataService,
+            NavService, LoginGuard, Router,
+            Renderer, ModalService, SecurityService, FloatMsgService,
+            ChangeDetectorRef])
     ], LayoutComponent);
     return LayoutComponent;
 }());
