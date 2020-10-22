@@ -179,8 +179,8 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-6 ">
                                     <p>Condiciones especiales de pago:</p>
-                                    <ul>
-                                        <li *ngFor="let condicion of data.condicionesPago">
+                                    <ul style="padding-left: 0px;">
+                                        <li style="list-style-type: none;" *ngFor="let condicion of data.condicionesPago">
                                             <span class="grey">{{condicion}}</span>
                                         </li>
                                     </ul>
@@ -252,30 +252,28 @@
         <div class="row myRow" style=" margin-top:15px;">
             <!--boleto destacado-->
             <div class="row titleSection titleSectionNoBorder">
-                <div class="col-xs-12 col-sm-12">Boletos</div>
-                <div class="col-xs-12 rowInfoGrey rounded shadow animate" id="boletos">
-                    <div class="rowInfoRoundedGreenLine" *ngIf="data.boleto">
-                        <div class="col-xs-12 col-sm-15">
-                            <p>Estado</p>
-                            <p>{{data.boleto.estado}} <span *ngIf="data.boleto.observacion != '' && data.boleto.observacion" class="fa  fa-info-circle" toggle="tooltip" title="{{data.boleto.observacion}}"></span></p>
-                        </div>
-                        <div class="col-xs-12 col-sm-15">
-                            <p>Fecha de recepción</p>
-                            <p>{{data.boleto.fechaRecepcion}}</p>
-                        </div>
-                        <div class="col-xs-12 col-sm-15">
-                            <p>Tipo Boleto</p>
-                            <p>{{data.boleto.tipoBoleto}}</p>
-                        </div>
-                        <div class="col-xs-12 col-sm-15">
-                            <p>Bolsa</p>
-                            <p>{{data.boleto.bolsa}}</p>
-                        </div>
-                        <div class="col-xs-12 col-sm-15">
-                            <p>Devolución</p>
-                            <p>{{data.boleto.devAcop}}</p>
-                        </div>
-                    </div>
+                <div class="col-xs-12 col-sm-12"><strong>Boletos</strong></div>
+                <div class="clearfix myTables">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Estado</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de recepción</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Tipo Boleto</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Bolsa</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Devolución</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr role="row" class="odd" *ngIf="data.boleto">
+                                <td style="">{{data.boleto.estado}}</td>
+                                <td style="">{{data.boleto.fechaRecepcion}}</td>
+                                <td style="">{{data.boleto.tipoBoleto}}</td>
+                                <td style="">{{data.boleto.bolsa}}</td>
+                                <td style="">{{data.boleto.devAcop}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <!--Boleto tabla-->
@@ -332,7 +330,7 @@
                 </div>
 
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Pagos</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Pagos</strong></div>
                 </div>
                 <!--pagos y liquidaciones tabla-->
                 <div id="myPagos" class="row myRow hideMobile">
@@ -376,7 +374,7 @@
                     <div>Liquidaciones</div>
                 </div>
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Liquidaciones</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Liquidaciones</strong></div>
                 </div>
                 <!--pagos y liquidaciones tabla-->
                 <div id="myLiquidaciones" class="row myRow hideMobile">
@@ -435,12 +433,12 @@
                     <div>Fijaciones</div>
                 </div>
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Fijaciones</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Fijaciones</strong></div>
                 </div>
                 <!--pagos y liquidaciones tabla-->
                 <div id="myFijaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-fijaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-fijaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -476,12 +474,12 @@
                 </div>
 
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Ampliaciones / Anulaciones</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Ampliaciones / Anulaciones</strong></div>
                 </div>
                 <!--pagos y liquidaciones tabla-->
                 <div id="myAmpliaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-ampliaciones-anulaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-ampliaciones-anulaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Tipo</th>
@@ -521,12 +519,12 @@
                     <div>Aplicaciones</div>
                 </div>
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Aplicaciones</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Aplicaciones</strong></div>
                 </div>
 
                 <div id="myAplicaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-aplicacciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-aplicacciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -576,12 +574,12 @@
                     <div>Contratos hijos</div>
                 </div>
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Contratos hijos</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Contratos hijos</strong></div>
                 </div>
 
                 <div id="myHijos" class="row myRow  hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha de Concertación</th>
@@ -610,12 +608,13 @@
         <div class="row myRow">
             <div id="Calidad" class="col-sm-12  hideMobile">
                 <div class="row titleSection titleSectionNoBorder">
-                    <div class="col-xs-12 col-sm-12">Calidad</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Calidad</strong></div>
                 </div>
                 <div class="row  myRow firstSection mySearch">
                     <div class="col-xs-12 col-md-12 rounded shadow animate">
-                        <title-caps>Refinar resultados de Calidad</title-caps>
-                        <hr />
+                        <div class="col-xs-12 col-md-12 search-header">
+                            <title-caps style="font-size: 17px;">Refinar resultados de Calidad</title-caps>
+                        </div>
                         <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-15 ">
                             Por N&ordm; CCPP:
                             <div class="styled-select ">
@@ -628,14 +627,63 @@
         </div>
 
         <div class="row myRow">
-            <div id="Calidad" class="col-sm-12  hideMobile">
+            <div class="row calidad" *ngFor="let calidad of data.calidad | customFilter : 'ccpp' : filtroCCPP">
+                <div class="col-xs-12 col-sm-3 col-md-2 calidadTitle">
+                    <p class="grey"><strong>CCPP</strong></p>
+                    <a class="animate grey" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)" href="#">{{calidad.ccpp}}</a>
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-10 clearfix myTables">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="3" style="text-align: center;">Calado</th>
+                                <th tabindex="0" rowspan="1" colspan="2" style="text-align: start;">C&aacute;mara (Cert.: <span *ngIf="calidad.certificado != ''">{{calidad.certificado}}</span><span *ngIf="calidad.certificado == ''">- </span>)</th>
+                            </tr>
+                            <tr role="row">
+                                <th width="20%">Características</th>
+                                <th width="20%">Resultado</th>
+                                <th width="20%">Kg DTO.</th>
+                                <th width="20%">Resultado</th>
+                                <th width="20%">DTO (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let registro of calidad.registros" role="row" class="odd">
+                                <td>{{registro.caract}}</td>
+                                <td>{{registro.calaResul}}%</td>
+                                <td>{{registro.kgDto}}</td>
+                                <td>{{registro.camaResul}}%</td>
+                                <td>{{registro.dto}}%</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr role="row">
+                                <td width="20%">Resultado Final</td>
+                                <td width="20%">
+                                    <p><strong>Kg Dto.</strong> {{calidad.kgDtoTotal}}</p>
+                                </td>
+                                <td width="20%">
+                                    <p><strong>Total Dto (%)</strong> {{calidad.dtoPorcTotal}}</p>
+                                </td>
+                                <td width="20%">
+                                    <p><strong>Kg netos</strong> {{calidad.kgNetosTotal}}</p>
+                                </td>
+                                <td width="20%">
+                                    <p><strong>Kg Aplicados</strong> {{calidad.kgAplicadosTotal}}</p>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- <div id="Calidad" class="col-sm-12  hideMobile">
                 <div class="row myRow">
                     <div class="clearfix totalTable">
                         <table width="100%">
                             <tr>
                                 <td width="20%">
                                     resultado final TOTAL
-
                                 </td>
                                 <td width="80%" style="padding-left:15px;">
 
@@ -665,20 +713,37 @@
 
                         <tr *ngFor="let calidad of data.calidad | customFilter : 'ccpp' : filtroCCPP">
                             <td width="20%" valign="top" class="CalidadCCPPTitle animate">
-                                <p>CCPP</p>
-                                <a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)" href="#">{{calidad.ccpp}}</a>
+                                <p class="grey"><strong>CCPP</strong></p>
+                                <a class="animate grey" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)" href="#">{{calidad.ccpp}}</a>
                             </td>
                             <td width="80%" valign="top" style="padding-left:15px;">
                                 <table class="CalidadCCPPData rounded shadow animate" width="100%" border="0" cellspacing="0" cellpadding="0">
                                     <tr>
                                         <td>
                                             <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" rowspan="2" class="">Características</th>
+                                                    <th width="40%" colspan="2" class="CalidadCCPPDataSub"><div>Calado</div></th>
+                                                    <th width="40%" colspan="2" class="CalidadCCPPDataSub"><div>C&aacute;mara (Cert.: <span *ngIf="calidad.certificado != ''">{{calidad.certificado}}</span><span *ngIf="calidad.certificado == ''">- </span>)</div></th>
+                                                </tr>
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" style="text-align:right">Resultado</th>
+                                                    <th width="20%">Kg DTO.</th>
+                                                    <th width="20%">Resultado</th>
+                                                    <th width="20%">DTO (%)</th>
+                                                </tr>
+                                                <tr *ngFor="let registro of calidad.registros">
+                                                    <td>{{registro.caract}}</td>
+                                                    <td>{{registro.calaResul}}%</td>
+                                                    <td>{{registro.kgDto}}</td>
+                                                    <td>{{registro.camaResul}}%</td>
+                                                    <td>{{registro.dto}}%</td>
 
+                                                </tr>
                                                 <tr class="CalidadCCPPDataPlus">
                                                     <td colspan="5" style="border:none">
                                                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                             <tr>
-
                                                                 <td width="100%">
                                                                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra" style="">
                                                                         <tr>
@@ -706,25 +771,6 @@
                                                         </table>
                                                     </td>
                                                 </tr>
-                                                <tr class="CalidadCCPPDataCategoria">
-                                                    <th width="20%" rowspan="2" class="">Características</th>
-                                                    <th width="40%" colspan="2" class="CalidadCCPPDataSub"><div>Calado</div></th>
-                                                    <th width="40%" colspan="2" class="CalidadCCPPDataSub"><div>C&aacute;mara (Cert.: <span *ngIf="calidad.certificado != ''">{{calidad.certificado}}</span><span *ngIf="calidad.certificado == ''">- </span>)</div></th>
-                                                </tr>
-                                                <tr class="CalidadCCPPDataCategoria">
-                                                    <th width="20%" style="text-align:right">Resultado</th>
-                                                    <th width="20%">Kg DTO.</th>
-                                                    <th width="20%">Resultado</th>
-                                                    <th width="20%">DTO (%)</th>
-                                                </tr>
-                                                <tr *ngFor="let registro of calidad.registros">
-                                                    <td>{{registro.caract}}</td>
-                                                    <td>{{registro.calaResul}}%</td>
-                                                    <td>{{registro.kgDto}}</td>
-                                                    <td>{{registro.camaResul}}%</td>
-                                                    <td>{{registro.dto}}%</td>
-
-                                                </tr>
                                             </table>
                                         </td>
                                     </tr>
@@ -733,7 +779,7 @@
                         </tr>
                     </table>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!--Botones mobile-->
