@@ -19,7 +19,7 @@ BEGIN
         );
 END;
 
-IF NOT EXISTS (SELECT TOP (1) 1 FROM dbo.Rol WHERE Nombre = 'NUEVOCORR')
+IF NOT EXISTS (SELECT TOP (1) 1 FROM dbo.Rol WHERE Codigo = 'NUEVOCORR')
 BEGIN
     INSERT INTO dbo.Rol
     (
@@ -46,7 +46,7 @@ BEGIN
                      );
 END;
 
-IF NOT EXISTS (SELECT TOP (1) 1 FROM dbo.Rol WHERE Nombre = 'CORR')
+IF NOT EXISTS (SELECT TOP (1) 1 FROM dbo.Rol WHERE Codigo = 'CORR')
 BEGIN
     INSERT INTO dbo.Rol
     (
@@ -74,7 +74,7 @@ END;
 
 
 
-IF NOT EXISTS (SELECT TOP (1) 1 FROM dbo.Rol WHERE Nombre = 'MULTIFIRMA')
+IF NOT EXISTS (SELECT TOP (1) 1 FROM dbo.Rol WHERE Codigo = 'MF')
 BEGIN
 	INSERT INTO dbo.Rol
 	(
