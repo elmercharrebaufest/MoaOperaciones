@@ -85,12 +85,14 @@
     <Content Include="Azure\cambioPass.css" />
     <Content Include="Azure\cambioPass.html" />
     <Content Include="Azure\cambioPass.js" />
+    <Content Include="Azure\fondo.png" />
     <Content Include="Azure\iniciodesesion.css" />
     <Content Include="Azure\iniciodesesion.html" />
     <Content Include="Azure\iniciodesesion.js" />
     <Content Include="Azure\jquery.maskedinput.js" />
     <Content Include="Azure\login.jpg" />
     <Content Include="Azure\loginSmall.jpg" />
+    <Content Include="Azure\logo.png" />
     <Content Include="Azure\logoLogin.png" />
     <Content Include="Azure\registro.css" />
     <Content Include="Azure\registro.js" />

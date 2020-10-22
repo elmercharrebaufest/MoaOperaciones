@@ -1,35 +1,49 @@
+body {
+    background: url(https://webopdevstorage.blob.core.windows.net/root/fondo.png) center center no-repeat fixed;
+    background-size: cover;
+}
+
 body > div.container.unified_container {
-  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg)
-    center center no-repeat fixed;
-  background-size: cover;
   width: 100%;
 }
 
 body > div.container.unified_container > div > div {
   width: 100%;
+  padding-right: 0px;
+}
+
+div.row {
+  background: transparent;
 }
 
 img {
-  max-width: 100%;
-  background: white;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  padding-left: 15px;
+    max-width: 100%;
+    background: white;
+    width: 210px;
+    height: 100px;
+    margin-top: 50px;
+}
+
+.signup {
+  margin-bottom: 0px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
 }
 
 .panel-body {
-  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 30px;
   font-size: 14px;
 }
 
 body > div.container.unified_container > div > div > div > div {
   height: auto;
   overflow: auto;
-  max-height: 90vh;
-}
-
-body > div.container.unified_container > div {
-  width: 50%;
+  min-height: 100vh;
 }
 
 div#api {
@@ -43,25 +57,8 @@ div#api {
   margin-right: 10px !important;
 }
 
-button#next,
-#email_ver_but_send,
-#continue,
-#emailVerificationControl_but_verify_code,
-#emailVerificationControl_but_send_new_code {
-  border-radius: 5px;
-  border: none;
-  background-color: #337ab7;
-  color: white;
-  margin: 10px 0;
-  padding: 5px 10px;
-}
-
 #cancel {
-  border-radius: 5px;
-  border: none;
   background-color: #dd441e;
-  color: white;
-  margin: 10px 0;
 }
 
 #cancel:hover {
@@ -70,7 +67,6 @@ button#next,
 
 .error {
   color: #dd441e !important;
-  padding-left: 15px;
   font-size: 11px;
 }
 
@@ -86,19 +82,13 @@ button#next,
   width: 40%;
 }
 
-#continue,
-#cancel {
-  width: 50%;
-  height: 30px;
-  font-weight: bold;
-}
-
 #continue {
-  margin-right: 5px;
+  margin-right: 40px !important;
+  margin-left: 10px !important;
 }
 
 #cancel {
-  margin-left: 5px;
+  margin-left: 0px !important;
 }
 
 button#next {
@@ -106,13 +96,18 @@ button#next {
 }
 
 button#next:hover,
+#emailVerificationControl_but_send_code:hover,
 #email_ver_but_send:hover,
+#emailVerificationControl_but_send_new_code:hover,
+#emailVerificationControl_but_change_claims:hover,
 #continue:hover {
-  background-color: #17308f;
+  background-color: #063b63;
 }
 
 #attributeVerification > div.buttons {
-  display: flex;
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
 }
 
 input#password {
@@ -130,24 +125,42 @@ input#logonIdentifier {
 }
 
 a#createAccount,
-#emailVerificationControl_but_send_code {
-  background: #337ab7;
+#emailVerificationControl_but_send_code,
+#emailVerificationControl_but_verify_code,
+#emailVerificationControl_but_send_new_code,
+#emailVerificationControl_but_change_claims,
+#continue,
+#cancel {
   color: white;
-  border-radius: 5px;
-  padding: 5px 10px;
-  width: auto;
-  margin: 10px 0;
+  border-radius: 2px;
+  padding: 5px;
+  width: 145px;
+  height: 36px;
   text-decoration: none;
+  text-transform: uppercase;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
 }
 
-button#email_ver_but_send {
-  border-radius: 5px;
+a#createAccount,
+#emailVerificationControl_but_send_code,
+#continue {
+  background: #075088;
+  margin-left: -15px;
 }
 
-button#continue {
-  border-radius: 5px;
+#emailVerificationControl_but_verify_code,
+#emailVerificationControl_but_change_claims {
+    background: #075088;
+}
+
+#emailVerificationControl_but_send_new_code {
+    background: #009688;
+    width: 180px;
+}
+
+#emailVerificationControl_but_verify_code {
+    width: 150px;
 }
 
 body > div.container.self_asserted_container > div {
@@ -171,12 +184,6 @@ body > div.container.unified_container > div {
   justify-content: left;
   align-items: center;
   height: 100vh;
-  background-color: rgba(4, 117, 62, 0.75);
-}
-
-body > div.container.unified_container > div > div > div {
-  width: 85%;
-  margin: auto;
 }
 
 #background_branding_container {
@@ -192,7 +199,7 @@ body > div.container.unified_container > div > div > div {
 }
 
 body > div.container.unified_container > div > div > div > div {
-  color: #172f8f;
+  color: #373a3c;
 }
 
 #attributeList > ul {
@@ -204,11 +211,12 @@ body > div.container.unified_container > div > div > div > div {
 }
 
 input {
-  width: 50%;
-  border-radius: 5px;
+  width: 100%;
+  border-radius: 0px;
   border: none;
-  background-color: rgb(232, 240, 254) !important;
   color: black;
+  font-size: 16px;
+  border-bottom: #00000061 1px solid;
 }
 
 #api > div > div.entry > div.rememberMe {
@@ -237,7 +245,7 @@ input {
 
 label,
 input {
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 li {
@@ -264,4 +272,24 @@ li {
 
 #emailVerificationControl > div.buttons > div.verificationErrorText.error {
   padding: 0;
+}
+
+.Password > div > label,
+.EmailBox > div > label,
+.TextBox > div > label {
+  display: none !important;
+}
+
+.info {
+  color: #00000061;
+  font-size: 12px;
+}
+
+.RadioSingleSelect > div {
+  margin-left: -15px;
+}
+
+#extension_Tipodeproveedor_label {
+  color: #373a3c;
+  font-size: 20px;
 }

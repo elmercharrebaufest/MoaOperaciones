@@ -65,12 +65,12 @@ export class AppComponent {
                     } else if (result.url == undefined || result.url == "") {
                         this.mensajeComponent.setErrorMsg("No se pudo obtener la URL destino");
                     } else {
-                        location.href = result.url;
+                        window.location.href = result.url;
                     }
                 } else {
                     if (result.error != undefined && result.error != "") {
                         alert(result.error);
-                        location.href = window.location.origin + '/SignOut';
+                        window.location.href = window.location.origin + '/SignOut';
                     } 
                     else {
                         this.loginUser(result);

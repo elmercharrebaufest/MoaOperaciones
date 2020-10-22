@@ -1,31 +1,38 @@
 body > div.container.unified_container {
-  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg)
-    center center no-repeat fixed;
-  background-size: cover;
-  width: 100%;
+    background: url(https://webopdevstorage.blob.core.windows.net/root/fondo.png) center center no-repeat fixed;
+    background-size: cover;
+    width: 100%;
 }
 
 body > div.container.unified_container > div > div {
   width: 100%;
+  padding-right: 0px;
+}
+
+div.row {
+    background: transparent;
 }
 
 img {
   max-width: 100%;
   background: white;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
-  padding-left: 15px;
+  width: 210px;
+  height: 100px;
 }
 
 .panel-body {
-  padding: 15px;
-  font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    font-size: 14px;
 }
 
 body > div.container.unified_container > div > div > div > div {
   height: auto;
   overflow: auto;
-  max-height: 90vh;
+  min-height: 100vh;
 }
 
 div#api {
@@ -36,26 +43,40 @@ div#api {
 }
 
 .intro {
-  color: #5e645f;
+    margin: 30px;
+    text-align: center;
+    font-size: 12px;
+    width: 267px;
+    color: #5e645f;
+}
+
+.login {
+    margin-bottom: 0px !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 }
 
 #next {
-  border-radius: 5px;
-  border: none;
-  background-color: #337ab7;
-  color: white;
-  margin: 10px 0;
-  width: 50%;
-  height: 30px;
-  font-weight: bold;
+    border-radius: 2px;
+    border: none;
+    background-color: #009688;
+    color: white;
+    margin: 10px 0px 0px 30px;
+    width: 135px;
+    height: 36px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 #next:hover {
-  background-color: #17308f;
+    background-color: #008e80;
 }
 
-input#password {
-  border-radius: 5px;
+label,
+div.divider,
+div.password-label{
+  display: none !important;
 }
 
 input#logonIdentifier {
@@ -68,16 +89,25 @@ input#logonIdentifier {
   margin: 15px 0;
 }
 
+a#createAccount {
+    background: #959595 !important;
+    text-align: center;
+    padding-top: 8px !important;
+}
+
 a#createAccount,
 #emailVerificationControl_but_send_code {
   background: #337ab7;
   color: white;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 5px;
-  width: 50%;
+  width: 145px;
+  height: 36px;
   margin: 10px 0;
   text-decoration: none;
+  text-transform: uppercase;
   border: none;
+  font-size: 14px;
 }
 
 button#email_ver_but_send {
@@ -86,11 +116,12 @@ button#email_ver_but_send {
 
 body > div.container.self_asserted_container > div {
   display: flex;
+  flex-direction: column;
   justify-content: center !important;
   align-items: center !important;
   width: 100%;
   height: 100% !important;
-  background-color: rgba(4, 117, 62, 0.75);
+  background-color: rgba(255, 255, 255, 1);
 }
 
 body > div.container.self_asserted_container {
@@ -104,14 +135,6 @@ body > div.container.unified_container > div {
   display: flex;
   justify-content: left;
   align-items: center;
-  width: 33.33%;
-  height: 100vh;
-  background-color: rgba(4, 117, 62, 0.75);
-}
-
-body > div.container.unified_container > div > div > div {
-  width: 85%;
-  margin: auto;
 }
 
 #background_branding_container {
@@ -139,11 +162,12 @@ body > div.container.unified_container > div > div > div > div {
 }
 
 input {
-  width: 100%;
-  border-radius: 5px;
-  border: none;
-  background-color: rgb(232, 240, 254) !important;
-  color: black;
+    width: 100%;
+    border-radius: 0px;
+    border: none;
+    color: black;
+    font-size: 16px;
+    border-bottom: #00000061 1px solid;
 }
 
 #api > div > div.entry > div.rememberMe {
@@ -179,9 +203,12 @@ li {
   margin-bottom: 10px;
 }
 
-#localAccountForm > div.entry > div.buttons {
-  display: flex;
-  justify-content: center;
+#localAccountForm > div.entry > div.buttons,
+#localAccountForm > div.create {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 50px;
 }
 
 .error {
