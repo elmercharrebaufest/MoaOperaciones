@@ -8,7 +8,7 @@
 
             <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-info col-xs-12 col-sm-11 button" data-toggle="modal"
+                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add" data-toggle="modal"
                     id="modalToggleButton" data-target="#modalNuevoVendedor">
                     Nuevo vendedor
                 </button>
@@ -19,8 +19,9 @@
         <!--End Title-->
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr>
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     Por Vendedor:
                     <div class="styled-select">
@@ -70,13 +71,13 @@
                                 <button (click)="goToSeccionParam('/alta-empresa-granos', vendedor.Id)" *ngIf="vendedor.EstadoAprobacion != 3 && 
                                 vendedor.EstadoAprobacion != 5 &&
                                 vendedor.EstadoAprobacion != 6 &&
-                                vendedor.EstadoAprobacion != 9 " class="btn btn-info button">
+                                vendedor.EstadoAprobacion != 9 " class="btn btn-custom btn-add">
                                     Ver alta
                                 </button>
                                 <br>
                                 <button (click)="eliminarVendedor(vendedor.Id)" *ngIf="vendedor.EstadoAprobacion == 1"
                                     class="
-                                    btn btn-info buttonEliminar">
+                                    btn btn-custom btn-remove">
                                     Eliminar
                                 </button>
                             </td>

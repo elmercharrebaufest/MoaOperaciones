@@ -2874,6 +2874,10 @@ fa-file-word-o {
   animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
+.spinner-grey > div {
+  background-color: #959595!important;
+}
+
 .spinnerSmall {
   margin: 0 auto;
   width: 150px;
@@ -3176,6 +3180,9 @@ table.dataTable.order-column.hover tbody tr:hover {
   opacity: 1;
 }
 
+.modal-content{
+  border-radius: 11px!important;
+}
 
 modal-content > dl.dl-horizontal {
   font-size: 16px;
