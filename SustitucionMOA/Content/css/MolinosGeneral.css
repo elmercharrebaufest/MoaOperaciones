@@ -28,6 +28,12 @@ body {
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("/content/fonts/Roboto-Regular.ttf");
+  font-style: normal;
+}
+
 body {
   font-size: 14px;
   font-family: "Roboto Condensed", Arial, sans-serif;
@@ -1049,13 +1055,16 @@ textarea {
   height: auto;
   resize: none;
   font-family: "Roboto Condensed", Arial, sans-serif;
-  background-color: #f0f0f0;
-  border: none;
   padding: 5px;
   width: 100%;
   border-radius: 4px 4px 4px 4px;
   -moz-border-radius: 4px 4px 4px 4px;
   -webkit-border-radius: 4px 4px 4px 4px;
+  background-color: white;
+  border: 1px solid #DDDDDD;
+  color: #818A91;
+  font-weight: normal;
+  font-size: 16px;
 }
 
 .searchVerSelect {
@@ -3136,21 +3145,37 @@ table.dataTable.order-column.hover tbody tr:hover {
 }
 
 /*---------BEGIN: Modal---------*/
-.modal-header {
+/* .modal-header {
   background-color: #007933;
   color: #fff;
   border-left: 8px solid #172972;
+} */
+
+.modal-header {
+  padding: 10px;
+  background-color: #959595;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-family: "Roboto Condensed", Arial, sans-serif!important;
+  text-transform: uppercase !important;
+  color:#FFFFFF !important;
+  font-size: 21px !important;
+  font-weight: bold !important;
 }
 
 .close {
   float: right;
   font-size: 21px;
-  font-weight: 700;
   line-height: 1;
   color: #fff;
   text-shadow: none;
   opacity: 1;
 }
+
 
 modal-content > dl.dl-horizontal {
   font-size: 16px;
@@ -3323,6 +3348,7 @@ a.PagoTablaLink:hover {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   margin-bottom: 20px;
+  font-size: 15px;
 }
 
 i.arrow{
@@ -3481,4 +3507,49 @@ div.panel-body a.active{
   color: #707070;
   margin: 0;
   font-weight: normal;
+}
+
+.btn-custom {
+  padding: 5px;
+  height: 36px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: none;
+  box-shadow: 0px 2px 2px #0000003D;
+  margin: 0 10px !important;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: white !important;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.btn-grande {
+  width: 201px;
+}
+
+.btn-mediano {
+  width:146px;
+}
+
+.btn-chico {
+  width:98px
+}
+
+.btn-remove {
+  background: #DD441E;
+}
+
+.btn-add {
+  background: #075088;
+  margin: 0;
+}
+
+.btn-cerrar {
+  background: #959595;
+}
+
+.btn-guardar {
+  background: #009688;
 }
