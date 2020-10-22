@@ -31,6 +31,16 @@ a:hover {
   flex-direction: column;
 }
 
+.card-container {
+  margin-top: 15px;
+  padding-left: 35px;
+  padding-right: 35px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+
 .modal-notificacion {
   font-size: 16px;
 }
@@ -418,12 +428,18 @@ p {
   border-top: none!important;
 }
 
+.cssTable>tfoot>tr>td,
+.cssTable>tfoot>tr>th {
+  border: none!important;
+}
+
 .btn-add-container {
   padding-bottom: 10px;
   display: flex;
   justify-content: flex-end;
-  margin-right: 18px;
+  margin-right: 20px;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -437,6 +453,10 @@ input::-webkit-inner-spin-button {
 
 #declaracionJurada {
   margin: 10px;
+}
+
+.cssTable {
+  border-top: 1px;
 }
 
 .cssTable td {
@@ -515,6 +535,7 @@ input::-webkit-inner-spin-button {
   font-weight: normal;
   font-size: 15px;
   color: white;
+  border-radius: 11px;
 }
 
 .card-header-open {
@@ -523,7 +544,6 @@ input::-webkit-inner-spin-button {
 }
 
 .card-header-closed {
-  border-radius: 11px;
 }
 
 
