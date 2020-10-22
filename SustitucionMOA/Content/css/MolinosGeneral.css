@@ -109,7 +109,7 @@ a:hover {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 7;
+  z-index: 9;
 }
 #coverAll {
   display: none;
@@ -351,6 +351,7 @@ label {
   float: right;
   width: calc(100% - 260px);
   min-height: 100%;
+  top: 103px;
 }
 .main-panel {
   /*overflow: auto;*/
@@ -371,17 +372,18 @@ SIDEBAR*/
   flex-direction: row;
   overflow: hidden;
   top: 0px;
+  left: 0px;
   height: 103px;
   width: 100%;
   z-index: 8;
   box-shadow: 0px 3px 6px #00000029;
+  position: fixed;
 }
 .User-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: right;
   width: 100%;
-  z-index: 4;
   background: #fff;
   padding-right: 25px;
 }
@@ -816,9 +818,7 @@ Header Mobile */
   padding: 0px;
 }
 .titleSection .col-sm-10 span {
-  color: #172f8f;
-  font-size: 25px;
-  display: inline-block;
+  color: #707070;
 }
 .titleSection .titleExtraData {
   font-size: 18px;
@@ -847,6 +847,13 @@ Header Mobile */
 .titleSectionTablePart {
   display: table-cell;
   float: none;
+}
+.titleIconsPart{
+  display: flex;
+  flex-direction: row;
+}
+.titleIconsPart a{
+  margin: 0px 5px;
 }
 .btnSection {
   background: #fff;
@@ -877,7 +884,7 @@ Header Mobile */
 }
 .print,
 .ticket {
-  margin-top: 5px;
+  width: 138px;
 }
 .btnSection .fa-file-excel-o {
   color: #090;
@@ -1363,7 +1370,6 @@ Texto con recuadro gris*/
   margin-top: 10px;
 }
 .rowInfoRoundedGreenLine {
-  background: #a8cfba;
   width: 100%;
   height: auto;
   float: left;
@@ -3023,8 +3029,8 @@ table.dataTable.order-column.hover tbody tr:hover {
   margin-right: 5px;
 }
 .ctacte .agrupador td {
-  background: #e9f0e9;
-  border-top: 3px solid #77b794 !important;
+  background: #959595;
+  color: #fff;
 }
 .ctacte .cargaDeDatos {
   padding-top: 25px;
@@ -3378,7 +3384,6 @@ i.unselected{
 .custom-card-body{
   background: #fff !important;
   min-height: 174px;
-  min-width: 164px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
@@ -3495,6 +3500,10 @@ div.panel-body a.active{
   color: #075088 !important;
 }
 
+.grey {
+  color: #707070 !important;
+}
+
 #datosFiscales{
   margin-top: 12px;
 }
@@ -3552,4 +3561,40 @@ div.panel-body a.active{
 
 .btn-guardar {
   background: #009688;
+}
+
+.titleExtraData{
+  font-size: 19px;
+  margin-top: 20px;
+}
+
+.titleExtraData strong,
+.titleExtraData a{
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+#caracteristicas,
+#condiciones,
+#bonificaciones{
+  color: #232323;
+  background: white;
+  border-radius: 11px;
+}
+
+#bonificaciones table{
+  background: white;
+  border-radius: 11px;
+}
+
+#bonificaciones td{
+  color: #232323 !important;
+  background: transparent;
+  border: none;
+}
+
+#boletos{
+  color: #232323;
+  background: white;
+  padding: 24px;
 }
