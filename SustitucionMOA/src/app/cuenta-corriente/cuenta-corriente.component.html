@@ -3,11 +3,11 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Movimientos</div>
+            <div class="col-xs-12 col-sm-10 "><strong>Movimientos</strong></div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
             </div>
         </div>
@@ -15,8 +15,9 @@
         <!--Search-->
         <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr />
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
@@ -56,7 +57,7 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
 
-                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate cuenta-corriente-simple-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate cuenta-corriente-simple-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('docDateDate')">F. Emisi&oacute;n</th>

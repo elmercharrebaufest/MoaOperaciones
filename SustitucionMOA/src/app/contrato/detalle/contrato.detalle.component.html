@@ -6,13 +6,9 @@
         <!--Title-->
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div style="line-height:0.8; display: inline-block; vertical-align:top;"> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> / Corredor <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </div>
-                <div class="titleExtraData">
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Corredor: <strong>{{data.caracteristicas[0].nomCorredor}}</strong><br>
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Vendedor: <strong><a (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', data.caracteristicas[0].vendedor, data.caracteristicas[0].nomVendedor)" href="#">{{data.caracteristicas[0].nomVendedor}}</a> </strong>({{data.caracteristicas[0].vendedor}})
-                </div>
+                <div> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> / Corredor <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </div>
             </div>
-            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+            <div class="col-xs-12 col-sm-2 titleIconsPart">
                 <spinner-small #spinnerSmallExport></spinner-small>
                 <a (click)="exportarExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallExportComponent.visible">
                     <div class="btnSection animate export">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
@@ -29,43 +25,47 @@
         <!--End Title-->
         <!--Search-->
         <div class="row myRow firstSection roundedInfo">
-            <div class="col-xs-12 col-sm-3 col-md-2  rowInfoGrey rounded shadow animate rowInfoRoundedWhite" *ngIf="data.resumen">
-                <title-caps>Resumen</title-caps>
+            <div class="col-xs-12 col-sm-4 col-md-3 rowInfoGrey rounded shadow animate rowInfoRoundedWhite" *ngIf="data.resumen">
+                <div class="col-xs-6 col-sm-12 titleExtraData blue">
+                    <strong>Corredor: </strong>{{data.caracteristicas[0].nomCorredor}}<br>
+                    <strong>Vendedor: </strong> <a class="blue" (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', data.caracteristicas[0].vendedor, data.caracteristicas[0].nomVendedor)" href="#">{{data.caracteristicas[0].nomVendedor}}</a>
+                </div>
                 <hr>
+                <title-caps class="blue"><strong>Resumen</strong></title-caps>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Estado:</p>
-                    {{data.resumen[0].estado}}
+                    <p class="blue">Estado:</p>
+                    <span class="grey">{{data.resumen[0].estado}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Producto:</p>
-                    {{data.resumen[0].producto}}
+                    <p class="blue">Producto:</p>
+                    <span class="grey">{{data.resumen[0].producto}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Pactado:</p>
-                    {{data.caracteristicas[0].cantidadString}}
+                    <p class="blue">Pactado:</p>
+                    <span class="grey">{{data.caracteristicas[0].cantidadString}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Precio/Tn:</p>
-                    {{data.resumen[0].precioString}}
+                    <p class="blue">Precio/Tn:</p>
+                    <span class="grey">{{data.resumen[0].precioString}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Entregado:</p>
-                    {{data.resumen[0].cantEntreString}}
+                    <p class="blue">Entregado:</p>
+                    <span class="grey">{{data.resumen[0].cantEntreString}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Liquidado:</p>
-                    {{data.resumen[0].cantLiquiString}}
+                    <p class="blue">Liquidado:</p>
+                    <span class="grey">{{data.resumen[0].cantLiquiString}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Fijado:</p>
-                    {{data.resumen[0].cantFijaString}}
+                    <p class="blue">Fijado:</p>
+                    <span class="grey">{{data.resumen[0].cantFijaString}}</span>
                 </div>
                 <div class="col-xs-6 col-sm-12">
-                    <p>Pendiente de entrega:</p>
-                    {{data.resumen[0].cantPendEntreString}}
+                    <p class="blue">Pendiente de entrega:</p>
+                    <span class="grey">{{data.resumen[0].cantPendEntreString}}</span>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-9 col-md-10 squareInfo animate">
+            <div class="col-xs-12 col-sm-8 col-md-9 squareInfo animate">
                 <div class="row myRow">
                     <div id="showCaracteristicas" class="showBtn btnSection btnInfo animate" onClick="showCaracteristicas()">
                         <div>
@@ -79,57 +79,57 @@
                         </div>
                         <div>Características del contrato</div>
                     </div>
-                    <title-caps class="hideMobile">Características del contrato</title-caps>
+                    <title-caps class="hideMobile blue">Características del contrato</title-caps>
                     <hr class="hideMobile">
                     <div id="caracteristicas" class="rowInfoGrey clearfix hideMobile" *ngIf="data.caracteristicas[0]">
                         <div class="row myRow">
                             <div class="col-xs-12 col-sm-3">
                                 <p>Tipo de contrato:</p>
-                                {{data.caracteristicas[0].tipo}}
+                                <span class="grey">{{data.caracteristicas[0].tipo}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Cantidad:</p>
-                                {{data.caracteristicas[0].cantidadString}}
+                                <span class="grey">{{data.caracteristicas[0].cantidadString}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Calificación Proveedor:</p>
-                                {{data.caracteristicas[0].calificacion}}
+                                <span class="grey">{{data.caracteristicas[0].calificacion}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Tolerancia:</p>
-                                {{data.caracteristicas[0].toleMin}}% a {{data.caracteristicas[0].toleMax}}%
+                                <span class="grey">{{data.caracteristicas[0].toleMin}}% a {{data.caracteristicas[0].toleMax}}%</span>
                             </div>
                         </div>
                         <div class="row myRow">
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Lugar descarga/puerto:</p>
-                                {{data.caracteristicas[0].descarga}}
+                                <span class="grey">{{data.caracteristicas[0].descarga}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Estado de Boleto:</p>
-                                {{data.caracteristicas[0].estadoBol}}
+                                <span class="grey">{{data.caracteristicas[0].estadoBol}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Procedencia:</p>
-                                {{data.caracteristicas[0].procedencia}}
+                                <span class="grey">{{data.caracteristicas[0].procedencia}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Período de entrega:</p>
-                                {{data.caracteristicas[0].entregaMin}} a {{data.caracteristicas[0].entregaMax}}
+                                <span class="grey">{{data.caracteristicas[0].entregaMin}} a {{data.caracteristicas[0].entregaMax}}</span>
                             </div>
                         </div>
                         <div class="row myRow">
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Fecha de concertación:</p>
-                                {{data.caracteristicas[0].fechaConcerta}}
+                                <span class="grey">{{data.caracteristicas[0].fechaConcerta}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Standard calidad:</p>
-                                {{data.caracteristicas[0].standardCali}}
+                                <span class="grey">{{data.caracteristicas[0].standardCali}}</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 ">
                                 <p>Cosecha:</p>
-                                {{data.caracteristicas[0].cosecha}}
+                                <span class="grey">{{data.caracteristicas[0].cosecha}}</span>
                             </div>
                         </div>
                     </div>
@@ -149,39 +149,39 @@
                             </div>
                             <div>Condiciones comerciales</div>
                         </div>
-                        <title-caps class="hideMobile">Condiciones comerciales</title-caps>
+                        <title-caps class="hideMobile blue">Condiciones comerciales</title-caps>
                         <hr class="hideMobile">
                         <div id="condiciones" class="rowInfoGrey clearfix hideMobile" *ngIf="data.caracteristicas[0]">
                             <div class="row myRow">
                                 <div class="col-xs-12 col-sm-6">
                                     <p>Pizarra de referencia:</p>
-                                    {{data.caracteristicas[0].pizarraRef}}
+                                    <span class="grey">{{data.caracteristicas[0].pizarraRef}}</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 ">
                                     <p>Fijación diaria:</p>
-                                    {{data.caracteristicas[0].fijaDiariaMin}}kg a {{data.caracteristicas[0].fijaDiariaMax}}kg
+                                    <span class="grey">{{data.caracteristicas[0].fijaDiariaMin}}kg a {{data.caracteristicas[0].fijaDiariaMax}}kg</span>
                                 </div>
                             </div>
                             <div class="row myRow">
                                 <div class="col-xs-12 col-sm-6">
                                     <p>Pago parcial:</p>
-                                    {{data.caracteristicas[0].pagoParcial}}%
+                                    <span class="grey">{{data.caracteristicas[0].pagoParcial}}%</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 ">
                                     <p>Descuento por acarreo:</p>
-                                    ${{data.caracteristicas[0].descuentoAcarreo}} / Tn
+                                    <span class="grey">${{data.caracteristicas[0].descuentoAcarreo}} / Tn</span>
                                 </div>
                             </div>
                             <div class="row myRow">
                                 <div class="col-xs-12 col-sm-6">
                                     <p>Condición de pago fijaciones:</p>
-                                    {{data.caracteristicas[0].condPagoFija}}
+                                    <span class="grey">{{data.caracteristicas[0].condPagoFija}}</span>
                                 </div>
                                 <div class="col-xs-12 col-sm-6 ">
                                     <p>Condiciones especiales de pago:</p>
                                     <ul>
                                         <li *ngFor="let condicion of data.condicionesPago">
-                                            {{condicion}}
+                                            <span class="grey">{{condicion}}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -189,7 +189,7 @@
                             <div class="row myRow">
                                 <div class="col-xs-12 col-sm-6">
                                     <p>Fecha tope de fijación:</p>
-                                    {{data.caracteristicas[0].fechaTopeFija}}
+                                    <span class="grey">{{data.caracteristicas[0].fechaTopeFija}}</span>
                                 </div>
                             </div>
                         </div>
@@ -207,40 +207,40 @@
                             </div>
                             <div>Bonificaciones</div>
                         </div>
-                        <title-caps class="hideMobile">Bonificaciones</title-caps>
+                        <title-caps class="hideMobile blue">Bonificaciones</title-caps>
                         <hr class="hideMobile">
                         <div id="bonificaciones" class="rowInfoGrey rowInfoGreyTable clearfix hideMobile " *ngIf="data.caracteristicas[0]">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:24px;">
+                                <tr></tr>
                                 <tr>
-                                    <td width="50%">&nbsp;</td>
-                                    <td width="25%">&nbsp;</td>
-                                    <td width="25%">GENERAL</td>
+                                    <td colspan="3" class="titleTable"><strong>Dentro del Precio</strong></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="titleTable">DENTRO DEL PRECIO</td>
-                                </tr>
-                                <tr>
+                                    <td><span class="grey">Fijo</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].importeAPrecio}}</span></td>
                                     <td>&nbsp;</td>
-                                    <td>Fijo</td>
-                                    <td>{{data.caracteristicas[0].importeAPrecio}}</td>
-                                </tr>
-                                <tr>
                                     <td>&nbsp;</td>
-                                    <td>%</td>
-                                    <td>{{data.caracteristicas[0].porcAPrecio}}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="titleTable">FUERA DEL PRECIO</td>
-                                </tr>
-                                <tr>
+                                    <td><span class="grey">%</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].porcAPrecio}}</span></td>
                                     <td>&nbsp;</td>
-                                    <td>Fijo</td>
-                                    <td>{{data.caracteristicas[0].importeSPrecio}}</td>
+                                    <td>&nbsp;</td>
                                 </tr>
                                 <tr>
+                                    <td colspan="3" class="titleTable"><strong>Fuera del Precio</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grey">Fijo</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].importeSPrecio}}</span></td>
                                     <td>&nbsp;</td>
-                                    <td>%</td>
-                                    <td>{{data.caracteristicas[0].porcSPrecio}}</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grey">%</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].porcSPrecio}}</span></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
                                 </tr>
                             </table>
                         </div>
@@ -249,11 +249,11 @@
             </div>
         </div>
         <!--BOLETOS-->
-        <div class="row myRow" style=" margin-top:15px;margin-bottom: 30px;">
+        <div class="row myRow" style=" margin-top:15px;">
             <!--boleto destacado-->
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 col-sm-12">Boletos</div>
-                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen" style="background:#77b794;">
+                <div class="col-xs-12 rowInfoGrey rounded shadow animate" id="boletos">
                     <div class="rowInfoRoundedGreenLine" *ngIf="data.boleto">
                         <div class="col-xs-12 col-sm-15">
                             <p>Estado</p>
@@ -281,7 +281,7 @@
             <!--Boleto tabla-->
             <div class="row myRow">
                 <div class="clearfix myTables">
-                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                         <thead>
                             <tr role="row">
                                 <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío bolsa</th>
@@ -337,7 +337,7 @@
                 <!--pagos y liquidaciones tabla-->
                 <div id="myPagos" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-pagos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-pagos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
@@ -381,7 +381,7 @@
                 <!--pagos y liquidaciones tabla-->
                 <div id="myLiquidaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
-                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-liquidaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-liquidaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
