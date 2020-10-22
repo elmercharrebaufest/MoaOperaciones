@@ -1,4 +1,4 @@
-﻿import { Component, Renderer, OnDestroy, ViewChild } from '@angular/core';
+﻿import { Component, Renderer, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router } from "@angular/router";
 
 import { Seccion } from './../common/models/seccion';
@@ -51,6 +51,7 @@ export class LayoutComponent implements OnDestroy {
     modalInfoContratoProcedencia: any;
     modalFooter: any;
     seccionList: Array<Seccion>;
+    tieneSecciones: boolean = false;
     seccionActive: string;
     menuActive: string = 'home';
     mensajeError = '';
@@ -64,7 +65,10 @@ export class LayoutComponent implements OnDestroy {
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeModalComponent;
 
-    constructor(private service: LayoutService, private sessionDataService: SessionDataService, private navService: NavService, private loginGuard: LoginGuard, private router: Router, protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService) {
+    constructor(private service: LayoutService, private sessionDataService: SessionDataService,
+        private navService: NavService, private loginGuard: LoginGuard, private router: Router,
+        protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
+    private cd: ChangeDetectorRef) {
 
         this.renderer.setElementClass(document.body, 'wrapper', true);
 
@@ -111,6 +115,10 @@ export class LayoutComponent implements OnDestroy {
         navService.seccionList$.subscribe(
             seccionList => {
                 this.seccionList = seccionList
+
+                this.tieneSecciones = seccionList.length > 0;
+
+                this.cd.detectChanges();
             });
         navService.seccionActive$.subscribe(
             seccionActive => {

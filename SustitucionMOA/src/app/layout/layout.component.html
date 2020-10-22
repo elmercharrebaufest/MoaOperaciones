@@ -362,7 +362,7 @@
                     </div>
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
-                            <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS') && isCorr()">
+                            <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
                                 <a (click)="goToSeccion('/vendedor/status')" href="#">
                                     <!--data-toggle="tab">-->Consulta de Vendedor
                                 </a>
@@ -500,7 +500,7 @@
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
             aria-hidden="true"></i>{{mensajeSuccess}}</div>
     <!-- Tab panes -->
-    <div class="SubMenu-wrapper" *ngIf="seccionList">
+    <div class="SubMenu-wrapper" [hidden]="!tieneSecciones">
         <div class="SubMenu myTab clearfix">
             <div class="tab-content ">
                 <div class="tab-pane fade active in" id="Inicio">
