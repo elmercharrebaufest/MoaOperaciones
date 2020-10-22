@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
