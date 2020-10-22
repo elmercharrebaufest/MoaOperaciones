@@ -4,13 +4,14 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Dato Fiscal: <strong>Vendedores</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>Dato Fiscal: Vendedores</strong> </div>
         </div>
         <!--End Title-->
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr>
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     Por Vendedor:
                     <div class="styled-select">
@@ -35,9 +36,9 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate " cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('descVendedor')">Vendedor</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('idVendedor')">Nro. Vendedor</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado')">Estado</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('descVendedor')">Vendedor<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'descVendedor' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'descVendedor' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('idVendedor')">Nro. Vendedor<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'idVendedor' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'idVendedor' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado')">Estado<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Estado' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Estado' && orderDirection < 0 }"></i></th>
                         </tr>
                     </thead>
                     <tbody>
