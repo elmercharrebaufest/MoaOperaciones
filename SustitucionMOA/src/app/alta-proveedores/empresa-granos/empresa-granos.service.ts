@@ -52,13 +52,18 @@ export class EmpresaGranosService extends BaseService {
     }
 
     generarInformeComercial(
-        informeComercial: InformeComercial
+        informeComercial: InformeComercial,
+        proveedorId?: number
+
     ): Observable<any> {
         let payload = new FormData();
         payload.append(
             "informeComercialJson",
             JSON.stringify(informeComercial)
         );
+
+        payload.append("proveedorId", proveedorId.toString());
+
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarInformeComercial", payload)
             .pipe(

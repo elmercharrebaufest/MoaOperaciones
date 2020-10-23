@@ -59,9 +59,10 @@ var EmpresaGranosService = /** @class */ (function (_super) {
         })
             .pipe(map(this.extractData));
     };
-    EmpresaGranosService.prototype.generarInformeComercial = function (informeComercial) {
+    EmpresaGranosService.prototype.generarInformeComercial = function (informeComercial, proveedorId) {
         var payload = new FormData();
         payload.append("informeComercialJson", JSON.stringify(informeComercial));
+        payload.append("proveedorId", proveedorId.toString());
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarInformeComercial", payload)
             .pipe(timeoutWith(30000, throwError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))

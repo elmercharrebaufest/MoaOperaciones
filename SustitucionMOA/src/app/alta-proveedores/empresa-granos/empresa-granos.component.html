@@ -733,13 +733,12 @@
                     <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
                 </div>
                 <div class="modal-body modal-notificacion">
-                    <p>¡Su solicitud fue enviada con éxito!</p>
-                    <p>Un asesor le informará el estado de su registro.</p>
-                    <p>¡Muchas gracias!</p>
-
+                    <label>¡Su solicitud fue enviada con éxito!</label><br />
+                    <label>Un asesor le informará el estado de su registro.</label><br />
+                    <label>¡Muchas gracias!</label><br />
                 </div>
                 <div class="modal-footer">
-                    <a class="btn-azul btn-custom" (click)="redirigirAEstado()">Aceptar</a>
+                    <button (click)="redirigirAEstado()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
                 </div>
             </div>
         </div>
@@ -783,13 +782,15 @@
                                     <input [(ngModel)]="informe.localidadId" type="hidden" id="localidadinf"
                                         style="font-weight: 100 !important;">
 
-                                    <ng-autocomplete [data]="data" [searchKeyword]="keyword"
-                                        (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
-                                        (inputChanged)='onChangeSearchInforme($event)'
-                                        (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
-                                        [placeHolder]="'Localidad'" [notFoundText]="autocompleteNotFoundText"
-                                        [notFoundTemplate]="notFoundTemplate">
-                                    </ng-autocomplete>
+                                    <div class="ng-autocomplete">
+                                        <ng-autocomplete [data]="data" [searchKeyword]="keyword"
+                                            (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
+                                            (inputChanged)='onChangeSearchInforme($event)'
+                                            (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
+                                            [placeHolder]="'Localidad'" [notFoundText]="autocompleteNotFoundText"
+                                            [notFoundTemplate]="notFoundTemplate">
+                                        </ng-autocomplete>
+                                    </div>
 
                                     <ng-template #itemTemplate let-item>
                                         <a [innerHTML]="item.Nombre"></a>
@@ -894,7 +895,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="styled-elements">
+                                            <div>
                                                 <input [(ngModel)]="field.LocalidadId" type="hidden"
                                                     id="localidad_{{i}}">
                                                 <ng-autocomplete [data]="data" [searchKeyword]="keyword"
@@ -974,7 +975,7 @@
                                                 <input [(ngModel)]="acopio.LocalidadID" type="hidden"
                                                     id="localidadalm_{{i}}" style="font-weight: 100 !important;">
 
-                                                <div class="styled-elements">
+                                                <div>
 
                                                     <ng-autocomplete [data]="data" [searchKeyword]="keyword"
                                                         (selected)='selectEventAlmacenamiento($event, i)'
