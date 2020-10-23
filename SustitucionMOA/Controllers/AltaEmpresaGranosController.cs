@@ -33,7 +33,7 @@ namespace SustitucionMOA.Controllers
             this.repositorio = repositorio;
         }
 
-        public ActionResult GenerarInformeComercial(string informeComercialJson)
+        public ActionResult GenerarInformeComercial(string informeComercialJson, int proveedorId)
         {
             try
             {
@@ -47,11 +47,9 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
 
-                var proveedor = usuario.ObtenerProveedor();
+                var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
-                var proveedorId = proveedor.Id;
-
-                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, 0);
+                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, proveedorId);
 
                 if (infoProveedor.ProveedorClasificacion == "Productor")
                 {

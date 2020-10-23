@@ -273,7 +273,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         }
         this.mensajeError = "";
         this.subscription = this.service
-            .generarInformeComercial(this.informe)
+            .generarInformeComercial(this.informe, this.proveedorId)
             .subscribe(function (result) {
             _this.spinnerModal.hideIt();
             if (result.error) {
