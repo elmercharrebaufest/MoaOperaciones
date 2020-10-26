@@ -44,10 +44,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/GrabarContratoAPrecio";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/GrabarContratoAPrecio";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -93,10 +93,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNet/InicializarContrato";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNet/InicializarContrato";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -144,10 +144,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNet/ObtenerDatosCompraNet";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNet/ObtenerDatosCompraNet";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -193,10 +193,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/GrabarContratoAFijar";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/GrabarContratoAFijar";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -243,10 +243,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/ValidarDirecto";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/ValidarDirecto";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -293,10 +293,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/Proveedor/BuscarProveedoresConCorredor";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/Proveedor/BuscarProveedoresConCorredor";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -342,10 +342,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/HabilitarPizarra";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/HabilitarPizarra";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -390,10 +390,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/HabilitarCampaña";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/HabilitarCampaña";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -438,10 +438,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/TraerPrecioMoa";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/TraerPrecioMoa";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -486,10 +486,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNet/ObtenerFijacionesAutomaticas";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNet/ObtenerFijacionesAutomaticas";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
@@ -527,17 +527,17 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarContratoAFijar");
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarFijacion");
 
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/CompraNetTercero/GrabarFijacion";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/CompraNetTercero/GrabarFijacion";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
