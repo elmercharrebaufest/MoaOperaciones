@@ -11,6 +11,7 @@ using SustitucionMOA.Utils;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -182,6 +183,14 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
+
+
+				if (usuario.Roles.Where(r => r.Codigo == "ADM").Any()
+					|| usuario.Roles.Where(r => r.Codigo == "TODOS").Any()
+				)
+                {
+					tipoGranos = "A";
+                }
 
 				string tipoUsuario = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI" ? usuario.TipoUsuario.NombreCorto : "PROV";
 

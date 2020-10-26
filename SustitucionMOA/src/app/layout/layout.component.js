@@ -171,7 +171,7 @@ var LayoutComponent = /** @class */ (function () {
         return this.securityService.tienePermiso(permiso);
     };
     LayoutComponent.prototype.isAmbos = function () {
-        return this.granosFlag == "A" && this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG');
+        return this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG');
     };
     LayoutComponent.prototype.setGranos = function () {
         this.granosSelected = "G";
