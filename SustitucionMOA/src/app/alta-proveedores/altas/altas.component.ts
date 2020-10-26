@@ -44,7 +44,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     data: any;
-    dataFiltered: any;
     estados: any;
     selectedEstado: string = "q";
     orderedByColumn: string = "id";
@@ -55,6 +54,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     observaciones: string = "";
     observacionesProveedor: string = "";
     mensajeError: string = "";
+    filtroAlta: string = "";
+
 
     listaArchivos: Array<Archivo> = [];
 
@@ -89,7 +90,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
-                        this.dataFiltered = result.data;
                     }
                 },
                 error => {
@@ -284,11 +284,12 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     onOptionsSelected() {
-        if (this.selectedEstado != "") {
-            this.dataFiltered = this.data.filter(t => t.EstadoAprobacionDescripcion == this.selectedEstado);
-        } else {
-            this.dataFiltered = this.data;
-        }
+        // Esto ahora lo filtramos con un pipe
+        // if (this.selectedEstado != "") {
+        //     this.dataFiltered = this.data.filter(t => t.EstadoAprobacionDescripcion == this.selectedEstado);
+        // } else {
+        //     this.dataFiltered = this.data;
+        // }
 
     }
 
