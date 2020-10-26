@@ -162,18 +162,13 @@ namespace SustitucionMOAUtils.Services
             return listadoProveedores.Distinct().ToList();
         }
 
-        public string AgregarVendedor(string mailUsuario, string cuit, string razonSocial)
+        public string AgregarVendedor(string mailUsuario, string cuit)
         {
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
             if (cuit == null || cuit == "")
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
-            }
-
-            if (razonSocial == null || razonSocial == "")
-            {
-                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Razon Social"));
             }
 
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
@@ -184,13 +179,26 @@ namespace SustitucionMOAUtils.Services
             var nuevoVendedor = new Proveedor
             {
                 CUIT = cuit,
-                RazonSocial = razonSocial,
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 CodigoProveedor = FormatearCodigoProveedor(cuit)
             };
 
-            if (!usuario.EsCorredor()) dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
+            if (usuario.EsCorredor())
+            {
+                var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit);
+
+                if (infoDA.HayError)
+                {
+                    throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                }
+
+                nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
+            }
+            else
+            {
+                dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
+            }
 
             usuario.Proveedores.Add(nuevoVendedor);
 

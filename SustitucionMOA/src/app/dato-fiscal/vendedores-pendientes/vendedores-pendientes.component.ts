@@ -54,7 +54,6 @@ export class VendedoresPendientesComponent
     filtroVendedor: string = "";
     filtroNroVendedor: string = "";
 
-    nuevoVendedorRazonSocial: string = "";
     nuevoVendedorCUIT: string = "";
 
     setTabs() {
@@ -163,7 +162,6 @@ export class VendedoresPendientesComponent
         try {
             this.subscription = this.service
                 .agregarVendedor(
-                    this.nuevoVendedorRazonSocial,
                     this.nuevoVendedorCUIT
                 )
                 .subscribe(
@@ -183,7 +181,6 @@ export class VendedoresPendientesComponent
                         } else {
                             this.getVendedores();
                             this.mensajeComponent.setSuccessMsg(result.data);
-                            this.nuevoVendedorRazonSocial = "";
                             this.nuevoVendedorCUIT = "";
 
                             document.getElementById("modalToggleButton").click();

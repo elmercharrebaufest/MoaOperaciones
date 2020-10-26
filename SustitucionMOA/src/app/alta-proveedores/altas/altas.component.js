@@ -54,6 +54,7 @@ var AltasComponent = /** @class */ (function (_super) {
         _this.observaciones = "";
         _this.observacionesProveedor = "";
         _this.mensajeError = "";
+        _this.filtroAlta = "";
         _this.listaArchivos = [];
         _this.empleados = [];
         _this.funcionarios = [];
@@ -65,6 +66,7 @@ var AltasComponent = /** @class */ (function (_super) {
     }
     AltasComponent.prototype.ngOnInit = function () {
         this.getEstados();
+        this.navService.setSeccionList([]);
     };
     AltasComponent.prototype.verDetalle = function () {
         this.navService.navegarSeccion('/proveedor-detalle');
@@ -90,7 +92,6 @@ var AltasComponent = /** @class */ (function (_super) {
                 }
                 else {
                     _this.data = result.data;
-                    _this.dataFiltered = result.data;
                 }
             }, function (error) {
                 _this.spinnerComponent.hideIt();
@@ -267,13 +268,12 @@ var AltasComponent = /** @class */ (function (_super) {
         link.click();
     };
     AltasComponent.prototype.onOptionsSelected = function () {
-        var _this = this;
-        if (this.selectedEstado != "") {
-            this.dataFiltered = this.data.filter(function (t) { return t.EstadoAprobacionDescripcion == _this.selectedEstado; });
-        }
-        else {
-            this.dataFiltered = this.data;
-        }
+        // Esto ahora lo filtramos con un pipe
+        // if (this.selectedEstado != "") {
+        //     this.dataFiltered = this.data.filter(t => t.EstadoAprobacionDescripcion == this.selectedEstado);
+        // } else {
+        //     this.dataFiltered = this.data;
+        // }
     };
     AltasComponent.prototype.cargarSolicitudUsuario = function (mail, proveedorId) {
         var _this = this;

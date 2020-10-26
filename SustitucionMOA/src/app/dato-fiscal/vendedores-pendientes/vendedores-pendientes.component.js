@@ -46,7 +46,6 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         _this.itemsPerPage = 20;
         _this.filtroVendedor = "";
         _this.filtroNroVendedor = "";
-        _this.nuevoVendedorRazonSocial = "";
         _this.nuevoVendedorCUIT = "";
         _this.mensajeComponent = new MensajeComponent();
         _this.mensajeModalComponent = new MensajeComponent();
@@ -126,7 +125,7 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         this.unsubscribe();
         try {
             this.subscription = this.service
-                .agregarVendedor(this.nuevoVendedorRazonSocial, this.nuevoVendedorCUIT)
+                .agregarVendedor(this.nuevoVendedorCUIT)
                 .subscribe(function (result) {
                 _this.spinnerModalComponent.hideIt();
                 if (result.logout == true) {
@@ -142,7 +141,6 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
                 else {
                     _this.getVendedores();
                     _this.mensajeComponent.setSuccessMsg(result.data);
-                    _this.nuevoVendedorRazonSocial = "";
                     _this.nuevoVendedorCUIT = "";
                     document.getElementById("modalToggleButton").click();
                 }

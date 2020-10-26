@@ -64,10 +64,9 @@ var DatoFiscalService = /** @class */ (function (_super) {
         })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))), map(this.extractData));
     };
-    DatoFiscalService.prototype.agregarVendedor = function (nuevoVendedorRazonSocial, nuevoVendedorCUIT) {
+    DatoFiscalService.prototype.agregarVendedor = function (nuevoVendedorCUIT) {
         var params = new URLSearchParams();
         params.set("cuit", nuevoVendedorCUIT);
-        params.set("razonSocial", nuevoVendedorRazonSocial);
         return this.http
             .get("/api/vendedor/agregarVendedor", { search: params })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))), map(this.extractData));

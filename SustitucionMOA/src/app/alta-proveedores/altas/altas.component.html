@@ -15,7 +15,8 @@
                 <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
                     Por Razon Social/CUIT:
                     <div class="styled-select ">
-                        <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal"
+                            [(ngModel)]="filtroAlta">
                     </div>
                 </div>
                 <div class="col-xs-6  col-sm-4 col-md-5">
@@ -43,22 +44,60 @@
                     role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Mail')">Usuario<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">Codigo<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CUIT')">CUIT<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('RazonSocial')">Razon Social<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Comercial')">Comercial<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('SISAEstadoCuit')">SISA<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('EstadoSIPER')">Estado Siper<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('UltimaEdicion')">Ultima Edición<span>
-                                <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Mail')">Usuario<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                                Codigo<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CUIT')">CUIT<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('RazonSocial')">Razon
+                                Social<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Comercial')">
+                                Comercial<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('SISAEstadoCuit')">
+                                SISA<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('EstadoSIPER')">Estado
+                                Siper<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('UltimaEdicion')">Ultima
+                                Edición<span>
+                                    <i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i></span>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1"
+                                (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado<span><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i></span>
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let empresa of dataFiltered | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'CUIT' : 'RazonSocial' : filtro | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
-                            role="row" [class.odd]="!odd">
+                        <tr *ngFor="let empresa of data 
+                                | orderedColumn : {property: orderedByColumn, direction: orderDirection} 
+                                | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta 
+                                | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado 
+                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
+                                ; let odd = odd" role="row" [class.odd]="!odd">
                             <td>{{empresa.Mail}}</td>
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
@@ -563,7 +602,7 @@
                         [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-right: 10px;"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')">
                     <label style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
@@ -592,13 +631,13 @@
                     Aprobar
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                     (click)="cambiarEstado(5)"
                     style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Rechazar
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                     (click)="cambiarEstado(4)"
                     style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Observar
