@@ -64,6 +64,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     relacionConFuncionarios: string = "";
     ngOnInit(): void {
         this.getEstados();
+        this.navService.setSeccionList([]);
 
     }
 

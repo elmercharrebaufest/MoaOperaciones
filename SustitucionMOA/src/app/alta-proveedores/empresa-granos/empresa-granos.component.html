@@ -62,13 +62,14 @@
                         </div>
                         <div class="container-fluid">
                             <div class="col-xs-12">
-                                <p>Complete la carta de presentación</p>
 
-                                <button type="button" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
-                                    data-target="#modalCartaPresentacion" class="btn-custom btn-azul">
-                                    Completar Carta de presentación
-                                </button>
-
+                                <label>
+                                    <span id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
+                                        data-target="#modalCartaPresentacion" class="link-adjuntar">
+                                        Completar
+                                    </span>
+                                    la carta de presentación
+                                </label>
                             </div>
                             <div class="col-xs-12">
                                 <label class="informe-firmado label" for="cartaDePresentacionFirmada">
@@ -999,14 +1000,12 @@
                                             </td>
                                             <td width="83px">
                                                 <div class="styled-elements">
-
                                                     <input [(ngModel)]="acopio.Toneladas" type="number"
                                                         placeholder="TNS" />
                                                 </div>
                                             </td>
                                             <td width="121px">
                                                 <div class="styled-elements">
-
                                                     <select [(ngModel)]="acopio.ArrendaPropia">
                                                         <option disabled hidden [value]="selectUndefinedOptionValue">
                                                             Condición
@@ -1119,7 +1118,7 @@
                                     <div class="formulario-label">
                                         Bolsa
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Bolsa"
                                             [(ngModel)]="cartaPresentacion.corredorBolsa" maxlength="100" />
                                     </div>
@@ -1128,7 +1127,7 @@
                                     <div class="formulario-label">
                                         Nro registro:
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Nro registro"
                                             [(ngModel)]="cartaPresentacion.corredorNroRegistro" maxlength="100" />
                                     </div>
@@ -1145,7 +1144,7 @@
                                     <div class="formulario-label">
                                         Actividad
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <select [(ngModel)]="cartaPresentacion.vendedorActividad" [value]="Productor"
                                             class="dropdown-granos ng-pristine ng-valid ng-touched">
                                             <option value="Productor" selected>Productor</option>
@@ -1159,7 +1158,7 @@
                                     <div class="formulario-label">
                                         Domicilio fiscal
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Domicilio fiscal"
                                             [(ngModel)]="cartaPresentacion.vendedorDomicilioFiscal" maxlength="100" />
                                     </div>
@@ -1168,7 +1167,7 @@
                                     <div class="formulario-label">
                                         Antigüedad en la actividad
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Antigüedad en la actividad"
                                             [(ngModel)]="cartaPresentacion.vendedorAntiguedadEnActividad"
                                             maxlength="100" />
@@ -1180,7 +1179,7 @@
                                     <div class="formulario-label">
                                         Antecedes comerciales
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Antecedes comerciales"
                                             [(ngModel)]="cartaPresentacion.vendedorAntecedentesComerciales"
                                             maxlength="100" />
@@ -1192,7 +1191,7 @@
                                     <div class="formulario-label">
                                         Mail de contacto
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Mail de contacto"
                                             [(ngModel)]="cartaPresentacion.vendedorMailContacto" maxlength="100" />
                                     </div>
@@ -1202,7 +1201,7 @@
                                     <div class="formulario-label">
                                         Teléfono de contacto
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Teléfono de contacto"
                                             [(ngModel)]="cartaPresentacion.vendedorTelefonoContacto" maxlength="100" />
                                     </div>
@@ -1211,7 +1210,7 @@
                                     <div class="formulario-label">
                                         Domicilio real
                                     </div>
-                                    <div class="formulario-input">
+                                    <div class="styled-elements">
                                         <input type="text" class="form-control" placeholder="Domicilio real"
                                             [(ngModel)]="cartaPresentacion.vendedorDomicilioReal" maxlength="100" />
                                     </div>
@@ -1223,192 +1222,206 @@
                                 <br />
                             </div>
                         </div>
-                        <div class="formulario row">
-                            <div class="formulario-label col-xs-12">
-                                <p class="table-title">
-                                    Campaña:
-                                    <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
-                                        class="dropdown-granos" [value]=listaCampanias[0]>
-                                        <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
-                                            {{camp.CampaniaActual}}
-                                        </option>
-                                    </select>
-                                </p>
+                        <div class="formulario-campo">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="styled-elements">
+                                        <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual"
+                                            [value]=listaCampanias[0]>
+                                            <option disabled hidden [value]="selectUndefinedOptionValue"> Campaña
+                                            </option>
+                                            <option *ngFor="let camp of listaCampanias"
+                                                value="{{camp.CampaniaIdActual}}">
+                                                {{camp.CampaniaActual}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                </div>
                             </div>
-                        </div>
+                            <div class="formulario">
 
-                        <div class="formulario">
-                            <div>
-                                <p class="table-title">Capacidad productiva</p>
+                                <div class="titulo">Capacidad productiva
+                                </div>
+                                <table class="table table-borderless table-custom">
+                                    <tbody>
+                                        <tr *ngFor="let field of cartaPresentacion.nuevosCampos; let i = index">
+                                            <td width="140px">
+                                                <div class="styled-elements">
+                                                    <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
+                                                        class="dropdown-granos">
+                                                        <option disabled hidden [value]="selectUndefinedOptionValue">
+                                                            Grano
+                                                        </option>
+                                                        <option *ngFor="let material of listaMateriales"
+                                                            value="{{material.Id}}">
+                                                            {{material.Descripcion}}
+                                                        </option>
+                                                    </select>
+                                                    <input [(ngModel)]="field.CampaniaId" class="form-control"
+                                                        type="text" value="0" name="{{field.CampaniaId}}"
+                                                        style="display:none;" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input [(ngModel)]="field.LocalidadId" class="form-control"
+                                                    type="hidden" style="font-weight: 100 !important;">
+
+                                                <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                                    (selected)='selectEventCampoCartaPresentacion($event, i)'
+                                                    [(ngModel)]="field.Localidad"
+                                                    (inputChanged)='onChangeLocalidad($event)'
+                                                    [itemTemplate]="itemTemplate"
+                                                    [notFoundText]="autocompleteNotFoundText"
+                                                    [placeHolder]="'Localidad'" [notFoundTemplate]="notFoundTemplate">
+                                                </ng-autocomplete>
+
+                                                <ng-template #itemTemplate let-item>
+                                                    <a [innerHTML]="item.Nombre"></a>
+                                                </ng-template>
+
+                                                <ng-template #notFoundTemplate let-notFound>
+                                                    <div [innerHTML]="notFound"></div>
+                                                </ng-template>
+                                            </td>
+                                            <td width="100px">
+                                                <div class="styled-elements">
+
+                                                    <input [(ngModel)]="field.Hectareas" class="form-control"
+                                                        type="number" name="{{field.Hectareas}}" placeholder="HAS" />
+                                                </div>
+                                            </td>
+                                            <td width="100px">
+                                                <div class="styled-elements">
+
+                                                    <input [(ngModel)]="field.Toneladas" class="form-control"
+                                                        type="number" name="{{field.Toneladas}}" placeholder="TNS" />
+                                                </div>
+                                            </td>
+                                            <td width="75px">
+                                                <div class="styled-elements">
+
+                                                    <select [(ngModel)]="field.ArrendaPropia"
+                                                        class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                        <option disabled hidden [value]="selectUndefinedOptionValue">
+                                                            Condición
+                                                        </option>
+                                                        <option value="true">Propio</option>
+                                                        <option value="false">Alquilado</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td width="75px">
+                                                <button class="btn-remove btn-custom btn-chico" type="button"
+                                                    (click)="borrarCampoCartaPresentacion(i)">
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+                                <div class="btn-add-container">
+                                    <button class="btn-add btn-custom btn-chico" type="button"
+                                        (click)="agregarCampoCartaPresentacion()">
+                                        Agregar
+                                    </button>
+
+                                </div>
                             </div>
-                            <table class="table table-striped table-bordered table-custom">
-                                <thead>
-                                    <tr>
-                                        <th>Grano</th>
-                                        <th>Localidad</th>
-                                        <th>Has</th>
-                                        <th>TNs</th>
-                                        <th>Condicion</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let field of cartaPresentacion.nuevosCampos; let i = index">
-                                        <td width="140px">
-                                            <div class="formulario-input">
-                                                <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId"
-                                                    class="dropdown-granos">
-                                                    <option *ngFor="let material of listaMateriales"
-                                                        value="{{material.Id}}">
-                                                        {{material.Descripcion}}
-                                                    </option>
-                                                </select>
-                                                <input [(ngModel)]="field.CampaniaId" class="form-control" type="text"
-                                                    value="0" name="{{field.CampaniaId}}" style="display:none;" />
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <input [(ngModel)]="field.LocalidadId" class="form-control" type="hidden"
-                                                style="font-weight: 100 !important;">
 
-                                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
-                                                (selected)='selectEventCampoCartaPresentacion($event, i)'
-                                                [(ngModel)]="field.Localidad" (inputChanged)='onChangeLocalidad($event)'
-                                                [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText"
-                                                [placeHolder]="'Localidad'" [notFoundTemplate]="notFoundTemplate">
-                                            </ng-autocomplete>
+                            <!-- TABLA 2 -->
+                            <div class="formulario">
+                                <div class="titulo">
+                                    Capacidad planta
+                                </div>
+                                <table class="table table-borderless table-custom">
+                                    <tbody>
+                                        <tr *ngFor="let acopio of cartaPresentacion.nuevosAcopios; let i = index">
 
-                                            <ng-template #itemTemplate let-item>
-                                                <a [innerHTML]="item.Nombre"></a>
-                                            </ng-template>
+                                            <td>
+                                                <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text"
+                                                    value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
 
-                                            <ng-template #notFoundTemplate let-notFound>
-                                                <div [innerHTML]="notFound"></div>
-                                            </ng-template>
-                                        </td>
-                                        <td width="100px">
-                                            <input [(ngModel)]="field.Hectareas" class="form-control" type="number"
-                                                name="{{field.Hectareas}}" />
-                                        </td>
-                                        <td width="100px">
-                                            <input [(ngModel)]="field.Toneladas" class="form-control" type="number"
-                                                name="{{field.Toneladas}}" />
-                                        </td>
-                                        <td width="75px">
-                                            <select [(ngModel)]="field.ArrendaPropia"
-                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
-                                                <option value="true">Propio</option>
-                                                <option value="false">Alquilado</option>
-                                            </select>
-                                        </td>
-                                        <td width="75px">
-                                            <button class="btn-remove btn-custom" type="button"
-                                                (click)="borrarCampoCartaPresentacion(i)">
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
+                                                <input [(ngModel)]="acopio.LocalidadID" class="form-control"
+                                                    type="hidden" id="localidadalm_{{i}}"
+                                                    style="font-weight: 100 !important;">
 
-                                </tbody>
+                                                <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                                    (selected)='selectEventAcopioCartaPresentacion($event, i)'
+                                                    [(ngModel)]="acopio.Localidad"
+                                                    (inputChanged)='onChangeLocalidad($event)'
+                                                    [itemTemplate]="itemTemplate"
+                                                    [notFoundText]="autocompleteNotFoundText"
+                                                    [placeHolder]="'Localidad'" [notFoundTemplate]="notFoundTemplate">
+                                                </ng-autocomplete>
 
-                            </table>
-                            <div class="btn-add-container">
-                                <button class="btn-add btn-custom" type="button"
-                                    (click)="agregarCampoCartaPresentacion()">
-                                    Agregar
-                                </button>
+                                                <ng-template #itemTemplate let-item>
+                                                    <a [innerHTML]="item.Nombre"></a>
+                                                </ng-template>
 
-                            </div>
-                        </div>
-
-                        <!-- TABLA 2 -->
-                        <div class="formulario">
-                            <div>
-                                <p class="table-title">Capacidad planta</p>
-                            </div>
-                            <table class="table table-striped table-bordered table-custom">
-                                <thead>
-                                    <tr>
-                                        <th>Localidad</th>
-                                        <th>TNs</th>
-                                        <th>Condición</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let acopio of cartaPresentacion.nuevosAcopios; let i = index">
-
-                                        <td>
-                                            <input [(ngModel)]="acopio.CampaniaID" class="form-control" type="text"
-                                                value="0" name="{{acopio.CampaniaID}}" style="display:none;" />
-
-                                            <input [(ngModel)]="acopio.LocalidadID" class="form-control" type="hidden"
-                                                id="localidadalm_{{i}}" style="font-weight: 100 !important;">
-
-                                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
-                                                (selected)='selectEventAcopioCartaPresentacion($event, i)'
-                                                [(ngModel)]="acopio.Localidad"
-                                                (inputChanged)='onChangeLocalidad($event)' [itemTemplate]="itemTemplate"
-                                                [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
-                                                [notFoundTemplate]="notFoundTemplate">
-                                            </ng-autocomplete>
-
-                                            <ng-template #itemTemplate let-item>
-                                                <a [innerHTML]="item.Nombre"></a>
-                                            </ng-template>
-
-                                            <ng-template #notFoundTemplate let-notFound>
-                                                <div [innerHTML]="notFound"></div>
-                                            </ng-template>
-                                        </td>
-                                        <td width="100px">
-                                            <input [(ngModel)]="acopio.Toneladas" class="form-control" type="number" />
-                                        </td>
-                                        <td width="75px">
-                                            <select [(ngModel)]="acopio.ArrendaPropia"
-                                                class="dropdown-granos ng-pristine ng-valid ng-touched">
-                                                <option value="true">Propio</option>
-                                                <option value="false">Alquilado</option>
-                                            </select>
-                                        </td>
-                                        <td width="75px">
-                                            <button class="btn-remove btn-custom" type="button"
-                                                (click)="borrarAcopioCartaPresentacion(i)">
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="btn-add-container">
-                                <button class="btn-add btn-custom" type="button"
-                                    (click)="agregarAcopioCartaPresentacion()">
-                                    Agregar
-                                </button>
+                                                <ng-template #notFoundTemplate let-notFound>
+                                                    <div [innerHTML]="notFound"></div>
+                                                </ng-template>
+                                            </td>
+                                            <td width="100px">
+                                                <div class="styled-elements">
+                                                    <input [(ngModel)]="acopio.Toneladas" class="form-control"
+                                                        placeholder="TNS" type="number" />
+                                                </div>
+                                            </td>
+                                            <td width="75px">
+                                                <div class="styled-elements">
+                                                    <select [(ngModel)]="acopio.ArrendaPropia"
+                                                        class="dropdown-granos ng-pristine ng-valid ng-touched">
+                                                        <option disabled hidden [value]="selectUndefinedOptionValue">
+                                                            Condición
+                                                        </option>
+                                                        <option value="true">Propio</option>
+                                                        <option value="false">Alquilado</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td width="75px">
+                                                <button class="btn-remove btn-custom btn-chico" type="button"
+                                                    (click)="borrarAcopioCartaPresentacion(i)">
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="btn-add-container">
+                                    <button class="btn-add btn-custom btn-chico" type="button"
+                                        (click)="agregarAcopioCartaPresentacion()">
+                                        Agregar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="formulario" style="width:100%;text-align: center;">
-                        <div *ngIf="mensajeError != ''" class="formulario-input;">
-                            <div class="alert alert-danger">
-                                <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+                    <div class="modal-footer">
+                        <div class="formulario" style="width:100%;text-align: center;">
+                            <div *ngIf="mensajeError != ''" class="formulario-input;">
+                                <div class="alert alert-danger">
+                                    <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+                                </div>
                             </div>
-                        </div>
-                        <div class="formulario-input;">
-                            <spinner-small #spinnerCartaPresentacion></spinner-small>
-                        </div>
-                        <div class="formulario-input">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <a class="btn btn-primary" id="CartaPresentacionDescargar"
-                                (click)="generarCartaPresentacion()">Guardar y Descargar</a>
+                            <div class="formulario-input;">
+                                <spinner-small #spinnerCartaPresentacion></spinner-small>
+                            </div>
+                            <div class="formulario-input">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <a class="btn btn-primary" id="CartaPresentacionDescargar"
+                                    (click)="generarCartaPresentacion()">Guardar y Descargar</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- end modal carta de presentanción -->
+        <!-- end modal carta de presentanción -->
 
-</div>
+    </div>
