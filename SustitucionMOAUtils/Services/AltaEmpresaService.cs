@@ -75,6 +75,24 @@ namespace SustitucionMOAUtils.Services
 
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
+                if (estado == EstadoAprobacion.AnularRechazo)
+                {
+                    //Lo inicializo así por las dudas, en el peor de los casos queda igual
+                    EstadoAprobacion estadoAnterior = EstadoAprobacion.Rechazado;
+                    var historialAnterior = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion != EstadoAprobacion.Rechazado).OrderByDescending(x => x.Fecha).FirstOrDefault();
+
+                    if (historialAnterior == null)
+                    {
+                        estadoAnterior = EstadoAprobacion.DocumentacionPendiente;
+                    }
+                    else
+                    {
+                        estadoAnterior = historialAnterior.EstadoAprobacion;
+                    }
+
+                    estado = estadoAnterior;
+                }
+
                 proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
                     {
@@ -123,6 +141,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.Observaciones = observacionParaElProveedor;
                 }
+
+
 
                 if (!string.IsNullOrWhiteSpace(estadoSIPER))
                 {
