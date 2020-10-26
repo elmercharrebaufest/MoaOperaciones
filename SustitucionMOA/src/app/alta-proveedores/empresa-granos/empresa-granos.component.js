@@ -108,6 +108,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.checkPermisos();
         this.navService.setSeccionList([]);
         this.obtenerMateriales();
+        this.obtenerCampanias();
         this.obtenerArchivosSubidos();
         this.cargarSolicitudUsuario();
         this.obtenerInfoProveedor();
@@ -120,14 +121,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         get: function () {
             return this.firstFormGroup.get("email");
         },
-        enumerable: false,
+        enumerable: true,
         configurable: true
     });
     Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
         get: function () {
             return this.secondFormGroup.get("password");
         },
-        enumerable: false,
+        enumerable: true,
         configurable: true
     });
     EmpresaGranosComponent.prototype.selectEventProduccion = function (item, index) {
@@ -235,6 +236,22 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                 }
             }
             _this.listaCampanias = listaCampanias2;
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
+    EmpresaGranosComponent.prototype.obtenerCampanias = function () {
+        var _this = this;
+        this.subscription = this.service.obtenerCampanias().subscribe(function (result) {
+            var obj = result;
+            _this.listaCampanias = new Array();
+            obj.forEach(function (element) {
+                var cam = {
+                    CampaniaActual: element.Descripcion,
+                    CampaniaIdActual: element.CampaniaId,
+                };
+                _this.listaCampanias.push(cam);
+            });
         }, function (error) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });

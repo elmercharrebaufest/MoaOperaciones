@@ -518,5 +518,52 @@ namespace SustitucionMOAUtils.Services
 
             return altaEmpresa;
         }
+
+        public string ObtenerCampañasDataAgro()
+        {
+            try
+            {
+                var urlBusquedaMateriales = string.Concat(DataAgroURL, "/Campana/Buscar");
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //urlBusquedaMateriales = "http://localhost:52498/Campana/Buscar";
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(urlBusquedaMateriales, null);
+
+                    task.Wait();
+
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+
+                    return scapedJson;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
     }
 }

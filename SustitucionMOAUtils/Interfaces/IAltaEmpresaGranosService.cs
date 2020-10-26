@@ -19,5 +19,7 @@ namespace SustitucionMOAUtils.Interfaces
         string EliminarArchivo(string mail, int archivoID, int proveedorId);
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId);
         AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId);
+        string ObtenerCampañasDataAgro();
+
     }
 }

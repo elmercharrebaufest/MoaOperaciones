@@ -51,6 +51,7 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
+    <Compile Include="Models\DataAgro\CampaniaDto.cs" />
     <Compile Include="Models\DataAgro\ContratoAFijar.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
