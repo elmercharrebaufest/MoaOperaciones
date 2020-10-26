@@ -602,7 +602,7 @@
                         [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-right: 10px;"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')">
                     <label style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
@@ -631,13 +631,13 @@
                     Aprobar
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                     (click)="cambiarEstado(5)"
                     style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Rechazar
                 </button>
                 <button type="button" class="btn btn-info btn-lg"
-                    *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                     (click)="cambiarEstado(4)"
                     style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Observar

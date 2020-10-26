@@ -45,7 +45,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     data: any;
     estados: any;
-    selectedEstado: string = "q";
+    selectedEstado: string = "";
     orderedByColumn: string = "id";
     empresaSeleccionada: Empresa = new Empresa();
     empresaEstadoSeleccionada: number = 0;
