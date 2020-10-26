@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Pagos</div>
+            <div class="col-xs-12 col-sm-10 "><strong>Pagos</strong></div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
@@ -13,10 +13,11 @@
         </div>
         <!--End Title-->
         <!--Search-->
-        <div class="row  myRow firstSection mySearch">
+        <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr />
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
@@ -59,12 +60,12 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate pagos-emitidos-ng-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fechaPagoDate')">Fecha de Pago</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('numeroPago')">N&uacute;mero Pago</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('viaPago')">V&iacute;a de Pago</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('totalMercaderia')">Monto Comprobantes</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('retencion')">Retenciones</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('monto')">Neto Acreditado</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fechaPagoDate')">Fecha de Pago<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaPagoDate' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaPagoDate' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('numeroPago')">N&uacute;mero Pago<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'numeroPago' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'numeroPago' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('viaPago')">V&iacute;a de Pago<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'viaPago' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'viaPago' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('totalMercaderia')">Monto Comprobantes<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'totalMercaderia' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'totalMercaderia' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('retencion')">Retenciones<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'retencion' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'retencion' && orderDirection < 0 }"></i></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('monto')">Neto Acreditado<i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'monto' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'monto' && orderDirection < 0 }"></i></th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Ver Comporbantes</th>
                         </tr>
                     </thead>

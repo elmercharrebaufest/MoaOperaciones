@@ -19,31 +19,31 @@
 
 })(jQuery);
 
-/* --- Cambios con Incio --- */
-$(document).ready(function () {
-    $('#tableModal').DataTable({
-        responsive: {
-            details: {
-                display: $.fn.dataTable.Responsive.display.modal({
-                    header: function (row) {
-                        var data = row.data();
-                        return 'DETALLES DEL ' + data[0];
-                    }
-                }),
-                renderer: function (api, rowIdx, columns) {
-                    var data = $.map(columns, function (col, i) {
-                        return '<tr>' +
-                        '<td>' + col.title + ':' + '</td> ' +
-                        '<td>' + col.data + '</td>' +
-                        '</tr>';
-                    }).join('');
+// /* --- Cambios con Incio --- */
+// $(document).ready(function () {
+//     $('#tableModal').DataTable({
+//         responsive: {
+//             details: {
+//                 display: $.fn.dataTable.Responsive.display.modal({
+//                     header: function (row) {
+//                         var data = row.data();
+//                         return 'DETALLES DEL ' + data[0];
+//                     }
+//                 }),
+//                 renderer: function (api, rowIdx, columns) {
+//                     var data = $.map(columns, function (col, i) {
+//                         return '<tr>' +
+//                         '<td>' + col.title + ':' + '</td> ' +
+//                         '<td>' + col.data + '</td>' +
+//                         '</tr>';
+//                     }).join('');
 
-                    return $('<table/>').append(data);
-                }
-            }
-        }
-    });
-});
+//                     return $('<table/>').append(data);
+//                 }
+//             }
+//         }
+//     });
+// });
 
 var userOpenSmall = function() {
     notificationCloseSmall()

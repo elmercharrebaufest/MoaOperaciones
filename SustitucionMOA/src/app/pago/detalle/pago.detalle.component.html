@@ -6,13 +6,13 @@
         <!--Title-->
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div style="line-height:0.8; display: inline-block; vertical-align:top;"> Pago: <strong><span>Nº {{data.pago}}</span></strong> </div>
-                <div class="titleExtraData titleExtraDataOneLine"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Vendedor: <strong><a *ngIf="data.vendedores[0] != undefined" routerLink="/dato-fiscal/situacion-fiscal">{{data.vendedores[0].vendedor}}</a> </strong></div>
+                <div style="line-height:0.8;"> <strong>Pago: <span>Nº {{data.pago}}</span></strong> </div>
+                <div class="titleExtraData titleExtraDataOneLine"> Vendedor: <strong><a class="gret" *ngIf="data.vendedores[0] != undefined" routerLink="/dato-fiscal/situacion-fiscal">{{data.vendedores[0].vendedor}}</a> </strong></div>
             </div>
             <div class="col-xs-12 col-sm-2 titleSectionTablePart">
                 <spinner-small #smallSpinner></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
                     <!--<a href="#" style="text-decoration:none!important">
             <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
@@ -24,29 +24,29 @@
         <div id="Pago" class=" firstSection row myRow">
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen">
-                    <div class="rowInfoRoundedGreenLine">
+                    <div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Fecha de pago</p>
+                            <p class="grey">Fecha de pago</p>
                             <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].fecha}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>ID Pago</p>
+                            <p class="grey">ID Pago</p>
                             <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].idPago}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Total Mercader&iacute;a</p>
+                            <p class="grey">Total Mercader&iacute;a</p>
                             <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].brutoString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Total IVA</p>
+                            <p class="grey">Total IVA</p>
                             <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].ivaString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Retenciones</p>
+                            <p class="grey">Retenciones</p>
                             <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].retencionesString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p>Neto Acreditado</p>
+                            <p class="grey">Neto Acreditado</p>
                             <p *ngIf="data.cabeceras[0] != undefined">{{data.cabeceras[0].netoString}}</p>
                         </div>
                     </div>
@@ -60,13 +60,13 @@
                     <tr>
                         <td width="100%">
                             <div>
-                                <p>Contrato Molinos</p>
-                                <p> <a class="animate" (click)="goToSeccionParam('/contrato/detalle', salida.contrato)" href="#">{{salida.contrato}}</a></p>
+                                <p class="grey">Contrato Molinos</p>
+                                <p> <a class="animate grey" (click)="goToSeccionParam('/contrato/detalle', salida.contrato)" href="#">{{salida.contrato}}</a></p>
                             </div>
                             <div>
-                                <p> Tipo pago</p>
-                                <p style="margin-bottom: 0px!important; margin-right: 5px!important">{{salida.tipo}}</p>
-                                <p *ngFor="let registro of salida.registros" style="font-weight: 700!important;">{{registro.nroLegal}}</p>
+                                <p class="grey"> Tipo pago</p>
+                                <p class="grey" style="margin-bottom: 0px!important; margin-right: 5px!important">{{salida.tipo}}</p>
+                                <p class="grey" *ngFor="let registro of salida.registros" style="font-weight: 700!important;">{{registro.nroLegal}}</p>
                             </div>
                         </td>
                     </tr>
@@ -76,8 +76,8 @@
                 <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
                     <tr class="CalidadCCPPDataCategoria">
                         <th width="60%">&nbsp;</th>
-                        <th width="20%">Total Mercader&iacute;a</th>
-                        <th width="20%">IVA</th>
+                        <th class="grey" width="20%">Total Mercader&iacute;a</th>
+                        <th class="grey" width="20%">IVA</th>
                     </tr>
                     <ng-container *ngFor="let registro of salida.registros">
                         <tr class="PagoTableLine">
@@ -117,12 +117,12 @@
         </div>
         <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
             <tr role="row" class="totalTable totalTableWhite" *ngIf="showCorredorTotal(data.subtotalMercCorredor, data.subtotalIvaCorredor)">
-                <td tabindex="0">subtotal corredor</td>
+                <td class="grey" tabindex="0">subtotal corredor</td>
                 <td>{{data.subtotalMercCorredorString}}</td>
                 <td>{{data.subtotalIvaCorredorString}}</td>
             </tr>
             <tr role="row" class="totalTable totalTableWhite">
-                <td tabindex="0">subtotal vendedor</td>
+                <td class="grey" tabindex="0">subtotal vendedor</td>
                 <td>{{data.subtotalMercVendedorString}}</td>
                 <td>{{data.subtotalIvaVendedorString}}</td>
             </tr>
