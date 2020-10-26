@@ -168,9 +168,12 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-                if (!usuario.TieneProveedor(vendedor))
+                if (!usuario.EsAdmin())
                 {
-                    throw new ValidationCustomException("Proveedor incorrecto");
+                    if (!usuario.TieneProveedor(vendedor))
+                    {
+                        throw new ValidationCustomException("Proveedor incorrecto");
+                    }
                 }
 
                 // get context of the authentication manager

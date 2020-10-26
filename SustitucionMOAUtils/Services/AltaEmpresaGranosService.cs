@@ -489,7 +489,7 @@ namespace SustitucionMOAUtils.Services
 
                 ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
 
-                var info = new InfoProveedorDataAgroDto
+                    var info = new InfoProveedorDataAgroDto
                 {
                     ProveedorCBU = result.ProveedorCBU,
                     ProveedorClasificacion = result.ProveedorClasificacion,

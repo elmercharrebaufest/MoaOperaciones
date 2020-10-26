@@ -322,7 +322,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         this.mensajeError = "";
         this.subscription = this.service
-            .generarInformeComercial(this.informe)
+            .generarInformeComercial(this.informe, this.proveedorId)
             .subscribe(
                 (result) => {
                     this.spinnerModal.hideIt();
