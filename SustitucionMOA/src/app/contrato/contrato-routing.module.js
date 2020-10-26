@@ -15,6 +15,7 @@ import { ContratoDetalleFijacionComponent } from './detalle-fijacion/contrato.de
 import { CrearContratoAPrecioComponent } from '../crear-contrato/aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from '../crear-contrato/afijar/crear-contrato.afijar.component';
 import { CrearContratoBaseComponent } from '../crear-contrato/crear-contrato.component';
+import { CrearContratoFijacionComponent } from '../crear-contrato/fijacion/crear-contrato.fijacion.component';
 var routes = [
     { path: '', component: ContratoVigenteComponent },
     { path: 'vigente', component: ContratoVigenteComponent },
@@ -26,6 +27,7 @@ var routes = [
     { path: "crear", component: CrearContratoBaseComponent },
     { path: "crear/aprecio", component: CrearContratoAPrecioComponent },
     { path: "crear/afijar", component: CrearContratoAFijarComponent },
+    { path: "crear/fijacion", component: CrearContratoFijacionComponent },
 ];
 var ContratoRoutingModule = /** @class */ (function () {
     function ContratoRoutingModule() {

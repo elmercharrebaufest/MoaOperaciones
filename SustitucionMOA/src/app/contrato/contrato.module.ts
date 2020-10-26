@@ -15,6 +15,7 @@ import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CrearContratoAFijarComponent } from '../crear-contrato/afijar/crear-contrato.afijar.component';
 import { CrearContratoAPrecioComponent } from '../crear-contrato/aprecio/crear-contrato.aprecio.component';
+import { CrearContratoFijacionComponent } from '../crear-contrato/fijacion/crear-contrato.fijacion.component';
 import { CrearContratoBaseComponent } from '../crear-contrato/crear-contrato.component';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
@@ -36,7 +37,8 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
         ContratoDetalleFijacionComponent,
         CrearContratoBaseComponent,
         CrearContratoAPrecioComponent,
-        CrearContratoAFijarComponent
+        CrearContratoAFijarComponent,
+        CrearContratoFijacionComponent
     ],
     providers: [
         ContratoService

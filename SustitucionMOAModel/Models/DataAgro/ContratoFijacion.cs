@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Models.DataAgro
 {
-    public class ContratoAPrecio
+    public class ContratoFijacion
     {
         public int CampañaID { get; set; }
         public int TipoNegocioId { get; set; }
@@ -39,7 +39,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public DateTime Fecha { get; set; }
         public DateTime FechaHasta { get; set; }
         public int ProveedorCreadorId { get; set; }
-        public int StandardDeCalidadId { get; set; }
+        public int? StandardDeCalidadId { get; set; }
         public int? CondicionFijacionId { get; set; }
         public int? CantidadCamiones { get; set; }
         public int? ImporteSustentable { get; set; }
@@ -49,11 +49,14 @@ namespace SustitucionMOAModel.Models.DataAgro
         public bool? PlanCanje { get; set; }
         public int? ZonaId { get; set; }
         public bool? Pizarra { get; set; }
-
+        public int ContratoId { get; set; }
+        public string Posicion { get; set; }
         public string ObservacionTercero { get; set; }
         public bool? CalidadTercero { get; set; }
         public bool? PagoDiferidoTercero { get; set; }
         public bool? DolarizadoTercero { get; set; }
+        public bool? TrigoEspecial { get; set; }
+
 
 
     }

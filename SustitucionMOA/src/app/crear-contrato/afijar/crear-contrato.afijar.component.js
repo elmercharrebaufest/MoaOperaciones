@@ -26,10 +26,6 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     function CrearContratoAFijarComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.contrato = new ContratoAFijar();
-        _this.fechaInicio = new Date().toLocaleDateString('en-GB');
-        _this.fechaFin = new Date().toLocaleDateString('en-GB');
-        _this.fechafInicio = new Date().toLocaleDateString('en-GB');
-        _this.fechafFin = new Date().toLocaleDateString('en-GB');
         return _this;
     }
     CrearContratoAFijarComponent.prototype.setTabs = function () {
@@ -43,7 +39,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     CrearContratoAFijarComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
         var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        var hoymesqueviene = this.service.ObtenerFechaHasta(hoysinhora);
+        var hoymesqueviene = this.ObtenerFechaHasta(hoysinhora);
         this.contrato.FechaDesde = hoysinhora;
         this.contrato.FechaHasta = hoymesqueviene;
         $(document).on("mouseover", '.form_datetime_Inicio', function () {
@@ -191,10 +187,9 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
                 _this.proveedores = resultlist.map(function (prov) {
                     return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit };
                 });
-                //this.proveedores = JSON.parse(result);                },
-                (function (error) {
-                    _this.mensajeComponent.setErrorMsg(error.message);
-                });
+                //this.proveedores = JSON.parse(result);                
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
             });
         }
     };
@@ -231,22 +226,6 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
             this.bolsasSelect = this.bolsasCarta;
         }
     };
-    //changePagoDiferido(event) {
-    //    this.contrato.DolarizadoTercero = false;
-    //}
-    //changeDolarizado(event) {
-    //    this.contrato.PagoDiferidoTercero = false;
-    //}
-    //changeMoneda(event) {
-    //    this.contrato.PagoDiferidoTercero = false;
-    //    this.contrato.DolarizadoTercero = false;
-    //}
-    //isVisiblePagoDiferido(): boolean {
-    //    return this.contrato.MonedaId == "ARP  ";
-    //}
-    //isVisibleDolarizado(): boolean {
-    //    return this.contrato.MonedaId == "USDM ";
-    //}
     CrearContratoAFijarComponent.prototype.isVisibleBolsa = function () {
         return this.contrato.BoletoId != 3;
     };
@@ -401,6 +380,11 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         }
         else {
             return true;
+        }
+    };
+    CrearContratoAFijarComponent.prototype.onChangeMaterial = function () {
+        if (this.contrato.MaterialId != null) {
+            this.habilitaciones(this.contrato);
         }
     };
     CrearContratoAFijarComponent = __decorate([

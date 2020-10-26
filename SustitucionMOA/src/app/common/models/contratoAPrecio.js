@@ -1,5 +1,6 @@
 var ContratoAPrecio = /** @class */ (function () {
     function ContratoAPrecio() {
+        this.TipoNegocioId = 2;
     }
     return ContratoAPrecio;
 }());

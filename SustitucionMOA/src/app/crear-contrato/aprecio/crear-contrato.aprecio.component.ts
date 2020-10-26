@@ -10,6 +10,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
+import { forEach } from '@angular/router/src/utils/collection';
 declare var $: any;
 
 @Component({
@@ -20,9 +21,7 @@ declare var $: any;
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
-    fechaInicio = new Date().toLocaleDateString('en-GB');
-    fechaFin = new Date().toLocaleDateString('en-GB');
-
+    
     ngOnInit() {
         super.ngOnInit();
         console.log("inicia el componente")
@@ -35,7 +34,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
         var hoy = new Date();
         var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        var hoymesqueviene = this.service.ObtenerFechaHasta(hoysinhora);
+        var hoymesqueviene = this.ObtenerFechaHasta(hoysinhora);
 
         this.contrato.FechaDesde = hoysinhora;
         this.contrato.FechaHasta = hoymesqueviene;
@@ -45,7 +44,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 format: 'dd/mm/yyyy',
                 language: 'es',
                 weekStart: 1,
-                todayBtn: 1,
+                //todayBtn: 1,
                 autoclose: 1,
                 todayHighlight: 1,
                 startView: 2,
@@ -53,7 +52,9 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 showMeridian: 1,
                 pickTime: false,
                 minView: 2,
-                maxView: 4
+                maxView: 4,
+                //startDate: new Date(),
+                //endDate: new Date(),
             }).on('changeDate', function (ev) {
                 if (ev.date.valueOf()) {
                     var fechaBase = new Date(ev.date.valueOf());
@@ -93,7 +94,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 format: 'dd/mm/yyyy',
                 language: 'es',
                 weekStart: 1,
-                todayBtn: 1,
+                //todayBtn: 1,
                 autoclose: 1,
                 todayHighlight: 1,
                 startView: 2,
@@ -188,10 +189,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         this.contrato.PagoDiferidoTercero = false;
     }
 
-    changeMoneda(event) {
-        this.contrato.PagoDiferidoTercero = false;
-        this.contrato.DolarizadoTercero = false;
-    }
+
     isVisiblePagoDiferido(): boolean {
         return this.contrato.MonedaId == "ARP  ";
     }
@@ -285,6 +283,9 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
+        console.log(this.datosPizarra);
+        console.log(this.datosPrecioMoa);
+
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
@@ -330,7 +331,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
             return false;
         }
-        if (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "") {
+        if (this.contrato.Pizarra == true &&(this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
             return false;
         }
@@ -357,6 +358,76 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         } else {
             return true;
         }
+    }
+
+    onChangeMaterial() {
+        if (this.contrato.MaterialId != null) {
+            this.contrato.CampanaId = null;
+            this.habilitaciones(this.contrato);
+            this.contrato.Precio = 0;
+            this.contrato.MonedaId = null;
+        }
+    }
+    changePizarra() {
+        this.contrato.Precio = 0;
+        this.contrato.MonedaId = null;
+        if (this.contrato.Pizarra == true) {
+            this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
+            this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
+            this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
+            this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
+            var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
+
+            $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+            $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+
+            $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+            $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+        } else {
+
+        }
+    }
+
+    disablePrecio(): boolean {
+        return this.contrato.Pizarra == true;
+    }
+
+    changeMoneda(event) {
+        this.contrato.PagoDiferidoTercero = false;
+        this.contrato.DolarizadoTercero = false;
+        if (this.contrato.MonedaId != "" && this.contrato.MonedaId != undefined && this.contrato.MonedaId != null) {
+            // buscar precio moa
+            var leng = this.datosPrecioMoa.length;
+            var items = this.datosPrecioMoa;
+            for (var i = 0; i < leng; i++) {
+                var item = items[i];
+                console.log(item);
+                if (item.MonedaId == this.contrato.MonedaId) {
+                    if (item.Precio == 0) {
+                        this.contrato.Precio = null;
+                    } else {
+                        this.contrato.Precio = item.Precio;
+                        this.contrato.FechaDesde = new Date(parseInt(item.DesdeEntrega.substr(6)));
+                        this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
+                        this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
+                        this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
+                        var entregaHasta = new Date(parseInt(item.HastaEntrega.substr(6)));
+
+                        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+
+                        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+                    }
+
+                }
+            }
+        } else {
+            this.contrato.Precio = 0;
+        }
+    }
+    configuraciones() {
+
     }
 
 }

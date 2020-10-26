@@ -27,7 +27,7 @@ var CrearContratoService = /** @class */ (function (_super) {
     function CrearContratoService() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    CrearContratoService.prototype.obteneDatosContrato = function () {
+    CrearContratoService.prototype.obteneDatosContrato = function (tiponegocio) {
         this.headers = new Headers();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
@@ -35,8 +35,10 @@ var CrearContratoService = /** @class */ (function (_super) {
         this.headers.append('Cache-control', 'no-store');
         this.headers.append('Expires', '0');
         this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('tiponegocio', tiponegocio.toString());
         return this.http
-            .get('/api/CrearContrato/ObteneDatosContrato', { headers: this.headers })
+            .get('/api/CrearContrato/ObteneDatosContrato', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
     CrearContratoService.prototype.obtenerDatosCompraNet = function (idProveedorDataAgro) {
@@ -74,31 +76,6 @@ var CrearContratoService = /** @class */ (function (_super) {
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     };
-    CrearContratoService.prototype.ObtenerFechaHasta = function (fechaBase) {
-        var hoy = fechaBase != undefined ? fechaBase : new Date();
-        var anio = hoy.getFullYear();
-        var mesPost = hoy.getMonth() + 1;
-        var dia = hoy.getDate();
-        var ultimoDia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
-        if (dia === 1) {
-            dia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
-            mesPost = hoy.getMonth() + 1;
-        }
-        if (dia === ultimoDia || (mesPost === 2 && dia >= 29)) {
-            dia = new Date(anio, mesPost, 0).getDate();
-        }
-        if (mesPost === 13) {
-            mesPost = 1;
-            anio += 1;
-        }
-        //if (mesPost < 10) {
-        //    mesPost = "0" + mesPost.toString();
-        //}
-        //if (dia < 10) {
-        //    dia = "0" + dia.toString();
-        //}
-        return new Date(anio, mesPost, dia); // dia + '-' + mesPost + '-' + anio;
-    };
     CrearContratoService.prototype.grabarContratoAFijar = function (contrato) {
         var payload = new FormData();
         payload.append("contrato", JSON.stringify(contrato));
@@ -130,6 +107,45 @@ var CrearContratoService = /** @class */ (function (_super) {
         this.headers.append('Pragma', 'no-cache');
         return this.http
             .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
+            .pipe(map(this.extractData));
+    };
+    CrearContratoService.prototype.grabarContratoFijacion = function (contrato) {
+        var payload = new FormData();
+        payload.append("contrato", JSON.stringify(contrato));
+        return this.http
+            .post('/api/CrearContrato/CrearContratoFijacion', payload)
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    };
+    CrearContratoService.prototype.habilitaciones = function (material, tiponegocio) {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('material', material.toString());
+        params.set('tiponegocio', tiponegocio.toString());
+        return this.http
+            .get('/api/CrearContrato/Habilitaciones', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    };
+    CrearContratoService.prototype.obtenerFijacionesAutomaticas = function (esCorredorEnDataAgro, cuitProveedor, materialId, filtro) {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('esCorredorEnDataAgro', esCorredorEnDataAgro);
+        params.set('cuitProveedor', cuitProveedor);
+        params.set('materialId', materialId);
+        params.set('filtro', filtro);
+        return this.http.get('/api/CrearContrato/ObtenerFijacionesAutomaticas', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
     CrearContratoService = __decorate([
