@@ -343,7 +343,8 @@ namespace SustitucionMOATest.Services
                 Mail = mailUsuario,
                 CUITRegistro = "23-123464943-9",
                 Habilitado = true,
-                Proveedores = proveedores
+                Proveedores = proveedores,
+                Roles = new List<Rol>()
             };
 
             repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
@@ -378,7 +379,8 @@ namespace SustitucionMOATest.Services
                 Mail = mailUsuario,
                 CUITRegistro = "23-123464943-9",
                 Habilitado = true,
-                Proveedores = proveedores
+                Proveedores = proveedores,
+                Roles = new List<Rol>()
             };
 
             repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
@@ -413,7 +415,8 @@ namespace SustitucionMOATest.Services
                 Mail = mailUsuario,
                 CUITRegistro = "23-123464943-9",
                 Habilitado = true,
-                Proveedores = proveedores
+                Proveedores = proveedores,
+                Roles = new List<Rol>()
             };
             var respuesta = string.Format(InfoMsg.SinRegistros, "Empresas");
 

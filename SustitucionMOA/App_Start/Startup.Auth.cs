@@ -185,9 +185,7 @@ namespace SustitucionMOA
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
 
 
-				if (usuario.Roles.Where(r => r.Codigo == "ADM").Any()
-					|| usuario.Roles.Where(r => r.Codigo == "TODOS").Any()
-				)
+				if (usuario.EsAdmin())
                 {
 					tipoGranos = "A";
                 }

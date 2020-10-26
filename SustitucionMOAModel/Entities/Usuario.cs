@@ -143,5 +143,12 @@ namespace SustitucionMOAModel.Entities
             if (rolRemover != null)
                 Roles.Remove(rolRemover);
         }
+
+
+        public bool EsAdmin()
+        {
+            return Roles.Where(r => r.Codigo == "ADM").Any()
+                    || Roles.Where(r => r.Codigo == "TODOS").Any();
+        }
     }
 }
