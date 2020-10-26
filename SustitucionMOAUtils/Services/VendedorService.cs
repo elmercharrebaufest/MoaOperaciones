@@ -3,6 +3,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
@@ -132,19 +133,38 @@ namespace SustitucionMOAUtils.Services
 
         private List<ProveedorDto> GetVendedores(string mailUsuario, Func<Proveedor, bool> filtro = null)
         {
-            var proveedores = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario).Proveedores.ToList();
 
-            if(filtro != null)
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
+
+            var listadoProveedores = new List<ProveedorDto>();
+
+            if (!usuario.EsAdmin())
             {
-                proveedores = proveedores.Where(filtro).ToList();
+                var proveedores = usuario.Proveedores.ToList();
+
+                if (filtro != null)
+                {
+                    proveedores = proveedores.Where(filtro).ToList();
+                }
+
+                listadoProveedores.AddRange(proveedores.Select(x => new ProveedorDto(x)).ToList());
+            }
+            else
+            {
+                listadoProveedores.AddRange(repositorio.Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado).Select(x => new ProveedorDto(x)));
+
+                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
+
+                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
             }
 
-            return proveedores.Select(x => new ProveedorDto(x)).ToList();
+
+            return listadoProveedores.Distinct().ToList();
         }
 
         public string AgregarVendedor(string mailUsuario, string cuit, string razonSocial)
         {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
             if (cuit == null || cuit == "")
             {
@@ -181,7 +201,7 @@ namespace SustitucionMOAUtils.Services
 
         public string EliminarVendedor(string mailUsuario, int proveedorId)
         {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
 
             var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 

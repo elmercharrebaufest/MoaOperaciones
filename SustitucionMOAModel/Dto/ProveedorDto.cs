@@ -64,6 +64,12 @@ namespace SustitucionMOAModel.Dto
             }
         }
 
+        public ProveedorDto(Models.WSMapMOA.Usuario.Usuario x)
+        {
+            CodigoProveedor = x.vendedor;
+            RazonSocial = x.usuario;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is ProveedorDto dto &&
