@@ -511,7 +511,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             return true;
         }
         if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
-            this.mensajeError = "No completo la Campa�a Actual.";
+            this.mensajeError = "No completo la Campaña Actual.";
             return true;
         }
         var filaError = 0;
@@ -822,14 +822,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             return true;
         }
         //Vendedor
-        if (this.cartaPresentacion.vendedorDomicilioFiscal == "" ||
-            !this.cartaPresentacion.vendedorDomicilioFiscal) {
-            this.mensajeError = "No completo el domicilio fiscal.";
-            return true;
-        }
         if (this.cartaPresentacion.vendedorActividad == "" ||
             !this.cartaPresentacion.vendedorActividad) {
             this.mensajeError = "No seleccionó la actividad.";
+            return true;
+        }
+        if (this.cartaPresentacion.vendedorDomicilioFiscal == "" ||
+            !this.cartaPresentacion.vendedorDomicilioFiscal) {
+            this.mensajeError = "No completo el domicilio fiscal.";
             return true;
         }
         if (this.cartaPresentacion.vendedorMailContacto == "" ||
