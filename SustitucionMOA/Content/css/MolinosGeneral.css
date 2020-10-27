@@ -1566,6 +1566,9 @@ h2 span {
   color: #000;
   font-weight: 700;
 }
+.totalTableWhite:hover{
+  background: #fff !important;
+}
 .totalTable td {
   border-top: 1px solid #999c9b !important;
   font-size: 16px;
@@ -1607,14 +1610,9 @@ h2 span {
 }
 #Calidad .CalidadCCPP .CalidadCCPPTitle,
 #Pago .PagoColumn {
-  background: #77b794 !important;
-  border-left: 4px solid #fff;
   text-align: left;
   font-family: "Roboto Condensed", Arial, sans-serif !important;
-  font-size: 18px;
-  color: #fff;
-  font-weight: 700;
-  padding: 10px;
+  font-size: 22px;
 }
 .CalidadCCPPTitle a,
 .PagoColumn a {
@@ -1678,8 +1676,7 @@ h2 span {
 }
 .CalidadCCPPDataSub div {
   padding-bottom: 5px;
-  color: #77b794;
-  border-bottom: 4px solid #77b794;
+  border-bottom: 2px solid #707070;
   padding-top: 10px;
   text-align: left;
 }
@@ -1722,8 +1719,6 @@ h2 span {
 }
 .PagoColumn p:nth-child(2) {
   margin-bottom: 15px !important;
-  font-weight: 700 !important;
-  text-transform: uppercase;
 }
 .PagoFactura {
   display: table-cell;
@@ -1748,6 +1743,15 @@ h2 span {
 }
 .PagoTableLine td:first-child {
   font-weight: 700;
+}
+.PagoTable tbody tr:first-child td{
+  border-top: none !important;
+}
+.PagoTable tbody tr:last-child td:first-child{
+  border-bottom-left-radius: 10px;
+}
+.PagoTable tbody tr:last-child td:last-child{
+  border-bottom-right-radius: 10px;
 }
 .PagoTable span {
   color: #f00;
@@ -1779,9 +1783,6 @@ h2 span {
 }
 .PagoTable .totalTableWhite {
   background: none !important;
-}
-.PagoTableLine {
-  background: #f2f6f2;
 }
 .PagoNegative {
   color: #f00;
@@ -3511,6 +3512,10 @@ div.panel-body a.active{
   color: #707070 !important;
 }
 
+.black {
+  color: #232323 !important;
+}
+
 #datosFiscales{
   margin-top: 12px;
 }
@@ -3605,6 +3610,7 @@ div.panel-body a.active{
   font-size: 22px;
 }
 
+.PagoTable tbody tr:last-child,
 .calidad tfoot{
   background: rgb(149, 149, 149, 0.36);
 }
@@ -3615,4 +3621,10 @@ div.panel-body a.active{
 
 .calidad{
   margin-bottom: 10px;
+}
+
+.btnSections{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
