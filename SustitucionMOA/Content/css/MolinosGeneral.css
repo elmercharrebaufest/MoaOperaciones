@@ -3538,7 +3538,7 @@ div.panel-body a.active{
   justify-content: center;
   color: white !important;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 400!important;
 }
 
 .btn-grande {

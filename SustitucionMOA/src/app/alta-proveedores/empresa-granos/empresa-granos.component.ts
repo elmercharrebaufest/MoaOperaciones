@@ -603,7 +603,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             return true;
         }
         if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
-            this.mensajeError = "No completo la Campa�a Actual.";
+            this.mensajeError = "No completo la Campaña Actual.";
             return true;
         }
 
@@ -977,7 +977,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             this.cartaPresentacion.corredorBolsa == "" ||
             !this.cartaPresentacion.corredorBolsa
         ) {
-            this.mensajeError = "No completo el campo bolsa .";
+            this.mensajeError = "No completo el campo bolsa.";
             return true;
         }
 
@@ -990,14 +990,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
 
         //Vendedor
-        if (
-            this.cartaPresentacion.vendedorDomicilioFiscal == "" ||
-            !this.cartaPresentacion.vendedorDomicilioFiscal
-        ) {
-            this.mensajeError = "No completo el domicilio fiscal.";
-            return true;
-        }
-        if (
+          if (
             this.cartaPresentacion.vendedorActividad == "" ||
             !this.cartaPresentacion.vendedorActividad
         ) {
@@ -1005,6 +998,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             return true;
         }
 
+        if (
+            this.cartaPresentacion.vendedorDomicilioFiscal == "" ||
+            !this.cartaPresentacion.vendedorDomicilioFiscal
+        ) {
+            this.mensajeError = "No completo el domicilio fiscal.";
+            return true;
+        }
+      
         if (
             this.cartaPresentacion.vendedorMailContacto == "" ||
             !this.cartaPresentacion.vendedorMailContacto

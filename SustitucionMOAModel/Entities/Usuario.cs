@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Entities
 
         public virtual TipoUsuario TipoUsuario { get; set; }
 
+        public DateTime? UltimoLogin { get; set; }
 
         [InverseProperty("UsuariosAsociados")]
         public virtual ICollection<Proveedor> Proveedores { get; set; }

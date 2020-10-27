@@ -38,6 +38,10 @@ namespace SustitucionMOAUtils.Services
                 RegistrarUsuario(mail, CUIT, granosFlag, ref usuario);
             }
 
+            usuario.UltimoLogin = DateTime.Now;
+
+            repositorio.GuardarCambios();
+
             return usuario;
         }
 
