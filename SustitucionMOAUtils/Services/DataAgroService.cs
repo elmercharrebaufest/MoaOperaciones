@@ -98,7 +98,7 @@ namespace SustitucionMOAUtils.Services
                         usuario.Roles.Add(rolDesabilitado);
 
                         proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
-                        proveedor.Observaciones = "El mail del registro no está dentro de los mails registrados en Data Agro.";
+                        proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                     }
                 }
                 else
@@ -106,7 +106,7 @@ namespace SustitucionMOAUtils.Services
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
-                    proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
+                    proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                 }
 
                 usuario.Proveedores.Add(proveedor);
@@ -165,13 +165,13 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
-                    proveedor.Observaciones = "El mail del registro no está dentro de los mails registrados en Data Agro.";
+                    proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                 }
             }
             else
             {
                 proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
-                proveedor.Observaciones = "El proveedor no está habilitado en Data Agro.";
+                proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
             }
         }
 
