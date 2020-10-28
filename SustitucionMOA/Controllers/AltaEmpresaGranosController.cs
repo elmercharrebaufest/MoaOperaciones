@@ -331,7 +331,6 @@ namespace SustitucionMOA.Controllers
             {
                 if (string.IsNullOrEmpty(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                //string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail, proveedorId));
 

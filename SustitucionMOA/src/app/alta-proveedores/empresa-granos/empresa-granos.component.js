@@ -813,7 +813,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         //Corredor
         if (this.cartaPresentacion.corredorBolsa == "" ||
             !this.cartaPresentacion.corredorBolsa) {
-            this.mensajeError = "No completo el campo bolsa .";
+            this.mensajeError = "No completo el campo bolsa.";
             return true;
         }
         if (this.cartaPresentacion.corredorNroRegistro == "" ||

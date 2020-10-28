@@ -83,6 +83,12 @@
                                         [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i><i
                                         [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i></span>
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('FechaSolicitud')">
+                                Fecha Solicitud<span>
+                                    <i
+                                        [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection > 0 }"></i><i
+                                        [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection < 0 }"></i></span>
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1"
                                 (click)="orderColumnBy('EstadoAprobacionDescripcion')">Estado<span><i
                                         [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i><i
@@ -106,9 +112,11 @@
                             <td>{{empresa.SISAEstadoCuit || "-"}}</td>
                             <td>{{empresa.EstadoSIPER || "-"}}</td>
                             <td>
-                                {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy HH:mm') : "" }}
+                                {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}
                             </td>
-
+                            <td>
+                                {{ empresa.FechaSolicitud ? (empresa.FechaSolicitud.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}
+                            </td>
 
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>

@@ -402,10 +402,11 @@
                                     </ng-container>
                                     <ng-container *ngIf="liquidacion.pedido != ''">
                                         <td tabindex="0" style="">{{liquidacion.fecha}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td>{{liquidacion.tipo}}   <a (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)" href="#">Ver Proforma</a></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
                                     </ng-container>
                                 </tr>
                             </tbody>

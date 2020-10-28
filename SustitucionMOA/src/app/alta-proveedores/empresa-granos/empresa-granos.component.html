@@ -773,7 +773,7 @@
                                     </div>
                                     <div class="styled-elements">
                                         <input type="text" id="direccion" placeholder="Direccion"
-                                            [(ngModel)]="informe.direccion" maxlength="100" />
+                                            autocomplete="chrome-off" [(ngModel)]="informe.direccion" maxlength="100" />
                                         <span class="requerido">*</span>
                                     </div>
                                 </div>
@@ -783,7 +783,8 @@
                                     </div>
                                     <div class="styled-elements">
                                         <input type="text" id="codigoPostal" placeholder="Codigo postal"
-                                            [(ngModel)]="informe.codigoPostal" maxlength="20" />
+                                            autocomplete="chrome-off" [(ngModel)]="informe.codigoPostal"
+                                            maxlength="20" />
                                         <span class="requerido">*</span>
                                     </div>
                                 </div>
@@ -803,7 +804,7 @@
                                                     (inputChanged)='onChangeSearchInforme($event)'
                                                     (inputFocused)='selectEventInforme($event)'
                                                     [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'"
-                                                    [notFoundText]="autocompleteNotFoundText"
+                                                    [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
                                                     [notFoundTemplate]="notFoundTemplate">
                                                 </ng-autocomplete>
                                             </div>

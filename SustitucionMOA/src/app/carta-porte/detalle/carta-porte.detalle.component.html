@@ -5,44 +5,37 @@
     <section class="container-fluid clearfix" *ngIf="data">
         <!--Title-->
         <div class="row titleSection titleSectionTable">
-            <div class="col-xs-12 col-sm-8 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div style="line-height:0.8; display: inline-block; vertical-align:top;">
-                    Carta de Porte:
-                    <strong><span>Nº {{data.ccpp}}</span></strong>
+            <div class="col-xs-12 col-sm-8 fixtwobuttons animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8;">
+                    <strong>Carta de Porte:
+                    <span>Nº {{data.ccpp}}</span></strong>
                 </div>
                 <div class="titleExtraData titleExtraDataOneLine">
-                    <i class="fa fa-arrow-circle-right"
-                       aria-hidden="true"></i> Vendedor: <strong>
-                        {{data.entregasDescargas[0].descripcionVendedor}}
+                    Vendedor: <strong>
+                    {{data.entregasDescargas[0].descripcionVendedor}}
                     </strong>({{data.entregasDescargas[0].vendedor}})
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+            <div class="col-xs-12 col-sm-4 btnSections">
                 <spinner-small #smallSpinner></spinner-small>
                 <!--<a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!isExportVisible()">-->
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
                    *ngIf="!this.spinnerSmallComponent.visible">
                     <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
+                <button type="button" class="btn-custom btn-add"
+                        (click)="abrirModal()"
+                >
+                    Ver Carta de Porte
+                </button>
+
+                <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"></button>
                 <!--<a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
                 </a>-->
                 <!-- Button trigger modal -->
                 <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"
                     (click)="abrirModal()" style="display: none;">Open Modal</button> -->
-            </div>
-
-
-            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
-                <spinner-small #smallSpinner></spinner-small>
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-info btn-lg"
-                        (click)="abrirModal()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: flex; background: #172f8f; border: none;">
-                    Ver Carta de Porte
-                </button>
-
-                <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"></button>
             </div>
 
             <!-- Modal -->
@@ -74,32 +67,32 @@
         <!--Datos de entrega-->
         <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas">
             <div class="row titleSection titleSectionNoBorder">
-                <div class="col-xs-12 col-sm-12">Datos de entrega</div>
+                <div class="col-xs-12 col-sm-12"><strong>Datos de entrega</strong></div>
                 <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen"
                      style="padding: 10px 10px;">
-                    <div class="rowInfoRoundedGreenLine">
+                    <div>
                         <div class="col-xs-12 col-sm-2">
-                            <p style="text-align: center;">Fecha</p>
+                            <p class="black" style="text-align: center;">Fecha</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].fecha}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p style="text-align: center;">Producto</p>
+                            <p class="black" style="text-align: center;">Producto</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].descripcionProducto}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p style="text-align: center;">Descargado en planta</p>
+                            <p class="black" style="text-align: center;">Descargado en planta</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].descargaCentro}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p style="text-align: center;">Procedencia</p>
+                            <p class="black" style="text-align: center;">Procedencia</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].procedencia}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p style="text-align: center;">Total Recibidos</p>
+                            <p class="black" style="text-align: center;">Total Recibidos</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].netoDescontadoString}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-2">
-                            <p style="text-align: center;">Total Aplicados</p>
+                            <p class="black" style="text-align: center;">Total Aplicados</p>
                             <p style="text-align: center;">{{data.entregasDescargas[0].totalAplicadosString}}</p>
                         </div>
                     </div>
@@ -124,7 +117,7 @@
                     <div>Aplicaciones</div>
                 </div>
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Aplicaciones</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Aplicaciones</strong></div>
                 </div>
                 <div id="myAplicaciones" class="row myRow hideMobile">
                     <div class="clearfix myTables">
@@ -156,7 +149,7 @@
                                     <td style=""></td>
                                     <td style="">{{data.aplicacionesTotalAplicadosString}}</td>
                                 </tr>
-                                <tr role="row" class="totalTable totalTableWhite">
+                                <tr role="row" class="totalTableWhite">
                                     <td tabindex="0">Excedente</td>
 
                                     <td style=""></td>
@@ -184,21 +177,21 @@
                     <div>Datos de descarga</div>
                 </div>
                 <div class="row titleSection titleSectionNoBorder hideMobile">
-                    <div class="col-xs-12 col-sm-12">Datos de descarga</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Datos de descarga</strong></div>
                 </div>
                 <div id="myDescarga"
                      class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen hideMobile">
-                    <div class="rowInfoRoundedGreenLine">
+                    <div>
                         <div class="col-xs-12 col-sm-4">
-                            <p>Vehículo</p>
+                            <p class="black">Vehículo</p>
                             <p>{{data.entregasDescargas[0].tipoVehiculo}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-4">
-                            <p>Chasis</p>
+                            <p class="black">Chasis</p>
                             <p>{{data.entregasDescargas[0].patente}}</p>
                         </div>
                         <div class="col-xs-12 col-sm-4">
-                            <p>Acoplado</p>
+                            <p class="black">Acoplado</p>
                             <p>{{data.entregasDescargas[0].acoplado}}</p>
                         </div>
                     </div>
@@ -212,7 +205,7 @@
         <div class="row myRow">
             <div id="Calidad" class="col-sm-12  hideMobile">
                 <div class="row titleSection titleSectionNoBorder">
-                    <div class="col-xs-12 col-sm-12">Calidad</div>
+                    <div class="col-xs-12 col-sm-12"><strong>Calidad</strong></div>
                 </div>
                 <div class="row myRow">
                     <div class="clearfix totalTable">
@@ -254,19 +247,19 @@
                                                     <th width="20%">Nº Cert.</th>
                                                 </tr>-->
                                                 <tr class="CalidadCCPPDataCategoria">
-                                                    <th width="20%" rowspan="2" class="">Características</th>
+                                                    <th class="black" width="20%" rowspan="2">Características</th>
                                                     <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
-                                                        <div>Calado</div>
+                                                        <div class="black">Calado</div>
                                                     </th>
                                                     <th width="40%" colspan="2" class=" CalidadCCPPDataSub">
-                                                        <div>C&aacute;mara</div>
+                                                        <div class="black">C&aacute;mara</div>
                                                     </th>
                                                 </tr>
                                                 <tr class="CalidadCCPPDataCategoria">
-                                                    <th width="20%" style="text-align:right">Resultado</th>
-                                                    <th width="20%">Kg DTO.</th>
-                                                    <th width="20%">Resultado</th>
-                                                    <th width="20%">DTO (%)</th>
+                                                    <th class="black" width="20%" style="text-align:right">Resultado</th>
+                                                    <th class="black" width="20%">Kg DTO.</th>
+                                                    <th class="black" width="20%">Resultado</th>
+                                                    <th class="black" width="20%">DTO (%)</th>
                                                 </tr>
                                                 <ng-container *ngFor="let calidad of data.datosCalidad">
                                                     <tr>
