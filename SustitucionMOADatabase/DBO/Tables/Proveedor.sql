@@ -11,6 +11,7 @@ CREATE TABLE [dbo].[Proveedor](
  [EstadoSIPER] VARCHAR(MAX) NULL, 
  	 [VinculoConEmpleadosDeMolinos] BIT NULL, 
     [VinculoConFuncionariosPublicos] BIT NULL, 
+    [FechaSolicitud] DATETIME NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

@@ -367,6 +367,8 @@ namespace SustitucionMOAUtils.Services
                 }
             );
 
+            proveedor.FechaSolicitud = DateTime.Now;
+
             repositorio.GuardarCambios();
 
             return SuccessMsg.ValidacionPendienteOK;
@@ -485,11 +487,17 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                Proveedor proveedor;
+
+                if (proveedorId > 0)
+                    proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                else
+                    proveedor = usuario.ObtenerProveedor();
+                    
 
                 ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
 
-                    var info = new InfoProveedorDataAgroDto
+                var info = new InfoProveedorDataAgroDto
                 {
                     ProveedorCBU = result.ProveedorCBU,
                     ProveedorClasificacion = result.ProveedorClasificacion,

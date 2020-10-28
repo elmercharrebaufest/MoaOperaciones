@@ -27,6 +27,8 @@ namespace SustitucionMOAModel.Dto
 
         public DateTime? UltimaEdicion { get; set; }
 
+        public DateTime? FechaSolicitud { get; set; }
+
         public ProveedorDto() { }
         public ProveedorDto(Proveedor proveedor)
         {
@@ -40,6 +42,7 @@ namespace SustitucionMOAModel.Dto
             Mail = proveedor.Mail ?? "";
             Observaciones = proveedor.Observaciones;
             RazonSocial = proveedor.RazonSocial ?? "";
+            FechaSolicitud = proveedor.FechaSolicitud;
             Comercial = "";
 
             if (proveedor.UsuariosAsociados.Count() > 0)

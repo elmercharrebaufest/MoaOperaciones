@@ -23,6 +23,8 @@ namespace SustitucionMOAModel.Entities
         public int? IdComercialDataAgro { get; set; }
         public string EstadoSIPER { get; set; }
 
+        public DateTime? FechaSolicitud { get; set; }
+
         public virtual ICollection<Archivo> Archivos { get; set; }
 
         [InverseProperty("Proveedores")]
@@ -31,7 +33,7 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Proveedor")]
         public virtual ICollection<ProveedorHistorialAprobacion> HistorialAprobaciones { get; set; }
 
-
+        
         public bool? VinculoConEmpleadosDeMolinos { get; set; }
         public bool? VinculoConFuncionariosPublicos { get; set; }
 
