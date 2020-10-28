@@ -116,6 +116,13 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.addFieldValueAlm();
         this.agregarCampoCartaPresentacion();
         this.agregarAcopioCartaPresentacion();
+        //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
+        setTimeout(function () {
+            var autocompletesLocalidad = document.querySelectorAll('[placeholder="Localidad"]');
+            for (var i = 0; i < autocompletesLocalidad.length; i++) {
+                autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
+            }
+        }, 1000);
     };
     Object.defineProperty(EmpresaGranosComponent.prototype, "email", {
         get: function () {

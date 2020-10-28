@@ -46,8 +46,11 @@ var VendedoresListComponent = /** @class */ (function (_super) {
         _this.itemsPerPage = 20;
         _this.filtroVendedor = "";
         _this.filtroNroVendedor = "";
+        _this.nuevoVendedorCUIT = "";
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
+        _this.mensajeModalComponent = new MensajeComponent();
+        _this.spinnerModalComponent = new SpinnerComponent();
         return _this;
     }
     VendedoresListComponent.prototype.setTabs = function () {
@@ -112,6 +115,43 @@ var VendedoresListComponent = /** @class */ (function (_super) {
             this.orderedByColumn = column;
         }
     };
+    VendedoresListComponent.prototype.solicitarAltaProveedor = function () {
+        var _this = this;
+        this.mensajeComponent.setMsgsEmpty();
+        this.mensajeModalComponent.setMsgsEmpty();
+        this.spinnerModalComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service
+                .agregarVendedor(this.nuevoVendedorCUIT)
+                .subscribe(function (result) {
+                _this.spinnerModalComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined &&
+                    result.error != "") {
+                    _this.mensajeModalComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeModalComponent.setInfoMsg(result.info);
+                }
+                else {
+                    //this.getVendedores();
+                    _this.mensajeComponent.setSuccessMsg(result.data);
+                    _this.nuevoVendedorCUIT = "";
+                    document.getElementById("modalToggleButton").click();
+                }
+            }, function (error) {
+                _this.spinnerModalComponent.hideIt();
+                _this.mensajeModalComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.spinnerModalComponent.hideIt();
+            this.mensajeModalComponent.setErrorMsg(e);
+        }
+    };
     __decorate([
         ViewChild(MensajeComponent),
         __metadata("design:type", MensajeComponent)
@@ -120,10 +160,19 @@ var VendedoresListComponent = /** @class */ (function (_super) {
         ViewChild(SpinnerComponent),
         __metadata("design:type", SpinnerComponent)
     ], VendedoresListComponent.prototype, "spinnerComponent", void 0);
+    __decorate([
+        ViewChild("mensajeModal"),
+        __metadata("design:type", MensajeComponent)
+    ], VendedoresListComponent.prototype, "mensajeModalComponent", void 0);
+    __decorate([
+        ViewChild("spinnerModal"),
+        __metadata("design:type", SpinnerComponent)
+    ], VendedoresListComponent.prototype, "spinnerModalComponent", void 0);
     VendedoresListComponent = __decorate([
         Component({
             selector: "list",
             templateUrl: "dato-fiscal.vendedor.component.html",
+            styleUrls: ["dato-fiscal.vendedor.component.css"],
             providers: [DatoFiscalService],
         }),
         __metadata("design:paramtypes", [DatoFiscalService,
