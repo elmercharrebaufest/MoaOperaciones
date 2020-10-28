@@ -145,8 +145,19 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var data = altaEmpresaService.GetEstadoAprobacion(userMail);
 
-                return JsonCustom(new { data = altaEmpresaService.GetEstadoAprobacion(userMail) });
+                if (data.Estado == EstadoAprobacion.AnalisisDeNosis
+                    || data.Estado == EstadoAprobacion.EtapaFinal
+                    || data.Estado == EstadoAprobacion.AprobacionPendiente)
+                {
+                    data.EstadoDescripcion = "Alta en Gestión";
+                }
+                if (data.Estado == EstadoAprobacion.EdicionRequerida)
+                {
+                    data.EstadoDescripcion = "Solicitud de información";
+                }
+                return JsonCustom(new { data });
             }
             catch (InfoCustomException e)
             {
