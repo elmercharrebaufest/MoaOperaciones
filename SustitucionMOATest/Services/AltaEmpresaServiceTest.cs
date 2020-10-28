@@ -5,6 +5,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
@@ -20,12 +21,13 @@ namespace SustitucionMOATest.Services
     {
         private AltaEmpresaService target;
         private Mock<IRepositorio> repositorioMock;
+        private Mock<IDataAgroService>  dataAgroServiceMock;
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
-            target = new AltaEmpresaService(repositorioMock.Object);
+            target = new AltaEmpresaService(repositorioMock.Object, dataAgroServiceMock.Object);
         }
 
         [Test()]
@@ -82,8 +84,11 @@ namespace SustitucionMOATest.Services
                   Codigo = "GRAN"
               });
 
+            dataAgroServiceMock
+                .Setup(y => y.ObtenerValidarCUITProveedorGranos(It.IsAny<string>()))
+                .Returns(new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial());
 
-     
+
             var expected = string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
 
             var observacion = "";
