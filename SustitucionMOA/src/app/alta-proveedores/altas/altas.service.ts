@@ -46,4 +46,12 @@ export class AltaEmpresaService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    public VerificarEstadoDataAgro(empresaId: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('proveedorID', empresaId.toString());
+        return this.http
+            .get('/api/AltaEmpresa/VerificarEstadoDataAgro', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
 }
