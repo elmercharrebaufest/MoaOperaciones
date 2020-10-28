@@ -7,7 +7,7 @@
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
             </div>
         </div>
@@ -79,14 +79,78 @@
                     
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('fechaDescargaDate')">Fecha<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('cartaPorte')">CCPP Nº<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('producto')">Producto<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('netoDescontado')">Recibido<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('aLiquidar')">Aplicado<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'aLiquidar' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'aLiquidar' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('contrnum')">Contrato Molinos<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('contrvend')">Contrato Proveedor<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrvend' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrvend' && orderDirection < 0 }"></i></span></th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">Vendedor<span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection < 0 }"></i></span></th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('fechaDescargaDate')">
+                                Fecha
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>     
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('cartaPorte')">
+                                CCPP Nº
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>    
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('producto')">
+                                Producto
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>      
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('netoDescontado')">
+                                Recibido
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>     
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('aLiquidar')">
+                                Aplicado
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'aLiquidar' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'aLiquidar' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div> 
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('contrnum')">
+                                Contrato Molinos
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>    
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('contrvend')">
+                                Contrato Proveedor
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrvend' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrvend' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>       
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;" (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">
+                                Vendedor
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>       
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

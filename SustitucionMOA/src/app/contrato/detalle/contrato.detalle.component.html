@@ -6,7 +6,7 @@
         <!--Title-->
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> / Corredor <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </div>
+                <div> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> <span *ngIf="data.caracteristicas[0].corredor">/ Corredor <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </span></div>
             </div>
             <div class="col-xs-12 col-sm-2 titleIconsPart">
                 <spinner-small #spinnerSmallExport></spinner-small>
@@ -27,7 +27,7 @@
         <div class="row myRow firstSection roundedInfo">
             <div class="col-xs-12 col-sm-4 col-md-3 rowInfoGrey rounded shadow animate rowInfoRoundedWhite" *ngIf="data.resumen">
                 <div class="col-xs-6 col-sm-12 titleExtraData blue">
-                    <strong>Corredor: </strong>{{data.caracteristicas[0].nomCorredor}}<br>
+                    <span *ngIf="data.caracteristicas[0].corredor"><strong>Corredor: </strong>{{data.caracteristicas[0].nomCorredor}}<br></span>
                     <strong>Vendedor: </strong> <a class="blue" (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', data.caracteristicas[0].vendedor, data.caracteristicas[0].nomVendedor)" href="#">{{data.caracteristicas[0].nomVendedor}}</a>
                 </div>
                 <hr>

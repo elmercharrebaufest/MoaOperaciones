@@ -6,15 +6,15 @@
         <!--Title-->
         <div class="row titleSection titleSectionTable">
             <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
-                <div style="line-height:0.8; display: inline-block; vertical-align:top;">Detalle Fijaci&oacute;n <strong><span>N&ordm; {{data.fijacion}}</span></strong></div>
+                <div style="line-height:0.8;"><strong>Detalle Fijaci&oacute;n <span>N&ordm; {{data.fijacion}}</span></strong></div>
                 <div class="titleExtraData">
-                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Monto: <strong>{{data.total}}</strong><br>
+                    Monto: <strong>{{data.total}}</strong><br>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-2 titleSectionTablePart">
                 <spinner-small #spinnerSmallExport></spinner-small>
                 <a (click)="exportarExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallExportComponent.visible">
-                    <div class="btnSection animate export">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate export align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
                 <!--<a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>

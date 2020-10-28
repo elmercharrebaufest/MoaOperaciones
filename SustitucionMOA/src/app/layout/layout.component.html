@@ -119,7 +119,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <a (click)="guardarTarifas(dtp_input_fletes.value)" href="#" style="text-decoration:none!important">
-                        <div class="btnSection animate">Guardar <span class="fa  fa-floppy-o"></span></div>
+                        <div class="btnSection animate align-right">Guardar <span class="fa  fa-floppy-o"></span></div>
                     </a>
                 </div>
             </div>
@@ -181,14 +181,14 @@
         <div *ngIf="showLiquidaciones" class="col-xs-12">
             <a (click)="exportExcel(modalLiquidacionContrato, modalLiquidacionSecuencia, modalLiquidacionComprobante)"
                 href="#" style="text-decoration:none!important">
-                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
+                <div class="btnSection animate align-right" style="background: #009688;">Exportar <img style="margin-left: 15px;" src="Content/images/buttons/EXPORT_MODAL.svg" /></div>
             </a>
         </div>
 
         <div *ngIf="showFleteProcedencia" class="col-xs-12">
             <a (click)="exportExcelFleteProcedencia(modalInfoContratoProcedencia)" href="#"
                 style="text-decoration:none!important">
-                <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
+                <div class="btnSection animate align-right" style="background: #009688;">Exportar <img style="margin-left: 15px;" src="Content/images/buttons/EXPORT_MODAL.svg" /></div>
             </a>
         </div>
     </modal-footer>

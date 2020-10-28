@@ -205,7 +205,7 @@ LOGIN*/
   margin: 24px 38px;
   position: relative;
   height: 33px;
-  width: 180px;
+  width: 202px;
   background: #959595;
   font-size: 14px;
 }
@@ -213,7 +213,7 @@ LOGIN*/
   position: relative;
   z-index: 2;
   float: left;
-  width: 90px;
+  width: 101px;
   height: 33px;
   line-height: 26px;
   color: rgba(255, 255, 255);
@@ -249,14 +249,14 @@ LOGIN*/
   transition: 0.15s ease-out;
 }
 .switch-input:checked + .switch-label-on ~ .switch-selection {
-  left: 90px;
+  left: 101px;
   background: #075088;
 }
 .switch-selection {
   display: block;
   position: absolute;
   z-index: 1;
-  width: 90px;
+  width: 101px;
   height: 33px;
   background: #067935;
   -webkit-transition: left 0.25s ease-out;
@@ -300,6 +300,7 @@ label {
   min-height: 100%;
   overflow: hidden;
   width: 100%;
+  font-family: Roboto Regular;
 }
 .sidebar li {
   margin-top: 0.3em;
@@ -3162,12 +3163,16 @@ table.dataTable.order-column.hover tbody tr:hover {
   border-left: 8px solid #172972;
 } */
 
+modal-header h1{
+  margin: 10px 0px;
+  color: white;
+}
+
 .modal-header {
   padding: 10px;
   background-color: #959595;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  margin-bottom: 20px;
 }
 
 .modal-title {
@@ -3402,7 +3407,7 @@ i.unselected{
 }
 
 #accordionMenu{
-  margin: 20px 31px 0px 38px;
+  margin: 20px 20px 0px 38px;
 }
 
 .link-header{
@@ -3438,7 +3443,6 @@ a.link-header[aria-expanded=false] span{
 #documentacion,
 #contacto,
 #usuarios{
-  width: 180px;
   height: 35px;
 }
 
@@ -3484,7 +3488,6 @@ div.panel-body div{
 
 #accordionMenu div.panel{
   margin-bottom: 5px;
-  width: 180px;
   border: none;
 }
 
@@ -3627,4 +3630,14 @@ div.panel-body a.active{
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+}
+
+.no-padding-left-right{
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.observaciones{
+  color: #075088;
+  font-size: 24px;
 }
