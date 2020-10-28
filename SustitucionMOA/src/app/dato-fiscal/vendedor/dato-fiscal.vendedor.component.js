@@ -141,6 +141,7 @@ var VendedoresListComponent = /** @class */ (function (_super) {
                     _this.mensajeComponent.setSuccessMsg(result.data);
                     _this.nuevoVendedorCUIT = "";
                     document.getElementById("modalToggleButton").click();
+                    _this.redirigiAPendientes();
                 }
             }, function (error) {
                 _this.spinnerModalComponent.hideIt();
@@ -151,6 +152,9 @@ var VendedoresListComponent = /** @class */ (function (_super) {
             this.spinnerModalComponent.hideIt();
             this.mensajeModalComponent.setErrorMsg(e);
         }
+    };
+    VendedoresListComponent.prototype.redirigiAPendientes = function () {
+        this.navService.navegarSeccion("/dato-fiscal/vendedores-pendientes");
     };
     __decorate([
         ViewChild(MensajeComponent),

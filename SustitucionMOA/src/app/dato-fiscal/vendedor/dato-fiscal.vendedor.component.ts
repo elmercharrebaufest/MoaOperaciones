@@ -169,8 +169,10 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
                             //this.getVendedores();
                             this.mensajeComponent.setSuccessMsg(result.data);
                             this.nuevoVendedorCUIT = "";
-
                             document.getElementById("modalToggleButton").click();
+
+                            this.redirigiAPendientes();
+
                         }
                     },
                     (error) => {
@@ -182,5 +184,9 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
             this.spinnerModalComponent.hideIt();
             this.mensajeModalComponent.setErrorMsg(e);
         }
+    }
+
+    redirigiAPendientes() {
+        this.navService.navegarSeccion("/dato-fiscal/vendedores-pendientes");
     }
 }
