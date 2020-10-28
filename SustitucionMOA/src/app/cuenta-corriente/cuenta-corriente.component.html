@@ -60,15 +60,76 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate cuenta-corriente-simple-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('docDateDate')">F. Emisi&oacute;n</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fecVtoDate')">F. Vto.</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('docNo')">N&deg; Cte.</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('descripcion')">Descripci&oacute;n</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('contrato')">Contrato</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('moneda')">Moneda</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ukurs')">TC</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('debe')">Debe</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('haber')">Haber</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('docDateDate')">
+                                F. Emisi&oacute;n <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'docDateDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'docDateDate' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fecVtoDate')">
+                                F. Vto.<div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fecVtoDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fecVtoDate' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('docNo')">
+                                N&deg; Cte.
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'docNo' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'docNo' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('descripcion')">
+                                Descripci&oacute;n
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'descripcion' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'descripcion' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('contrato')">
+                                Contrato
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('moneda')">
+                                Moneda
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'moneda' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'moneda' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ukurs')">
+                                TC
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'ukurs' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'ukurs' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('debe')">
+                                Debe
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'debe' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'debe' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('haber')">
+                                Haber
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'haber' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'haber' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>

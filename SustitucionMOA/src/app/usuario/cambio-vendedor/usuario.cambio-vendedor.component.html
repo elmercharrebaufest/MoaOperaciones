@@ -4,13 +4,14 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Usuario: <strong>Listado</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>Usuario: Listado</strong> </div>
         </div>
         <!--End Title-->
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr>
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Por Usuario/Vendedor:
                     <div class="styled-select">
@@ -31,14 +32,14 @@
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('usuario')">Usuario</th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('vendedor')">Vendedor</th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="">Seleccionar</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: center;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let usuario of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'usuario' : 'vendedor' : filtroUsuarioVendedor | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td>{{usuario.RazonSocial}}</td>
                             <td>{{usuario.CodigoProveedor}}</td>
-                            <td><a class="animate" (click)="seleccionarVendedor(usuario.CodigoProveedor, usuario.RazonSocial)" href="#"><span class="fa  fa-check-circle"></span></a></td>
+                            <td style="text-align: center;"><a class="animate" (click)="seleccionarVendedor(usuario.CodigoProveedor, usuario.RazonSocial)" href="#" >seleccionar vendedor</a></td>
                         </tr>
                     </tbody>
                 </table>

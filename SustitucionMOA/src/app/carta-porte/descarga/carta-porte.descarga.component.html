@@ -15,7 +15,7 @@
                     <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
                 <a (click)="validarCheckboxesFotos()" style="text-decoration:none!important">
-                    <div class="btnSection animate align-right" style="margin: 0 10px;">Descargar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right" style="margin: 0 10px;">Descargar <span class="fa fa-download" aria-hidden="true"></span></div>
                 </a>
 
                 <!--OLD DOWNLOAD
@@ -109,32 +109,61 @@
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('fechaDescargaDate')">Fecha
-                                <span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection < 0 }"></i></span>
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDescargaDate' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>  
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('cartaPorte')">
-                                CCPP
-                                Nº
-                                <span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection < 0 }"></i></span>
+                                CCPP Nº
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cartaPorte' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>  
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('producto')">
                                 Producto
-                                <span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection < 0 }"></i></span>
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'producto' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div> 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('contrnum')">Contrato Molinos
-                                <span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection < 0 }"></i></span>
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrnum' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div> 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('netoDescontado')">
                                 Recibido
-                                <span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection < 0 }"></i></span>
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'netoDescontado' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1"
                                 style="text-align: left;"
                                 (click)="orderColumnBy('vendedor')" *ngIf="isCorredor()">Vendedor
-                                <span><i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection > 0 }"></i><i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection < 0 }"></i></span>
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'vendedor' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
                             </th>
 
                         </tr>
