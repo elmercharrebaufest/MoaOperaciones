@@ -1,5 +1,6 @@
 ﻿using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -15,6 +16,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -201,6 +203,41 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(altaEmpresaService.ObtenerMaterialesDataAgro());
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult GetCampanias()
+        {
+            try
+            {
+                string CampanaMin = ConfigurationManager.AppSettings["CampanaMin"].ToString();
+                var datosjson =  altaEmpresaService.ObtenerCampañasDataAgro();
+                var listCamp = JsonConvert.DeserializeObject<List<CampaniaDto>>(datosjson);
+               
+                var idCamp = listCamp.Where(a => a.Descripcion == CampanaMin).Single().CampaniaId;
+                listCamp = listCamp.Where(a => a.CampaniaId >= idCamp).ToList();
+                return JsonCustom(listCamp);
+                
             }
             catch (InfoCustomException e)
             {
