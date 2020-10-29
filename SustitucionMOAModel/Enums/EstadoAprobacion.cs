@@ -28,7 +28,7 @@
                 case EstadoAprobacion.AprobacionPendiente:
                     return "Aprobación pendiente";
                 case EstadoAprobacion.DeshabilitadoEnDataAgro:
-                    return "Deshabilitado en DataAgro";
+                    return "Deshabilitado en Data Agro";
                 case EstadoAprobacion.EdicionRequerida:
                     return "Edicion requerida";
                 case EstadoAprobacion.Rechazado:

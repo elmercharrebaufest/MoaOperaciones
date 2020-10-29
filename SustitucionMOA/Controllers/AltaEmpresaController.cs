@@ -99,16 +99,21 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                List<KeyValuePair<int, string>> estados = new List<KeyValuePair<int, string>>
+                List<KeyValuePair<string, string>> estadosIntermedios = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.AprobacionPendiente, EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.AnalisisDeNosis, EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.EtapaFinal, EstadoAprobacion.EtapaFinal.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.EdicionRequerida, EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.DeshabilitadoEnDataAgro, EstadoAprobacion.Aprobado.ToFriendlyString()),
-                    new KeyValuePair<int, string>((int)EstadoAprobacion.AunNoImplementado, EstadoAprobacion.Rechazado.ToFriendlyString())
+                    new KeyValuePair<string, string>(EstadoAprobacion.AprobacionPendiente.ToFriendlyString(), EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString())
                 };
-                return JsonCustom(new { data = estados });
+                List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>(EstadoAprobacion.Aprobado.ToFriendlyString(), EstadoAprobacion.Aprobado.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.Rechazado.ToFriendlyString(), EstadoAprobacion.Rechazado.ToFriendlyString())
+                };
+                
+                return JsonCustom(new { intermedios = estadosIntermedios, finales = estadosFinales });
             }
             catch (InfoCustomException e)
             {
