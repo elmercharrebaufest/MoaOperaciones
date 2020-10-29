@@ -207,6 +207,7 @@ namespace SustitucionMOA
                 else
                 {
 					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, "ESTADO SOLICITUD"));
+					notification.AddClaim(new Claim(Globals.ClaimsPermisosType, "CONTACTO MAIL"));
 				}
 			}
 			catch (Exception e)

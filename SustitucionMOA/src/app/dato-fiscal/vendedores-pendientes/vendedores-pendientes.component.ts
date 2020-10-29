@@ -83,15 +83,6 @@ export class VendedoresPendientesComponent
                 )
             );
 
-        if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(
-                new Seccion(
-                    "/dato-fiscal/documentacion",
-                    "dato-fiscal",
-                    "Documentacion"
-                )
-            );
-
         if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
             secciones.push(
                 new Seccion(

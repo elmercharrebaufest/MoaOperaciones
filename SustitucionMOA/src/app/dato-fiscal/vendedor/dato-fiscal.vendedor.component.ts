@@ -64,15 +64,6 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
         new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores")
       );
 
-    if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-      secciones.push(
-        new Seccion(
-          "/dato-fiscal/documentacion",
-          "dato-fiscal",
-          "Documentacion"
-        )
-      );
-
     if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
       secciones.push(
         new Seccion(
