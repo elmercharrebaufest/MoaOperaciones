@@ -275,6 +275,11 @@ namespace SustitucionMOA.Controllers
 
                 var proveedorId = int.Parse(Request.Form.Get("proveedorId"));
 
+                if (proveedorId == 0)//para el caso de los directo que no tienen mas de un proveedor
+                {
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
+
                 List<string> errores = new List<string>();
 
                 for (int i = 0; i < Request.Files.Count; i++)
@@ -477,7 +482,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-       
+
         public ActionResult CargarSolicitudUsuario(string mail, int proveedorId)
         {
             try
