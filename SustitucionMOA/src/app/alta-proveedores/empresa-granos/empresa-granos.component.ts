@@ -138,7 +138,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([]);
 
-        this.obtenerMateriales();
         this.obtenerCampanias();
         this.obtenerArchivosSubidos();
         this.cargarSolicitudUsuario();
@@ -310,6 +309,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     };
                     this.listaCampanias.push(cam);
                 });                
+
+                this.obtenerMateriales();
+
             },
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);

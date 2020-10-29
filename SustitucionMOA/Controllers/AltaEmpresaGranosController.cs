@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
@@ -198,11 +199,11 @@ namespace SustitucionMOA.Controllers
             return JsonCustom("");
         }
 
-        public ActionResult GetMateriales()
+        public async Task<ActionResult> GetMateriales()
         {
             try
             {
-                return JsonCustom(altaEmpresaService.ObtenerMaterialesDataAgro());
+                return JsonCustom(await altaEmpresaService.ObtenerMaterialesDataAgro());
             }
             catch (InfoCustomException e)
             {
@@ -226,12 +227,12 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        public ActionResult GetCampanias()
+        public async Task<ActionResult> GetCampanias()
         {
             try
             {
                 string CampanaMin = ConfigurationManager.AppSettings["CampanaMin"].ToString();
-                var datosjson =  altaEmpresaService.ObtenerCampañasDataAgro();
+                var datosjson = await altaEmpresaService.ObtenerCampañasDataAgroAsync();
                 var listCamp = JsonConvert.DeserializeObject<List<CampaniaDto>>(datosjson);
                
                 var idCamp = listCamp.Where(a => a.Descripcion == CampanaMin).Single().CampaniaId;

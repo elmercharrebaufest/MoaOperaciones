@@ -25,7 +25,6 @@ import { DatoFiscalService } from "./../dato-fiscal.service";
 import { NavService } from "./../../common/services/NavService";
 import { FloatMsgService } from "./../../common/services/FloatMsgService";
 import { SecurityService } from "./../../common/services/SecurityService";
-import { Seccion } from "./../../common/models/seccion";
 import { BaseComponent } from "./../../common/base-components/base-component";
 import { ModalService } from "./../../common/services/ModalService";
 var DocumentacionComponent = /** @class */ (function (_super) {
@@ -43,17 +42,8 @@ var DocumentacionComponent = /** @class */ (function (_super) {
         this.setMenuSeccionTab("dato-fiscal", "Documentacion");
     };
     DocumentacionComponent.prototype.ngOnInit = function () {
-        //this.service.getTitulo().subscribe(titulo => this.titulo = titulo);
         this.setTabs();
         var secciones = [];
-        if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-            secciones.push(new Seccion("/dato-fiscal/situacion-fiscal", "dato-fiscal", "Mi Situacion Fiscal"));
-        if (this.isAuthorized("CONSULTAR VENDEDORES"))
-            secciones.push(new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores"));
-        if (this.isAuthorized("CONSULTAR DOCUMENTACION"))
-            secciones.push(new Seccion("/dato-fiscal/documentacion", "dato-fiscal", "Documentacion"));
-        if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
-            secciones.push(new Seccion("/dato-fiscal/vendedores-pendientes", "dato-fiscal", "Vendedores pendientes"));
         this.navService.setSeccionList(secciones);
     };
     DocumentacionComponent = __decorate([
