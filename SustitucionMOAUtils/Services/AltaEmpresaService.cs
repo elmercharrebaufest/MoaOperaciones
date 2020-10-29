@@ -19,10 +19,12 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
+        protected readonly IDataAgroService dataAgroService;
 
-        public AltaEmpresaService(IRepositorio repositorio)
+        public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
         }
 
         public List<ProveedorDto> GetEmpresas()
@@ -36,6 +38,7 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
+                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
@@ -141,8 +144,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.Observaciones = observacionParaElProveedor;
                 }
-
-
 
                 if (!string.IsNullOrWhiteSpace(estadoSIPER))
                 {

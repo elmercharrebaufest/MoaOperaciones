@@ -175,6 +175,42 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+
+        public string VerificarEstadoProveedor(int proveedorId)
+        {
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            if (proveedor == null)
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
+            }
+
+            var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
+            if (respuesta.HayError)
+            {
+                throw new InfoCustomException(respuesta.ListaErrores.First().Message);
+            }
+
+            if (respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase))
+            {
+                throw new InfoCustomException("El mail del proveedor no coincide con el cargado en DataAgro");
+            }
+           
+            proveedor.IdComercialDataAgro = respuesta.ComercialId;
+            proveedor.IdDataAgro = respuesta.ProveedorId;
+            proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
+            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+
+            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+
+            repositorio.GuardarCambios();
+
+            string resultado = "El proveedor ha sido habilitado para cargar la documentación.";
+
+            return resultado;
+        }
+
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto)
         {
             return repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);

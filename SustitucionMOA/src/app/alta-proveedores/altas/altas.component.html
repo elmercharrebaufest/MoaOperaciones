@@ -148,11 +148,19 @@
 
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
-                                <button type="button" class="btn-custom btn-chico btn-add" (click)="abrirModal(empresa)">
+                                <button *ngIf="empresa.EstadoAprobacion != 3" type="button"
+                                    style="width: 70px;font-size: 12px;" class="btn-custom btn-add btn-chico"
+                                    (click)="abrirModal(empresa)">
                                     Ver
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton"
                                     data-toggle="modal" data-target="#myModal"></button>
+
+                                <button *ngIf="empresa.EstadoAprobacion === 3" type="button"
+                                    style="width: 70px;font-size: 12px;" class="btn-custom btn-add btn-chico"
+                                    (click)="VerificarEstadoDataAgro(empresa)">
+                                    Verificar DataAgro
+                                </button>
                             </td>
                         </tr>
                     </tbody>

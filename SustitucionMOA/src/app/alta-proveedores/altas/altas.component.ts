@@ -200,6 +200,41 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+
+    VerificarEstadoDataAgro(empresa: Empresa) {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.altaEmpresaService.VerificarEstadoDataAgro(empresa.Id).subscribe(
+                result => {
+                    this.getEmpresa();
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+
     
     handleFileInput(files: FileList, fileKey: string) {
         this.mensajeComponent.setMsgsEmpty();
