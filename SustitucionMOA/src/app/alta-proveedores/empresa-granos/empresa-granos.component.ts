@@ -260,10 +260,12 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     obtenerMateriales() {
+
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
         this.subscription = this.service.obtenerMateriales().subscribe(
             (result) => {
                 let obj = JSON.parse(result);
-                this.listaCampanias = new Array();
+               // this.listaCampanias = new Array();
                 obj.Datos.forEach((element) => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
@@ -271,13 +273,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     mat.CampaniaActual = element.CampaniaActual;
                     mat.CampaniaIdActual = element.CampaniaIdActual;
                     this.listaMateriales.push(mat);
-                    let cam = {
+                   /* let cam = {
                         CampaniaActual: element.CampaniaActual,
                         CampaniaIdActual: element.CampaniaIdActual,
                     };
-                    this.listaCampanias.push(cam);
+                    this.listaCampanias.push(cam);*/
                 });
-                const listaCampanias2 = [];
+                /*const listaCampanias2 = [];
                 const map = new Map();
                 for (const item of this.listaCampanias) {
                     if (!map.has(item.CampaniaIdActual)) {
@@ -288,7 +290,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         });
                     }
                 }
-                this.listaCampanias = listaCampanias2;
+                this.listaCampanias = listaCampanias2;*/
             },
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
