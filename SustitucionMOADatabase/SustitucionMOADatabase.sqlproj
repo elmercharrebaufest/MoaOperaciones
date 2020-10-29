@@ -81,8 +81,8 @@
     <Build Include="DBO\Tables\ProveedorRelacionConEmpleados.sql" />
     <Build Include="DBO\Tables\ProveedorRelacionConFuncionarios.sql" />
     <None Include="scripts\Roles Corredores.sql" />
-    <Build Include="scripts\NuevoRolMenu.sql" />
-    <Build Include="scripts\PermisoContactoMailRolesIniciales.sql" />
+    <None Include="scripts\NuevoRolMenu.sql" />
+    <None Include="scripts\PermisoContactoMailRolesIniciales.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
