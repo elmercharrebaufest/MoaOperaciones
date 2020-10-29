@@ -2381,9 +2381,6 @@ margin-top:25px;
     width: 48.8%;
     margin-bottom: 5px;
   }
-  .SubMenu li:nth-child(odd) a {
-    margin-right: 5px;
-  }
   .inicioNotificaciones .date {
     display: none;
   }
@@ -3046,6 +3043,7 @@ table.dataTable.order-column.hover tbody tr:hover {
   font-size: 22px !important;
   padding: 0 !important;
   line-height: 0.99 !important;
+  margin-left: 10px;
 }
 @media (max-width: 767px) {
   .ctacte .mySearch .rounded .col-sm-6 {
@@ -3640,4 +3638,12 @@ div.panel-body a.active{
 .observaciones{
   color: #075088;
   font-size: 24px;
+}
+
+.height-auto{
+  height: auto !important;
+}
+
+.btn-custom span.fa{
+  margin-left: 10px;
 }
