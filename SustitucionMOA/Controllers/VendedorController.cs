@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -114,8 +115,17 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                return JsonCustom(new { data = _vendedorService.GetVendedoresPendientes(mailUsuario) });
+                var data = _vendedorService.GetVendedoresPendientes(mailUsuario);
+                foreach (var item in data)
+                {
+                    if (item.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                                || item.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                                || item.EstadoAprobacion == EstadoAprobacion.EtapaFinal)
+                    {
+                        item.EstadoAprobacionDescripcion = "Alta en Gestión";
+                    }
+                }
+                return JsonCustom(new { data = data });
             }
             catch (InfoCustomException e)
             {
