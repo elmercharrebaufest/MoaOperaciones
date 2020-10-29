@@ -192,7 +192,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(respuesta.ListaErrores.First().Message);
             }
 
-            if (respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase))
+            if (!respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase))
             {
                 throw new InfoCustomException("El mail del proveedor no coincide con el cargado en DataAgro");
             }
