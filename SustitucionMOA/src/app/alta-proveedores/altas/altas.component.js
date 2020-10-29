@@ -124,7 +124,10 @@ var AltasComponent = /** @class */ (function (_super) {
                     _this.mensajeComponent.setInfoMsg(result.info);
                 }
                 else {
-                    _this.estados = result.data;
+                    var estadosIntermedios = result.intermedios;
+                    var estadosFinales = result.finales;
+                    var estadosAgrupados = [{ Key: estadosIntermedios.map(function (x) { return x.Key; }).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(function (x) { return x.Key; }).join("|"), Value: 'Altas finalizadas' }];
+                    _this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
                     _this.getEmpresa();
                 }
             }, function (error) {
@@ -192,6 +195,37 @@ var AltasComponent = /** @class */ (function (_super) {
         }
         catch (e) {
             this.spinnerModal.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    };
+    AltasComponent.prototype.VerificarEstadoDataAgro = function (empresa) {
+        var _this = this;
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.altaEmpresaService.VerificarEstadoDataAgro(empresa.Id).subscribe(function (result) {
+                _this.getEmpresa();
+                _this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    _this.mensajeComponent.setSuccessMsg(result.data);
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }

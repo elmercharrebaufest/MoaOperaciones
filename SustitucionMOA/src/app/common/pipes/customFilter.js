@@ -13,6 +13,12 @@ var CustomFilter = /** @class */ (function () {
             return [];
         if (!filter)
             return values;
+        //Filtro compuesto
+        if (filter.indexOf('|') >= 0) {
+            var filtros_1 = filter.split('|');
+            return values.filter(function (v) { return filtros_1.some(function (f) { return v[field].toUpperCase().indexOf(f.toUpperCase()) >= 0; }); });
+        }
+        //Filtro simple
         return values.filter(function (v) { return v[field].toUpperCase().indexOf(filter.toUpperCase()) >= 0; });
     };
     CustomFilter = __decorate([

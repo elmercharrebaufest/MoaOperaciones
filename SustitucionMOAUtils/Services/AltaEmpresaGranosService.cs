@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -188,7 +189,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string ObtenerMaterialesDataAgro()
+        public async Task<string> ObtenerMaterialesDataAgro()
         {
             try
             {
@@ -205,11 +206,11 @@ namespace SustitucionMOAUtils.Services
 
                 using (var client = new HttpClient(httpClientHandler, false))
                 {
-                    var task = client.PostAsync(urlBusquedaMateriales, null);
+                    var task = await client.PostAsync(urlBusquedaMateriales, null);
 
-                    task.Wait();
+                    //task.Wait();
 
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    var stringContent = task.Content.ReadAsStringAsync();
 
                     string scapedJson = stringContent.Result.Replace("ñ", "ni");
 
@@ -527,7 +528,7 @@ namespace SustitucionMOAUtils.Services
             return altaEmpresa;
         }
 
-        public string ObtenerCampañasDataAgro()
+        public async Task<string> ObtenerCampañasDataAgroAsync()
         {
             try
             {
@@ -549,11 +550,11 @@ namespace SustitucionMOAUtils.Services
 
                 using (var client = new HttpClient(httpClientHandler, false))
                 {
-                    var task = client.PostAsync(urlBusquedaMateriales, null);
+                    var task = await client.PostAsync(urlBusquedaMateriales, null);
 
-                    task.Wait();
+                    //task.Wait();
 
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    var stringContent = task.Content.ReadAsStringAsync();
 
                     string scapedJson = stringContent.Result.Replace("ñ", "ni");
 

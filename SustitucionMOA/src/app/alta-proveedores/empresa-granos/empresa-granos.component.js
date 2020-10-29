@@ -128,14 +128,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         get: function () {
             return this.firstFormGroup.get("email");
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
         get: function () {
             return this.secondFormGroup.get("password");
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     EmpresaGranosComponent.prototype.selectEventProduccion = function (item, index) {
@@ -214,9 +214,10 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
     };
     EmpresaGranosComponent.prototype.obtenerMateriales = function () {
         var _this = this;
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
         this.subscription = this.service.obtenerMateriales().subscribe(function (result) {
             var obj = JSON.parse(result);
-            _this.listaCampanias = new Array();
+            // this.listaCampanias = new Array();
             obj.Datos.forEach(function (element) {
                 var mat = new Material();
                 mat.Id = element.MaterialId;
@@ -224,16 +225,15 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                 mat.CampaniaActual = element.CampaniaActual;
                 mat.CampaniaIdActual = element.CampaniaIdActual;
                 _this.listaMateriales.push(mat);
-                var cam = {
-                    CampaniaActual: element.CampaniaActual,
-                    CampaniaIdActual: element.CampaniaIdActual,
-                };
-                _this.listaCampanias.push(cam);
+                /* let cam = {
+                     CampaniaActual: element.CampaniaActual,
+                     CampaniaIdActual: element.CampaniaIdActual,
+                 };
+                 this.listaCampanias.push(cam);*/
             });
-            var listaCampanias2 = [];
-            var map = new Map();
-            for (var _i = 0, _a = _this.listaCampanias; _i < _a.length; _i++) {
-                var item = _a[_i];
+            /*const listaCampanias2 = [];
+            const map = new Map();
+            for (const item of this.listaCampanias) {
                 if (!map.has(item.CampaniaIdActual)) {
                     map.set(item.CampaniaIdActual, true); // set any value to Map
                     listaCampanias2.push({
@@ -242,7 +242,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                     });
                 }
             }
-            _this.listaCampanias = listaCampanias2;
+            this.listaCampanias = listaCampanias2;*/
         }, function (error) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });

@@ -49,6 +49,12 @@ var AltaEmpresaService = /** @class */ (function (_super) {
             .get('/api/AltaEmpresaGranos/CargarSolicitudUsuario')
             .pipe(map(this.extractData));
     };
+    AltaEmpresaService.prototype.VerificarEstadoDataAgro = function (empresaId) {
+        var params = new URLSearchParams();
+        params.set('proveedorID', empresaId.toString());
+        return this.http
+            .get('/api/AltaEmpresa/VerificarEstadoDataAgro', { search: params, headers: this.headers }).pipe(map(this.extractData));
+    };
     AltaEmpresaService = __decorate([
         Injectable()
     ], AltaEmpresaService);
