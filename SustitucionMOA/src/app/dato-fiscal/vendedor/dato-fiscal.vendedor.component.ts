@@ -11,58 +11,68 @@ import { SessionDataService } from "./../../common/services/SessionDataService";
 import { ModalService } from "./../../common/services/ModalService";
 
 @Component({
-  selector: "list",
-  templateUrl: `dato-fiscal.vendedor.component.html`,
-  providers: [DatoFiscalService],
+    selector: "list",
+    templateUrl: `dato-fiscal.vendedor.component.html`,
+    styleUrls: ["dato-fiscal.vendedor.component.css"],
+    providers: [DatoFiscalService],
 })
 export class VendedoresListComponent extends BaseComponent implements OnInit {
-  @ViewChild(MensajeComponent)
-  protected mensajeComponent: MensajeComponent;
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
 
-  @ViewChild(SpinnerComponent)
-  protected spinnerComponent: SpinnerComponent;
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
-  constructor(
-    protected service: DatoFiscalService,
-    protected navService: NavService,
-    protected securityService: SecurityService,
-    protected sessionDataService: SessionDataService,
-    protected floatMsgService: FloatMsgService,
-    protected modalService: ModalService
-  ) {
-    super(navService, securityService, floatMsgService, modalService);
-    this.mensajeComponent = new MensajeComponent();
-    this.spinnerComponent = new SpinnerComponent();
-  }
+    @ViewChild("mensajeModal")
+    protected mensajeModalComponent: MensajeComponent;
 
-  data: any;
-  orderedByColumn: string = "vendedor";
-  orderDirection: number = 1;
-  itemsPerPage = 20;
-  filtroVendedor: string = "";
-  filtroNroVendedor: string = "";
+    @ViewChild("spinnerModal")
+    protected spinnerModalComponent: SpinnerComponent;
 
-  setTabs() {
-    this.setMenuSeccionTab("dato-fiscal", "Mis Vendedores");
-  }
+    constructor(
+        protected service: DatoFiscalService,
+        protected navService: NavService,
+        protected securityService: SecurityService,
+        protected sessionDataService: SessionDataService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService
+    ) {
+        super(navService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
+        this.mensajeModalComponent = new MensajeComponent();
+        this.spinnerModalComponent = new SpinnerComponent();
+    }
 
-  ngOnInit() {
-    this.setTabs();
-    this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
-    var secciones = [];
-    if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
-      secciones.push(
-        new Seccion(
-          "/dato-fiscal/situacion-fiscal",
-          "dato-fiscal",
-          "Mi Situacion Fiscal"
-        )
-      );
+    data: any;
+    orderedByColumn: string = "vendedor";
+    orderDirection: number = 1;
+    itemsPerPage = 20;
+    filtroVendedor: string = "";
+    filtroNroVendedor: string = "";
+    nuevoVendedorCUIT: string = "";
 
-    if (this.isAuthorized("CONSULTAR VENDEDORES"))
-      secciones.push(
-        new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores")
-      );
+    setTabs() {
+        this.setMenuSeccionTab("dato-fiscal", "Mis Vendedores");
+    }
+
+    ngOnInit() {
+        this.setTabs();
+        this.securityService.tienePermisoRedirect("CONSULTAR VENDEDORES");
+        var secciones = [];
+        if (this.isAuthorized("CONSULTAR DATOS FISCALES"))
+            secciones.push(
+                new Seccion(
+                    "/dato-fiscal/situacion-fiscal",
+                    "dato-fiscal",
+                    "Mi Situacion Fiscal"
+                )
+            );
+
+        if (this.isAuthorized("CONSULTAR VENDEDORES"))
+            secciones.push(
+                new Seccion("/dato-fiscal/vendedor", "dato-fiscal", "Mis Vendedores")
+            );
 
     if (this.isAuthorized("CONSULTAR VENDEDOR PENDIENTES"))
       secciones.push(
@@ -73,52 +83,101 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
         )
       );
 
-    this.navService.setSeccionList(secciones);
-    this.getUsuario();
-  }
+        this.navService.setSeccionList(secciones);
+        this.getUsuario();
+    }
 
-  getUsuario() {
-    this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
-    this.unsubscribe();
-    try {
-      this.subscription = this.service.getVendedores("", "").subscribe(
-        (result) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-            this.data = result.data.vendedores;
-          }
-        },
-        (error) => {
-          this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
+    getUsuario() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service.getVendedores("", "").subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.data = result.data.vendedores;
+                    }
+                },
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
         }
-      );
-    } catch (e) {
-      this.spinnerComponent.hideIt();
-      this.mensajeComponent.setErrorMsg(e);
-      return false; //<-- Prevent Refresh
+
+        return false; //<-- Prevent Refresh
     }
 
-    return false; //<-- Prevent Refresh
-  }
-
-  isVisible() {
-    return this.data && this.data.length != 0;
-  }
-
-  orderColumnBy(column: string) {
-    if (column == this.orderedByColumn) {
-      this.orderDirection = -this.orderDirection;
-    } else {
-      this.orderDirection = 1;
-      this.orderedByColumn = column;
+    isVisible() {
+        return this.data && this.data.length != 0;
     }
-  }
+
+    orderColumnBy(column: string) {
+        if (column == this.orderedByColumn) {
+            this.orderDirection = -this.orderDirection;
+        } else {
+            this.orderDirection = 1;
+            this.orderedByColumn = column;
+        }
+    }
+
+    solicitarAltaProveedor() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.mensajeModalComponent.setMsgsEmpty();
+        this.spinnerModalComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscription = this.service
+                .agregarVendedor(
+                    this.nuevoVendedorCUIT
+                )
+                .subscribe(
+                    (result) => {
+                        this.spinnerModalComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeModalComponent.setErrorMsg(
+                                result.error
+                            );
+                        } else if (result.info != undefined) {
+                            this.mensajeModalComponent.setInfoMsg(result.info);
+                        } else {
+                            //this.getVendedores();
+                            this.mensajeComponent.setSuccessMsg(result.data);
+                            this.nuevoVendedorCUIT = "";
+                            document.getElementById("modalToggleButton").click();
+
+                            this.redirigiAPendientes();
+
+                        }
+                    },
+                    (error) => {
+                        this.spinnerModalComponent.hideIt();
+                        this.mensajeModalComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerModalComponent.hideIt();
+            this.mensajeModalComponent.setErrorMsg(e);
+        }
+    }
+
+    redirigiAPendientes() {
+        this.navService.navegarSeccion("/dato-fiscal/vendedores-pendientes");
+    }
 }

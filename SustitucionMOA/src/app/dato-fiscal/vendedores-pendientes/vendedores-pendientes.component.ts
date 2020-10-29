@@ -21,15 +21,10 @@ export class VendedoresPendientesComponent
     implements OnInit {
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
-
-    @ViewChild("mensajeModal")
-    protected mensajeModalComponent: MensajeComponent;
-
+    
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild("spinnerModal")
-    protected spinnerModalComponent: SpinnerComponent;
 
     constructor(
         protected service: DatoFiscalService,
@@ -41,10 +36,7 @@ export class VendedoresPendientesComponent
     ) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
-        this.mensajeModalComponent = new MensajeComponent();
-
         this.spinnerComponent = new SpinnerComponent();
-        this.spinnerModalComponent = new SpinnerComponent();
     }
 
     data: any;
@@ -146,47 +138,7 @@ export class VendedoresPendientesComponent
         }
     }
 
-    solicitarAltaProveedor() {
-        this.mensajeModalComponent.setMsgsEmpty();
-        this.spinnerModalComponent.showIt();
-        this.unsubscribe();
-        try {
-            this.subscription = this.service
-                .agregarVendedor(
-                    this.nuevoVendedorCUIT
-                )
-                .subscribe(
-                    (result) => {
-                        this.spinnerModalComponent.hideIt();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (
-                            result.error != undefined &&
-                            result.error != ""
-                        ) {
-                            this.mensajeModalComponent.setErrorMsg(
-                                result.error
-                            );
-                        } else if (result.info != undefined) {
-                            this.mensajeModalComponent.setInfoMsg(result.info);
-                        } else {
-                            this.getVendedores();
-                            this.mensajeComponent.setSuccessMsg(result.data);
-                            this.nuevoVendedorCUIT = "";
 
-                            document.getElementById("modalToggleButton").click();
-                        }
-                    },
-                    (error) => {
-                        this.spinnerModalComponent.hideIt();
-                        this.mensajeModalComponent.setErrorMsg(error.message);
-                    }
-                );
-        } catch (e) {
-            this.spinnerModalComponent.hideIt();
-            this.mensajeModalComponent.setErrorMsg(e);
-        }
-    }
 
     eliminarVendedor(proveedorId: number) {
         this.mensajeComponent.setMsgsEmpty();

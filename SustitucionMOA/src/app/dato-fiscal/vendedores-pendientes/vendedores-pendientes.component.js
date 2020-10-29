@@ -48,9 +48,7 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         _this.filtroNroVendedor = "";
         _this.nuevoVendedorCUIT = "";
         _this.mensajeComponent = new MensajeComponent();
-        _this.mensajeModalComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
-        _this.spinnerModalComponent = new SpinnerComponent();
         return _this;
     }
     VendedoresPendientesComponent.prototype.setTabs = function () {
@@ -118,42 +116,6 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
             this.orderedByColumn = column;
         }
     };
-    VendedoresPendientesComponent.prototype.solicitarAltaProveedor = function () {
-        var _this = this;
-        this.mensajeModalComponent.setMsgsEmpty();
-        this.spinnerModalComponent.showIt();
-        this.unsubscribe();
-        try {
-            this.subscription = this.service
-                .agregarVendedor(this.nuevoVendedorCUIT)
-                .subscribe(function (result) {
-                _this.spinnerModalComponent.hideIt();
-                if (result.logout == true) {
-                    _this.sessionDataService.logout();
-                }
-                else if (result.error != undefined &&
-                    result.error != "") {
-                    _this.mensajeModalComponent.setErrorMsg(result.error);
-                }
-                else if (result.info != undefined) {
-                    _this.mensajeModalComponent.setInfoMsg(result.info);
-                }
-                else {
-                    _this.getVendedores();
-                    _this.mensajeComponent.setSuccessMsg(result.data);
-                    _this.nuevoVendedorCUIT = "";
-                    document.getElementById("modalToggleButton").click();
-                }
-            }, function (error) {
-                _this.spinnerModalComponent.hideIt();
-                _this.mensajeModalComponent.setErrorMsg(error.message);
-            });
-        }
-        catch (e) {
-            this.spinnerModalComponent.hideIt();
-            this.mensajeModalComponent.setErrorMsg(e);
-        }
-    };
     VendedoresPendientesComponent.prototype.eliminarVendedor = function (proveedorId) {
         var _this = this;
         this.mensajeComponent.setMsgsEmpty();
@@ -195,17 +157,9 @@ var VendedoresPendientesComponent = /** @class */ (function (_super) {
         __metadata("design:type", MensajeComponent)
     ], VendedoresPendientesComponent.prototype, "mensajeComponent", void 0);
     __decorate([
-        ViewChild("mensajeModal"),
-        __metadata("design:type", MensajeComponent)
-    ], VendedoresPendientesComponent.prototype, "mensajeModalComponent", void 0);
-    __decorate([
         ViewChild(SpinnerComponent),
         __metadata("design:type", SpinnerComponent)
     ], VendedoresPendientesComponent.prototype, "spinnerComponent", void 0);
-    __decorate([
-        ViewChild("spinnerModal"),
-        __metadata("design:type", SpinnerComponent)
-    ], VendedoresPendientesComponent.prototype, "spinnerModalComponent", void 0);
     VendedoresPendientesComponent = __decorate([
         Component({
             selector: "app-vendedores-pendientes",

@@ -6,15 +6,7 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">Dato Fiscal: <strong>Vendedores</strong> </div>
 
-            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add" data-toggle="modal"
-                    id="modalToggleButton" data-target="#modalNuevoVendedor">
-                    Nuevo vendedor
-                </button>
-
-                <button type="button" style="display:none" id="openModalHiddenButton"></button>
-            </div>
+            
         </div>
         <!--End Title-->
         <div class="row myRow firstSection mySearch">
@@ -99,50 +91,7 @@
         </div>
         <!-- END tables-->
         <!-- END form-->
-        <!-- Modal -->
-        <div class="modal fade" id="modalNuevoVendedor" tabindex="-1" aria-labelledby="myModalLabel"
-            data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                            onClick="abrirModal()">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">Nuevo vendedor </h4>
-                    </div>
-                    <mensaje #mensajeModal></mensaje>
-                    <spinner #spinnerModal></spinner>
-                    <div class="modal-body mySearch">
-                        <div class="col-xs-12 col-md-12">
-
-                            <div class="col-xs-12 col-md-1">
-                                <div class="formulario-label">
-                                    CUIT
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-md-5">
-
-                                <div class="styled-select">
-                                    <input type="text" class="form-control" placeholder="CUIT" mask="00-00000000-0"
-                                        [(ngModel)]="nuevoVendedorCUIT" maxlength="13" />
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12 col-md-6">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="formulario-input">
-                            <button class="btn-custom btn-add" (click)="solicitarAltaProveedor()">
-                                Aceptar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
     </section>
     <!--End CONTENT-->

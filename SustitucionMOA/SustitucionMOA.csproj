@@ -319,6 +319,7 @@
     <Content Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.css" />
     <Content Include="src\app\dato-fiscal\vendedores-pendientes\vendedores-pendientes.component.html" />
     <Content Include="src\app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.html" />
+    <Content Include="src\app\dato-fiscal\vendedor\dato-fiscal.vendedor.component.css" />
     <Content Include="src\app\error\error.no-autorizado.component.html" />
     <Content Include="src\app\factura\factura.component.html" />
     <Content Include="src\app\flete\a-facturar\flete.a-facturar.component.html" />
