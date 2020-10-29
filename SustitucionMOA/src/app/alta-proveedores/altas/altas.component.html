@@ -24,7 +24,7 @@
                     <div class="styled-select ">
                         <select [(ngModel)]="selectedEstado" (ngModelChange)="onOptionsSelected()">
                             <option value="" selected>Todos</option>
-                            <option *ngFor="let x of estados" value="{{x.Value}}">{{x.Value}}</option>
+                            <option *ngFor="let x of estados" value="{{x.Key}}">{{x.Value}}</option>
                         </select>
 
                     </div>
