@@ -201,6 +201,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.IdDataAgro = respuesta.ProveedorId;
             proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+            proveedor.Observaciones = "";
 
             proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
 
