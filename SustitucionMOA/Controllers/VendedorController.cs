@@ -59,7 +59,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = _vendedorService.GetVendedores(SessionPersister.Proveedor, fechaInicio, fechaFin) });
+                return JsonCustom(new { data = _vendedorService.GetVendedores(SessionPersister.User.username, SessionPersister.Proveedor, fechaInicio, fechaFin) });
             }
             catch (InfoCustomException e)
             {

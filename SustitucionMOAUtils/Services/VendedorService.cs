@@ -66,7 +66,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public VendedoresWSMOAResponse GetVendedores(string proveedor, string fechaInicio, string fechaFin)
+        public VendedoresWSMOAResponse GetVendedores(string usuariomail, string proveedor, string fechaInicio, string fechaFin)
         {
             if (fechaInicio == "")
             {
@@ -76,8 +76,15 @@ namespace SustitucionMOAUtils.Services
             {
                 fechaFin = DateTime.Now.ToShortDateString();
             }
+
             List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
             VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(proveedor, fechas);
+
+            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C")).Select(v => new Vendedor() { descVendedor = v.RazonSocial, estado = v.EstadoAprobacionDescripcion, idVendedor = v.CodigoProveedor });
+
+            response.vendedores.AddRange(vendedoresAprobados);
+
+            response.vendedores = response.vendedores.Distinct().ToList();
             return response;
         }
 
