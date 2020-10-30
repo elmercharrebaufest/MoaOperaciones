@@ -12,6 +12,7 @@ CREATE TABLE [dbo].[Proveedor](
  	 [VinculoConEmpleadosDeMolinos] BIT NULL, 
     [VinculoConFuncionariosPublicos] BIT NULL, 
     [FechaSolicitud] DATETIME NULL, 
+    [Comercial] VARCHAR(200) NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

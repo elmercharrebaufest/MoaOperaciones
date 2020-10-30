@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime? FechaSolicitud { get; set; }
 
+
         public virtual ICollection<Archivo> Archivos { get; set; }
 
         [InverseProperty("Proveedores")]
@@ -42,5 +43,8 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Proveedor")]
         public virtual ICollection<ProveedorRelacionConFuncionarios> RelacionConFuncionarios { get; set; }
+
+        public string Comercial { get; set; }
+
     }
 }
