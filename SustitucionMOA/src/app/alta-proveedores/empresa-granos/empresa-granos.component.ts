@@ -666,7 +666,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
 
         filaError = 0;
-        
+        this.informe.NuevosAcopios = this.informe.NuevosAcopios.filter(item => (
+            (item.LocalidadID == null || item.LocalidadID == 0) && (item.Toneladas == null || item.Toneladas == 0)) == false);
+        //
+
         for (const item of this.informe.NuevosAcopios) {
             filaError++;
             if (item.LocalidadID == null || item.LocalidadID == 0) {
@@ -1088,6 +1091,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
 
         filaError = 0;
+        this.cartaPresentacion.nuevosAcopios = this.cartaPresentacion.nuevosAcopios.filter(item => (
+            (item.LocalidadID == null || item.LocalidadID == 0)  && (item.Toneladas == null || item.Toneladas == 0)) == false);
 
         for (const item of this.cartaPresentacion.nuevosAcopios) {
             if (item.LocalidadID == null || item.LocalidadID == 0) {
