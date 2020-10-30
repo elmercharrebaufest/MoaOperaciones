@@ -165,7 +165,10 @@ namespace SustitucionMOAUtils.Services
                 listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
             }
 
-
+            foreach (var item in listadoProveedores.Where(a => a.CUIT == null))
+            {
+                item.CUIT = "-";
+            }
             return listadoProveedores.Distinct().ToList();
         }
 
