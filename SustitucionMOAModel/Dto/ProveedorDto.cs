@@ -43,15 +43,15 @@ namespace SustitucionMOAModel.Dto
             Observaciones = proveedor.Observaciones;
             RazonSocial = proveedor.RazonSocial ?? "";
             FechaSolicitud = proveedor.FechaSolicitud;
-            Comercial = "";
+            Comercial = proveedor.Comercial;
 
-            if (proveedor.UsuariosAsociados.Count() > 0)
-            {
-                if (proveedor.UsuariosAsociados.First() is UsuarioGranos)
-                {
-                    Comercial = (proveedor.UsuariosAsociados.First() as UsuarioGranos).Comercial;
-                }
-            }
+            //if (proveedor.UsuariosAsociados.Count() > 0)
+            //{
+            //    if (proveedor.UsuariosAsociados.First() is UsuarioGranos)
+            //    {
+            //        Comercial = (proveedor.UsuariosAsociados.First() as UsuarioGranos).Comercial;
+            //    }
+            //}
 
             EstadoSIPER = proveedor.EstadoSIPER;
 

@@ -107,7 +107,6 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
-        this.obtenerMateriales();
         this.obtenerCampanias();
         this.obtenerArchivosSubidos();
         this.cargarSolicitudUsuario();
@@ -259,6 +258,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
                 };
                 _this.listaCampanias.push(cam);
             });
+            _this.obtenerMateriales();
         }, function (error) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });

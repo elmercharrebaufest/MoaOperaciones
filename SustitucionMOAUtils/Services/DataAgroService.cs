@@ -79,7 +79,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
-                        usuario.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
+                        proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
 
                         proveedor.IdComercialDataAgro = respuesta.ComercialId;
                         proveedor.IdDataAgro = respuesta.ProveedorId;
@@ -155,6 +155,8 @@ namespace SustitucionMOAUtils.Services
             {
                 if (respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                 {
+                    proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
+
                     proveedor.IdComercialDataAgro = respuesta.ComercialId;
                     proveedor.IdDataAgro = respuesta.ProveedorId;
                     proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
@@ -192,15 +194,17 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException(respuesta.ListaErrores.First().Message);
             }
 
-            if (respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase))
+            if (!respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase))
             {
                 throw new InfoCustomException("El mail del proveedor no coincide con el cargado en DataAgro");
             }
-           
+
+            proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
             proveedor.IdComercialDataAgro = respuesta.ComercialId;
             proveedor.IdDataAgro = respuesta.ProveedorId;
             proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+            proveedor.Observaciones = "";
 
             proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
 
