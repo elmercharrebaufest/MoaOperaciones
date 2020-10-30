@@ -560,6 +560,8 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             }
         }
         filaError = 0;
+        this.informe.NuevosAcopios = this.informe.NuevosAcopios.filter(function (item) { return ((item.LocalidadID == null || item.LocalidadID == 0) && (item.Toneladas == null || item.Toneladas == 0)) == false; });
+        //
         for (var _b = 0, _c = this.informe.NuevosAcopios; _b < _c.length; _b++) {
             var item = _c[_b];
             filaError++;
@@ -893,6 +895,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             }
         }
         filaError = 0;
+        this.cartaPresentacion.nuevosAcopios = this.cartaPresentacion.nuevosAcopios.filter(function (item) { return ((item.LocalidadID == null || item.LocalidadID == 0) && (item.Toneladas == null || item.Toneladas == 0)) == false; });
         for (var _b = 0, _c = this.cartaPresentacion.nuevosAcopios; _b < _c.length; _b++) {
             var item = _c[_b];
             if (item.LocalidadID == null || item.LocalidadID == 0) {
