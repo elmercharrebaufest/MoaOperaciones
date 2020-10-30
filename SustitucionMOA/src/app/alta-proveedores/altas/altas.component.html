@@ -674,7 +674,7 @@
                         Aprobar
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-remove"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(5)">
                         Rechazar
                     </button>
@@ -684,7 +684,7 @@
                         Anular rechazo
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(4)">
                         Observar
                     </button>
