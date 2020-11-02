@@ -45,15 +45,6 @@
                     style="width: 100%; padding:10px 0; background: white !important;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Mail')">
-                                Usuario<div>
-                                    <span>
-                                        <i
-                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection > 0 }"></i>
-                                        <i
-                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection < 0 }"></i></span>
-                                </div>
-                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
                                 Codigo<div>
                                     <span>
@@ -81,6 +72,16 @@
                                             [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i>
                                         <i
                                             [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i></span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('RazonSocialCorredor')">
+                                Corredor
+                                <div>
+                                    <span>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection < 0 }"></i></span>
                                 </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Comercial')">
@@ -149,15 +150,15 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let empresa of data 
-                                | orderedColumn : {property: orderedByColumn, direction: orderDirection} 
                                 | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta 
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado 
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
+                                | orderedColumn : {property: orderedByColumn, direction: orderDirection} 
                                 ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td>{{empresa.Mail}}</td>
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial || "-"}}</td>
+                            <td>{{empresa.RazonSocialCorredor || "-"}}</td>
                             <td>{{empresa.Comercial || "-"}}</td>
                             <td>{{empresa.SISAEstadoCuit || "-"}}</td>
                             <td>{{empresa.EstadoSIPER || "-"}}</td>
@@ -220,7 +221,8 @@
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
                     {{empresaSeleccionada.RazonSocial}} -
-                    {{empresaSeleccionada.CUIT}}
+                    {{empresaSeleccionada.CUIT}} -
+                    {{empresaSeleccionada.Mail}}
                 </h4>
 
             </div>
