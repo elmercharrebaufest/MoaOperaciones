@@ -64,6 +64,7 @@
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
+    <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaService.cs" />
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Web;
 
 namespace SustitucionMOAUtils.Services
@@ -117,7 +118,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 if (responseSet != null && responseSet.Log.Count > 0 && responseSet.Log[0].Mensaje != "")
                 {
-                    throw new InfoCustomException(responseSet.Log[0].Mensaje);
+                    //throw new InfoCustomException(responseSet.Log[0].Mensaje);
+                    throw new InfoCustomException(ErrorMsg.Error);
                 }
 
                 return responseSet;
@@ -184,12 +186,12 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 PesificacionGetContratosWSMOAResponse responseGet = (PesificacionGetContratosWSMOAResponse)new PesificacionConsumerMOA().request(proveedor);
-                if (responseGet == null || responseGet.Contratos.Count < 1)
+                if (responseGet == null || responseGet.Contratos.Where(a => a.CantidadPendiente > 0).ToList().Count < 1)
                 {
                     throw new InfoCustomException("No se encontraron contratos para pesificar");
                 }
 
-                return responseGet.Contratos;
+                return responseGet.Contratos.Where(a => a.CantidadPendiente > 0).ToList();
             }
             catch (InfoCustomException e)
             {

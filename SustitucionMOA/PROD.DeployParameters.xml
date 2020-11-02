@@ -6,6 +6,8 @@
 
 	<setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
 
+	<setParameter name="DataAgroURL Config" value="https://dataagro.com.ar/" />
+	
 	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 	<setParameter name="SI_MPMF_MOAOP_APLICACIONES Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_APLICACIONES&amp;interfaceNamespace=urn%3AOPERACIONES"/>
 	<setParameter name="SI_MPMF_MOAOP_CONTRATOS Service Endpoint Address" value="http://gvicpiprod01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTRATOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
