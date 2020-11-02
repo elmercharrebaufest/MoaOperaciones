@@ -25,12 +25,14 @@
                     return "Alta aceptada";
                 case EstadoAprobacion.DocumentacionPendiente:
                     return "Documentación pendiente";
+                //case EstadoAprobacion.AprobacionPendiente:
+                //return "Aprobación pendiente";
                 case EstadoAprobacion.AprobacionPendiente:
-                    return "Aprobación pendiente";
+                    return "Alta solicitada";
                 case EstadoAprobacion.DeshabilitadoEnDataAgro:
                     return "Deshabilitado en DataAgro";
                 case EstadoAprobacion.EdicionRequerida:
-                    return "Edicion requerida";
+                    return "Solicitud de información";
                 case EstadoAprobacion.Rechazado:
                     return "Alta rechazada";
                 case EstadoAprobacion.AunNoImplementado:
