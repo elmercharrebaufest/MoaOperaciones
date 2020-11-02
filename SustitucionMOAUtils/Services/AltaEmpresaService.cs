@@ -34,13 +34,14 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                                 x => (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
                                 || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                                 || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
                                 || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
+                                && !x.CodigoProveedor.Contains("C")
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
