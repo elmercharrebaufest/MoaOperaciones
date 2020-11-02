@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
-    [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    //[System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class BaseController : Controller
     {
         protected JsonResult JsonCustom(object data)

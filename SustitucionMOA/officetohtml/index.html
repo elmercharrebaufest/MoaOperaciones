@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OfficeJs </title>
+    <meta charset="utf-8">
+    <link href="./layout/styles/layout.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./include/jquery_ui/themes/start/jquery-ui.min.css">
+    <script src="./include/jquery/jquery-1.12.4.min.js"></script>
+    <script src="./include/jquery_ui/jquery-ui.min.js"></script>
+    <!-- ################################ For files reder ###############################-->
+    <!--PDF-->
+    <link rel="stylesheet" href="./include/pdf/pdf.viewer.css">
+    <script src="./include/pdf/pdf.js"></script>
+    <!--Docs-->
+    <script src="./include/docx/jszip-utils.js"></script>
+    <script src="./include/docx/mammoth.browser.min.js"></script>
+    <!--PPTX-->
+    <link rel="stylesheet" href="./include/PPTXjs/css/pptxjs.css">
+    <link rel="stylesheet" href="./include/PPTXjs/css/nv.d3.min.css">
+    <script type="text/javascript" src="./include/PPTXjs/js/filereader.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/d3.min.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/nv.d3.min.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/pptxjs.js"></script>
+    <script type="text/javascript" src="./include/PPTXjs/js/divs2slides.js"></script>
+    <!--All Spreadsheet -->
+    <link rel="stylesheet" href="./include/SheetJS/handsontable.full.min.css">
+    <script type="text/javascript" src="./include/SheetJS/handsontable.full.min.js"></script>
+    <script type="text/javascript" src="./include/SheetJS/xlsx.full.min.js"></script>
+    <!--Image viewer-->
+    <link rel="stylesheet" href="./include/verySimpleImageViewer/css/jquery.verySimpleImageViewer.css">
+    <script type="text/javascript" src="./include/verySimpleImageViewer/js/jquery.verySimpleImageViewer.js"></script>
+    <!--officeToHtml-->
+    <script src="./include/officeToHtml/officeToHtml.js"></script>
+    <link rel="stylesheet" href="./include/officeToHtml/officeToHtml.css">
+</head>
+
+<body id="top" style="background-color:white;">
+    <style>
+        .cerrar {
+            align-items: center;
+            background-attachment: scroll;
+            background-clip: border-box;
+            background-color: rgb(23, 47, 143);
+            background-image: none;
+            background-origin: padding-box;
+            background-size: auto;
+            border-bottom-color: rgb(255, 255, 255);
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            border-bottom-style: none;
+            border-collapse: collapse;
+            border-image-repeat: stretch;
+            border-image-slice: 100%;
+            border-image-source: none;
+            border-image-width: 1;
+            border-left-color: rgb(255, 255, 255);
+            border-left-style: none;
+            border-right-color: rgb(255, 255, 255);
+            border-right-style: none;
+            border-top-color: rgb(255, 255, 255);
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            box-sizing: border-box;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            display: flex;
+            font-family: Arial, verdana, sans-serif;
+            font-size: 18px;
+            font-stretch: 100%;
+            font-weight: 400;
+            height: 30px;
+            letter-spacing: normal;
+            line-height: 24px;
+            margin-bottom: 0px;
+            margin-left: 10px;
+            margin-right: 10px;
+            outline-color: rgb(255, 255, 255);
+            overflow-x: visible;
+            overflow-y: visible;
+            padding-bottom: 10px;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 10px;
+            text-align: center;
+            text-decoration-color: rgb(255, 255, 255);
+            text-decoration-line: none;
+            text-decoration-style: solid;
+            text-indent: 0px;
+            text-rendering: auto;
+            text-shadow: none;
+            text-size-adjust: 100%;
+            text-transform: none;
+            touch-action: manipulation;
+            user-select: none;
+            vertical-align: middle;
+            white-space: nowrap;
+            width: 189.078px;
+            writing-mode: horizontal-tb;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -webkit-border-image: none;
+            width: 120px;
+            display: inline-flex;
+        }
+    </style>
+    <div class="wrapper row3">
+        <main class="  " style="padding:0;">
+
+            <p id="file_p" style="display:block;">
+                Archivo: <a href="#" id="a_file"></a><input type="file" id="select_file" style="display:none;" />
+                <button onclick="window.close();" class="cerrar">CERRAR</button>
+            </p>
+            <!-- ################################################################################################ -->
+            <div class="content three_quarter" style="margin-left:13%;">
+                <div id="resolte-div" style="overflow: hidden;">
+                    <div id="resolte-contaniner" style="width: 100%; height:550px; overflow: auto;"></div>
+                </div>
+                <script type="text/javascript">
+                    var url;
+
+                    $("#a_file").click(function () {
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                    });
+                    (function ($) {
+                        $("#resolte-contaniner").css("height", (screen.height - 200) + "px");
+
+
+                        const queryString = window.location.search;
+                        const urlParams = new URLSearchParams(queryString);
+                        var param = urlParams.get('param');
+                        param = atob(param);
+                        var parametros = new URLSearchParams(param);
+
+                        var datos = {
+                            fileKey: parametros.get("fileKey"),
+                            mail: parametros.get("mail"),
+                            archivoId: parametros.get("archivoId"),
+                            proveedorId: parametros.get("proveedorId")
+                        };
+                        $.ajax({
+                            async: false,
+                            url: '/api/AltaEmpresaGranos/DescargarArchivo',
+                            type: 'GET',
+                            data: datos,
+                            dataType: "json",
+                            contentType: "application/json; charset=utf-8",
+                            success: function (data) {
+                                result = data;
+                                var byteArray = new Uint8Array(result.FileContents);
+                                var blob = new Blob([byteArray], { type: 'application/octet-stream' });
+                                const dT = new DataTransfer();
+                                dT.items.add(new File([blob], result.FileDownloadName));
+                                console.log(4);
+                                url = window.URL.createObjectURL(blob);
+                                console.log(5);
+                                select_file.files = dT.files;
+                                $("#a_file").html(result.FileDownloadName);
+
+
+                                $("#resolte-contaniner").officeToHtml({
+                                    //url: file_path,
+                                    inputObjId: "select_file",
+                                    pdfSetting: {
+                                        setLang: "",
+                                        setLangFilesPath: "" /*"include/pdf/lang/locale" - relative to app path*/
+                                    }
+                                });
+                                $("#select_file").change();
+                            },
+                            error: function (error) {
+                                console.log("error");
+                            }
+                        });
+
+                    }(jQuery));
+                </script>
+            </div>
+        </main>
+    </div>
+
+
+</body>
+
+</html>

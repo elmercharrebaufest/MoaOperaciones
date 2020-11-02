@@ -71,6 +71,8 @@
         public const string CONSULTAR_DATOS_FISCALES = "CONSULTAR DATOS FISCALES";
         public const string CONSULTAR_VENDEDORES = "CONSULTAR VENDEDORES";
         public const string CONSULTAR_VENDEDOR_STATUS = "CONSULTAR VENDEDOR STATUS";
+        public const string CONSULTAR_VENDEDOR_PENDIENTES = "CONSULTAR VENDEDOR PENDIENTES";
+        
 
         /* PERMISOS DESCARGA DOCUMENTOS */
         public const string DESCARGAR_DOCUMENTO = "DESCARGAR DOCUMENTO";
@@ -89,5 +91,17 @@
 
         /*DATA AGRO*/
         public const string DATAAGROLOGIN = "DATAAGROLOGIN";
+
+        public const string ALTAEMPRESA = "ALTA EMPRESA";
+
+        public const string ABM_EMPRESAS = "ABM EMPRESAS";
+        public const string ABM_EMPRESAS_OPERADOR = "ABM EMPRESAS OPERADOR";
+        public const string ABM_EMPRESAS_APROBADOR = "ABM EMPRESAS APROBADOR";
+
+        public const string ESTADO_SOLICITUD = "ESTADO SOLICITUD";
+
+        /* PERMISOS CREAR CONTRATO */
+        public const string CREAR_CONTRATO = "CREAR CONTRATOS";
+
     }
 }

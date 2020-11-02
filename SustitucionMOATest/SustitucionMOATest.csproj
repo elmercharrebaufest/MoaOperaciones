@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
@@ -60,6 +63,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -87,17 +91,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AltaEmpresaControllerTest.cs" />
+    <Compile Include="Controllers\AltaEmpresaGranosControllerTest.cs" />
     <Compile Include="Controllers\CartaPorteControllerTest.cs" />
+    <Compile Include="Controllers\UsuarioControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AltaEmpresaGranosServiceTest.cs" />
+    <Compile Include="Services\AltaEmpresaServiceTest.cs" />
+    <Compile Include="Services\AzureB2CServiceTest.cs" />
+    <Compile Include="Services\DataAgroServiceTest.cs" />
+    <Compile Include="Services\UsuarioServiceTest.cs" />
+    <Compile Include="Services\VendedorServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
+      <Project>{CDE9AB52-949B-428E-A737-5910D05116D8}</Project>
+      <Name>SustitucionMOAAsset</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
+      <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
+      <Name>SustitucionMOACustomException</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
       <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
+      <Project>{17CF0FDF-2900-470D-8F5E-E64A8583B61F}</Project>
+      <Name>SustitucionMOARepositorio</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAUtils\SustitucionMOAUtils.csproj">
       <Project>{da180ee1-e819-4216-b0f5-2377a22ea72a}</Project>
@@ -112,9 +137,7 @@
       <Name>SustitucionMOA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

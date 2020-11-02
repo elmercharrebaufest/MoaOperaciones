@@ -1,29 +1,263 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using Microsoft.Owin.Security;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.Home;
+using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
+using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using Entidades = SustitucionMOAModel.Entities;
+
+
 
 namespace SustitucionMOA.Controllers
 {
-    [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    //[System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class HomeController : BaseController
     {
         HomeService _homeService = new HomeService();
+        LoginService _loginService = new LoginService();
+
+        protected readonly IRepositorio repositorio;
+        protected readonly IAzureB2CService azureB2CService;
+        protected readonly IDataAgroService dataAgroService;
+
+        private static readonly string redirectUrl = ConfigurationManager.AppSettings["SpaUrl"];
+
         // GET: Home
+
+        public HomeController(IRepositorio repositorio, IAzureB2CService azureB2CService, IDataAgroService dataAgroService)
+        {
+            this.repositorio = repositorio;
+            this.azureB2CService = azureB2CService;
+            this.dataAgroService = dataAgroService;
+        }
 
         public ActionResult Index()
         {
-            if (Request.Url.AbsolutePath != "" && Request.Url.AbsolutePath != "/" && Request.Url.AbsolutePath != "/login") {
-                return Redirect("/");
+            if (Request.IsAuthenticated)
+            {
+                return Redirect(redirectUrl);
             }
-            return new FilePathResult(Server.MapPath("~/index.html"), "text/html");
+            else
+            {
+                try
+                {
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+
+                }
+                //Ignoramos esta excepción porque la da cuando carga recursos
+                catch
+                {
+
+                }
+                return null;
+            }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_HOME)]
+        public ActionResult Registro()
+        {
+            //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+            try
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
+            }
+            //Ignoramos esta excepción porque la da cuando carga recursos
+            catch
+            {
+
+            }
+            return null;
+        }
+
+        public async Task SignOut()
+        {
+            // To sign out the user, you should issue an OpenIDConnect sign out request.
+            if (Request.IsAuthenticated)
+            {
+                await MsalAppBuilder.ClearUserTokenCache();
+                IEnumerable<AuthenticationDescription> authTypes = HttpContext.GetOwinContext().Authentication.GetAuthenticationTypes();
+                HttpContext.GetOwinContext().Authentication.SignOut(authTypes.Select(t => t.AuthenticationType).ToArray());
+                Request.GetOwinContext().Authentication.GetAuthenticationTypes();
+            }
+            else
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+            }
+        }
+
+        public ActionResult ResetPassword()
+        {
+            //Este try catch lo ignoramos porque son las excepciones cuando carga componentes nuevos 
+            try
+            {
+                HttpContext.GetOwinContext().Set("Policy", Globals.ResetPasswordPolicyId);
+                HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, });
+            }
+            //Ignoramos esta excepción porque la da cuando carga recursos
+            catch
+            {
+
+            }
+            return null;
+        }
+
+        public ActionResult ValidarLoginAzure()
+        {
+            try
+            {
+                if (!Request.IsAuthenticated)
+                {
+                    throw new ValidationCustomException("Su sesión ha expirado. Por favor, ingrese nuevamente.");
+                }
+
+                string username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value;
+                string nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value;
+                string proveedor = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
+                string granosFlag = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsGranosFlagType).Value;
+                string tipoUsuario = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsTipoUsuarioType).Value;
+                string esNuevoUsuarioStr = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsNuevoUsuarioType).Value;
+
+                bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
+
+                List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
+
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
+
+                Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
+
+                if (permisos.Count() == 1 && permisos.Contains("DATAAGROLOGIN"))
+                {
+                    DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
+
+                    return Json(new { success = SuccessMsg.LoginOk, tipoUsuario = "DATAAGROLOGIN", cuit = data.cuit, error = data.error, username = data.nombreUsuario, url = data.url, vencimiento = data.vencimiento }, JsonRequestBehavior.AllowGet);
+                }
+
+                NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
+
+                try
+                {
+                    if (!Globals.EsLocal)
+                    {
+                        if (!esNuevoUsuario)
+                        {
+                            noticias = _loginService.getNoticias(proveedor);
+                            noticias.cantidad = 0;
+                            if (noticias != null && noticias.noticias != null)
+                            {
+                                noticias.cantidad += noticias.noticias.Count;
+                            }
+                            if (noticias != null && noticias.notificaciones != null)
+                            {
+                                noticias.cantidad += noticias.notificaciones.Count;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                }
+
+                string redirectURL = "";
+
+                if (esNuevoUsuario)
+                {
+                    if (usuario.TipoUsuario.Nombre == "Corredor")
+                    {
+                        redirectURL = "/dato-fiscal/vendedores-pendientes";
+                    }
+                    else
+                    {
+                        if (usuario.ObtenerProveedor().EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                        {
+                            if (granosFlag == "G")
+                            {
+                                redirectURL = "/alta-empresa-granos";
+                            }
+                            else
+                            {
+                                redirectURL = "/dato-fiscal/documentacion";
+                            }
+                        }
+                        else
+                        {
+                            redirectURL = "/estado-solicitud";
+                        }
+                    }
+                }
+                else
+                {
+                    if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
+                    {
+                        redirectURL = "/aduana/pesada-online";
+                    }
+                    else if (tipoUsuario == "CLIE")
+                    {
+                        redirectURL = "/cuenta-corriente/simple";
+                    }
+                    else
+                    {
+                        if (granosFlag == "A" || granosFlag == "G")
+                        {
+                            redirectURL = "/home";
+                        }
+                        else
+                        {
+                            redirectURL = "/home-ngs";
+                        }
+                    }
+                }
+
+                return Json(new
+                {
+                    success = SuccessMsg.LoginOk,
+                    username,
+                    nombre,
+                    proveedor,
+                    granosFlag,
+                    permisos,
+                    tipoUsuario,
+                    noticias,
+                    esNuevoUsuario,
+                    redirectURL,
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult getHomeInfo(string fechaInicio, string fechaFin)
         {
             try
@@ -66,6 +300,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
     }
 }

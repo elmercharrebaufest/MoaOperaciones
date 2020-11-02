@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="15713314-3b7a-4391-b13e-c8767a325f48" ChangeDateTime="09/29/2020 20:06:16">
+    <Property Name="ElementName" Value="[dbo].[Archivo].[Usuario_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Archivo]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Proveedor_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="91abcad4-57d5-4030-b409-45825aad39c4" ChangeDateTime="09/23/2020 21:17:33">
+    <Property Name="ElementName" Value="[dbo].[UsuarioGranos].[VinculoConFuncionariosPublicos]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UsuarioGranos]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VinculoConEmpleadosDeMolinos" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="ea5c21c9-8006-4462-97a4-b67adfb5d00c" ChangeDateTime="09/23/2020 21:17:36">
+    <Property Name="ElementName" Value="[dbo].[UsuarioGranos].[h]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UsuarioGranos]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VinculoConFuncionariosPublicos" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="82aa9b5d-c29b-4ac5-9b25-bd65e721138d" ChangeDateTime="10/01/2020 14:14:26">
+    <Property Name="ElementName" Value="[dbo].[UsuarioRelacionConFuncionarios].[Usuario_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[UsuarioRelacionConFuncionarios]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Proveedor_Id" />
+  </Operation>
+</Operations>

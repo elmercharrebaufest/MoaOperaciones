@@ -19,7 +19,7 @@ namespace SustitucionMOAAssets {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ErrorMsg {
@@ -75,6 +75,24 @@ namespace SustitucionMOAAssets {
         public static string ErrorArchivoFormato {
             get {
                 return ResourceManager.GetString("ErrorArchivoFormato", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ya existe un archivo con el mismo nombre..
+        /// </summary>
+        public static string ErrorArchivoRepetido {
+            get {
+                return ResourceManager.GetString("ErrorArchivoRepetido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El archivo {0} es requerido..
+        /// </summary>
+        public static string ErrorArchivoRequerido {
+            get {
+                return ResourceManager.GetString("ErrorArchivoRequerido", resourceCulture);
             }
         }
         
@@ -147,6 +165,15 @@ namespace SustitucionMOAAssets {
         public static string ErrorFechaInvalida {
             get {
                 return ResourceManager.GetString("ErrorFechaInvalida", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No se pudo identificar el tipo de archivo que desea subir.
+        /// </summary>
+        public static string ErrorFileKeyInvalido {
+            get {
+                return ResourceManager.GetString("ErrorFileKeyInvalido", resourceCulture);
             }
         }
         
@@ -259,11 +286,29 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ya existe un vendedor con el mismo CUIT.
+        /// </summary>
+        public static string ErrorVendedorRepetido {
+            get {
+                return ResourceManager.GetString("ErrorVendedorRepetido", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Temporalmente fuera servicio, vuelva a intentarlo en unos minutos.
         /// </summary>
         public static string ErrorWS {
             get {
                 return ResourceManager.GetString("ErrorWS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No puede editar la solicitud debido que su estado no es &quot;Documentacion pendiente&quot;..
+        /// </summary>
+        public static string EstadoIncorrectoSolicitud {
+            get {
+                return ResourceManager.GetString("EstadoIncorrectoSolicitud", resourceCulture);
             }
         }
     }

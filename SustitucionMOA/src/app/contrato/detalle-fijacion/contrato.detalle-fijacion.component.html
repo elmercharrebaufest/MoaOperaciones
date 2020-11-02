@@ -1,0 +1,51 @@
+﻿<div class="content-wraper">
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix" *ngIf="data">
+        <!--Title-->
+        <div class="row titleSection titleSectionTable">
+            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8;"><strong>Detalle Fijaci&oacute;n <span>N&ordm; {{data.fijacion}}</span></strong></div>
+                <div class="titleExtraData">
+                    Monto: <strong>{{data.total}}</strong><br>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+                <spinner-small #spinnerSmallExport></spinner-small>
+                <a (click)="exportarExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallExportComponent.visible">
+                    <div class="btnSection animate export align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                </a>
+                <!--<a href="#" style="text-decoration:none!important">
+                    <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
+                </a>-->
+            </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div id="myPagos" class="row myRow hideMobile">
+            <div class="clearfix myTables">
+                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable " cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <thead>
+                        <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                            <th tabindex="0" rowspan="1" colspan="1">N&ordm; CCPP</th>
+                            <th tabindex="0" rowspan="1" colspan="1">Kilos Fijados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of data.detalleFijacion" role="row" class="odd">
+                            <td tabindex="0">{{item.fechaDescarga}}</td>
+                            <td><a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', item.cartaPorte)" href="#">{{item.cartaPorte}}</a></td>
+                            <td style="">{{item.netoDescontado}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--Fin botones mobile-->
+    </section>
+    <!--End CONTENT-->
+</div>
+
+

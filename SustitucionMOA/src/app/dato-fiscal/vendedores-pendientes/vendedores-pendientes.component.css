@@ -1,0 +1,53 @@
+.button {
+  margin: 0 10px;
+  height: 30px;
+  align-items: center;
+  display: flex;
+  background: #172f8f;
+  border: none;
+  justify-content: center;
+}
+
+.buttonEliminar {
+  margin: 0 10px;
+  height: 30px;
+  align-items: center;
+  display: flex;
+  background: #af1a16;
+  border: none;
+  justify-content: center;
+}
+
+.modal {
+  margin-top: 128px;
+  padding-left: 35px;
+  padding-right: 35px;
+  padding-top: 25px;
+  margin-bottom: 40px;
+  align-items: center;
+  flex-direction: column;
+}
+
+#modalNuevoVendedor {
+  overflow: scroll !important;
+  bottom: -85px !important;
+  margin-top: 0;
+}
+
+.modal-body {
+  padding-bottom: 25px;
+  justify-content: center;
+  display: flex;
+}
+
+.modal-footer {
+  justify-content: center;
+  display: flex;
+}
+
+.formulario-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #172f8f;
+  margin-top: 10px;
+}

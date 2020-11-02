@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>SustitucionMOADatabase</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{47c7cb5f-0215-4129-a853-2b1b9f82d405}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>SustitucionMOADatabase</RootNamespace>
+    <AssemblyName>SustitucionMOADatabase</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="DBO" />
+    <Folder Include="DBO\Tables" />
+    <Folder Include="scripts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
+    <Build Include="DBO\Tables\Archivo.sql" />
+    <Build Include="DBO\Tables\Contacto.sql" />
+    <Build Include="DBO\Tables\Localidad.sql" />
+    <Build Include="DBO\Tables\Partido.sql" />
+    <Build Include="DBO\Tables\PermisoPorRol.sql" />
+    <Build Include="DBO\Tables\Proveedor.sql" />
+    <Build Include="DBO\Tables\ProveedorUsuario.sql" />
+    <Build Include="DBO\Tables\Provincia.sql" />
+    <Build Include="DBO\Tables\Rol.sql" />
+    <Build Include="DBO\Tables\RolPermisoPorRol.sql" />
+    <Build Include="DBO\Tables\RolUsuario.sql" />
+    <Build Include="DBO\Tables\TestEntity.sql" />
+    <Build Include="DBO\Tables\TipoUsuario.sql" />
+    <Build Include="DBO\Tables\Usuario.sql" />
+    <Build Include="DBO\Tables\UsuarioGranos.sql" />
+    <Build Include="DBO\Tables\UsuarioNoGranos.sql" />
+    <Build Include="DBO\Tables\ProveedorRelacionConEmpleados.sql" />
+    <Build Include="DBO\Tables\ProveedorRelacionConFuncionarios.sql" />
+    <None Include="scripts\Roles Corredores.sql" />
+    <None Include="scripts\NuevoRolMenu.sql" />
+    <None Include="scripts\PermisoContactoMailRolesIniciales.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DatabasePublishQA.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\UpdateRolesEditables.sql" />
+  </ItemGroup>
+</Project>

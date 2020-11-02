@@ -1,13 +1,24 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Quartz.Util;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -53,7 +64,7 @@ namespace SustitucionMOAUtils.Services
                     for (int i = 0; i < jsonResult.Datos.Count; i++)
                     {
                         DateTime fecha = jsonResult.Datos[i].Feriado;
-                        feriados.Add(fecha.Date);
+                        feriados.Add(fecha);
                     }
                     return feriados;
                 }

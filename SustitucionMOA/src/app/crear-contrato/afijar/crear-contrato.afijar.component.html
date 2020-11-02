@@ -1,0 +1,324 @@
+﻿<style>
+    .fieldset {
+        max-width: 650px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 2px 2px #88888854;
+        padding: 20px;
+        margin-top: 15px;
+    }
+
+    .subtitulo {
+        box-sizing: border-box;
+        color: blue;
+        display: table;
+        max-width: 100%;
+        padding: 0;
+        white-space: normal;
+        font-weight: 600 !important;
+        font-size: large;
+    }
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 28px;
+        background-color: transparent !important;
+        margin: 0 !important;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .labelSwitch {
+        top: 5px;
+        position: relative;
+        margin-left: 7px;
+    }
+</style>
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Fijar</strong> </div>
+        </div>
+        <mensaje></mensaje>
+        <fieldset class="fieldset">
+            <label class="subtitulo">Condiciones Generales</label>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="tipocontrato" class="font-weight-bold">Tipo de contrato</label>
+                    <select class="form-control" name="tipocontrato" readonly disabled>
+                        <option value="1" selected>A Fijar</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="destino">Destiono</label>
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
+                        <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="desde" class="font-weight-bold">Entrega Desde</label>
+                    <div class="styled-select input-group date form_datetime_Inicio" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_inicio" (change)="changeMoneda($event)">
+                        <input type="text" value="{{fechaInicio}}" id="noCursor" readonly (change)="changeMoneda($event)" />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
+                    <input type="hidden" #dtp_input_inicio id="dtp_input_inicio" value="{{fechaInicio}}" (change)="changeMoneda($event)" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="hasta">Entrega Hasta</label>
+                    <div class="styled-select input-group date form_datetime_Fin" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fin">
+                        <input type="text" value="{{fechaFin}}" id="noCursor2" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
+                    <input type="hidden" #dtp_input_fin id="dtp_input_fin" value="{{fechaFin}}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="desde" class="font-weight-bold">Fijacion Desde</label>
+                    <div class="styled-select input-group date form_datetime_fInicio" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_finicio" (change)="changeMoneda($event)">
+                        <input type="text" value="{{fechafInicio}}" id="noCursorf" readonly (change)="changeMoneda($event)" />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
+                    <input type="hidden" #dtp_input_finicio id="dtp_input_finicio" value="{{fechafInicio}}" (change)="changeMoneda($event)" />
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="hasta">Fijacion Hasta</label>
+                    <div class="styled-select input-group date form_datetime_fFin" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_ffin">
+                        <input type="text" value="{{fechafFin}}" id="noCursor2f" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
+                    <input type="hidden" #dtp_input_ffin id="dtp_input_ffin" value="{{fechafFin}}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="material">Material</label>
+                    <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId">
+                        <option *ngFor="let item of materiales" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="camania">Campaña</label>
+                    <select class="form-control" name="campania" [(ngModel)]="contrato.CampanaId">
+                        <option *ngFor="let item of campanias" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Cantidad (Kg.)</label>
+                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="camania">Condicion de Fijacion</label>
+                    <select class="form-control" name="condfijacion" [(ngModel)]="contrato.CondicionFijacionId">
+                        <option *ngFor="let item of condicionFijacion" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+                <!--<div class="form-group col-md-4">
+            <label for="precio">Precio</label>
+            <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+        </div>
+        <div class="form-group col-md-2">
+            <label for="moneda">Moneda</label>
+            <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+            </select>
+        </div>-->
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="condVend">Condicion vendedor</label>
+                    <select class="form-control" name="condVend" [(ngModel)]="contrato.ClasificacionId" (change)="changeClasificacion($event)">
+                        <option *ngFor="let item of condicionVendedor" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+                <div *ngIf="isNotProductor()">
+                    <div class="form-group col-md-3" style="padding-right: 0px;padding-top: 30px;">
+                        <label class="switch">
+                            <input type="checkbox" [(ngModel)]="contrato.Consignatario" (change)="changeConsignatario($event)">
+                            <span class="slider round"></span>
+
+                        </label><label class="labelSwitch"> Consignatario</label>
+                    </div>
+                    <div class="form-group col-md-3" style="padding-left: 5px;padding-top: 30px;">
+                        <label class="switch">
+                            <input type="checkbox" [(ngModel)]="contrato.PlanCanje" (change)="changePlanCanje($event)">
+                            <span class="slider round"></span>
+
+                        </label><label class="labelSwitch"> Plan Canje</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="form-group col-md-6">
+                    <label for="localidad">Localidad</label>
+                    <input [(ngModel)]="contrato.LocalidadId" class="form-control" type="hidden"
+                           id="localidadinf" style="font-weight: 100 !important;">
+                    <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                                     (selected)='selectEventLocalidad($event)' [(ngModel)]="localidad"
+                                     (inputChanged)='onChangeSearchLocalidad($event)'
+                                     (inputFocused)='selectEventLocalidad($event)' [itemTemplate]="itemTemplate"
+                                     [notFoundText]="autocompleteNotFoundText"
+                                     [notFoundTemplate]="notFoundTemplate">
+                    </ng-autocomplete>
+
+                    <ng-template #itemTemplate let-item>
+                        <a [innerHTML]="item.Nombre"></a>
+                    </ng-template>
+
+                    <ng-template #notFoundTemplate let-notFound>
+                        <div [innerHTML]="notFound"></div>
+                    </ng-template>
+                </div>
+                <div class="form-group col-md-6" *ngIf="isVisibleEstablecimiento()">
+                    <label for="establecimiento">Establecimiento</label><br />
+                    <input type="radio" id="EstablecimientoPropio" name="EstablecimientoPropio" value="true" [(ngModel)]="contrato.EstablecimientoPropio">
+                    <label for="EstablecimientoPropio"> Propio</label> &nbsp;&nbsp;&nbsp;
+                    <input type="radio" id="EstablecimientoAlquilado" name="EstablecimientoPropio" value="false" [(ngModel)]="contrato.EstablecimientoPropio">
+                    <label for="EstablecimientoAlquilado"> Alquilado</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="boleto">Boleto</label>
+                    <select class="form-control" name="boleto" [(ngModel)]="contrato.BoletoId" (ngModelChange)="onBoletoSelected()">
+
+                        <option value="1">Confirma</option>
+                        <option value="2">Físico</option>
+                        <option value="3">Ninguno</option>
+                        <option value="4">Carta Oferta</option>
+                        <!--<option value="5">Físico</option>-->
+                    </select>
+                </div>
+                <div class="form-group col-md-6" *ngIf="isVisibleBolsa()">
+                    <label for="bolsa">Bolsa</label>
+                    <select class="form-control" name="bolsa" [(ngModel)]="contrato.BolsaId">
+
+                        <option *ngFor="let item of bolsasSelect" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!--<label class="subtitulo">Condiciones De Pago</label>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group col-md-12" *ngIf="isVisiblePagoDiferido()">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="contrato.PagoDiferidoTercero" (change)="changePagoDiferido($event)">
+                    <span class="slider round"></span>
+
+                </label><label class="labelSwitch"> Pago diferido</label>
+            </div>
+            <div class="form-group col-md-12" *ngIf="isVisibleDolarizado()">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="contrato.DolarizadoTercero" (change)="changeDolarizado($event)">
+                    <span class="slider round"></span>
+
+                </label><label class="labelSwitch"> Dolarizado</label>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="switch">
+                    <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
+                    <span class="slider round"></span>
+
+                </label><label class="labelSwitch"> Calidad</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="ObservacionTercero">Observaciones</label>
+            <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+        </div>
+
+    </div>-->
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="ObservacionTercero">Observaciones</label>
+                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+                </div>
+            
+                <div class="col-md-6">
+                    <label style="padding-top: 41px;">10% por multa de incumplimiento</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <spinner></spinner>
+
+                    <button type="button" class="btn btn-info btn-lg" (click)="grabarContratoAPrecio()"
+                            style="margin-top: 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        Grabar
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+
+    </section>
+    <!--End CONTENT-->
+</div>

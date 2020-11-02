@@ -1,0 +1,295 @@
+body {
+    background: url(https://webopdevstorage.blob.core.windows.net/root/fondo.png) center center no-repeat fixed;
+    background-size: cover;
+}
+
+body > div.container.unified_container {
+  width: 100%;
+}
+
+body > div.container.unified_container > div > div {
+  width: 100%;
+  padding-right: 0px;
+}
+
+div.row {
+  background: transparent;
+}
+
+img {
+    max-width: 100%;
+    background: white;
+    width: 210px;
+    height: 100px;
+    margin-top: 50px;
+}
+
+.signup {
+  margin-bottom: 0px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 30px;
+  font-size: 14px;
+}
+
+body > div.container.unified_container > div > div > div > div {
+  height: auto;
+  overflow: auto;
+  min-height: 100vh;
+}
+
+div#api {
+  background: white;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 15px;
+}
+
+#emailVerificationControl_but_verify_code {
+  margin-right: 10px !important;
+}
+
+#cancel {
+  background-color: #dd441e;
+}
+
+#cancel:hover {
+  background-color: #9a280c;
+}
+
+.error {
+  color: #dd441e !important;
+  font-size: 11px;
+}
+
+#emailVerificationControl_success_message {
+  color: #43a047 !important;
+}
+
+#api {
+  padding-top: 0;
+}
+
+#email_ver_but_send {
+  width: 40%;
+}
+
+#continue {
+  margin-right: 40px !important;
+  margin-left: 10px !important;
+}
+
+#cancel {
+  margin-left: 0px !important;
+}
+
+button#next {
+  width: 100%;
+}
+
+button#next:hover,
+#emailVerificationControl_but_send_code:hover,
+#email_ver_but_send:hover,
+#emailVerificationControl_but_send_new_code:hover,
+#emailVerificationControl_but_change_claims:hover,
+#continue:hover {
+  background-color: #063b63;
+}
+
+#attributeVerification > div.buttons {
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+input#password {
+  border-radius: 5px;
+}
+
+input#logonIdentifier {
+  border-radius: 5px;
+}
+
+.entry-item {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+a#createAccount,
+#emailVerificationControl_but_send_code,
+#emailVerificationControl_but_verify_code,
+#emailVerificationControl_but_send_new_code,
+#emailVerificationControl_but_change_claims,
+#continue,
+#cancel {
+  color: white;
+  border-radius: 2px;
+  padding: 5px;
+  width: 145px;
+  height: 36px;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: none;
+  font-size: 14px;
+}
+
+a#createAccount,
+#emailVerificationControl_but_send_code,
+#continue {
+  background: #075088;
+  margin-left: -15px;
+}
+
+#emailVerificationControl_but_verify_code,
+#emailVerificationControl_but_change_claims {
+    background: #075088;
+}
+
+#emailVerificationControl_but_send_new_code {
+    background: #009688;
+    width: 180px;
+}
+
+#emailVerificationControl_but_verify_code {
+    width: 150px;
+}
+
+body > div.container.self_asserted_container > div {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100%;
+  height: 100% !important;
+  background-color: rgba(4, 117, 62, 0.75);
+}
+
+body > div.container.self_asserted_container {
+  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg)
+    center center no-repeat fixed;
+  background-size: cover;
+  width: 100%;
+}
+
+body > div.container.unified_container > div {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  height: 100vh;
+}
+
+#background_branding_container {
+  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg);
+}
+
+#background_branding_container > img {
+  display: none !important;
+}
+
+#api > div > div.intro > h2 {
+  font-size: 20px !important;
+}
+
+body > div.container.unified_container > div > div > div > div {
+  color: #373a3c;
+}
+
+#attributeList > ul {
+  list-style: none !important;
+}
+
+#email {
+  margin-bottom: 10px;
+}
+
+input {
+  width: 100%;
+  border-radius: 0px;
+  border: none;
+  color: black;
+  font-size: 16px;
+  border-bottom: #00000061 1px solid;
+}
+
+#api > div > div.entry > div.rememberMe {
+  display: flex;
+}
+
+#rememberMe {
+  width: 10%;
+}
+
+#api > div > div.divider > h2 {
+  display: none;
+}
+
+#api > div > div.create {
+  margin-top: 15px;
+}
+
+#attributeList > ul {
+  padding: 0 !important;
+}
+
+#emailVerificationControl > ul {
+  padding-left: 0;
+}
+
+label,
+input {
+  margin-bottom: 2px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+.intro,
+.helpLink {
+  display: none;
+}
+
+#Granos_option,
+#Corredor_option,
+[id="No granos_option"],
+#Cliente_option,
+#Ambos_option {
+  font-weight: 100;
+  width: 87%;
+}
+
+.input-error {
+  border: solid 1px #dd441e;
+}
+
+#emailVerificationControl > div.buttons > div.verificationErrorText.error {
+  padding: 0;
+}
+
+.Password > div > label,
+.EmailBox > div > label,
+.TextBox > div > label {
+  display: none !important;
+}
+
+.info {
+  color: #00000061;
+  font-size: 12px;
+}
+
+.RadioSingleSelect > div {
+  margin-left: -15px;
+}
+
+#extension_Tipodeproveedor_label {
+  color: #373a3c;
+  font-size: 20px;
+}

@@ -1,0 +1,249 @@
+body {
+    background: url(https://webopdevstorage.blob.core.windows.net/root/fondo.png) center center no-repeat fixed;
+    background-size: cover;
+}
+
+body > div.container.self_asserted_container {
+  width: 100%;
+}
+
+body > div.container.self_asserted_container > div > div {
+    width: 100%;
+    padding-right: 0px;
+}
+
+div.row {
+    background: transparent;
+}
+
+img {
+    max-width: 100%;
+    background: white;
+    width: 210px;
+    height: 100px;
+    margin-top: 50px;
+}
+
+.signup {
+    margin-bottom: 0px !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+
+.panel-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    font-size: 14px;
+}
+
+div#api {
+  background: white;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 15px;
+}
+
+button#next,
+#email_ver_but_send,
+#continue,
+#cancel {
+    background: #075088;
+    color: white;
+    border-radius: 2px;
+    padding: 5px;
+    width: 145px;
+    height: 36px;
+    margin: 10px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    font-size: 14px;
+}
+
+button#next {
+  width: 100%;
+}
+
+button#next:hover,
+#email_ver_but_send:hover,
+#email_ver_but_resend:hover,
+#email_ver_but_edit:hover,
+#email_ver_but_verify:hover,
+#continue:hover,
+#cancel:hover {
+    background-color: #063b63;
+}
+
+#attributeVerification > div.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+input#password {
+  border-radius: 5px;
+}
+
+input#logonIdentifier {
+  border-radius: 5px;
+}
+
+.entry-item {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+a#createAccount,
+#emailVerificationControl_but_send_code {
+    background: #075088;
+    color: white;
+    border-radius: 2px;
+    padding: 5px;
+    width: 145px;
+    height: 36px;
+    margin: 10px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    font-size: 14px;
+}
+
+body > div.container.self_asserted_container > div {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 100vh;
+}
+
+#background_branding_container {
+  background: url(https://webopdevstorage.blob.core.windows.net/root/login.jpg);
+}
+
+#background_branding_container > img {
+  display: none !important;
+}
+
+#api > div > div.intro > h2 {
+  font-size: 20px !important;
+}
+
+body > div.container.self_asserted_container > div > div > div > div {
+    color: #373a3c;
+    height: auto;
+    overflow: auto;
+    min-height: 100vh;
+}
+
+#attributeList > ul {
+  list-style: none !important;
+}
+
+input {
+    width: 100% !important;
+    border-radius: 0px !important;
+    border: none !important;
+    color: black !important;
+    font-size: 16px !important;
+    border-bottom: #00000061 1px solid !important;
+    margin: 10px 0;
+    box-shadow: none !important;
+}
+
+#api > div > div.entry > div.rememberMe {
+  display: flex;
+}
+
+#rememberMe {
+  width: 10%;
+}
+
+#api > div > div.divider > h2 {
+  display: none;
+}
+
+#api > div > div.create {
+  margin-top: 15px;
+}
+
+#attributeList > ul {
+  padding: 0 !important;
+}
+
+#emailVerificationControl > ul {
+  padding-left: 0;
+}
+
+label,
+input {
+  margin-bottom: 5px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+#cancel {
+  background-color: #dd441e;
+  color: white;
+  margin-left: 30px;
+}
+
+#cancel:hover {
+  background-color: #9a280c;
+}
+
+.error {
+  color: #dd441e !important;
+  padding-left: 15px;
+  font-size: 11px;
+}
+
+.attrEntry input:invalid {
+  outline: none !important;
+}
+
+.intro,
+.helpText,
+.helpLink {
+  display: none;
+}
+
+#email_ver_but_verify,
+#email_ver_but_resend,
+#email_ver_but_edit {
+    background: #075088;
+    color: white;
+    border-radius: 2px;
+    padding: 5px;
+    width: 145px;
+    height: 36px;
+    margin: 10px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    font-size: 14px;
+}
+
+.helpText {
+  color: #dd441e;
+}
+
+.buttons.verify{
+    max-width: 350px;
+}
+
+#email_ver_but_resend{
+    margin-left: 30px;
+}
+
+.errorText {
+    width: 350px;
+    border: none;
+    padding: 0;
+    background-position: unset;
+    background-color: transparent;
+}

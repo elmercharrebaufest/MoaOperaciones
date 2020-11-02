@@ -120,6 +120,15 @@
   <data name="AltaUsuarioOK" xml:space="preserve">
     <value>Se ha generado el usuario correctamente</value>
   </data>
+  <data name="AltaVendedorOK" xml:space="preserve">
+    <value>Se ha generado el vendedor correctamente</value>
+  </data>
+  <data name="ArchivoBorrado" xml:space="preserve">
+    <value>Documento borrado correctamente</value>
+  </data>
+  <data name="ArchivoSubidoOK" xml:space="preserve">
+    <value>Documento guardado correctamente</value>
+  </data>
   <data name="BalanzaActualizacionOK" xml:space="preserve">
     <value>La balanza (Código: {0}) se ha actualizado correctamente</value>
   </data>
@@ -147,6 +156,9 @@
   <data name="DatosPesadasGuardadosOK" xml:space="preserve">
     <value>Los datos de las Pesadas se han guardado correctamente</value>
   </data>
+  <data name="EmpresaCambioEstadoOK" xml:space="preserve">
+    <value>La empresa ({0}) se actualizo correctamente</value>
+  </data>
   <data name="EnvioMsjOk" xml:space="preserve">
     <value>El mensaje ha sido enviado correctamente</value>
   </data>
@@ -168,6 +180,9 @@
   <data name="OlvideContraniaOk" xml:space="preserve">
     <value>Se le enviará un mail con una nueva contraseña</value>
   </data>
+  <data name="RolesActualizadosOk" xml:space="preserve">
+    <value>El rol del usuario {{}} ha sido actualizado correctamente.</value>
+  </data>
   <data name="UsuarioDesbloqueadoOK" xml:space="preserve">
     <value>El usuario ({0}) ha sido desbloqueado</value>
   </data>
@@ -176,5 +191,11 @@
   </data>
   <data name="UsuarioHabilitadoOK" xml:space="preserve">
     <value>El usuario ({0}) ha sido habilitado</value>
+  </data>
+  <data name="ValidacionPendienteOK" xml:space="preserve">
+    <value>Su usuario ha sido marcado para revisar por un administrador. Le informaremos por mail cuando pueda entrar.</value>
+  </data>
+  <data name="VendedorBorradoOK" xml:space="preserve">
+    <value>El vendedor se ha borrado correctamente</value>
   </data>
 </root>

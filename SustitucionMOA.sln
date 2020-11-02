@@ -48,6 +48,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SustitucionMOACrypting", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SustitucionMOATest", "SustitucionMOATest\SustitucionMOATest.csproj", "{10D27389-F93F-408F-A666-E25A9E49C0FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SustitucionMOARepositorio", "SustitucionMOARepositorio\SustitucionMOARepositorio.csproj", "{17CF0FDF-2900-470D-8F5E-E64A8583B61F}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SustitucionMOADatabase", "SustitucionMOADatabase\SustitucionMOADatabase.sqlproj", "{47C7CB5F-0215-4129-A853-2B1B9F82D405}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +98,16 @@ Global
 		{10D27389-F93F-408F-A666-E25A9E49C0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10D27389-F93F-408F-A666-E25A9E49C0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10D27389-F93F-408F-A666-E25A9E49C0FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17CF0FDF-2900-470D-8F5E-E64A8583B61F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17CF0FDF-2900-470D-8F5E-E64A8583B61F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17CF0FDF-2900-470D-8F5E-E64A8583B61F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17CF0FDF-2900-470D-8F5E-E64A8583B61F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C7CB5F-0215-4129-A853-2B1B9F82D405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47C7CB5F-0215-4129-A853-2B1B9F82D405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47C7CB5F-0215-4129-A853-2B1B9F82D405}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{47C7CB5F-0215-4129-A853-2B1B9F82D405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47C7CB5F-0215-4129-A853-2B1B9F82D405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47C7CB5F-0215-4129-A853-2B1B9F82D405}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
