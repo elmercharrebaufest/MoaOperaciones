@@ -75,28 +75,38 @@ namespace SustitucionMOAUtils.Services
                 usuario.TipoUsuario = ObtenerTipoPorNombreCorto("G");
                 proveedor.Mail = usuario.Mail;
 
-                if (!respuesta.HayError)
+                if (respuesta != null)
                 {
-                    if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                    if (!respuesta.HayError)
                     {
-                        proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
+                        if (respuesta.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                        {
+                            proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
 
-                        proveedor.IdComercialDataAgro = respuesta.ComercialId;
-                        proveedor.IdDataAgro = respuesta.ProveedorId;
-                        proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
-                        proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+                            proveedor.IdComercialDataAgro = respuesta.ComercialId;
+                            proveedor.IdDataAgro = respuesta.ProveedorId;
+                            proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
+                            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
 
-                        Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
+                            Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
-                        proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
+                            proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
 
-                        usuario.Roles.Add(rolUsuario);
+                            usuario.Roles.Add(rolUsuario);
+                        }
+                        else
+                        {
+                            Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
+                            usuario.Roles.Add(rolDesabilitado);
+
+                            proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                            proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
+                        }
                     }
                     else
                     {
                         Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                         usuario.Roles.Add(rolDesabilitado);
-
                         proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                         proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                     }
