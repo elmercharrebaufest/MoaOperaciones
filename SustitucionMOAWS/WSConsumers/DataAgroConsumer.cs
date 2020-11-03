@@ -27,7 +27,7 @@ namespace SustitucionMOAWS.WSConsumers
                 return service.ValidarProveedorComercial(CUIT); 
             }
             //Significa que no estamos conectados
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

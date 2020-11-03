@@ -62,7 +62,7 @@ namespace SustitucionMOAUtils.Services
                     usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
                     RegistrarUsuarioGenerico(ref usuarioNoGranos);
                     usuario = usuarioNoGranos;
-             
+
                     break;
 
                 case "ambos":
@@ -89,7 +89,7 @@ namespace SustitucionMOAUtils.Services
                     usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
 
                     RegistrarUsuarioGenerico(ref usuarioCliente);
- 
+
                     usuario = usuarioCliente;
                     break;
             }
@@ -143,37 +143,47 @@ namespace SustitucionMOAUtils.Services
 
             proveedor.Mail = usuario.Mail;
 
-            if (!infoProveedor.HayError)
+            if (infoProveedor != null)
             {
-                if (infoProveedor.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
+                if (!infoProveedor.HayError)
                 {
-                    proveedor.IdComercialDataAgro = infoProveedor.ComercialId;
-                    proveedor.IdDataAgro = infoProveedor.ProveedorId;
-                    proveedor.RazonSocial = infoProveedor.ProveedorRazonSocial;
-                    proveedor.CodigoProveedor = FormatearCodigoCorredor(proveedor.CUIT);
-                    proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
-
-                    proveedor.Comercial = string.Concat(infoProveedor.ComercialNombres, " ", infoProveedor.ComercialApellido);
-
-                    if (infoProveedor.ProveedorOperando)
+                    if (infoProveedor.ProveedorMails.Contains(usuario.Mail, StringComparer.OrdinalIgnoreCase) || bool.Parse(ConfigurationManager.AppSettings["EsLocal"]))
                     {
-                        var rolGranos = ObtenerRolPorCodigo("GRAN");
-                        var rolCorredor = ObtenerRolPorCodigo("CORR");
+                        proveedor.IdComercialDataAgro = infoProveedor.ComercialId;
+                        proveedor.IdDataAgro = infoProveedor.ProveedorId;
+                        proveedor.RazonSocial = infoProveedor.ProveedorRazonSocial;
+                        proveedor.CodigoProveedor = FormatearCodigoCorredor(proveedor.CUIT);
+                        proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
-                        usuario.AgregarRol(rolGranos);
-                        usuario.AgregarRol(rolCorredor);
+                        proveedor.Comercial = string.Concat(infoProveedor.ComercialNombres, " ", infoProveedor.ComercialApellido);
+
+                        if (infoProveedor.ProveedorOperando)
+                        {
+                            var rolGranos = ObtenerRolPorCodigo("GRAN");
+                            var rolCorredor = ObtenerRolPorCodigo("CORR");
+
+                            usuario.AgregarRol(rolGranos);
+                            usuario.AgregarRol(rolCorredor);
+                        }
+                        else
+                        {
+                            var rolNuevoCorredor = ObtenerRolPorCodigo("NUECORR");
+                            usuario.AgregarRol(rolNuevoCorredor);
+                        }
                     }
                     else
                     {
-                        var rolNuevoCorredor = ObtenerRolPorCodigo("NUECORR");
-                        usuario.AgregarRol(rolNuevoCorredor);
+                        Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
+                        usuario.Roles.Add(rolDesabilitado);
+
+                        proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                        proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                     }
                 }
                 else
                 {
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
-
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                     proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                 }
@@ -185,7 +195,6 @@ namespace SustitucionMOAUtils.Services
                 proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
                 proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
             }
-
             usuario.Proveedores.Add(proveedor);
             usuario.Habilitado = true;
 
@@ -193,7 +202,7 @@ namespace SustitucionMOAUtils.Services
 
             return repositorio.GuardarCambios() == 1;
         }
-        
+
         public bool RegistrarUsuarioGenerico(ref Usuario usuario)
         {
             Rol rolUsuarioNoImplementado = ObtenerRolPorCodigo("NOIMP");
