@@ -71,7 +71,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let usuario of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'Mail' : 'CodigoProveedor' : filtroUsuarioVendedor | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                        <tr *ngFor="let usuario of data | customFilterOr : 'Mail' : 'CodigoProveedor' : filtroUsuarioVendedor | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                             <td><a (click)="showModalTableResponsive(usuario)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{usuario.Id}}</td>
                             <td><a (click)="showModalTableResponsive(usuario)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{usuario.Mail}}</td>
                             <td>{{usuario.CodigoProveedor}}</td>
@@ -130,10 +130,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">Cancelar</button>
-                    <button type="button" class="btn btn-info btn-lg"
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal" style="display: inline-flex;">Cancelar</button>
+                    <button type="button" class="btn-custom btn-add btn-chico"
                             (click)="guardarRolesUsuario()"
-                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                            style="display: inline-flex;">
                         Guardar
                     </button>
 

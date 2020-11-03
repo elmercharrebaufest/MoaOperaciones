@@ -46,10 +46,12 @@ namespace SustitucionMOA.Controllers
 
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                userMail = userMail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : userMail;
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-
+                if (proveedorId == 0)
+                {
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
                 var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, proveedorId);
@@ -120,7 +122,10 @@ namespace SustitucionMOA.Controllers
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
-
+                if (proveedorId == 0)
+                {
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 var corredor = usuario.ObtenerCorredor();
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
@@ -234,11 +239,11 @@ namespace SustitucionMOA.Controllers
                 string CampanaMin = ConfigurationManager.AppSettings["CampanaMin"].ToString();
                 var datosjson = await altaEmpresaService.ObtenerCampañasDataAgroAsync();
                 var listCamp = JsonConvert.DeserializeObject<List<CampaniaDto>>(datosjson);
-               
+
                 var idCamp = listCamp.Where(a => a.Descripcion == CampanaMin).Single().CampaniaId;
                 listCamp = listCamp.Where(a => a.CampaniaId >= idCamp).ToList();
                 return JsonCustom(listCamp);
-                
+
             }
             catch (InfoCustomException e)
             {
@@ -345,7 +350,11 @@ namespace SustitucionMOA.Controllers
                 {
                     esOperador = true;
                 }
-
+                if (proveedorId == 0)
+                {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 return JsonCustom(altaEmpresaService.ObtenerArchivosSubidos(mail, proveedorId, esOperador));
             }
             catch (InfoCustomException e)
@@ -374,7 +383,11 @@ namespace SustitucionMOA.Controllers
             {
                 if (string.IsNullOrEmpty(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
+                if (proveedorId == 0)
+                {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail, proveedorId));
 
             }
@@ -407,7 +420,11 @@ namespace SustitucionMOA.Controllers
             {
                 if (string.IsNullOrWhiteSpace(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
+                if (proveedorId == 0)
+                {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 string rutaArchivoSubido = altaEmpresaService.ObtenerArchivo(mail, archivoID, proveedorId);
 
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
@@ -426,7 +443,11 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
+                if (proveedorId == 0)
+                {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 string result = altaEmpresaService.EliminarArchivo(mail, archivoID, proveedorId);
 
                 return JsonCustom(result);
@@ -459,7 +480,6 @@ namespace SustitucionMOA.Controllers
                 var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                mail = mail.IsNullOrWhiteSpace() ? "mpfeiffer@baufest.com" : mail;
 
                 return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, altaEmpresa));
             }
@@ -490,7 +510,11 @@ namespace SustitucionMOA.Controllers
             {
                 if (string.IsNullOrEmpty(mail))
                     mail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
+                if (proveedorId == 0)
+                {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
                 AltaEmpresaViewModel result = altaEmpresaService.CargarSolicitudUsuario(mail, proveedorId);
                 return JsonCustom(result);
             }
