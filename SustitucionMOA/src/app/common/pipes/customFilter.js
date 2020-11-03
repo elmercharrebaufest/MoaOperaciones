@@ -14,7 +14,7 @@ var CustomFilter = /** @class */ (function () {
         if (!filter)
             return values;
         //Filtro compuesto
-        if (filter.indexOf('|') >= 0) {
+        if (filter.indexOf('|') > 0) {
             var filtros_1 = filter.split('|');
             return values.filter(function (v) { return filtros_1.some(function (f) { return v[field].toUpperCase().indexOf(f.toUpperCase()) >= 0; }); });
         }

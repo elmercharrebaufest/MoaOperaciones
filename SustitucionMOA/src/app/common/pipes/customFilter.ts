@@ -9,7 +9,7 @@ export class CustomFilter implements PipeTransform {
         if (!filter) return values;
         
         //Filtro compuesto
-        if(filter.indexOf('|') >= 0){
+        if(filter.indexOf('|') > 0){
             let filtros = filter.split('|');
             return values.filter(v => filtros.some(f => v[field].toUpperCase().indexOf(f.toUpperCase()) >= 0));
         }

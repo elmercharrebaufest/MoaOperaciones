@@ -34,13 +34,14 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                                 x => (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
                                 || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                                 || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
                                 || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
+                                && !x.CodigoProveedor.Contains("C")
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
@@ -49,6 +50,15 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Empresas"));
                 }
+
+                //TODO: Deprecar esto y obtener la razon social a través de la FK del proveedor al proveedor que lo dio de alta
+                foreach (var proveedorDto in proveedorDtos)
+                {
+                    var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
+
+                    if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
+                }
+
                 return proveedorDtos;
             }
             catch (Exception)

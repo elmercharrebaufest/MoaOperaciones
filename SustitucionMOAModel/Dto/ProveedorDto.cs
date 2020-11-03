@@ -29,6 +29,8 @@ namespace SustitucionMOAModel.Dto
 
         public DateTime? FechaSolicitud { get; set; }
 
+        public string RazonSocialCorredor { get; set; }
+
         public ProveedorDto() { }
         public ProveedorDto(Proveedor proveedor)
         {
