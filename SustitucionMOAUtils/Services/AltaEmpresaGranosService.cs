@@ -502,7 +502,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     ProveedorCBU = result.ProveedorCBU,
                     ProveedorClasificacion = result.ProveedorClasificacion,
-                    EstadoSISA = result.ProveedorSISAEstadoCuit
+                    EstadoSISA = result.ProveedorSISAEstadoCuit,
+                    ProveedorCUIT = proveedor.CUIT,
+                    RazonSocial = proveedor.RazonSocial,
                 };
 
                 return info;
@@ -573,6 +575,18 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public Proveedor ObtenerRazonSocialProveedor(int proveedorId)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            
+            return proveedor;
+        }
+        public string ObtenerCUITUsuario(string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            return usuario.CUITRegistro;
         }
     }
 }
