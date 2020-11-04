@@ -20,6 +20,5 @@ namespace SustitucionMOAUtils.Interfaces
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId);
         AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId);
         string ObtenerCampañasDataAgro();
-
     }
 }

@@ -197,6 +197,37 @@ var AltasComponent = /** @class */ (function (_super) {
         }
         return false; //<-- Prevent Refresh
     };
+    AltasComponent.prototype.VerificarEstadoDataAgro = function (empresa) {
+        var _this = this;
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.altaEmpresaService.VerificarEstadoDataAgro(empresa.Id).subscribe(function (result) {
+                _this.getEmpresa();
+                _this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    _this.mensajeComponent.setSuccessMsg(result.data);
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    };
     AltasComponent.prototype.handleFileInput = function (files, fileKey) {
         var _this = this;
         this.mensajeComponent.setMsgsEmpty();

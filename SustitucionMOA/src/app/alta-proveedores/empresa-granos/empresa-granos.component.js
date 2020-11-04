@@ -66,6 +66,8 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         _this.codigoDeConducta = false;
         _this.materialesData = null;
         _this.CBUSISA = "";
+        _this.proveedorCUIT = "";
+        _this.razonSocial = "";
         _this.nombreArchivoSeleccionado = "";
         _this.fileKeySeleccionado = "";
         _this.descripcionSeleccionado = "";
@@ -128,14 +130,14 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         get: function () {
             return this.firstFormGroup.get("email");
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(EmpresaGranosComponent.prototype, "password", {
         get: function () {
             return this.secondFormGroup.get("password");
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     EmpresaGranosComponent.prototype.selectEventProduccion = function (item, index) {
@@ -270,6 +272,8 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             .subscribe(function (result) {
             _this.CBUSISA = result.ProveedorCBU;
             _this.estadoSISA = result.EstadoSISA;
+            _this.proveedorCUIT = result.ProveedorCUIT;
+            _this.razonSocial = result.RazonSocial;
         }, function (error) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });

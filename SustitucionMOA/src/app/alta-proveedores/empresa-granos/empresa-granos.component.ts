@@ -51,6 +51,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     codigoDeConducta: boolean = false;
     materialesData: any = null;
     CBUSISA: string = "";
+    proveedorCUIT: string = "";
+    razonSocial: string = "";
 
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
@@ -322,6 +324,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 (result) => {
                     this.CBUSISA = result.ProveedorCBU;
                     this.estadoSISA = result.EstadoSISA;
+                    this.proveedorCUIT = result.ProveedorCUIT;
+                    this.razonSocial = result.RazonSocial;
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
