@@ -41,7 +41,6 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
                                 || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
-                                && !x.CodigoProveedor.Contains("C")
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
