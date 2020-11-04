@@ -151,9 +151,9 @@
                     <tbody>
                         <tr *ngFor="let empresa of data 
                                 | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta 
-                                | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado 
+                                | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
+                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
-                                | orderedColumn : {property: orderedByColumn, direction: orderDirection} 
                                 ; let odd = odd" role="row" [class.odd]="!odd">
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
