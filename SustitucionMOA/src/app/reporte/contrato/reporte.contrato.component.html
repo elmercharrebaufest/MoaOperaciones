@@ -1,22 +1,24 @@
 ﻿<style>
     @media (min-width: 768px) {
-  .col-sm-5 {
-    width: 40%;
-    float: left;
-  }
-}
-@media (min-width: 992px) {
-  .col-md-5 {
-    width: 40%;
-    float: left;
-  }
-}
-@media (min-width: 1200px) {
-  .col-lg-5 {
-    width: 40%;
-    float: left;
-  }
-}
+        .col-sm-5 {
+            width: 40%;
+            float: left;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .col-md-5 {
+            width: 40%;
+            float: left;
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .col-lg-5 {
+            width: 40%;
+            float: left;
+        }
+    }
 </style>
 <div class="content-wraper">
     <!-- CONTENT-->
@@ -27,7 +29,7 @@
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" /></div>
                 </a>
             </div>
         </div>
@@ -39,14 +41,28 @@
                     <title-caps>Refinar resultados</title-caps>
                 </div>
                 <!--<div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-        <p>Ver</p>
-        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-    </div>-->
-                <div class="col-xs-12 col-sm-6 col-md-5">
-                    <p>Por Vendedor</p><!--Proveedor-->
-                    <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="materiales"></dropdown>
-                    </div>
+                    <p>Ver</p>
+                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                </div>-->
+                <div class="col-xs-12 col-sm-6 col-md-5" *ngIf="isVisibleProveedor()">
+                    <label for="Proveedorid" class="font-weight-bold">Por Proveedor</label>
+                    <input [(ngModel)]="proveedorid" class="form-control" type="hidden"
+                           id="proveedorinf" style="font-weight: 100 !important;">
+                    <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
+                                     (selected)='selectEventProveedor($event)' [(ngModel)]="proveedor"
+                                     (inputChanged)='onChangeSearchProveedor($event)'
+                                     (inputFocused)='selectEventProveedor($event)' [itemTemplate]="itemTemplate2"
+                                     [notFoundText]="autocompleteNotFoundText"
+                                     [notFoundTemplate]="notFoundTemplate2">
+                    </ng-autocomplete>
+
+                    <ng-template #itemTemplate2 let-item>
+                        <a [innerHTML]="item.RazonSocial"></a>
+                    </ng-template>
+
+                    <ng-template #notFoundTemplate2 let-notFound>
+                        <div [innerHTML]="notFound"></div>
+                    </ng-template>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Tipo de Negocio</p>
@@ -174,27 +190,26 @@
                 </div>
 
                 <!--<div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
-        <p>Mostrar</p>
-        <div class="styled-select">
-            <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
-        </div>
-    </div>
-    <div id="showSearch" onClick="openSearch()">
-        <div style="">
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-        </div>
-        <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
-    </div>
-    <div id="hideSearch" onClick="closeSearch()">
-        <div style="">
-            <i class="fa fa-times" aria-hidden="true"></i>
-        </div>
-        <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
-    </div>-->
+                    <p>Mostrar</p>
+                    <div class="styled-select">
+                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+                    </div>
+                </div>
+                <div id="showSearch" onClick="openSearch()">
+                    <div style="">
+                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                    </div>
+                    <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
+                </div>
+                <div id="hideSearch" onClick="closeSearch()">
+                    <div style="">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </div>
+                    <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
+                </div>-->
             </div>
         </div>
         <!-- End Search-->
-
         <!-- Tables-->
 
         <div class="row myRow">
@@ -213,7 +228,7 @@
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDate' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fechaDate' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>     
+                                </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('nroContrato')">
                                 Contrato Molinos
@@ -222,7 +237,7 @@
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'nroContrato' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'nroContrato' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>     
+                                </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('contrvend')">
                                 Contrato Proveedor
@@ -231,7 +246,7 @@
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrvend' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrvend' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>     
+                                </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('material')">
                                 Producto
@@ -240,7 +255,7 @@
                                         <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'material' && orderDirection > 0 }"></i>
                                         <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'material' && orderDirection < 0 }"></i>
                                     </span>
-                                </div>      
+                                </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('kilosFijados')">
                                 Fijado

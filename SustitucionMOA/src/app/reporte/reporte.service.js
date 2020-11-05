@@ -52,6 +52,31 @@ var ReporteService = /** @class */ (function (_super) {
         return this.http
             .get('/api/contrato/getDetalleFijacion', { search: params, headers: this.headers }).pipe(map(this.extractData));
     };
+    ReporteService.prototype.buscarProveedoresConCorredor = function (term) {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('filtro', term);
+        return this.http.get('/api/CrearContrato/BuscarProveedoresConCorredor', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    };
+    ReporteService.prototype.validarDirecto = function () {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9');
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+        return this.http
+            .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
+            .pipe(map(this.extractData));
+    };
     ReporteService = __decorate([
         Injectable()
     ], ReporteService);

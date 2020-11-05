@@ -39,7 +39,11 @@ export class ReporteBaseComponent extends ListBaseComponent {
     condicionVendedor: any = new Array();
     condicionFijacion: any = new Array();
     datosCompraNet: any = null;
-
+    esCorredorEnDataAgro: boolean = false;
+    keyword2: string = "";
+    corredorId: number = null;
+    proveedorId: number = null;
+    proveedor: any = null;
     boletoId: string = "";
     clasificacionId: string = "";
     destinoId: string = "";
@@ -59,7 +63,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
                 new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
             ]
         );
-        this.obteneDatosContrato();
+        this.validarDirecto();
     }
 
     obteneDatosContrato() {
@@ -156,4 +160,38 @@ export class ReporteBaseComponent extends ListBaseComponent {
             return false;
     }
 
+    isVisibleProveedor(): boolean {
+        return this.esCorredorEnDataAgro == true;
+    }
+
+    validarDirecto() {
+        this.unsubscribe();
+        this.subscription = this.service.validarDirecto().subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    let obj = JSON.parse(result);
+                    if (obj != null && obj > 0) {
+                        this.corredorId = obj;
+                        this.esCorredorEnDataAgro = true;
+                    } else {
+                        this.obteneDatosContrato();
+                        this.esCorredorEnDataAgro = false;
+                    }
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+
+        );
+
+        return false;
+    }
 }

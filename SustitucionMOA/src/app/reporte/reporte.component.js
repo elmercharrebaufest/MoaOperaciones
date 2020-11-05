@@ -52,6 +52,11 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         _this.condicionVendedor = new Array();
         _this.condicionFijacion = new Array();
         _this.datosCompraNet = null;
+        _this.esCorredorEnDataAgro = false;
+        _this.keyword2 = "";
+        _this.corredorId = null;
+        _this.proveedorId = null;
+        _this.proveedor = null;
         _this.boletoId = "";
         _this.clasificacionId = "";
         _this.destinoId = "";
@@ -69,7 +74,7 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
             new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
             new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
         ]);
-        this.obteneDatosContrato();
+        this.validarDirecto();
     };
     ReporteBaseComponent.prototype.obteneDatosContrato = function () {
         var _this = this;
@@ -160,6 +165,39 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
             return true;
         else
             return false;
+    };
+    ReporteBaseComponent.prototype.isVisibleProveedor = function () {
+        return this.esCorredorEnDataAgro == true;
+    };
+    ReporteBaseComponent.prototype.validarDirecto = function () {
+        var _this = this;
+        this.unsubscribe();
+        this.subscription = this.service.validarDirecto().subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = JSON.parse(result);
+                if (obj != null && obj > 0) {
+                    _this.corredorId = obj;
+                    _this.esCorredorEnDataAgro = true;
+                }
+                else {
+                    _this.obteneDatosContrato();
+                    _this.esCorredorEnDataAgro = false;
+                }
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
     };
     ReporteBaseComponent = __decorate([
         Component({
