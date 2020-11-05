@@ -62,6 +62,10 @@ var appRoutes = [
                 path: "contrato",
                 loadChildren: "./contrato/contrato.module#ContratoModule",
             },
+            {
+                path: "reporte",
+                loadChildren: "./reporte/reporte.module#ReporteModule",
+            },
             { path: "contacto", component: ContactoMailComponent },
             {
                 path: "cuenta-corriente",

@@ -304,6 +304,8 @@
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
+    <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
     <Content Include="src\app\contrato\anulacion\contrato.anulacion.component.html" />
     <Content Include="src\app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.html" />
@@ -915,6 +917,12 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte.service.ts" />
+    <TypeScriptCompile Include="src\app\reporte\contrato\reporte.contrato.component.ts" />
+    <TypeScriptCompile Include="src\app\reporte\cupo\reporte.cupo.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\afijar\crear-contrato.afijar.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\aprecio\crear-contrato.aprecio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.component.ts" />
