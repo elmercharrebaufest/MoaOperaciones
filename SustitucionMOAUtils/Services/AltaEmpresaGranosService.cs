@@ -482,6 +482,13 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.ArchivoBorrado;
         }
 
+        public string ReformatearCUIT(string CUIT)
+        {
+            var CUITFormateado = (CUIT.Insert(2, "-")).Insert(11, "-");
+
+            return CUITFormateado;
+        }
+
         public InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId)
         {
             try
@@ -494,7 +501,9 @@ namespace SustitucionMOAUtils.Services
                     proveedor = repositorio.Obtener<Proveedor>(proveedorId);
                 else
                     proveedor = usuario.ObtenerProveedor();
-                    
+
+                var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
+               
 
                 ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
 
@@ -502,7 +511,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     ProveedorCBU = result.ProveedorCBU,
                     ProveedorClasificacion = result.ProveedorClasificacion,
-                    EstadoSISA = result.ProveedorSISAEstadoCuit
+                    EstadoSISA = result.ProveedorSISAEstadoCuit,
+                    ProveedorCUIT = CUITProveedor,
+                    RazonSocial = proveedor.RazonSocial,
                 };
 
                 return info;
@@ -573,6 +584,18 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public Proveedor ObtenerRazonSocialProveedor(int proveedorId)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            
+            return proveedor;
+        }
+        public string ObtenerCUITUsuario(string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            return usuario.CUITRegistro;
         }
     }
 }

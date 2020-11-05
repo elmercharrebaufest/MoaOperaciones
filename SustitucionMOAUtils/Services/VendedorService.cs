@@ -204,6 +204,9 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
+                nuevoVendedor.Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
+                nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
+                nuevoVendedor.IdDataAgro = infoDA.ProveedorId;
             }
             else
             {
