@@ -123,6 +123,8 @@ var UsuarioCambioVendedorComponent = /** @class */ (function (_super) {
                     _this.sessionDataService.setProveedor(result.vendedor);
                     sessionStorage.setItem("nombre", result.descripcion);
                     _this.sessionDataService.setNombre(result.descripcion);
+                    sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
+                    _this.sessionDataService.setNoticias(result.noticias);
                 }
             }, function (error) {
                 _this.mensajeComponent.setErrorMsg(error.message);
