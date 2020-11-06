@@ -2,10 +2,12 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace SustitucionMOA.Controllers
 
         private readonly IUsuarioService _usuarioService;
         private readonly IRepositorio repositorio;
+        LoginService _loginService = new LoginService();
 
         public UsuarioController (IUsuarioService usuarioService, IRepositorio repositorio)
         {
@@ -194,7 +197,32 @@ namespace SustitucionMOA.Controllers
                     );
 
 
-                return JsonCustom(new { vendedor = vendedor, descripcion = descripcion });
+                NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
+
+                try
+                {
+                    if (!Globals.EsLocal)
+                    {
+                        noticias = _loginService.getNoticias(vendedor);
+                        noticias.cantidad = 0;
+                        if (noticias != null && noticias.noticias != null)
+                        {
+                            noticias.cantidad += noticias.noticias.Count;
+                        }
+                        if (noticias != null && noticias.notificaciones != null)
+                        {
+                            noticias.cantidad += noticias.notificaciones.Count;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                }
+
+
+
+                return JsonCustom(new { vendedor = vendedor, descripcion = descripcion, noticias = noticias });
 
             }
             catch (ValidationCustomException e)
