@@ -40,6 +40,7 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
         _this.datosContrato = new Array();
+        _this.proveedores = new Array();
         _this.materiales = [];
         _this.monedas = new Array();
         _this.destinos = new Array();
@@ -53,17 +54,10 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         _this.condicionFijacion = new Array();
         _this.datosCompraNet = null;
         _this.esCorredorEnDataAgro = false;
-        _this.keyword2 = "";
+        _this.keyword2 = "RazonSocial";
+        _this.autocompleteNotFoundText = "No encontrado";
         _this.corredorId = null;
         _this.proveedorId = null;
-        _this.proveedor = null;
-        _this.boletoId = "";
-        _this.clasificacionId = "";
-        _this.destinoId = "";
-        _this.estadoId = "";
-        _this.materialId = "";
-        _this.campaniaId = "";
-        _this.tipoNegocioId = "";
         return _this;
     }
     ReporteBaseComponent.prototype.checkPermisos = function () { this.securityService.tienePermisoRedirect("CONSULTAR CONTRATOS"); };
@@ -74,9 +68,9 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
             new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
             new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
         ]);
-        this.validarDirecto();
+        this.getDatosCombos();
     };
-    ReporteBaseComponent.prototype.obteneDatosContrato = function () {
+    ReporteBaseComponent.prototype.getDatosCombos = function () {
         var _this = this;
         this.unsubscribe();
         this.subscription = this.service.getDatosCombos().subscribe(function (result) {
@@ -189,15 +183,35 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
                     _this.esCorredorEnDataAgro = true;
                 }
                 else {
-                    _this.obteneDatosContrato();
+                    _this.getDatosCombos();
                     _this.esCorredorEnDataAgro = false;
                 }
+                console.log("this.esCorredorEnDataAgro", _this.esCorredorEnDataAgro);
             }
         }, function (error) {
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false;
+    };
+    ReporteBaseComponent.prototype.selectEventProveedor = function (item) {
+        this.proveedorId = item.Id;
+        console.log("prov: ", item.Id);
+    };
+    ReporteBaseComponent.prototype.onChangeSearchProveedor = function (term) {
+        var _this = this;
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(function (result) {
+                var resultlist = JSON.parse(result);
+                _this.proveedores = resultlist.map(function (prov) {
+                    return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit };
+                });
+                //this.proveedores = JSON.parse(result);
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
     };
     ReporteBaseComponent = __decorate([
         Component({

@@ -19,6 +19,12 @@
             float: left;
         }
     }
+
+    .styled-select input[type="checkbox"], .styled-select input[type="radio"] {
+        margin-top: 13px;
+        height: 16px;
+        margin-bottom: 11px;
+    }
 </style>
 <div class="content-wraper">
     <!-- CONTENT-->
@@ -41,9 +47,9 @@
                     <title-caps>Refinar resultados</title-caps>
                 </div>
                 <!--<div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Ver</p>
-                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-                </div>-->
+        <p>Ver</p>
+        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+    </div>-->
                 <div class="col-xs-12 col-sm-6 col-md-5" *ngIf="isVisibleProveedor()">
                     <label for="Proveedorid" class="font-weight-bold">Por Proveedor</label>
                     <input [(ngModel)]="proveedorid" class="form-control" type="hidden"
@@ -96,33 +102,43 @@
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Fecha de Concertación Desde</p>
-                    <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                    <div class="styled-select input-group date form_datetime_fechaDesde" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaDesde">
+                        <input type="text" value="{{fechaDesde}}" id="noCursor_fechaDesde" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
+                    <input type="hidden" #dtp_input_fechaDesde id="dtp_input_fechaDesde" value="{{fechaDesde}}" />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Fecha de Concertación Hasta</p>
-                    <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                    <div class="styled-select input-group date form_datetime_fechaHasta" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fechaHasta">
+                        <input type="text" value="{{fechaHasta}}" id="noCursor_fechaHasta" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
+                    <input type="hidden" #dtp_input_fechaHasta id="dtp_input_fechaHasta" value="{{fechaHasta}}" />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Fecha de Entrega Desde</p>
-                    <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                    <div class="styled-select input-group date form_datetime_entregaDesde" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_entregaDesde">
+                        <input type="text" value="{{entregaDesde}}" id="noCursor_entregaDesde" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
+                    <input type="hidden" #dtp_input_entregaDesde id="dtp_input_entregaDesde" value="{{entregaDesde}}" />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Fecha de Entrega Hasta</p>
-                    <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                    <div class="styled-select input-group date form_datetime_entregaHasta" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_entregaHasta">
+                        <input type="text" value="{{entregaHasta}}" id="noCursor_entregaHasta" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
+                    <input type="hidden" #dtp_input_entregaHasta id="dtp_input_entregaHasta" value="{{entregaHasta}}" />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Fecha Hasta Fijación</p>
-                    <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                    <div class="styled-select input-group date form_datetime_fijacionHasta" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fijacionHasta">
+                        <input type="text" value="{{fijacionHasta}}" id="noCursor_fijacionHasta" readonly />
+                        <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
+                    <input type="hidden" #dtp_input_fijacionHasta id="dtp_input_fijacionHasta" value="{{fijacionHasta}}" />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-15">
@@ -163,7 +179,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-15">
+                <div class="col-xs-12 col-sm-6 col-md-15" *ngIf="isVisibleProveedor()">
                     <p>Contrato Corredor</p>
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" aria-controls="tableModal">
@@ -171,42 +187,56 @@
                 </div>
 
                 <div class="col-xs-6 col-sm-6 col-md-15">
-                    <p>Sustentable</p>
+                    <p>Calidad</p>
                     <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" aria-controls="tableModal">
+                        <select class="form-control" name="condVend" [(ngModel)]="calidadTercero">
+                            <option value="null">Todos</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-15">
                     <p>Dolarizado</p>
                     <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" aria-controls="tableModal">
+                        <select class="form-control" name="condVend" [(ngModel)]="dolarizadoTercero">
+                            <option value="null">Todos</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-xs-6 col-sm-6 col-md-15">
                     <p>Pago Diferido</p>
                     <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" aria-controls="tableModal">
+                        <select class="form-control" name="condVend" [(ngModel)]="pagoDiferidoTercero">
+                            <option value="null">Todos</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                        </select>
                     </div>
                 </div>
 
-                <!--<div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Mostrar</p>
-                    <div class="styled-select">
-                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
-                    </div>
-                </div>
-                <div id="showSearch" onClick="openSearch()">
-                    <div style="">
-                        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                    </div>
-                    <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
-                </div>
-                <div id="hideSearch" onClick="closeSearch()">
-                    <div style="">
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </div>
-                    <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
-                </div>-->
+                <a (click)="obteneContratos()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">Buscar </div>
+                </a>
+                <button type="button" class="btn btn-info btn-lg" (click)="obteneContratos()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    Buscar
+                </button>
+                <!--
+    <div id="showSearch" onClick="openSearch()">
+        <div style="">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </div>
+        <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
+    </div>
+    <div id="hideSearch" onClick="closeSearch()">
+        <div style="">
+            <i class="fa fa-times" aria-hidden="true"></i>
+        </div>
+        <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
+    </div>-->
             </div>
         </div>
         <!-- End Search-->

@@ -19,7 +19,7 @@ export class ReporteService extends BaseService {
         params.set('numeroContrato', numero_contrato);
         params.set('fijacion', fijacion);
         return this.http
-            .get('/api/CrearContrato/getContratos', { search: params, headers: this.headers }).pipe(
+            .get('/api/CrearContrato/GetContratos', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
     public getDatosCombos() {
@@ -43,6 +43,30 @@ export class ReporteService extends BaseService {
         return this.http
             .get('/api/contrato/getDetalleFijacion', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
+    }
+    public obteneContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId,
+        boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fechaDesde', fechaDesde);
+        params.set('fechaHasta', fechaHasta);
+        params.set('entregaDesde', entregaDesde);
+        params.set('entregaHasta', entregaHasta);
+        params.set('fijacionHasta', fijacionHasta);
+        params.set('corredorId', corredorId);
+        params.set('proveedorId', proveedorId);
+        params.set('boletoId', boletoId);
+        params.set('clasificacionId', clasificacionId);
+        params.set('destinoId', destinoId);
+        params.set('estadoId', estadoId);
+        params.set('materialId', materialId);
+        params.set('campaniaId', campaniaId);
+        params.set('tipoNegocioId', tipoNegocioId);
+        params.set('pagoDiferidoTercero', pagoDiferidoTercero);
+        params.set('calidadTercero', calidadTercero);
+        params.set('dolarizadoTercero', dolarizadoTercero);
+        return this.http
+            .get('/api/CrearContrato/GetContratos', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
     }
 
     buscarProveedoresConCorredor(term): Observable<any> {

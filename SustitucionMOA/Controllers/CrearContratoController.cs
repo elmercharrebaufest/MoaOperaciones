@@ -206,5 +206,45 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult GetContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, string corredorId, 
+            string proveedorId, string boletoId, string clasificacionId, string destinoId, string estadoId, string materialId, string campaniaId, string tipoNegocioId, 
+            bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero)
+        {
+            try
+            {
+               
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedor();
+
+                //contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
+                //contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+
+                string result = "";// crearContratoService.CrearContratoAPrecio(contratoAPrecio);
+
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

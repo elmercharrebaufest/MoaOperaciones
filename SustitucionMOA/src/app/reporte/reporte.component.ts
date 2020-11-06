@@ -12,6 +12,7 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
 import { Seccion } from './../common/models/Seccion';
+declare var $: any;
 
 
 
@@ -19,7 +20,7 @@ import { Seccion } from './../common/models/Seccion';
     selector: 'app-reporte',
     template: ``,
     providers: [ReporteService]
-})  
+})
 export class ReporteBaseComponent extends ListBaseComponent {
 
     constructor(protected service: ReporteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
@@ -27,6 +28,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
     }
 
     datosContrato: any = new Array();
+    proveedores: any = new Array();
     materiales: any = [];
     monedas: any = new Array();
     destinos: any = new Array();
@@ -40,17 +42,11 @@ export class ReporteBaseComponent extends ListBaseComponent {
     condicionFijacion: any = new Array();
     datosCompraNet: any = null;
     esCorredorEnDataAgro: boolean = false;
-    keyword2: string = "";
+    keyword2 = "RazonSocial";
+    autocompleteNotFoundText = "No encontrado";
+
     corredorId: number = null;
     proveedorId: number = null;
-    proveedor: any = null;
-    boletoId: string = "";
-    clasificacionId: string = "";
-    destinoId: string = "";
-    estadoId: string = "";
-    materialId: string = "";
-    campaniaId: string = "";
-    tipoNegocioId: string = "";
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CONTRATOS"); }
 
@@ -63,10 +59,12 @@ export class ReporteBaseComponent extends ListBaseComponent {
                 new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
             ]
         );
-        this.validarDirecto();
+        this.getDatosCombos();
     }
 
-    obteneDatosContrato() {
+
+
+    getDatosCombos() {
         this.unsubscribe();
         this.subscription = this.service.getDatosCombos().subscribe(
             result => {
@@ -180,9 +178,10 @@ export class ReporteBaseComponent extends ListBaseComponent {
                         this.corredorId = obj;
                         this.esCorredorEnDataAgro = true;
                     } else {
-                        this.obteneDatosContrato();
+                        this.getDatosCombos();
                         this.esCorredorEnDataAgro = false;
                     }
+                    console.log("this.esCorredorEnDataAgro", this.esCorredorEnDataAgro);
                 }
             },
             error => {
@@ -194,4 +193,30 @@ export class ReporteBaseComponent extends ListBaseComponent {
 
         return false;
     }
+
+    selectEventProveedor(item) {
+        this.proveedorId = item.Id;
+        console.log("prov: ", item.Id);
+    }
+
+    onChangeSearchProveedor(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
+                result => {
+                    var resultlist = JSON.parse(result);
+
+                    this.proveedores = resultlist.map(prov => {
+                        return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit }
+                    })
+                    //this.proveedores = JSON.parse(result);
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
+    }
+
+    
 }
