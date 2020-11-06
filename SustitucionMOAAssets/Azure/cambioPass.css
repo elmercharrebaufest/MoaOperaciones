@@ -48,7 +48,7 @@ div#api {
 }
 
 button#next,
-#email_ver_but_send,
+#emailVerificationControl_but_send_code,
 #continue,
 #cancel {
     background: #075088;
@@ -68,15 +68,15 @@ button#next {
   width: 100%;
 }
 
-button#next:hover,
-#email_ver_but_send:hover,
-#email_ver_but_resend:hover,
-#email_ver_but_edit:hover,
-#email_ver_but_verify:hover,
-#continue:hover,
-#cancel:hover {
-    background-color: #063b63;
-}
+    button#next:hover,
+    #emailVerificationControl_but_send_code:hover,
+    #emailVerificationControl_but_send_new_code:hover,
+    #emailVerificationControl_but_change_claims:hover,
+    #emailVerificationControl_but_verify_code:hover,
+    #continue:hover,
+    #cancel:hover {
+        background-color: #063b63;
+    }
 
 #attributeVerification > div.buttons {
     display: flex;
@@ -212,9 +212,9 @@ li {
   display: none;
 }
 
-#email_ver_but_verify,
-#email_ver_but_resend,
-#email_ver_but_edit {
+#emailVerificationControl_but_verify_code,
+#emailVerificationControl_but_send_new_code,
+#emailVerificationControl_but_change_claims {
     background: #075088;
     color: white;
     border-radius: 2px;
@@ -236,7 +236,7 @@ li {
     max-width: 350px;
 }
 
-#email_ver_but_resend{
+#emailVerificationControl_but_send_new_code{
     margin-left: 30px;
 }
 
