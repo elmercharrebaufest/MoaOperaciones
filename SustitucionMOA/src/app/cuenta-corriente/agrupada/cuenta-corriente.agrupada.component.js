@@ -29,6 +29,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import { Seccion } from '../../common/models/seccion';
 var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
     __extends(CuentaCorrienteAgrupadaComponent, _super);
     function CuentaCorrienteAgrupadaComponent(service, navService, sessionDataService, securityService, floatMsgService, modalService, route, router) {
@@ -52,7 +53,7 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
         return _this;
     }
     CuentaCorrienteAgrupadaComponent.prototype.setTabs = function () {
-        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
+        this.setMenuSeccionTab("cuenta-corriente", "Detalle de pagos");
     };
     CuentaCorrienteAgrupadaComponent.prototype.isVisible = function () {
         if (this.data) {
@@ -87,7 +88,7 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
         return this.granosSelected == "G";
     };
     CuentaCorrienteAgrupadaComponent.prototype.showModalTableAgrupadaResponsive = function (CuentaCorriente, agrupador) {
-        this.modalService.openModalTableResponsive("Cuenta Corriente", [
+        this.modalService.openModalTableResponsive("Detalle de pagos", [
             { etiqueta: "Agrupador", valor: agrupador },
             { etiqueta: "F. Emisión", valor: CuentaCorriente.docDate },
             { etiqueta: "Descripción", valor: CuentaCorriente.descripcion },
@@ -96,6 +97,15 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
             { etiqueta: "Importe AR$", valor: CuentaCorriente.importeArgString }
         ]);
         return false;
+    };
+    CuentaCorrienteAgrupadaComponent.prototype.ngOnInit = function () {
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([
+            new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+            new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
+        ]);
+        this.getData();
     };
     CuentaCorrienteAgrupadaComponent = __decorate([
         Component({

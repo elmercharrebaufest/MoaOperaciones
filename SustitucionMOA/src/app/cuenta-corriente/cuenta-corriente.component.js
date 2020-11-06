@@ -53,12 +53,15 @@ var CuentaCorrienteBaseComponent = /** @class */ (function (_super) {
     }
     CuentaCorrienteBaseComponent.prototype.checkPermisos = function () { this.securityService.tienePermisoRedirect("CONSULTAR CUENTA CORRIENTE"); };
     CuentaCorrienteBaseComponent.prototype.setTabs = function () {
-        this.setMenuSeccionTab("cuenta-corriente", "Movimientos");
+        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
     };
     CuentaCorrienteBaseComponent.prototype.ngOnInit = function () {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Cuenta Corriente'), new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Movimientos'),]);
+        this.navService.setSeccionList([
+            new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+            new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
+        ]);
         this.orderedByColumn = "orden";
         this.orderDirection = 1;
         this.getData();
