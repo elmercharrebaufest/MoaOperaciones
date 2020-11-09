@@ -52,12 +52,11 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom("");
         }
-
-        public ActionResult ObteneDatosContrato()
+        public ActionResult ObteneDatosContrato(int tiponegocio)
         {
             try
             {
-                return JsonCustom(crearContratoService.ObteneDatosContrato());
+                return JsonCustom(crearContratoService.ObteneDatosContrato(tiponegocio));
             }
             catch (InfoCustomException e)
             {
@@ -81,11 +80,14 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-        public ActionResult ObtenerDatosCompraNet()
+        public ActionResult ObtenerDatosCompraNet(int? idProveedorDataAgro)
         {
             try
             {
+                if (idProveedorDataAgro.HasValue)
+                {
+                    return JsonCustom(crearContratoService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
+                }
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
@@ -128,8 +130,11 @@ namespace SustitucionMOA.Controllers
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
 
                 var proveedor = usuario.ObtenerProveedor();
+                if (contratoAPrecio.CorredorId == null)
+                {
+                    contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
+                }
 
-                contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
                 contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAPrecio.ComercialCreadorId = null;
                 contratoAPrecio.MonedaSustentable = "USDM ";
@@ -160,13 +165,12 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
         public ActionResult CrearContratoAFijar(string contrato)
         {
             try
             {
                 contrato = contrato.Replace("nia", "ña");
-                var contratoAPrecio = JsonConvert.DeserializeObject<ContratoAFijar>(contrato);
+                var contratoAFijar = JsonConvert.DeserializeObject<ContratoAFijar>(contrato);
 
 
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
@@ -175,15 +179,18 @@ namespace SustitucionMOA.Controllers
 
                 var proveedor = usuario.ObtenerProveedor();
 
-                contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
-                contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
-                contratoAPrecio.ComercialCreadorId = null;
-                contratoAPrecio.MonedaSustentable = "USDM ";
-                contratoAPrecio.ContratoSAP = "";
-                contratoAPrecio.CantidadCamiones = null;
+                if (contratoAFijar.CorredorId == null)
+                {
+                    contratoAFijar.ProveedorId = (int)proveedor.IdDataAgro;
+                }
+                contratoAFijar.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+                contratoAFijar.ComercialCreadorId = null;
+                contratoAFijar.MonedaSustentable = "USDM ";
+                contratoAFijar.ContratoSAP = "";
+                contratoAFijar.CantidadCamiones = null;
 
 
-                string result = crearContratoService.CrearContratoAFijar(contratoAPrecio);
+                string result = crearContratoService.CrearContratoAFijar(contratoAFijar);
 
                 return JsonCustom(result);
             }
@@ -206,5 +213,265 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult ValidarDirecto()
+        {
+            try
+            {
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedor();
+                var directo = crearContratoService.ValidarDirecto(proveedor.CUIT);
+                int result = 0;
+                if (directo == "false")
+                {
+                    result = proveedor.IdDataAgro ?? 0;
+                }
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult BuscarProveedoresConCorredor(string filtro)
+        {
+            try
+            {
+                filtro = filtro.IsNullOrWhiteSpace() ? "" : filtro;
+
+                if (filtro.Length > 2)
+                {
+                    string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+
+                    var proveedor = usuario.ObtenerProveedor();
+                    return JsonCustom(crearContratoService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
+                }
+                else
+                {
+                    return JsonCustom("");
+
+                }
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult Habilitaciones(int material, int tiponegocio)
+        {
+            try
+            {
+                string HabilitarPizarra = crearContratoService.HabilitarPizarra(material, tiponegocio);
+                string HabilitarCampana = crearContratoService.HabilitarCampaña(material);
+                string TraerPrecioMoa = crearContratoService.TraerPrecioMoa(material, tiponegocio);
+                var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa };
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult HabilitarCampana(int material)
+        {
+            try
+            {
+                return JsonCustom(crearContratoService.HabilitarCampaña(material));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult HabilitarPizarra(int material, int tiponegocio)
+        {
+            try
+            {
+                return JsonCustom(crearContratoService.HabilitarPizarra(material, tiponegocio));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult ObtenerFijacionesAutomaticas(bool esCorredorEnDataAgro, string cuitProveedor, int materialId, string filtro)
+        {
+            try
+            {
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                var proveedor = usuario.ObtenerProveedor();
+
+                if (esCorredorEnDataAgro)
+                {
+                    return JsonCustom(crearContratoService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
+                }
+                else
+                {
+                    return JsonCustom(crearContratoService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
+
+                }
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult CrearContratoFijacion(string contrato)
+        {
+            try
+            {
+                contrato = contrato.Replace("nia", "ña");
+                var contratoFijacion = JsonConvert.DeserializeObject<ContratoFijacion>(contrato);
+
+
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedor();
+
+                if (contratoFijacion.CorredorId == null)
+                {
+                    contratoFijacion.ProveedorId = (int)proveedor.IdDataAgro;
+                }
+                contratoFijacion.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+                contratoFijacion.ComercialCreadorId = null;
+                contratoFijacion.MonedaSustentable = "USDM ";
+                contratoFijacion.CantidadCamiones = null;
+
+
+                string result = crearContratoService.CrearContratoFijacion(contratoFijacion);
+
+                return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        
     }
 }

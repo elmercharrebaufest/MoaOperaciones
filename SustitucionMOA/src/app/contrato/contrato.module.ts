@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContratoRoutingModule } from './contrato-routing.module';
 import { ContratoBaseComponent } from './contrato.component';
@@ -15,26 +15,30 @@ import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CrearContratoAFijarComponent } from '../crear-contrato/afijar/crear-contrato.afijar.component';
 import { CrearContratoAPrecioComponent } from '../crear-contrato/aprecio/crear-contrato.aprecio.component';
+import { CrearContratoFijacionComponent } from '../crear-contrato/fijacion/crear-contrato.fijacion.component';
 import { CrearContratoBaseComponent } from '../crear-contrato/crear-contrato.component';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ContratoRoutingModule,
-    SharedModule,
-    NgxPaginationModule
-  ],
+    imports: [
+        CommonModule,
+        ContratoRoutingModule,
+        SharedModule,
+        NgxPaginationModule,
+        AutocompleteLibModule
+    ],
     declarations: [
-      ContratoBaseComponent,
-      ContratoAmpliacionComponent,
-      ContratoAnulacionComponent,
-      ContratoFijacionComponent,
-      ContratoVigenteComponent,
-      ContratoDetalleComponent,
-      ContratoDetalleFijacionComponent,
-      CrearContratoBaseComponent,
-      CrearContratoAPrecioComponent,
-      CrearContratoAFijarComponent
+        ContratoBaseComponent,
+        ContratoAmpliacionComponent,
+        ContratoAnulacionComponent,
+        ContratoFijacionComponent,
+        ContratoVigenteComponent,
+        ContratoDetalleComponent,
+        ContratoDetalleFijacionComponent,
+        CrearContratoBaseComponent,
+        CrearContratoAPrecioComponent,
+        CrearContratoAFijarComponent,
+        CrearContratoFijacionComponent
     ],
     providers: [
         ContratoService

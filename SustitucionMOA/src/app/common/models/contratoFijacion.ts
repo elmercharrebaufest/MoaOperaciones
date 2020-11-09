@@ -1,4 +1,4 @@
-﻿export class ContratoAFijar {
+﻿export class ContratoFijacion {
     public TipoNegocioId: number;
     public Id: number;
     public MaterialId: number;
@@ -35,8 +35,12 @@
     public Consignatario: boolean;
     public PlanCanje: boolean;
     public ObservacionTercero: string;
+    public Pizarra: boolean;
+    public ContratoId: number;
+    public Posicion: string;
+    public TrigoEspecial: boolean;
 
     constructor() {
-        this.TipoNegocioId = 1;
+        this.TipoNegocioId = 3;
     }
 }

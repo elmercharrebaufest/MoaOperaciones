@@ -38,8 +38,9 @@
     public PlanCanje: boolean;
     public ObservacionTercero: string;
     public CalidadTercero: boolean;
+    public Pizarra: boolean;
 
     constructor() {
-
+        this.TipoNegocioId = 2;
     }
 }
