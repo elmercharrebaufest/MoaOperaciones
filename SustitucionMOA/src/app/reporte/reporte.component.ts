@@ -26,6 +26,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
     constructor(protected service: ReporteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
+    data: any = [];
 
     datosContrato: any = new Array();
     proveedores: any = new Array();
@@ -152,7 +153,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
     }
 
     isVisible(): boolean {
-        if (this.data && this.data.contratosInfo.length != 0)
+        if (this.data && this.data.length != 0)
             return true;
         else
             return false;

@@ -39,6 +39,7 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         _this.securityService = securityService;
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
+        _this.data = [];
         _this.datosContrato = new Array();
         _this.proveedores = new Array();
         _this.materiales = [];
@@ -155,7 +156,7 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         return false;
     };
     ReporteBaseComponent.prototype.isVisible = function () {
-        if (this.data && this.data.contratosInfo.length != 0)
+        if (this.data && this.data.length != 0)
             return true;
         else
             return false;

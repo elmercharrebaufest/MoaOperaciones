@@ -170,10 +170,8 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
             this.unsubscribe();
             this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero).subscribe(function (result) {
                 var resultlist = JSON.parse(result);
-                _this.proveedores = resultlist.map(function (prov) {
-                    return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit };
-                });
-                //this.proveedores = JSON.parse(result);
+                _this.data = resultlist.Data;
+                console.log(_this.data);
             }, function (error) {
                 _this.mensajeComponent.setErrorMsg(error.message);
             });

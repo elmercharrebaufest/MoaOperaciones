@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Kendo.DynamicLinq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quartz.Util;
 using SustitucionMOAAssets;
@@ -229,5 +230,53 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string GetContratos(DataSourceRequest request)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Contrato/BuscaDatosTabla");
+
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                userName = "emartin";
+                password = "eugeniomartin2";
+                dominio = "baunet";
+                url = "http://localhost:52498/Contrato/BuscaDatosTabla";
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                var content = JsonConvert.SerializeObject(request);
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    var result = stringContent.Result;
+                    return result;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
     }
 }

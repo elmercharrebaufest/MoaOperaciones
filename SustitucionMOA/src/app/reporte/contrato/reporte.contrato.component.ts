@@ -173,10 +173,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                     result => {
                         var resultlist = JSON.parse(result);
 
-                        this.proveedores = resultlist.map(prov => {
-                            return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit }
-                        })
-                        //this.proveedores = JSON.parse(result);
+                        this.data = resultlist.Data;
+                        console.log(this.data);
                     },
                     error => {
                         this.mensajeComponent.setErrorMsg(error.message);

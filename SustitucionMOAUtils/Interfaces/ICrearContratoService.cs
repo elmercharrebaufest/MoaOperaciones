@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Models.DataAgro;
+﻿using Kendo.DynamicLinq;
+using SustitucionMOAModel.Models.DataAgro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace SustitucionMOAUtils.Interfaces
         string CrearContratoAPrecio(ContratoAPrecio contratoAPrecio);
         string CrearContratoAFijar(ContratoAFijar contratoAPrecio);
         string ObtenerDatosCompraNet(int proveedorId);
+        string GetContratos(DataSourceRequest request);
     }
 }
