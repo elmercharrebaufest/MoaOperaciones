@@ -39,13 +39,19 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
     retencion: string = "";
 
     setTabs() {
-        this.setMenuSeccionTab("cuenta-corriente", "Movimientos");
+        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
     }
 
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Cuenta Corriente'), new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Movimientos'),]);
+        this.navService.setSeccionList(
+            [
+                new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
+            ]
+        );
+
         this.orderedByColumn = "orden";
         this.orderDirection = 1;
         this.getData();
@@ -96,7 +102,7 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
                 this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
-                }else if (result.error != undefined && result.error != "") {
+                } else if (result.error != undefined && result.error != "") {
                     this.floatMsgService.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
@@ -165,7 +171,7 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
                     var valueString = valueInt.toString();
                     var cantCeros = 4 - valueString.length;
                     var pagoFormat = "";
-                    for (var i = 0; i < cantCeros; i++){
+                    for (var i = 0; i < cantCeros; i++) {
                         pagoFormat += "0";
                     }
                     pagoFormat += valueString
