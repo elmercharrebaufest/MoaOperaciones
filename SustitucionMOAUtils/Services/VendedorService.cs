@@ -122,6 +122,76 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+
+        public List<EstadoVendedorDto> GetVariosVendedoresStatus(List<string> cuitsVendedores, string user)
+        {
+            try
+            {
+                List<EstadoVendedorDto> listaResultados = new List<EstadoVendedorDto>();
+
+                foreach (string cuit in cuitsVendedores.Select(s => s.Trim()).Distinct().ToList())
+                {
+                    var estadoVendedorDto = new EstadoVendedorDto
+                    {
+                        CUIT = cuit
+                    };
+
+                    if (cuit == null || cuit == "")
+                    {
+                        estadoVendedorDto.Estado = string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT");
+                    }
+                    VendedorHabilitadoWSMOAResponse response;
+
+                    try
+                    {
+                        response = new VendedorHabilitadoConsumerMOA().request(cuit, "MOA", user);
+                    }
+                    catch (InfoCustomException ex)
+                    {
+                        estadoVendedorDto.Estado = ex.Message;
+                        listaResultados.Add(estadoVendedorDto);
+                        continue;
+                    }
+
+
+                    if (response == null)
+                    {
+                        estadoVendedorDto.Estado = InfoMsg.ProveedorSinAlta;
+                    }
+                    else
+                    {
+
+                        if (response.status == null || response.status == "" || response.status == "Proveedor inexistente")
+                        {
+                            estadoVendedorDto.Estado = InfoMsg.ProveedorSinAlta;
+                        }
+                        else
+                        {
+                            estadoVendedorDto.CodigoProveedor = response.cabeceras.FirstOrDefault().proveedor;
+                            estadoVendedorDto.RazonSocial = response.cabeceras.FirstOrDefault().descripcion;
+                            estadoVendedorDto.Estado = response.status;
+                        }
+                    }
+
+                    listaResultados.Add(estadoVendedorDto);
+                }
+
+                return listaResultados;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         public List<ProveedorDto> GetVendedores(string mailUsuario)
         {
             return GetVendedores(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
