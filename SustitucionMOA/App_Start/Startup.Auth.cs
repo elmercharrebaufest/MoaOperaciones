@@ -8,6 +8,7 @@ using Microsoft.Owin.Security.Notifications;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using SustitucionMOA.Utils;
+using SustitucionMOAModel.Models.WSMapMOA.Usuario.Permiso;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
@@ -184,8 +185,10 @@ namespace SustitucionMOA
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
 
+				var permisosUsuario = usuario.ObtenerPermisos();
 
-				if (usuario.EsAdmin())
+				if (usuario.EsAdmin() || 
+				   (permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME) && permisosUsuario.Contains(SustitucionMOASecurity.Permiso.CONSULTAR_HOME_NG)))
                 {
 					tipoGranos = "A";
                 }
@@ -199,7 +202,7 @@ namespace SustitucionMOA
 
                 if (usuario.EstaHabilitado())
 				{
-					foreach (var permiso in usuario.ObtenerPermisos())
+					foreach (var permiso in permisosUsuario)
 					{
 						notification.AddClaim(new Claim(Globals.ClaimsPermisosType, permiso));
 					}
