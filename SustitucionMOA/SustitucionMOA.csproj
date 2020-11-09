@@ -210,7 +210,6 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
-    <Content Include="dist\carta-porte-carta-porte-module.js" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
     <Content Include="dist\Content\css\font-awesome.min.css" />
@@ -246,25 +245,12 @@
     <Content Include="dist\Content\js\jquery.js" />
     <Content Include="dist\Content\js\molinos.js" />
     <Content Include="dist\Content\js\trmix.min.js" />
-    <Content Include="dist\contrato-contrato-module.js" />
-    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js" />
-    <Content Include="dist\dato-fiscal-dato-fiscal-module.js" />
-    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js" />
-    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js" />
-    <Content Include="dist\factura-factura-module.js" />
     <Content Include="dist\favicon.ico" />
-    <Content Include="dist\flete-flete-module.js" />
-    <Content Include="dist\glyphicons-halflings-regular.svg" />
     <Content Include="dist\index.html" />
-    <Content Include="dist\liquidacion-liquidacion-module.js" />
-    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js" />
-    <Content Include="dist\main.js" />
-    <Content Include="dist\pago-no-granos-pago-no-granos-module.js" />
-    <Content Include="dist\pago-pago-module.js" />
-    <Content Include="dist\polyfills.js" />
-    <Content Include="dist\runtime.js" />
-    <Content Include="dist\styles.js" />
-    <Content Include="dist\vendor.js" />
+    <Content Include="dist\glyphicons-halflings-regular.svg" />
+
+    <Content Include="dist\*.js" />
+
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
