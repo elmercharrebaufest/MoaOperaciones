@@ -25,11 +25,13 @@ namespace SustitucionMOAUtils.Services
 
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer;
 
-        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService)
+        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService, IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer)
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
+            this.vendedorHabilitadoConsumer = vendedorHabilitadoConsumer;
         }
 
         public VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor)
@@ -97,7 +99,7 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
                 }
 
-                VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoConsumerMOA().request(cuit, "MOA", user);
+                VendedorHabilitadoWSMOAResponse response = vendedorHabilitadoConsumer.Request(cuit, "MOA", user);
                 if (response == null)
                 {
                     throw new InfoCustomException(InfoMsg.ProveedorSinAlta);
@@ -144,7 +146,7 @@ namespace SustitucionMOAUtils.Services
 
                     try
                     {
-                        response = new VendedorHabilitadoConsumerMOA().request(cuit, "MOA", user);
+                        response = vendedorHabilitadoConsumer.Request(cuit, "MOA", user);
                     }
                     catch (InfoCustomException ex)
                     {
@@ -152,7 +154,6 @@ namespace SustitucionMOAUtils.Services
                         listaResultados.Add(estadoVendedorDto);
                         continue;
                     }
-
 
                     if (response == null)
                     {

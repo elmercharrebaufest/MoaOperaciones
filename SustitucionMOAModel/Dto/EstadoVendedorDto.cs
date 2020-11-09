@@ -23,5 +23,23 @@ namespace SustitucionMOAModel.Dto
             Estado = response.status;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is EstadoVendedorDto dto &&
+                   CUIT == dto.CUIT &&
+                   CodigoProveedor == dto.CodigoProveedor &&
+                   RazonSocial == dto.RazonSocial &&
+                   Estado == dto.Estado;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1246237457;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUIT);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CodigoProveedor);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocial);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Estado);
+            return hashCode;
+        }
     }
 }
