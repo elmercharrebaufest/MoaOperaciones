@@ -247,7 +247,7 @@
     <Content Include="dist\Content\js\trmix.min.js" />
     <Content Include="dist\favicon.ico" />
     <Content Include="dist\index.html" />
-    <Content Include="dist\glyphicons-halflings-regular.svg" />
+    <Content Include="dist\glyphicons-halflings-regular.*.svg" />
 
     <Content Include="dist\*.js" />
 
