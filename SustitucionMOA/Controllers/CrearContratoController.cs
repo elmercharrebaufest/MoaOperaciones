@@ -208,7 +208,7 @@ namespace SustitucionMOA.Controllers
             }
         }
         public ActionResult GetContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
-            int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, int? estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
+            int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
             bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero)
         {
             try
@@ -272,9 +272,9 @@ namespace SustitucionMOA.Controllers
                 {
                     filtros.Add(new Kendo.DynamicLinq.Filter { Field = "DestinoId", Value = destinoId, Operator = "eq" });
                 }
-                if (estadoId.HasValue && estadoId > 0)
+                if (!string.IsNullOrWhiteSpace(estadoId))
                 {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Estado", Value = estadoId, Operator = "eq" });
+                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Estado_Contrato", Value = estadoId, Operator = "eq" });
                 }
                 if (materialId.HasValue && materialId > 0)
                 {

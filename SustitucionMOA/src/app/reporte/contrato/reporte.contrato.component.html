@@ -144,7 +144,13 @@
                 <div class="col-xs-12 col-sm-6 col-md-15">
                     <p>Estado</p>
                     <div class="styled-select">
-                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroEstado" [(ngModel)]="estadoId"></dropdown>
+                        <select class="form-control" name="estadoId" [(ngModel)]="estadoId">
+                            <option value="">Todos</option>
+                            <option value="Carga">Carga</option>
+                            <option value="Rechazado">Rechazado</option>
+                            <option value="Finalizado">Finalizado</option>
+                            <option value="Confirmado">Confirmado</option>
+                        </select>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-15">
