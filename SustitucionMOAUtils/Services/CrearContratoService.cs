@@ -10,6 +10,7 @@ using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
@@ -278,6 +279,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
+                Log.Debug(e.InnerException != null ? e.InnerException.Message : e.Message, cuit ?? "", "ValidarDirecto");
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
