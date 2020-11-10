@@ -32,6 +32,12 @@ var VendedorStatusService = /** @class */ (function (_super) {
         return this.http
             .get('/api/vendedor/getVendedorStatus', { search: params, headers: this.headers }).pipe(map(this.extractData));
     };
+    VendedorStatusService.prototype.getVariosVendedoresStatus = function (cuitStr) {
+        var params = new URLSearchParams();
+        params.set('cuitStr', cuitStr);
+        return this.http
+            .get('/api/vendedor/GetVariosVendedoresStatus', { search: params, headers: this.headers }).pipe(map(this.extractData));
+    };
     VendedorStatusService = __decorate([
         Injectable()
     ], VendedorStatusService);
