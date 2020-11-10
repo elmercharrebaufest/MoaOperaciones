@@ -5,6 +5,7 @@ using Ninject.Web.Common.WebHost;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -75,6 +76,11 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IUsuarioService>().To(typeof(UsuarioService)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<IVendedorService>().To(typeof(VendedorService)).InScope(ctx => OperationContext.Current);
+
+
+            #region InterfacesSAP
+            kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            #endregion
 
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();

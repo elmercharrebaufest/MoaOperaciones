@@ -315,6 +315,7 @@
     <Compile Include="WSConsumers\FleteValidarImporteConsumerMOA.cs" />
     <Compile Include="WSConsumers\HomeConsumerMOA.cs" />
     <Compile Include="WSConsumers\HomeNGConsumerMOA.cs" />
+    <Compile Include="Interfaces\IVendedorHabilitadoConsumerMOA.cs" />
     <Compile Include="WSConsumers\LiquidacionesConsumerMOA.cs" />
     <Compile Include="WSConsumers\LiquidacionesNGConsumerMOA.cs" />
     <Compile Include="WSConsumers\LoginConsumerMOA.cs" />

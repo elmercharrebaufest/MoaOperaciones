@@ -13,11 +13,11 @@ using SustitucionMOAAssets;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class VendedorHabilitadoConsumerMOA
+    public class VendedorHabilitadoConsumerMOA : IVendedorHabilitadoConsumerMOA
     {
         SI_MPMF_MOAOP_VENDED_HABILITClient service = new SI_MPMF_MOAOP_VENDED_HABILITClient();
 
-        public VendedorHabilitadoWSMOAResponse request(string cuit, string sociedad, string usuario)
+        public VendedorHabilitadoWSMOAResponse Request(string cuit, string sociedad, string usuario)
         {
             try
             {
@@ -53,7 +53,8 @@ namespace SustitucionMOAWS.WSConsumers
                 throw new InfoCustomException(InfoMsg.ProveedorSinAlta);
             }
 
-            if (cabeceras.Length == 0) {
+            if (cabeceras.Length == 0)
+            {
                 result.cabeceras.Add(new Cabecera() { });
             }
 

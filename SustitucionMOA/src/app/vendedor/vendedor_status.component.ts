@@ -15,10 +15,11 @@ import { ModalService } from './../common/services/ModalService';
 
 @Component({
     selector: 'app-vendedor-status',
-    //template: '<h1>{{titulo}}</h1>'
     templateUrl: `vendedor_status.component.html`,
+    styleUrls: ['vendedor_status.component.css'],
     providers: [VendedorStatusService]
 })
+
 export class VendedorStatusComponent extends BaseComponent implements OnInit {
 
     @ViewChild(MensajeComponent)
@@ -41,11 +42,13 @@ export class VendedorStatusComponent extends BaseComponent implements OnInit {
         this.mensajeComponent = new MensajeComponent();
     }
 
-    cuit = "";
+    cuit:string = "";
     datosFiscales: any;
+    listaVendedores: any;
     statusHabilitado: boolean;
     statusInhabilitado: boolean;
     statusObservado: boolean;
+    consultaMultiple: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab("vendedor", "Vendedor Estado");
@@ -61,46 +64,110 @@ export class VendedorStatusComponent extends BaseComponent implements OnInit {
     }
 
     getData() {
+        this.consultaMultiple = false;
+
+        if (this.cuit.includes(",")) {
+            this.consultaMultiple = true;
+            this.getDataMultiple();
+        }
+        else {
+            this.getDataUnico();
+        }
+
+        return false;
+    }
+
+    getDataMultiple() {
+        this.datosFiscales = null;
+        this.mensajeComponent.setMsgsEmpty();
+  
+        if ((this.cuit.match(/,/g) || []).length > 15)
+        {
+            this.mensajeComponent.setErrorMsg("Solo se pueden hacer busquedas de hasta 15 CUITs");
+            return false;
+        }
+        
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        this.subscription = this.service.getVariosVendedoresStatus(this.cuit).subscribe(
+            result => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.listaVendedores = result.data;
+
+                    this.listaVendedores = this.listaVendedores.map(x => {
+                        return {
+                        ...x,
+                        cssClass: this.getCssClass(x.Estado)
+                        };
+                    });
+                 
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+        return false;
+    }
+    
+    getCssClass(Estado:string) {
+        if (Estado.toLowerCase().indexOf("inhabilitado") >= 0) {
+            return "bg-danger"
+        } else if (Estado.toLowerCase().indexOf("habilitado") >= 0) {
+            return "bg-success"
+        } else {
+            return "bg-warning"
+        }
+    }
+
+    getDataUnico()
+    {
         this.datosFiscales = null;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        this.route.params.forEach((params: Params) => {
-            this.subscription = this.service.getVendedorStatus(this.cuit).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
+
+        this.statusHabilitado = false;
+        this.statusInhabilitado = false;
+        this.statusObservado = false;
+
+        this.subscription = this.service.getVendedorStatus(this.cuit).subscribe(
+            result => {
+                this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.datosFiscales = result.data;
+
+                    if (this.datosFiscales.status.toLowerCase().indexOf("inhabilitado") >= 0) {
+                        this.statusInhabilitado = true;
+                    } else if (this.datosFiscales.status.toLowerCase().indexOf("habilitado") >= 0) {
+                        this.statusHabilitado = true;
                     } else {
-                        this.datosFiscales = result.data;
-                        if (this.datosFiscales.status.toLowerCase().indexOf("inhabilitado") >= 0) {
-                            this.statusHabilitado = false;
-                            this.statusInhabilitado = true;
-                            this.statusObservado = false;
-                        } else if (this.datosFiscales.status.toLowerCase().indexOf("habilitado") >= 0) {
-                            this.statusHabilitado = true;
-                            this.statusInhabilitado = false;
-                            this.statusObservado = false;
-                        } else {
-                            this.statusHabilitado = false;
-                            this.statusInhabilitado = false;
-                            this.statusObservado = true;
-                        }
+                        this.statusObservado = true;
                     }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
                 }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
             );
-        });
         return false;
     }
-
     isVencida(fechaHasta: string): boolean {
         if (fechaHasta != undefined) {
             return new Date(fechaHasta) < new Date();
