@@ -15,7 +15,13 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public class VendedorHabilitadoConsumerMOA : IVendedorHabilitadoConsumerMOA
     {
-        SI_MPMF_MOAOP_VENDED_HABILITClient service = new SI_MPMF_MOAOP_VENDED_HABILITClient();
+        readonly SI_MPMF_MOAOP_VENDED_HABILITClient service;
+        public VendedorHabilitadoConsumerMOA()
+        {
+            service = new SI_MPMF_MOAOP_VENDED_HABILITClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+        }
 
         public VendedorHabilitadoWSMOAResponse Request(string cuit, string sociedad, string usuario)
         {
@@ -25,10 +31,9 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES4430[] convenios = new ZMPES4430[] { };
                 ZMPES4450[] exenciones = new ZMPES4450[] { };
                 string status = "";
-                service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-                service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+
                 ZMPTE3420[] actividades = service.SI_MPMF_MOAOP_VENDED_HABILIT(cuit, sociedad, usuario, out status, out cabeceras, out convenios, out exenciones);
-                VendedorHabilitadoWSMOAResponse result = map(cuit, status, cabeceras, convenios, exenciones, actividades);
+                VendedorHabilitadoWSMOAResponse result = Map(cuit, status, cabeceras, convenios, exenciones, actividades);
                 return result;
             }
             catch (InfoCustomException e)
@@ -42,7 +47,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         }
 
-        private VendedorHabilitadoWSMOAResponse map(string cuit, string status, ZMPES4470[] cabeceras, ZMPES4430[] convenios, ZMPES4450[] exenciones, ZMPTE3420[] actividades)
+        private VendedorHabilitadoWSMOAResponse Map(string cuit, string status, ZMPES4470[] cabeceras, ZMPES4430[] convenios, ZMPES4450[] exenciones, ZMPTE3420[] actividades)
         {
             VendedorHabilitadoWSMOAResponse result = new VendedorHabilitadoWSMOAResponse();
 
