@@ -115,7 +115,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string mailUsuario = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var data = _vendedorService.GetVendedoresPendientes(mailUsuario);
+                var data = _vendedorService.GetVendedoresPendientes(mailUsuario, SessionPersister.Proveedor);
                 foreach (var item in data)
                 {
                     if (item.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente

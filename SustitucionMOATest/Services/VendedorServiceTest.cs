@@ -69,6 +69,7 @@ namespace SustitucionMOATest.Services
 
             var mailUsuario = "existente@mail.com";
 
+
             var usuarioCorredor = new Usuario
             {
                 Mail = mailUsuario,
@@ -81,7 +82,7 @@ namespace SustitucionMOATest.Services
                     .Returns(usuarioCorredor);
 
 
-            var result = target.GetVendedoresPendientes(mailUsuario);
+            var result = target.GetVendedoresPendientes(mailUsuario, codigoProveedor: "");
 
             CollectionAssert.AreEquivalent(expected, result);
 
@@ -385,7 +386,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
 
-            var result = target.GetVendedoresPendientes(mailUsuario);
+            var result = target.GetVendedoresPendientes(mailUsuario, codigoProveedor: "");
 
             repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -422,7 +423,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
 
-            var ex = Assert.Throws<InfoCustomException>(() => target.GetVendedoresPendientes(mailUsuario));
+            var ex = Assert.Throws<InfoCustomException>(() => target.GetVendedoresPendientes(mailUsuario, codigoProveedor: ""));
             Assert.AreEqual(ex.Message, respuesta);
             repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
         }

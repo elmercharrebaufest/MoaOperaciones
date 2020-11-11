@@ -66,7 +66,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public VendedoresWSMOAResponse GetVendedores(string usuariomail, string proveedor, string fechaInicio, string fechaFin)
+        public VendedoresWSMOAResponse GetVendedores(string usuariomail, string codigoProveedor, string fechaInicio, string fechaFin)
         {
             if (fechaInicio == "")
             {
@@ -78,7 +78,20 @@ namespace SustitucionMOAUtils.Services
             }
 
             List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-            VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(proveedor, fechas);
+
+            VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == usuariomail);
+
+            if (usuario.EsAdmin())
+            {
+                var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                if (proveedor != null)
+                {
+                    usuariomail = proveedor.Mail;
+                }
+            }
 
             var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C")).Select(v => new Vendedor() { descVendedor = v.RazonSocial, estado = v.EstadoAprobacionDescripcion, idVendedor = v.CodigoProveedor });
 
@@ -127,8 +140,22 @@ namespace SustitucionMOAUtils.Services
             return GetVendedores(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
         }
 
-        public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario)
+        public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario, string codigoProveedor)
         {
+
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
+
+
+            if (usuario.EsAdmin())
+            {
+                var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                if (proveedor != null)
+                {
+                    mailUsuario = proveedor.Mail;
+                }
+            }
+
             List<ProveedorDto> proveedorDtos = GetVendedores(mailUsuario, x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
 
             if (proveedorDtos.Count == 0)
