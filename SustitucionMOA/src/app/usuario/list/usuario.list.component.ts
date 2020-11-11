@@ -249,6 +249,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioSeleccionado = usuario;
         this.rolesUsuarioSeleccionado = new Array<Rol>();
 
+
+
         this.rolOptions = [];
         this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
 
@@ -256,15 +258,49 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.rolesUsuarioSeleccionado[i].checked = false;
         }
 
+        usuario.Roles = this.obtenerRolesUsuario();
+
+/*
         usuario.Roles.forEach(element => {
             let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
 
             if (index > -1)
                 this.rolesUsuarioSeleccionado[index].checked = true;
-        });
+        });*/
 
         document.getElementById("openModalHiddenButton").click();
         return false;
+    }
+
+    obtenerRolesUsuario() {
+         try {
+            this.service.obtenerRolesUsuario(this.usuarioSeleccionado).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+
+                        result.data.forEach(element => {
+                            let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
+
+                            if (index > -1)
+                                this.rolesUsuarioSeleccionado[index].checked = true;
+                        });
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 
     guardarRolesUsuario() {
@@ -301,27 +337,5 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
         return false; //<-- Prevent Refresh
     }
-    /*
-    agregarRolUsuario() {
-        var rolAgregar: Rol = new Rol();
-
-        rolAgregar.Id = this.rolDropdownComponent.selectedOption,
-        rolAgregar.Nombre = this.rolDropdownComponent.selectedOptionLabel;
-
-        this.rolDropdownComponent.setInitial();
-        this.rolesUsuarioSeleccionado.push(rolAgregar);
-
-        //this.rolOptions[this.rolOptions.findIndex(r => r.value.toString() == rolAgregar.Id.toString())];
-
-    }
-
-    quitarRolUsuario(rol: Rol) {
-
-        let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == rol.Id.toString());
-
-        this.rolesUsuarioSeleccionado.splice(index, 1);
-
-
-        //delete this.rolesUsuarioSeleccionado[index];
-    }*/
+    
 }

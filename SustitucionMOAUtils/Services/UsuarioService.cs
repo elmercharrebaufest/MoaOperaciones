@@ -127,6 +127,8 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+
+
         [Obsolete]
         public string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva)
         {
@@ -429,6 +431,23 @@ namespace SustitucionMOAUtils.Services
 
             return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail);
         }
+
+        public List<RolDropdownDto> GetRolesUsuario(int idUsuario)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+
+                var rolesDto = usuario.Roles.Select(x => new RolDropdownDto(x)).ToList();
+
+                return rolesDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
         {
