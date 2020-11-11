@@ -67,7 +67,6 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         this.checkPermisos();
         this.navService.setSeccionList([
             new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
-            new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
         ]);
         this.getDatosCombos();
     };

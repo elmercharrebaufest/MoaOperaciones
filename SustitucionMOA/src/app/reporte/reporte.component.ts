@@ -57,7 +57,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
         this.navService.setSeccionList(
             [
                 new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
-                new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
+                //new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
             ]
         );
         this.getDatosCombos();
