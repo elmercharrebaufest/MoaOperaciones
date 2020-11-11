@@ -87,6 +87,13 @@ var UsuarioService = /** @class */ (function (_super) {
         return this.http
             .get('/api/usuario/getRoles', { headers: this.headers }).pipe(map(this.extractData));
     };
+    UsuarioService.prototype.obtenerRolesUsuario = function (usuarioSeleccionado) {
+        var params = new URLSearchParams();
+        var idUsuario = usuarioSeleccionado.Id;
+        params.set('idUsuario', idUsuario);
+        return this.http
+            .get('/api/usuario/ObtenerRolesUsuario', { search: params, headers: this.headers }).pipe(map(this.extractData));
+    };
     UsuarioService = __decorate([
         Injectable()
     ], UsuarioService);
