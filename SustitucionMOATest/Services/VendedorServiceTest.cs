@@ -388,7 +388,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.GetVendedoresPendientes(mailUsuario, codigoProveedor: "");
 
-            repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.AtMost(2));
 
             Assert.IsTrue(result.Count == 1);
             Assert.AreEqual(result.First().CUIT, proveedores.First().CUIT);
@@ -425,7 +425,7 @@ namespace SustitucionMOATest.Services
 
             var ex = Assert.Throws<InfoCustomException>(() => target.GetVendedoresPendientes(mailUsuario, codigoProveedor: ""));
             Assert.AreEqual(ex.Message, respuesta);
-            repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.AtMost(2));
         }
     }
 }
