@@ -11,6 +11,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -45,6 +56,7 @@ var VendedorStatusComponent = /** @class */ (function (_super) {
         _this.route = route;
         _this.router = router;
         _this.cuit = "";
+        _this.consultaMultiple = false;
         _this.spinnerComponent = new SpinnerComponent();
         _this.mensajeComponent = new MensajeComponent();
         return _this;
@@ -61,45 +73,95 @@ var VendedorStatusComponent = /** @class */ (function (_super) {
         this.navService.setSeccionList(secciones);
     };
     VendedorStatusComponent.prototype.getData = function () {
+        this.consultaMultiple = false;
+        if (this.cuit.includes(",")) {
+            this.consultaMultiple = true;
+            this.getDataMultiple();
+        }
+        else {
+            this.getDataUnico();
+        }
+        return false;
+    };
+    VendedorStatusComponent.prototype.getDataMultiple = function () {
+        var _this = this;
+        this.datosFiscales = null;
+        this.mensajeComponent.setMsgsEmpty();
+        if ((this.cuit.match(/,/g) || []).length > 15) {
+            this.mensajeComponent.setErrorMsg("Solo se pueden hacer busquedas de hasta 15 CUITs");
+            return false;
+        }
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.getVariosVendedoresStatus(this.cuit).subscribe(function (result) {
+            _this.spinnerComponent.hideIt();
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                _this.listaVendedores = result.data;
+                _this.listaVendedores = _this.listaVendedores.map(function (x) {
+                    return __assign(__assign({}, x), { cssClass: _this.getCssClass(x.Estado) });
+                });
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    VendedorStatusComponent.prototype.getCssClass = function (Estado) {
+        if (Estado.toLowerCase().indexOf("inhabilitado") >= 0) {
+            return "bg-danger";
+        }
+        else if (Estado.toLowerCase().indexOf("habilitado") >= 0) {
+            return "bg-success";
+        }
+        else {
+            return "bg-warning";
+        }
+    };
+    VendedorStatusComponent.prototype.getDataUnico = function () {
         var _this = this;
         this.datosFiscales = null;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        this.route.params.forEach(function (params) {
-            _this.subscription = _this.service.getVendedorStatus(_this.cuit).subscribe(function (result) {
-                _this.spinnerComponent.hideIt();
-                if (result.logout == true) {
-                    _this.sessionDataService.logout();
+        this.statusHabilitado = false;
+        this.statusInhabilitado = false;
+        this.statusObservado = false;
+        this.subscription = this.service.getVendedorStatus(this.cuit).subscribe(function (result) {
+            _this.spinnerComponent.hideIt();
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                _this.datosFiscales = result.data;
+                if (_this.datosFiscales.status.toLowerCase().indexOf("inhabilitado") >= 0) {
+                    _this.statusInhabilitado = true;
                 }
-                else if (result.error != undefined && result.error != "") {
-                    _this.mensajeComponent.setErrorMsg(result.error);
-                }
-                else if (result.info != undefined) {
-                    _this.mensajeComponent.setInfoMsg(result.info);
+                else if (_this.datosFiscales.status.toLowerCase().indexOf("habilitado") >= 0) {
+                    _this.statusHabilitado = true;
                 }
                 else {
-                    _this.datosFiscales = result.data;
-                    if (_this.datosFiscales.status.toLowerCase().indexOf("inhabilitado") >= 0) {
-                        _this.statusHabilitado = false;
-                        _this.statusInhabilitado = true;
-                        _this.statusObservado = false;
-                    }
-                    else if (_this.datosFiscales.status.toLowerCase().indexOf("habilitado") >= 0) {
-                        _this.statusHabilitado = true;
-                        _this.statusInhabilitado = false;
-                        _this.statusObservado = false;
-                    }
-                    else {
-                        _this.statusHabilitado = false;
-                        _this.statusInhabilitado = false;
-                        _this.statusObservado = true;
-                    }
+                    _this.statusObservado = true;
                 }
-            }, function (error) {
-                _this.spinnerComponent.hideIt();
-                _this.mensajeComponent.setErrorMsg(error.message);
-            });
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false;
     };
@@ -137,8 +199,8 @@ var VendedorStatusComponent = /** @class */ (function (_super) {
     VendedorStatusComponent = __decorate([
         Component({
             selector: 'app-vendedor-status',
-            //template: '<h1>{{titulo}}</h1>'
             templateUrl: "vendedor_status.component.html",
+            styleUrls: ['vendedor_status.component.css'],
             providers: [VendedorStatusService]
         }),
         __metadata("design:paramtypes", [VendedorStatusService,

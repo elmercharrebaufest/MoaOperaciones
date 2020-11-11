@@ -20,4 +20,12 @@ export class VendedorStatusService extends BaseService {
             .get('/api/vendedor/getVendedorStatus', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
+
+    public getVariosVendedoresStatus(cuitStr: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cuitStr', cuitStr);
+        return this.http
+            .get('/api/vendedor/GetVariosVendedoresStatus', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
 }

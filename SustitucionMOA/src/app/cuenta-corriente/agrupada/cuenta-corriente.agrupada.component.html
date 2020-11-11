@@ -3,11 +3,12 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Cuenta Corriente</strong></div>
+            <div class="col-xs-12 col-sm-10 ">Detalle de pagos</div>
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
-                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+                    *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
                 </a>
             </div>
         </div>
@@ -15,9 +16,8 @@
         <!--Search-->
         <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <div class="col-xs-12 col-md-12 search-header">
-                    <title-caps>Refinar resultados</title-caps>
-                </div>
+                <title-caps>Refinar resultados</title-caps>
+                <hr />
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
@@ -25,7 +25,8 @@
                 <div id="searchNroLegal" class="col-xs-12 col-sm-6 col-md-15">
                     Por N&deg; Legal:
                     <div class="styled-select ">
-                        <input type="search" class="" placeholder="" [value]="filtroNroLegal" (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [value]="filtroNroLegal"
+                            (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="showSearch" onClick="openSearch()">
@@ -50,7 +51,7 @@
             </div>
 
             <div class="clearfix totalTable">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0" *ngIf="isVisible()" style="border-radius: 10px;">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" *ngIf="isVisible()">
                     <tr>
                         <td>SALDO AL <span style=" white-space:nowrap">{{data.fechaSaldo}}</span></td>
                         <td width="15%" style="text-align:right;">{{data.total}}</td>
@@ -58,7 +59,9 @@
                 </table>
             </div>
             <div class="clearfix myTables rounded shadow " style="padding-left:0; padding-right:0;" *ngIf="isVisible()">
-                <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline animate  boletosTable cc-agrupada-table cuenta-corriente-agrupada-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;" >
+                <table id="tableModal"
+                    class="display nowrap dataTable no-footer dtr-inline animate  boletosTable cc-agrupada-table cuenta-corriente-agrupada-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1">Agrupador</th>
@@ -70,12 +73,21 @@
                         </tr>
                     </thead>
                     <tbody *ngIf="isSinAgruparVisible()">
-                        <tr *ngFor="let cuentaCorrienteElemSA of data.cuentasCorrientesSinAgrupar.cuentasCorrientes | customFilter : 'xblnr' : filtroNroLegal" role="row">
-                            <td tabindex="0"><a (click)="showModalTableAgrupadaResponsive(cuentaCorrienteElemSA,'Sin agrupador')" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a></td>
+                        <tr *ngFor="let cuentaCorrienteElemSA of data.cuentasCorrientesSinAgrupar.cuentasCorrientes | customFilter : 'xblnr' : filtroNroLegal"
+                            role="row">
+                            <td tabindex="0"><a
+                                    (click)="showModalTableAgrupadaResponsive(cuentaCorrienteElemSA,'Sin agrupador')"
+                                    href="#" class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                        aria-hidden="true"></i></a></td>
                             <td>{{cuentaCorrienteElemSA.docDate}}</td>
                             <td>{{cuentaCorrienteElemSA.descripcion}}</td>
-                            <td><a (click)="descargaPDF(cuentaCorrienteElemSA.docNo, cuentaCorrienteElemSA.fiscYear)" href="#"><span class="fa  fa-file-pdf-o " *ngIf="cuentaCorrienteElemSA.xblnr != ''"></span> {{cuentaCorrienteElemSA.xblnr}}</a></td>
-                            <td *ngIf="isGranos()"><a class="animate"  (click)="goToSeccionParam('/contrato/detalle', cuentaCorrienteElemSA.contrato)" href="#">{{cuentaCorrienteElemSA.contrato}}</a></td>
+                            <td><a (click)="descargaPDF(cuentaCorrienteElemSA.docNo, cuentaCorrienteElemSA.fiscYear)"
+                                    href="#"><span class="fa  fa-file-pdf-o "
+                                        *ngIf="cuentaCorrienteElemSA.xblnr != ''"></span>
+                                    {{cuentaCorrienteElemSA.xblnr}}</a></td>
+                            <td *ngIf="isGranos()"><a class="animate"
+                                    (click)="goToSeccionParam('/contrato/detalle', cuentaCorrienteElemSA.contrato)"
+                                    href="#">{{cuentaCorrienteElemSA.contrato}}</a></td>
                             <td *ngIf="!isGranos()">{{cuentaCorrienteElemSA.contrato}}</td>
                             <td>{{cuentaCorrienteElemSA.importeArgString}}</td>
                         </tr>
@@ -89,20 +101,30 @@
                         </tr>
                     </tbody>
                     <ng-container *ngIf="isAgrupadasVisible()">
-                        <ng-container *ngFor="let cuentaCorrienteA of data.cuentasCorrientesAgrupadas | slice:0:itemsEnPantalla | customFilterContain: 'cuentasCorrientes' : 'xblnr' : filtroNroLegal">
+                        <ng-container
+                            *ngFor="let cuentaCorrienteA of data.cuentasCorrientesAgrupadas | slice:0:itemsEnPantalla | customFilterContain: 'cuentasCorrientes' : 'xblnr' : filtroNroLegal">
                             <tbody class="agrupador">
                                 <tr role="row">
-                                    <td colspan="6" tabindex="0"><strong>{{cuentaCorrienteA.agrupador}}</strong></td>
+                                    <td colspan="6" tabindex="0">{{cuentaCorrienteA.agrupador}}</td>
                                 </tr>
                             </tbody>
                             <tbody>
                                 <tr role="row" *ngFor="let cuentaCorrienteElemA of cuentaCorrienteA.cuentasCorrientes">
-                                    <td tabindex="0"><a (click)="showModalTableAgrupadaResponsive(cuentaCorrienteElemA, cuentaCorrienteA.agrupador)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a></td>
+                                    <td tabindex="0"><a
+                                            (click)="showModalTableAgrupadaResponsive(cuentaCorrienteElemA, cuentaCorrienteA.agrupador)"
+                                            href="#" class="btnShowModal"><i class="fa fa-plus fa-lg"
+                                                aria-hidden="true"></i></a></td>
                                     <td>{{cuentaCorrienteElemA.docDate}}</td>
                                     <td>{{cuentaCorrienteElemA.descripcion}}</td>
-                                    <td><a (click)="descargaPDF(cuentaCorrienteElemA.docNo, cuentaCorrienteElemA.fiscYear)" href="#" *ngIf="cuentaCorrienteElemA.xblnr != ''"><span class="fa  fa-file-pdf-o "></span>{{cuentaCorrienteElemA.xblnr}}</a></td>
-                                    <td *ngIf="isAuthorized('CONSULTAR CONTRATO DETALLE')"><a class="animate" (click)="goToSeccionParam('/contrato/detalle', cuentaCorrienteElemA.contrato)" href="#">{{cuentaCorrienteElemA.contrato}}</a></td>
-                                    <td *ngIf="!isAuthorized('CONSULTAR CONTRATO DETALLE')">{{cuentaCorrienteElemA.contrato}}</td>
+                                    <td><a (click)="descargaPDF(cuentaCorrienteElemA.docNo, cuentaCorrienteElemA.fiscYear)"
+                                            href="#" *ngIf="cuentaCorrienteElemA.xblnr != ''"><span
+                                                class="fa  fa-file-pdf-o "></span>{{cuentaCorrienteElemA.xblnr}}</a>
+                                    </td>
+                                    <td *ngIf="isAuthorized('CONSULTAR CONTRATO DETALLE')"><a class="animate"
+                                            (click)="goToSeccionParam('/contrato/detalle', cuentaCorrienteElemA.contrato)"
+                                            href="#">{{cuentaCorrienteElemA.contrato}}</a></td>
+                                    <td *ngIf="!isAuthorized('CONSULTAR CONTRATO DETALLE')">
+                                        {{cuentaCorrienteElemA.contrato}}</td>
                                     <td>{{cuentaCorrienteElemA.importeArgString}}</td>
                                 </tr>
                             </tbody>
@@ -118,10 +140,12 @@
                     </ng-container>
                 </table>
                 <div class="row  myRow  mySearch cargaDeDatos" *ngIf="isVisible()">
+                    <hr>
                     <div class="row myRow cargaDeDatosBtn">
                         <div class="col-xs-12 col-sm-3 col-sm-offset-9 " *ngIf="showMostrarMas">
                             <a (click)="verMas()" href="#" style="text-decoration:none!important">
-                                <div class="btn-custom btn-chico btn-add animate align-right">Ver Más <span class="fa  fa-angle-double-down "></span></div>
+                                <div class="btnSection animate">Ver Más <span class="fa  fa-angle-double-down "></span>
+                                </div>
                             </a>
                         </div>
                     </div>

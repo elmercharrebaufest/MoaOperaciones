@@ -27,6 +27,7 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
+            dataAgroServiceMock = new Mock<IDataAgroService>();
             target = new AltaEmpresaService(repositorioMock.Object, dataAgroServiceMock.Object);
         }
 
