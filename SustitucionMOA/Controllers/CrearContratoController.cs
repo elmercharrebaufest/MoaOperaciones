@@ -19,6 +19,8 @@ using System.Linq;
 using System.Web.Mvc;
 using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 using Kendo.DynamicLinq;
+using System.Web.Script.Serialization;
+using SustitucionMOAUtils.Export;
 
 namespace SustitucionMOA.Controllers
 {
@@ -223,91 +225,10 @@ namespace SustitucionMOA.Controllers
                 //contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
                 //contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 //
-                DataSourceRequest request = new DataSourceRequest();
-                request.Filter = new Kendo.DynamicLinq.Filter();
-                request.Filter.Logic = "and";
-                var filtros = new List<Kendo.DynamicLinq.Filter>();
-                if (!string.IsNullOrWhiteSpace(fechaDesde))
-                {
-                    var fecha = DateTime.ParseExact(fechaDesde, "dd/MM/yyyy", null);
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Fecha", Value = fecha, Operator = "gte" });
-                }
-                if (!string.IsNullOrWhiteSpace(fechaHasta))
-                {
-                    var fecha = DateTime.ParseExact(fechaHasta, "dd/MM/yyyy", null);
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Fecha", Value = fecha, Operator = "lte" });
-                }
-                if (!string.IsNullOrWhiteSpace(entregaDesde))
-                {
-                    var fecha = DateTime.ParseExact(entregaDesde, "dd/MM/yyyy", null);
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "FechaDesde", Value = fecha, Operator = "gte" });
-                }
-                if (!string.IsNullOrWhiteSpace(entregaHasta))
-                {
-                    var fecha = DateTime.ParseExact(entregaHasta, "dd/MM/yyyy", null);
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "FechaHasta", Value = fecha, Operator = "lte" });
-                }
-                if (!string.IsNullOrWhiteSpace(fijacionHasta))
-                {
-                    var fecha = DateTime.ParseExact(fijacionHasta, "dd/MM/yyyy", null);
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "HastaFijacion", Value = fecha, Operator = "lte" });
-                }
-                if (corredorId.HasValue && corredorId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "CorredorId", Value = corredorId, Operator = "eq" });
-                }
-                if (proveedorId.HasValue && proveedorId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ProveedorId", Value = proveedorId, Operator = "eq" });
-                }
-                if (boletoId.HasValue && boletoId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "BoletoId", Value = boletoId, Operator = "eq" });
-                }
-                if (clasificacionId.HasValue && clasificacionId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ClasificacionId", Value = clasificacionId, Operator = "eq" });
-                }
-                if (destinoId.HasValue && destinoId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "DestinoId", Value = destinoId, Operator = "eq" });
-                }
-                if (!string.IsNullOrWhiteSpace(estadoId))
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Estado_Contrato", Value = estadoId, Operator = "eq" });
-                }
-                if (materialId.HasValue && materialId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "MaterialId", Value = materialId, Operator = "eq" });
-                }
-                if (campaniaId.HasValue && campaniaId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "CampanaId", Value = campaniaId, Operator = "eq" });
-                }
-                if (tipoNegocioId.HasValue && tipoNegocioId > 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "TipoNegocio", Value = tipoNegocioId, Operator = "eq" });
-                }
-                if (pagoDiferidoTercero.HasValue)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "PagoDiferidoTercero", Value = pagoDiferidoTercero, Operator = "eq" });
-                }
-                if (dolarizadoTercero.HasValue)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "DolarizadoTercero", Value = dolarizadoTercero, Operator = "eq" });
-                }
-                if (calidadTercero.HasValue)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "CalidadTercero", Value = calidadTercero, Operator = "eq" });
-                }
-                if (corredorId == null || corredorId == 0)
-                {
-                    filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ProveedorId", Value = (int)proveedor.IdDataAgro, Operator = "eq" });
-                }
-                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ComercialCreadorId", Value = (int)proveedor.IdDataAgro, Operator = "eq" });//es el ProveedorCreadorId en el BasicoContrato
-                request.Filter.Filters = filtros;
-                string result = crearContratoService.GetContratos(request);
-
+                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor);
+                //System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
+                //var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
+                //var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
@@ -329,6 +250,146 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult ExportContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
+           int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
+           bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero)
+        {
+            try
+            {
 
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+
+                var proveedor = usuario.ObtenerProveedor();
+
+                //contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
+                //contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+                //
+                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor);
+                System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
+                var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
+                var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
+                foreach (var item in list)
+                {
+                    if (item.FechaDesde.HasValue)
+                        item.FechaDesde = item.FechaDesde.Value.AddHours(-3);
+                    if (item.FechaHasta.HasValue)
+                        item.FechaHasta = item.FechaHasta.Value.AddHours(-3);
+                }
+                var excel = ExcelExport.ToExcel(list, new string[] { "Cuit", "Proveedor", "Corredor", "ContratoCorredor", "TipoNegocio", "Cantidad", "Precio", "Moneda",
+                    "Destino", "FechaDesde", "FechaHasta", "Material", "Campaña", "Clasificacion", "Localidad", "Consignatario", "Estado", "Pago Diferido", "Dolarizado", "Calidad" }, "Reporte Contratos");
+
+                return JsonCustom(excel);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        private string obteberContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor)
+        {
+            DataSourceRequest request = new DataSourceRequest();
+            request.Filter = new Kendo.DynamicLinq.Filter();
+            request.Filter.Logic = "and";
+            var filtros = new List<Kendo.DynamicLinq.Filter>();
+            if (!string.IsNullOrWhiteSpace(fechaDesde))
+            {
+                var fecha = DateTime.ParseExact(fechaDesde, "dd/MM/yyyy", null).ToUniversalTime();
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Fecha", Value = fecha, Operator = "gte" });
+            }
+            if (!string.IsNullOrWhiteSpace(fechaHasta))
+            {
+                var fecha = DateTime.ParseExact(fechaHasta, "dd/MM/yyyy", null).ToUniversalTime();
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Fecha", Value = fecha, Operator = "lte" });
+            }
+            if (!string.IsNullOrWhiteSpace(entregaDesde))
+            {
+                var fecha = DateTime.ParseExact(entregaDesde, "dd/MM/yyyy", null).ToUniversalTime();
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "FechaDesde", Value = fecha, Operator = "gte" });
+            }
+            if (!string.IsNullOrWhiteSpace(entregaHasta))
+            {
+                var fecha = DateTime.ParseExact(entregaHasta, "dd/MM/yyyy", null).ToUniversalTime();
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "FechaHasta", Value = fecha, Operator = "lte" });
+            }
+            if (!string.IsNullOrWhiteSpace(fijacionHasta))
+            {
+                var fecha = DateTime.ParseExact(fijacionHasta, "dd/MM/yyyy", null).ToUniversalTime();
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "HastaFijacion", Value = fecha, Operator = "lte" });
+            }
+            if (corredorId.HasValue && corredorId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "CorredorId", Value = corredorId, Operator = "eq" });
+            }
+            if (proveedorId.HasValue && proveedorId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ProveedorId", Value = proveedorId, Operator = "eq" });
+            }
+            if (boletoId.HasValue && boletoId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "BoletoId", Value = boletoId, Operator = "eq" });
+            }
+            if (clasificacionId.HasValue && clasificacionId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ClasificacionId", Value = clasificacionId, Operator = "eq" });
+            }
+            if (destinoId.HasValue && destinoId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "DestinoId", Value = destinoId, Operator = "eq" });
+            }
+            if (!string.IsNullOrWhiteSpace(estadoId))
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "Estado_Contrato", Value = estadoId, Operator = "eq" });
+            }
+            if (materialId.HasValue && materialId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "MaterialId", Value = materialId, Operator = "eq" });
+            }
+            if (campaniaId.HasValue && campaniaId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "CampanaId", Value = campaniaId, Operator = "eq" });
+            }
+            if (tipoNegocioId.HasValue && tipoNegocioId > 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "TipoNegocio", Value = tipoNegocioId, Operator = "eq" });
+            }
+            if (pagoDiferidoTercero.HasValue)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "PagoDiferidoTercero", Value = pagoDiferidoTercero, Operator = "eq" });
+            }
+            if (dolarizadoTercero.HasValue)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "DolarizadoTercero", Value = dolarizadoTercero, Operator = "eq" });
+            }
+            if (calidadTercero.HasValue)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "CalidadTercero", Value = calidadTercero, Operator = "eq" });
+            }
+            if (corredorId == null || corredorId == 0)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ProveedorId", Value = (int)proveedor.IdDataAgro, Operator = "eq" });
+            }
+            filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ComercialCreadorId", Value = (int)proveedor.IdDataAgro, Operator = "eq" });//es el ProveedorCreadorId en el BasicoContrato
+            request.Filter.Filters = filtros;
+            string result = crearContratoService.GetContratos(request);
+            return result;
+        }
     }
 }

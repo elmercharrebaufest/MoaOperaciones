@@ -62,9 +62,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
         );
         this.getDatosCombos();
     }
-
-
-
+      
     getDatosCombos() {
         this.unsubscribe();
         this.subscription = this.service.getDatosCombos().subscribe(

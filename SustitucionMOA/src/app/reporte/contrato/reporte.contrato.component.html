@@ -47,9 +47,9 @@
                     <title-caps>Refinar resultados</title-caps>
                 </div>
                 <!--<div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-        <p>Ver</p>
-        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-    </div>-->
+                    <p>Ver</p>
+                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                </div>-->
                 <div class="col-xs-12 col-sm-6 col-md-5" *ngIf="isVisibleProveedor()">
                     <label for="Proveedorid" class="font-weight-bold">Por Proveedor</label>
                     <input [(ngModel)]="proveedorid" class="form-control" type="hidden"
@@ -223,37 +223,21 @@
                     </div>
                 </div>
 
-                <!--<a (click)="obteneContratos()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">Buscar </div>
-                </a>-->
                 <button type="button" class="btn btn-info btn-lg" (click)="obteneContratos()"
-                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        style="margin: 10px 14px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                     Buscar
                 </button>
-                <!--
-    <div id="showSearch" onClick="openSearch()">
-        <div style="">
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-        </div>
-        <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
-    </div>
-    <div id="hideSearch" onClick="closeSearch()">
-        <div style="">
-            <i class="fa fa-times" aria-hidden="true"></i>
-        </div>
-        <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
-    </div>-->
             </div>
         </div>
         <!-- End Search-->
         <!-- Tables-->
 
         <div class="row myRow">
-            <div class="clearfix myTables" style="overflow-x:auto;">
+            <div class="clearfix myTables">
 
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <div>
+                <div style="overflow-x: auto; width: 100%;">
                     <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                         <thead>
                             <tr role="row">
@@ -450,8 +434,8 @@
                                 <td>{{contratoInfo.Precio}}</td>
                                 <td>{{contratoInfo.Moneda}}</td>
                                 <td>{{contratoInfo.DestinoDescripcion}}</td>
-                                <td>{{contratoInfo.FechaDesde}}</td>
-                                <td>{{contratoInfo.FechaHasta}}</td>
+                                <td>{{contratoInfo.FechaDesde | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{contratoInfo.FechaHasta | date: 'dd/MM/yyyy'}}</td>
                                 <td>{{contratoInfo.Material}}</td>
                                 <td>{{contratoInfo.Campania}}</td>
                                 <td>{{contratoInfo.Clasificacion}}</td>

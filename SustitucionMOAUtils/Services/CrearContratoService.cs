@@ -241,10 +241,10 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                userName = "emartin";
-                password = "eugeniomartin2";
-                dominio = "baunet";
-                url = "http://localhost:52498/Contrato/BuscaDatosTabla";
+                //userName = "emartin";
+                //password = "eugeniomartin2";
+                //dominio = "baunet";
+                //url = "http://localhost:52498/Contrato/BuscaDatosTabla";
                 var httpClientHandler = new HttpClientHandler()
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),

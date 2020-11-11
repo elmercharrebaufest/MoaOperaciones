@@ -100,6 +100,29 @@ var ReporteService = /** @class */ (function (_super) {
             .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
             .pipe(map(this.extractData));
     };
+    ReporteService.prototype.exportContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
+        var params = new URLSearchParams();
+        params.set('fechaDesde', fechaDesde);
+        params.set('fechaHasta', fechaHasta);
+        params.set('entregaDesde', entregaDesde);
+        params.set('entregaHasta', entregaHasta);
+        params.set('fijacionHasta', fijacionHasta);
+        params.set('corredorId', corredorId);
+        params.set('proveedorId', proveedorId);
+        params.set('boletoId', boletoId);
+        params.set('clasificacionId', clasificacionId);
+        params.set('destinoId', destinoId);
+        params.set('estadoId', estadoId);
+        params.set('materialId', materialId);
+        params.set('campaniaId', campaniaId);
+        params.set('tipoNegocioId', tipoNegocioId);
+        params.set('pagoDiferidoTercero', pagoDiferidoTercero);
+        params.set('calidadTercero', calidadTercero);
+        params.set('dolarizadoTercero', dolarizadoTercero);
+        return this.http
+            .get('/api/CrearContrato/ExportContratos', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    };
     ReporteService = __decorate([
         Injectable()
     ], ReporteService);
