@@ -490,16 +490,13 @@ namespace SustitucionMOA.Controllers
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                string codigoProveedor = SessionPersister.Proveedor;
 
-                var proveedor = usuario.ObtenerProveedor();
+                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
 
-                //contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
-                //contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
-                //
+
                 string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor);
-                //System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
-                //var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
-                //var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
+
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
@@ -531,12 +528,10 @@ namespace SustitucionMOA.Controllers
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                string codigoProveedor = SessionPersister.Proveedor;
 
-                var proveedor = usuario.ObtenerProveedor();
+                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
 
-                //contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
-                //contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
-                //
                 string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor);
                 System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
                 var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
