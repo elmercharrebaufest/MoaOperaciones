@@ -374,11 +374,6 @@
                                     <!--data-toggle="tab">-->Consulta de Vendedor
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('CONSULTAR FLETE')">
-                                <a (click)="goToSeccion('/flete/a-facturar')" href="#">
-                                    <!--data-toggle="tab">-->Fletes
-                                </a>
-                            </div>
                             <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
@@ -405,9 +400,19 @@
                                     <!--data-toggle="tab">-->Mi situaci&oacute;n fiscal
                                 </a>
                             </div>
+                            <div *ngIf="isGranosSelected() && isAuthorized('CONSULTAR VENDEDORES')">
+                                <a (click)="goToSeccion('/dato-fiscal/vendedor')" href="#">
+                                    <!--data-toggle="tab">-->Mis Vendedores
+                                </a>
+                            </div>
+                            <div *ngIf="isGranosSelected() && isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                                <a (click)="goToSeccion('/dato-fiscal/vendedores-pendientes')" href="#">
+                                    <!--data-toggle="tab">-->Vendedores Pendientes
+                                </a>
+                            </div>
                             <div>
                                 <a (click)="goToSeccion('/dato-fiscal/documentacion')" href="#">
-                                    <!--data-toggle="tab">-->{{isGranosSelected() ? 'Documentos e Informaci&oacute;n &uacute;til' : 'Documentos'}}
+                                    <!--data-toggle="tab">-->Documentos e Informaci&oacute;n &uacute;til
                                 </a>
                             </div>
                             <div
