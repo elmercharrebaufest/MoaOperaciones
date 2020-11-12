@@ -53,6 +53,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     CBUSISA: string = "";
     proveedorCUIT: string = "";
     razonSocial: string = "";
+    proveedorClasificacion: string = "";
 
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
@@ -328,6 +329,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 (result) => {
                     this.CBUSISA = result.ProveedorCBU;
                     this.estadoSISA = result.EstadoSISA;
+                    this.proveedorClasificacion = result.ProveedorClasificacion;
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
                 },
@@ -965,6 +967,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         });
 
         this.cartaPresentacion.campaniaID = this.campaniaActual;
+        this.cartaPresentacion.vendedorActividad = this.proveedorClasificacion;
+        
 
         if (this.validarCartaPresentacion()) {
             this.spinnerCartaPresentacion.hideIt();

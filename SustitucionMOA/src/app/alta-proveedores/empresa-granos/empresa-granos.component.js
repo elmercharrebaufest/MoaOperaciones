@@ -68,6 +68,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
         _this.CBUSISA = "";
         _this.proveedorCUIT = "";
         _this.razonSocial = "";
+        _this.proveedorClasificacion = "";
         _this.nombreArchivoSeleccionado = "";
         _this.fileKeySeleccionado = "";
         _this.descripcionSeleccionado = "";
@@ -272,6 +273,7 @@ var EmpresaGranosComponent = /** @class */ (function (_super) {
             .subscribe(function (result) {
             _this.CBUSISA = result.ProveedorCBU;
             _this.estadoSISA = result.EstadoSISA;
+            _this.proveedorClasificacion = result.ProveedorClasificacion;
             _this.proveedorCUIT = result.ProveedorCUIT;
             _this.razonSocial = result.RazonSocial;
         }, function (error) {
