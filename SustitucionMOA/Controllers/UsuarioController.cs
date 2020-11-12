@@ -211,6 +211,10 @@ namespace SustitucionMOA.Controllers
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorType));
                 identity.AddClaim(new Claim(Globals.ClaimsProveedorType, vendedor));
 
+                identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
+                identity.AddClaim(new Claim(Globals.ClaimsNombreType, descripcion));
+
+
                 // tell the authentication manager to use this new identity
                 authenticationManager.AuthenticationResponseGrant =
                     new Microsoft.Owin.Security.AuthenticationResponseGrant(
