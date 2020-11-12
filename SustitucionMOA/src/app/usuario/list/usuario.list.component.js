@@ -250,13 +250,46 @@ var UsuarioListComponent = /** @class */ (function (_super) {
         for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
             this.rolesUsuarioSeleccionado[i].checked = false;
         }
-        usuario.Roles.forEach(function (element) {
-            var index = _this.rolesUsuarioSeleccionado.findIndex(function (r) { return r.Id.toString() == element.Id.toString(); });
-            if (index > -1)
-                _this.rolesUsuarioSeleccionado[index].checked = true;
-        });
+        usuario.Roles = this.obtenerRolesUsuario();
+        /*
+                usuario.Roles.forEach(element => {
+                    let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
+        
+                    if (index > -1)
+                        this.rolesUsuarioSeleccionado[index].checked = true;
+                });*/
         document.getElementById("openModalHiddenButton").click();
         return false;
+    };
+    UsuarioListComponent.prototype.obtenerRolesUsuario = function () {
+        var _this = this;
+        try {
+            this.service.obtenerRolesUsuario(this.usuarioSeleccionado).subscribe(function (result) {
+                _this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    result.data.forEach(function (element) {
+                        var index = _this.rolesUsuarioSeleccionado.findIndex(function (r) { return r.Id.toString() == element.Id.toString(); });
+                        if (index > -1)
+                            _this.rolesUsuarioSeleccionado[index].checked = true;
+                    });
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
     };
     UsuarioListComponent.prototype.guardarRolesUsuario = function () {
         var _this = this;

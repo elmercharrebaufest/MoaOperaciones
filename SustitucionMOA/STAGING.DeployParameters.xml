@@ -6,7 +6,7 @@
 
 	<setParameter name="PasswordSapEnc Config" value="/ZeEum06O947GGBswhXnAw==" />
 
-	<setParameter name="DataAgroURL Config" value="https://dataagro.com.ar/" />
+	<setParameter name="DataAgroURL Config" value="https://www.dataagro.com.ar/" />
 
 	<setParameter name="EsLocal Config" value="false" />
 
