@@ -172,7 +172,35 @@ namespace SustitucionMOAUtils.Services
 
             var listadoProveedores = new List<ProveedorDto>();
 
-            if (!usuario.EsAdmin())
+            if (usuario.EsAdmin())
+            {
+
+                listadoProveedores.AddRange(
+                    repositorio
+                        .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                        .Select(proveedor => new ProveedorDto
+                        {
+                            CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                            CUIT = proveedor.CUIT,
+                            EstadoAprobacion = proveedor.EstadoAprobacion,
+                            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                            Id = proveedor.Id,
+                            IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                            IdDataAgro = proveedor.IdDataAgro,
+                            Mail = proveedor.Mail ?? "",
+                            Observaciones = proveedor.Observaciones,
+                            RazonSocial = proveedor.RazonSocial ?? "",
+                            FechaSolicitud = proveedor.FechaSolicitud,
+                            Comercial = proveedor.Comercial,
+                            EstadoSIPER = proveedor.EstadoSIPER
+                        })
+                );
+
+                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
+
+                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
+            }
+            else
             {
                 var proveedores = usuario.Proveedores.ToList();
 
@@ -181,16 +209,25 @@ namespace SustitucionMOAUtils.Services
                     proveedores = proveedores.Where(filtro).ToList();
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(x => new ProveedorDto(x)).ToList());
+                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto
+                {
+                    CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                    CUIT = proveedor.CUIT,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                    Id = proveedor.Id,
+                    IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                    IdDataAgro = proveedor.IdDataAgro,
+                    Mail = proveedor.Mail ?? "",
+                    Observaciones = proveedor.Observaciones,
+                    RazonSocial = proveedor.RazonSocial ?? "",
+                    FechaSolicitud = proveedor.FechaSolicitud,
+                    Comercial = proveedor.Comercial,
+                    EstadoSIPER = proveedor.EstadoSIPER
+                }
+                ).ToList());
             }
-            else
-            {
-                listadoProveedores.AddRange(repositorio.Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado).Select(x => new ProveedorDto(x)));
 
-                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
-
-                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
-            }
 
             foreach (var item in listadoProveedores.Where(a => a.CUIT == null))
             {
