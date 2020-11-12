@@ -148,6 +148,7 @@ namespace SustitucionMOA.Controllers
                 contratoAPrecio.MonedaSustentable = "USDM ";
                 contratoAPrecio.ContratoSAP = "";
                 contratoAPrecio.CantidadCamiones = null;
+                contratoAPrecio.Pizarra = false;
 
 
                 string result = crearContratoService.CrearContratoAPrecio(contratoAPrecio);
