@@ -8,7 +8,8 @@
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
                     *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate">Exportar <span class="fa  fa-file-excel-o"></span></div>
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                    </div>
                 </a>
             </div>
         </div>
@@ -16,8 +17,9 @@
         <!--Search-->
         <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <title-caps>Refinar resultados</title-caps>
-                <hr />
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
