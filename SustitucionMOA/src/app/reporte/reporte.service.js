@@ -41,16 +41,15 @@ var ReporteService = /** @class */ (function (_super) {
         this.headers.append('Cache-control', 'no-store');
         this.headers.append('Expires', '0');
         this.headers.append('Pragma', 'no-cache');
+        var params = new URLSearchParams();
+        params.set('tiponegocio', "1");
         return this.http
-            .get('/api/CrearContrato/ObteneDatosContrato', { headers: this.headers })
+            .get('/api/CrearContrato/ObteneDatosContrato', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
-    ReporteService.prototype.getDatosCupos = function (numero_contrato, fijacion) {
-        var params = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
-        params.set('fijacion', fijacion);
+    ReporteService.prototype.obtenerMateriales = function () {
         return this.http
-            .get('/api/contrato/getDetalleFijacion', { search: params, headers: this.headers }).pipe(map(this.extractData));
+            .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers }).pipe(map(this.extractData));
     };
     ReporteService.prototype.obteneContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
         var params = new URLSearchParams();

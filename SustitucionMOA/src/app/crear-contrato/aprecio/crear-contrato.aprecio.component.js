@@ -239,6 +239,12 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
                     }
                     else {
                         _this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                        _this.contrato.MaterialId = null;
+                        _this.contrato.Cantidad = null;
+                        _this.contrato.CampanaId = null;
+                        _this.contrato.Precio = null;
+                        _this.contrato.PrecioNeto = null;
+                        _this.contrato.MonedaId = null;
                     }
                 }
             }, function (error) {

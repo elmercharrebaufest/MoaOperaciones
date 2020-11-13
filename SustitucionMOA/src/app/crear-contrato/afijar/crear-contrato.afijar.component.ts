@@ -327,6 +327,9 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                             this.mensajeComponent.setErrorMsg(errores);
                         } else {
                             this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                            this.contrato.MaterialId = null;
+                            this.contrato.Cantidad = null;
+                            this.contrato.CampanaId = null;
                         }
                     }
                 },

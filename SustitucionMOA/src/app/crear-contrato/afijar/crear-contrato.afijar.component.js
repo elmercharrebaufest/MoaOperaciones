@@ -299,6 +299,9 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
                     }
                     else {
                         _this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                        _this.contrato.MaterialId = null;
+                        _this.contrato.Cantidad = null;
+                        _this.contrato.CampanaId = null;
                     }
                 }
             }, function (error) {

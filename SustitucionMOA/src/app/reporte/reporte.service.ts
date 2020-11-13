@@ -31,17 +31,15 @@ export class ReporteService extends BaseService {
         this.headers.append('Cache-control', 'no-store');
         this.headers.append('Expires', '0');
         this.headers.append('Pragma', 'no-cache');
-
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('tiponegocio', "1");
         return this.http
-            .get('/api/CrearContrato/ObteneDatosContrato', { headers: this.headers })
+            .get('/api/CrearContrato/ObteneDatosContrato', { search: params,headers: this.headers })
             .pipe(map(this.extractData));
     }
-    public getDatosCupos(numero_contrato: string, fijacion: string) {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('numeroContrato', numero_contrato);
-        params.set('fijacion', fijacion);
+    public obtenerMateriales() {
         return this.http
-            .get('/api/contrato/getDetalleFijacion', { search: params, headers: this.headers }).pipe(
+            .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers }).pipe(
                 map(this.extractData));
     }
     public obteneContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId,
