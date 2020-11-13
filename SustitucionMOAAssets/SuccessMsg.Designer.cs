@@ -241,6 +241,51 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La notificación se ha actualizado correctamente.
+        /// </summary>
+        public static string NotificacionActualizada {
+            get {
+                return ResourceManager.GetString("NotificacionActualizada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La notificación se ha guardado correctamente.
+        /// </summary>
+        public static string NotificacionAgregada {
+            get {
+                return ResourceManager.GetString("NotificacionAgregada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La notificación se ha borrado correctamente.
+        /// </summary>
+        public static string NotificacionBorrada {
+            get {
+                return ResourceManager.GetString("NotificacionBorrada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La notificación se ha deshabilitado correctamente.
+        /// </summary>
+        public static string NotificacionDeshabilitada {
+            get {
+                return ResourceManager.GetString("NotificacionDeshabilitada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La notificación se ha habilitado correctamente.
+        /// </summary>
+        public static string NotificacionHabilitada {
+            get {
+                return ResourceManager.GetString("NotificacionHabilitada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Se le enviará un mail con una nueva contraseña.
         /// </summary>
         public static string OlvideContraniaOk {

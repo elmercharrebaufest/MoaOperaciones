@@ -177,6 +177,21 @@
   <data name="LoginOk" xml:space="preserve">
     <value>Login exitoso</value>
   </data>
+  <data name="NotificacionActualizada" xml:space="preserve">
+    <value>La notificación se ha actualizado correctamente</value>
+  </data>
+  <data name="NotificacionAgregada" xml:space="preserve">
+    <value>La notificación se ha guardado correctamente</value>
+  </data>
+  <data name="NotificacionBorrada" xml:space="preserve">
+    <value>La notificación se ha borrado correctamente</value>
+  </data>
+  <data name="NotificacionDeshabilitada" xml:space="preserve">
+    <value>La notificación se ha deshabilitado correctamente</value>
+  </data>
+  <data name="NotificacionHabilitada" xml:space="preserve">
+    <value>La notificación se ha habilitado correctamente</value>
+  </data>
   <data name="OlvideContraniaOk" xml:space="preserve">
     <value>Se le enviará un mail con una nueva contraseña</value>
   </data>
