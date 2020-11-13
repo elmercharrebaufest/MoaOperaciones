@@ -62,7 +62,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
         );
         this.getDatosCombos();
     }
-      
+
     getDatosCombos() {
         this.unsubscribe();
         this.subscription = this.service.getDatosCombos().subscribe(
@@ -76,14 +76,6 @@ export class ReporteBaseComponent extends ListBaseComponent {
                 } else {
                     let obj = JSON.parse(result);
                     this.datosContrato = obj;
-                    obj.Datos.material.forEach(element => {
-                        let el = {
-                            Id: element.MaterialId.toString(),
-                            Descripcion: element.Descripcion
-                        }
-                        this.materiales.push(el);
-                    });
-                    console.log(this.materiales);
 
                     obj.Datos.Bolsa.forEach(element => {
                         let el = {
@@ -139,6 +131,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
                         this.condicionFijacion.push(el);
                     });
 
+                    this.obtenerMateriales();
                 }
             },
             error => {
@@ -148,6 +141,26 @@ export class ReporteBaseComponent extends ListBaseComponent {
 
         );
         return false;
+    }
+
+    obtenerMateriales() {
+
+        this.subscription = this.service.obtenerMateriales().subscribe(
+            (result) => {
+                let obj = JSON.parse(result);
+
+                obj.Datos.forEach(element => {
+                    let el = {
+                        Id: element.MaterialId.toString(),
+                        Descripcion: element.Descripcion
+                    }
+                    this.materiales.push(el);
+                });
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
     }
 
     isVisible(): boolean {
@@ -217,5 +230,5 @@ export class ReporteBaseComponent extends ListBaseComponent {
         }
     }
 
-    
+
 }

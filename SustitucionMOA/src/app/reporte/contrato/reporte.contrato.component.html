@@ -25,6 +25,27 @@
         height: 16px;
         margin-bottom: 11px;
     }
+
+    .Carga, .Rechazado, .Finalizado, .Confirmado {
+        border-bottom-width: 5px;
+        border-bottom-style: solid;
+    }
+
+    .Carga {
+        border-bottom-color: lightskyblue;
+    }
+
+    .Rechazado {
+        border-bottom-color: grey;
+    }
+
+    .Finalizado {
+        border-bottom-color: black;
+    }
+
+    .Confirmado {
+        border-bottom-color: green;
+    }
 </style>
 <div class="content-wraper">
     <!-- CONTENT-->
@@ -241,6 +262,15 @@
                     <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                         <thead>
                             <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado_Contrato')">
+                                    Estado
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Estado_Contrato' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Estado_Contrato' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Cuit')">
                                     Cuit
                                     <div>
@@ -385,15 +415,6 @@
                                         </span>
                                     </div>
                                 </th>
-                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado_Contrato')">
-                                    Estado
-                                    <div>
-                                        <span>
-                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Estado_Contrato' && orderDirection > 0 }"></i>
-                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Estado_Contrato' && orderDirection < 0 }"></i>
-                                        </span>
-                                    </div>
-                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('PagoDiferidoTercero')">
                                     Pago Diferido
                                     <div>
@@ -425,6 +446,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                                <td class="{{contratoInfo.Estado_Contrato}}">{{contratoInfo.Estado_Contrato}}</td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
                                 <td *ngIf="isCorredor()">{{contratoInfo.Corredor}}</td>
@@ -441,10 +463,9 @@
                                 <td>{{contratoInfo.Clasificacion}}</td>
                                 <td>{{contratoInfo.Localidad}}</td>
                                 <td>{{contratoInfo.Consignatario}}</td>
-                                <td>{{contratoInfo.Estado_Contrato}}</td>
-                                <td>{{contratoInfo.PagoDiferidoTercero}}</td>
-                                <td>{{contratoInfo.DolarizadoTercero}}</td>
-                                <td>{{contratoInfo.CalidadTercero}}</td>
+                                <td>{{contratoInfo.PagoDiferidoTercero == true ? "Si":"No"}}</td>
+                                <td>{{contratoInfo.DolarizadoTercero == true ? "Si":"No"}}</td>
+                                <td>{{contratoInfo.CalidadTercero == true ? "Si":"No"}}</td>
                             </tr>
                         </tbody>
                     </table>
