@@ -33,7 +33,14 @@ namespace SustitucionMOAModel.Entities
         public Proveedor ObtenerProveedor()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
-            return Proveedores.FirstOrDefault();
+            var proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+
+            if (proveedor == null)
+            {
+                proveedor = Proveedores.FirstOrDefault();
+            }
+
+            return proveedor;
         }
 
         public Proveedor ObtenerCorredor()
