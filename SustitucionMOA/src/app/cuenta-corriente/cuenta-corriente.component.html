@@ -7,16 +7,15 @@
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                   *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">
-                        Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                    *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" />
                     </div>
                 </a>
             </div>
         </div>
         <!--End Title-->
         <!--Search-->
-        <div class="row myRow firstSection mySearch">
+        <div class="row  myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Refinar resultados</title-caps>
@@ -26,10 +25,10 @@
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
                 </div>
                 <div id="searchNroLegal" class="col-xs-12 col-sm-6 col-md-15">
-                    Por N&deg; Legal:
+                    Por N&deg; Cte. o Contrato:
                     <div class="styled-select ">
-                        <input type="search" class="" placeholder="" [value]="filtroNroLegal"
-                               (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [value]="filtroNroCteContrato"
+                            (input)="filtroNroCteContrato = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
@@ -62,60 +61,46 @@
                 <spinner></spinner>
 
                 <table *ngIf="isVisible()" id="tableModal"
-                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate cuenta-corriente-simple-table"
-                       cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate cuenta-corriente-simple-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1">
                                 F.
-                                Emisi&oacute;n
-                            </th>
+                                Emisi&oacute;n</th>
                             <th tabindex="0" rowspan="1" colspan="1">
                                 F.
-                                Vto.
-                            </th>
+                                Vto.</th>
                             <th tabindex="0" rowspan="1" colspan="1">
                                 N&deg;
-                                Cte.
-                            </th>
+                                Cte.</th>
                             <th tabindex="0" rowspan="1" colspan="1">
-                                Descripci&oacute;n
-                            </th>
+                                Descripci&oacute;n</th>
                             <th tabindex="0" rowspan="1" colspan="1">
-                                Contrato
-                            </th>
+                                Contrato</th>
                             <th tabindex="0" rowspan="1" colspan="1">
                                 Moneda
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1">
-                                TC
-                            </th>
+                                TC</th>
                             <th tabindex="0" rowspan="1" colspan="1">
-                                Debe
+                                Debe</th>
+                            <th tabindex="0" rowspan="1" colspan="1"> Haber
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1">
-                                Haber
-                            </th>
-                            <th tabindex="0" rowspan="1" colspan="1">
-                                Saldo
+                            <th tabindex="0" rowspan="1" colspan="1">Saldo
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let cuentaCorriente of data.cuentasCorrientes | orderedColumn : {property: orderedByColumn, direction: orderDirection} | customFilterOr : 'docNo' : 'contrato' : filtroNroCteContrato  | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
-                            <td>
-                                <a (click)="showModalTableResponsive(cuentaCorriente)" class="btnShowModal">
-                                    <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
-                                </a> {{cuentaCorriente.docDate}}
+                            <td><a (click)="showModalTableResponsive(cuentaCorriente)" class="btnShowModal"><i
+                                        class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{cuentaCorriente.docDate}}
                             </td>
                             <td>{{cuentaCorriente.fecVto}}</td>
-                            <td>
-                                <a (click)="descargaPDF(cuentaCorriente.docNo, cuentaCorriente.fiscYear)" href="#">
-                                    <span class="fa  fa-file-pdf-o " *ngIf="cuentaCorriente.docNo != ''"></span>
-                                    {{cuentaCorriente.xblnr}}
-                                </a>
-                            </td>
+                            <td><a (click)="descargaPDF(cuentaCorriente.docNo, cuentaCorriente.fiscYear)" href="#"><span
+                                        class="fa  fa-file-pdf-o " *ngIf="cuentaCorriente.docNo != ''"></span>
+                                    {{cuentaCorriente.xblnr}}</a></td>
                             <td>{{cuentaCorriente.descripcion}}</td>
                             <td>{{cuentaCorriente.contrato}}</td>
                             <td>{{cuentaCorriente.moneda}}</td>
@@ -130,15 +115,15 @@
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
                             <a class="paginate_button current"
-                               *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
                         </span>
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                           [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                            [class.disabled]="pT.isLastPage()"> Siguiente </a>
                     </div>
                 </pagination-template>
             </div>

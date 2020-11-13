@@ -21,16 +21,12 @@ namespace SustitucionMOAModel.Dto
 
         public string Tipo { get; set; }
 
-        public List<RolDropdownDto> Roles { get; set; }
-
-
         public UsuarioDto(Usuario usuario)
         {
             Id = usuario.Id;
             Mail = usuario.Mail;
             Habilitado = usuario.Habilitado;
             CUIT = usuario.CUITRegistro;
-            CodigoProveedor = usuario.ObtenerCodigoProveedor();
 
             switch (usuario.TipoUsuario.NombreCorto)
             {
@@ -50,7 +46,23 @@ namespace SustitucionMOAModel.Dto
                     break;
             }
 
-            Roles = usuario.Roles.Select(r => new RolDropdownDto(r)).ToList();
+            CodigoProveedor = FormatearCodigo();
+        }
+
+        private string FormatearCodigo()
+        {
+
+            if (string.IsNullOrEmpty(CUIT))
+                return "";
+
+            if (Tipo == "CORR")
+            {
+                return string.Concat("C", CUIT.Substring(2, 8));
+            }
+            else
+            {
+                return string.Concat("00", CUIT.Substring(2, 8));
+            }
         }
     }
 }
