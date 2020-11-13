@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CuentaCorrienteAgrupadaComponent } from './agrupada/cuenta-corriente.agrupada.component';
+import { CuentaCorrientePartidasAbiertasComponent } from './partidas-abiertas/cuenta-corriente.partidas-abiertas.component';
 import { CuentaCorrienteBaseComponent } from './cuenta-corriente.component';
 var routes = [
     { path: '', component: CuentaCorrienteBaseComponent },
@@ -25,6 +26,10 @@ var routes = [
     {
         path: "agrupada/:id",
         component: CuentaCorrienteAgrupadaComponent,
+    },
+    {
+        path: "partidas-abiertas",
+        component: CuentaCorrientePartidasAbiertasComponent,
     },
 ];
 var CuentaCorrienteRoutingModule = /** @class */ (function () {

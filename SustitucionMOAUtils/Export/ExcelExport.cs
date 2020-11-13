@@ -170,7 +170,7 @@ namespace SustitucionMOAUtils.Export
             }
 
             return sw.ToString();
-        }
+        }               
 
         public static string ToExcelContratoDetalle(object ampliacionesAnulacionesList, object aplicacionesList, object calidadList, object caracteristicasList, object condicionesPagoList, object fijacionesList, object hijosList, object liquidacionesList, object pagosList, object resumenList, string[] ampliacionesAnulacionesHeaders, string[] aplicacionesHeaders, string[] calidadHeaders, string[] caracteristicasHeaders, string[] condicionesPagoHeaders, string[] fijacionesHeaders, string[] hijosHeaders, string[] liquidacionesHeaders, string[] pagosHeaders, string[] resumenHeaders, string titulo)
         {
@@ -823,6 +823,84 @@ namespace SustitucionMOAUtils.Export
             return sw.ToString();
         }
 
+        public static string ToExcelCuentaCorrientePartidasAbiertas(List<CuentaCorrienteAgrupada> list, string[] headers, string titulo)
+        {
+
+            StringWriter sw = new StringWriter();
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+
+            var tituloRow = new System.Data.DataTable("Titulo");
+            tituloRow.Columns.Add("Titulo");
+            tituloRow.Rows.Add(titulo);
+            var gridTitulo = new GridView();
+            gridTitulo.DataSource = tituloRow;
+            gridTitulo.GridLines = GridLines.None;
+            gridTitulo.Font.Bold = true;
+            gridTitulo.Font.Size = 14;
+            gridTitulo.ShowHeader = false;
+            gridTitulo.DataBind();
+            gridTitulo.Rows[0].Cells[0].ColumnSpan = headers.Count();
+            gridTitulo.RenderControl(htw);
+
+            var gridData = new GridView();
+            gridData.DataSource = " ";
+            gridData.DataBind();
+            gridData.GridLines = GridLines.None;
+            gridData.HeaderRow.Cells[0].Text = " ";
+            gridData.RenderControl(htw);
+
+            foreach (CuentaCorrienteAgrupada ctecta in list)
+            {
+                var agrupadorRow = new System.Data.DataTable("Agrupador");
+                agrupadorRow.Columns.Add("Agrupador");
+                agrupadorRow.Rows.Add(ctecta.agrupador);
+                var gridAgrupador = new GridView();
+                gridAgrupador.DataSource = agrupadorRow;
+                gridAgrupador.GridLines = GridLines.None;
+                gridAgrupador.Font.Bold = true;
+                gridAgrupador.Font.Size = 14;
+                gridAgrupador.ShowHeader = false;
+                gridAgrupador.DataBind();
+                gridAgrupador.Rows[0].Cells[0].ColumnSpan = headers.Count();
+                gridAgrupador.RenderControl(htw);
+
+                gridData.DataSource = ctecta.cuentasCorrientes;
+                gridData.DataBind();
+                gridData.GridLines = GridLines.Both;
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    gridData.HeaderRow.Cells[i].Text = headers[i];
+                }
+                gridData.RenderControl(htw);
+
+                var totalRow = new System.Data.DataTable("Total");
+                totalRow.Columns.Add("Agrupador");
+                totalRow.Rows.Add("Total: " + ctecta.total);
+                var gridTotal = new GridView();
+                gridTotal.DataSource = totalRow;
+                gridTotal.GridLines = GridLines.None;
+                gridTotal.Font.Bold = true;
+                gridTotal.Font.Size = 12;
+                gridTotal.ShowHeader = false;
+                gridTotal.DataBind();
+                gridTotal.Rows[0].Cells[0].ColumnSpan = headers.Count();
+                gridTotal.RenderControl(htw);
+
+                gridData.DataSource = " ";
+                gridData.DataBind();
+                gridData.GridLines = GridLines.None;
+                gridData.HeaderRow.Cells[0].Text = " ";
+                gridData.RenderControl(htw);
+
+                gridData.DataSource = " ";
+                gridData.DataBind();
+                gridData.GridLines = GridLines.None;
+                gridData.HeaderRow.Cells[0].Text = " ";
+                gridData.RenderControl(htw);
+            }
+
+            return sw.ToString();
+        }
 
         public static string ToExcelViajesAgrupados(List<ViajeAgrupadoExcel> list, string[] headers, string titulo)
         {

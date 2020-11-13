@@ -95,4 +95,37 @@ var CuentaCorrienteAgrupadaService = /** @class */ (function (_super) {
     return CuentaCorrienteAgrupadaService;
 }(CuentaCorrienteService));
 export { CuentaCorrienteAgrupadaService };
+var CuentaCorrientePartidasAbiertasService = /** @class */ (function (_super) {
+    __extends(CuentaCorrientePartidasAbiertasService, _super);
+    function CuentaCorrientePartidasAbiertasService() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    CuentaCorrientePartidasAbiertasService.prototype.getData = function (periodo, fecha_inicio, fecha_fin, contrato, pago, retencion) {
+        var params = new URLSearchParams();
+        params.set('periodo', periodo);
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        params.set('contrato', contrato);
+        params.set('pago', pago);
+        params.set('retencion', retencion);
+        return this.http
+            .get('/api/CuentaCorriente/getCuentasCorrientesAgrupadas', { search: params, headers: this.headers }).pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))), map(this.extractData));
+    };
+    CuentaCorrientePartidasAbiertasService.prototype.exportExcel = function (periodo, fecha_inicio, fecha_fin, contrato, pago, retencion) {
+        var params = new URLSearchParams();
+        params.set('periodo', periodo);
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        params.set('contrato', contrato);
+        params.set('pago', pago);
+        params.set('retencion', retencion);
+        return this.http
+            .get('/api/CuentaCorriente/downloadCuentasCorrientesPartidasAbiertas', { search: params, headers: this.headers }).pipe(timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))), map(this.extractData));
+    };
+    CuentaCorrientePartidasAbiertasService = __decorate([
+        Injectable()
+    ], CuentaCorrientePartidasAbiertasService);
+    return CuentaCorrientePartidasAbiertasService;
+}(CuentaCorrienteService));
+export { CuentaCorrientePartidasAbiertasService };
 //# sourceMappingURL=cuenta-corriente.service.js.map

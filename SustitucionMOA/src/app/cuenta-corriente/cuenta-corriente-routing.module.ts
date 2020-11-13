@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CuentaCorrienteAgrupadaComponent } from './agrupada/cuenta-corriente.agrupada.component';
+import { CuentaCorrientePartidasAbiertasComponent } from './partidas-abiertas/cuenta-corriente.partidas-abiertas.component';
 import { CuentaCorrienteBaseComponent } from './cuenta-corriente.component';
 
 const routes: Routes = [
@@ -20,6 +21,10 @@ const routes: Routes = [
     {
       path: "agrupada/:id",
       component: CuentaCorrienteAgrupadaComponent,
+    },
+    {
+        path: "partidas-abiertas",
+        component: CuentaCorrientePartidasAbiertasComponent,
     },
 ];
 

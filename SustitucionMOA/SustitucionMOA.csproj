@@ -254,9 +254,7 @@
     <Content Include="dist\favicon.ico" />
     <Content Include="dist\index.html" />
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
-
     <Content Include="dist\*.js" />
-
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -300,6 +298,7 @@
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
     <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
@@ -901,6 +900,7 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />

@@ -107,7 +107,7 @@ var VendedorStatusComponent = /** @class */ (function (_super) {
             else {
                 _this.listaVendedores = result.data;
                 _this.listaVendedores = _this.listaVendedores.map(function (x) {
-                    return __assign(__assign({}, x), { cssClass: _this.getCssClass(x.Estado) });
+                    return __assign({}, x, { cssClass: _this.getCssClass(x.Estado) });
                 });
             }
         }, function (error) {

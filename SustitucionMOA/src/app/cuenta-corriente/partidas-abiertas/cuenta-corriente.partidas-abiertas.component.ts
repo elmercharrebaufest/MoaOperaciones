@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SlicePipe } from '@angular/common';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { CuentaCorrienteAgrupadaService } from './../cuenta-corriente.service';
+import { CuentaCorrientePartidasAbiertasService } from './../cuenta-corriente.service';
 import { CuentaCorrienteBaseComponent } from './../cuenta-corriente.component';
 import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
@@ -17,15 +17,15 @@ import { Seccion } from '../../common/models/seccion';
 
 
 @Component({
-    selector: 'app-cuenta-corriente-agrupada',
-    templateUrl: `cuenta-corriente.agrupada.component.html`,
-    providers: [CuentaCorrienteAgrupadaService]
+    selector: 'app-cuenta-corriente-partidas-abiertas',
+    templateUrl: `cuenta-corriente.partidas-abiertas.component.html`,
+    providers: [CuentaCorrientePartidasAbiertasService]
 
 })
     
-export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseComponent {
+export class CuentaCorrientePartidasAbiertasComponent extends CuentaCorrienteBaseComponent {
 
-    constructor(protected service: CuentaCorrienteAgrupadaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: CuentaCorrientePartidasAbiertasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService, route, router);
 
         this.granosSelected = sessionStorage.getItem("granosSelected");
@@ -44,7 +44,7 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
     granosSelected: string;
 
     setTabs() {
-        this.setMenuSeccionTab("cuenta-corriente", "Saldos");
+        this.setMenuSeccionTab("cuenta-corriente", "Partidas Abiertas");
     }
 
     isVisible(): boolean {

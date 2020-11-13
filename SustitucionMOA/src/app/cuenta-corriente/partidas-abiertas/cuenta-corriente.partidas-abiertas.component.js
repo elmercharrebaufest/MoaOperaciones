@@ -22,7 +22,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CuentaCorrienteAgrupadaService } from './../cuenta-corriente.service';
+import { CuentaCorrientePartidasAbiertasService } from './../cuenta-corriente.service';
 import { CuentaCorrienteBaseComponent } from './../cuenta-corriente.component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
@@ -30,9 +30,9 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
-var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
-    __extends(CuentaCorrienteAgrupadaComponent, _super);
-    function CuentaCorrienteAgrupadaComponent(service, navService, sessionDataService, securityService, floatMsgService, modalService, route, router) {
+var CuentaCorrientePartidasAbiertasComponent = /** @class */ (function (_super) {
+    __extends(CuentaCorrientePartidasAbiertasComponent, _super);
+    function CuentaCorrientePartidasAbiertasComponent(service, navService, sessionDataService, securityService, floatMsgService, modalService, route, router) {
         var _this = _super.call(this, service, navService, sessionDataService, securityService, floatMsgService, modalService, route, router) || this;
         _this.service = service;
         _this.navService = navService;
@@ -52,10 +52,10 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
         });
         return _this;
     }
-    CuentaCorrienteAgrupadaComponent.prototype.setTabs = function () {
-        this.setMenuSeccionTab("cuenta-corriente", "Saldos");
+    CuentaCorrientePartidasAbiertasComponent.prototype.setTabs = function () {
+        this.setMenuSeccionTab("cuenta-corriente", "Partidas Abiertas");
     };
-    CuentaCorrienteAgrupadaComponent.prototype.isVisible = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.isVisible = function () {
         if (this.data) {
             if (this.isSinAgruparVisible() || this.isAgrupadasVisible) {
                 return true;
@@ -66,28 +66,28 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
         else
             return false;
     };
-    CuentaCorrienteAgrupadaComponent.prototype.isSinAgruparVisible = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.isSinAgruparVisible = function () {
         return this.data.cuentasCorrientesSinAgrupar && this.data.cuentasCorrientesSinAgrupar.cuentasCorrientes.length != 0;
     };
-    CuentaCorrienteAgrupadaComponent.prototype.isAgrupadasVisible = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.isAgrupadasVisible = function () {
         return this.data.cuentasCorrientesAgrupadas && this.data.cuentasCorrientesAgrupadas.length != 0;
     };
-    CuentaCorrienteAgrupadaComponent.prototype.verMas = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.verMas = function () {
         this.itemsEnPantalla = this.itemsEnPantalla + 5;
         if (this.data.cuentasCorrientesAgrupadas.length <= this.itemsEnPantalla) {
             this.showMostrarMas = false;
         }
         return false;
     };
-    CuentaCorrienteAgrupadaComponent.prototype.vaciarFiltros = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.vaciarFiltros = function () {
         this.filtroNroLegal = "";
         this.itemsEnPantalla = 5;
         this.showMostrarMas = true;
     };
-    CuentaCorrienteAgrupadaComponent.prototype.isGranos = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.isGranos = function () {
         return this.granosSelected == "G";
     };
-    CuentaCorrienteAgrupadaComponent.prototype.showModalTableAgrupadaResponsive = function (CuentaCorriente, agrupador) {
+    CuentaCorrientePartidasAbiertasComponent.prototype.showModalTableAgrupadaResponsive = function (CuentaCorriente, agrupador) {
         this.modalService.openModalTableResponsive("Detalle de pagos", [
             { etiqueta: "Agrupador", valor: agrupador },
             { etiqueta: "F. Emisión", valor: CuentaCorriente.docDate },
@@ -98,7 +98,7 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
         ]);
         return false;
     };
-    CuentaCorrienteAgrupadaComponent.prototype.ngOnInit = function () {
+    CuentaCorrientePartidasAbiertasComponent.prototype.ngOnInit = function () {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([
@@ -108,15 +108,15 @@ var CuentaCorrienteAgrupadaComponent = /** @class */ (function (_super) {
         ]);
         this.getData();
     };
-    CuentaCorrienteAgrupadaComponent = __decorate([
+    CuentaCorrientePartidasAbiertasComponent = __decorate([
         Component({
-            selector: 'app-cuenta-corriente-agrupada',
-            templateUrl: "cuenta-corriente.agrupada.component.html",
-            providers: [CuentaCorrienteAgrupadaService]
+            selector: 'app-cuenta-corriente-partidas-abiertas',
+            templateUrl: "cuenta-corriente.partidas-abiertas.component.html",
+            providers: [CuentaCorrientePartidasAbiertasService]
         }),
-        __metadata("design:paramtypes", [CuentaCorrienteAgrupadaService, NavService, SessionDataService, SecurityService, FloatMsgService, ModalService, ActivatedRoute, Router])
-    ], CuentaCorrienteAgrupadaComponent);
-    return CuentaCorrienteAgrupadaComponent;
+        __metadata("design:paramtypes", [CuentaCorrientePartidasAbiertasService, NavService, SessionDataService, SecurityService, FloatMsgService, ModalService, ActivatedRoute, Router])
+    ], CuentaCorrientePartidasAbiertasComponent);
+    return CuentaCorrientePartidasAbiertasComponent;
 }(CuentaCorrienteBaseComponent));
-export { CuentaCorrienteAgrupadaComponent };
-//# sourceMappingURL=cuenta-corriente.agrupada.component.js.map
+export { CuentaCorrientePartidasAbiertasComponent };
+//# sourceMappingURL=cuenta-corriente.partidas-abiertas.component.js.map

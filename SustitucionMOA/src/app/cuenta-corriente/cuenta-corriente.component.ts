@@ -48,7 +48,8 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
         this.navService.setSeccionList(
             [
                 new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
-                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de pagos'),
+                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Saldos'),
+                new Seccion('/cuenta-corriente/partidas-abiertas', 'cuenta-corriente', 'Partidas Abiertas'),
             ]
         );
 
