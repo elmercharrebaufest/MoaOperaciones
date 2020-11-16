@@ -1,0 +1,51 @@
+<div class="content-wraper">
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+    <!--Title-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10 "><strong>Nueva notificación</strong> </div>
+    </div>
+    <!--End Title-->
+    <!--Search-->
+    <div class="myRow firstSection mySearch">
+      <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+        <div class="col-xs-12 col-md-12 search-header">
+          <title-caps>Refinar resultados</title-caps>
+        </div>
+
+        <div>
+          Nombre:
+        </div>
+
+        <div>
+          <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
+        </div>
+
+        <div>
+          Fecha Inicio:
+        </div>
+        <div>
+          <input type="date" [(ngModel)]="notificacion.FechaInicio" id="fechaInicio">
+        </div>
+
+        <div>
+          Fecha Fin:
+        </div>
+        <div>
+          <input type="date" [(ngModel)]="notificacion.FechaFin" id="fechaFin">
+        </div>
+      </div>
+    </div>
+
+    <!-- End Search-->
+    <!-- Tables-->
+    <div class="row myRow">
+      <div class="clearfix myTables">
+        <mensaje></mensaje>
+        <spinner></spinner>
+      </div>
+    </div>
+    <!-- END tables-->
+  </section>
+  <!--End CONTENT-->
+</div>

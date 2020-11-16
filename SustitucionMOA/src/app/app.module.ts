@@ -42,7 +42,12 @@ import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuari
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
-import { VendedorStatusService } from "./vendedor/vendedor_status.service";
+import { VendedorStatusService } from "./vendedor/vendedor_status.service";;
+import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component'
+;
+import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
+import { NotificacionesService } from "./notificaciones/notificaciones.service";
+
 
 @NgModule({
   imports: [
@@ -73,6 +78,8 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     EmpresaNoGranosComponent,
     AltasComponent,
     EstadoSolicitudComponent,
+    AltaNotificacionesComponent,
+    ListadoNotificacionesComponent
   ],
   providers: [
     DatePipe,
@@ -90,6 +97,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     SecurityService,
     EmpresaGranosService,
     EstadoSolicitudService,
+    NotificacionesService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

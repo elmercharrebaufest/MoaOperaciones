@@ -18,9 +18,24 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
         }
 
+        public string GrabarNotificacion (Notificacion notificacion)
+        {
+            var resultado = "";
+           
+            if (repositorio.Existe<Notificacion>(n => n.Id == notificacion.Id))
+            {
+                resultado = Editar(notificacion);
+            }
+            else
+            {
+                resultado = Agregar(notificacion);
+            }
+
+            return resultado;
+        }
+
         public string Agregar(Notificacion notificacion)
         {
-
             notificacion.Borrada = false;
             repositorio.Agregar(notificacion);
 
@@ -97,8 +112,8 @@ namespace SustitucionMOAUtils.Services
                 && n.Habilitada
                 && n.FechaInicio >= DateTime.Now
                 && n.FechaFin <= DateTime.Now
-                && n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id))
-                && n.FiltroTipoUsuario.Contains(usuario.TipoUsuario)
+                && n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x))
+                && n.FiltroTipoUsuario.Contains(usuario.TipoUsuario.Id)
             ); ;
 
             return listado;
