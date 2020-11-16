@@ -199,6 +199,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\MolinosForms2.css" />
+    <Content Include="Content\css\MolinosGeneral2.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
@@ -248,9 +250,7 @@
     <Content Include="dist\favicon.ico" />
     <Content Include="dist\index.html" />
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
-
     <Content Include="dist\*.js" />
-
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
