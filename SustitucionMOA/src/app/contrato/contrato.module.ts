@@ -13,10 +13,6 @@ import { SpinnerSmallComponent } from '../common/view-child/spinner-small/spinne
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { CrearContratoAFijarComponent } from '../crear-contrato/afijar/crear-contrato.afijar.component';
-import { CrearContratoAPrecioComponent } from '../crear-contrato/aprecio/crear-contrato.aprecio.component';
-import { CrearContratoFijacionComponent } from '../crear-contrato/fijacion/crear-contrato.fijacion.component';
-import { CrearContratoBaseComponent } from '../crear-contrato/crear-contrato.component';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 @NgModule({
@@ -35,10 +31,6 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
         ContratoVigenteComponent,
         ContratoDetalleComponent,
         ContratoDetalleFijacionComponent,
-        CrearContratoBaseComponent,
-        CrearContratoAPrecioComponent,
-        CrearContratoAFijarComponent,
-        CrearContratoFijacionComponent
     ],
     providers: [
         ContratoService

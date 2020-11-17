@@ -1,50 +1,48 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+import { Component } from '@angular/core';
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAFijarService } from './../crear-contrato.service';
 import { ContratoAFijar } from "../../common/models/contratoAFijar";
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
-import { NavService } from '../../common/services/NavService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { SecurityService } from '../../common/services/SecurityService';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { ModalService } from '../../common/services/ModalService';
-import { Seccion } from '../../common/models/seccion';
-declare var $: any;
-
-@Component({
-    selector: 'app-crear-contrato-afijar',
-    templateUrl: `crear-contrato.afijar.component.html`,
-    providers: [{ provide: CrearContratoService, useClass: CrearContratoAFijarService }]
-})
-export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
-
-    setTabs() {
+var CrearContratoAFijarComponent = /** @class */ (function (_super) {
+    __extends(CrearContratoAFijarComponent, _super);
+    function CrearContratoAFijarComponent() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.contrato = new ContratoAFijar();
+        return _this;
+    }
+    CrearContratoAFijarComponent.prototype.setTabs = function () {
         this.setMenuSeccionTab("crear-contrato", "A Fijar");
-    }
-
-    contrato: ContratoAFijar = new ContratoAFijar();
-    
-
-    ngOnInit() {
-        super.ngOnInit();
-
+    };
+    CrearContratoAFijarComponent.prototype.ngOnInit = function () {
+        _super.prototype.ngOnInit.call(this);
         this.obteneDatosContrato(this.contrato);
-        this.contrato.CondicionFijacionId = 7;       
+        this.contrato.CondicionFijacionId = 7;
         document.getElementById("openModalConfirmModal").click();
-
-    }
-
-    ngAfterViewInit(): void {
-
-
+    };
+    CrearContratoAFijarComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
         var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
         var hoymesqueviene = this.ObtenerFechaHasta(hoysinhora);
-
         this.contrato.FechaDesde = hoysinhora;
         this.contrato.FechaHasta = hoymesqueviene;
-
         $(document).on("mouseover", '.form_datetime_Inicio', function () {
             $('.form_datetime_Inicio').datetimepicker({
                 format: 'dd/mm/yyyy',
@@ -67,7 +65,6 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                     var mesPost = hoy.getMonth() + 2;
                     var dia = hoy.getDate();
                     var ultimoDia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
-
                     if (dia === 1) {
                         dia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
                         mesPost = hoy.getMonth() + 1;
@@ -91,8 +88,6 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                 }
             });
         });
-
-
         $(document).on("mouseover", '.form_datetime_Fin', function () {
             $('.form_datetime_Fin').datetimepicker({
                 format: 'dd/mm/yyyy',
@@ -109,11 +104,8 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                 maxView: 4
             });
         });
-
         this.fechaInicio = hoysinhora.toLocaleDateString('en-GB');
         this.fechaFin = hoymesqueviene.toLocaleDateString('en-GB');
-
-
         //--
         $(document).on("mouseover", '.form_datetime_fInicio', function () {
             $('.form_datetime_fInicio').datetimepicker({
@@ -137,7 +129,6 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                     var mesPost = hoy.getMonth() + 2;
                     var dia = hoy.getDate();
                     var ultimoDia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
-
                     if (dia === 1) {
                         dia = new Date(anio, hoy.getMonth() + 1, 0).getDate();
                         mesPost = hoy.getMonth() + 1;
@@ -161,8 +152,6 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                 }
             });
         });
-
-
         $(document).on("mouseover", '.form_datetime_fFin', function () {
             $('.form_datetime_fFin').datetimepicker({
                 format: 'dd/mm/yyyy',
@@ -179,63 +168,51 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                 maxView: 4
             });
         });
-
         this.fechafInicio = hoysinhora.toLocaleDateString('en-GB');
         this.fechafFin = hoymesqueviene.toLocaleDateString('en-GB');
         //--
-
-    }
-
-    selectEventProveedor(item) {
+    };
+    CrearContratoAFijarComponent.prototype.selectEventProveedor = function (item) {
         this.contrato.ProveedorId = item.Id;
         console.log("prov: ", item.Id);
         if (item != null && item.Id != null && item.Id > 0) {
             this.obtenerDatosCompraNet(this.contrato, item.Id);
         }
-    }
-
-    onChangeSearchProveedor(term: string) {
+    };
+    CrearContratoAFijarComponent.prototype.onChangeSearchProveedor = function (term) {
+        var _this = this;
         if (term.length > 2) {
             this.unsubscribe();
-            this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
-                result => {
-                    var resultlist = JSON.parse(result);
-
-                    this.proveedores = resultlist.map(prov => {
-                        return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit }
-                    })
-                    //this.proveedores = JSON.parse(result);                
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
+            this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(function (result) {
+                var resultlist = JSON.parse(result);
+                _this.proveedores = resultlist.map(function (prov) {
+                    return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit };
+                });
+                //this.proveedores = JSON.parse(result);                
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
         }
-    }
-
-    selectEventLocalidad(item) {
+    };
+    CrearContratoAFijarComponent.prototype.selectEventLocalidad = function (item) {
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
-    }
-
-    onChangeSearchLocalidad(term: string) {
+    };
+    CrearContratoAFijarComponent.prototype.onChangeSearchLocalidad = function (term) {
+        var _this = this;
         if (term.length > 2) {
             this.unsubscribe();
-            this.subscription = this.service.searchLocalidad(term).subscribe(
-                result => {
-                    this.localidades = result;
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
+            this.subscription = this.service.searchLocalidad(term).subscribe(function (result) {
+                _this.localidades = result;
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
         }
-    }
-
-    onBoletoSelected() {
+    };
+    CrearContratoAFijarComponent.prototype.onBoletoSelected = function () {
         this.contrato.BolsaId = 0;
         if (this.contrato.BoletoId == 1) {
             this.bolsasSelect = this.bolsasConfirma;
@@ -249,17 +226,15 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
-    }
-
-    isVisibleBolsa(): boolean {
+    };
+    CrearContratoAFijarComponent.prototype.isVisibleBolsa = function () {
         return this.contrato.BoletoId != 3;
-    }
-
-    isVisibleEstablecimiento(): boolean {
+    };
+    CrearContratoAFijarComponent.prototype.isVisibleEstablecimiento = function () {
         return this.contrato.ProvinciaId == 1;
-    }
-
-    grabarContratoAPrecio() {
+    };
+    CrearContratoAFijarComponent.prototype.grabarContratoAPrecio = function () {
+        var _this = this;
         if (!this.validarContrato()) {
             return false;
         }
@@ -270,7 +245,6 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         dateParts = $("#noCursor2").val().split("/");
         this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
         this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-
         dateParts = $("#noCursorf").val().split("/");
         this.contrato.DesdeFijacion = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
         dateParts = $("#noCursor2f").val().split("/");
@@ -280,13 +254,10 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         this.contrato.PrecioNeto = 0;
         this.contrato.FechaOperacion = hoysinhora;
         this.contrato.Fecha = hoy;
-
         this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
-
         this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 1;
-
         if (this.contrato.MaterialId == 1) {
             this.contrato.StandardDeCalidadId = 2;
         }
@@ -302,55 +273,50 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         if (this.contrato.MaterialId == 5) {
             this.contrato.StandardDeCalidadId = 5;
         }
-
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         console.log(this.contrato);
         try {
             this.unsubscribe();
-            this.subscription = this.service.grabarContratoAFijar(this.contrato).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        let obj = JSON.parse(result);
-
-                        if (obj.HayError) {
-                            let errores = "";
-                            obj.Errores.forEach(element => {
-                                errores = errores + element.Message + " - ";
-                            });
-
-                            this.mensajeComponent.setErrorMsg(errores);
-                        } else {
-                            //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
-
-                            this.contrato.MaterialId = null;
-                            this.contrato.Cantidad = null;
-                            this.contrato.CampanaId = null;
-                            document.getElementById("openModalConfirmModal").click();
-                        }
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
+            this.subscription = this.service.grabarContratoAFijar(this.contrato).subscribe(function (result) {
+                _this.spinnerComponent.hideIt();
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
                 }
-
-            );
-        } catch (e) {
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    var obj = JSON.parse(result);
+                    if (obj.HayError) {
+                        var errores_1 = "";
+                        obj.Errores.forEach(function (element) {
+                            errores_1 = errores_1 + element.Message + " - ";
+                        });
+                        _this.mensajeComponent.setErrorMsg(errores_1);
+                    }
+                    else {
+                        //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                        _this.contrato.MaterialId = null;
+                        _this.contrato.Cantidad = null;
+                        _this.contrato.CampanaId = null;
+                        document.getElementById("openModalConfirmModal").click();
+                    }
+                }
+            }, function (error) {
+                _this.spinnerComponent.hideIt();
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
-
-    }
-
-    validarContrato() {
+    };
+    CrearContratoAFijarComponent.prototype.validarContrato = function () {
         //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
         //    this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Dolarizado.");
         //    return false;
@@ -400,34 +366,40 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         //    return false;
         //}
         return true;
-    }
-
-    changePlanCanje(event) {
+    };
+    CrearContratoAFijarComponent.prototype.changePlanCanje = function (event) {
         this.contrato.Consignatario = false;
-    }
-
-    changeConsignatario(event) {
+    };
+    CrearContratoAFijarComponent.prototype.changeConsignatario = function (event) {
         this.contrato.PlanCanje = false;
-    }
-
-    changeClasificacion(event) {
+    };
+    CrearContratoAFijarComponent.prototype.changeClasificacion = function (event) {
         if (this.contrato.ClasificacionId == 1) {
             this.contrato.PlanCanje = false;
             this.contrato.Consignatario = false;
         }
-    }
-    isNotProductor(event) {
+    };
+    CrearContratoAFijarComponent.prototype.isNotProductor = function (event) {
         if (this.contrato.ClasificacionId == 1) {
             return false;
-        } else {
+        }
+        else {
             return true;
         }
-    }
-
-    onChangeMaterial() {
+    };
+    CrearContratoAFijarComponent.prototype.onChangeMaterial = function () {
         if (this.contrato.MaterialId != null) {
             this.habilitaciones(this.contrato);
         }
-    }
-
-}
+    };
+    CrearContratoAFijarComponent = __decorate([
+        Component({
+            selector: 'app-crear-contrato-afijar',
+            templateUrl: "crear-contrato.afijar.component.html",
+            providers: [{ provide: CrearContratoService, useClass: CrearContratoAFijarService }]
+        })
+    ], CrearContratoAFijarComponent);
+    return CrearContratoAFijarComponent;
+}(CrearContratoBaseComponent));
+export { CrearContratoAFijarComponent };
+//# sourceMappingURL=crear-contrato.afijar.component.js.map
