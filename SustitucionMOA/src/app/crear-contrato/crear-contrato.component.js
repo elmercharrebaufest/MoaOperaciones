@@ -79,9 +79,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([
-            new Seccion('/contrato/crear/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/contrato/crear/afijar', 'crear-contrato', 'A Fijar'),
-            new Seccion('/contrato/crear/fijacion', 'crear-contrato', 'Fijacion'),
+            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
         ]);
         //this.obteneDatosContrato();
     };
@@ -134,11 +134,13 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     _this.zona.push(el);
                 });
                 obj.Datos.Destino.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.destinos.push(el);
+                    if (element.Id != 10) {
+                        var el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        };
+                        _this.destinos.push(el);
+                    }
                 });
                 obj.Datos.campania.forEach(function (element) {
                     var el = {
@@ -423,6 +425,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         return false;
     };
     ;
+    CrearContratoBaseComponent.prototype.irACargas = function () {
+        this.navService.navegarSeccion("reporte/contrato");
+    };
     __decorate([
         ViewChild(MensajeComponent),
         __metadata("design:type", MensajeComponent)

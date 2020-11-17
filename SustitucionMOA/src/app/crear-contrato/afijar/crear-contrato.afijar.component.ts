@@ -30,7 +30,9 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         super.ngOnInit();
 
         this.obteneDatosContrato(this.contrato);
-        this.contrato.CondicionFijacionId = 7;
+        this.contrato.CondicionFijacionId = 7;       
+        document.getElementById("openModalConfirmModal").click();
+
     }
 
     ngAfterViewInit(): void {
@@ -326,10 +328,12 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
 
                             this.mensajeComponent.setErrorMsg(errores);
                         } else {
-                            this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                            //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+
                             this.contrato.MaterialId = null;
                             this.contrato.Cantidad = null;
                             this.contrato.CampanaId = null;
+                            document.getElementById("openModalConfirmModal").click();
                         }
                     }
                 },

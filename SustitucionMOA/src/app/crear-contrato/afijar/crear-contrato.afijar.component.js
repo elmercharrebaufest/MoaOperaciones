@@ -35,6 +35,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         _super.prototype.ngOnInit.call(this);
         this.obteneDatosContrato(this.contrato);
         this.contrato.CondicionFijacionId = 7;
+        document.getElementById("openModalConfirmModal").click();
     };
     CrearContratoAFijarComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -298,10 +299,11 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
                         _this.mensajeComponent.setErrorMsg(errores_1);
                     }
                     else {
-                        _this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                        //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
                         _this.contrato.MaterialId = null;
                         _this.contrato.Cantidad = null;
                         _this.contrato.CampanaId = null;
+                        document.getElementById("openModalConfirmModal").click();
                     }
                 }
             }, function (error) {

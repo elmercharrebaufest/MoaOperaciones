@@ -76,9 +76,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([
 
-            new Seccion('/contrato/crear/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/contrato/crear/afijar', 'crear-contrato', 'A Fijar'),
-            new Seccion('/contrato/crear/fijacion', 'crear-contrato', 'Fijacion'),
+            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
 
         ]);
         //this.obteneDatosContrato();
@@ -130,11 +130,14 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         this.zona.push(el);
                     });
                     obj.Datos.Destino.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
+                        if (element.Id != 10) {
+                            let el = {
+                                Id: element.Id,
+                                Descripcion: element.Descripcion
+                            }
+                            this.destinos.push(el);
                         }
-                        this.destinos.push(el);
+
                     });
                     obj.Datos.campania.forEach(element => {
                         let el = {
@@ -412,11 +415,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                                 DesdeEntrega: con.DesdeEntrega,
                                 FechaDesde: con.FechaDesde,
                                 FechaHasta: con.FechaHasta,
-                                Filtro: '<p class="buscar-nomb"><strong>' + con.ContratoId+'</strong> - ' +
-                                    'KG CTO: ' + con.KilosContrato+' ' +
-                                    ' - KGS SIN PRECIO : ' + con.ARecibirSinPrecio+' - KGS SIN FIJAR : ' + con.RecibidoSinFijar+'' +
-                                    ' - KILOS A FIJAR: ' + con.KilosPendiente+' - KG APLIC: ' + con.KilosAplicados+'' +
-                                    ' - Hasta: ' + con.FechaHasta+' - <strong>' + con.CentroDescripcion+'</strong></p>',
+                                Filtro: '<p class="buscar-nomb"><strong>' + con.ContratoId + '</strong> - ' +
+                                    'KG CTO: ' + con.KilosContrato + ' ' +
+                                    ' - KGS SIN PRECIO : ' + con.ARecibirSinPrecio + ' - KGS SIN FIJAR : ' + con.RecibidoSinFijar + '' +
+                                    ' - KILOS A FIJAR: ' + con.KilosPendiente + ' - KG APLIC: ' + con.KilosAplicados + '' +
+                                    ' - Hasta: ' + con.FechaHasta + ' - <strong>' + con.CentroDescripcion + '</strong></p>',
                                 HastaEntrega: con.HastaEntrega,
                                 ImporteAPrecio: con.ImporteAPrecio,
                                 ImporteSobrePrecio: con.ImporteSobrePrecio,
@@ -445,4 +448,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         return false;
     };
 
+    irACargas() {
+        this.navService.navegarSeccion("reporte/contrato");
+    }
 }

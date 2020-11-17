@@ -238,7 +238,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
                         _this.mensajeComponent.setErrorMsg(errores_1);
                     }
                     else {
-                        _this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                        //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
                         _this.contrato.MaterialId = null;
                         _this.contrato.Cantidad = null;
                         _this.contrato.CampanaId = null;
@@ -246,6 +246,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
                         _this.contrato.PrecioNeto = null;
                         _this.contrato.MonedaId = null;
                         _this.contrato.ContratoSAP = null;
+                        document.getElementById("openModalConfirmModal").click();
                     }
                 }
             }, function (error) {

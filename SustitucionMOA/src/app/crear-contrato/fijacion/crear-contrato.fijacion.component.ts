@@ -261,7 +261,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
 
                             this.mensajeComponent.setErrorMsg(errores);
                         } else {
-                            this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                            //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
                             this.contrato.MaterialId = null;
                             this.contrato.Cantidad = null;
                             this.contrato.CampanaId = null;
@@ -269,6 +269,8 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
                             this.contrato.PrecioNeto = null;
                             this.contrato.MonedaId = null;
                             this.contrato.ContratoSAP = null;
+                            document.getElementById("openModalConfirmModal").click();
+
                         }
                     }
                 },

@@ -110,6 +110,11 @@ const appRoutes: Routes = [
       { path: "estado-solicitud", component: EstadoSolicitudComponent },
       { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
       { path: "altas", component: AltasComponent },
+        {
+            path: "crear-contrato",
+            loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
+        },
+
     ],
   },
   { path: "**", component: HomeComponent },
