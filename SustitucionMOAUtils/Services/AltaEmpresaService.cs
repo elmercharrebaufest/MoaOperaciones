@@ -41,6 +41,7 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
                                 || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
+                                && x.HistorialAprobaciones.Count > 0
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorDto

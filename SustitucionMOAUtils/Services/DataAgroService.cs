@@ -188,7 +188,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public string VerificarEstadoProveedor(int proveedorId)
+        public string VerificarEstadoProveedor(int proveedorId, string usuarioMail)
         {
             Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
@@ -196,19 +196,35 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
             }
-
+            int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
             var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-
+            var hist = new ProveedorHistorialAprobacion
+            {
+                Fecha = DateTime.Now,
+                Proveedor_Id = proveedor.Id,
+                Usuario_Id = usuarioId,
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+            };
             if (respuesta.HayError)
             {
+                hist.Observacion = respuesta.ListaErrores.First().Message;
+                repositorio.Agregar(hist);
+                repositorio.GuardarCambios();
                 throw new InfoCustomException(respuesta.ListaErrores.First().Message);
             }
 
             if (!respuesta.ProveedorMails.Contains(proveedor.Mail, StringComparer.OrdinalIgnoreCase))
             {
+                hist.Observacion = "El mail del proveedor no coincide con el cargado en DataAgro";
+                repositorio.Agregar(hist);
+                repositorio.GuardarCambios();
                 throw new InfoCustomException("El mail del proveedor no coincide con el cargado en DataAgro");
             }
 
+            string resultado = "El proveedor ha sido habilitado para cargar la documentación.";
+            hist.Observacion = "Proveedor habilitado en DataAgro";
+
+            proveedor.HistorialAprobaciones.Add(hist);
             proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
             proveedor.IdComercialDataAgro = respuesta.ComercialId;
             proveedor.IdDataAgro = respuesta.ProveedorId;
@@ -220,7 +236,6 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            string resultado = "El proveedor ha sido habilitado para cargar la documentación.";
 
             return resultado;
         }

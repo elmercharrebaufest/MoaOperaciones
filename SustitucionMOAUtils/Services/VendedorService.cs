@@ -266,6 +266,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
                 }
+                var hist = new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    Usuario_Id = usuario.Id,
+                    EstadoAprobacion = nuevoVendedor.EstadoAprobacion,
+                    Observacion = "Proveedor habilitado en DataAgro"
+                };
+                nuevoVendedor.HistorialAprobaciones.Add(hist);
 
                 nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
                 nuevoVendedor.Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
@@ -275,9 +283,18 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 dataAgroService.ValidarNuevoProveedorMultifirma(ref nuevoVendedor);
+
+                var hist = new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    Usuario_Id = usuario.Id,
+                    EstadoAprobacion = nuevoVendedor.EstadoAprobacion,
+                    Observacion = nuevoVendedor.Observaciones
+                };
+                nuevoVendedor.HistorialAprobaciones.Add(hist);
+                usuario.Proveedores.Add(nuevoVendedor);
             }
 
-            usuario.Proveedores.Add(nuevoVendedor);
 
             repositorio.GuardarCambios();
 

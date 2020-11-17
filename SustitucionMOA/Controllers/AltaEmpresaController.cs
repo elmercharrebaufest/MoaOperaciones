@@ -183,7 +183,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = dataAgroService.VerificarEstadoProveedor(proveedorID) });
+                return JsonCustom(new { data = dataAgroService.VerificarEstadoProveedor(proveedorID, ClaimsPrincipalExtension.GetClaimValue("emails")) });
             }
             catch (InfoCustomException e)
             {
