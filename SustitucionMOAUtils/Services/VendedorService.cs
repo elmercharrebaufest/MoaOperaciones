@@ -337,7 +337,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
                 }
-
+                nuevoVendedor.IdProveedorCorredor = usuario.ObtenerCorredor().Id;
                 nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
                 nuevoVendedor.Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
                 nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
