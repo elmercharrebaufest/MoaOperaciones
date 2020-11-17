@@ -175,9 +175,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
-            result => {
-                this.spinnerSmallComponent.hideIt();
-                this.visibleEnviar = true;
+            result => {               
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -188,8 +186,13 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                     this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                     this.getListaContratos();
                 }
+                $("#myModalConfirmacion").hide();
+                this.spinnerSmallComponent.hideIt();
+                this.visibleEnviar = true;
+                return false;
             },
             error => {
+                $("#myModalConfirmacion").hide();
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 this.mensajeComponent.setErrorMsg(error.message);
