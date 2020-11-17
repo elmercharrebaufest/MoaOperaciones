@@ -38,6 +38,7 @@ import { HomeNGSComponent } from "./home/no-granos/home.no-granos.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { LayoutService } from "./layout/layout.service";
 import { PesificacionComponent } from "./pesificacion/pesificacion.component";
+import { TooltipsModule } from "./tooltips/tooltips.module";
 import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuario.cambio-vendedor.component";
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
@@ -57,6 +58,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     ReCaptchaModule,
     AutocompleteLibModule,
     SharedModule,
+    TooltipsModule,
   ],
   declarations: [
     AppComponent,

@@ -5,6 +5,7 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../common/shared.module';
+import { TooltipsModule } from '../tooltips/tooltips.module';
 import { CartaPorteAplicacionComponent } from "./aplicacion/carta-porte.aplicacion2.component";
 import { CartaPorteRoutingModule } from './carta-porte-routing.module';
 import { CartaPorteBaseComponent } from "./carta-porte.component";
@@ -22,6 +23,7 @@ import { CartaPorteFormularioComponent } from "./formulario/carta-porte.formular
     NgxPaginationModule,
     Ng2AutoCompleteModule,
     AutocompleteLibModule,
+    TooltipsModule,
   ],
     declarations: [
       CartaPorteAplicacionComponent,
