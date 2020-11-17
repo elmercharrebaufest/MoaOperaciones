@@ -400,12 +400,12 @@
                                     <!--data-toggle="tab">-->Mi situaci&oacute;n fiscal
                                 </a>
                             </div>
-                            <div *ngIf="isGranosSelected() && isAuthorized('CONSULTAR VENDEDORES')">
+                            <div *ngIf="isAuthorized('CONSULTAR VENDEDORES')">
                                 <a (click)="goToSeccion('/dato-fiscal/vendedor')" href="#">
                                     <!--data-toggle="tab">-->Mis Vendedores
                                 </a>
                             </div>
-                            <div *ngIf="isGranosSelected() && isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div *ngIf="isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/dato-fiscal/vendedores-pendientes')" href="#">
                                     <!--data-toggle="tab">-->Vendedores Pendientes
                                 </a>
