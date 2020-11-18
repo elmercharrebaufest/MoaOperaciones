@@ -100,6 +100,17 @@ namespace SustitucionMOAUtils.Services
                             usuario.Roles.Add(rolDesabilitado);
 
                             proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                            var hist = new ProveedorHistorialAprobacion
+                            {
+                                Fecha = DateTime.Now,
+                                Proveedor_Id = proveedor.Id,
+                                Usuario_Id = usuario.Id,
+                                EstadoAprobacion = proveedor.EstadoAprobacion,
+                                Observacion = "El mail no coincide con el registrado en Data Agro"
+                            };
+                            repositorio.Agregar(hist);
+
                             proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                         }
                     }
@@ -108,6 +119,17 @@ namespace SustitucionMOAUtils.Services
                         Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                         usuario.Roles.Add(rolDesabilitado);
                         proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                        var hist = new ProveedorHistorialAprobacion
+                        {
+                            Fecha = DateTime.Now,
+                            Proveedor_Id = proveedor.Id,
+                            Usuario_Id = usuario.Id,
+                            EstadoAprobacion = proveedor.EstadoAprobacion,
+                            Observacion = respuesta.ListaErrores.First().Message
+                        };
+                        repositorio.Agregar(hist);
+
                         proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                     }
                 }
@@ -116,6 +138,17 @@ namespace SustitucionMOAUtils.Services
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                    var hist = new ProveedorHistorialAprobacion
+                    {
+                        Fecha = DateTime.Now,
+                        Proveedor_Id = proveedor.Id,
+                        Usuario_Id = usuario.Id,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
+                        Observacion = "Ocurrió un error comunicandose con Data Agro"
+                    };
+                    repositorio.Agregar(hist);
+
                     proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                 }
 
@@ -221,7 +254,6 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("El mail del proveedor no coincide con el cargado en DataAgro");
             }
 
-            string resultado = "El proveedor ha sido habilitado para cargar la documentación.";
             hist.Observacion = "Proveedor habilitado en DataAgro";
 
             proveedor.HistorialAprobaciones.Add(hist);
@@ -232,10 +264,20 @@ namespace SustitucionMOAUtils.Services
             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
             proveedor.Observaciones = "";
 
-            proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+            string resultado;
+
+            if (respuesta.ProveedorOperando)
+            {
+                resultado = "El proveedor ha sido habilitado en estado 'Aprobado' debido a que tenía contratos. De tratarse de un usuario nuevo recuerde actualizar los roles. ";
+                proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
+            }
+            else 
+            {
+                resultado = "El proveedor ha sido habilitado para cargar la documentación.";
+                proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
+            }
 
             repositorio.GuardarCambios();
-
 
             return resultado;
         }
