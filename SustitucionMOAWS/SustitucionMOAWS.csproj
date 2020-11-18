@@ -745,13 +745,13 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PesificacionGuadarWebServiceMOA\SI_MPMF_MOAOP_GUARDAR_PESIF1.wsdl" />
-    <None Include="Service References\PesificacionWebServiceMOA\SI_MPMF_MOAOP_OBTENER_PEND_USD.wsdl" />
     <None Include="Service References\PesificacionGuadarWebServiceMOA\SustitucionMOAWS.PesificacionGuadarWebServiceMOA.SI_MPMF_MOAOP_GUARDAR_PESIFResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PesificacionGuadarWebServiceMOA\SustitucionMOAWS.PesificacionGuadarWebServiceMOA.ZMPES5490.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\PesificacionWebServiceMOA\SI_MPMF_MOAOP_OBTENER_PEND_USD1.wsdl" />
     <None Include="Service References\PesificacionWebServiceMOA\SustitucionMOAWS.PesificacionWebServiceMOA.SI_MPMF_MOAOP_OBTENER_PEND_USDResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
