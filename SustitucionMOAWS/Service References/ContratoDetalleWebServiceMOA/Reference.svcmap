@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\SI_MPMF_MOAOP_DETALLES_CONTRATOService.wsdl" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/7c2f2d710afd30be857935ee1dd38932" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_DETALLES_CONTRATO.wsdl" MetadataType="Wsdl" ID="a1749361-e52a-44f3-a007-0a9c373d0ea3" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/SI_MPMF_MOAOP_DETALLES_CONTRATOService.wsdl" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_DETALLES_CONTRATO1.wsdl" MetadataType="Wsdl" ID="66d4b1ea-fe7c-4eab-92e0-7d2cd4dd4499" SourceId="1" SourceUrl="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/7c2f2d710afd30be857935ee1dd38932" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

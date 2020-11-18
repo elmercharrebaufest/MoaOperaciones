@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\SI_MPMF_MOAOP_DET_VINCULA.xml" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/e0bc4c304a2b3b9e922b753749df4eb8" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_DET_VINCULA.wsdl" MetadataType="Wsdl" ID="0e9c734c-e668-4fc0-8526-fc00e023530a" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/SI_MPMF_MOAOP_DET_VINCULA.xml" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_DET_VINCULA1.wsdl" MetadataType="Wsdl" ID="71495c1e-820c-4ad3-bf01-e65a36b0f111" SourceId="1" SourceUrl="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/e0bc4c304a2b3b9e922b753749df4eb8" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

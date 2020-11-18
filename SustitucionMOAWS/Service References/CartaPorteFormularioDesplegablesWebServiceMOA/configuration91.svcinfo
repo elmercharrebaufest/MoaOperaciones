@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="wzQhTvh4OB95loUNZQjeU7GYzhE=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="05tzwJm78iAfhKM2j+UTilaxBvtJanSJIu/3uSSPWcQ=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_CP_DESPLEGABLESBinding">
       <properties>
@@ -221,7 +221,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port36" contract="CartaPorteFormularioDesplegablesWebServiceMOA.SI_MPMF_MOAOP_CP_DESPLEGABLES" bindingType="basicHttpBinding" address="http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn:OPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_CP_DESPLEGABLESBinding">
+    <endpoint name="HTTP_Port36" contract="CartaPorteFormularioDesplegablesWebServiceMOA.SI_MPMF_MOAOP_CP_DESPLEGABLES" bindingType="basicHttpBinding" address="http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_CP_DESPLEGABLESBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -306,7 +306,7 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port36" contract="CartaPorteFormularioDesplegablesWebServiceMOA.SI_MPMF_MOAOP_CP_DESPLEGABLES" bindingType="basicHttpBinding" address="https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn:OPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_CP_DESPLEGABLESBinding1">
+    <endpoint name="HTTPS_Port36" contract="CartaPorteFormularioDesplegablesWebServiceMOA.SI_MPMF_MOAOP_CP_DESPLEGABLES" bindingType="basicHttpBinding" address="https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_CP_DESPLEGABLESBinding1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>

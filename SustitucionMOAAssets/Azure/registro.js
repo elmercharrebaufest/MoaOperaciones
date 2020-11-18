@@ -62,7 +62,8 @@ $("document").ready(function () {
   $("#claimVerificationServerError").text(
     "Ya existe un usuario con el e-mail especificado. Elija otro diferente."
     );
-
+    $("#extension_Tipodeproveedor_cliente").hide();
+    $("#cliente_option").hide();
   /*
 $(#newPassword).addClass('input-error');
 $(#email).addClass('input-error');

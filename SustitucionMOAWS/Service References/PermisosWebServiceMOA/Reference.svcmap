@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\NuevosWS\SI_MPMF_MOAOP_PERMISOS.xml" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/8389c87d7fae35e99bc755eed9a0c393" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_PERMISOS.wsdl" MetadataType="Wsdl" ID="ec49da53-496c-414e-a57a-334ca18ec91d" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/NuevosWS/SI_MPMF_MOAOP_PERMISOS.xml" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_PERMISOS1.wsdl" MetadataType="Wsdl" ID="299abe42-136b-4e78-8650-d985ec307121" SourceId="1" SourceUrl="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/8389c87d7fae35e99bc755eed9a0c393" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="Se/FzGIUSqSa5wfKIAtC/LFtS58=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="0xGaunZa2rekPlljZPw4rMzKTHhq56+INEz2XIByJv0=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding2">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding2</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -110,10 +110,10 @@
         </property>
       </properties>
     </bindingConfiguration>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding3">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding1">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding3</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding1</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -221,10 +221,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port39" contract="VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDOR" bindingType="basicHttpBinding" address="http://gvicpidev01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn:OPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding2">
+    <endpoint name="HTTP_Port39" contract="VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDOR" bindingType="basicHttpBinding" address="http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://gvicpidev01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
+          <serializedValue>http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -233,7 +233,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding2</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDOR</serializedValue>
@@ -306,10 +306,10 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port39" contract="VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDOR" bindingType="basicHttpBinding" address="https://gvicpidev01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn:OPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding3">
+    <endpoint name="HTTPS_Port39" contract="VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDOR" bindingType="basicHttpBinding" address="https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>https://gvicpidev01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
+          <serializedValue>https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -318,7 +318,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding3</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLES_VENDEDORBinding1</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDOR</serializedValue>

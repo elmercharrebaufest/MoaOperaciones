@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\lucas\Desktop\SI_MPMF_MOAOP_DET_FLETE_PROCService.wsdl" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/669902210dc033b2b4b517f84afdc904" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_DET_FLETE_PROC.wsdl" MetadataType="Wsdl" ID="04e007ea-9f07-47a4-85b6-1b88c8da5bad" SourceId="1" SourceUrl="file:///C:/Users/lucas/Desktop/SI_MPMF_MOAOP_DET_FLETE_PROCService.wsdl" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_DET_FLETE_PROC1.wsdl" MetadataType="Wsdl" ID="dd7a6761-1173-470c-8302-0346edd736a5" SourceId="1" SourceUrl="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/669902210dc033b2b4b517f84afdc904" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

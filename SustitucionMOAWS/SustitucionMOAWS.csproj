@@ -352,7 +352,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\DataSources\System.Diagnostics.EventLogEntry.datasource" />
-    <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES.wsdl" />
+    <None Include="Service References\AplicacionesWebServiceMOA\SI_MPMF_MOAOP_APLICACIONES1.wsdl" />
     <None Include="Service References\AplicacionesWebServiceMOA\SustitucionMOAWS.AplicacionesWebServiceMOA.SI_MPMF_MOAOP_APLICACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -375,7 +375,7 @@
     <None Include="Service References\CambioPassWebServiceMOA\SustitucionMOAWS.CambioPassWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CCPP.wsdl" />
+    <None Include="Service References\CartaPorteDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CCPP1.wsdl" />
     <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPPResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -391,12 +391,36 @@
     <None Include="Service References\CartaPorteDetalleWebServiceMOA\SustitucionMOAWS.CartaPorteDetalleWebServiceMOA.ZMPES6190.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SI_MPMF_MOAOP_BUSCA_CTG.wsdl" />
-    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SI_MPMF_MOAOP_CP_DESPLEGABLES.wsdl" />
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SI_MPMF_MOAOP_BUSCA_CTG1.wsdl" />
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.SI_MPMF_MOAOP_BUSCA_CTGResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.ZMPES5360.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.ZMPES5370.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.ZMPES5380.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.ZMPES5390.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.ZMPES5400.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioCTGWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA.ZMPES5410.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SI_MPMF_MOAOP_CP_DESPLEGABLES1.wsdl" />
+    <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioDesplegablesWebServiceMOA.SI_MPMF_MOAOP_CP_DESPLEGABLESResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\CartaPorteFormularioDesplegablesWebServiceMOA\SustitucionMOAWS.CartaPorteFormularioDesplegablesWebServiceMOA.Z_MPMF_MOAOP_CP_DESPLEGABLESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SI_MPMF_MOAOP_CATEG_CONTACTO.wsdl" />
+    <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SI_MPMF_MOAOP_CATEG_CONTACTO1.wsdl" />
     <None Include="Service References\ContactoMailCategoriasWebServiceMOA\SustitucionMOAWS.ContactoMailCategoriasWebServiceMOA.SI_MPMF_MOAOP_CATEG_CONTACTOResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -407,7 +431,7 @@
     <None Include="Service References\ContactoMailWebServiceMOA\SustitucionMOAWS.ContactoMailWebServiceMOA.SI_MPMF_MOAOP_MAIL_CONTACTOResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ContratoDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_CONTRATO.wsdl" />
+    <None Include="Service References\ContratoDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_CONTRATO1.wsdl" />
     <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_CONTRATOResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -444,7 +468,7 @@
     <None Include="Service References\ContratoDetalleWebServiceMOA\SustitucionMOAWS.ContratoDetalleWebServiceMOA.ZMPES6210.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ContratoPDFWebServiceMOA\SI_MPMF_MOAOP_PDF_CONTRATO.wsdl" />
+    <None Include="Service References\ContratoPDFWebServiceMOA\SI_MPMF_MOAOP_PDF_CONTRATO1.wsdl" />
     <None Include="Service References\ContratoPDFWebServiceMOA\SustitucionMOAWS.ContratoPDFWebServiceMOA.ITCOO.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -454,7 +478,7 @@
     <None Include="Service References\ContratoPDFWebServiceMOA\SustitucionMOAWS.ContratoPDFWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ContratosWebServiceMOA\SI_MPMF_MOAOP_CONTRATOS.wsdl" />
+    <None Include="Service References\ContratosWebServiceMOA\SI_MPMF_MOAOP_CONTRATOS1.wsdl" />
     <None Include="Service References\ContratosWebServiceMOA\SustitucionMOAWS.ContratosWebServiceMOA.SI_MPMF_MOAOP_CONTRATOSResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -480,7 +504,7 @@
     <None Include="Service References\CrearUsuarioWebServiceMOA\SustitucionMOAWS.CrearUsuarioWebServiceMOA.SI_MPMF_MOAOP_CREA_USERResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SI_MPMF_MOAOP_CUENTA_CORRIENTE.wsdl" />
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\SI_MPMF_MOAOP_CUENTA_CORRIENTE1.wsdl" />
     <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.SI_MPMF_MOAOP_CUENTA_CORRIENTEResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -522,7 +546,7 @@
     <None Include="Service References\DataAgroServices\SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\DetalleCteWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CTE.wsdl" />
+    <None Include="Service References\DetalleCteWebServiceMOA\SI_MPMF_MOAOP_DETALLE_CTE1.wsdl" />
     <None Include="Service References\DetalleCteWebServiceMOA\SustitucionMOAWS.DetalleCteWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CTEResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -532,7 +556,7 @@
     <None Include="Service References\DetalleCteWebServiceMOA\SustitucionMOAWS.DetalleCteWebServiceMOA.ZMPES5450.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\FijacionDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_FIJACIONES.wsdl" />
+    <None Include="Service References\FijacionDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_FIJACIONES1.wsdl" />
     <None Include="Service References\FijacionDetalleWebServiceMOA\SustitucionMOAWS.FijacionDetalleWebServiceMOA.SI_MPMF_MOAOP_DET_FIJACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -542,7 +566,7 @@
     <None Include="Service References\FijacionDetalleWebServiceMOA\SustitucionMOAWS.FijacionDetalleWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\FijacionesWebServiceMOA\SI_MPMF_MOAOP_FIJACIONES.wsdl" />
+    <None Include="Service References\FijacionesWebServiceMOA\SI_MPMF_MOAOP_FIJACIONES1.wsdl" />
     <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.SI_MPMF_MOAOP_FIJACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -564,14 +588,14 @@
     <None Include="Service References\FijacionesWebServiceMOA\SustitucionMOAWS.FijacionesWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\FletesRelacionWebServiceMOA\SI_MPMF_MOAOP_RELAC_PL.wsdl" />
+    <None Include="Service References\FletesRelacionWebServiceMOA\SI_MPMF_MOAOP_RELAC_PL1.wsdl" />
     <None Include="Service References\FletesRelacionWebServiceMOA\SustitucionMOAWS.FletesRelacionWebServiceMOA.SI_MPMF_MOAOP_RELAC_PLResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\FletesRelacionWebServiceMOA\SustitucionMOAWS.FletesRelacionWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\FletesWebServiceMOA\SI_MPMF_MOAOP_VIAJES.wsdl" />
+    <None Include="Service References\FletesWebServiceMOA\SI_MPMF_MOAOP_VIAJES1.wsdl" />
     <None Include="Service References\FletesWebServiceMOA\SustitucionMOAWS.FletesWebServiceMOA.SI_MPMF_MOAOP_VIAJESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -584,7 +608,7 @@
     <None Include="Service References\FletesWebServiceMOA\SustitucionMOAWS.FletesWebServiceMOA.ZMPES4970.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\FleteValidarImporteWebServiceMOA\SI_MPMF_MOAOP_VAL_IMPORTE.wsdl" />
+    <None Include="Service References\FleteValidarImporteWebServiceMOA\SI_MPMF_MOAOP_VAL_IMPORTE1.wsdl" />
     <None Include="Service References\FleteValidarImporteWebServiceMOA\SustitucionMOAWS.FleteValidarImporteWebServiceMOA.SI_MPMF_MOAOP_VAL_IMPORTEResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -608,7 +632,7 @@
     <None Include="Service References\HomeWebServiceMOA\SustitucionMOAWS.HomeWebServiceMOA.ZMPES4550.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\LiquidacionesNGWebServiceMOA\SI_MPMF_MOAOP_LIQUIDACIONES_NG.wsdl" />
+    <None Include="Service References\LiquidacionesNGWebServiceMOA\SI_MPMF_MOAOP_LIQUIDACIONES_NG1.wsdl" />
     <None Include="Service References\LiquidacionesNGWebServiceMOA\SustitucionMOAWS.LiquidacionesNGWebServiceMOA.SI_MPMF_MOAOP_LIQUIDACIONES_NGResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -621,7 +645,7 @@
     <None Include="Service References\LiquidacionesNGWebServiceMOA\SustitucionMOAWS.LiquidacionesNGWebServiceMOA.ZMPES6110.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\LiquidacionesWebServiceMOA\SI_MPMF_MOAOP_LIQUIDACIONES.wsdl" />
+    <None Include="Service References\LiquidacionesWebServiceMOA\SI_MPMF_MOAOP_LIQUIDACIONES1.wsdl" />
     <None Include="Service References\LiquidacionesWebServiceMOA\SustitucionMOAWS.LiquidacionesWebServiceMOA.SI_MPMF_MOAOP_LIQUIDACIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -638,11 +662,11 @@
     <None Include="Service References\LoginWebServiceMOA\SustitucionMOAWS.LoginWebServiceMOA.Z_MPMF_MOAOP_LOGINResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\MovimientoBalanzaWebServiceMOA\SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA.wsdl" />
+    <None Include="Service References\MovimientoBalanzaWebServiceMOA\SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA1.wsdl" />
     <None Include="Service References\MovimientoBalanzaWebServiceMOA\SustitucionMOAWS.MovimientoBalanzaWebServiceMOA.SI_MPMF_MOAOP_MOVIMIENTOS_BALANZAResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\NoticiasDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_NOTICIAS.wsdl" />
+    <None Include="Service References\NoticiasDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_NOTICIAS1.wsdl" />
     <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_NOTICIASResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -658,14 +682,14 @@
     <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4920.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
+    <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG1.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NGResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.ZMPES4940.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PagoDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLE_PAGO.wsdl" />
+    <None Include="Service References\PagoDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLE_PAGO1.wsdl" />
     <None Include="Service References\PagoDetalleWebServiceMOA\SustitucionMOAWS.PagoDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_PAGOResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -678,14 +702,14 @@
     <None Include="Service References\PagoDetalleWebServiceMOA\SustitucionMOAWS.PagoDetalleWebServiceMOA.ZMPES5320.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PagosNGWebServiceMOA\SI_MPMF_MOAOP_PAGOS_NG.wsdl" />
+    <None Include="Service References\PagosNGWebServiceMOA\SI_MPMF_MOAOP_PAGOS_NG1.wsdl" />
     <None Include="Service References\PagosNGWebServiceMOA\SustitucionMOAWS.PagosNGWebServiceMOA.SI_MPMF_MOAOP_PAGOS_NGResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PagosNGWebServiceMOA\SustitucionMOAWS.PagosNGWebServiceMOA.ZMPES4930.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PagosWebServiceMOA\SI_MPMF_MOAOP_PAGOS_CTA_CTE.wsdl" />
+    <None Include="Service References\PagosWebServiceMOA\SI_MPMF_MOAOP_PAGOS_CTA_CTE1.wsdl" />
     <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.SI_MPMF_MOAOP_PAGOS_CTA_CTEResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -698,28 +722,28 @@
     <None Include="Service References\PagosWebServiceMOA\SustitucionMOAWS.PagosWebServiceMOA.ZMPES5310.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PDFWebServiceMOA\SI_MPMF_MOAOP_PDF.wsdl" />
+    <None Include="Service References\PDFWebServiceMOA\SI_MPMF_MOAOP_PDF1.wsdl" />
     <None Include="Service References\PDFWebServiceMOA\SustitucionMOAWS.PDFWebServiceMOA.SI_MPMF_MOAOP_PDFResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PDFWebServiceMOA\SustitucionMOAWS.PDFWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PerfilesWebServiceMOA\SI_MPMF_MOAOP_PERFILES.wsdl" />
+    <None Include="Service References\PerfilesWebServiceMOA\SI_MPMF_MOAOP_PERFILES1.wsdl" />
     <None Include="Service References\PerfilesWebServiceMOA\SustitucionMOAWS.PerfilesWebServiceMOA.SI_MPMF_MOAOP_PERFILESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PerfilesWebServiceMOA\SustitucionMOAWS.PerfilesWebServiceMOA.Z_MPMF_MOAOP_PERFILESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PermisosWebServiceMOA\SI_MPMF_MOAOP_PERMISOS.wsdl" />
+    <None Include="Service References\PermisosWebServiceMOA\SI_MPMF_MOAOP_PERMISOS1.wsdl" />
     <None Include="Service References\PermisosWebServiceMOA\SustitucionMOAWS.PermisosWebServiceMOA.SI_MPMF_MOAOP_PERMISOSResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\PermisosWebServiceMOA\SustitucionMOAWS.PermisosWebServiceMOA.Z_MPMF_MOAOP_PERMISOSResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\PesificacionGuadarWebServiceMOA\SI_MPMF_MOAOP_GUARDAR_PESIF.wsdl" />
+    <None Include="Service References\PesificacionGuadarWebServiceMOA\SI_MPMF_MOAOP_GUARDAR_PESIF1.wsdl" />
     <None Include="Service References\PesificacionWebServiceMOA\SI_MPMF_MOAOP_OBTENER_PEND_USD.wsdl" />
     <None Include="Service References\PesificacionGuadarWebServiceMOA\SustitucionMOAWS.PesificacionGuadarWebServiceMOA.SI_MPMF_MOAOP_GUARDAR_PESIFResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -733,14 +757,14 @@
     <None Include="Service References\PesificacionWebServiceMOA\SustitucionMOAWS.PesificacionWebServiceMOA.ZMPES5470.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SI_MPMF_MOAOP_DET_FLETE_PROC.wsdl" />
+    <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SI_MPMF_MOAOP_DET_FLETE_PROC1.wsdl" />
     <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SustitucionMOAWS.ProformaFleteProcedenciaServiceMOA.SI_MPMF_MOAOP_DET_FLETE_PROCResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ProformaFleteProcedenciaServiceMOA\SustitucionMOAWS.ProformaFleteProcedenciaServiceMOA.ZMPES6250.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\RecepcionesWebServiceMOA\SI_MPMF_MOAOP_RECEPCIONES.wsdl" />
+    <None Include="Service References\RecepcionesWebServiceMOA\SI_MPMF_MOAOP_RECEPCIONES1.wsdl" />
     <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.SI_MPMF_MOAOP_RECEPCIONESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -763,6 +787,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES4910.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\RecepcionesWebServiceMOA\SustitucionMOAWS.RecepcionesWebServiceMOA.ZMPES49901.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ScatoWebService\ServicioRepositorio.wsdl" />
@@ -1835,7 +1862,7 @@
     <None Include="Service References\UsuariosWebServiceMOA\SustitucionMOAWS.UsuariosWebServiceMOA.Z_MPMF_MOAOP_USUARIOSResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\VendedorDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_VENDEDOR.wsdl" />
+    <None Include="Service References\VendedorDetalleWebServiceMOA\SI_MPMF_MOAOP_DETALLES_VENDEDOR1.wsdl" />
     <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLES_VENDEDORResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -1854,7 +1881,7 @@
     <None Include="Service References\VendedorDetalleWebServiceMOA\SustitucionMOAWS.VendedorDetalleWebServiceMOA.ZMPTE3420.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\VendedoresWebServiceMOA\SI_MPMF_MOAOP_VENDEDORES.wsdl" />
+    <None Include="Service References\VendedoresWebServiceMOA\SI_MPMF_MOAOP_VENDEDORES1.wsdl" />
     <None Include="Service References\VendedoresWebServiceMOA\SustitucionMOAWS.VendedoresWebServiceMOA.SI_MPMF_MOAOP_VENDEDORESResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -1867,7 +1894,7 @@
     <None Include="Service References\VendedoresWebServiceMOA\SustitucionMOAWS.VendedoresWebServiceMOA.ZMPES4910.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SI_MPMF_MOAOP_VENDED_HABILIT.wsdl" />
+    <None Include="Service References\VendedorHabilitadoWebServiceMOA\SI_MPMF_MOAOP_VENDED_HABILIT1.wsdl" />
     <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.SI_MPMF_MOAOP_VENDED_HABILITResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -1883,7 +1910,7 @@
     <None Include="Service References\VendedorHabilitadoWebServiceMOA\SustitucionMOAWS.VendedorHabilitadoWebServiceMOA.ZMPTE3420.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\VinculaDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_VINCULA.wsdl" />
+    <None Include="Service References\VinculaDetalleWebServiceMOA\SI_MPMF_MOAOP_DET_VINCULA1.wsdl" />
     <None Include="Service References\VinculaDetalleWebServiceMOA\SustitucionMOAWS.VinculaDetalleWebServiceMOA.SI_MPMF_MOAOP_DET_VINCULAResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

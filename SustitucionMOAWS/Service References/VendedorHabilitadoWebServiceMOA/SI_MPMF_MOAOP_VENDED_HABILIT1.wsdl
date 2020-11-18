@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="SI_MPMF_MOAOP_DETALLES_VENDEDOR" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="SI_MPMF_MOAOP_VENDED_HABILIT" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:documentation />
   <wsp:UsingPolicy wsdl:required="true" />
-  <wsp:Policy wsu:Id="OP_SI_MPMF_MOAOP_DETALLES_VENDEDOR" />
+  <wsp:Policy wsu:Id="OP_SI_MPMF_MOAOP_VENDED_HABILIT" />
   <wsdl:types>
     <xsd:schema xmlns="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-      <xsd:element name="Z_MPMF_MOAOP_DETALLES_VENDEDOR">
+      <xsd:element name="Z_MPMF_MOAOP_VENDED_HABILIT.Response">
         <xsd:complexType>
           <xsd:all>
-            <xsd:element name="PE_PROVEEDOR">
+            <xsd:element minOccurs="0" name="PT_ACTIVIDAD_PROV">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPTE3420" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="STATUS">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
-                  <xsd:maxLength value="10" />
+                  <xsd:maxLength value="50" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="PE_PROVEEDOR_DETALLE">
-              <xsd:simpleType>
-                <xsd:restriction base="xsd:string">
-                  <xsd:maxLength value="10" />
-                </xsd:restriction>
-              </xsd:simpleType>
-            </xsd:element>
-            <xsd:element name="T_CABE">
+            <xsd:element minOccurs="0" name="T_CABE">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4470" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
-            <xsd:element name="T_CONVENIO">
+            <xsd:element minOccurs="0" name="T_CONVENIO">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4430" />
                 </xsd:sequence>
               </xsd:complexType>
             </xsd:element>
-            <xsd:element name="T_CUENTA">
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4460" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element name="T_EXECIONES">
+            <xsd:element minOccurs="0" name="T_EXECIONES">
               <xsd:complexType>
                 <xsd:sequence>
                   <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4450" />
@@ -53,50 +46,29 @@
           </xsd:all>
         </xsd:complexType>
       </xsd:element>
-      <xsd:element name="Z_MPMF_MOAOP_DETALLES_VENDEDOR.Response">
+      <xsd:element name="Z_MPMF_MOAOP_VENDED_HABILIT">
         <xsd:complexType>
           <xsd:all>
-            <xsd:element minOccurs="0" name="PS_RETURN">
+            <xsd:element name="IM_CUIT">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
-                  <xsd:maxLength value="2" />
+                  <xsd:maxLength value="16" />
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="PT_ACTIVIDAD_PROV">
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPTE3420" />
-                </xsd:sequence>
-              </xsd:complexType>
+            <xsd:element name="IM_SOCIEDAD">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="4" />
+                </xsd:restriction>
+              </xsd:simpleType>
             </xsd:element>
-            <xsd:element name="T_CABE">
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4470" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element name="T_CONVENIO">
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4430" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element name="T_CUENTA">
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4460" />
-                </xsd:sequence>
-              </xsd:complexType>
-            </xsd:element>
-            <xsd:element name="T_EXECIONES">
-              <xsd:complexType>
-                <xsd:sequence>
-                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4450" />
-                </xsd:sequence>
-              </xsd:complexType>
+            <xsd:element name="IM_USUARIO">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="15" />
+                </xsd:restriction>
+              </xsd:simpleType>
             </xsd:element>
           </xsd:all>
         </xsd:complexType>
@@ -142,60 +114,6 @@
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
                 <xsd:maxLength value="1" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-        </xsd:sequence>
-      </xsd:complexType>
-      <xsd:complexType name="ZMPES4460">
-        <xsd:sequence>
-          <xsd:element minOccurs="0" name="PROVEEDOR">
-            <xsd:annotation>
-              <xsd:documentation>Account Number of Vendor or Creditor</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="10" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="BANCO">
-            <xsd:annotation>
-              <xsd:documentation>Name of bank</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="60" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="CUENTA">
-            <xsd:annotation>
-              <xsd:documentation>Bank account number</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="18" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="CBU">
-            <xsd:annotation>
-              <xsd:documentation>Account Holder Name</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="60" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="TIPO_CTA">
-            <xsd:annotation>
-              <xsd:documentation>Character Field Length = 10</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="10" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
@@ -489,28 +407,28 @@
       </xsd:complexType>
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="rfc.Z_MPMF_MOAOP_DETALLES_VENDEDOR.Input">
+  <wsdl:message name="rfc.Z_MPMF_MOAOP_VENDED_HABILIT.Input">
     <wsdl:documentation />
-    <wsdl:part name="parameters" element="rfc:Z_MPMF_MOAOP_DETALLES_VENDEDOR" />
+    <wsdl:part name="parameters" element="rfc:Z_MPMF_MOAOP_VENDED_HABILIT" />
   </wsdl:message>
-  <wsdl:message name="rfc.Z_MPMF_MOAOP_DETALLES_VENDEDOR.Output">
+  <wsdl:message name="rfc.Z_MPMF_MOAOP_VENDED_HABILIT.Output">
     <wsdl:documentation />
-    <wsdl:part name="parameters" element="rfc:Z_MPMF_MOAOP_DETALLES_VENDEDOR.Response" />
+    <wsdl:part name="parameters" element="rfc:Z_MPMF_MOAOP_VENDED_HABILIT.Response" />
   </wsdl:message>
-  <wsdl:portType name="SI_MPMF_MOAOP_DETALLES_VENDEDOR">
+  <wsdl:portType name="SI_MPMF_MOAOP_VENDED_HABILIT">
     <wsdl:documentation />
-    <wsdl:operation name="SI_MPMF_MOAOP_DETALLES_VENDEDOR">
+    <wsdl:operation name="SI_MPMF_MOAOP_VENDED_HABILIT">
       <wsdl:documentation />
       <wsp:Policy>
-        <wsp:PolicyReference URI="#OP_SI_MPMF_MOAOP_DETALLES_VENDEDOR" />
+        <wsp:PolicyReference URI="#OP_SI_MPMF_MOAOP_VENDED_HABILIT" />
       </wsp:Policy>
-      <wsdl:input message="p1:rfc.Z_MPMF_MOAOP_DETALLES_VENDEDOR.Input" />
-      <wsdl:output message="p1:rfc.Z_MPMF_MOAOP_DETALLES_VENDEDOR.Output" />
+      <wsdl:input message="p1:rfc.Z_MPMF_MOAOP_VENDED_HABILIT.Input" />
+      <wsdl:output message="p1:rfc.Z_MPMF_MOAOP_VENDED_HABILIT.Output" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="SI_MPMF_MOAOP_DETALLES_VENDEDORBinding" type="p1:SI_MPMF_MOAOP_DETALLES_VENDEDOR">
+  <wsdl:binding name="SI_MPMF_MOAOP_VENDED_HABILITBinding" type="p1:SI_MPMF_MOAOP_VENDED_HABILIT">
     <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
-    <wsdl:operation name="SI_MPMF_MOAOP_DETALLES_VENDEDOR">
+    <wsdl:operation name="SI_MPMF_MOAOP_VENDED_HABILIT">
       <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <wsdl:input>
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
@@ -520,12 +438,12 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="SI_MPMF_MOAOP_DETALLES_VENDEDORService">
-    <wsdl:port name="HTTP_Port" binding="p1:SI_MPMF_MOAOP_DETALLES_VENDEDORBinding">
-      <address location="http://gvicpidev01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+  <wsdl:service name="SI_MPMF_MOAOP_VENDED_HABILITService">
+    <wsdl:port name="HTTP_Port" binding="p1:SI_MPMF_MOAOP_VENDED_HABILITBinding">
+      <address location="http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDED_HABILIT&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </wsdl:port>
-    <wsdl:port name="HTTPS_Port" binding="p1:SI_MPMF_MOAOP_DETALLES_VENDEDORBinding">
-      <address location="https://gvicpidev01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:port name="HTTPS_Port" binding="p1:SI_MPMF_MOAOP_VENDED_HABILITBinding">
+      <address location="https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDED_HABILIT&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
