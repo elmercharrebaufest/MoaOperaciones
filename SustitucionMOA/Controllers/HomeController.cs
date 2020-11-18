@@ -179,7 +179,14 @@ namespace SustitucionMOA.Controllers
                 {
                     if (usuario.TipoUsuario.Nombre == "Corredor")
                     {
-                        redirectURL = "/dato-fiscal/vendedores-pendientes";
+                        if (usuario.ObtenerProveedor().EstadoAprobacion == EstadoAprobacion.Aprobado)
+                        {
+                            redirectURL = "/dato-fiscal/vendedores-pendientes";
+                        }
+                        else
+                        {
+                            redirectURL = "/estado-solicitud";
+                        }
                     }
                     else
                     {

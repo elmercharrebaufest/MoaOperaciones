@@ -261,7 +261,10 @@ namespace SustitucionMOAUtils.Services
             proveedor.IdComercialDataAgro = respuesta.ComercialId;
             proveedor.IdDataAgro = respuesta.ProveedorId;
             proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
-            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+
+            if (string.IsNullOrEmpty(proveedor.CodigoProveedor))
+                proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+
             proveedor.Observaciones = "";
 
             string resultado;
