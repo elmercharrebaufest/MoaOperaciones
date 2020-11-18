@@ -20,8 +20,7 @@ declare var $: any;
     providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
 })
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
-    @ViewChild("spinnerCampana")
-    protected spinnerCampana: SpinnerSmallComponent;
+   
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
     
@@ -372,14 +371,12 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     onChangeMaterial() {
-        this.spinnerCampana.showIt();
         if (this.contrato.MaterialId != null) {
             this.contrato.CampanaId = null;
             this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
         }
-        this.spinnerCampana.hideIt();
     }
     changePizarra() {
         this.contrato.Precio = 0;
