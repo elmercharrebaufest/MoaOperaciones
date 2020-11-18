@@ -22,7 +22,8 @@ END;
 SELECT @PermisoId = id from @table
 --Agrego el nuevo permiso a todos los roles habilitados a ver el menu
 BEGIN TRANSACTION
-	INSERT INTO dbo.RolPermisoPorRol Values ((SELECT Id FROM dbo.Rol where Codigo = 'GRAN'), @PermisoId)
+	INSERT INTO dbo.RolPermisoPorRol Values ((SELECT Id FROM dbo.Rol where Codigo = 'MF'), @PermisoId)
 	INSERT INTO dbo.RolPermisoPorRol Values ((SELECT Id FROM dbo.Rol where Codigo = 'CORR'), @PermisoId) 
+	INSERT INTO dbo.RolPermisoPorRol Values ((SELECT Id FROM dbo.Rol where Codigo = 'NUECORR'), @PermisoId) 
 COMMIT TRANSACTION
 

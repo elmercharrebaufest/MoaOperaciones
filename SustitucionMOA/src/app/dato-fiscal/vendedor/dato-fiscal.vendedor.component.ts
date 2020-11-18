@@ -52,6 +52,8 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
     filtroNroVendedor: string = "";
     nuevoVendedorCUIT: string = "";
 
+    mostrarNuevoVendedor: boolean = false;
+
     setTabs() {
         this.setMenuSeccionTab("dato-fiscal", "Mis Vendedores");
     }
@@ -85,6 +87,11 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
 
         this.navService.setSeccionList(secciones);
         this.getUsuario();
+
+
+        if (this.isAuthorized('NUEVO VENDEDOR') && (sessionStorage.getItem("granosFlag") == "G" || sessionStorage.getItem("granosFlag") == "A" )) {
+            this.mostrarNuevoVendedor = true;
+        }
     }
 
     getUsuario() {
