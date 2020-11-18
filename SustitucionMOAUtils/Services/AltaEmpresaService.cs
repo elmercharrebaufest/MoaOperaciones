@@ -43,7 +43,32 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
                                 );
 
-                List<ProveedorDto> proveedorDtos = proveedores.Select(x => new ProveedorDto(x)).ToList();
+                List<ProveedorDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorDto
+                {
+                    CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                    CUIT = proveedor.CUIT,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                    Id = proveedor.Id,
+                    IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                    IdDataAgro = proveedor.IdDataAgro,
+                    Mail = proveedor.Mail ?? "",
+                    Observaciones = proveedor.Observaciones,
+                    RazonSocial = proveedor.RazonSocial ?? "",
+                    RazonSocialCorredor = proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : "",
+                    FechaSolicitud = proveedor.FechaSolicitud,
+                    Comercial = proveedor.Comercial,
+                    EstadoSIPER = proveedor.EstadoSIPER,
+                    UltimaEdicion = proveedor.HistorialAprobaciones.FirstOrDefault() != null ? proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
+                    HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
+                    {
+                        Id = a.Id,
+                        EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                        Fecha = a.Fecha,
+                        Observacion = a.Observacion,
+                        Usuario = a.Usuario.Mail
+                    }).ToList()
+                }).ToList();
 
                 if (proveedorDtos.Count == 0)
                 {
@@ -53,16 +78,29 @@ namespace SustitucionMOAUtils.Services
                 //TODO: Deprecar esto y obtener la razon social a través de la FK del proveedor al proveedor que lo dio de alta
                 foreach (var proveedorDto in proveedorDtos)
                 {
-                    var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
+                    //var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
+                    //if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
 
-                    if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
+                    if (proveedorDto.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                        )
+                    {
+                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
+                        if (result != null)
+                        {
+                            proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                        }
+                    }
+
                 }
 
                 return proveedorDtos;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 

@@ -112,6 +112,8 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                         this.sessionDataService.setProveedor(result.vendedor);
                         sessionStorage.setItem("nombre", result.descripcion);
                         this.sessionDataService.setNombre(result.descripcion);
+                        sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
+                        this.sessionDataService.setNoticias(result.noticias);
                     }
                 },
                 error => {

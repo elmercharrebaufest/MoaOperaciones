@@ -48,6 +48,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public bool? Consignatario { get; set; }
         public bool? PlanCanje { get; set; }
         public int? ZonaId { get; set; }
+        public bool? Pizarra { get; set; }
 
         public string ObservacionTercero { get; set; }
         public bool? CalidadTercero { get; set; }

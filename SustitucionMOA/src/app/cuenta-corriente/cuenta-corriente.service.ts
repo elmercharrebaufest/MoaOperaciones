@@ -88,3 +88,38 @@ export class CuentaCorrienteAgrupadaService extends CuentaCorrienteService {
     }
 
 }
+
+
+@Injectable()
+export class CuentaCorrientePartidasAbiertasService extends CuentaCorrienteService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('periodo', periodo);
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        params.set('contrato', contrato);
+        params.set('pago', pago);
+        params.set('retencion', retencion);
+        return this.http
+            .get('/api/CuentaCorriente/getCuentasCorrientesAgrupadas', { search: params, headers: this.headers }).pipe(
+                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
+                map(this.extractData));
+
+    }
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string, contrato: string, pago: string, retencion: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('periodo', periodo);
+        params.set('fechaInicio', fecha_inicio);
+        params.set('fechaFin', fecha_fin);
+        params.set('contrato', contrato);
+        params.set('pago', pago);
+        params.set('retencion', retencion);
+        return this.http
+            .get('/api/CuentaCorriente/downloadCuentasCorrientesPartidasAbiertas', { search: params, headers: this.headers }).pipe(
+                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))),
+                map(this.extractData));
+    }
+
+}

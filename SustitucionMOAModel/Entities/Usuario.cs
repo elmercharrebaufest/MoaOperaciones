@@ -33,7 +33,14 @@ namespace SustitucionMOAModel.Entities
         public Proveedor ObtenerProveedor()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
-            return Proveedores.FirstOrDefault();
+            var proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
+
+            if (proveedor == null)
+            {
+                proveedor = Proveedores.FirstOrDefault();
+            }
+
+            return proveedor;
         }
 
         public Proveedor ObtenerCorredor()
@@ -48,7 +55,10 @@ namespace SustitucionMOAModel.Entities
             else
                 return Proveedores.FirstOrDefault();
         }
-
+        public Proveedor ObtenerProveedorPorCodigo(string codigoProveedor)
+        {
+            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).FirstOrDefault();
+        }
 
         public bool TieneProveedor(string codigoProveedor)
         {
@@ -63,7 +73,7 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerRazonSocial()
         {
-            if (Proveedores.Count >= 1 )
+            if (Proveedores.Count >= 1)
             {
                 if (!string.IsNullOrEmpty(ObtenerProveedor().RazonSocial))
                     return ObtenerProveedor().RazonSocial;

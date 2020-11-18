@@ -8,5 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
         string DownloadCuentaCorrientesAgrupadas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion);
         CuentaCorrienteViewModel GetCuentasCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion);
         CuentaCorrienteAgrupadaViewModel GetCuentasCorrientesAgrupadas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion);
+        string DownloadCuentasCorrientesPartidasAbiertas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion);
+
     }
 }

@@ -60,6 +60,9 @@
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Kendo.DynamicLinq.1.1.2.0\lib\net40\Kendo.DynamicLinq.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -129,6 +132,9 @@
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.7.1\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.0\lib\net40\System.Linq.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -202,12 +208,14 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
+    <Content Include="Content\images\header\key-solid.svg" />
+    <Content Include="Content\images\header\logo.png" />
+    <Content Include="Content\images\header\logo_.png" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
-    <Content Include="dist\carta-porte-carta-porte-module.js" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
     <Content Include="dist\Content\css\font-awesome.min.css" />
@@ -243,25 +251,10 @@
     <Content Include="dist\Content\js\jquery.js" />
     <Content Include="dist\Content\js\molinos.js" />
     <Content Include="dist\Content\js\trmix.min.js" />
-    <Content Include="dist\contrato-contrato-module.js" />
-    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js" />
-    <Content Include="dist\dato-fiscal-dato-fiscal-module.js" />
-    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js" />
-    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js" />
-    <Content Include="dist\factura-factura-module.js" />
     <Content Include="dist\favicon.ico" />
-    <Content Include="dist\flete-flete-module.js" />
-    <Content Include="dist\glyphicons-halflings-regular.svg" />
     <Content Include="dist\index.html" />
-    <Content Include="dist\liquidacion-liquidacion-module.js" />
-    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js" />
-    <Content Include="dist\main.js" />
-    <Content Include="dist\pago-no-granos-pago-no-granos-module.js" />
-    <Content Include="dist\pago-pago-module.js" />
-    <Content Include="dist\polyfills.js" />
-    <Content Include="dist\runtime.js" />
-    <Content Include="dist\styles.js" />
-    <Content Include="dist\vendor.js" />
+    <Content Include="dist\glyphicons-halflings-regular.*.svg" />
+    <Content Include="dist\*.js" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -297,6 +290,7 @@
     <Content Include="src\app\carta-porte\descarga\carta-porte.descarga.component.html" />
     <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
+    <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
     <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
     <Content Include="src\app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
@@ -304,6 +298,9 @@
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
+    <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
+    <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
     <Content Include="src\app\contrato\anulacion\contrato.anulacion.component.html" />
     <Content Include="src\app\contrato\detalle-fijacion\contrato.detalle-fijacion.component.html" />
@@ -311,6 +308,7 @@
     <Content Include="src\app\contrato\fijacion\contrato.fijacion.component.html" />
     <Content Include="src\app\contrato\vigente\contrato.vigente.component.html" />
     <Content Include="src\app\crear-contrato\afijar\crear-contrato.afijar.component.html" />
+    <Content Include="src\app\crear-contrato\fijacion\crear-contrato.fijacion.component.html" />
     <Content Include="src\app\crear-contrato\aprecio\crear-contrato.aprecio.component.html" />
     <Content Include="src\app\cuenta-corriente\agrupada\cuenta-corriente.agrupada.component.html" />
     <Content Include="src\app\cuenta-corriente\cuenta-corriente.component.html" />
@@ -762,7 +760,6 @@
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
     <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
-    <Content Include="dist\carta-porte-carta-porte-module.js.map" />
     <Content Include="dist\Content\files\InformeComercial.doc" />
     <Content Include="dist\Content\fonts\fontawesome-webfont.eot" />
     <Content Include="dist\Content\fonts\fontawesome-webfont.ttf" />
@@ -777,26 +774,11 @@
     <Content Include="dist\Content\fonts\RobotoCondensed-Light.ttf" />
     <Content Include="dist\Content\fonts\RobotoCondensed-Regular.ttf" />
     <Content Include="dist\Content\images\header\logoEndosado.ai" />
-    <Content Include="dist\contrato-contrato-module.js.map" />
-    <Content Include="dist\cuenta-corriente-cuenta-corriente-module.js.map" />
-    <Content Include="dist\dato-fiscal-dato-fiscal-module.js.map" />
-    <Content Include="dist\default~liquidacion-liquidacion-module~liquidacion-no-granos-liquidacion-no-granos-module.js.map" />
-    <Content Include="dist\default~pago-no-granos-pago-no-granos-module~pago-pago-module.js.map" />
-    <Content Include="dist\factura-factura-module.js.map" />
-    <Content Include="dist\flete-flete-module.js.map" />
-    <Content Include="dist\glyphicons-halflings-regular.eot" />
-    <Content Include="dist\glyphicons-halflings-regular.ttf" />
-    <Content Include="dist\glyphicons-halflings-regular.woff" />
-    <Content Include="dist\glyphicons-halflings-regular.woff2" />
-    <Content Include="dist\liquidacion-liquidacion-module.js.map" />
-    <Content Include="dist\liquidacion-no-granos-liquidacion-no-granos-module.js.map" />
-    <Content Include="dist\main.js.map" />
-    <Content Include="dist\pago-no-granos-pago-no-granos-module.js.map" />
-    <Content Include="dist\pago-pago-module.js.map" />
-    <Content Include="dist\polyfills.js.map" />
-    <Content Include="dist\runtime.js.map" />
-    <Content Include="dist\styles.js.map" />
-    <Content Include="dist\vendor.js.map" />
+    <Content Include="dist\glyphicons-halflings-regular.*.eot" />
+    <Content Include="dist\glyphicons-halflings-regular.*.ttf" />
+    <Content Include="dist\glyphicons-halflings-regular.*.woff" />
+    <Content Include="dist\glyphicons-halflings-regular.*.woff2" />
+    <Content Include="dist\*.js.map" />
     <Content Include="dist\web.config" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
@@ -909,13 +891,26 @@
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte.module.ts" />
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
+    <TypeScriptCompile Include="src\app\common\models\precioMoaCompraNet.ts" />
+    <TypeScriptCompile Include="src\app\common\models\habilitacionPizarra.ts" />
+    <TypeScriptCompile Include="src\app\common\models\contratoFijacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\contratoAFijar.ts" />
     <TypeScriptCompile Include="src\app\common\models\contratoAPrecio.ts" />
     <TypeScriptCompile Include="src\app\common\models\pesificacionContrato.ts" />
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
+    <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />
+    <TypeScriptCompile Include="src\app\reporte\reporte.service.ts" />
+    <TypeScriptCompile Include="src\app\reporte\contrato\reporte.contrato.component.ts" />
+    <TypeScriptCompile Include="src\app\reporte\cupo\reporte.cupo.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\afijar\crear-contrato.afijar.component.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\fijacion\crear-contrato.fijacion.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\aprecio\crear-contrato.aprecio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.service.ts" />

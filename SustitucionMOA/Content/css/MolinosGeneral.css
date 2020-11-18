@@ -3435,13 +3435,14 @@ a.link-header[aria-expanded=false] span{
   color: #067935;
 }
 
+#misReportes,
 #misOperaciones,
 #infoFinanciera,
 #operar,
 #documentacion,
 #contacto,
-#usuarios{
-  height: 35px;
+#usuarios {
+    height: 35px;
 }
 
 .panel-heading.seccion{
@@ -3458,17 +3459,17 @@ a.link-header span{
   position: relative;
   right: 10px;
 }
-
+#collapseRepo div.panel-body,
 #collapseMO div.panel-body,
 #collapseIF div.panel-body,
 #collapseO div.panel-body,
 #collapseDoc div.panel-body,
-#collapseU div.panel-body{
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  display: flex;
-  flex-direction: column;
-  width: 180px;
-  padding: 0;
+#collapseU div.panel-body {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    padding: 0;
 }
 
 div.panel-body a{

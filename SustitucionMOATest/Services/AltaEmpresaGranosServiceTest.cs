@@ -145,7 +145,7 @@ namespace SustitucionMOATest.Services
                 ProveedorClasificacion = "Productor",
                 EstadoSISA = "1",
                 RazonSocial = "test",
-                ProveedorCUIT = "233333333333"
+                ProveedorCUIT = "12-12345678-1"
             };
 
             var infoDataAgro = new ResultadoValidarProveedorComercial
@@ -170,7 +170,7 @@ namespace SustitucionMOATest.Services
                 Id = proveedorId,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 RazonSocial = "test",
-                CUIT = "233333333333",
+                CUIT = "12123456781",
                 Archivos = new List<Archivo>(),
             };
 

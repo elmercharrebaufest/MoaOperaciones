@@ -25,6 +25,10 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime? FechaSolicitud { get; set; }
 
+        public int? IdProveedorCorredor { get; set; }
+
+        [ForeignKey("IdProveedorCorredor")]
+        public virtual Proveedor ProveedorCorredor { get; set; }
 
         public virtual ICollection<Archivo> Archivos { get; set; }
 

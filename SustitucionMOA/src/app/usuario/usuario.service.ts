@@ -99,4 +99,15 @@ export class UsuarioService extends BaseService {
                 map(this.extractData));
     }
 
+    public obtenerRolesUsuario(usuarioSeleccionado: any) {
+        let params: URLSearchParams = new URLSearchParams();
+        var idUsuario = usuarioSeleccionado.Id;
+
+        params.set('idUsuario', idUsuario);
+        return this.http
+            .get('/api/usuario/ObtenerRolesUsuario', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+
 }

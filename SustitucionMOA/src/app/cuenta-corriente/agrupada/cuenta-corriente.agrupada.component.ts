@@ -12,6 +12,7 @@ import { DropdownComponent, DropdownOption } from './../../common/view-child/dro
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import { Seccion } from '../../common/models/seccion';
 
 
 
@@ -21,6 +22,7 @@ import { ModalService } from './../../common/services/ModalService';
     providers: [CuentaCorrienteAgrupadaService]
 
 })
+    
 export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseComponent {
 
     constructor(protected service: CuentaCorrienteAgrupadaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
@@ -42,7 +44,7 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
     granosSelected: string;
 
     setTabs() {
-        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
+        this.setMenuSeccionTab("cuenta-corriente", "Saldos");
     }
 
     isVisible(): boolean {
@@ -83,7 +85,7 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
     }
 
     showModalTableAgrupadaResponsive(CuentaCorriente: any, agrupador: string) {
-        this.modalService.openModalTableResponsive("Cuenta Corriente", [
+        this.modalService.openModalTableResponsive("Detalle de pagos", [
             { etiqueta: "Agrupador", valor: agrupador },
             { etiqueta: "F. Emisión", valor: CuentaCorriente.docDate },
             { etiqueta: "Descripción", valor: CuentaCorriente.descripcion },
@@ -92,6 +94,21 @@ export class CuentaCorrienteAgrupadaComponent extends CuentaCorrienteBaseCompone
             { etiqueta: "Importe AR$", valor: CuentaCorriente.importeArgString }
         ]);
         return false;
+    }
+
+
+
+    ngOnInit() {
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList(
+            [
+                new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Saldos'),
+                new Seccion('/cuenta-corriente/partidas-abiertas', 'cuenta-corriente', 'Partidas Abiertas'),
+            ]
+        );
+        this.getData();
     }
 
 }

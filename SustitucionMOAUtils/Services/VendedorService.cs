@@ -25,11 +25,13 @@ namespace SustitucionMOAUtils.Services
 
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer;
 
-        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService)
+        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService, IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer)
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
+            this.vendedorHabilitadoConsumer = vendedorHabilitadoConsumer;
         }
 
         public VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor)
@@ -66,7 +68,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public VendedoresWSMOAResponse GetVendedores(string usuariomail, string proveedor, string fechaInicio, string fechaFin)
+        public VendedoresWSMOAResponse GetVendedores(string usuariomail, string codigoProveedor, string fechaInicio, string fechaFin)
         {
             if (fechaInicio == "")
             {
@@ -78,7 +80,20 @@ namespace SustitucionMOAUtils.Services
             }
 
             List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
-            VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(proveedor, fechas);
+
+            VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == usuariomail);
+
+            if (usuario.EsAdmin())
+            {
+                var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                if (proveedor != null)
+                {
+                    usuariomail = proveedor.Mail;
+                }
+            }
 
             var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C")).Select(v => new Vendedor() { descVendedor = v.RazonSocial, estado = v.EstadoAprobacionDescripcion, idVendedor = v.CodigoProveedor });
 
@@ -97,7 +112,7 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
                 }
 
-                VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoConsumerMOA().request(cuit, "MOA", user);
+                VendedorHabilitadoWSMOAResponse response = vendedorHabilitadoConsumer.Request(cuit, "MOA", user);
                 if (response == null)
                 {
                     throw new InfoCustomException(InfoMsg.ProveedorSinAlta);
@@ -122,13 +137,96 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+
+        public List<EstadoVendedorDto> GetVariosVendedoresStatus(List<string> cuitsVendedores, string user)
+        {
+            try
+            {
+                List<EstadoVendedorDto> listaResultados = new List<EstadoVendedorDto>();
+
+                foreach (string cuit in cuitsVendedores.Select(s => s.Trim()).Distinct().ToList())
+                {
+                    var estadoVendedorDto = new EstadoVendedorDto
+                    {
+                        CUIT = cuit
+                    };
+
+                    if (cuit == null || cuit == "")
+                    {
+                        estadoVendedorDto.Estado = string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT");
+                    }
+                    VendedorHabilitadoWSMOAResponse response;
+
+                    try
+                    {
+                        response = vendedorHabilitadoConsumer.Request(cuit, "MOA", user);
+                    }
+                    catch (InfoCustomException ex)
+                    {
+                        estadoVendedorDto.Estado = ex.Message;
+                        listaResultados.Add(estadoVendedorDto);
+                        continue;
+                    }
+
+                    if (response == null)
+                    {
+                        estadoVendedorDto.Estado = InfoMsg.ProveedorSinAlta;
+                    }
+                    else
+                    {
+
+                        if (response.status == null || response.status == "" || response.status == "Proveedor inexistente")
+                        {
+                            estadoVendedorDto.Estado = InfoMsg.ProveedorSinAlta;
+                        }
+                        else
+                        {
+                            estadoVendedorDto.CodigoProveedor = response.cabeceras.FirstOrDefault().proveedor;
+                            estadoVendedorDto.RazonSocial = response.cabeceras.FirstOrDefault().descripcion;
+                            estadoVendedorDto.Estado = response.status;
+                        }
+                    }
+
+                    listaResultados.Add(estadoVendedorDto);
+                }
+
+                return listaResultados;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         public List<ProveedorDto> GetVendedores(string mailUsuario)
         {
             return GetVendedores(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
         }
 
-        public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario)
+        public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario, string codigoProveedor)
         {
+
+            var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
+
+
+            if (usuario.EsAdmin())
+            {
+                var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
+
+                if (proveedor != null)
+                {
+                    mailUsuario = proveedor.Mail;
+                }
+            }
+
             List<ProveedorDto> proveedorDtos = GetVendedores(mailUsuario, x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
 
             if (proveedorDtos.Count == 0)
@@ -145,7 +243,35 @@ namespace SustitucionMOAUtils.Services
 
             var listadoProveedores = new List<ProveedorDto>();
 
-            if (!usuario.EsAdmin())
+            if (usuario.EsAdmin())
+            {
+
+                listadoProveedores.AddRange(
+                    repositorio
+                        .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                        .Select(proveedor => new ProveedorDto
+                        {
+                            CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                            CUIT = proveedor.CUIT,
+                            EstadoAprobacion = proveedor.EstadoAprobacion,
+                            EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                            Id = proveedor.Id,
+                            IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                            IdDataAgro = proveedor.IdDataAgro,
+                            Mail = proveedor.Mail ?? "",
+                            Observaciones = proveedor.Observaciones,
+                            RazonSocial = proveedor.RazonSocial ?? "",
+                            FechaSolicitud = proveedor.FechaSolicitud,
+                            Comercial = proveedor.Comercial,
+                            EstadoSIPER = proveedor.EstadoSIPER
+                        })
+                );
+
+                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
+
+                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
+            }
+            else
             {
                 var proveedores = usuario.Proveedores.ToList();
 
@@ -154,16 +280,25 @@ namespace SustitucionMOAUtils.Services
                     proveedores = proveedores.Where(filtro).ToList();
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(x => new ProveedorDto(x)).ToList());
+                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto
+                {
+                    CodigoProveedor = proveedor.CodigoProveedor ?? "",
+                    CUIT = proveedor.CUIT,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                    Id = proveedor.Id,
+                    IdComercialDataAgro = proveedor.IdComercialDataAgro,
+                    IdDataAgro = proveedor.IdDataAgro,
+                    Mail = proveedor.Mail ?? "",
+                    Observaciones = proveedor.Observaciones,
+                    RazonSocial = proveedor.RazonSocial ?? "",
+                    FechaSolicitud = proveedor.FechaSolicitud,
+                    Comercial = proveedor.Comercial,
+                    EstadoSIPER = proveedor.EstadoSIPER
+                }
+                ).ToList());
             }
-            else
-            {
-                listadoProveedores.AddRange(repositorio.Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado).Select(x => new ProveedorDto(x)));
 
-                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
-
-                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
-            }
 
             foreach (var item in listadoProveedores.Where(a => a.CUIT == null))
             {
@@ -202,7 +337,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
                 }
-
+                nuevoVendedor.IdProveedorCorredor = usuario.ObtenerCorredor().Id;
                 nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
                 nuevoVendedor.Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
                 nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;

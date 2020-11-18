@@ -44,6 +44,7 @@ import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -73,6 +74,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     EmpresaNoGranosComponent,
     AltasComponent,
     EstadoSolicitudComponent,
+
   ],
   providers: [
     DatePipe,

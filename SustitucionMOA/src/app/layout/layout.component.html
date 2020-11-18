@@ -119,7 +119,9 @@
             <div class="row">
                 <div class="col-xs-12">
                     <a (click)="guardarTarifas(dtp_input_fletes.value)" href="#" style="text-decoration:none!important">
-                        <div class="btnSection animate align-right" style="background: #009688; opacity: 1; color: white;">Guardar <span class="fa  fa-floppy-o"></span></div>
+                        <div class="btnSection animate align-right"
+                            style="background: #009688; opacity: 1; color: white;">Guardar <span
+                                class="fa  fa-floppy-o"></span></div>
                     </a>
                 </div>
             </div>
@@ -181,14 +183,16 @@
         <div *ngIf="showLiquidaciones" class="col-xs-12">
             <a (click)="exportExcel(modalLiquidacionContrato, modalLiquidacionSecuencia, modalLiquidacionComprobante)"
                 href="#" style="text-decoration:none!important">
-                <div class="btnSection animate align-right" style="background: #009688; opacity: 1; color: white;">Exportar <img style="margin-left: 15px;" src="Content/images/buttons/EXPORT_MODAL.svg" /></div>
+                <div class="btnSection animate align-right" style="background: #009688; opacity: 1; color: white;">
+                    Exportar <img style="margin-left: 15px;" src="Content/images/buttons/EXPORT_MODAL.svg" /></div>
             </a>
         </div>
 
         <div *ngIf="showFleteProcedencia" class="col-xs-12">
             <a (click)="exportExcelFleteProcedencia(modalInfoContratoProcedencia)" href="#"
                 style="text-decoration:none!important">
-                <div class="btnSection animate align-right" style="background: #009688; opacity: 1; color: white;">Exportar <img style="margin-left: 15px;" src="Content/images/buttons/EXPORT_MODAL.svg" /></div>
+                <div class="btnSection animate align-right" style="background: #009688; opacity: 1; color: white;">
+                    Exportar <img style="margin-left: 15px;" src="Content/images/buttons/EXPORT_MODAL.svg" /></div>
             </a>
         </div>
     </modal-footer>
@@ -286,7 +290,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU')">
                     <div class="panel-heading seccion" role="tab" id="misOperaciones">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                            href="#collapseMO" aria-expanded="false" aria-controls="collapseMO">
+                           href="#collapseMO" aria-expanded="false" aria-controls="collapseMO">
                             Mis Operaciones <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -321,7 +325,7 @@
                                 <a (click)="goToSeccion('/factura')" href="#">Factura</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isNoGranosSelected()">
-                                <a (click)="goToSeccion('/cuenta-corriente/agrupada')" href="#">
+                                <a (click)="goToSeccion('/cuenta-corriente/simple')" href="#">
                                     <!--data-toggle="tab">-->Cuenta Corriente
                                 </a>
                             </div>
@@ -333,18 +337,42 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="misReportes">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                           href="#collapseRepo" aria-expanded="false" aria-controls="collapseRepo">
+                            Mis Cargas <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseRepo" class="collapse" aria-labelledby="misReportes" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/reporte/contrato')" href="#">
+                                    <!--data-toggle="tab">-->Contratos
+                                </a>
+                            </div>
+                            <!--<div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/reporte/cupo')" href="#">
+                                    Cupos
+                                </a>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="infoFinanciera">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                            href="#collapseIF" aria-expanded="false" aria-controls="collapseIF">
+                           href="#collapseIF" aria-expanded="false" aria-controls="collapseIF">
                             Informaci&oacute;n Financiera <span class="glyphicon glyphicon-chevron-down"
-                                aria-hidden="true"></span>
+                                                                aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseIF" class="collapse" aria-labelledby="infoFinanciera" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CUENTA CORRIENTE') && isGranosSelected()">
-                                <a (click)="goToSeccion('/cuenta-corriente/agrupada')" href="#">
+                                <a (click)="goToSeccion('/cuenta-corriente/simple')" href="#">
                                     <!--data-toggle="tab">-->Cuenta Corriente
                                 </a>
                             </div>
@@ -359,7 +387,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="operar">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                            href="#collapseO" aria-expanded="false" aria-controls="collapseO">
+                           href="#collapseO" aria-expanded="false" aria-controls="collapseO">
                             Operar <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -373,6 +401,9 @@
                             <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Contratos</a>
+                            </div>
                             <div>
                                 <a (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
                                     Registro de operaciones
@@ -384,9 +415,8 @@
                 <div class="panel panel-default">
                     <div class="panel-heading seccion" role="tab" id="documentacion">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                            href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
-                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span
-                                class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                           href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
+                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseDoc" class="collapse" aria-labelledby="documentacion" role="tabpanel">
@@ -411,14 +441,12 @@
                                     <!--data-toggle="tab">-->Documentos e Informaci&oacute;n &uacute;til
                                 </a>
                             </div>
-                            <div
-                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
                             </div>
-                            <div
-                                *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/estado-solicitud')" href="#">
                                     <!--data-toggle="tab">-->Estado solicitud
                                 </a>
@@ -429,7 +457,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
-                            href="#" data-parent="#accordionMenu">
+                           href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
                     </div>
@@ -437,7 +465,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isAuthorized('ABM USUARIOS')">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
+                           href="#collapseU" aria-expanded="false" aria-controls="collapseU">
                             Usuarios <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -462,36 +490,36 @@
 
                 <!-- DEPRECADO! -->
                 <!-- <nav>
-                <ul class="nav">
-                    
-
-
-                    <li>
-                        <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
-                            (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
-                            href="#">
-                            data-toggle="tab">Aduana
-                        </a>
-                    </li>
-                    <li>
-                        <a class="animate " [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
-                            (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
-                            data-toggle="tab">RYD
-                        </a>
-                    </li>
-                    <li>
-                        <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
-                            (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
-                            href="#">
-                            data-toggle="tab">RYD Mantenimiento
-                        </a>
-                    </li>
+        <ul class="nav">
 
 
 
+            <li>
+                <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
+                    (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
+                    href="#">
+                    data-toggle="tab">Aduana
+                </a>
+            </li>
+            <li>
+                <a class="animate " [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
+                    (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
+                    data-toggle="tab">RYD
+                </a>
+            </li>
+            <li>
+                <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
+                    (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
+                    href="#">
+                    data-toggle="tab">RYD Mantenimiento
+                </a>
+            </li>
 
-                </ul>
-            </nav> -->
+
+
+
+        </ul>
+    </nav> -->
             </div>
         </div>
     </barra-nav>

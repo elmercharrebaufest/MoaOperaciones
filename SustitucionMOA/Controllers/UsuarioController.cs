@@ -2,10 +2,12 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,7 @@ namespace SustitucionMOA.Controllers
 
         private readonly IUsuarioService _usuarioService;
         private readonly IRepositorio repositorio;
+        LoginService _loginService = new LoginService();
 
         public UsuarioController (IUsuarioService usuarioService, IRepositorio repositorio)
         {
@@ -120,6 +123,28 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult ObtenerRolesUsuario(int idUsuario)
+        {
+            try
+            {
+                return JsonCustom(new { data = _usuarioService.GetRolesUsuario(idUsuario) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
         public ActionResult Deshabilitar(string mailUsuario)
         {
@@ -186,6 +211,10 @@ namespace SustitucionMOA.Controllers
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorType));
                 identity.AddClaim(new Claim(Globals.ClaimsProveedorType, vendedor));
 
+                identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
+                identity.AddClaim(new Claim(Globals.ClaimsNombreType, descripcion));
+
+
                 // tell the authentication manager to use this new identity
                 authenticationManager.AuthenticationResponseGrant =
                     new Microsoft.Owin.Security.AuthenticationResponseGrant(
@@ -194,7 +223,32 @@ namespace SustitucionMOA.Controllers
                     );
 
 
-                return JsonCustom(new { vendedor = vendedor, descripcion = descripcion });
+                NoticiasDetallesWSMOAResponse noticias = new NoticiasDetallesWSMOAResponse() { };
+
+                try
+                {
+                    if (!Globals.EsLocal)
+                    {
+                        noticias = _loginService.getNoticias(vendedor);
+                        noticias.cantidad = 0;
+                        if (noticias != null && noticias.noticias != null)
+                        {
+                            noticias.cantidad += noticias.noticias.Count;
+                        }
+                        if (noticias != null && noticias.notificaciones != null)
+                        {
+                            noticias.cantidad += noticias.notificaciones.Count;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                }
+
+
+
+                return JsonCustom(new { vendedor = vendedor, descripcion = descripcion, noticias = noticias });
 
             }
             catch (ValidationCustomException e)
