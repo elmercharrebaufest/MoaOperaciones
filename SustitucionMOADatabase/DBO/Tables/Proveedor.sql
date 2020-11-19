@@ -27,5 +27,3 @@ GO
 
 ALTER TABLE [dbo].[Proveedor] CHECK CONSTRAINT [FK_Proveedor_ProveedorCorredor]
 GO
-
-
