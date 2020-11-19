@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>Moaperaciones</TargetDatabaseName>
+    <TargetDatabaseName>MoaOperaciones</TargetDatabaseName>
     <DeployScriptFileName>Base de Datos.sql</DeployScriptFileName>
     <TargetConnectionString>data source=GVICSQLTEST2016.molinosagro.ad;initial catalog=MoaOperaciones;Integrated Security=True;Pooling=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
