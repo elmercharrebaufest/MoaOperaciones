@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Dto
             if (string.IsNullOrEmpty(CUIT))
                 return "";
 
-            if (Tipo == "CORR")
+            if (Tipo == "Corredor")
             {
                 return string.Concat("C", CUIT.Substring(2, 8));
             }
