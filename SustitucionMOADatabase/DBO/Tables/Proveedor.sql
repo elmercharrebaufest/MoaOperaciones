@@ -14,6 +14,7 @@ CREATE TABLE [dbo].[Proveedor](
     [FechaSolicitud] DATETIME NULL, 
     [Comercial] VARCHAR(200) NULL, 
     [IdProveedorCorredor] INT NULL, 
+    [prueba] NCHAR(10) NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
