@@ -300,19 +300,16 @@
                                 <a (click)="goToSeccion('/contrato/vigente')" href="#">
                                     <!--data-toggle="tab">-->Contratos 
                                 </a>
-                                <app-tooltip></app-tooltip>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()">
                                 <a (click)="goToSeccion('/carta-porte/descarga')" href="#">
                                     <!--data-toggle="tab"-->Cartas de Porte
                                 </a>
-                                <app-tooltip></app-tooltip>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranosSelected()">
                                 <a (click)="goToSeccion('/liquidacion/aprobada')" href="#">
                                     <!--data-toggle="tab">-->Liquidaciones
                                 </a>
-                                <app-tooltip></app-tooltip>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranosSelected()">
                                 <a (click)="goToSeccion('/comprobante-ngs/aprobada')" href="#">
@@ -544,11 +541,34 @@
                         <li *ngFor="let seccion of seccionList"><a class="animate"
                                 [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
                                 (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+                        
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+<div class="col-xs-12 col-sm-2" [hidden]="!tieneSecciones" style="float: right;">
+    <div *ngFor="let seccion of seccionList">
+    </div>
+
+    <script>$(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })</script>
+
+    <div>
+        <button type="button" class="btn btn-secondary" data-toggle="tooltip" 
+        data-placement="bottom" title={{this.textoTooltip}}>
+            <img src="Content/images/buttons/information2.svg"/>
+          </button>
+    </div>
+
+    <div class="tooltipscontainer">
+        <div><img src="Content/images/buttons/information2.svg"/></div>
+        <span class="tooltiptexto" aria-hidden="true">
+            {{this.textoTooltip}}
+        </span>
+    </div>
+</div>
     <!-- END Tab panes -->
     <router-outlet></router-outlet>
 </div>

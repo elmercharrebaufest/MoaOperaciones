@@ -59,6 +59,7 @@ export class LayoutComponent implements OnDestroy {
     mensajeSuccess = '';
     mensajeErrorModal = '';
     subscription: any;
+    textoTooltip: string = '';
 
     @ViewChild("myModal") modal: any;
 
@@ -123,6 +124,60 @@ export class LayoutComponent implements OnDestroy {
         navService.seccionActive$.subscribe(
             seccionActive => {
                 this.seccionActive = seccionActive
+                console.log(this.seccionActive);
+
+                switch(this.seccionActive){
+                    case 'Fijaciones':
+                    case 'Ampliaciones':
+                    case 'Anulaciones':
+                    case 'Vigentes':
+                        this.textoTooltip = 'En esta categoría podrás visualizar los negocios concertados, sus fijaciones, ampliaciones y anulaciones. Haciendo click en el número de contrato podrás visualizar mayor información sobre el mismo (características, condiciones comerciales, estado del boleto, aplicaciones, calidades, liquidaciones asociadas y pagos).';
+                        break;
+                    case 'A Fijar':
+                    case 'Fijacion':
+                    case 'A Precio':
+                        this.textoTooltip = 'Texto a Definir';
+                        break
+                    case 'Aplicaciones':
+                    case 'Formulario':
+                    case 'Descargas':
+                        this.textoTooltip = 'En esta categoría podrás visualizar el detalle de tus entregas y la imagen de las cartas de porte correspondientes. En la solapa de "Aplicaciones" podrás ver a qué negocio fueron asignadas. Además, en "Formulario" podrás autocompletar tu carta de porte a partir del CTG e imprimirla con el formulario otorgado por AFIP.';
+                        break;
+                    case 'Observadas':
+                    case 'Pagas':
+                    case 'Aprobadas':
+                        this.textoTooltip = 'En esta categoría podrás visualizar el estado de tus liquidaciones. En la solapa de "Aprobadas" podrás ver aquellas están en condiciones de incluirse en el proceso de pagos. En "Observadas" aquellas que se encuentran en proceso de contabilización o que presentan diferencias que impiden su registración. En "Pagas" aquellas ya fueron pagadas.';
+                        break;
+                    case 'Contratos':
+                        this.textoTooltip = 'Texto a Definir';
+                        break;
+                    case 'Cuenta Corriente':
+                        this.textoTooltip = 'En la solapa "Cuenta Corriente" podrás visualizar los movimientos y el saldo correspondiente. En la solapa "Detalle de pago" podrás visualizar los comprobantes que hayan sido cancelados agrupados por número de orden de pago.';
+                        break;
+                    case 'Emitidos':
+                        this.textoTooltip = 'En esta categoría podrás visualizar el detalle de tus pagos por número de identificación pudiendo descargar los documentos asociados al pago (comprobantes, orden de pago y certificados de retención).';
+                        break;
+                    case 'Vendedor Estado':
+                        this.textoTooltip = 'Texto a Definir';
+                        break
+                    case 'Mi Situacion Fiscal':
+                        this.textoTooltip = 'En esta categoría podrás visualizar el estado de tu perfil impositivo (Estado en SISA, exenciones vigentes/vencidas, cuentas bancarias e inscripción en Ing. Brutos).';
+                        break;
+                    case 'Mis Vendedores':
+                        this.textoTooltip = 'En esta categoría podrás visualizar el perfil impositivo de tus vendedores habilitados (Estado en SISA, exenciones vigentes/vencidas, cuentas bancarias e inscripción en Ing. Brutos).';
+                        break;
+                    case 'Vendedores pendientes':
+                        this.textoTooltip = 'En esta categoría podrás visualizar aquellos vendedores que se encuentran en proceso de alta y consultar su grado de avance, el estado dela documentación presentada y requerida.';
+                        break;
+                    case 'Documentacion':
+                        this.textoTooltip = 'En esta categoría podrás consultar nuestros datos de contacto, horario de atención, direcciones de envío y documentos útiles para operar (Legajo de Molinos Agro, Documentación de Alta, Cesiones de Pago y mercadería, Certificado de depósito y carta de garantía, tarifas de servicios e instructivos).';
+                        break;
+                    case 'Listado Usuarios':
+                        this.textoTooltip = 'Texto a Definir';
+                        break;
+                    default:
+                        break;
+                }
             });
         navService.menuActive$.subscribe(
             menuActive => {
