@@ -93,7 +93,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.data = result.data;
 
                         setTimeout(function () {
-                            $('[data-toggle="popover"]').popover({ trigger: 'focus' });
+                            $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: {  "hide": 3000 } });
                             
                         }, 100);
                     }
@@ -398,13 +398,20 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             );
     }
-    copiar(str) {
-        const el = document.createElement('input');
-        el.setAttribute("type", "hidden");
+    copiar(str, id) {
+        console.log(str, id);
+        $('[data-toggle="popover"]').popover('hide');
+        const el = document.createElement('textarea');
         el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
         document.body.appendChild(el);
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
+        setTimeout(function () {
+            $("#h" + id).popover('show');
+        }, 100);
     }
 }

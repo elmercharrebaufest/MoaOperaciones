@@ -145,7 +145,9 @@
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
                                 ; let odd = odd" role="row" [class.odd]="!odd"
-                           tabindex="0" data-toggle="popover" data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"  data-content="Mail Copiado al portapapeles" (click)="copiar(empresa.Mail)">
+                           tabindex="0" (click)="copiar(empresa.Mail,empresa.Id)"
+                            id="h{{empresa.Id}}" data-toggle="popover" data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"  data-content="Mail Copiado al portapapeles"
+                            >
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial || "-"}}</td>
