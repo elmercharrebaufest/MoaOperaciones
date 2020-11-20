@@ -27,6 +27,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     protected mensajeComponent: MensajeComponent;
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    @ViewChild("spinnerCampana")
+    protected spinnerCampana: SpinnerSmallComponent;
 
     constructor(protected service: CrearContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -205,6 +207,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     }
 
     habilitaciones(contrato) {
+        this.spinnerCampana.showIt();
         this.unsubscribe();
         this.subscription = this.service.habilitaciones(contrato.MaterialId, contrato.TipoNegocioId).subscribe(
             result => {
@@ -272,8 +275,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         }
                     }
                 }
+                this.spinnerCampana.hideIt();
             },
             error => {
+                this.spinnerCampana.hideIt();
                 this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }

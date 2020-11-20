@@ -142,7 +142,7 @@ namespace SustitucionMOA.Controllers
                 {
                     contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
                 }
-
+                contratoAPrecio.ComercialId = (int)proveedor.IdComercialDataAgro;
                 contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAPrecio.ComercialCreadorId = null;
                 contratoAPrecio.MonedaSustentable = "USDM ";
@@ -191,6 +191,7 @@ namespace SustitucionMOA.Controllers
                 {
                     contratoAFijar.ProveedorId = (int)proveedor.IdDataAgro;
                 }
+                contratoAFijar.ComercialId = (int)proveedor.IdComercialDataAgro;
                 contratoAFijar.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAFijar.ComercialCreadorId = null;
                 contratoAFijar.MonedaSustentable = "USDM ";
@@ -452,6 +453,7 @@ namespace SustitucionMOA.Controllers
                 {
                     contratoFijacion.ProveedorId = (int)proveedor.IdDataAgro;
                 }
+                contratoFijacion.ComercialId = (int)proveedor.IdComercialDataAgro;
                 contratoFijacion.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoFijacion.ComercialCreadorId = null;
                 contratoFijacion.MonedaSustentable = "USDM ";
