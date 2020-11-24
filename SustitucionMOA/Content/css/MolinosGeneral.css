@@ -479,7 +479,6 @@ SIDEBAR*/
   padding-left: 35px;
 }
 .SubMenu {
-  width: 100%;
   display: block;
   font-weight: 300;
   float: left;
@@ -3656,37 +3655,43 @@ div.panel-body a.active{
 .tooltipscontainer {
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black;
+
+  background: transparent url('Content/images/buttons/information2.svg') 0% 0% no-repeat padding-box;
+  opacity: 1;
+  font-family: Roboto Regular;
 }
 
 .tooltipscontainer .tooltiptexto {
   visibility: hidden;
   width: 300px;
-  background-color: black !important;
-  color: #fff !important;
-  font-size: 15px;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
+  background-color: #ffffff;
+  color: #3f4845;
+  font-size: 16px;
+  border-radius: 11px;
+  padding: 20px;
+  font-family: Roboto Regular;
+  text-transform: none;
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+  /*border-style: solid;
+   Position the tooltip */
   position: absolute;
   z-index: 1;
-  top: -20px;
-  left: 110%;
+  top: -6px;
+  right: 90%;
 }
 
-.tooltipscontainer .tooltiptexto::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  margin-top: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent black transparent transparent;
+.tooltipscontainer .tooltipAyuda {
+  width: 100px; 
+  float: right; 
+  font-size: 16px;
+  margin-bottom: 1px;
 }
 
 .tooltipscontainer:hover .tooltiptexto {
   visibility: visible;
+  transition: .4s ease-in-out;
 }
-
 /*-------END TOOLTIPS-----------*/
