@@ -34,6 +34,57 @@
         <div>
           <input type="date" [(ngModel)]="notificacion.FechaFin" id="fechaFin">
         </div>
+
+        <div>
+          Habilitada:
+        </div>
+        <div>
+          <input type="checkbox" [(ngModel)]="notificacion.Habilitada" id="habilitada">
+        </div>
+        <div>
+          Link adjunto:
+        </div>
+
+        <div>
+          <input type="text" id="LinkAdjunto" [(ngModel)]="notificacion.LinkAdjunto">
+        </div>
+        <div>
+          Mensaje:
+        </div>
+        <div>
+          <input type="text" id="Mensaje" [(ngModel)]="notificacion.Mensaje">
+        </div>
+        <div>
+          <div>
+            Roles:
+          </div>
+          <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
+            <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+              [(ngModel)]="rol.checked">
+            &nbsp;
+            <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+          </span>
+        </div>
+        <div>
+          <div>
+            Tipo de Usuario:
+          </div>
+          <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
+            <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"
+              value="{{tipoDeUsuario.Id}}" [(ngModel)]="tipoDeUsuario.checked">
+            &nbsp;
+            <label for="tipoDeUsuario_{{tipoDeUsuario.Id}}">{{tipoDeUsuario.Nombre}}</label>
+          </span>
+        </div>
+
+
+        <div class="col-xs-12 col-md-12" label="Enviar">
+          <div class="step-actions enviar">
+            <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
+              data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+            <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+          </div>
+        </div>
       </div>
     </div>
 

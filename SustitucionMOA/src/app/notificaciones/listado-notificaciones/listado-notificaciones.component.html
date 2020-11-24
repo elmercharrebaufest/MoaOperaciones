@@ -22,14 +22,8 @@
         </div>
         <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
           Por Razon Social/CUIT:
-          <div class="styled-select ">
+          <div class="styled-select">
             <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal" [(ngModel)]="filtroAlta">
-          </div>
-        </div>
-        <div class="col-xs-6  col-sm-4 col-md-5">
-          Por Estado:
-          <div class="styled-select ">
-
           </div>
         </div>
       </div>
@@ -48,15 +42,13 @@
           style="width: 100%; padding:10px 0; background: white !important;">
           <thead>
             <tr role="row">
-              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Nombre')">
-                Nombre<div>
-                  <span>
-                    <i
-                      [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
-                    <i
-                      [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i></span>
-                </div>
+              <th>Id</th>
+              <th>
+                Nombre
               </th>
+              <th>Fecha inicio</th>
+              <th>Fecha fin</th>
+              <th>Habilitada</th>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +56,12 @@
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                 ; let odd = odd" role="row" [class.odd]="!odd">
+              <td>{{notificacion.Id}}</td>
               <td>{{notificacion.Nombre || "-"}}</td>
+              <td>{{ notificacion.FechaInicio ? (notificacion.FechaInicio.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}</td>
+              <td>{{ notificacion.FechaFin ? (notificacion.FechaFin.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}</td>
+              <td>{{notificacion.Habilitada}}</td>
+
             </tr>
           </tbody>
         </table>

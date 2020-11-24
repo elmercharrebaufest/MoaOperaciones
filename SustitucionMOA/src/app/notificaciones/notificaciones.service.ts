@@ -29,12 +29,17 @@ export class NotificacionesService extends BaseService {
     }
 
     public grabar(notificacion :Notificacion): Observable<any> {
+        let payload = new FormData();
+        payload.append(
+            "notificacionJson",
+            JSON.stringify(notificacion)
+        );
+
         return this.http
-            .get('/api/Notificacion/Grabar')
+            .post('/api/Notificacion/Grabar', payload)
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
-
 
     public eliminar(notificacionId: number): Observable<any> {
         return this.http

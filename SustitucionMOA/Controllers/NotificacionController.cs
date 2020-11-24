@@ -1,4 +1,5 @@
 ﻿using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -25,10 +26,12 @@ namespace SustitucionMOA.Controllers
             this.notificacionService = notificacionService;
         }
 
-        public ActionResult Grabar(Notificacion notificacion)
+        public ActionResult Grabar(string notificacionJson)
         {
             try
             {
+                var notificacion = JsonConvert.DeserializeObject<Notificacion>(notificacionJson);
+
                 return JsonCustom(new { data = notificacionService.GrabarNotificacion(notificacion) });
             }
             catch (InfoCustomException e)
