@@ -797,6 +797,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
+    <Content Include="Template\EstadoAlta.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -1084,7 +1087,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Template\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
   </ItemGroup>
