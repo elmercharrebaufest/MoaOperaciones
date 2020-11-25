@@ -49,6 +49,7 @@
               <th>Fecha inicio</th>
               <th>Fecha fin</th>
               <th>Habilitada</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -60,8 +61,13 @@
               <td>{{notificacion.Nombre || "-"}}</td>
               <td>{{ notificacion.FechaInicio ? (notificacion.FechaInicio.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}</td>
               <td>{{ notificacion.FechaFin ? (notificacion.FechaFin.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}</td>
-              <td>{{notificacion.Habilitada}}</td>
-
+              <td>{{notificacion.Habilitada}}
+                <i *ngIf="notificacion.Habilitada" class="fa fa-check-circle"></i>
+                <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
+              </td>
+              <td>
+                <button (click)="goToSeccionParam('/notificaciones/alta', notificacion.Id)">Editar</button>
+              </td>
             </tr>
           </tbody>
         </table>

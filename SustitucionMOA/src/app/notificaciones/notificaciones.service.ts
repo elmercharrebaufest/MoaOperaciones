@@ -14,6 +14,16 @@ export class NotificacionesService extends BaseService {
         super(http);
     }
 
+    public getNotificacion(notificacionId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('notificacionId', notificacionId.toString());
+
+        return this.http
+            .get('/api/Notificacion/GetNotificacion', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
     public getListado(): Observable<any> {
         return this.http
             .get('/api/Notificacion/GetListado')
@@ -21,9 +31,9 @@ export class NotificacionesService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    public getListadoUsuario(): Observable<any> {
+    public getNotificaciones(): Observable<any> {
         return this.http
-            .get('/api/Notificacion/GetListadoUsuario')
+            .get('/api/Notificacion/getNotificaciones')
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }

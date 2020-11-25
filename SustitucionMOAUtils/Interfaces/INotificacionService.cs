@@ -16,5 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<Notificacion> Listar();
 
         List<Notificacion> ObtenerNotificacionesUsuario(string mailUsuario);
+
+        Notificacion ObtenerNotificacion(int notificacionId);
     }
 }

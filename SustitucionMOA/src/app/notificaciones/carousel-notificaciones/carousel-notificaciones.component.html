@@ -1,0 +1,42 @@
+<div *ngIf="mostrarNotificaciones">
+  <div class="col-xs-12 col-md-12 tituloNotificacion">
+    <strong>¡Bienvenido!</strong>
+  </div>
+  <div class="col-xs-12 col-md-12 subtituloNotificacion">
+    Hoy tienes una nueva noticia.
+  </div>
+
+  <div class="col-xs-12 col-md-12 notificacionContainer">
+    <div class="col-xs-1">
+      <i class="fa fa-caret-left btnPrevious" *ngIf="index!=0" (click)="notificacionAnterior()"></i>
+    </div>
+    <div class="col-xs-10">
+      <div class="col-xs-12 col-md-8 notificacionMensaje">
+        Ésta es una notificación importante, que puede ser un desplegable o puede redirigir a la sección necesaria. A
+        menos
+        que
+        se cierre, va a quedar siempre visible para el usuario
+        -
+        {{notificacionActual.Mensaje}}
+      </div>
+      <div class="col-xs-12 col-md-4 notificacionContenedorBotones">
+        <div class="col-xs-5 col-md-12 col-lg-5 ">
+          <a *ngIf="notificacionActual.linkActual!=''" href="https://www.google.com" target="blank"
+            class="button btn-custom btn-guardar btn-mediano">{{notificacionActual.linkActual}} VER MAS</a>
+        </div>
+        <div class="col-xs-5 col-md-0 col-lg-1">
+
+        </div>
+        <div class="col-xs-5 col-md-12 col-lg-5">
+          <button class="btn-custom btn-cerrar btn-mediano" (click)="cerrarNotificaciones()"> CERRAR </button>
+        </div>
+        <div class="col-xs-1 col-md-0 col-lg-1">
+
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-1">
+      <i class="fa fa-caret-right btnNext" *ngIf="index!=totalNotificaciones" (click)="siguienteNotificacion()"></i>
+    </div>
+  </div>
+</div>

@@ -43,10 +43,10 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";;
-import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component'
-;
+import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
 import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
+import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 
 
 @NgModule({
@@ -79,7 +79,8 @@ import { NotificacionesService } from "./notificaciones/notificaciones.service";
     AltasComponent,
     EstadoSolicitudComponent,
     AltaNotificacionesComponent,
-    ListadoNotificacionesComponent
+    ListadoNotificacionesComponent,
+    CarouselNotificacionesComponent
   ],
   providers: [
     DatePipe,

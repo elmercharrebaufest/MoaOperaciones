@@ -27,10 +27,10 @@ namespace SustitucionMOAModel.Entities
 
         public string Mensaje { get; set; }
 
-        [ForeignKey("Rol_Id")]
+        [ForeignKey("FK_RolesNotificacion_Rol")]
         public ICollection<int> FiltroRoles { get; set; }
 
-        [ForeignKey("TipoUsuario_Id")]
+        [ForeignKey("FK_TipoDeUsuarioNotificacion_Notificacion")]
         public ICollection<int> FiltroTipoUsuario { get; set; }
     }
 }

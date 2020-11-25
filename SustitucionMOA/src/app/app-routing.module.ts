@@ -113,7 +113,8 @@ const appRoutes: Routes = [
       { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
       { path: "altas", component: AltasComponent },
       { path: "notificaciones", component: ListadoNotificacionesComponent},
-      { path: "notificaciones/alta", component: AltaNotificacionesComponent}
+      { path: "notificaciones/alta", component: AltaNotificacionesComponent},
+      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent}
 
     ],
   },

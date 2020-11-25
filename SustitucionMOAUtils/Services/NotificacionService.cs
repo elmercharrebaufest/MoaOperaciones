@@ -110,13 +110,21 @@ namespace SustitucionMOAUtils.Services
             var listado = repositorio.Listar<Notificacion>(
                 n => !n.Borrada
                 && n.Habilitada
-                && n.FechaInicio >= DateTime.Now
-                && n.FechaFin <= DateTime.Now
-                && n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x))
-                && n.FiltroTipoUsuario.Contains(usuario.TipoUsuario.Id)
-            ); ;
+                && DateTime.Now >= n.FechaInicio
+                && DateTime.Now <= n.FechaFin
+                //&& n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x))
+                //&& n.FiltroTipoUsuario.Contains(usuario.TipoUsuario.Id)
+            ); 
+
 
             return listado;
+        }
+
+        public Notificacion ObtenerNotificacion(int notificacionId)
+        {
+            var notificacion = repositorio.Obtener<Notificacion>(notificacionId);
+
+            return notificacion;
         }
     }
 }
