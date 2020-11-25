@@ -11,6 +11,7 @@ import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
 import { forEach } from '@angular/router/src/utils/collection';
+import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 declare var $: any;
 
 @Component({
@@ -19,6 +20,7 @@ declare var $: any;
     providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
 })
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
+   
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
     

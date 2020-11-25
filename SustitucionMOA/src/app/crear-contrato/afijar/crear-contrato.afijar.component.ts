@@ -31,8 +31,7 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
 
         this.obteneDatosContrato(this.contrato);
         this.contrato.CondicionFijacionId = 7;       
-        document.getElementById("openModalConfirmModal").click();
-
+       
     }
 
     ngAfterViewInit(): void {

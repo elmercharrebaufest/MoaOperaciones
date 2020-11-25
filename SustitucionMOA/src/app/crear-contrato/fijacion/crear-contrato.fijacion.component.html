@@ -230,15 +230,15 @@
                     <label for="cantidad">Cantidad (Kg.)</label>
                     <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="precio">Precio</label>
-                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
-                </div>
                 <div class="form-group col-md-2">
                     <label for="moneda">Moneda</label>
                     <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)" [disabled]="disablePrecio()">
                         <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="precio">Precio</label>
+                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
                 </div>
                 <div class="form-group col-md-2" *ngIf="isVisiblePizarra()">
                     <label class=""> Pizarra</label><label class="switch">

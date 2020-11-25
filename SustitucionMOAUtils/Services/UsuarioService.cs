@@ -318,7 +318,7 @@ namespace SustitucionMOAUtils.Services
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuarioMail);
 
             var proveedor = usuario.ObtenerProveedor();
-            
+
             proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
             usuario.Habilitado = true;
@@ -426,10 +426,18 @@ namespace SustitucionMOAUtils.Services
                 Rol rolAAgregar = repositorio.Obtener<Rol>(r => r.Id == idRol);
                 usuario.AgregarRol(rolAAgregar);
             }
-            
-            repositorio.GuardarCambios();
 
-            return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail);
+            repositorio.GuardarCambios();
+            var proveedor = usuario.ObtenerProveedor();
+            if (proveedor != null)
+            {
+                return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail, " ( CUIT: " + proveedor.CUIT + ")");
+            }
+            else
+            {
+                return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail, "");
+            }
+
         }
 
         public List<RolDropdownDto> GetRolesUsuario(int idUsuario)

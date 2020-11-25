@@ -250,7 +250,7 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to El rol del usuario {{}} ha sido actualizado correctamente..
+        ///   Looks up a localized string similar to El rol del usuario {0}{1} ha sido actualizado correctamente..
         /// </summary>
         public static string RolesActualizadosOk {
             get {
