@@ -84,8 +84,8 @@
     <None Include="scripts\NuevoRolMenu.sql" />
     <None Include="scripts\PermisoContactoMailRolesIniciales.sql" />
     <Build Include="DBO\Tables\Notificacion.sql" />
-    <Build Include="DBO\Tables\NotificacionRoles.sql" />
-    <Build Include="DBO\Tables\TipoDeUsuarioNotificacion.sql" />
+    <Build Include="DBO\Tables\NotificacionRol.sql" />
+    <Build Include="DBO\Tables\NotificacionTipoUsuario.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

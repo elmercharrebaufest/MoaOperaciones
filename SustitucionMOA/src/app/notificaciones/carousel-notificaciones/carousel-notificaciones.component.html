@@ -12,17 +12,12 @@
     </div>
     <div class="col-xs-10">
       <div class="col-xs-12 col-md-8 notificacionMensaje">
-        Ésta es una notificación importante, que puede ser un desplegable o puede redirigir a la sección necesaria. A
-        menos
-        que
-        se cierre, va a quedar siempre visible para el usuario
-        -
         {{notificacionActual.Mensaje}}
       </div>
       <div class="col-xs-12 col-md-4 notificacionContenedorBotones">
         <div class="col-xs-5 col-md-12 col-lg-5 ">
-          <a *ngIf="notificacionActual.linkActual!=''" href="https://www.google.com" target="blank"
-            class="button btn-custom btn-guardar btn-mediano">{{notificacionActual.linkActual}} VER MAS</a>
+          <a *ngIf="notificacionActual.linkAdjunto!=''" href="https://www.google.com" target="blank"
+            class="button btn-custom btn-guardar btn-mediano">{{notificacionActual.linkAdjunto}} VER MAS</a>
         </div>
         <div class="col-xs-5 col-md-0 col-lg-1">
 

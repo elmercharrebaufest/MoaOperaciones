@@ -23,6 +23,8 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("RolesAsociados")]
         public virtual ICollection<PermisoPorRol> PermisosAsociados { get; set; }
 
+        public virtual ICollection<Notificacion> NotificacionesAsociadas { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is Rol rol &&

@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -13,10 +14,10 @@ namespace SustitucionMOAUtils.Interfaces
         
         string Habilitar(int idNotificacion);
 
-        List<Notificacion> Listar();
+        List<NotificacionDto> Listar();
 
-        List<Notificacion> ObtenerNotificacionesUsuario(string mailUsuario);
+        List<NotificacionDto> ObtenerNotificacionesUsuario(string mailUsuario);
 
-        Notificacion ObtenerNotificacion(int notificacionId);
+        NotificacionDto ObtenerNotificacion(int notificacionId);
     }
 }

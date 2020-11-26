@@ -76,4 +76,95 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
 
         return false; //<-- Prevent Refresh
     }
+
+
+    habilitar(notificacionId: number) {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.service.habilitar(notificacionId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getListado()
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    deshabilitar(notificacionId: number) {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.service.deshabilitar(notificacionId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getListado()
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    eliminar(notificacionId: number) {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.service.eliminar(notificacionId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getListado()
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
 }

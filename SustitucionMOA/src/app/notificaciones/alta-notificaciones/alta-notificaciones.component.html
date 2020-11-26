@@ -3,88 +3,122 @@
   <section class="container-fluid clearfix">
     <!--Title-->
     <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 "><strong>Nueva notificación</strong> </div>
+      <div class="col-xs-12 col-sm-10 ">
+        <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
+        <strong *ngIf="notificacion.Id > 0">Editar notificación</strong>
+      </div>
     </div>
     <!--End Title-->
     <!--Search-->
     <div class="myRow firstSection mySearch">
+      <div *ngIf="mensajeError != ''" class="formulario-input;">
+        <div class="alert alert-danger">
+          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+        </div>
+      </div>
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
         <div class="col-xs-12 col-md-12 search-header">
           <title-caps>Refinar resultados</title-caps>
         </div>
 
-        <div>
-          Nombre:
-        </div>
+        <div class="formulario">
+          <div class="formulario-label">
+            Nombre:
+          </div>
 
-        <div>
-          <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
-        </div>
+          <div class="styled-elements">
+            <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
+          </div>
 
-        <div>
-          Fecha Inicio:
-        </div>
-        <div>
-          <input type="date" [(ngModel)]="notificacion.FechaInicio" id="fechaInicio">
-        </div>
+          <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 searchVerSelect ">
+            Desde:
+            <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
+              <fieldset>
+                <div>
+                  <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
+                    data-link-field="dtp_input1">
+                    <input type="text" id="noCursor" value="{{fecha_inicio}}" readonly>
+                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                  </div>
+                  <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
+                  <br />
+                </div>
+              </fieldset>
+            </form>
+          </div>
 
-        <div>
-          Fecha Fin:
-        </div>
-        <div>
-          <input type="date" [(ngModel)]="notificacion.FechaFin" id="fechaFin">
-        </div>
-
-        <div>
-          Habilitada:
-        </div>
-        <div>
-          <input type="checkbox" [(ngModel)]="notificacion.Habilitada" id="habilitada">
-        </div>
-        <div>
-          Link adjunto:
-        </div>
-
-        <div>
-          <input type="text" id="LinkAdjunto" [(ngModel)]="notificacion.LinkAdjunto">
-        </div>
-        <div>
-          Mensaje:
-        </div>
-        <div>
-          <input type="text" id="Mensaje" [(ngModel)]="notificacion.Mensaje">
-        </div>
-        <div>
+          <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 entrefechas_2 searchVerSelect ">
+            Hasta:
+            <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+              <fieldset>
+                <div>
+                  <div class="input-group date form_datetime2" data-date="" data-date-format="dd/MM/yyyy"
+                    data-link-field="dtp_input2">
+                    <input type="text" value="{{fecha_fin}}" id="noCursor" readonly />
+                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                  </div>
+                  <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" />
+                  <br />
+                </div>
+              </fieldset>
+            </form>
+          </div>
           <div>
-            Roles:
+            Habilitada:
           </div>
-          <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
-            <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
-              [(ngModel)]="rol.checked">
-            &nbsp;
-            <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-          </span>
-        </div>
-        <div>
           <div>
-            Tipo de Usuario:
+            <input type="checkbox" [(ngModel)]="notificacion.Habilitada" id="habilitada">
           </div>
-          <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
-            <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"
-              value="{{tipoDeUsuario.Id}}" [(ngModel)]="tipoDeUsuario.checked">
-            &nbsp;
-            <label for="tipoDeUsuario_{{tipoDeUsuario.Id}}">{{tipoDeUsuario.Nombre}}</label>
-          </span>
+          <div>
+            Link adjunto:
+          </div>
+
+          <div>
+            <input type="text" id="LinkAdjunto" [(ngModel)]="notificacion.LinkAdjunto">
+          </div>
+          <div>
+            Mensaje:
+          </div>
+          <div>
+            <input type="text" id="Mensaje" [(ngModel)]="notificacion.Mensaje">
+          </div>
+          <div>
+            <div>
+              Roles: <input type="checkbox" name="checkAllRoles" (click)="checkAllRoles()" [(ngModel)]="allRoles">
+            </div>
+            <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
+              <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                [(ngModel)]="rol.checked">
+              &nbsp;
+              <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+            </span>
+          </div>
+          <div>
+            <div>
+              Tipo de Usuario: <input type="checkbox" name="allTipos" (click)="checkAllTipos()"
+                [(ngModel)]="checkAllTipos">
+            </div>
+            <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
+              <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"
+                value="{{tipoDeUsuario.Id}}" [(ngModel)]="tipoDeUsuario.checked">
+              &nbsp;
+              <label for="tipoDeUsuario_{{tipoDeUsuario.Id}}">{{tipoDeUsuario.Nombre}}</label>
+            </span>
+          </div>
+
+
+          <div class="col-xs-12 col-md-12" label="Enviar">
+            <div class="step-actions enviar">
+              <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
+                data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+              <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+            </div>
+          </div>
+
         </div>
 
 
-        <div class="col-xs-12 col-md-12" label="Enviar">
-          <div class="step-actions enviar">
-            <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-              data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-            <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
-          </div>
-        </div>
+
       </div>
     </div>
 

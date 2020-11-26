@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Dto
+{
+    public class NotificacionDto
+    {
+        public int Id { get; set; }
+
+        public string Nombre { get; set; }
+
+        public string FechaInicio { get; set; }
+
+        public string FechaFin { get; set; }
+
+        public bool Habilitada { get; set; }
+
+        public bool Borrada { get; set; }
+
+        public string Mensaje { get; set;  }
+
+        public string LinkAdjunto { get; set; }
+
+        public List<int> FiltroRoles { get; set; }
+
+        public List<int> FiltroTipoUsuario { get; set; }
+
+
+
+    }
+}

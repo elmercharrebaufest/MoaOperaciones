@@ -27,10 +27,11 @@ namespace SustitucionMOAModel.Entities
 
         public string Mensaje { get; set; }
 
-        [ForeignKey("FK_RolesNotificacion_Rol")]
-        public ICollection<int> FiltroRoles { get; set; }
+        [InverseProperty("NotificacionesAsociadas")]
 
-        [ForeignKey("FK_TipoDeUsuarioNotificacion_Notificacion")]
-        public ICollection<int> FiltroTipoUsuario { get; set; }
+        public virtual ICollection<Rol> FiltroRoles { get; set; }
+
+        [InverseProperty("NotificacionesAsociadas")]
+        public virtual ICollection<TipoUsuario> FiltroTipoUsuario { get; set; }
     }
 }

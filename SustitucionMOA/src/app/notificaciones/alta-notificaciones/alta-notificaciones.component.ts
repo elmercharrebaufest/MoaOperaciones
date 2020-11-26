@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { BaseComponent } from '../../common/base-components/base-component';
@@ -13,12 +14,13 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { NotificacionesService } from '../notificaciones.service';
+declare var $: any;
 
 @Component({
     selector: 'app-alta-notificaciones',
     templateUrl: './alta-notificaciones.component.html',
     styleUrls: ['./alta-notificaciones.component.css'],
-    providers: [NotificacionesService]
+    providers: [NotificacionesService, DatePipe]
 })
 export class AltaNotificacionesComponent extends BaseComponent implements OnInit {
     @ViewChild(MensajeComponent)
@@ -33,13 +35,20 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     notificacionId: number = 0;
 
     notificacion: Notificacion = new Notificacion();
-    
+
+    fecha_inicio: string;
+    fecha_fin: string;
+    mensajeError: string = "";
+
+    allRoles: boolean = false;
+    allTipos: boolean = false;
     
     constructor(protected service: NotificacionesService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
-        protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
     }
 
@@ -60,11 +69,98 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             this.obtenerNotificacion();
     }
 
+    ngAfterViewInit(): void {
+
+        $(document).on("mouseover", '.form_datetime1', function () {
+            $(".form_datetime1").datetimepicker({
+                format: 'dd/mm/yyyy',
+                language: 'es',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0,
+                showMeridian: 1,
+                pickTime: false,
+                minView: 2,
+                maxView: 4
+            });
+        });
+
+        $(document).on("mouseover", '.form_datetime2', function () {
+            $(".form_datetime2").datetimepicker({
+                format: 'dd/mm/yyyy',
+                language: 'es',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0,
+                showMeridian: 1,
+                pickTime: false,
+                minView: 2,
+                maxView: 4
+            });
+        });
+    }
+
     validar() {
+        if (this.notificacion.Nombre.length < 3) {
+            this.mensajeError = "Ingrese el nombre.";
+            return false;
+        }
+
+        if (this.fecha_inicio.length == 0) {
+            this.mensajeError = "Ingrese la fecha de inicio.";
+            return false;
+        }
+        
+        if (this.fecha_fin.length == 0) {
+            this.mensajeError = "Ingrese la fecha de fin.";
+            return false;
+        }
+                
+        if (this.notificacion.LinkAdjunto.length > 0) {
+            if (!this.validarURL()) {
+                this.mensajeError = "La dirección del link adjunto es inválida.";
+                return false;
+            }
+        }
+
+        if (this.notificacion.Mensaje.length == 0) {
+            this.mensajeError = "Ingrese el mensaje.";
+            return false;
+        }
+
+        if (this.roles.filter(x => x.checked).length == 0)
+        {
+            this.mensajeError = "Seleccione algún rol.";
+            return false;
+        }
+        
+        if (this.tipoUsuarioArray.filter(x => x.checked).length == 0)
+        {
+            this.mensajeError = "Seleccione algún tipo de usuario.";
+            return false;
+        }
+            
         return true;
     }
 
-    async obtenerNotificacion() {
+    validarURL() {
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return !!pattern.test(this.notificacion.LinkAdjunto);
+    }
+    
+
+    obtenerNotificacion() {
         try {
             this.subscriptionDropDowns = this.service.getNotificacion(this.notificacionId).subscribe(
                 result => {
@@ -77,15 +173,16 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                     } else {
                         this.notificacion = result.data;
 
-                        console.log(this.notificacion);
                         this.notificacion.FiltroRoles.forEach(element => {
                             this.roles.find(x => x.Id == element.toString()).checked = true
                         });
-
-                        
                         this.notificacion.FiltroTipoUsuario.forEach(element => {
                             this.tipoUsuarioArray.find(x => x.Id == element.toString()).checked = true
                         });
+
+                        this.fecha_inicio = this.notificacion.FechaInicio.toString();
+                        this.fecha_fin = this.notificacion.FechaFin.toString();
+                        
                     }
                 },
                 error => {
@@ -97,7 +194,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
     }
 
-    async getRolesOptions() {
+    getRolesOptions() {
         try {
             this.subscriptionDropDowns = this.usuarioService.getRoles().subscribe(
                 result => {
@@ -120,13 +217,29 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
     }
 
-    async initTipoUsuarios() {
+    initTipoUsuarios() {
         this.tipoUsuarioArray.push(
             new TipoUsuario ({ Id: "2", Nombre: "Granos", checked: false, }),
             new TipoUsuario ({ Id: "3", Nombre: "No Granos", checked: false, }),
             new TipoUsuario ({ Id: "4", Nombre: "Corredor", checked: false, }),
             new TipoUsuario ({ Id: "5", Nombre: "Cliente", checked: false, }),
         );
+    }
+
+    checkAllRoles() {
+        setTimeout(() => {
+            this.roles.forEach(element => {
+                element.checked = this.allRoles;
+            })
+        }, 0)
+    }
+
+    checkAllTipos() {
+        setTimeout(() => {
+            this.tipoUsuarioArray.forEach(element => {
+                element.checked = this.allTipos;
+            });
+        }, 0)
     }
 
     submit() {
@@ -138,8 +251,23 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.spinnerComponent.showIt();
         this.unsubscribe();
 
-        this.notificacion.FiltroRoles = this.roles.filter(x => x.checked).map(r => parseInt(r.Id));
-        this.notificacion.FiltroTipoUsuario = this.tipoUsuarioArray.filter(x => x.checked).map(r => parseInt(r.Id));
+        this.notificacion.FiltroRoles = this.roles.filter(x => x.checked);
+        this.notificacion.FiltroTipoUsuario = this.tipoUsuarioArray.filter(x => x.checked);
+        
+        let fechaInicio = (<HTMLInputElement>document.getElementById("dtp_input1")).value;
+
+        var dateParts = fechaInicio.split("/");
+
+        this.notificacion.FechaInicio = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
+
+        let fechaFin = (<HTMLInputElement>document.getElementById("dtp_input2")).value;
+
+        dateParts = fechaFin.split("/");
+
+        this.notificacion.FechaFin = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
+
+        console.info();
+        console.log(this.notificacion)
 
         this.subscription = this.service
             .grabar(this.notificacion)

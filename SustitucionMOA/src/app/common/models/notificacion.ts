@@ -1,3 +1,5 @@
+import { Rol } from "./rol";
+import { TipoUsuario } from "./tipoUsuario";
 
 export class Notificacion {
     public Id: number;
@@ -8,11 +10,11 @@ export class Notificacion {
     public Borrada: boolean;
     public LinkAdjunto: string;
     public Mensaje: string;
-    public FiltroRoles: Array<Number>
-    public FiltroTipoUsuario: Array<Number>
+    public FiltroRoles: Array<Rol>
+    public FiltroTipoUsuario: Array<TipoUsuario>
 
     constructor() { 
-        this.FiltroRoles = new Array<Number>();
-        this.FiltroTipoUsuario = new  Array<Number>();
+        this.FiltroRoles = new Array<Rol>();
+        this.FiltroTipoUsuario = new  Array<TipoUsuario>();
     }
 }
