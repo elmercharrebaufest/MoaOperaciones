@@ -546,7 +546,8 @@
                 </div>
             </div>
         </div>
-        <div *ngIf="textoTooltip" class="tooltipscontainer col-2 col-xs-2 col-sm-2" style="float: right;">
+        
+        <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1" style="float: right;">
             <div class="tooltipAyuda">
                 <img src="Content/images/buttons/information.svg"/>
                 <span>Ayuda</span>
@@ -557,20 +558,23 @@
                 {{this.textoTooltip2}}
             </span>
         </div>
+
+        
+        <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1" style="float: right;">
+            <div class="tooltipAyuda">
+                <img src="Content/images/buttons/information.svg"/>
+                <span>Ayuda</span>
+            </div>
+            <span class="tooltiptextoPrimerLog" aria-hidden="true">
+                <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i class="glyphicon glyphicon-remove"></i></button>
+                <br>
+                {{this.textoTooltip}}
+                <br>
+                {{this.textoTooltip2}}
+            </span>
+        </div>
     </div>
 
-
-<!--
-<div [hidden]="!tieneSecciones" style="float: right;">
-    <div *ngFor="let seccion of seccionList"></div>
-    
-    <div class="tooltipscontainer">
-        <img src="Content/images/buttons/information2.svg"/>
-        <span class="tooltiptexto" aria-hidden="true">
-            {{this.textoTooltip}}
-        </span>
-    </div>
-</div>-->
     <!-- END Tab panes -->
     
     

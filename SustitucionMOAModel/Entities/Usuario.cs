@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Entities
         public string Mail { get; set; }
         public string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
+        public string SeccionesVisitadas { get; set; }
 
         public virtual TipoUsuario TipoUsuario { get; set; }
 

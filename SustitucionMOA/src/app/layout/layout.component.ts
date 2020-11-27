@@ -12,6 +12,7 @@ import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spin
 import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mensaje-modal.component';
 
 import { LoginGuard } from './../common/security/login-guard';
+import { ok } from 'assert';
 declare var $: any;
 
 @Component({
@@ -61,6 +62,8 @@ export class LayoutComponent implements OnDestroy {
     subscription: any;
     textoTooltip: string = '';
     textoTooltip2: string = '';
+    seccionesVisitadas: string;
+    auxiliarSeccionesVisitadas: string = '';
 
     @ViewChild("myModal") modal: any;
 
@@ -84,6 +87,7 @@ export class LayoutComponent implements OnDestroy {
         this.noticias = JSON.parse(sessionStorage.getItem("noticias"));
         this.seccionActive = this.navService.seccionActiveValue;
         this.menuActive = this.navService.menuActiveValue;
+        this.seccionesVisitadas = sessionStorage.getItem("seccionesVisitadas");
 
         sessionDataService.username$.subscribe(
             username => {
@@ -114,6 +118,11 @@ export class LayoutComponent implements OnDestroy {
                 this.noticias = noticias;
             });
 
+        sessionDataService.seccionesVisitadas$.subscribe(
+            seccionesVisitadas => {
+                this.seccionesVisitadas = seccionesVisitadas;
+            });
+
         navService.seccionList$.subscribe(
             seccionList => {
                 this.seccionList = seccionList
@@ -122,11 +131,10 @@ export class LayoutComponent implements OnDestroy {
 
                 this.cd.detectChanges();
             });
+    
         navService.seccionActive$.subscribe(
             seccionActive => {
-                this.seccionActive = seccionActive
-
-                console.log(this.seccionActive);
+                this.seccionActive = seccionActive;
 
                 switch(this.seccionActive){
                     case 'Fijaciones':
@@ -135,69 +143,79 @@ export class LayoutComponent implements OnDestroy {
                     case 'Vigentes':
                         this.textoTooltip = 'En esta categoría podrás visualizar los negocios concertados, sus fijaciones, ampliaciones y anulaciones.';
                         this.textoTooltip2 = 'Haciendo click en el número de contrato podrás visualizar mayor información sobre el mismo (características, condiciones comerciales, estado del boleto, aplicaciones, calidades, liquidaciones asociadas y pagos).';
+                        this.auxiliarSeccionesVisitadas = 'Vigentes';
                         break;
                     case 'A Fijar':
                     case 'Fijacion':
                     case 'A Precio':
                         this.textoTooltip = 'Texto a Definir';
                         this.textoTooltip2 = '';
+                        this.auxiliarSeccionesVisitadas = 'A Precio';
                         break
                     case 'Aplicaciones':
                     case 'Formulario':
                     case 'Descargas':
+                        this.auxiliarSeccionesVisitadas = 'Descargas';
                         this.textoTooltip = 'En esta categoría podrás visualizar el detalle de tus entregas y la imagen de las cartas de porte correspondientes.';
                         this.textoTooltip2 = 'En la solapa de "Aplicaciones" podrás ver a qué negocio fueron asignadas. Además, en "Formulario" podrás autocompletar tu carta de porte a partir del CTG e imprimirla con el formulario otorgado por AFIP.';
                         break;
                     case 'Observadas':
                     case 'Pagas':
                     case 'Aprobadas':
+                        this.auxiliarSeccionesVisitadas = 'Aprobadas';
                         this.textoTooltip = 'En esta categoría podrás visualizar el estado de tus liquidaciones.';
                         this.textoTooltip2 = 'En la solapa de "Aprobadas" podrás ver aquellas están en condiciones de incluirse en el proceso de pagos. En "Observadas" aquellas que se encuentran en proceso de contabilización o que presentan diferencias que impiden su registración. En "Pagas" aquellas ya fueron pagadas.';
                         break;
-                    case 'Contratos':
-                        this.textoTooltip = 'Texto a Definir';
-                        this.textoTooltip2 = '';
-                        break;
                     case 'Detalle de pagos':
                     case 'Cuenta Corriente':
+                        this.auxiliarSeccionesVisitadas = 'Cuenta Corriente';
                         this.textoTooltip = 'En la solapa "Cuenta Corriente" podrás visualizar los movimientos y el saldo correspondiente.';
                         this.textoTooltip2 = 'En la solapa "Detalle de pago" podrás visualizar los comprobantes que hayan sido cancelados agrupados por número de orden de pago.';
                         break;
                     case 'Emitidos':
+                        this.auxiliarSeccionesVisitadas = 'Emitidos';
                         this.textoTooltip = 'En esta categoría podrás visualizar el detalle de tus pagos por número de identificación pudiendo descargar los documentos asociados al pago (comprobantes, orden de pago y certificados de retención).';
                         this.textoTooltip2 = '';
                         break;
                     case 'Vendedor Estado':
+                        this.auxiliarSeccionesVisitadas = 'Vendedor Estado';
                         this.textoTooltip = 'En esta categoría podrás consultar si uno o más vendedores están habilitados para operar con nosotros.';
                         this.textoTooltip2 = '';
                         break
                     case 'Mi Situacion Fiscal':
+                        this.auxiliarSeccionesVisitadas = 'Mi Situacion Fiscal';
                         this.textoTooltip = 'En esta categoría podrás visualizar el estado de tu perfil impositivo (Estado en SISA, exenciones vigentes/vencidas, cuentas bancarias e inscripción en Ing. Brutos).';
                         this.textoTooltip2 = '';
                         break;
                     case 'Mis Vendedores':
+                        this.auxiliarSeccionesVisitadas = 'Mis Vendedores';
                         this.textoTooltip = 'En esta categoría podrás visualizar el perfil impositivo de tus vendedores habilitados (Estado en SISA, exenciones vigentes/vencidas, cuentas bancarias e inscripción en Ing. Brutos).';
                         this.textoTooltip2 = '';
                         break;
                     case 'Vendedores pendientes':
+                        this.auxiliarSeccionesVisitadas = 'Vendedores pendientes';
                         this.textoTooltip = 'En esta categoría podrás visualizar aquellos vendedores que se encuentran en proceso de alta y consultar su grado de avance, el estado dela documentación presentada y requerida.';
                         this.textoTooltip2 = '';
                         break;
                     case 'Documentacion':
+                        this.auxiliarSeccionesVisitadas = 'Documentacion';
                         this.textoTooltip = 'En esta categoría podrás consultar nuestros datos de contacto, horario de atención, direcciones de envío y documentos útiles para operar (Legajo de Molinos Agro, Documentación de Alta, Cesiones de Pago y mercadería, Certificado de depósito y carta de garantía, tarifas de servicios e instructivos).';
                         this.textoTooltip2 = '';
                         break;
                     case 'Listado Usuarios':
+                        this.auxiliarSeccionesVisitadas = 'Listado Usuarios';
                         this.textoTooltip = 'En esta categoría podrás ver el listado de usuarios, Deshabilitarlos o editar sus roles.';
                         this.textoTooltip2 = '';
                         break;
                     case 'Viajes Pendientes':
                     case 'Viajes Facturados':
                     case 'Viajes A Facturar':
+                        this.auxiliarSeccionesVisitadas = 'Viajes A Facturar';
                         this.textoTooltip = 'En esta categoría podrás visualizar tus viajes pendientes de proformar, facturar y facturados.';
                         this.textoTooltip2 = '';
                         break;
                     case 'Contacto':
+                        this.auxiliarSeccionesVisitadas = 'Contacto';
                         this.textoTooltip = 'En esta categoría podrás contactarte con nosotros y resolver tus dudas o consultas, reclamar pagos y retenciones, y enviar documentación.';
                         this.textoTooltip2 = '';
                         break;
@@ -336,6 +354,25 @@ export class LayoutComponent implements OnDestroy {
         return false; // <- Prevent href del a
     }
 
+    isSeccionVisitada(){
+        return this.seccionesVisitadas.includes(this.auxiliarSeccionesVisitadas);
+    }
+
+    actualizarSeccionVisitada(){
+        this.seccionesVisitadas += this.seccionActive;
+        
+        this.subscription = this.service.seccionVisitada(this.auxiliarSeccionesVisitadas).subscribe(
+            result => {
+                if (result.status){
+                    //RETORNAR ALGO.
+                    console.log("FUNCIONO");
+                }
+                    
+            },
+        )
+        
+        this.isSeccionVisitada();
+    }
 
     editarCuenta() {
         this.sessionDataService.editarCuenta();

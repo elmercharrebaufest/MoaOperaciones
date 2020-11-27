@@ -79,6 +79,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public void SeccionVisitada (string mailUsuario, string seccion)
+        {
+            Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
+            if (usuario.SeccionesVisitadas.Contains(seccion)) return;
+
+            usuario.SeccionesVisitadas += $"-{seccion}";
+            repositorio.GuardarCambios();
+        }
 
         //public UsuariosWSMOAResponse getUsuarios()
         //{

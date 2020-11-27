@@ -3655,8 +3655,6 @@ div.panel-body a.active{
 .tooltipscontainer {
   position: relative;
   display: inline-block;
-
-  background: transparent url('Content/images/buttons/information2.svg') 0% 0% no-repeat padding-box;
   opacity: 1;
   font-family: Roboto Regular;
 }
@@ -3680,7 +3678,7 @@ div.panel-body a.active{
   position: absolute;
   z-index: 1;
   top: -6px;
-  right: 90%;
+  right: 160%;
 }
 
 .tooltipscontainer .tooltipAyuda {
@@ -3694,4 +3692,37 @@ div.panel-body a.active{
   visibility: visible;
   transition: .4s ease-in-out;
 }
+
+.tooltipscontainer .tooltiptextoPrimerLog {
+  visibility: visible;
+  width: 300px;
+  background-color: #ffffff;
+  color: #3f4845;
+  font-size: 16px;
+  border-radius: 11px;
+  padding: 20px;
+  font-family: Roboto Regular;
+  text-transform: none;
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+  /*border-style: solid;
+   Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -6px;
+  right: 160%;
+}
+
 /*-------END TOOLTIPS-----------*/
+
+.botonTransparente{
+  position: relative;
+  top: -5px;
+  left: 240px;
+  background-color: transparent;
+  border-color: white;
+  color:#3f4845;
+  border-style: solid;
+}
