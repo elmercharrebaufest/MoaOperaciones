@@ -57,10 +57,10 @@ namespace SustitucionMOAUtils.Services
                     break;
 
                 case "no granos":
-                    Usuario usuarioNoGranos = new Usuario { Mail = mail, CUITRegistro = CUIT };
+                    UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = mail, CUITRegistro = CUIT };
 
                     usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
-                    RegistrarUsuarioGenerico(ref usuarioNoGranos);
+                    RegistrarUsuarioNoGranos(ref usuarioNoGranos);
                     usuario = usuarioNoGranos;
 
                     break;
@@ -124,6 +124,31 @@ namespace SustitucionMOAUtils.Services
             };
 
             return ValidarCUITProveedor(ref usuario, proveedor);
+        }
+
+        public bool RegistrarUsuarioNoGranos(ref UsuarioNoGranos usuario)
+        {
+            Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+
+            usuario.Roles = new List<Rol>
+            {
+                nuevoNoGranos
+            };
+
+            usuario.Proveedores = new List<Proveedor>();
+
+            Proveedor proveedor = new Proveedor
+            {
+                CUIT = usuario.CUITRegistro,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+            };
+
+            usuario.Proveedores.Add(proveedor);
+
+            usuario.Habilitado = true;
+
+            repositorio.Agregar(usuario);
+            return repositorio.GuardarCambios() == 1;
         }
 
         public bool RegistrarUsuarioCorredor(ref Usuario usuario)

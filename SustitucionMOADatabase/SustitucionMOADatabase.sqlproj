@@ -87,6 +87,7 @@
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
     <None Include="DatabasePublishPreProd.xml" />
+    <None Include="scripts\Rol_NuevoNoGranos.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
