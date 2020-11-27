@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="RyVfA6K5W+gIdh0DAOdt4AfmnuffHBRBEO115vnXpXE=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="kNOJMF1mBV65Ha00q6rTL2a18g8=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DET_PAGOS_NGBinding">
       <properties>
@@ -221,10 +221,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port8" contract="PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NG" bindingType="basicHttpBinding" address="http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DET_PAGOS_NGBinding">
+    <endpoint name="HTTP_Port8" contract="PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NG" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DET_PAGOS_NGBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
+          <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -306,10 +306,10 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port8" contract="PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NG" bindingType="basicHttpBinding" address="https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DET_PAGOS_NGBinding1">
+    <endpoint name="HTTPS_Port8" contract="PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NG" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DET_PAGOS_NGBinding1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
+          <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

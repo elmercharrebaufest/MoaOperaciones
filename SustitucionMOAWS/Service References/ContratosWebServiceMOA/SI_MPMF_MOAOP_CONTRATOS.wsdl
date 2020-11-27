@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="SI_MPMF_MOAOP_CONTRATOS" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation />
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="OP_SI_MPMF_MOAOP_CONTRATOS" />
+  <wsdl:types>
+    <xsd:schema xmlns="urn:sap-com:document:sap:rfc:functions" targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:element name="Z_MPMF_MOAOP_CONTRATOS.Response">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element minOccurs="0" name="PS_ERROR">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="2" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_CONTRATOS_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4060" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_CONTRATOS_OUT">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES3900" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_COSECHA_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4070" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_FECHA_OPERACION_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4100" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_MATERIAL_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4090" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_VENDEDOR_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4080" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Z_MPMF_MOAOP_CONTRATOS">
+        <xsd:complexType>
+          <xsd:all>
+            <xsd:element minOccurs="0" name="PE_PEND_ENTREGA">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="1" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="PE_PROVEEDOR">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:maxLength value="10" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_CONTRATOS_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4060" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_CONTRATOS_OUT">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES3900" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_COSECHA_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4070" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_FECHA_OPERACION_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4100" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_MATERIAL_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4090" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element minOccurs="0" name="T_VENDEDOR_IN">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES4080" />
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:all>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:simpleType name="date">
+        <xsd:union xmlns="urn:sap-com:document:sap:rfc:functions" memberTypes="xsd:date rfc:genericDate" />
+      </xsd:simpleType>
+      <xsd:simpleType name="genericDate">
+        <xsd:restriction base="xsd:string">
+          <xsd:pattern value="....-..-.." />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="ZMPES4100">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="FECHA_OP" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Field of type DATS</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FECHA_OP_HASTA" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Field of type DATS</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES4060">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="CONTRATO">
+            <xsd:annotation>
+              <xsd:documentation>Contract Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES3900">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="NRO_CONTRATO">
+            <xsd:annotation>
+              <xsd:documentation>Character Field Length = 10</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CONTRVEND">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FECHA_CONCERT" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Field of type DATS</xsd:documentation>
+            </xsd:annotation>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ID_VENDEDOR">
+            <xsd:annotation>
+              <xsd:documentation>Vendor Account Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="VENDEDOR">
+            <xsd:annotation>
+              <xsd:documentation>Name 1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="35" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CANT_KILOS">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="25" />
+                <xsd:fractionDigits value="0" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="UNIME_PACTADO">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="PRECIO">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="11" />
+                <xsd:fractionDigits value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MONEDA">
+            <xsd:annotation>
+              <xsd:documentation>Short text</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="15" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LUGAR_DESCARGA">
+            <xsd:annotation>
+              <xsd:documentation>Name</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="30" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="COSECHA">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="MATERIAL">
+            <xsd:annotation>
+              <xsd:documentation>Material Description (Short Text)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="40" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ESTADO_BOLETO">
+            <xsd:annotation>
+              <xsd:documentation>Version Number Component</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="APLICACIONES">
+            <xsd:annotation>
+              <xsd:documentation>Purchase Order Quantity</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="13" />
+                <xsd:fractionDigits value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="UNIME_ENTREGADO">
+            <xsd:annotation>
+              <xsd:documentation>Purchase Order Unit of Measure</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LIQUIDADO">
+            <xsd:annotation>
+              <xsd:documentation>Purchase Order Quantity</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:decimal">
+                <xsd:totalDigits value="13" />
+                <xsd:fractionDigits value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="UNIME_LIQUIDADO">
+            <xsd:annotation>
+              <xsd:documentation>Purchase Order Unit of Measure</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ESTADO">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="20" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES4080">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="VENDEDOR">
+            <xsd:annotation>
+              <xsd:documentation>Character Field Length = 10</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES4070">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="COSECHA">
+            <xsd:annotation>
+              <xsd:documentation>Character Field with Length 5</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="5" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="ZMPES4090">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="MATERIAL">
+            <xsd:annotation>
+              <xsd:documentation>Field length 18</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="18" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="rfc.Z_MPMF_MOAOP_CONTRATOS.Input">
+    <wsdl:documentation />
+    <wsdl:part name="parameters" element="rfc:Z_MPMF_MOAOP_CONTRATOS" />
+  </wsdl:message>
+  <wsdl:message name="rfc.Z_MPMF_MOAOP_CONTRATOS.Output">
+    <wsdl:documentation />
+    <wsdl:part name="parameters" element="rfc:Z_MPMF_MOAOP_CONTRATOS.Response" />
+  </wsdl:message>
+  <wsdl:portType name="SI_MPMF_MOAOP_CONTRATOS">
+    <wsdl:documentation />
+    <wsdl:operation name="SI_MPMF_MOAOP_CONTRATOS">
+      <wsdl:documentation />
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_SI_MPMF_MOAOP_CONTRATOS" />
+      </wsp:Policy>
+      <wsdl:input message="p1:rfc.Z_MPMF_MOAOP_CONTRATOS.Input" />
+      <wsdl:output message="p1:rfc.Z_MPMF_MOAOP_CONTRATOS.Output" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SI_MPMF_MOAOP_CONTRATOSBinding" type="p1:SI_MPMF_MOAOP_CONTRATOS">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:operation name="SI_MPMF_MOAOP_CONTRATOS">
+      <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <wsdl:input>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:input>
+      <wsdl:output>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SI_MPMF_MOAOP_CONTRATOSService">
+    <wsdl:port name="HTTP_Port" binding="p1:SI_MPMF_MOAOP_CONTRATOSBinding">
+      <address location="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTRATOS&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+    <wsdl:port name="HTTPS_Port" binding="p1:SI_MPMF_MOAOP_CONTRATOSBinding">
+      <address location="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTRATOS&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

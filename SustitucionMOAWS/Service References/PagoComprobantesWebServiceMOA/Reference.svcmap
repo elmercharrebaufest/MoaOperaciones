@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/a0539894219e369b92ec75fc8369c4fc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/a0539894219e369b92ec75fc8369c4fc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_DET_PAGOS_NG1.wsdl" MetadataType="Wsdl" ID="d6eb25dc-c30b-4f84-b3ff-f5f312c56010" SourceId="1" SourceUrl="http://gvicpiqa01.ar.molinos.local:50000/dir/wsdl?p=ic/a0539894219e369b92ec75fc8369c4fc" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" MetadataType="Wsdl" ID="d1a728ac-e005-4c93-87bd-d3a37c2e4ca2" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/a0539894219e369b92ec75fc8369c4fc" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
