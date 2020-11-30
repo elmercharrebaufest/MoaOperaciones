@@ -243,6 +243,10 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     }
 
     submit() {
+
+        this.fecha_inicio = (<HTMLInputElement>document.getElementById("dtp_input1")).value;
+        this.fecha_fin = (<HTMLInputElement>document.getElementById("dtp_input2")).value;
+
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
             return;
@@ -254,15 +258,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.notificacion.FiltroRoles = this.roles.filter(x => x.checked);
         this.notificacion.FiltroTipoUsuario = this.tipoUsuarioArray.filter(x => x.checked);
         
-        let fechaInicio = (<HTMLInputElement>document.getElementById("dtp_input1")).value;
 
-        var dateParts = fechaInicio.split("/");
+        var dateParts = this.fecha_inicio.split("/");
 
         this.notificacion.FechaInicio = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
 
-        let fechaFin = (<HTMLInputElement>document.getElementById("dtp_input2")).value;
-
-        dateParts = fechaFin.split("/");
+        dateParts = this.fecha_fin.split("/");
 
         this.notificacion.FechaFin = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
 

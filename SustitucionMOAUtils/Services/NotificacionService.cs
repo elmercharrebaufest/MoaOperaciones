@@ -119,7 +119,7 @@ namespace SustitucionMOAUtils.Services
         {
             var notificacion = repositorio.Obtener<Notificacion>(idNotificacion);
 
-            notificacion.Borrada = false;
+            notificacion.Borrada = true;
 
             repositorio.GuardarCambios();
 
@@ -150,9 +150,10 @@ namespace SustitucionMOAUtils.Services
                 n => !n.Borrada
                 && n.Habilitada
                 && DateTime.Now >= n.FechaInicio
-                && DateTime.Now <= n.FechaFin
-                //&& n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x))
-                //&& n.FiltroTipoUsuario.Contains(usuario.TipoUsuario.Id)
+                && DateTime.Now <= n.FechaFin)
+            .AsEnumerable()
+            .Where(n=> n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id))
+                && n.FiltroTipoUsuario.Any(t => t.Id == usuario.TipoUsuario.Id)
             ).Select(x => new NotificacionDto
             {
                 Nombre = x.Nombre,

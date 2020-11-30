@@ -59,8 +59,8 @@
                                 ; let odd = odd" role="row" [class.odd]="!odd">
               <td>{{notificacion.Id}}</td>
               <td>{{notificacion.Nombre || "-"}}</td>
-              <td>{{ notificacion.FechaInicio ? (notificacion.FechaInicio.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}</td>
-              <td>{{ notificacion.FechaFin ? (notificacion.FechaFin.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}</td>
+              <td>{{ notificacion.FechaInicio }}</td>
+              <td>{{ notificacion.FechaFin }}</td>
               <td>
                 <i *ngIf="notificacion.Habilitada" class="fa fa-check-circle"></i>
                 <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
