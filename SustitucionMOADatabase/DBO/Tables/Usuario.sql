@@ -6,7 +6,7 @@ CREATE TABLE [dbo].[Usuario](
 	[TipoUsuario_Id] [int] NULL,
 
  [UltimoLogin] SMALLDATETIME NULL, 
-    [SeccionesVisitadas] NVARCHAR(MAX) NULL DEFAULT '', 
+    [SeccionesVisitadas] NVARCHAR(MAX) NOT NULL DEFAULT '', 
     CONSTRAINT [PK_dbo.Usuario] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
