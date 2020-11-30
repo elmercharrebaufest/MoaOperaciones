@@ -363,11 +363,10 @@ export class LayoutComponent implements OnDestroy {
         
         this.subscription = this.service.seccionVisitada(this.auxiliarSeccionesVisitadas).subscribe(
             result => {
-                if (result.status){
-                    //RETORNAR ALGO.
-                    console.log("FUNCIONO");
-                }
-                    
+                if (result.status)
+                    return result.status;
+                else
+                    throw new console.error("Ocurrio un error al actualizar la seccion.");
             },
         )
         

@@ -225,7 +225,7 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(result, respuesta);
         }
 
-        /*[Test]
+        [Test]
         public void SeccionVisitadaTest()
         {
             var mailUsuario = "existente@mail.com";
@@ -243,9 +243,14 @@ namespace SustitucionMOATest.Services
 
             var expected = "descargas-prueba-noEstaba";
 
-            var result = target.SeccionVisitada(mailUsuario, "noEstaba");
+            target.SeccionVisitada(mailUsuario, "noEstaba");
 
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
-        }*/
+            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            Assert.AreEqual(expected, resultUser.SeccionesVisitadas);
+        }
     }
 }
