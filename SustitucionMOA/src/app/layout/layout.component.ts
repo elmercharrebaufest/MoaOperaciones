@@ -197,11 +197,6 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'En esta categoría podrás consultar nuestros datos de contacto, horario de atención, direcciones de envío y documentos útiles para operar (Legajo de Molinos Agro, Documentación de Alta, Cesiones de Pago y mercadería, Certificado de depósito y carta de garantía, tarifas de servicios e instructivos).';
                         this.textoTooltip2 = '';
                         break;
-                    case 'Listado Usuarios':
-                        this.auxiliarSeccionesVisitadas = 'Listado Usuarios';
-                        this.textoTooltip = 'En esta categoría podrás ver el listado de usuarios, Deshabilitarlos o editar sus roles.';
-                        this.textoTooltip2 = '';
-                        break;
                     case 'Viajes Pendientes':
                     case 'Viajes Facturados':
                     case 'Viajes A Facturar':
