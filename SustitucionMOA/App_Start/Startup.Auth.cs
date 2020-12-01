@@ -182,6 +182,7 @@ namespace SustitucionMOA
 				notification.AddClaim(new Claim(Globals.ClaimsUserNameType, mail));
 				notification.AddClaim(new Claim(Globals.ClaimsNombreType, usuario.ObtenerRazonSocial()));
 				notification.AddClaim(new Claim(Globals.ClaimsProveedorType, usuario.ObtenerCodigoProveedor()));
+				notification.AddClaim(new Claim(Globals.ClaimsSeccionesVisitadas, usuario.SeccionesVisitadas ?? ""));
 
 				string tipoGranos = usuario.TipoUsuario.NombreCorto == "CORR" || usuario.TipoUsuario.NombreCorto == "CLI"  ? "G" : usuario.TipoUsuario.NombreCorto;
 

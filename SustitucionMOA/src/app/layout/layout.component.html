@@ -298,7 +298,7 @@
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/contrato/vigente')" href="#">
-                                    <!--data-toggle="tab">-->Contratos
+                                    <!--data-toggle="tab">-->Contratos 
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()">
@@ -536,20 +536,51 @@
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
             aria-hidden="true"></i>{{mensajeSuccess}}</div>
     <!-- Tab panes -->
-    <div class="SubMenu-wrapper" [hidden]="!tieneSecciones">
-        <div class="SubMenu myTab clearfix">
+    <div class="SubMenu-wrapper row">
+        <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
             <div class="tab-content ">
                 <div class="tab-pane fade active in" id="Inicio">
                     <ul class="nav">
                         <li *ngFor="let seccion of seccionList"><a class="animate"
                                 [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
                                 (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+                        
                     </ul>
                 </div>
             </div>
         </div>
+        
+        <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1" style="float: right;">
+            <div class="tooltipAyuda">
+                <img src="Content/images/buttons/information.svg"/>
+                <span>Ayuda</span>
+            </div>
+            <span class="tooltiptexto" aria-hidden="true">
+                {{this.textoTooltip}}
+                <br>
+                {{this.textoTooltip2}}
+            </span>
+        </div>
+
+        
+        <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1" style="float: right;">
+            <div class="tooltipAyuda">
+                <img src="Content/images/buttons/information.svg"/>
+                <span>Ayuda</span>
+            </div>
+            <span class="tooltiptextoPrimerLog" aria-hidden="true">
+                <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i class="glyphicon glyphicon-remove"></i></button>
+                <br>
+                {{this.textoTooltip}}
+                <br>
+                {{this.textoTooltip2}}
+            </span>
+        </div>
     </div>
+
     <!-- END Tab panes -->
+    
+    
     <router-outlet></router-outlet>
 </div>
 <header-user id="userSmall" style="display:none; margin-right: 25px;">

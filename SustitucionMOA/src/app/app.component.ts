@@ -88,6 +88,7 @@ export class AppComponent {
         sessionStorage.setItem("tipoUsuario", result.tipoUsuario);
         sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
         sessionStorage.setItem("permisos", JSON.stringify(result.permisos));
+        sessionStorage.setItem("seccionesVisitadas", result.seccionesVisitadas);
         this.sessionDataService.setNombre(result.nombre);
         this.sessionDataService.setUsername(result.username);
         this.sessionDataService.setProveedor(result.proveedor);
@@ -95,6 +96,7 @@ export class AppComponent {
         this.sessionDataService.setNoticias(result.noticias);
         this.sessionDataService.setPermisos(result.permisos);
         this.sessionDataService.setGranosFlag(result.granosFlag);
+        this.sessionDataService.setSeccionesVisitadas(result.seccionesVisitadas);
 
         sessionStorage.setItem("granosSelected", result.granosFlag);
 
