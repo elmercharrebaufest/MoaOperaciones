@@ -438,6 +438,36 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult DescargarArchivos(string mail, int proveedorId)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(mail))
+                    mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                if (proveedorId == 0)
+                {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
+                    proveedorId = usuario.ObtenerProveedor().Id;
+                }
+                
+                var path = $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{DateTime.Now.Ticks}";
+                Directory.CreateDirectory(path);
+                string rutaZip= altaEmpresaService.ObtenerArchivos(mail, proveedorId, path);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+                string fileName = Path.GetFileName(rutaZip);
+
+                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+                Directory.Delete(path, true);
+
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult EliminarArchivo(int archivoID, int proveedorId)
         {
             try

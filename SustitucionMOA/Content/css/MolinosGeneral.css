@@ -3548,6 +3548,10 @@ div.panel-body a.active{
   font-weight: 400!important;
 }
 
+.btn-custom:disabled {
+  opacity: 0.65;
+}
+
 .btn-grande {
   width: 201px;
 }

@@ -22,6 +22,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
 using System.Threading.Tasks;
+using System.IO.Compression;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -596,6 +597,27 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             return usuario.CUITRegistro;
+        }
+
+        public string ObtenerArchivos(string mail, int proveedorId, string pathBase)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var zipFilename = $"Proveedor-{proveedor.CUIT}-Documentacion.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    foreach (var archivoSubido in proveedor.Archivos)
+                    {
+                        string fileName = Path.GetFileName(archivoSubido.Ruta);
+                        archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                    }
+                }
+            }
+
+            return filePath;
         }
     }
 }
