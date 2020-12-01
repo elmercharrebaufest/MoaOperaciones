@@ -10,115 +10,154 @@
     </div>
     <!--End Title-->
     <!--Search-->
-    <div class="myRow firstSection mySearch">
+    <div class="mySearch">
       <div *ngIf="mensajeError != ''" class="formulario-input;">
         <div class="alert alert-danger">
           <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
         </div>
       </div>
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
-        <div class="col-xs-12 col-md-12 search-header">
-          <title-caps>Refinar resultados</title-caps>
-        </div>
-
-        <div class="formulario">
-          <div class="formulario-label">
-            Nombre:
+        <div class="formulario-campo">
+          <div class="col-xs-12 col-md-12 search-header">
+            <title-caps>Información de la notificacion</title-caps>
           </div>
+          <div class="formulario">
+            <div class="col-xs-12 col-md-6">
+              <div class="formulario-label">
+                Nombre:
+              </div>
 
-          <div class="styled-elements">
-            <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
-          </div>
+              <div class="styled-select">
+                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <div class="divFalso">
+              </div>
+              <label class="mySearch" for="habilitada">
+                <input type="checkbox" class="checkboxGrande" [(ngModel)]="notificacion.Habilitada" id="habilitada">
+                Habilitada
+              </label>
+            </div>
+            <div class="col-xs-12 col-md-12"></div>
+            <div class="col-xs-12 col-md-3">
+              <div class="formulario-label">
+                Desde:
+              </div>
+              <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
+                <fieldset>
+                  <div>
+                    <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
+                      data-link-field="dtp_input1">
+                      <input type="text" id="noCursor" value="{{fecha_inicio}}" fechaInicioInput readonly>
+                      <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
 
-          <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 searchVerSelect ">
-            Desde:
-            <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
-              <fieldset>
-                <div>
-                  <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
-                    data-link-field="dtp_input1">
-                    <input type="text" id="noCursor" value="{{fecha_inicio}}" readonly>
-                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
+                    <br />
                   </div>
-                  <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
-                  <br />
-                </div>
-              </fieldset>
-            </form>
-          </div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="col-xs-12 col-md-1">
+              <div class="formulario-label">
+                Hora
+              </div>
+              <div class="styled-select">
+                <select [(ngModel)]="horaInicio">
+                  <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
+                    00
+                  </option>
+                </select>
+              </div>
+            </div>
 
-          <div class="col-xs-12 col-sm-6 col-md-12 entrefechas_1 entrefechas_2 searchVerSelect ">
-            Hasta:
-            <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
-              <fieldset>
-                <div>
-                  <div class="input-group date form_datetime2" data-date="" data-date-format="dd/MM/yyyy"
-                    data-link-field="dtp_input2">
-                    <input type="text" value="{{fecha_fin}}" id="noCursor" readonly />
-                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+            <div class="col-xs-12 col-md-2">
+              <div class="formulario-label">
+                Hasta:
+              </div>
+              <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+                <fieldset>
+                  <div>
+                    <div class="input-group date form_datetime2" data-date="" data-date-format="dd/MM/yyyy"
+                      data-link-field="dtp_input2">
+                      <input type="text" value="{{fecha_fin}}" id="noCursor" fechaFinInput readonly />
+                      <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
+                    <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" />
+                    <br />
                   </div>
-                  <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" />
-                  <br />
+                </fieldset>
+              </form>
+            </div>
+
+            <div class="col-xs-12 col-md-6">
+
+              <div class="formulario-label">
+                Link adjunto:
+              </div>
+              <div class="styled-select">
+                <input type="text" id="LinkAdjunto" width="200px" [(ngModel)]="notificacion.LinkAdjunto">
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-12"></div>
+
+            <div class="col-xs-12 col-md-12">
+              <div class="formulario-label">
+                Mensaje:
+              </div>
+              <div class="styled-select">
+                <textarea id="Mensaje" [(ngModel)]="notificacion.Mensaje" rows="5">
+
+                </textarea>
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-md-12">
+              <div class="formulario-label">
+                Roles <input type="checkbox" name="checkAllRoles" (click)="checkAllRoles()" [(ngModel)]="allRoles">
+              </div>
+              <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
+                <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                  [(ngModel)]="rol.checked">
+                &nbsp;
+                <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+              </span>
+            </div>
+            <br>
+
+            <div class="col-xs-12 col-md-12">
+              <div class="formulario-label">
+                Tipo de Usuario <input type="checkbox" name="allTipos" (click)="checkAllTipos()" [(ngModel)]="allTipos">
+              </div>
+              <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
+                <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"
+                  value="{{tipoDeUsuario.Id}}" [(ngModel)]="tipoDeUsuario.checked">
+                &nbsp;
+                <label for="tipoDeUsuario_{{tipoDeUsuario.Id}}">{{tipoDeUsuario.Nombre}}</label>
+              </span>
+            </div>
+
+            <div class="containerBotones">
+              <div class="col-xs-0 col-md-3"></div>
+              <div class="col-xs-5 col-md-2">
+                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
+                  value="Volver">
+              </div>
+              <div class="col-xs-2 col-md-1"></div>
+
+
+              <div class="col-xs-5 col-md-3">
+                <div class="step-actions enviar">
+                  <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
+                    data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                  <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
                 </div>
-              </fieldset>
-            </form>
-          </div>
-          <div>
-            Habilitada:
-          </div>
-          <div>
-            <input type="checkbox" [(ngModel)]="notificacion.Habilitada" id="habilitada">
-          </div>
-          <div>
-            Link adjunto:
-          </div>
-
-          <div>
-            <input type="text" id="LinkAdjunto" [(ngModel)]="notificacion.LinkAdjunto">
-          </div>
-          <div>
-            Mensaje:
-          </div>
-          <div>
-            <input type="text" id="Mensaje" [(ngModel)]="notificacion.Mensaje">
-          </div>
-          <div>
-            <div>
-              Roles: <input type="checkbox" name="checkAllRoles" (click)="checkAllRoles()" [(ngModel)]="allRoles">
-            </div>
-            <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
-              <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
-                [(ngModel)]="rol.checked">
-              &nbsp;
-              <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-            </span>
-          </div>
-          <div>
-            <div>
-              Tipo de Usuario: <input type="checkbox" name="allTipos" (click)="checkAllTipos()"
-                [(ngModel)]="checkAllTipos">
-            </div>
-            <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
-              <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"
-                value="{{tipoDeUsuario.Id}}" [(ngModel)]="tipoDeUsuario.checked">
-              &nbsp;
-              <label for="tipoDeUsuario_{{tipoDeUsuario.Id}}">{{tipoDeUsuario.Nombre}}</label>
-            </span>
-          </div>
-
-
-          <div class="col-xs-12 col-md-12" label="Enviar">
-            <div class="step-actions enviar">
-              <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-              <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+              </div>
+              <div class="col-xs-0 col-md-2"></div>
             </div>
           </div>
-
         </div>
-
-
-
       </div>
     </div>
 
@@ -134,3 +173,28 @@
   </section>
   <!--End CONTENT-->
 </div>
+
+<!-- modal notificacion -->
+<button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
+  data-target="#modalNotificación"></button>
+<div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-close" style="display:none" data-dismiss="modal" aria-label="Close"
+          id="botonCerrarModal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Notificación guardada correctamente </h4>
+      </div>
+      <div class="modal-body modal-notificacion">
+        <label>La notificación ha sido guardada correctamente.</label><br />
+      </div>
+      <div class="modal-footer">
+        <button (click)="redirigirAListado()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal notificacion -->

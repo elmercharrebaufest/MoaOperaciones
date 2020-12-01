@@ -7,31 +7,31 @@
   </div>
 
   <div class="col-xs-12 col-md-12 notificacionContainer">
-    <div class="col-xs-1">
-      <i class="fa fa-caret-left btnPrevious" *ngIf="index!=0" (click)="notificacionAnterior()"></i>
-    </div>
-    <div class="col-xs-10">
-      <div class="col-xs-12 col-md-8 notificacionMensaje">
-        {{notificacionActual.Mensaje}}
-      </div>
-      <div class="col-xs-12 col-md-4 notificacionContenedorBotones">
-        <div class="col-xs-5 col-md-12 col-lg-5 ">
-          <a *ngIf="notificacionActual.linkAdjunto!=''" href="https://www.google.com" target="blank"
-            class="button btn-custom btn-guardar btn-mediano">{{notificacionActual.linkAdjunto}} VER MAS</a>
-        </div>
-        <div class="col-xs-5 col-md-0 col-lg-1">
 
+    <div class="row">
+      <div class="col-xs-12 col-md-9 container notificacionMensaje">
+        <div class="divAnterior">
+          <i class="fa fa-caret-left btnPrevious" (click)="notificacionAnterior()"></i>
         </div>
-        <div class="col-xs-5 col-md-12 col-lg-5">
+        <div class="divMensaje">
+          {{notificacionActual.Mensaje}}
+        </div>
+        <div class="divSiguiente">
+          <i class="fa fa-caret-right btnNext" (click)="siguienteNotificacion()"></i>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-3 notificacionContenedorBotones">
+        <div class="">
+          <a *ngIf="notificacionActual.LinkAdjunto!=''" href="{{notificacionActual.LinkAdjunto}}" target="blank"
+            class="button btn-custom btn-guardar btn-mediano">VER MAS</a>
+        </div>
+        <div class="">
           <button class="btn-custom btn-cerrar btn-mediano" (click)="cerrarNotificaciones()"> CERRAR </button>
         </div>
-        <div class="col-xs-1 col-md-0 col-lg-1">
-
-        </div>
       </div>
     </div>
-    <div class="col-xs-1">
-      <i class="fa fa-caret-right btnNext" *ngIf="index!=totalNotificaciones" (click)="siguienteNotificacion()"></i>
-    </div>
   </div>
+</div>
+<div class="divPaddingFinal">
+
 </div>

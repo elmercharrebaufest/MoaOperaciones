@@ -59,20 +59,22 @@
                                 ; let odd = odd" role="row" [class.odd]="!odd">
               <td>{{notificacion.Id}}</td>
               <td>{{notificacion.Nombre || "-"}}</td>
-              <td>{{ notificacion.FechaInicio }}</td>
-              <td>{{ notificacion.FechaFin }}</td>
+              <td>{{ notificacion.FechaInicio.split(":")[0] }}:00</td>
+              <td>{{ notificacion.FechaFin.split(" ")[0] }}</td>
               <td>
                 <i *ngIf="notificacion.Habilitada" class="fa fa-check-circle"></i>
                 <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
               </td>
               <td>
-                <button (click)="goToSeccionParam('/notificaciones/alta', notificacion.Id)">Editar</button>
-
-                <button *ngIf="!notificacion.Habilitada" (click)="habilitar(notificacion.Id)">Habilitar</button>
-
-                <button *ngIf="notificacion.Habilitada" (click)="deshabilitar(notificacion.Id)">Deshabilitar</button>
-
-                <button (click)="eliminar(notificacion.Id)">Eliminar</button>
+                <a (click)="goToSeccionParam('/notificaciones/alta', notificacion.Id)" class="cursor"
+                  role='button'>Editar</a>
+                <br><br>
+                <a *ngIf="!notificacion.Habilitada" (click)="habilitar(notificacion.Id)" class="cursor"
+                  role='button'>Habilitar</a>
+                <a *ngIf="notificacion.Habilitada" (click)="deshabilitar(notificacion.Id)" class="cursor"
+                  role='button'>Deshabilitar</a>
+                <br><br>
+                <a (click)="eliminar(notificacion.Id)" class="cursor" role='button'>Eliminar</a>
 
               </td>
             </tr>

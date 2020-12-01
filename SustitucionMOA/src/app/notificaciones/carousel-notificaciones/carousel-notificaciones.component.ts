@@ -20,6 +20,9 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
   indiceNotificacion: number = 0;
   totalNotificaciones: number = 0;
   mostrarNotificaciones: boolean = true;
+  mostrarBotonSiguiente: boolean = false;
+  mostrarBotonAnterior: boolean = false;
+
 
   constructor(protected service: NotificacionesService, protected navService: NavService,
               protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
@@ -47,9 +50,11 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
                       this.data = result.data;
                       this.totalNotificaciones = this.data.length
                       this.notificacionActual = this.data[this.indiceNotificacion];
-                      
+                      console.log(this.data.length)
                       if (this.data.length > 0)
                         this.mostrarNotificaciones = true;
+                      this.actualizarBotones()
+                      
                     }
                 },
                 error => {
@@ -63,16 +68,24 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
         return false; //<-- Prevent Refresh
     }
 
-  siguienteNotificacion()
-  {
-      this.notificacionActual = this.data[++this.indiceNotificacion];
+  siguienteNotificacion() {
+    this.notificacionActual = this.data[++this.indiceNotificacion];
+    this.actualizarBotones()
   }
 
   notificacionAnterior() {
     this.notificacionActual = this.data[--this.indiceNotificacion];
+    this.actualizarBotones()
   }
 
   cerrarNotificaciones() {
     this.mostrarNotificaciones = false
+  }
+
+  actualizarBotones() {
+    this.mostrarBotonSiguiente = (this.indiceNotificacion + 1) != this.totalNotificaciones;
+    
+    this.mostrarBotonAnterior = this.indiceNotificacion!=0;
+
   }
 }

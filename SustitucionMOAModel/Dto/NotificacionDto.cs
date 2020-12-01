@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Dto
 
         public string FechaFin { get; set; }
 
+        public int HoraInicio { get; set; }
         public bool Habilitada { get; set; }
 
         public bool Borrada { get; set; }

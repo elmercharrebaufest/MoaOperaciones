@@ -38,6 +38,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     fecha_inicio: string;
     fecha_fin: string;
+    horaInicio: number;
     mensajeError: string = "";
 
     allRoles: boolean = false;
@@ -65,13 +66,14 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.initTipoUsuarios();
         
 
-        if (this.notificacionId > 0)
+        if (this.notificacionId > 0) {
             this.obtenerNotificacion();
+        }
     }
 
     ngAfterViewInit(): void {
 
-        $(document).on("mouseover", '.form_datetime1', function () {
+        $(document).ready(function () {
             $(".form_datetime1").datetimepicker({
                 format: 'dd/mm/yyyy',
                 language: 'es',
@@ -86,9 +88,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                 minView: 2,
                 maxView: 4
             });
-        });
 
-        $(document).on("mouseover", '.form_datetime2', function () {
             $(".form_datetime2").datetimepicker({
                 format: 'dd/mm/yyyy',
                 language: 'es',
@@ -122,10 +122,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             return false;
         }
                 
-        if (this.notificacion.LinkAdjunto.length > 0) {
-            if (!this.validarURL()) {
-                this.mensajeError = "La dirección del link adjunto es inválida.";
-                return false;
+        if (this.notificacion.LinkAdjunto != undefined) {
+            if (this.notificacion.LinkAdjunto.length > 0) {
+                if (!this.validarURL()) {
+                    this.mensajeError = "La dirección del link adjunto es inválida.";
+                    return false;
+                }
             }
         }
 
@@ -176,11 +178,13 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                         this.notificacion.FiltroRoles.forEach(element => {
                             this.roles.find(x => x.Id == element.toString()).checked = true
                         });
+
                         this.notificacion.FiltroTipoUsuario.forEach(element => {
                             this.tipoUsuarioArray.find(x => x.Id == element.toString()).checked = true
                         });
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
+                        this.horaInicio = this.notificacion.HoraInicio;
                         this.fecha_fin = this.notificacion.FechaFin.toString();
                         
                     }
@@ -244,8 +248,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     submit() {
 
-        this.fecha_inicio = (<HTMLInputElement>document.getElementById("dtp_input1")).value;
-        this.fecha_fin = (<HTMLInputElement>document.getElementById("dtp_input2")).value;
+        this.fecha_inicio = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+        this.fecha_fin = (<HTMLInputElement>document.querySelectorAll('[fechaFinInput]')[0]).value;
 
         if (!this.validar()) {
             this.spinnerComponent.hideIt();
@@ -258,10 +262,11 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.notificacion.FiltroRoles = this.roles.filter(x => x.checked);
         this.notificacion.FiltroTipoUsuario = this.tipoUsuarioArray.filter(x => x.checked);
         
-
         var dateParts = this.fecha_inicio.split("/");
 
-        this.notificacion.FechaInicio = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
+        console.log(this.horaInicio)
+
+        this.notificacion.FechaInicio = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0], this.horaInicio >= 3 ? this.horaInicio - 3: 23 -this.horaInicio ); 
 
         dateParts = this.fecha_fin.split("/");
 
@@ -296,5 +301,16 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+    }
+
+
+    redirigirAListado() {
+         
+        document
+            .getElementById("botonCerrarModal")
+            .click();
+        this.navService.navegarSeccion(
+            "/notificaciones"
+        );
     }
 }

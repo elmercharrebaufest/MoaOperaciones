@@ -6,6 +6,7 @@ export class Notificacion {
     public Nombre: string;
     public FechaInicio: Date;
     public FechaFin: Date;
+    public HoraInicio: number;
     public Habilitada: boolean;
     public Borrada: boolean;
     public LinkAdjunto: string;
