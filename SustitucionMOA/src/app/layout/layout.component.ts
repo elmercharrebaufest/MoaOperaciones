@@ -136,8 +136,6 @@ export class LayoutComponent implements OnDestroy {
             seccionActive => {
                 this.seccionActive = seccionActive;
 
-                console.log(seccionActive);
-
                 switch(this.seccionActive){
                     case 'Fijaciones':
                     case 'Ampliaciones':
