@@ -55,7 +55,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
 
     setTabs() {
         this.navService.setSeccionList([]);
-        this.setMenuSeccionTab("pesificacion", "");
+        this.setMenuSeccionTab("pesificacion", "Pesificacion");
     }
 
     checkPermisos() {

@@ -136,6 +136,8 @@ export class LayoutComponent implements OnDestroy {
             seccionActive => {
                 this.seccionActive = seccionActive;
 
+                console.log(seccionActive);
+
                 switch(this.seccionActive){
                     case 'Fijaciones':
                     case 'Ampliaciones':
@@ -145,13 +147,6 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip2 = 'Haciendo click en el número de contrato podrás visualizar mayor información sobre el mismo (características, condiciones comerciales, estado del boleto, aplicaciones, calidades, liquidaciones asociadas y pagos).';
                         this.auxiliarSeccionesVisitadas = 'Vigentes';
                         break;
-                    case 'A Fijar':
-                    case 'Fijacion':
-                    case 'A Precio':
-                        this.textoTooltip = 'Texto a Definir';
-                        this.textoTooltip2 = '';
-                        this.auxiliarSeccionesVisitadas = 'A Precio';
-                        break
                     case 'Aplicaciones':
                     case 'Formulario':
                     case 'Descargas':
@@ -217,6 +212,11 @@ export class LayoutComponent implements OnDestroy {
                     case 'Contacto':
                         this.auxiliarSeccionesVisitadas = 'Contacto';
                         this.textoTooltip = 'En esta categoría podrás contactarte con nosotros y resolver tus dudas o consultas, reclamar pagos y retenciones, y enviar documentación.';
+                        this.textoTooltip2 = '';
+                        break;
+                    case 'Pesificacion':
+                        this.auxiliarSeccionesVisitadas = 'Pesificacion';
+                        this.textoTooltip = 'En esta categoría podrás pesificar tus negocios en dólares, individual o masivamente, y consultar aquellos negocios pendientes de pesificar.';
                         this.textoTooltip2 = '';
                         break;
                     default:
