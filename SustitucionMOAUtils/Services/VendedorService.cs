@@ -271,6 +271,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var proveedores = usuario.Proveedores.ToList();
 
+
                 if (filtro != null)
                 {
                     proveedores = proveedores.Where(filtro).ToList();
