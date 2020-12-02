@@ -26,6 +26,8 @@ namespace SustitucionMOA.Controllers
             this.notificacionService = notificacionService;
         }
 
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Grabar(string notificacionJson)
         {
             try
@@ -116,6 +118,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Eliminar(int notificacionId)
         {
             try
@@ -138,6 +141,7 @@ namespace SustitucionMOA.Controllers
         }
 
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Deshabilitar(int notificacionId)
         {
             try
@@ -159,6 +163,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Habilitar(int notificacionId)
         {
             try

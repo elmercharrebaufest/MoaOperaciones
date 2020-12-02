@@ -179,9 +179,13 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                             this.roles.find(x => x.Id == element.toString()).checked = true
                         });
 
+                        this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
+
                         this.notificacion.FiltroTipoUsuario.forEach(element => {
                             this.tipoUsuarioArray.find(x => x.Id == element.toString()).checked = true
                         });
+
+                        this.allTipos = this.tipoUsuarioArray.filter(x => x.checked).length == this.tipoUsuarioArray.length;
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
                         this.horaInicio = this.notificacion.HoraInicio;
@@ -264,16 +268,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         
         var dateParts = this.fecha_inicio.split("/");
 
-        console.log(this.horaInicio)
 
         this.notificacion.FechaInicio = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0], this.horaInicio >= 3 ? this.horaInicio - 3: 23 -this.horaInicio ); 
 
         dateParts = this.fecha_fin.split("/");
 
         this.notificacion.FechaFin = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
-
-        console.info();
-        console.log(this.notificacion)
 
         this.subscription = this.service
             .grabar(this.notificacion)

@@ -22,6 +22,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
   mostrarNotificaciones: boolean = true;
   mostrarBotonSiguiente: boolean = false;
   mostrarBotonAnterior: boolean = false;
+  mostrarVerMas: boolean = false;
 
 
   constructor(protected service: NotificacionesService, protected navService: NavService,
@@ -50,7 +51,6 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
                       this.data = result.data;
                       this.totalNotificaciones = this.data.length
                       this.notificacionActual = this.data[this.indiceNotificacion];
-                      console.log(this.data.length)
                       if (this.data.length > 0)
                         this.mostrarNotificaciones = true;
                       this.actualizarBotones()
@@ -85,7 +85,9 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
   actualizarBotones() {
     this.mostrarBotonSiguiente = (this.indiceNotificacion + 1) != this.totalNotificaciones;
     
-    this.mostrarBotonAnterior = this.indiceNotificacion!=0;
+    this.mostrarBotonAnterior = this.indiceNotificacion != 0;
+    
+    this.mostrarVerMas = (this.notificacionActual.LinkAdjunto || '') != '';
 
   }
 }

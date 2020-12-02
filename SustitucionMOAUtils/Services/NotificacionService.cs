@@ -99,7 +99,7 @@ namespace SustitucionMOAUtils.Services
             notificacion.LinkAdjunto = oNotificacion.LinkAdjunto;
             notificacion.Mensaje = oNotificacion.Mensaje;
 
-            notificacion.FiltroRoles = new List<Rol>();
+            notificacion.FiltroRoles.Clear();
 
             foreach (Rol rol in oNotificacion.FiltroRoles)
             {
@@ -107,7 +107,7 @@ namespace SustitucionMOAUtils.Services
                 notificacion.FiltroRoles.Add(nuevoRol);
             }
 
-            notificacion.FiltroTipoUsuario = new List<TipoUsuario>();
+            notificacion.FiltroTipoUsuario.Clear();
 
             foreach (TipoUsuario tipoUsuario in oNotificacion.FiltroTipoUsuario)
             {
