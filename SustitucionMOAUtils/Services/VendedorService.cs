@@ -266,10 +266,6 @@ namespace SustitucionMOAUtils.Services
                             EstadoSIPER = proveedor.EstadoSIPER
                         })
                 );
-
-                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
-
-                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
             }
             else
             {

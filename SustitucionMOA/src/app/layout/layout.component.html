@@ -462,7 +462,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isAuthorized('ABM USUARIOS')">
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && (isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS'))">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
