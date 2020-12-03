@@ -658,11 +658,24 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
+
+            if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e"))
+            {
+                this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
+                return true;
+            }
         
             if (item.Toneladas == null || item.Toneladas == 0) {
                 this.mensajeError = `Debe completar las toneladas en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
+
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) 
+            {
+                this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
+                return true;
+            }
+        
             if (item.ArrendaPropia == null) {
                 this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad productiva.`;
                 return true;
@@ -680,10 +693,18 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
+            
             if (item.Toneladas == null || item.Toneladas == 0) {
-                this.mensajeError = `Debe completar las Toneladas en la fila ${filaError}  de capacidad planta.`;
+                this.mensajeError = `Debe completar las Toneladas en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
+
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e"))
+            {
+                this.mensajeError = `Las toneladas deben ser un número entero en ${filaError} de capacidad productiva.`;
+                return true;
+            }
+
             if (item.ArrendaPropia == null) {
                 this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad planta.`;
                 return true;
@@ -1083,9 +1104,22 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
-        
+            
+
+            if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e"))
+            {
+                this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
+                return true;
+            }
+
             if (item.Toneladas == null || item.Toneladas == 0) {
                 this.mensajeError = `Debe completar las toneladas en la fila ${filaError} de capacidad productiva.`;
+                return true;
+            }
+
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e"))
+            {
+                this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
             if (item.ArrendaPropia == null) {
@@ -1107,6 +1141,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = `Debe completar las Toneladas en la fila ${filaError}  de capacidad planta.`;
                 return true;
             }
+
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e"))
+            {
+                this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad planta.`;
+                return true;
+            }
+
             if (item.ArrendaPropia == null) {
                 this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad planta.`;
                 return true;
