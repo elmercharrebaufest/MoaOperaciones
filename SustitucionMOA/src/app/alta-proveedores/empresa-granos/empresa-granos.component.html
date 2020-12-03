@@ -1203,7 +1203,7 @@
                                         Bolsa
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Bolsa" autocomplete="chrome-off"
+                                        <input type="text" autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.corredorBolsa" maxlength="100" />
                                         <span class="requerido">*</span>
 
@@ -1214,7 +1214,7 @@
                                         Nro registro:
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Nro registro" autocomplete="chrome-off"
+                                        <input type="text" autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.corredorNroRegistro" maxlength="100" />
                                         <span class="requerido">*</span>
                                     </div>
@@ -1228,37 +1228,27 @@
                                 Vendedor
                             </div>
                             <div class="formulario-campo">
-                                <div class="col-xs-12 col-md-6">
+                                <div class="col-xs-12 col-md-6" style="display: none;">
                                     <div class="formulario-label">
                                         Actividad
                                     </div>
-                                    <div class="styled-elements">
-                                        <select [(ngModel)]="cartaPresentacion.vendedorActividad" [value]="Productor"
+                                    <div class="styled-elements">                                  
+                                        <select [(ngModel)]="cartaPresentacion.vendedorActividad" [value]=""
                                             class="dropdown-granos ng-pristine ng-valid ng-touched">
-                                            <option value="Productor" selected>Productor</option>
+                                            <option value="proveedorClasificacion" selected="selected" selected>{{proveedorClasificacion}}</option>
+                                            <option value="Productor">Productor</option>
                                             <option value="Acopiador">Acopiador</option>
                                             <option value="Otros">Otros</option>
                                         </select>
-                                        <span class="requerido">*</span>
                                     </div>
                                 </div>
 
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
-                                        Domicilio fiscal
-                                    </div>
-                                    <div class="styled-elements">
-                                        <input type="text" placeholder="Domicilio fiscal" autocomplete="chrome-off"
-                                            [(ngModel)]="cartaPresentacion.vendedorDomicilioFiscal" maxlength="100" />
-                                        <span class="requerido">*</span>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="formulario-label">
                                         Antigüedad en la actividad
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Antigüedad en la actividad"
+                                        <input type="text"
                                             autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.vendedorAntiguedadEnActividad"
                                             maxlength="100" />
@@ -1268,10 +1258,21 @@
 
                                 <div class="col-xs-12 col-md-6">
                                     <div class="formulario-label">
+                                        Domicilio fiscal
+                                    </div>
+                                    <div class="styled-elements">
+                                        <input type="text" autocomplete="chrome-off"
+                                            [(ngModel)]="cartaPresentacion.vendedorDomicilioFiscal" maxlength="100" />
+                                        <span class="requerido">*</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="formulario-label">
                                         Antecedes comerciales
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Antecedes comerciales" autocomplete="chrome-off"
+                                        <input type="text" autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.vendedorAntecedentesComerciales"
                                             maxlength="100" />
                                     </div>
@@ -1283,7 +1284,7 @@
                                         Mail de contacto
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Mail de contacto" autocomplete="chrome-off"
+                                        <input type="text" autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.vendedorMailContacto" maxlength="100" />
                                         <span class="requerido">*</span>
                                     </div>
@@ -1294,7 +1295,7 @@
                                         Teléfono de contacto
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Teléfono de contacto" autocomplete="chrome-off"
+                                        <input type="text" autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.vendedorTelefonoContacto" maxlength="100" />
                                         <span class="requerido">*</span>
                                     </div>
@@ -1304,7 +1305,7 @@
                                         Domicilio real
                                     </div>
                                     <div class="styled-elements">
-                                        <input type="text" placeholder="Domicilio real" autocomplete="chrome-off"
+                                        <input type="text" autocomplete="chrome-off"
                                             [(ngModel)]="cartaPresentacion.vendedorDomicilioReal" maxlength="100" />
                                         <span class="requerido">*</span>
                                     </div>

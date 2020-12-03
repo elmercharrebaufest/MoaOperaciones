@@ -121,9 +121,11 @@ namespace SustitucionMOAUtils.Services
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
                 var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
 
                 cartadePresentacion.vendedorCuit = proveedor.CUIT;
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
+                cartadePresentacion.vendedorActividad = infoProveedor.ProveedorClasificacion;
 
                 ValidarEstadoSolicitud(proveedor);
 
