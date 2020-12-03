@@ -19,7 +19,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
   notificacionActual: Notificacion;
   indiceNotificacion: number = 0;
   totalNotificaciones: number = 0;
-  mostrarNotificaciones: boolean = true;
+  mostrarNotificaciones: boolean = false;
   mostrarBotonSiguiente: boolean = false;
   mostrarBotonAnterior: boolean = false;
   mostrarVerMas: boolean = false;
