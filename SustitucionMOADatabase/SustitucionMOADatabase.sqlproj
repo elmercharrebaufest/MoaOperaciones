@@ -85,6 +85,9 @@
     <None Include="scripts\PermisoContactoMailRolesIniciales.sql" />
     <None Include="scripts\PermisoNuevosVendedores.sql" />
     <None Include="scripts\RolConsultarVendedoresMF.sql" />
+    <Build Include="DBO\Tables\Notificacion.sql" />
+    <Build Include="DBO\Tables\NotificacionRol.sql" />
+    <Build Include="DBO\Tables\NotificacionTipoUsuario.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -95,5 +98,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
   </ItemGroup>
 </Project>

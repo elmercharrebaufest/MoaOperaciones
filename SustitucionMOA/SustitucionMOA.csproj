@@ -303,6 +303,12 @@
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
+    <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
+    <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
+    <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
+    <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.html" />
+    <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.css" />
+    <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.html" />
     <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
     <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
@@ -868,6 +874,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LiquidacionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
@@ -910,6 +917,13 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />

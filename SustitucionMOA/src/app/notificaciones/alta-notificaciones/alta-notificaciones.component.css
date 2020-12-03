@@ -1,0 +1,22 @@
+.formulario-label {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.divFalso {
+    padding-top: 5px;
+    padding-bottom: 35px;
+}
+
+.checkboxGrande {
+    zoom: 1.1;
+}
+
+.modal-footer {
+  justify-content: center;
+  display: flex;
+}
+
+.containerBotones {
+    padding-top: 15px;
+}

@@ -9,6 +9,7 @@ import { SecurityService } from './../common/services/SecurityService';
 import { SessionDataService } from './../common/services/SessionDataService';
 import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
+import { CarouselNotificacionesComponent } from '../notificaciones/carousel-notificaciones/carousel-notificaciones.component';
 @Component({
     selector: 'app-home',
     //template: '<h1>{{titulo}}</h1>'
@@ -33,6 +34,11 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+
+    
+    @ViewChild(CarouselNotificacionesComponent)
+    protected carouselNotificaciones: CarouselNotificacionesComponent;
+
 
     visible: boolean = false;
     cuentasCorrientes: any = null;

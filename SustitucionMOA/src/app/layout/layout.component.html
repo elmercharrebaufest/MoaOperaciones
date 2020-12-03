@@ -290,7 +290,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU')">
                     <div class="panel-heading seccion" role="tab" id="misOperaciones">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseMO" aria-expanded="false" aria-controls="collapseMO">
+                            href="#collapseMO" aria-expanded="false" aria-controls="collapseMO">
                             Mis Operaciones <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -364,9 +364,9 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="infoFinanciera">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseIF" aria-expanded="false" aria-controls="collapseIF">
+                            href="#collapseIF" aria-expanded="false" aria-controls="collapseIF">
                             Informaci&oacute;n Financiera <span class="glyphicon glyphicon-chevron-down"
-                                                                aria-hidden="true"></span>
+                                aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseIF" class="collapse" aria-labelledby="infoFinanciera" role="tabpanel">
@@ -387,7 +387,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="operar">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseO" aria-expanded="false" aria-controls="collapseO">
+                            href="#collapseO" aria-expanded="false" aria-controls="collapseO">
                             Operar <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -415,8 +415,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading seccion" role="tab" id="documentacion">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
-                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
+                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span
+                                class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseDoc" class="collapse" aria-labelledby="documentacion" role="tabpanel">
@@ -441,12 +442,14 @@
                                     <!--data-toggle="tab">-->Documentos e Informaci&oacute;n &uacute;til
                                 </a>
                             </div>
-                            <div *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div
+                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div
+                                *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/estado-solicitud')" href="#">
                                     <!--data-toggle="tab">-->Estado solicitud
                                 </a>
@@ -457,7 +460,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
-                           href="#" data-parent="#accordionMenu">
+                            href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
                     </div>
@@ -465,7 +468,7 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && (isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS'))">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseU" aria-expanded="false" aria-controls="collapseU">
+                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
                             Usuarios <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -481,7 +484,11 @@
                                     <!--data-toggle="tab">-->Altas Pendientes
                                 </a>
                             </div>
-
+                            <div *ngIf="isAuthorized('ABM EMPRESAS')">
+                                <a (click)="goToSeccion('/notificaciones')" href="#">
+                                    Notificaciones
+                                </a>
+                            </div>
 
                         </div>
                     </div>

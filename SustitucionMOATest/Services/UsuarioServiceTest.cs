@@ -93,10 +93,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.HabilitarUsuario(mailUsuario);
 
-
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-
-
 
             var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
@@ -152,7 +149,6 @@ namespace SustitucionMOATest.Services
                   TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
                   Proveedores = new List<Proveedor> { proveedor }
               });
-
 
             repositorioMock
                     .Setup(y => y.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
