@@ -115,7 +115,9 @@
 
             <div class="col-xs-12 col-md-12">
               <div class="formulario-label">
-                Roles <input type="checkbox" name="checkAllRoles" (click)="checkAllRoles()" [(ngModel)]="allRoles">
+                <input type="checkbox" name="checkAllRoles" id="checkAllRoles" (click)="checkAllRoles()"
+                  [(ngModel)]="allRoles">
+                <label for="checkAllRoles"> Roles</label>
               </div>
               <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
                 <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
@@ -128,7 +130,8 @@
 
             <div class="col-xs-12 col-md-12">
               <div class="formulario-label">
-                Tipo de Usuario <input type="checkbox" name="allTipos" (click)="checkAllTipos()" [(ngModel)]="allTipos">
+                <input type="checkbox" name="allTipos" id="allTipos" (click)="checkAllTipos()" [(ngModel)]="allTipos">
+                <label for="allTipos"> Tipo de Usuario</label>
               </div>
               <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
                 <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"

@@ -32,7 +32,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(mensajeError);
             }
 
-            if (repositorio.Existe<Notificacion>(n => n.Id == notificacion.Id))
+            if ((notificacion?.Id ?? 0) > 0)
             {
                 resultado = Editar(notificacion);
             }
@@ -46,17 +46,16 @@ namespace SustitucionMOAUtils.Services
 
         private string ValidarNotificacion(Notificacion notificacion)
         {
-            if (notificacion.Id == 0)
+       
+            if (repositorio.Existe<Notificacion>(n => n.Nombre == notificacion.Nombre && n.Id != notificacion.Id))
             {
-                if (repositorio.Existe<Notificacion>(n => n.Nombre == notificacion.Nombre))
-                {
-                    return "Ya existe una notificación con el mismo nombre";
-                }
+                return "Ya existe una notificación con el mismo nombre";
             }
+
             return "";
         }
 
-        public string Agregar(Notificacion notificacion)
+        private string Agregar(Notificacion notificacion)
         {
             notificacion.Borrada = false;
 
@@ -86,7 +85,7 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.NotificacionAgregada;
         }
 
-        public string Editar(Notificacion oNotificacion)
+        private string Editar(Notificacion oNotificacion)
         {
             var idNotificacion = oNotificacion.Id;
 

@@ -97,4 +97,7 @@
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
+  </ItemGroup>
 </Project>
