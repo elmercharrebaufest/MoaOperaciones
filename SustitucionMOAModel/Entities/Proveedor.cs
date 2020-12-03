@@ -36,7 +36,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Usuario> UsuariosAsociados { get; set; }
 
         [InverseProperty("Proveedor")]
-        public virtual ICollection<ProveedorHistorialAprobacion> HistorialAprobaciones { get; set; }
+        public virtual ICollection<ProveedorHistorialAprobacion> HistorialAprobaciones { get; set; } = new List<ProveedorHistorialAprobacion>();
 
         
         public bool? VinculoConEmpleadosDeMolinos { get; set; }

@@ -14,6 +14,7 @@ import { Empresa } from './Empresa';
 import { Archivo } from '../../common/models/archivo';
 import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
 import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
+declare var $: any;
 
 
 @Component({
@@ -66,7 +67,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
-
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
     verDetalle() {
@@ -90,6 +91,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data;
+
+                        setTimeout(function () {
+                            $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: {  "hide": 3000 } });
+                            
+                        }, 100);
                     }
                 },
                 error => {
@@ -103,7 +109,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
     getEstados() {
@@ -124,7 +129,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     } else {
                         let estadosIntermedios = result.intermedios;
                         let estadosFinales = result.finales;
-                        let estadosAgrupados = [{Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión'}, {Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas'}]
+                        let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
                         this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
                         this.getEmpresa();
                     }
@@ -238,7 +243,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
 
-    
+
     handleFileInput(files: FileList, fileKey: string) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerModal.showIt();
@@ -404,7 +409,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return this.relacionConEmpleados == "Si";
     }
 
-     eliminarArchivo(archivo :Archivo) {
+    eliminarArchivo(archivo: Archivo) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerModal.showIt();
         this.unsubscribe();
@@ -432,5 +437,21 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+    }
+    copiar(str, id) {
+        console.log(str, id);
+        $('[data-toggle="popover"]').popover('hide');
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        setTimeout(function () {
+            $("#h" + id).popover('show');
+        }, 100);
     }
 }

@@ -177,6 +177,17 @@ namespace SustitucionMOAUtils.Services
                         usuario.Roles.Add(rolDesabilitado);
 
                         proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                        var hist = new ProveedorHistorialAprobacion
+                        {
+                            Fecha = DateTime.Now,
+                            Proveedor_Id = proveedor.Id,
+                            Usuario_Id = usuario.Id,
+                            EstadoAprobacion = proveedor.EstadoAprobacion,
+                            Observacion = "El mail no coincide con el registrado en Data Agro"
+                        };
+                        repositorio.Agregar(hist);
+
                         proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                     }
                 }
@@ -185,6 +196,17 @@ namespace SustitucionMOAUtils.Services
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                    var hist = new ProveedorHistorialAprobacion
+                    {
+                        Fecha = DateTime.Now,
+                        Proveedor_Id = proveedor.Id,
+                        Usuario_Id = usuario.Id,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
+                        Observacion = infoProveedor.ListaErrores.First().Message
+                    };
+                    repositorio.Agregar(hist);
+
                     proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
                 }
             }
@@ -193,6 +215,17 @@ namespace SustitucionMOAUtils.Services
                 Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                 usuario.Roles.Add(rolDesabilitado);
                 proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+
+                var hist = new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    Proveedor_Id = proveedor.Id,
+                    Usuario_Id = usuario.Id,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    Observacion = "Ocurrió un error comunicandose con Data Agro"
+                };
+                repositorio.Agregar(hist);
+
                 proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
             }
             usuario.Proveedores.Add(proveedor);

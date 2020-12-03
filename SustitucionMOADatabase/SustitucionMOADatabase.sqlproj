@@ -83,6 +83,8 @@
     <None Include="scripts\Roles Corredores.sql" />
     <None Include="scripts\NuevoRolMenu.sql" />
     <None Include="scripts\PermisoContactoMailRolesIniciales.sql" />
+    <None Include="scripts\PermisoNuevosVendedores.sql" />
+    <None Include="scripts\RolConsultarVendedoresMF.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
