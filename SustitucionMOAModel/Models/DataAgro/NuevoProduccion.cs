@@ -10,8 +10,8 @@ namespace SustitucionMOAModel.Models.DataAgro
     {
         public int MaterialId { get; set; }
         public int CampañaId { get; set; }
-        public int Hectareas { get; set; }
-        public int Toneladas { get; set; }
+        public float Hectareas { get; set; }
+        public float Toneladas { get; set; }
         public int LocalidadId { get; set; }
         public bool ArrendaPropia { get; set; }
 
