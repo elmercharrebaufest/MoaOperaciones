@@ -1,0 +1,108 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix fletesAFacturar">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10"><strong>Fletes: Viajes pendientes</strong> </div>
+            <div class="col-xs-12 col-sm-2">
+                <spinner-small></spinner-small>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                </a>
+            </div>
+        </div>
+        <!--End Title-->
+        <div class="row myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
+                <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15">
+                    Ver:
+                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                </div>
+                <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
+                    Por N&ordm; CCPP:
+                    <div class="styled-select ">
+                        <input type="search" class="" placeholder="" [value]="filtroCCPP" (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div id="searchProducto" class="col-xs-12 col-sm-6 col-md-15">
+                    Por Producto:
+                    <div class="styled-select ">
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="filtroProducto" (select)="setFiltroProducto($event)"></dropdown>
+                    </div>
+                </div>
+                <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
+                    Mostrar:
+                    <div class="styled-select ">
+                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+                    </div>
+                </div>
+                <div id="showSearch" onClick="openSearch()">
+                    <div style="">
+                        <div class="fa fa-angle-double-right" aria-hidden="true"></div>
+                    </div>
+                    <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
+                </div>
+                <div id="hideSearch" onClick="closeSearch()">
+                    <div style="">
+                        <div class="fa fa-times" aria-hidden="true"></div>
+                    </div>
+                    <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
+                </div>
+            </div>
+        </div>
+        <!--Add 1-->
+        <div class="row myRow mySearch cargaDeDatos espacios-sm">
+            <!--TABLA-->
+            <div class="clearfix myTables">
+
+                <mensaje></mensaje>
+                <spinner></spinner>
+
+                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate flete-pendiente-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%;">
+                    <thead>
+                        <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ccpp')">CCPP</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('fechaCCPPDate')">Fecha</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('patente')">Patente</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('kg')">KG CCPP</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('descMat')">Descripción</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('origen')">Origen</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('destino')">Destino</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('peaje')">Peaje</th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('playa')">Playas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let viaje of data.viajes | customFilter : 'descMat' : productoSelected | customFilter : 'ccpp' : filtroCCPP | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                            <td tabindex="0"><a (click)="showModalTableResponsive(viaje)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{viaje.ccpp}}</td>
+                            <td>{{viaje.fechaCCPP}}</td>
+                            <td>{{viaje.patente}}</td>
+                            <td>{{viaje.kgString}}</td>
+                            <td>{{viaje.descMat}}</td>
+                            <td>{{viaje.origen}}</td>
+                            <td>{{viaje.destino}}</td>
+                            <td>{{viaje.peajeString}}</td>
+                            <td>{{viaje.playaString}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                        </span>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                    </div>
+                </pagination-template>
+
+            </div>
+        </div>
+    </section>
+    <!--End CONTENT-->
+</div>

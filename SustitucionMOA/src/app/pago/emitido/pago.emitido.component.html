@@ -1,0 +1,148 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Pagos</strong></div>
+            <div class="col-xs-12 col-sm-2">
+                <spinner-small></spinner-small>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                </a>
+            </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="row myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
+                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
+                    Ver:
+                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                </div>
+
+                <div id="searchID" class="col-xs-12 col-sm-6 col-md-15">
+                    Por ID:
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" [value]="filtroID" (input)="filtroID = $event.target.value" aria-controls="tableModal">
+                    </div>
+                </div>
+                <div id="searchMostrar" class="col-xs-12 col-sm-6 col-md-15">
+                    Mostrar:
+                    <div class="styled-select ">
+                        <dropdown [tipoDropdown]="'numberItems'" (select)="setItemsPerPage($event)"></dropdown>
+                    </div>
+                </div>
+                <div id="showSearch" onClick="openSearch()">
+                    <div style="">
+                        <div class="fa fa-angle-double-right" aria-hidden="true"></div>
+                    </div>
+                    <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
+                </div>
+                <div id="hideSearch" onClick="closeSearch()">
+                    <div style="">
+                        <div class="fa fa-times" aria-hidden="true"></div>
+                    </div>
+                    <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
+                </div>
+            </div>
+        </div>
+        <!-- End Search-->
+        <!-- Tables-->
+
+        <div class="row myRow">
+            <div class="clearfix myTables">
+
+                <mensaje></mensaje>
+                <spinner></spinner>
+
+                <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate pagos-emitidos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <thead>
+                        <tr role="row">
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('facreditacionDate')">
+                                Fecha de Acreditaci&oacute;n
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'facreditacionDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'facreditacionDate' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>     
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('idPago')">
+                                ID Pago
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'idPago' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'idPago' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>     
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('totalMercaderia')">
+                                Total Mercader&iacute;a
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'totalMercaderia' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'totalMercaderia' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div> 
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('iva')">
+                                Total IVA
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'iva' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'iva' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>     
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('retencion')">
+                                Retenciones
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'retencion' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'retencion' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>     
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('monto')">
+                                Neto Acreditado
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'monto' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'monto' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div> 
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let pago of data.pagos | customFilter : 'idPago' : filtroID | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
+                            <td><a (click)="showModalTableResponsive(pago)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{pago.facreditacion}}</td>
+                            <td *ngIf="!isEnProceso(pago.idPago)"><a class="animate" (click)="goToSeccionParam('/pago/detalle', pago.idPago)" href="#">{{pago.idPago}}</a></td>
+                            <td *ngIf="isEnProceso(pago.idPago)">{{pago.idPago}}</td>
+                            <td [ngClass]="(isNegative(pago.totalMercaderia)) ? 'PagoNegative' : 'PagoPositive'">{{pago.totalMercaderiaString}}</td>
+                            <td [ngClass]="(isNegative(pago.iva)) ? 'PagoNegative' : 'PagoPositive'">{{pago.ivaString}}</td>
+                            <td [ngClass]="(isNegative(pago.retencion)) ? 'PagoNegative' : 'PagoPositive'">{{pago.retencionString}}</td>
+                            <td [ngClass]="(isNegative(pago.monto)) ? 'PagoNegative' : 'PagoPositive'">{{pago.montoString}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()" [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                        </span>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                    </div>
+                </pagination-template>
+            </div>
+        </div>
+        <!-- END tables-->
+    </section>
+    <!--End CONTENT-->
+</div>

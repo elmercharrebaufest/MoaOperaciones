@@ -7,15 +7,98 @@
 						match="/configuration/appSettings/add[@key='PasswordSapEnc']
                            /@value" />
 	</parameter>
-	
+
+	<parameter name="RutaArchivosProveedores Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='RutaArchivosProveedores']
+                           /@value" />
+	</parameter>
+
 	<parameter name="DataAgroURL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='DataAgroURL']
                            /@value" />
 	</parameter>
 
-
+	<parameter name="SpaUrl Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='SpaUrl']
+                           /@value" />
+	</parameter>
 	
+	<parameter name="EsLocal Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='EsLocal']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:RedirectUri Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:RedirectUri']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:Tenant Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:Tenant']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:TenantId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:TenantId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:ClientId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:ClientId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:ClientSecret Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:ClientSecret']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:AadInstance Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:AadInstance']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:SignUpPolicyId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:SignUpPolicyId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:SignInPolicyId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:SignInPolicyId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:SignUpAndSignInPolicyId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:SignUpAndSignInPolicyId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:EditProfilePolicyId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:EditProfilePolicyId']
+                           /@value" />
+	</parameter>
+
+	<parameter name="ida:ResetPasswordPolicyId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ida:ResetPasswordPolicyId']
+                           /@value" />
+	</parameter>
+
+
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -295,7 +378,7 @@
                            /endpoint[@name='SI_MPMF_MOAOP_MAIL_CONTACTO']
                            /@address" />
 	</parameter>
-	
+
 	<parameter name="SI_MPMF_MOAOP_CATEG_CONTACTO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -352,5 +435,12 @@
                            /@address" />
 	</parameter>
 
+  <parameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IDataAgroServices']
+                           /@address" />
+  </parameter>
+  
 </parameters>
 

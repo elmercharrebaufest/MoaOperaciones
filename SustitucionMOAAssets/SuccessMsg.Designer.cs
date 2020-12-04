@@ -19,7 +19,7 @@ namespace SustitucionMOAAssets {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SuccessMsg {
@@ -66,6 +66,33 @@ namespace SustitucionMOAAssets {
         public static string AltaUsuarioOK {
             get {
                 return ResourceManager.GetString("AltaUsuarioOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Se ha generado el vendedor correctamente.
+        /// </summary>
+        public static string AltaVendedorOK {
+            get {
+                return ResourceManager.GetString("AltaVendedorOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documento borrado correctamente.
+        /// </summary>
+        public static string ArchivoBorrado {
+            get {
+                return ResourceManager.GetString("ArchivoBorrado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documento guardado correctamente.
+        /// </summary>
+        public static string ArchivoSubidoOK {
+            get {
+                return ResourceManager.GetString("ArchivoSubidoOK", resourceCulture);
             }
         }
         
@@ -151,6 +178,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La empresa ({0}) se actualizo correctamente.
+        /// </summary>
+        public static string EmpresaCambioEstadoOK {
+            get {
+                return ResourceManager.GetString("EmpresaCambioEstadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El mensaje ha sido enviado correctamente.
         /// </summary>
         public static string EnvioMsjOk {
@@ -214,6 +250,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El rol del usuario {{}} ha sido actualizado correctamente..
+        /// </summary>
+        public static string RolesActualizadosOk {
+            get {
+                return ResourceManager.GetString("RolesActualizadosOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El usuario ({0}) ha sido desbloqueado.
         /// </summary>
         public static string UsuarioDesbloqueadoOK {
@@ -237,6 +282,24 @@ namespace SustitucionMOAAssets {
         public static string UsuarioHabilitadoOK {
             get {
                 return ResourceManager.GetString("UsuarioHabilitadoOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Su usuario ha sido marcado para revisar por un administrador. Le informaremos por mail cuando pueda entrar..
+        /// </summary>
+        public static string ValidacionPendienteOK {
+            get {
+                return ResourceManager.GetString("ValidacionPendienteOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El vendedor se ha borrado correctamente.
+        /// </summary>
+        public static string VendedorBorradoOK {
+            get {
+                return ResourceManager.GetString("VendedorBorradoOK", resourceCulture);
             }
         }
     }

@@ -15,5 +15,21 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Vendedor
         public string descVendedor { get; set; }
 
         public string estado { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vendedor dto &&
+                   idVendedor == dto.idVendedor &&
+                   descVendedor == dto.descVendedor;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1873437470;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(idVendedor);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(descVendedor);
+            return hashCode;
+        }
     }
+
 }

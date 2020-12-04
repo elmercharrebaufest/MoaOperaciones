@@ -25,7 +25,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -35,6 +35,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, "SetComprobante(string contrato) " + (contrato??"null"));
                 var contratoJson = JsonConvert.DeserializeObject<ContratoContenido>(contrato);
 
                 return JsonCustom(_pesificacionService.SetContrato(SessionPersister.Proveedor, contratoJson.Contrato, contratoJson.Fijacion, contratoJson.Cantidad));

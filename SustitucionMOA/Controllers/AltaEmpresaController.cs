@@ -1,0 +1,203 @@
+﻿using Microsoft.Ajax.Utilities;
+using SustitucionMOA.Utils;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Enums;
+using SustitucionMOARepositorio;
+using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.DataAgroServices;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Web.Mvc;
+
+namespace SustitucionMOA.Controllers
+{
+    public class AltaEmpresaController : BaseController
+    {
+        protected readonly IRepositorio repositorio;
+        readonly IAltaEmpresaService altaEmpresaService;
+        readonly IDataAgroService dataAgroService;
+
+        public AltaEmpresaController(IAltaEmpresaService altaEmpresaService, IRepositorio repositorio, IDataAgroService dataAgroService)
+        {
+            this.altaEmpresaService = altaEmpresaService;
+            this.repositorio = repositorio;
+            this.dataAgroService = dataAgroService;
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        public ActionResult getEmpresas()
+        {
+            try
+            {
+                var empresas = altaEmpresaService.GetEmpresas();
+                foreach (var item in empresas)
+                {
+
+                    if (item.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                        || item.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                        || item.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                        || item.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                        )
+                    {
+                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
+                        if (result != null)
+                        {
+                            item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
+                        }
+                    }
+
+                    item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
+                    foreach (var item2 in item.HistorialAprobaciones)
+                    {
+                        item2.EstadoAprobacionDescripcion = AddSpacesToSentence(item2.EstadoAprobacionDescripcion);
+                    }
+                }
+                return JsonCustom(new { data = empresas });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        public ActionResult setEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.SetEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER, true) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        
+        public ActionResult getEstados()
+        {
+            try
+            {
+                List<KeyValuePair<string, string>> estadosIntermedios = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>(EstadoAprobacion.AprobacionPendiente.ToFriendlyString(), EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString())
+                };
+                List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>(EstadoAprobacion.Aprobado.ToFriendlyString(), EstadoAprobacion.Aprobado.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.Rechazado.ToFriendlyString(), EstadoAprobacion.Rechazado.ToFriendlyString())
+                };
+                
+                return JsonCustom(new { intermedios = estadosIntermedios, finales = estadosFinales });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        string AddSpacesToSentence(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return "";
+            StringBuilder newText = new StringBuilder(text.Length * 2);
+            newText.Append(text[0]);
+            for (int i = 1; i < text.Length; i++)
+            {
+                if (char.IsUpper(text[i]) && text[i - 1] != ' ')
+                    newText.Append(' ');
+                newText.Append(text[i]);
+            }
+            return newText.ToString();
+        }
+
+
+        public ActionResult GetEstadoAprobacion()
+        {
+            try
+            {
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var data = altaEmpresaService.GetEstadoAprobacion(userMail);
+
+                if (data.Estado == EstadoAprobacion.AnalisisDeNosis
+                    || data.Estado == EstadoAprobacion.EtapaFinal
+                    || data.Estado == EstadoAprobacion.AprobacionPendiente)
+                {
+                    data.EstadoDescripcion = "Alta en Gestión";
+                }
+                if (data.Estado == EstadoAprobacion.EdicionRequerida)
+                {
+                    data.EstadoDescripcion = "Solicitud de información";
+                }
+                return JsonCustom(new { data });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult VerificarEstadoDataAgro(int proveedorID)
+        {
+            try
+            {
+                return JsonCustom(new { data = dataAgroService.VerificarEstadoProveedor(proveedorID, ClaimsPrincipalExtension.GetClaimValue("emails")) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+    }
+}

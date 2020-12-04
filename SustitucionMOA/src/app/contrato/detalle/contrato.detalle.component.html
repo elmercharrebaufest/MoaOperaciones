@@ -1,0 +1,800 @@
+﻿<div class="content-wraper">
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix" *ngIf="isData()">
+        <!--Title-->
+        <div class="row titleSection titleSectionTable">
+            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div> Contrato Molinos <strong><span>Nº {{data.contrato}} </span></strong> <span *ngIf="data.caracteristicas[0].corredor">/ Corredor <strong><span>{{data.caracteristicas[0].corredor}}</span></strong> </span></div>
+            </div>
+            <div class="col-xs-12 col-sm-2 titleIconsPart">
+                <spinner-small #spinnerSmallExport></spinner-small>
+                <a (click)="exportarExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallExportComponent.visible">
+                    <div class="btnSection animate export">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                </a> 
+                <!--<a href="#" style="text-decoration:none!important">
+                    <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
+                </a>--> 
+                <spinner-small #spinnerSmallPDF></spinner-small>
+                <a (click)="downloadBoletoFisico(data.contrato)" href="#" style="text-decoration:none!important" *ngIf="data.caracteristicas[0].confirma != 'X' && !this.spinnerSmallPDFComponent.visible">
+                    <div class="btnSection animate ticket">Boleto Físico <span class="fa  fa-file-pdf-o "></span></div>
+                </a>
+            </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="row myRow firstSection roundedInfo">
+            <div class="col-xs-12 col-sm-4 col-md-3 rowInfoGrey rounded shadow animate rowInfoRoundedWhite" *ngIf="data.resumen">
+                <div class="col-xs-6 col-sm-12 titleExtraData blue">
+                    <span *ngIf="data.caracteristicas[0].corredor"><strong>Corredor: </strong>{{data.caracteristicas[0].nomCorredor}}<br></span>
+                    <strong>Vendedor: </strong> <a class="blue" (click)="goToSeccionParamDos('/dato-fiscal/situacion-fiscal', data.caracteristicas[0].vendedor, data.caracteristicas[0].nomVendedor)" href="#">{{data.caracteristicas[0].nomVendedor}}</a>
+                </div>
+                <hr>
+                <title-caps class="blue"><strong>Resumen</strong></title-caps>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Estado:</p>
+                    <span class="grey">{{data.resumen[0].estado}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Producto:</p>
+                    <span class="grey">{{data.resumen[0].producto}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Pactado:</p>
+                    <span class="grey">{{data.caracteristicas[0].cantidadString}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Precio/Tn:</p>
+                    <span class="grey">{{data.resumen[0].precioString}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Entregado:</p>
+                    <span class="grey">{{data.resumen[0].cantEntreString}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Liquidado:</p>
+                    <span class="grey">{{data.resumen[0].cantLiquiString}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Fijado:</p>
+                    <span class="grey">{{data.resumen[0].cantFijaString}}</span>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <p class="blue">Pendiente de entrega:</p>
+                    <span class="grey">{{data.resumen[0].cantPendEntreString}}</span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-8 col-md-9 squareInfo animate">
+                <div class="row myRow">
+                    <div id="showCaracteristicas" class="showBtn height-auto btn-grande height-auto btn-grande btnSection btnInfo animate" onClick="showCaracteristicas()">
+                        <div>
+                            <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                        </div>
+                        <div>Características del contrato</div>
+                    </div>
+                    <div id="hideCaracteristicas" class="hideBtn height-auto btn-grande height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeCaracteristicas()">
+                        <div>
+                            <li class="fa fa-times" aria-hidden="true"></li>
+                        </div>
+                        <div>Características del contrato</div>
+                    </div>
+                    <title-caps class="hideMobile blue">Características del contrato</title-caps>
+                    <hr class="hideMobile">
+                    <div id="caracteristicas" class="rowInfoGrey clearfix hideMobile" *ngIf="data.caracteristicas[0]">
+                        <div class="row myRow">
+                            <div class="col-xs-12 col-sm-3">
+                                <p>Tipo de contrato:</p>
+                                <span class="grey">{{data.caracteristicas[0].tipo}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Cantidad:</p>
+                                <span class="grey">{{data.caracteristicas[0].cantidadString}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Calificación Proveedor:</p>
+                                <span class="grey">{{data.caracteristicas[0].calificacion}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Tolerancia:</p>
+                                <span class="grey">{{data.caracteristicas[0].toleMin}}% a {{data.caracteristicas[0].toleMax}}%</span>
+                            </div>
+                        </div>
+                        <div class="row myRow">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Lugar descarga/puerto:</p>
+                                <span class="grey">{{data.caracteristicas[0].descarga}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Estado de Boleto:</p>
+                                <span class="grey">{{data.caracteristicas[0].estadoBol}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Procedencia:</p>
+                                <span class="grey">{{data.caracteristicas[0].procedencia}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Período de entrega:</p>
+                                <span class="grey">{{data.caracteristicas[0].entregaMin}} a {{data.caracteristicas[0].entregaMax}}</span>
+                            </div>
+                        </div>
+                        <div class="row myRow">
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Fecha de concertación:</p>
+                                <span class="grey">{{data.caracteristicas[0].fechaConcerta}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Standard calidad:</p>
+                                <span class="grey">{{data.caracteristicas[0].standardCali}}</span>
+                            </div>
+                            <div class="col-xs-12 col-sm-3 ">
+                                <p>Cosecha:</p>
+                                <span class="grey">{{data.caracteristicas[0].cosecha}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--segunda línea de datos-->
+                <div class="row myRow">
+                    <div class="col-xs-12 col-sm-6 rowInfoGreyLeft">
+                        <div id="showCondiciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showCondiciones()">
+                            <div>
+                                <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                            </div>
+                            <div>Condiciones comerciales</div>
+                        </div>
+                        <div id="hideCondiciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeCondiciones()">
+                            <div>
+                                <li class="fa fa-times" aria-hidden="true"></li>
+                            </div>
+                            <div>Condiciones comerciales</div>
+                        </div>
+                        <title-caps class="hideMobile blue">Condiciones comerciales</title-caps>
+                        <hr class="hideMobile">
+                        <div id="condiciones" class="rowInfoGrey clearfix hideMobile" *ngIf="data.caracteristicas[0]">
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-sm-6">
+                                    <p>Pizarra de referencia:</p>
+                                    <span class="grey">{{data.caracteristicas[0].pizarraRef}}</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 ">
+                                    <p>Fijación diaria:</p>
+                                    <span class="grey">{{data.caracteristicas[0].fijaDiariaMin}}kg a {{data.caracteristicas[0].fijaDiariaMax}}kg</span>
+                                </div>
+                            </div>
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-sm-6">
+                                    <p>Pago parcial:</p>
+                                    <span class="grey">{{data.caracteristicas[0].pagoParcial}}%</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 ">
+                                    <p>Descuento por acarreo:</p>
+                                    <span class="grey">${{data.caracteristicas[0].descuentoAcarreo}} / Tn</span>
+                                </div>
+                            </div>
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-sm-6">
+                                    <p>Condición de pago fijaciones:</p>
+                                    <span class="grey">{{data.caracteristicas[0].condPagoFija}}</span>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 ">
+                                    <p>Condiciones especiales de pago:</p>
+                                    <ul style="padding-left: 0px;">
+                                        <li style="list-style-type: none;" *ngFor="let condicion of data.condicionesPago">
+                                            <span class="grey">{{condicion}}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-sm-6">
+                                    <p>Fecha tope de fijación:</p>
+                                    <span class="grey">{{data.caracteristicas[0].fechaTopeFija}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 rowInfoGreyRight">
+                        <div id="showBonificaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showBonificaciones()">
+                            <div>
+                                <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                            </div>
+                            <div>Bonificaciones</div>
+                        </div>
+                        <div id="hideBonificaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeBonificaciones()">
+                            <div>
+                                <li class="fa fa-times" aria-hidden="true"></li>
+                            </div>
+                            <div>Bonificaciones</div>
+                        </div>
+                        <title-caps class="hideMobile blue">Bonificaciones</title-caps>
+                        <hr class="hideMobile">
+                        <div id="bonificaciones" class="rowInfoGrey rowInfoGreyTable clearfix hideMobile " *ngIf="data.caracteristicas[0]">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:24px;">
+                                <tr></tr>
+                                <tr>
+                                    <td colspan="3" class="titleTable"><strong>Dentro del Precio</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grey">Fijo</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].importeAPrecio}}</span></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grey">%</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].porcAPrecio}}</span></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="titleTable"><strong>Fuera del Precio</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grey">Fijo</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].importeSPrecio}}</span></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="grey">%</span></td>
+                                    <td><span class="grey">{{data.caracteristicas[0].porcSPrecio}}</span></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--BOLETOS-->
+        <div class="row myRow" style=" margin-top:15px;">
+            <!--boleto destacado-->
+            <div class="row titleSection titleSectionNoBorder">
+                <div class="col-xs-12 col-sm-12"><strong>Boletos</strong></div>
+                <div class="clearfix myTables">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Estado</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Fecha de recepción</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Tipo Boleto</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Bolsa</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Devolución</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr role="row" class="odd" *ngIf="data.boleto">
+                                <td style="">{{data.boleto.estado}}</td>
+                                <td style="">{{data.boleto.fechaRecepcion}}</td>
+                                <td style="">{{data.boleto.tipoBoleto}}</td>
+                                <td style="">{{data.boleto.bolsa}}</td>
+                                <td style="">{{data.boleto.devAcop}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--Boleto tabla-->
+            <div class="row myRow">
+                <div class="clearfix myTables">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-boletos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío bolsa</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Vuelta Bolsa</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Oblea Bolsa</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío Afip</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Vuelta Afip</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">REG. Afip</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Oblea Prov. Plan Canje</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Envío Sellado</th>
+                                <th tabindex="0" rowspan="1" colspan="1" style=" background:none">Vuelta Sellado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr role="row" class="odd" *ngIf="data.boleto.envioBolsa">
+                                <td tabindex="0" style=""><a (click)="showModalTableBoletosResponsive(data.boleto)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{data.boleto.envioBolsa}}</td>
+                                <td>{{data.boleto.vueltaBolsa}}</td>
+                                <td style="">{{data.boleto.obleaBolsa}}</td>
+                                <td style="">{{data.boleto.envioAfip}}</td>
+                                <td style="">{{data.boleto.vueltaAfip}}</td>
+                                <td style="">{{data.boleto.obleaAfip}}</td>
+                                <td style="">{{data.boleto.provPlanCanje}}</td>
+                                <td style="">{{data.boleto.envioSellado}}</td>
+                                <td style="">{{data.boleto.vueltaSellado}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!--pagos y liquidaciones-->
+        <div class="row myRow">
+
+            <div id="Pagos" class="col-sm-12 col-md-12 col-lg-12">
+
+                <div id="showPagos" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showPagos()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Pagos</div>
+                </div>
+                <div id="hidePagos" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closePagos()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Pagos</div>
+                </div>
+
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12"><strong>Pagos</strong></div>
+                </div>
+                <!--pagos y liquidaciones tabla-->
+                <div id="myPagos" class="row myRow hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-pagos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">ID pago</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Bruto</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Iva</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Retenciones</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let pago of data.pagos" role="row" class="odd">
+                                    <td tabindex="0"><a (click)="showModalTablePagosResponsive(pago)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{pago.fecha}}</td>
+                                    <td><a class="animate" (click)="goToSeccionParam('/pago/detalle', pago.idPago)" href="#">{{pago.idPago}}</a></td>
+                                    <td style="">{{pago.brutoString}}</td>
+                                    <td style="">{{pago.ivaString}}</td>
+                                    <td style=""><a (click)="goToSeccionParam('/cuenta-corriente/simple', pago.idPago)" href="#"><span class="fa  fa-file-pdf-o "></span>{{pago.retencionesString}}</a></td>
+                                    <td style="">{{pago.netoString}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="Liquidaciones" class="col-sm-12 col-md-12 col-lg-12">
+                <div id="showLiquidaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showLiquidaciones()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Liquidaciones</div>
+                </div>
+                <div id="hideLiquidaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeLiquidaciones()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Liquidaciones</div>
+                </div>
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12"><strong>Liquidaciones</strong></div>
+                </div>
+                <!--pagos y liquidaciones tabla-->
+                <div id="myLiquidaciones" class="row myRow hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-liquidaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Tipo</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Comprobante</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">KG</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Precio/tn</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let liquidacion of data.liquidaciones" role="row" class="odd">
+                                    <ng-container *ngIf="liquidacion.pedido == ''">
+                                        <td tabindex="0" style=""><a (click)="showModalTableLiquidacionesResponsive(liquidacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
+                                        <td>{{liquidacion.tipo}}</td>
+                                        <td>{{liquidacion.comprobante}}</td>
+                                        <td style="">{{liquidacion.cantidadString}}</td>
+                                        <td style="">{{liquidacion.precioString}}</td>
+                                        <td style="">{{liquidacion.totalString}}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="liquidacion.pedido != ''">
+                                        <td tabindex="0" style="">{{liquidacion.fecha}}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{liquidacion.tipo}}   <a (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)" href="#">Ver Proforma</a></td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--<a href="#" style="text-decoration:none!important;">
+                        <div class="btnSection animate" style=" margin-top:10px;">FIJAC. <span style="color:#03753e;">VER PROFORMA</span></div>
+                    </a>-->
+                </div>
+            </div>
+        </div>
+        <!--fijaciones y ampliaciones-->
+        <div class="row myRow">
+            <div id="Fijaciones" class="col-md-12 col-lg-6">
+                <div id="showFijaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showFijaciones()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Fijaciones</div>
+                </div>
+                <div id="hideFijaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeFijaciones()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Fijaciones</div>
+                </div>
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12"><strong>Fijaciones</strong></div>
+                </div>
+                <!--pagos y liquidaciones tabla-->
+                <div id="myFijaciones" class="row myRow hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-fijaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Nº Fijación</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Kilos Fijados</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Precio/TN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let fijacion of data.fijaciones" role="row" class="odd">
+                                    <td tabindex="0"><a (click)="showModalTableLFijacionesResponsive(fijacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{fijacion.fecha}}</td>
+                                    <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion', data.contrato, fijacion.nroFija)" href="#">{{fijacion.nroFija}}</a></td>
+                                    <td style="">{{fijacion.kilosFijaString}}</td>
+                                    <td style="">{{fijacion.precioString}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="Ampliaciones" class="col-sm-12 col-md-12 col-lg-6 ">
+                <div id="showAmpliaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showAmpliaciones()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Ampliaciones / Anulaciones</div>
+                </div>
+                <div id="hideAmpliaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeAmpliaciones()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Ampliaciones / Anulaciones</div>
+                </div>
+
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12"><strong>Ampliaciones / Anulaciones</strong></div>
+                </div>
+                <!--pagos y liquidaciones tabla-->
+                <div id="myAmpliaciones" class="row myRow hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-ampliaciones-anulaciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Tipo</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Cantidad</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Precio/Multa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let ampliacionAnulacion of data.ampliacionesAnulaciones" role="row" class="odd">
+                                    <td tabindex="0" style=""><a (click)="showModalTableAmpliacionesAnulacionesResponsive(ampliacionAnulacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{ampliacionAnulacion.tipo}}</td>
+                                    <td>{{ampliacionAnulacion.fecha}}</td>
+                                    <td style="">{{ampliacionAnulacion.cantidadString}}</td>
+                                    <td style="">{{ampliacionAnulacion.importeString}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--Aplicaciones-->
+        <div class="row myRow">
+            <div id="Aplicaciones" class="col-sm-12">
+
+                <div id="showAplicaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showAplicaciones()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Aplicaciones</div>
+                </div>
+                <div id="hideAplicaciones" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeAplicaciones()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Aplicaciones</div>
+                </div>
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12"><strong>Aplicaciones</strong></div>
+                </div>
+
+                <div id="myAplicaciones" class="row myRow hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-aplicacciones-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Carta de Porte</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Lugar de Descarga</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">KG Brutos</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">KG Aplicados</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let aplicacion of data.aplicaciones" role="row" class="odd">
+                                    <td tabindex="0"><a (click)="showModalTableAplicacionesResponsive(aplicacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{aplicacion.fecha}}</td>
+                                    <td><a class="animate" (click)="goToSeccionParam('/carta-porte/detalle', aplicacion.ccpp)" href="#">{{aplicacion.ccpp}}</a></td>
+                                    <td>{{aplicacion.descarga}}</td>
+                                    <td style="">{{aplicacion.kgBrutosString}}</td>
+                                    <td style="">{{aplicacion.kgNetosString}}</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr role="row" class="totalTable">
+                                    <td tabindex="0">TOTAL</td>
+                                    <td></td>
+                                    <td style=""></td>
+                                    <td style="">{{data.aplicacionesTotalBrutosString}}</td>
+                                    <td style="">{{data.aplicacionesTotalAplicadosString}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--contratos hijos-->
+        <div class="row myRow">
+            <div id="Hijos" class="col-sm-12">
+
+                <div id="showHijos" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showHijos()">
+                    <div>
+                        <li class="fa fa-angle-double-right" aria-hidden="true"></li>
+                    </div>
+                    <div>Contratos hijos</div>
+                </div>
+                <div id="hideHijos" class="hideBtn height-auto btn-grande btnSection btnInfo animate btnInfoClose" onClick="closeHijos()">
+                    <div>
+                        <li class="fa fa-times" aria-hidden="true"></li>
+                    </div>
+                    <div>Contratos hijos</div>
+                </div>
+                <div class="row titleSection titleSectionNoBorder hideMobile">
+                    <div class="col-xs-12 col-sm-12"><strong>Contratos hijos</strong></div>
+                </div>
+
+                <div id="myHijos" class="row myRow  hideMobile">
+                    <div class="clearfix myTables">
+                        <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" rowspan="1" colspan="1">Fecha de Concertación</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Contrato Molinos</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Contrato Proveedor</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Pactado</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Precio/tn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let hijo of data.hijos" role="row" class="odd">
+                                    <td tabindex="0"><a (click)="showModalTableHijosResponsive(hijo)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{hijo.fecha}}</td>
+                                    <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', hijo.contrMolinos)" href="#">{{hijo.contrMolinos}}</a></td>
+                                    <td style="">{{hijo.contrProve}}</td>
+                                    <td>{{hijo.cantidadString}}</td>
+                                    <td style="">{{hijo.precioString}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Calidad-->
+        <div class="row myRow">
+            <div id="Calidad" class="col-sm-12  hideMobile">
+                <div class="row titleSection titleSectionNoBorder">
+                    <div class="col-xs-12 col-sm-12"><strong>Calidad</strong></div>
+                </div>
+                <div class="row  myRow firstSection mySearch">
+                    <div class="col-xs-12 col-md-12 rounded shadow animate">
+                        <div class="col-xs-12 col-md-12 search-header">
+                            <title-caps style="font-size: 17px;">Refinar resultados de Calidad</title-caps>
+                        </div>
+                        <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-15 ">
+                            Por N&ordm; CCPP:
+                            <div class="styled-select ">
+                                <input type="search" class="" placeholder="" [value]="filtroCCPP" (input)="filtroCCPP = $event.target.value" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row myRow">
+            <div class="row calidad" *ngFor="let calidad of data.calidad | customFilter : 'ccpp' : filtroCCPP">
+                <div class="col-xs-12 col-sm-3 col-md-2 calidadTitle">
+                    <p class="grey"><strong>CCPP</strong></p>
+                    <a class="animate grey" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)" href="#">{{calidad.ccpp}}</a>
+                </div>
+                <div class="col-xs-12 col-sm-9 col-md-10 clearfix myTables">
+                    <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate boletosTable contrato-det-hijos-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:24px;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="3" style="text-align: center;">Calado</th>
+                                <th tabindex="0" rowspan="1" colspan="2" style="text-align: start;">C&aacute;mara (Cert.: <span *ngIf="calidad.certificado != ''">{{calidad.certificado}}</span><span *ngIf="calidad.certificado == ''">- </span>)</th>
+                            </tr>
+                            <tr role="row">
+                                <th width="20%">Características</th>
+                                <th width="20%">Resultado</th>
+                                <th width="20%">Kg DTO.</th>
+                                <th width="20%">Resultado</th>
+                                <th width="20%">DTO (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let registro of calidad.registros" role="row" class="odd">
+                                <td>{{registro.caract}}</td>
+                                <td>{{registro.calaResul}}%</td>
+                                <td>{{registro.kgDto}}</td>
+                                <td>{{registro.camaResul}}%</td>
+                                <td>{{registro.dto}}%</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr role="row">
+                                <td width="20%">Resultado Final</td>
+                                <td width="20%">
+                                    <p><strong>Kg Dto.</strong> {{calidad.kgDtoTotal}}</p>
+                                </td>
+                                <td width="20%">
+                                    <p><strong>Total Dto (%)</strong> {{calidad.dtoPorcTotal}}</p>
+                                </td>
+                                <td width="20%">
+                                    <p><strong>Kg netos</strong> {{calidad.kgNetosTotal}}</p>
+                                </td>
+                                <td width="20%">
+                                    <p><strong>Kg Aplicados</strong> {{calidad.kgAplicadosTotal}}</p>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- <div id="Calidad" class="col-sm-12  hideMobile">
+                <div class="row myRow">
+                    <div class="clearfix totalTable">
+                        <table width="100%">
+                            <tr>
+                                <td width="20%">
+                                    resultado final TOTAL
+                                </td>
+                                <td width="80%" style="padding-left:15px;">
+
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td width="20%"></td>
+                                            <td width="20%"></td>
+                                            <td width="20%"></td>
+                                            <td width="20%">
+                                                <p>Kg netos</p>
+                                                {{data.calidadTotalNetosString}}
+                                            </td>
+                                            <td width="20%" style="padding:5px;">
+                                                <p>Kg Aplicados</p>
+                                                {{data.calidadTotalAplicadosString}}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+
+                            </tr>
+                        </table>
+
+                    </div>
+                    <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
+
+                        <tr *ngFor="let calidad of data.calidad | customFilter : 'ccpp' : filtroCCPP">
+                            <td width="20%" valign="top" class="CalidadCCPPTitle animate">
+                                <p class="grey"><strong>CCPP</strong></p>
+                                <a class="animate grey" (click)="goToSeccionParam('/carta-porte/detalle', calidad.ccpp)" href="#">{{calidad.ccpp}}</a>
+                            </td>
+                            <td width="80%" valign="top" style="padding-left:15px;">
+                                <table class="CalidadCCPPData rounded shadow animate" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <table class="CalidadCCPPDataPaddingBottom" width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" rowspan="2" class="">Características</th>
+                                                    <th width="40%" colspan="2" class="CalidadCCPPDataSub"><div>Calado</div></th>
+                                                    <th width="40%" colspan="2" class="CalidadCCPPDataSub"><div>C&aacute;mara (Cert.: <span *ngIf="calidad.certificado != ''">{{calidad.certificado}}</span><span *ngIf="calidad.certificado == ''">- </span>)</div></th>
+                                                </tr>
+                                                <tr class="CalidadCCPPDataCategoria">
+                                                    <th width="20%" style="text-align:right">Resultado</th>
+                                                    <th width="20%">Kg DTO.</th>
+                                                    <th width="20%">Resultado</th>
+                                                    <th width="20%">DTO (%)</th>
+                                                </tr>
+                                                <tr *ngFor="let registro of calidad.registros">
+                                                    <td>{{registro.caract}}</td>
+                                                    <td>{{registro.calaResul}}%</td>
+                                                    <td>{{registro.kgDto}}</td>
+                                                    <td>{{registro.camaResul}}%</td>
+                                                    <td>{{registro.dto}}%</td>
+
+                                                </tr>
+                                                <tr class="CalidadCCPPDataPlus">
+                                                    <td colspan="5" style="border:none">
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr>
+                                                                <td width="100%">
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="totalTable CalidadDataExtra" style="">
+                                                                        <tr>
+                                                                            <td width="20%">resultado final </td>
+                                                                            <td width="20%">
+                                                                                <p>Kg Dto.</p>
+                                                                                {{calidad.kgDtoTotal}}
+                                                                            </td>
+                                                                            <td width="20%">
+                                                                                <p>Total Dto (%)</p>
+                                                                                {{calidad.dtoPorcTotal}}
+                                                                            </td>
+                                                                            <td width="20%">
+                                                                                <p>Kg netos</p>
+                                                                                {{calidad.kgNetosTotal}}
+                                                                            </td>
+                                                                            <td width="20%">
+                                                                                <p>Kg Aplicados</p>
+                                                                                {{calidad.kgAplicadosTotal}}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div> -->
+        </div>
+
+        <!--Botones mobile-->
+        <div class="showBtn height-auto btn-grande btnSection btnInfo animate downloadPDF">
+            <a (click)="descargarPDF()" href="#">
+                <div>
+                    <li class="fa fa-file-pdf-o" aria-hidden="true"></li>
+                </div>
+                <div>Calidad</div>
+            </a>
+        </div>
+        <!--Fin botones mobile-->
+    </section>
+    <!--End CONTENT-->
+</div>
+
+

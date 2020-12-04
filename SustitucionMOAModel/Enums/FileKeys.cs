@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Enums
+{
+    public static class FileKeys
+    {
+        public const string InformeComercialFirmado = "informeComercialFirmado";
+        public const string CartaDePresentacionFirmada = "cartaDePresentacionFirmada";
+        public const string ConstanciaCUIT = "constanciaCUIT";
+        public const string ConstanciaCBU = "constanciaCBU";
+        public const string ConstanciaCBUMercaderia = "constanciaCBUMercaderia";
+        public const string InscripcionIIBB = "inscripcionIIBB";
+        public const string CertificadoExclusionGanancias = "certificadoExclusionGanancias";
+        public const string CertificadoExclusionIIBB = "certificadoExclusionIIBB";
+        public const string CertificadoExclusionIVA = "certificadoExclusionIVA";
+        public const string CertificadoExclusionSUSS = "certificadoExclusionSUSS";
+        public const string SIPER = "SIPER";
+        public const string DocumentacionEnBolsa = "documentacionEnBolsa";
+        public const string OtrosArchivos = "otrosArchivos";
+        public const string ArchivosInternos = "archivosInternos";
+    }
+}

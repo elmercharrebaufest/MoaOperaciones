@@ -1,0 +1,485 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Carta de Porte: Formulario</strong></div>
+        </div>
+        <!--End Title-->
+        <!-- Form-->
+        <div class="row myRow firstSection mySearch cargaDeDatos">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <title-caps class="blue">Datos Cabecera</title-caps>
+                    <hr>
+                   
+                    <div class="col-xs-12">
+                        Nro. CTG:
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-8 col-md-4 col-lg-3">
+                                <div class="styled-select">
+                                    <input type="search" [(ngModel)]="formulario.nroCTG" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-4 col-md-offset-4 col-md-4 col-lg-offset-6 col-lg-3">
+                                <spinner-small #sp_ctg_buscar></spinner-small>
+                                <a (click)="getDataCTG()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallCTGBuscarComponent.visible">
+                                    <div class="btn-custom btn-add btn-chico animate align-right">Buscar <span class="fa fa-search "></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <div class="col-xs-12 col-sm-6">
+                        Nro. RENSPA:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.nroRenspa" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Fecha Carga:
+                        <div class="styled-select input-group date form_datetime_carga" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_input_carga">
+                            <input type="text" value="{{formulario.fechaCarga}}" id="noCursor" readonly />
+                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                        </div>
+                        <input type="hidden" #dtp_input_carga id="dtp_input_carga" class="dtp_input_carga" value="{{formulario.fechaCarga}}" />
+                    </div>
+
+                </div>
+
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <title-caps class="blue">Datos Intervinientes</title-caps>
+                    <hr>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Intermediario:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.intermediario" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Intermediario:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitIntermediario" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Remitente Comercial:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.remitenteComercial" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Remitente Comercial:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitRemitenteComercial" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Corredor del Comprador:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.corredorComprador" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Corredor del Comprador:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitCorredorComprador" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Mercado a Termino:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.mercadoATermino" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Mercado a Termino:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitMercadoATermino" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Corredor del Vendedor:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.corredorVendedor" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Corredor del Vendedor:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitCorredorVendedor" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Representante/Entregador:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.representanteEntregador" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Representante/Entregador:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitRepresentanteEntregador" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Destinatario:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.destinatario" [source]="destinatarioOptions" (valueChanged)="destinatarioSelected($event)" [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Destinatario:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitDestinatario" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Destino:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.destino" [source]="destinoOptions" (valueChanged)="destinoSelected($event)" [min-chars]="3" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Destino:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitDestino" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Intermediario del Flete:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.intermediarioFlete" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Intermediario del Flete:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitIntermediarioFlete" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Transportista:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.transportista" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT Transportista:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitTransportista" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Chofer:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.chofer" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        CUIT/CUIL Chofer:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.cuitCuilChofer" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <title-caps class="blue">Datos Granos/Especie</title-caps>
+                    <hr>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Grano/Especie:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.granoEspecie" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Tipo:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.tipo" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Cosecha:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.cosecha" [source]="cosechaOptions" (valueChanged)="cosechaSelected($event)" [min-chars]="1" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Nro. Contrato:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.nroContrato" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Kilos Estimados:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.kilosEstimados" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div> 
+
+                    <div class="col-xs-12 col-sm-6">
+                        Peso Bruto (KG):
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.pesoBruto" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Peso Tara (KG):
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.pesoTara" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Peso Neto (KG):
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.pesoNeto" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Observaciones:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.observaciones" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Procedencia de Mercader&iacute;a:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.procedenciaMercaderia" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <!--<div class="col-xs-12 col-sm-6">
+                        Establecimiento:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.establecimiento" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>-->
+
+                    <div class="col-xs-12 col-sm-6">
+                        Direcci&oacute;n:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.direccion" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Provincia:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.provincia" (valueChanged)="provinciaSelected($event)" [source]="provinciaOptions" [min-chars]="3" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Localidad:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.localidad" (valueChanged)="localidadSelected($event)" [source]="observableSource.bind(this)" [min-chars]="3" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-3">
+                        Carga Pesada en Destino <input type="checkbox" [(ngModel)]="formulario.cargaPesadaDestino" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+
+                    <div class="col-xs-12 col-sm-3">
+                        Declaracion de Calidad <input type="checkbox" [(ngModel)]="formulario.declaracionCalidad" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+
+                    <div class="col-xs-12 col-sm-3">
+                        Conforme <input type="checkbox" [(ngModel)]="formulario.conforme" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+
+                    <div class="col-xs-12 col-sm-3">
+                        Condicional <input type="checkbox" [(ngModel)]="formulario.condicional" class="fourRounded" placeholder="" aria-controls="tableModal">
+                    </div>
+
+
+                    <!--<div class="row titleSection titleSectionNoBorder">
+            <div class="col-xs-12 col-sm-12">Datos Destino</div>
+        </div>-->
+                </div>
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <title-caps class="blue">Datos Destino</title-caps>
+                    <hr>
+
+
+                    <div class="col-xs-12 col-sm-6">
+                        Direcci&oacute;n:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.direccionDestino" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Provincia Destino:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.provinciaDestino" (valueChanged)="provinciaDestinoSelected($event)" [source]="provinciaOptions" [min-chars]="3" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Localidad Destino:
+                        <div class="styled-select autocomplete">
+                            <input auto-complete [(ngModel)]="formulario.localidadDestino" (valueChanged)="localidadDestinoSelected($event)" [source]="observableSource.bind(this)" [min-chars]="3" [no-match-found-text]="'No se encontraron resultados'" [value-formatter]="generalFormatter" [list-formatter]="generalFormatter" [max-num-list]="10" />
+                        </div>
+                    </div>
+
+                    <!--<div class="row titleSection titleSectionNoBorder">
+            <div class="col-xs-12 col-sm-12">Datos del Transporte</div>
+        </div>-->
+                </div>
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <title-caps class="blue">Datos del Transporte</title-caps>
+                    <hr>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Pagador de Flete:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.pagadorFlete" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Cami&oacute;n 1:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.camion1" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Cami&oacute;n 2:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.camion2" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Cami&oacute;n 3:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.camion3" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Flete Pagado:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.fletePagado" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Flete a Pagar:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.fletePagar" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Acoplado:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.acoplado" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Tarifa de Referencia:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.tarifaReferencia" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        Tarifa:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.tarifa" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6">
+                        KM. a Recorrer:
+                        <div class="styled-select">
+                            <input type="search" [(ngModel)]="formulario.kmRecorrer" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                
+                <div class="row myRow">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        CCPP en PDF:
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                Archivo:
+                                <div class="styled-select">
+                                    <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                Inicio Rango de P&aacute;ginas:
+                                <div class="styled-select">
+                                    <dropdown #dropdown_pages [tipoDropdown]="'pageInput'" (select)="setInputPages($event)"></dropdown>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-8 col-lg-12">
+                                <spinner-small #sp_imp_temp></spinner-small>
+                                <a (click)="getCompletedPDFTemplate(dtp_input_carga.value)" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallImpTempComponent.visible">
+                                    <div class="btn-custom btn-add btn-chico animate">Imprimir<span class="fa  fa-play "></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        CCPP Impreso previamente:
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-8 col-lg-4">
+                                <spinner-small #sp_imp_blanco></spinner-small>
+                                <a (click)="getTemplate(dtp_input_carga.value)" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallImpBlancoComponent.visible">
+                                    <div class="btn-custom btn-add btn-chico animate">Imprimir<span class="fa fa-play"></span></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+             </div>
+        </div>
+        <div hidden="hidden" id="pdf-print"> </div>
+
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
+</div>

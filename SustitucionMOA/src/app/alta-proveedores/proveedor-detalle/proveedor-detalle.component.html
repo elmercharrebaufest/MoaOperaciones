@@ -1,0 +1,134 @@
+<div class="content-wraper">
+
+    <div class="row titleSection">Detalle proveedor</div>
+
+    <div class="row myRow firstSection roundedInfo" id="container">
+        <div name="Step 1" label="Informe comercial">
+            <h3>Informe comercial</h3>
+            <div class="informe-comercial">
+                <button type="button" class="btn btn-info btn-custom">
+                    Ver
+                </button>
+            </div>
+            <!-- Modal informe comercial-->
+            <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+                data-target="#myModal"></button>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onClick="abrirModal()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
+                        </div>
+                        <div class="modal-body">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end modal informe comercial-->
+        </div>
+        <div name="Step 2" label="CBU">
+            <h3> Constancia de CBU</h3>
+            <div class="form-group">
+                <button>
+                    Ver
+                </button>
+            </div>
+            <!-- Modal constancia CBU-->
+            <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+                data-target="#myModal"></button>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onClick="abrirModal()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Constancia CBU</h4>
+
+                        </div>
+                        <div class="modal-body">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end modal constancia CBU-->
+        </div>
+        <div name="Step 3" label="Documentación Impositiva">
+            <h3>Documentación Impositiva</h3>
+            <button>Ver</button>
+            <!-- Modal documentación impositiva-->
+            <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+                data-target="#myModal"></button>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onClick="abrirModal()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Documentación impositiva</h4>
+
+                        </div>
+                        <div class="modal-body">
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end modal documentación impositiva-->
+        </div>
+        <div name="Step 4" label="Documentación">
+            <h3>Documentación al día en Bolsa</h3>
+            <button>Ver</button>
+            <!-- Modal documentación Bolsa --->
+            <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+                data-target="#myModal"></button>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                                onClick="abrirModal()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Documentación al día en la Bolsa</h4>
+
+                        </div>
+                        <div class="modal-body">
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end modal documentación bolsa-->
+        </div>
+        <div name="Step 7" label="Enviar">
+            <div class="step-actions enviar">
+                <button mdbBtn size="sm" color="primary" (click)="aceptarAlta()">
+                    Aceptar
+                </button>
+                <button mdbBtn size="sm" color="primary" (click)="rechazarAlta()">
+                    Rechazar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

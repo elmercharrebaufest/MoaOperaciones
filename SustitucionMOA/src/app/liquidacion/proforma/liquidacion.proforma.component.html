@@ -1,0 +1,119 @@
+﻿<div class="content-wraper ccpp">
+    <!-- CONTENT-->
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <section class="container-fluid clearfix" *ngIf="data != undefined">
+        <!--Title-->
+        <div class="row titleSection titleSectionTable">
+            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8; display: inline-block;"> <strong>Proforma de Liquidaci&oacute;n Final: <span>Nº {{data.fijacion}}</span></strong> </div>
+            </div>
+            <div class="col-xs-12 col-sm-2 titleSectionTablePart">
+                <spinner-small #smallSpinner></spinner-small>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                </a>
+                <!--<a href="#" style="text-decoration:none!important">
+                    <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
+                </a>-->
+            </div>
+        </div>
+        <!--End Title-->
+        <!--Datos de Pago-->
+        <div id="Pago" class=" firstSection row myRow">
+            <div class="row titleSection titleSectionNoBorder">
+                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen">
+                    <div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="grey">Precio</p>
+                            <p class="grey">{{data.cabecera.precioString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="grey">Flete $/Ton</p>
+                            <p class="grey">{{data.cabecera.tarifaFleteString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="grey">Precio Neto</p>
+                            <p class="grey">{{data.cabecera.precioNetoString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                            <p class="grey">Kilos Compra</p>
+                            <p class="grey">{{data.cabecera.compradosString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                            <p class="grey">Kilos Recibidos</p>
+                            <p class="grey">{{data.cabecera.recibidosString}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--factura-->
+        <div id="Pago" class="Pago">
+            <div class="PagoColumn">
+                <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td width="100%">
+                            <div>
+                                <p class="grey"><strong>Contrato Molinos</strong></p>
+                                <p> <a class="animate grey" (click)="goToSeccionParam('/contrato/detalle', data.salidas[0].contrato)" href="#">{{data.salidas[0].contrato}}</a></p>
+                            </div>
+                            <div>
+                                <p class="grey">Tipo pago</p>
+                                <p class="grey"><strong>Liq.</strong></p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="PagoFactura">
+                <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
+                    <tr class="CalidadCCPPDataCategoria">
+                        <th width="40%">&nbsp;</th>
+                        <th width="20%" class="grey">Importe</th>
+                        <th width="20%" class="grey">IVA</th>
+                        <th width="20%" class="grey">Total</th>
+                    </tr>
+                    <ng-container *ngFor="let salida of data.salidas">
+                        <tr class="PagoTableLine">
+                            <td *ngIf="salida.caracteristica.toUpperCase() == 'FLETE PROCEDENCIA'"><a class="PagoTablaLink" (click)="showModalProcedencia(data.fijacion)" href="#">{{salida.caracteristica}}</a></td>
+                            <td *ngIf="salida.caracteristica.toUpperCase() != 'FLETE PROCEDENCIA'" [ngClass]="salida.caracteristica.toUpperCase().includes('FALTA') ? 'PagoNegative' : 'PagoPositive'">{{salida.caracteristica}}</td>
+                            <td><span [ngClass]="(isNegative(salida.importe)) ? 'PagoNegative' : 'PagoPositive'">{{salida.importeString}}</span></td>
+                            <td><span [ngClass]="(isNegative(salida.iva)) ? 'PagoNegative' : 'PagoPositive'"> {{salida.ivaString}}</span></td>
+                            <td><span [ngClass]="(isNegative(salida.total)) ? 'PagoNegative' : 'PagoPositive'">{{salida.totalString}}</span></td>
+                        </tr>
+                    </ng-container>
+                    <tr>
+                        <td>{{data.subTotal.caracteristica}}</td>
+                        <td><span [ngClass]="(isNegative(data.subTotal.importe)) ? 'PagoNegative' : 'PagoPositive'">{{data.subTotal.importeString}}</span></td>
+                        <td><span [ngClass]="(isNegative(data.subTotal.iva)) ? 'PagoNegative' : 'PagoPositive'"> {{data.subTotal.ivaString}}</span></td>
+                        <td><span [ngClass]="(isNegative(data.subTotal.total)) ? 'PagoNegative' : 'PagoPositive'">{{data.subTotal.totalString}}</span></td>
+                    </tr>
+                    <tr>
+                        <td>{{data.pagoACuenta.caracteristica}}</td>
+                        <td><span [ngClass]="(isNegative(data.pagoACuenta.importe)) ? 'PagoNegative' : 'PagoPositive'">{{data.pagoACuenta.importeString}}</span></td>
+                        <td><span [ngClass]="(isNegative(data.pagoACuenta.iva)) ? 'PagoNegative' : 'PagoPositive'"> {{data.pagoACuenta.ivaString}}</span></td>
+                        <td><span [ngClass]="(isNegative(data.pagoACuenta.total)) ? 'PagoNegative' : 'PagoPositive'">{{data.pagoACuenta.totalString}}</span></td>
+                    </tr>
+                    <tr>
+                        <td>{{data.saldoAPagar.caracteristica}}</td>
+                        <td><span [ngClass]="(isNegative(data.saldoAPagar.importe)) ? 'PagoNegative' : 'PagoPositive'">{{data.saldoAPagar.importeString}}</span></td>
+                        <td><span [ngClass]="(isNegative(data.saldoAPagar.iva)) ? 'PagoNegative' : 'PagoPositive'"> {{data.saldoAPagar.ivaString}}</span></td>
+                        <td><span [ngClass]="(isNegative(data.saldoAPagar.total)) ? 'PagoNegative' : 'PagoPositive'">{{data.saldoAPagar.totalString}}</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!--Botones mobile-->
+        <div class="showBtn height-auto btn-grande btnSection btnInfo animate  downloadPDF downloadPDF_PAGO">
+            <a href="#">
+                <div>
+                    <li class="fa fa-file-pdf-o" aria-hidden="true"></li>
+                </div>
+                <div>Factura</div>
+            </a>
+        </div>
+        <!--Fin botones mobile-->
+    </section>
+    <!--End CONTENT-->
+</div>
