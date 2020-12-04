@@ -67,7 +67,8 @@ namespace SustitucionMOAUtils.Services
                         Fecha = a.Fecha,
                         Observacion = a.Observacion,
                         Usuario = a.Usuario.Mail
-                    }).ToList()
+                    }).ToList(),
+                    IdTipoUsuario = proveedor.UsuariosAsociados.FirstOrDefault().TipoUsuario.Id
                 }).ToList();
 
                 if (proveedorDtos.Count == 0)

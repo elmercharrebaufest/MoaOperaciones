@@ -137,11 +137,17 @@ namespace SustitucionMOAUtils.Services
 
             usuario.Proveedores = new List<Proveedor>();
 
+            string cuit = usuario.CUITRegistro;
             Proveedor proveedor = new Proveedor
             {
                 CUIT = usuario.CUITRegistro,
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+                EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                Mail = usuario.Mail
             };
+            if (repositorio.Existe<Proveedor>(x=> x.CUIT == cuit))
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit); 
+            }
 
             usuario.Proveedores.Add(proveedor);
 

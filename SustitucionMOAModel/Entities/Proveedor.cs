@@ -38,7 +38,7 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Proveedor")]
         public virtual ICollection<ProveedorHistorialAprobacion> HistorialAprobaciones { get; set; }
 
-        
+
         public bool? VinculoConEmpleadosDeMolinos { get; set; }
         public bool? VinculoConFuncionariosPublicos { get; set; }
 
@@ -49,6 +49,23 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<ProveedorRelacionConFuncionarios> RelacionConFuncionarios { get; set; }
 
         public string Comercial { get; set; }
+        public string Telefono { get; set; }
+        public bool? RealizarAnalisisNOSIS { get; set; }
 
+        public int? IdRubro { get; set; }
+        
+        public string CondicionDePago { get; set; }
+        public string ServicioPrestado { get; set; }
+        public string OrganizacionDeCompra { get; set; }
+        public string RazonDeEleccion { get; set; }
+        public long? FacturacionAnual { get; set; }
+        public string SolicitanteInterno { get; set; }
+
+        [ForeignKey("IdRubro")]
+        public virtual Rubro Rubro { get; set; }
+        public bool? RequiereVerificacionCompras { get; set; }
+        public int? IdSituacionIVA { get; set; }
+        public int? IdIngresoBruto { get; set; }
+        public string CBU { get; set; }
     }
 }

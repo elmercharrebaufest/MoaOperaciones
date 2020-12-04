@@ -43,6 +43,9 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
+import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
+import { NumericDirective } from './common/directive/numeric.directive';
+import { NgxMaskModule } from "ngx-mask";
 
 
 @NgModule({
@@ -58,6 +61,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     ReCaptchaModule,
     AutocompleteLibModule,
     SharedModule,
+    NgxMaskModule.forRoot(),
   ],
   declarations: [
     AppComponent,
@@ -67,6 +71,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     LayoutComponent,
     NoAutorizadoComponent,
     UsuarioListComponent,
+    UsuarioAltaEmpresaNoGranosComponent,
     UsuarioCambioVendedorComponent,
     VendedorStatusComponent,
     PesificacionComponent,
@@ -74,7 +79,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     EmpresaNoGranosComponent,
     AltasComponent,
     EstadoSolicitudComponent,
-
+    NumericDirective
   ],
   providers: [
     DatePipe,

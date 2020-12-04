@@ -487,7 +487,11 @@
                                     <!--data-toggle="tab">-->Altas Pendientes
                                 </a>
                             </div>
-
+                            <div *ngIf="isAuthorized('ALTA EMPRESA NO GRANOS')">
+                                <a (click)="goToSeccion('/usuario/alta-empresa-no-granos')" href="#">
+                                    Alta Empresa No Granos
+                                </a>
+                            </div>
 
                         </div>
                     </div>

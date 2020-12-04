@@ -52,6 +52,8 @@
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\EstadoVendedorDto.cs" />
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
+    <Compile Include="Dto\RubroDto.cs" />
+    <Compile Include="Entities\Rubro.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CampaniaDto.cs" />
     <Compile Include="Models\DataAgro\ContratoAFijar.cs" />

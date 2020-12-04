@@ -311,6 +311,13 @@ namespace SustitucionMOAUtils.Services
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
+            else if (usuario.TipoUsuario.Nombre == "No Granos")
+            {
+                if (!ValidarArchivosSubidosNoGranos(proveedor, altaEmpresa))
+                {
+                    return ErrorMsg.ErrorCompleteCampo;
+                }
+            }
             else
             {
                 if (!ValidarArchivosSubidos(proveedor, infoProveedor))
@@ -323,6 +330,9 @@ namespace SustitucionMOAUtils.Services
 
             proveedor.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
             proveedor.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;
+            proveedor.CBU = altaEmpresa.CBU;
+            proveedor.IdIngresoBruto = altaEmpresa.IdIngresoBruto;
+            proveedor.IdSituacionIVA = altaEmpresa.IdSituacionIVA;
 
             repositorio.RemoverTodos(proveedor.RelacionConEmpleados.ToList());
             repositorio.RemoverTodos(proveedor.RelacionConFuncionarios.ToList());
@@ -430,6 +440,32 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
+        public bool ValidarArchivosSubidosNoGranos(Proveedor proveedor, AltaEmpresaViewModel altaEmpresa)
+        {
+            
+
+            if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCUIT))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CUIT"));
+            }
+            if (altaEmpresa.IdIngresoBruto == 1 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Inscripcion IIBB"));
+            }
+            if (altaEmpresa.IdIngresoBruto == 2 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Convenio (CM05 vigente)"));
+            }
+            //if (infoProveedor.EstadoSISA != "1")
+            //{
+            //    if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+            //    {
+            //        throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+            //    }
+            //}
+
+            return true;
+        }
 
         public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId, bool esOperador)
         {
@@ -505,13 +541,15 @@ namespace SustitucionMOAUtils.Services
                 var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
                
 
-                ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-
+                //ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                //result = new ResultadoValidarProveedorComercial {
+                    
+                //};
                 var info = new InfoProveedorDataAgroDto
                 {
-                    ProveedorCBU = result.ProveedorCBU,
-                    ProveedorClasificacion = result.ProveedorClasificacion,
-                    EstadoSISA = result.ProveedorSISAEstadoCuit,
+                    //ProveedorCBU = result.ProveedorCBU,
+                    //ProveedorClasificacion = result.ProveedorClasificacion,
+                    //EstadoSISA = result.ProveedorSISAEstadoCuit,
                     ProveedorCUIT = CUITProveedor,
                     RazonSocial = proveedor.RazonSocial,
                 };
@@ -535,7 +573,10 @@ namespace SustitucionMOAUtils.Services
             altaEmpresa.VinculoConFuncionariosPublicos = proveedor.VinculoConFuncionariosPublicos;
             altaEmpresa.Empleados = proveedor.RelacionConEmpleados.Select(a => new AltaEmpresaEmpleadosViewModel { CargoProveedora = a.CargoProveedora, NombreMolinos = a.NombreMolinos, NombreProveedora = a.NombreProveedora, Vinculo = a.Vinculo }).ToList();
             altaEmpresa.Funcionarios = proveedor.RelacionConFuncionarios.Select(a => new AltaEmpresaFuncionariosViewModel { CargoFirma = a.CargoFirma, CargoFuncionario = a.CargoFuncionario, NombreFirma = a.NombreFirma, NombreFuncionario = a.NombreFuncionario, Vinculo = a.Vinculo }).ToList();
-
+            altaEmpresa.IdIngresoBruto = proveedor.IdIngresoBruto;
+            altaEmpresa.IdSituacionIVA = proveedor.IdSituacionIVA;
+            altaEmpresa.CBU = proveedor.CBU;
+            
             return altaEmpresa;
         }
 

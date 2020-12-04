@@ -27,7 +27,7 @@ export class EmpresaNoGranosService extends BaseService {
         formData.append("proveedorId", proveedorId.toString());
 
         return this.http
-            .post("/api/AltaEmpresaGranos/GuardarArchivo", formData)
+            .post("/api/AltaEmpresaNoGranos/GuardarArchivo", formData)
             .pipe(map(this.extractData));
     }
 
@@ -152,7 +152,7 @@ export class EmpresaNoGranosService extends BaseService {
         params.set("mail", mail);
         params.set("proveedorId", proveedorId.toString());
         return this.http
-            .get("/api/AltaEmpresaGranos/ObtenerArchivosSubidos", {
+            .get("/api/AltaEmpresaNoGranos/ObtenerArchivosSubidos", {
                 search: params,
                 headers: this.headers,
             })
@@ -165,7 +165,7 @@ export class EmpresaNoGranosService extends BaseService {
         params.set("proveedorId", proveedorId.toString());
 
         return this.http
-            .get("/api/AltaEmpresaGranos/ObtenerInfoProveedor", {
+            .get("/api/AltaEmpresaNoGranos/ObtenerInfoProveedor", {
                 search: params,
                 headers: this.headers,
             })
@@ -183,7 +183,7 @@ export class EmpresaNoGranosService extends BaseService {
         params.set("proveedorId", proveedorId.toString());
 
         return this.http
-            .get("/api/AltaEmpresaGranos/DescargarArchivo", {
+            .get("/api/AltaEmpresaNoGranos/DescargarArchivo", {
                 search: params,
                 headers: this.headers,
             })
@@ -203,7 +203,7 @@ export class EmpresaNoGranosService extends BaseService {
         payload.append("proveedorId", proveedorId.toString());
 
         return this.http
-            .post("/api/AltaEmpresaGranos/EnviarSolicitudUsuario", payload)
+            .post("/api/AltaEmpresaNoGranos/EnviarSolicitudUsuario", payload)
             .pipe(
                 timeoutWith(
                     30000,
@@ -226,7 +226,7 @@ export class EmpresaNoGranosService extends BaseService {
         params.set("proveedorId", proveedorId.toString());
 
         return this.http
-            .get("/api/AltaEmpresaGranos/EliminarArchivo", {
+            .get("/api/AltaEmpresaNoGranos/EliminarArchivo", {
                 search: params,
                 headers: this.headers,
             })
@@ -253,7 +253,7 @@ export class EmpresaNoGranosService extends BaseService {
             params.set("proveedorId", "0");
 
         return this.http
-            .get("/api/AltaEmpresaGranos/CargarSolicitudUsuario", {
+            .get("/api/AltaEmpresaNoGranos/CargarSolicitudUsuario", {
                 search: params,
                 headers: this.headers,
             })

@@ -266,6 +266,12 @@ namespace SustitucionMOAUtils.Services
         {
             return string.Concat("00", CUIT.Substring(2, 8));
         }
+
+        public bool ProveedorApocrifo(string CUIT)
+        {
+            return new DataAgroConsumer().ProveedorApocrifo(CUIT);
+        }
+
     }
 
 }

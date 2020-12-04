@@ -20,6 +20,7 @@ import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuario.cambio-vendedor.component";
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
+import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 var appRoutes = [
     // { path: "documentacion", component: DocumentacionComponent },
     // {
@@ -90,6 +91,8 @@ var appRoutes = [
             },
             // { path: "usuario/alta", component: AltaUsuarioComponent },
             { path: "usuario/list", component: UsuarioListComponent },
+            { path: "usuario/alta-empresa-no-granos", component: UsuarioAltaEmpresaNoGranosComponent },
+            { path: "usuario/alta-empresa-no-granos/:id/:cuit/:mail", component: UsuarioAltaEmpresaNoGranosComponent },
             // {
             //   path: "usuario/cambio-contrasenia",
             //   component: CambioContraseniaComponent,

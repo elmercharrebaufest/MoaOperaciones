@@ -103,5 +103,9 @@
         /* PERMISOS CREAR CONTRATO */
         public const string CREAR_CONTRATO = "CREAR CONTRATOS";
 
+        /* PERMISOS ALTA EMPRESA NO GRANOS*/
+        public const string ALTA_EMPRESA_NO_GRANOS = "ALTA EMPRESA NO GRANOS";
+
+
     }
 }

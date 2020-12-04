@@ -32,6 +32,19 @@ namespace SustitucionMOAWS.WSConsumers
                 return null;
             }
         }
+
+        public bool ProveedorApocrifo(string CUIT)
+        {
+            try
+            {
+                return service.ProveedorApocrifo(CUIT);
+            }
+            //Significa que no estamos conectados
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 
 }

@@ -76,7 +76,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IUsuarioService>().To(typeof(UsuarioService)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<IVendedorService>().To(typeof(VendedorService)).InScope(ctx => OperationContext.Current);
-
+            kernel.Bind<IAltaEmpresaNoGranosService>().To(typeof(AltaEmpresaNoGranosService)).InScope(ctx => OperationContext.Current);
+            
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);

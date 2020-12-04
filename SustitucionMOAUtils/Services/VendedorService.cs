@@ -387,5 +387,7 @@ namespace SustitucionMOAUtils.Services
         {
             return CUIT.Substring(2, 8);
         }
+
+       
     }
 }

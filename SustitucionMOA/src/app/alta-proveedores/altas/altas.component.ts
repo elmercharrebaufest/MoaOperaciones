@@ -364,7 +364,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return this.relacionConEmpleados == "Si";
     }
 
-     eliminarArchivo(archivo :Archivo) {
+    eliminarArchivo(archivo :Archivo) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerModal.showIt();
         this.unsubscribe();
@@ -392,5 +392,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+    }
+
+    completarAlta(empresa: Empresa) {
+        console.log(empresa.Mail);
+       this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
     }
 }

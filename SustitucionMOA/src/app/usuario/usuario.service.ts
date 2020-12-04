@@ -109,5 +109,44 @@ export class UsuarioService extends BaseService {
                 map(this.extractData));
     }
 
+    public getRubros(): Observable<any> {
+        return this.http
+            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
 
+    grabarNuevoProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any, realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any,
+        servicioPrestado: any, organizacionDeCompra: any, razonDeEleccion: any, facturacionAnual: any, solicitanteInterno: any, idProveedor: any,
+        observacionesParaElProveedor: any, requiereVerificacionCompras: any) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('razonSocial', razonSocial);
+        params.set('cuit', cuit);
+        params.set('email', email);
+        params.set('telefono', telefono);
+        params.set('realizarAnalisisNOSIS', realizarAnalisisNOSIS);
+        params.set('IdRubro', IdRubro);
+        params.set('condicionDePago', condicionDePago);
+        params.set('servicioPrestado', servicioPrestado);
+        params.set('organizacionDeCompra', organizacionDeCompra);
+        params.set('razonDeEleccion', razonDeEleccion);
+        params.set('facturacionAnual', facturacionAnual);
+        params.set('solicitanteInterno', solicitanteInterno);
+        params.set('idProveedor', idProveedor);
+        params.set('observacionesParaElProveedor', observacionesParaElProveedor);
+        params.set('requiereVerificacionCompras', requiereVerificacionCompras);
+
+        return this.http
+            .get('/api/usuario/GrabarNuevoProveedorNoGranos', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    rechazarNuevoProveedorNoGranos(proveedorId: any, observacionesParaElProveedor: any) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idProveedor', proveedorId);
+        params.set('observacionesParaElProveedor', observacionesParaElProveedor)
+
+        return this.http
+            .get('/api/usuario/RechazarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
 }
