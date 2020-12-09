@@ -40,7 +40,8 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
+                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                                || x.EstadoAprobacion == EstadoAprobacion.SinAlta)
                                 && x.HistorialAprobaciones.Count > 0
                                 );
 

@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
-                    proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                    proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
 
                     var hist = new ProveedorHistorialAprobacion
                     {

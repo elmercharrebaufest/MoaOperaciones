@@ -91,7 +91,8 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString())
+                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString())
                 };
                 List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
                 {
