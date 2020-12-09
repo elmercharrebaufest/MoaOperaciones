@@ -231,6 +231,7 @@ namespace SustitucionMOAUtils.Services
             }
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
             var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
             var hist = new ProveedorHistorialAprobacion
             {
                 Fecha = DateTime.Now,
@@ -238,6 +239,7 @@ namespace SustitucionMOAUtils.Services
                 Usuario_Id = usuarioId,
                 EstadoAprobacion = proveedor.EstadoAprobacion,
             };
+
             if (respuesta.HayError)
             {
                 hist.Observacion = respuesta.ListaErrores.First().Message;
@@ -256,7 +258,6 @@ namespace SustitucionMOAUtils.Services
 
             hist.Observacion = "Proveedor habilitado en DataAgro";
 
-            proveedor.HistorialAprobaciones.Add(hist);
             proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
             proveedor.IdComercialDataAgro = respuesta.ComercialId;
             proveedor.IdDataAgro = respuesta.ProveedorId;
@@ -274,13 +275,15 @@ namespace SustitucionMOAUtils.Services
                 resultado = "El proveedor ha sido habilitado en estado 'Aprobado' debido a que tenía contratos. De tratarse de un usuario nuevo recuerde actualizar los roles.";
                 proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
 
-                foreach(var historial in proveedor.HistorialAprobaciones)
-                {
-                    repositorio.Remover(historial);
-                }
+                proveedor.HistorialAprobaciones.Clear();
+
+                var historiales = repositorio.Listar<ProveedorHistorialAprobacion>(h => h.Proveedor_Id == proveedor.Id);
+
+                repositorio.RemoverTodos(historiales);
             }
             else 
             {
+                proveedor.HistorialAprobaciones.Add(hist);
                 resultado = "El proveedor ha sido habilitado para cargar la documentación.";
                 proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
             }
