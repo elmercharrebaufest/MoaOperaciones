@@ -361,9 +361,9 @@ namespace SustitucionMOAUtils.Services
                     Observacion = nuevoVendedor.Observaciones
                 };
                 nuevoVendedor.HistorialAprobaciones.Add(hist);
-                usuario.Proveedores.Add(nuevoVendedor);
             }
 
+            usuario.Proveedores.Add(nuevoVendedor);
 
             repositorio.GuardarCambios();
 
