@@ -71,6 +71,7 @@
 
 .divMensaje {
     width: 90%;
+    white-space: pre;
 }
 
 .divAnterior {

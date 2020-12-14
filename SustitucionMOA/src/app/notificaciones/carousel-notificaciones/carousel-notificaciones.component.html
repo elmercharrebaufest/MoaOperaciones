@@ -12,9 +12,7 @@
       <div class="divAnterior">
         <i class="fa fa-caret-left btnPrevious" *ngIf="mostrarBotonAnterior" (click)="notificacionAnterior()"></i>
       </div>
-      <div class="divMensaje">
-        {{notificacionActual?.Mensaje || ""}}
-      </div>
+      <div class="divMensaje">{{notificacionActual?.Mensaje || ""}}</div>
       <div class="divSiguiente">
         <i class="fa fa-caret-right btnNext" *ngIf="mostrarBotonSiguiente" (click)="siguienteNotificacion()"></i>
       </div>

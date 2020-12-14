@@ -484,7 +484,7 @@
                                     <!--data-toggle="tab">-->Altas Pendientes
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('ABM EMPRESAS')">
+                            <div *ngIf="isAuthorized('ABM NOTIFICACIONES')">
                                 <a (click)="goToSeccion('/notificaciones')" href="#">
                                     Notificaciones
                                 </a>
@@ -541,7 +541,8 @@
     <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
-            aria-hidden="true"></i>{{mensajeSuccess}}</div>
+            aria-hidden="true"></i>{{mensajeSuccess}}
+    </div>
     <!-- Tab panes -->
     <div class="SubMenu-wrapper row">
         <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">

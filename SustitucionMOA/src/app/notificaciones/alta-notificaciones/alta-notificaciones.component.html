@@ -128,19 +128,6 @@
             </div>
             <br>
 
-            <div class="col-xs-12 col-md-12">
-              <div class="formulario-label">
-                <input type="checkbox" name="allTipos" id="allTipos" (click)="checkAllTipos()" [(ngModel)]="allTipos">
-                <label for="allTipos"> Tipo de Usuario</label>
-              </div>
-              <span *ngFor="let tipoDeUsuario of tipoUsuarioArray" class="col-xs-12 col-sm-12 col-md-6">
-                <input type="checkbox" name="tiposDeUsuarioSeleccionados" id="tipoDeUsuario_{{tipoDeUsuario.Id}}"
-                  value="{{tipoDeUsuario.Id}}" [(ngModel)]="tipoDeUsuario.checked">
-                &nbsp;
-                <label for="tipoDeUsuario_{{tipoDeUsuario.Id}}">{{tipoDeUsuario.Nombre}}</label>
-              </span>
-            </div>
-
             <div class="containerBotones">
               <div class="col-xs-0 col-md-3"></div>
               <div class="col-xs-5 col-md-2">

@@ -51,10 +51,11 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
                       this.data = result.data;
                       this.totalNotificaciones = this.data.length
                       this.notificacionActual = this.data[this.indiceNotificacion];
+
+                      console.log(this.notificacionActual.Mensaje);
                       if (this.data.length > 0)
                         this.mostrarNotificaciones = true;
                       this.actualizarBotones()
-                      
                     }
                 },
                 error => {
