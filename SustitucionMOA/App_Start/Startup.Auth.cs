@@ -116,7 +116,6 @@ namespace SustitucionMOA
 		private Task OnAuthenticationFailed(AuthenticationFailedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
 		{
 			notification.HandleResponse();
-
 			// Handle the error code that Azure AD B2C throws when trying to reset a password from the login page
 			// because password reset is not supported by a "sign-up or sign-in policy"
 			if (notification.ProtocolMessage.ErrorDescription != null && notification.ProtocolMessage.ErrorDescription.Contains("AADB2C90118"))
@@ -126,12 +125,12 @@ namespace SustitucionMOA
 			}
 			else if (notification.Exception.Message == "access_denied")
 			{
-				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, notification.Exception.Message);
+				Log.AzureError(notification.Exception);
 				notification.Response.Redirect("/");
 			}
 			else
 			{
-				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, notification.Exception.Message);
+				Log.AzureError(notification.Exception);
 				notification.Response.Redirect("/");
 			}
 
@@ -161,7 +160,7 @@ namespace SustitucionMOA
 			}
 			catch (Exception ex)
 			{
-				Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+				Log.AzureError(ex);
 			}
 		}
 

@@ -11,13 +11,14 @@ namespace SustitucionMOAUtils.Logger
     public class Log
     {
 
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
+        private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
             try
             {
-                writeLog(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
+                DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
             }
             catch (Exception e)
             {
@@ -30,7 +31,21 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                writeLog(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
+                DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+                Console.WriteLine("ERROR heredado:" + exception.ToString());
+            }
+        }
+
+
+        public static void Error(Exception exception)
+        {
+            try
+            {
+                DefaultLogger.Error(exception);
             }
             catch (Exception e)
             {
@@ -44,7 +59,7 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                writeLog("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
+                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
             }
             catch (Exception e)
             {
@@ -52,17 +67,29 @@ namespace SustitucionMOAUtils.Logger
             }
         }
 
-        private static void writeLog(string log) {
-            Logger.Error(log);
-            //string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
-            //checkOrCreateDirectory(directoryPath);
-            //var dataFile = directoryPath + "ErrorLog" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-            //File.AppendAllText(@dataFile, log + "\n");
+        public static void AzureError (Exception exception)
+        {
+            try
+            {
+                AzureLogger.Error(exception);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
         }
 
-        private static void checkOrCreateDirectory(string directory)
-        {
-            System.IO.Directory.CreateDirectory(directory);
-        }
+        //private static void WriteLog(string log) {
+        //    DefaultLogger.Error(log);
+        //    //string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
+        //    //checkOrCreateDirectory(directoryPath);
+        //    //var dataFile = directoryPath + "ErrorLog" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+        //    //File.AppendAllText(@dataFile, log + "\n");
+        //}
+
+        //private static void checkOrCreateDirectory(string directory)
+        //{
+        //    System.IO.Directory.CreateDirectory(directory);
+        //}
     }
 }
