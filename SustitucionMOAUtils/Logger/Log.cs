@@ -10,6 +10,9 @@ namespace SustitucionMOAUtils.Logger
 {
     public class Log
     {
+
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
             try
@@ -50,10 +53,11 @@ namespace SustitucionMOAUtils.Logger
         }
 
         private static void writeLog(string log) {
-            string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
-            checkOrCreateDirectory(directoryPath);
-            var dataFile = directoryPath + "ErrorLog" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
-            File.AppendAllText(@dataFile, log + "\n");
+            Logger.Error(log);
+            //string directoryPath = AppDomain.CurrentDomain.BaseDirectory + @"Logs\";
+            //checkOrCreateDirectory(directoryPath);
+            //var dataFile = directoryPath + "ErrorLog" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
+            //File.AppendAllText(@dataFile, log + "\n");
         }
 
         private static void checkOrCreateDirectory(string directory)
