@@ -40,6 +40,7 @@ export class NotificacionesService extends BaseService {
 
     public grabar(notificacion :Notificacion): Observable<any> {
         let payload = new FormData();
+        console.log(notificacion)
         payload.append(
             "notificacionJson",
             JSON.stringify(notificacion)

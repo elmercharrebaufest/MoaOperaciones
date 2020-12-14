@@ -63,9 +63,6 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
         this.getRolesOptions();
 
-        this.initTipoUsuarios();
-        
-
         if (this.notificacionId > 0) {
             this.obtenerNotificacion();
         }
@@ -142,11 +139,6 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             return false;
         }
         
-        if (this.tipoUsuarioArray.filter(x => x.checked).length == 0)
-        {
-            this.mensajeError = "Seleccione algún tipo de usuario.";
-            return false;
-        }
             
         return true;
     }
@@ -180,12 +172,6 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                         });
 
                         this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
-
-                        this.notificacion.FiltroTipoUsuario.forEach(element => {
-                            this.tipoUsuarioArray.find(x => x.Id == element.toString()).checked = true
-                        });
-
-                        this.allTipos = this.tipoUsuarioArray.filter(x => x.checked).length == this.tipoUsuarioArray.length;
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
                         this.horaInicio = this.notificacion.HoraInicio;
@@ -225,15 +211,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
     }
 
-    initTipoUsuarios() {
-        this.tipoUsuarioArray.push(
-            new TipoUsuario ({ Id: "2", Nombre: "Granos", checked: false, }),
-            new TipoUsuario ({ Id: "3", Nombre: "No Granos", checked: false, }),
-            new TipoUsuario ({ Id: "4", Nombre: "Corredor", checked: false, }),
-            new TipoUsuario ({ Id: "5", Nombre: "Cliente", checked: false, }),
-        );
-    }
-
+    
     checkAllRoles() {
         setTimeout(() => {
             this.roles.forEach(element => {
@@ -242,13 +220,6 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }, 0)
     }
 
-    checkAllTipos() {
-        setTimeout(() => {
-            this.tipoUsuarioArray.forEach(element => {
-                element.checked = this.allTipos;
-            });
-        }, 0)
-    }
 
     submit() {
 
@@ -264,7 +235,6 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.unsubscribe();
 
         this.notificacion.FiltroRoles = this.roles.filter(x => x.checked);
-        this.notificacion.FiltroTipoUsuario = this.tipoUsuarioArray.filter(x => x.checked);
         
         var dateParts = this.fecha_inicio.split("/");
 

@@ -27,9 +27,6 @@ namespace SustitucionMOAModel.Dto
 
         public List<int> FiltroRoles { get; set; }
 
-        public List<int> FiltroTipoUsuario { get; set; }
-
-
 
     }
 }

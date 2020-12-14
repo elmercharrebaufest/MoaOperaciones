@@ -63,8 +63,7 @@ namespace SustitucionMOATest.Services
                 Mensaje = "Hola",
                 Habilitada = true,
                 LinkAdjunto = "https://google.com/",
-                FiltroRoles = listadoRoles,
-                FiltroTipoUsuario = listadoTipoUsuarios
+                FiltroRoles = listadoRoles
             };
 
         }
@@ -83,7 +82,6 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(expected, result);
 
             repositorioMock.Verify(x => x.Obtener<Rol>(It.IsAny<int>()), Times.Once);
-            repositorioMock.Verify(x => x.Obtener<TipoUsuario>(It.IsAny<int>()), Times.Once);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Notificacion>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
@@ -114,8 +112,7 @@ namespace SustitucionMOATest.Services
                 Mensaje = "Hola",
                 Habilitada = true,
                 LinkAdjunto = "https://google.com/",
-                FiltroRoles = new List<Rol> { new Rol { Id = 1 } },
-                FiltroTipoUsuario = new List<TipoUsuario> { new TipoUsuario { Id = 1 } }
+                FiltroRoles = new List<Rol> { new Rol { Id = 1 } }
             };
 
             var result = target.GrabarNotificacion(notificacionEditada);
@@ -124,7 +121,6 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(expected, result);
 
             repositorioMock.Verify(x => x.Obtener<Rol>(It.IsAny<int>()), Times.Once);
-            repositorioMock.Verify(x => x.Obtener<TipoUsuario>(It.IsAny<int>()), Times.Once);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Notificacion>()), Times.Never);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
@@ -142,8 +138,7 @@ namespace SustitucionMOATest.Services
                 Mensaje = "Hola",
                 Habilitada = true,
                 LinkAdjunto = "https://google.com/",
-                FiltroRoles = listadoRoles,
-                FiltroTipoUsuario = listadoTipoUsuarios
+                FiltroRoles = listadoRoles
             };
 
             repositorioMock

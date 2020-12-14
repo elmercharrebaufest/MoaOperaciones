@@ -12,10 +12,8 @@ export class Notificacion {
     public LinkAdjunto: string;
     public Mensaje: string;
     public FiltroRoles: Array<Rol>
-    public FiltroTipoUsuario: Array<TipoUsuario>
 
     constructor() { 
         this.FiltroRoles = new Array<Rol>();
-        this.FiltroTipoUsuario = new  Array<TipoUsuario>();
     }
 }
