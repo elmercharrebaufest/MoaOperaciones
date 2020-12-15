@@ -95,7 +95,7 @@ namespace SustitucionMOAUtils.Services
 
                 ValidarRespuesta(data);
 
-                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
+                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Saldo", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
             }
             catch (InfoCustomException)
             {
