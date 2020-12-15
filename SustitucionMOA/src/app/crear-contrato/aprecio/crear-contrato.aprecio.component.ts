@@ -10,6 +10,8 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
+import { forEach } from '@angular/router/src/utils/collection';
+import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 declare var $: any;
 
 @Component({
@@ -18,11 +20,10 @@ declare var $: any;
     providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
 })
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
+   
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
-    fechaInicio = new Date().toLocaleDateString('en-GB');
-    fechaFin = new Date().toLocaleDateString('en-GB');
-
+    
     ngOnInit() {
         super.ngOnInit();
         console.log("inicia el componente")
@@ -35,8 +36,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
         var hoy = new Date();
         var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        var hoymesqueviene = this.service.ObtenerFechaHasta(hoysinhora);
-        
+        var hoymesqueviene = this.ObtenerFechaHasta(hoysinhora);
+
         this.contrato.FechaDesde = hoysinhora;
         this.contrato.FechaHasta = hoymesqueviene;
 
@@ -45,7 +46,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 format: 'dd/mm/yyyy',
                 language: 'es',
                 weekStart: 1,
-                todayBtn: 1,
+                //todayBtn: 1,
                 autoclose: 1,
                 todayHighlight: 1,
                 startView: 2,
@@ -53,10 +54,12 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 showMeridian: 1,
                 pickTime: false,
                 minView: 2,
-                maxView: 4
+                maxView: 4,
+                //startDate: new Date(),
+                //endDate: new Date(),
             }).on('changeDate', function (ev) {
-                if (ev.date.valueOf() ) {
-                    var fechaBase =new Date(ev.date.valueOf());
+                if (ev.date.valueOf()) {
+                    var fechaBase = new Date(ev.date.valueOf());
                     var hoy = fechaBase != undefined ? fechaBase : new Date();
                     var anio = hoy.getFullYear();
                     var mesPost = hoy.getMonth() + 2;
@@ -86,14 +89,14 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 }
             });
         });
-        
+
 
         $(document).on("mouseover", '.form_datetime_Fin', function () {
             $('.form_datetime_Fin').datetimepicker({
                 format: 'dd/mm/yyyy',
                 language: 'es',
                 weekStart: 1,
-                todayBtn: 1,
+                //todayBtn: 1,
                 autoclose: 1,
                 todayHighlight: 1,
                 startView: 2,
@@ -104,7 +107,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                 maxView: 4
             });
         });
-        
+
         this.fechaInicio = hoysinhora.toLocaleDateString('en-GB');
         this.fechaFin = hoymesqueviene.toLocaleDateString('en-GB');
 
@@ -113,6 +116,33 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
     setTabs() {
         this.setMenuSeccionTab("crear-contrato", "A Precio");
+    }
+
+    selectEventProveedor(item) {
+        this.contrato.ProveedorId = item.Id;
+        console.log("prov: ", item.Id);
+        if (item != null && item.Id != null && item.Id > 0) {
+            this.obtenerDatosCompraNet(this.contrato, item.Id);
+        }
+    }
+
+    onChangeSearchProveedor(term: string) {
+        if (term.length > 2) {
+            this.unsubscribe();
+            this.subscription = this.service.buscarProveedoresConCorredor(term).subscribe(
+                result => {
+                    var resultlist = JSON.parse(result);
+
+                    this.proveedores = resultlist.map(prov => {
+                        return { Id: prov.Id, RazonSocial: prov.RazonSocial + " (" + prov.Cuit + ")", CUIT: prov.Cuit }
+                    })
+                    //this.proveedores = JSON.parse(result);
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        }
     }
 
     selectEventLocalidad(item) {
@@ -161,10 +191,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         this.contrato.PagoDiferidoTercero = false;
     }
 
-    changeMoneda(event) {
-        this.contrato.PagoDiferidoTercero = false;
-        this.contrato.DolarizadoTercero = false;
-    }
+
     isVisiblePagoDiferido(): boolean {
         return this.contrato.MonedaId == "ARP  ";
     }
@@ -180,6 +207,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     grabarContratoAPrecio() {
+        console.log(this.contrato);
         if (!this.validarContrato()) {
             return false;
         }
@@ -217,7 +245,6 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
-        console.log(this.contrato);
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(
@@ -240,7 +267,15 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
                             this.mensajeComponent.setErrorMsg(errores);
                         } else {
-                            this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                            //this.mensajeComponent.setSuccessMsg("El contrato se genero correctamente.");
+                            this.contrato.MaterialId = null;
+                            this.contrato.Cantidad = null;
+                            this.contrato.CampanaId = null;
+                            this.contrato.Precio = null;
+                            this.contrato.PrecioNeto = null;
+                            this.contrato.MonedaId = null;
+                            document.getElementById("openModalConfirmModal").click();
+
                         }
                     }
                 },
@@ -258,6 +293,13 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
+        console.log(this.datosPizarra);
+        console.log(this.datosPrecioMoa);
+
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
+            return false;
+        }
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Dolarizado.");
             return false;
@@ -268,6 +310,39 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         }
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            return false;
+        }
+
+        if (this.contrato.DestinoId == null || this.contrato.DestinoId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Destino.");
+            return false;
+        }
+        if (this.contrato.MaterialId == null || this.contrato.MaterialId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Material.");
+            return false;
+        }
+        if (this.contrato.CampanaId == null || this.contrato.CampanaId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Campaña.");
+            return false;
+        }
+        if (this.contrato.ClasificacionId == null || this.contrato.ClasificacionId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Condicion vendedor.");
+            return false;
+        }
+        if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
+            return false;
+        }
+        if (this.contrato.BoletoId == null || this.contrato.BoletoId == undefined) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Boleto.");
+            return false;
+        }
+        if ((this.contrato.BolsaId == null || this.contrato.BolsaId == undefined) && this.contrato.BoletoId != 3) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
+            return false;
+        }
+        if (this.contrato.Pizarra == true &&(this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
             return false;
         }
         return true;
@@ -293,6 +368,76 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         } else {
             return true;
         }
+    }
+
+    onChangeMaterial() {
+        if (this.contrato.MaterialId != null) {
+            this.contrato.CampanaId = null;
+            this.habilitaciones(this.contrato);
+            this.contrato.Precio = 0;
+            this.contrato.MonedaId = null;
+        }
+    }
+    changePizarra() {
+        this.contrato.Precio = 0;
+        this.contrato.MonedaId = null;
+        if (this.contrato.Pizarra == true) {
+            this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
+            this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
+            this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
+            this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
+            var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
+
+            $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+            $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+
+            $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+            $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+        } else {
+
+        }
+    }
+
+    disablePrecio(): boolean {
+        return this.contrato.Pizarra == true;
+    }
+
+    changeMoneda(event) {
+        this.contrato.PagoDiferidoTercero = false;
+        this.contrato.DolarizadoTercero = false;
+        if (this.contrato.MonedaId != "" && this.contrato.MonedaId != undefined && this.contrato.MonedaId != null) {
+            // buscar precio moa
+            var leng = this.datosPrecioMoa.length;
+            var items = this.datosPrecioMoa;
+            for (var i = 0; i < leng; i++) {
+                var item = items[i];
+                console.log(item);
+                if (item.MonedaId == this.contrato.MonedaId) {
+                    if (item.Precio == 0) {
+                        this.contrato.Precio = null;
+                    } else {
+                        this.contrato.Precio = item.Precio;
+                        this.contrato.FechaDesde = new Date(parseInt(item.DesdeEntrega.substr(6)));
+                        this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
+                        this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
+                        this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
+                        var entregaHasta = new Date(parseInt(item.HastaEntrega.substr(6)));
+
+                        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+
+                        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+                    }
+
+                }
+            }
+        } else {
+            this.contrato.Precio = 0;
+        }
+    }
+    configuraciones() {
+
     }
 
 }

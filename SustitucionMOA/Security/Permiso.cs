@@ -103,5 +103,11 @@
         /* PERMISOS CREAR CONTRATO */
         public const string CREAR_CONTRATO = "CREAR CONTRATOS";
 
+
+        /* NOTIFICACIONES */
+        public const string LISTADO_NOTIFICACIONES = "LISTADO NOTIFICACIONES";
+        public const string ABM_NOTIFICACONES = "ABM NOTIFICACIONES";
+
+
     }
 }

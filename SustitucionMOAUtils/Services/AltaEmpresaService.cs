@@ -10,9 +10,8 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.IO;
 using System.Linq;
-using System.Windows.Markup.Localizer;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -22,6 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
 
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Template","EstadoAlta.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -57,6 +57,7 @@ namespace SustitucionMOAUtils.Services
                     Mail = proveedor.Mail ?? "",
                     Observaciones = proveedor.Observaciones,
                     RazonSocial = proveedor.RazonSocial ?? "",
+                    RazonSocialCorredor = proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : "",
                     FechaSolicitud = proveedor.FechaSolicitud,
                     Comercial = proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
@@ -79,9 +80,8 @@ namespace SustitucionMOAUtils.Services
                 //TODO: Deprecar esto y obtener la razon social a través de la FK del proveedor al proveedor que lo dio de alta
                 foreach (var proveedorDto in proveedorDtos)
                 {
-                    var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
-
-                    if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
+                    //var corredorAsociado = repositorio.Listar<Proveedor>(p => p.CodigoProveedor.Contains("C") && p.Mail == proveedorDto.Mail).FirstOrDefault();
+                    //if (corredorAsociado != null) proveedorDto.RazonSocialCorredor = corredorAsociado.RazonSocial;
 
                     if (proveedorDto.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
@@ -95,6 +95,7 @@ namespace SustitucionMOAUtils.Services
                             proveedorDto.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
                         }
                     }
+
                 }
 
                 return proveedorDtos;
@@ -227,7 +228,7 @@ namespace SustitucionMOAUtils.Services
 
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
                     }
@@ -320,12 +321,8 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarMailEdicionRequerida(Proveedor proveedor, string observacionParaElProveedor, List<string> copia)
         {
-            string cuerpo = "Estimado: " + proveedor.RazonSocial + "\n\n"
-                                        + "Su alta fue Observada." + "\n\n";
-            if (!string.IsNullOrWhiteSpace(observacionParaElProveedor))
-            {
-                cuerpo += "Observaciones: " + observacionParaElProveedor;
-            }
+            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+            var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "observada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
             string asunto = "Molinos Agro - Edición Requerida";
 
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
@@ -333,20 +330,16 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarMailRechazado(Proveedor proveedor, string observacionParaElProveedor, List<string> copia)
         {
-            string cuerpo = "Estimado: " + proveedor.RazonSocial + "\n\n"
-                    + "Su alta fue rechazada por Administración. Comunicarse con su comercial." + "\n\n";
-            if (!string.IsNullOrWhiteSpace(observacionParaElProveedor))
-            {
-                cuerpo += "Observaciones: " + observacionParaElProveedor;
-            }
+            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+            var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "rechazada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
             string asunto = "Molinos Agro - Solicitud Rechazada";
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 
         private void EnviarMailAprobado(Proveedor proveedor, List<string> copia)
         {
-            string cuerpo = "Estimado: " + proveedor.RazonSocial + "\n\n"
-                      + "Su alta para operar en Molinos Agro fue aprobada exitosamente." + "\n\n";
+            var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+            var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "aprobada", "-");
             string asunto = "Molinos Agro - Alta Exitosa";
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }

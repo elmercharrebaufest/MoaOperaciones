@@ -36,20 +36,6 @@ namespace SustitucionMOA.Controllers
                 var empresas = altaEmpresaService.GetEmpresas();
                 foreach (var item in empresas)
                 {
-
-                    if (item.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                        || item.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                        || item.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                        || item.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                        )
-                    {
-                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
-                        if (result != null)
-                        {
-                            item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
-                        }
-                    }
-
                     item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
                     foreach (var item2 in item.HistorialAprobaciones)
                     {

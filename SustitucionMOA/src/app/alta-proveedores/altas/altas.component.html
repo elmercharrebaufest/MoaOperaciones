@@ -512,6 +512,14 @@
                         </mdb-stepper>
                     </div>
                     <div class="row">
+                        <div class="form-group align-right">
+                            <button [disabled]="listaArchivos.length === 0" type="button" class="btn-custom btn-mediano btn-add"
+                                (click)="descargarArchivos(empresaSeleccionada.Mail, empresaSeleccionada.Id)">
+                                Descargar Archivos
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-header" id="headingMolinos">

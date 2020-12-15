@@ -130,6 +130,7 @@ namespace SustitucionMOA.Controllers
                 string granosFlag = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsGranosFlagType).Value;
                 string tipoUsuario = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsTipoUsuarioType).Value;
                 string esNuevoUsuarioStr = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsNuevoUsuarioType).Value;
+                string seccionesVisitadas = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSeccionesVisitadas).Value;
 
                 bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
 
@@ -242,6 +243,7 @@ namespace SustitucionMOA.Controllers
                     noticias,
                     esNuevoUsuario,
                     redirectURL,
+                    seccionesVisitadas,
                 }, JsonRequestBehavior.AllowGet);
 
             }

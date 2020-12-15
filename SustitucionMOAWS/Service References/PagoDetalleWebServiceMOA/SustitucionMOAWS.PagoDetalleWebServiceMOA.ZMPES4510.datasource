@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="ZMPES4510" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>SustitucionMOAWS.PagoDetalleWebServiceMOA.ZMPES4510, SustitucionMOAWS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>SustitucionMOAWS.PagoDetalleWebServiceMOA.ZMPES4510, Service References.PagoDetalleWebServiceMOA.Reference.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

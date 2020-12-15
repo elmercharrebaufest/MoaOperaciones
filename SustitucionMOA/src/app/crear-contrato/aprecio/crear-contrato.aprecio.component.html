@@ -99,6 +99,26 @@
         <mensaje></mensaje>
         <fieldset class="fieldset">
             <label class="subtitulo">Condiciones Generales</label>
+            <div class="form-group col-md-12" *ngIf="isVisibleProveedor()">
+                <label for="Proveedorid" class="font-weight-bold">Proveedor</label>
+                <input [(ngModel)]="contrato.Proveedorid" class="form-control" type="hidden"
+                       id="proveedorinf" style="font-weight: 100 !important;">
+                <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
+                                 (selected)='selectEventProveedor($event)' [(ngModel)]="proveedor"
+                                 (inputChanged)='onChangeSearchProveedor($event)'
+                                 (inputFocused)='selectEventProveedor($event)' [itemTemplate]="itemTemplate2"
+                                 [notFoundText]="autocompleteNotFoundText"
+                                 [notFoundTemplate]="notFoundTemplate2">
+                </ng-autocomplete>
+
+                <ng-template #itemTemplate2 let-item>
+                    <a [innerHTML]="item.RazonSocial"></a>
+                </ng-template>
+
+                <ng-template #notFoundTemplate2 let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                </ng-template>
+            </div>
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="tipocontrato" class="font-weight-bold">Tipo de contrato</label>
@@ -107,7 +127,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="destino">Destiono</label>
+                    <label for="destino">Destino</label>
                     <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
@@ -116,16 +136,16 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="desde" class="font-weight-bold">Entrega Desde</label>
-                    <div class="styled-select input-group date form_datetime_Inicio" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_inicio"  (change)="changeMoneda($event)">
-                        <input type="text" value="{{fechaInicio}}" id="noCursor" readonly  (change)="changeMoneda($event)" />
+                    <div class="styled-select input-group date form_datetime_Inicio" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_inicio" (change)="changeMoneda($event)">
+                        <input type="text" value="{{fechaInicio}}" id="noCursor" readonly (change)="changeMoneda($event)" />
                         <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
-                    <input type="hidden" #dtp_input_inicio id="dtp_input_inicio"  value="{{fechaInicio}}"  (change)="changeMoneda($event)"/>
+                    <input type="hidden" #dtp_input_inicio id="dtp_input_inicio" value="{{fechaInicio}}" (change)="changeMoneda($event)" />
                 </div>
                 <div class="form-group col-md-6">
                     <label for="hasta">Entrega Hasta</label>
                     <div class="styled-select input-group date form_datetime_Fin" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_input_fin">
-                        <input type="text"  value="{{fechaFin}}" id="noCursor2" readonly />
+                        <input type="text" value="{{fechaFin}}" id="noCursor2" readonly />
                         <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                     </div>
                     <input type="hidden" #dtp_input_fin id="dtp_input_fin" value="{{fechaFin}}" />
@@ -134,14 +154,15 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="material">Material</label>
-                    <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId">
+                    <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId" (change)="onChangeMaterial($event)">
                         <option *ngFor="let item of materiales" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
 
                 </div>
                 <div class="form-group col-md-6">
                     <label for="camania">Campaña</label>
-                    <select class="form-control" name="campania" [(ngModel)]="contrato.CampanaId">
+                    <spinner-small #spinnerCampana></spinner-small>
+                    <select class="form-control" name="campania" [(ngModel)]="contrato.CampanaId" *ngIf="!this.spinnerCampana.visible">
                         <option *ngFor="let item of campanias" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -151,15 +172,25 @@
                     <label for="cantidad">Cantidad (Kg.)</label>
                     <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="precio">Precio</label>
-                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
-                </div>
+
                 <div class="form-group col-md-2">
                     <label for="moneda">Moneda</label>
-                    <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                    <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)" [disabled]="disablePrecio()">
                         <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="precio">Precio</label>
+                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
+                </div>
+            </div>
+            <div class="row" *ngIf="isVisiblePizarra()">
+                <div class="form-group col-md-offset-6 col-md-3" style="padding-left: 18px;">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.Pizarra" (change)="changePizarra($event)">
+                        <span class="slider round"></span>
+
+                    </label><label class="labelSwitch"> Pizarra</label>
                 </div>
             </div>
             <div class="row">
@@ -257,7 +288,7 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.CalidadTercero" >
+                            <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
                             <span class="slider round"></span>
 
                         </label><label class="labelSwitch"> Calidad</label>
@@ -273,7 +304,7 @@
                 <div class="form-group col-md-12">
                     <spinner></spinner>
 
-                    <button type="button" class="btn btn-info btn-lg" (click)="grabarContratoAPrecio()"
+                    <button type="button" class="btn btn-info btn-lg" (click)="grabarContratoAPrecio()" *ngIf="!this.spinnerComponent.visible"
                             style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
                         Grabar
                     </button>
@@ -286,4 +317,29 @@
 
     </section>
     <!--End CONTENT-->
+</div>
+
+<!-- Modal confirmar -->
+<a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal" style="display:none;">    Click    to Open Confirm Modal</a>
+<div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    El contrato se genero correctamente.
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="irACargas()">Aceptar</button>
+            </div>
+        </div>
+    </div>
 </div>

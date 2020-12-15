@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\SI_MPMF_MOAOP_CUENTA_CORRIENTEService.wsdl" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/ac474c3fcfe637ba8e782092ffd242f3" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_CUENTA_CORRIENTE.wsdl" MetadataType="Wsdl" ID="8e930dbb-60ed-41e1-a6ba-98bd20cc3d90" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/SI_MPMF_MOAOP_CUENTA_CORRIENTEService.wsdl" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_CUENTA_CORRIENTE.wsdl" MetadataType="Wsdl" ID="341f99d5-21a0-4d7e-b46b-7442b2dbdbc1" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/ac474c3fcfe637ba8e782092ffd242f3" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -323,6 +323,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                         this.getUsuario();
                         
                         document.getElementById("closeModal").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
 
                     }
                 },

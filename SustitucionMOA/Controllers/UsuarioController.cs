@@ -11,8 +11,10 @@ using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -175,6 +177,21 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [System.Web.Http.HttpGet]
+        public ActionResult SeccionVisitada(string seccion)
+        {
+            try
+            {
+                _usuarioService.SeccionVisitada(SessionPersister.getUsername(), seccion);
+                return new HttpStatusCodeResult(HttpStatusCode.OK);
+            }
+            catch(Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);

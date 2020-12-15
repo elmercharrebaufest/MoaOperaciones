@@ -122,7 +122,8 @@ namespace SustitucionMOAUtils.Email
                 {
                     From = new MailAddress(EmailConfig.getEmailAddFrom()),
                     Body = cuerpo,
-                    Subject = asunto
+                    Subject = asunto,
+                    IsBodyHtml = true,
                 };
                 foreach (string mail in enviarA)
                 {

@@ -23,6 +23,14 @@ export class LayoutService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    public seccionVisitada(seccion: string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('seccion', seccion);
+        return this.http
+            .get('/api/usuario/SeccionVisitada', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))) )
+    }
+
     public downloadProcedencia(contrato: string) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('contrato', contrato);

@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Entities
         public string Mail { get; set; }
         public string CUITRegistro { get; set; }
         public bool Habilitado { get; set; }
+        public string SeccionesVisitadas { get; set; }
 
         public virtual TipoUsuario TipoUsuario { get; set; }
 
@@ -55,7 +56,10 @@ namespace SustitucionMOAModel.Entities
             else
                 return Proveedores.FirstOrDefault();
         }
-
+        public Proveedor ObtenerProveedorPorCodigo(string codigoProveedor)
+        {
+            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).FirstOrDefault();
+        }
 
         public bool TieneProveedor(string codigoProveedor)
         {
@@ -70,7 +74,7 @@ namespace SustitucionMOAModel.Entities
 
         public string ObtenerRazonSocial()
         {
-            if (Proveedores.Count >= 1 )
+            if (Proveedores.Count >= 1)
             {
                 if (!string.IsNullOrEmpty(ObtenerProveedor().RazonSocial))
                     return ObtenerProveedor().RazonSocial;

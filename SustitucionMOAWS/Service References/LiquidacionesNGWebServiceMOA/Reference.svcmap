@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\NuevosWS\SI_MPMF_MOAOP_LIQUIDACIONES_NG.xml" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/55977b4a7cda38569e2ef33285a603b6" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_LIQUIDACIONES_NG.wsdl" MetadataType="Wsdl" ID="3af71b62-0aec-4acc-826a-8b366e320ab8" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/NuevosWS/SI_MPMF_MOAOP_LIQUIDACIONES_NG.xml" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_LIQUIDACIONES_NG.wsdl" MetadataType="Wsdl" ID="76ad10d6-518a-4036-b8c2-6b8908f7ed50" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/55977b4a7cda38569e2ef33285a603b6" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

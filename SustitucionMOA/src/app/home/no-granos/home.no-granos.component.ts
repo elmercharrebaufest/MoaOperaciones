@@ -3,6 +3,8 @@ import { HomeService, HomeNGService } from './../home.service';
 import { HomeComponent } from './../home.component';
 import { NavService } from './../../common/services/NavService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
+import { CarouselNotificacionesComponent } from '../../notificaciones/carousel-notificaciones/carousel-notificaciones.component';
+
 
 @Component({
     selector: 'app-home-no-granos',
@@ -11,6 +13,9 @@ import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.comp
     providers: [{ provide: HomeService, useClass: HomeNGService }]
 })
 export class HomeNGSComponent extends HomeComponent {
+    
+    @ViewChild(CarouselNotificacionesComponent)
+    protected carouselNotificaciones: CarouselNotificacionesComponent;
 
     setTabs() {
         this.setMenuSeccionTab("home-ngs", "");

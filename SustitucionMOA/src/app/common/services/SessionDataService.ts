@@ -16,6 +16,7 @@ export class SessionDataService {
     public tipoUsuario = new Subject<string>();
     public permisos = new Subject<any>();
     public noticias = new Subject<any>();
+    public seccionesVisitadas = new Subject<string>();
 
     username$ = this.username.asObservable();
     nombre$ = this.nombre.asObservable();
@@ -25,6 +26,7 @@ export class SessionDataService {
     tipoUsuario$ = this.tipoUsuario.asObservable();
     permisos$ = this.permisos.asObservable();
     noticias$ = this.noticias.asObservable();
+    seccionesVisitadas$ = this.seccionesVisitadas.asObservable();
 
     setUsername(value: string) {
         this.username.next(value);
@@ -32,6 +34,10 @@ export class SessionDataService {
 
     setNombre(value: string) {
         this.nombre.next(value);
+    }
+
+    setSeccionesVisitadas(value: string) {
+        this.seccionesVisitadas.next(value);
     }
 
     setProveedor(value: string) {
@@ -67,6 +73,7 @@ export class SessionDataService {
         this.setTipoUsuario("");
         this.setPermisos(null);
         this.setNoticias(null);
+        this.setSeccionesVisitadas("");
         sessionStorage.clear();
 
         let logoutURL = window.location.origin;

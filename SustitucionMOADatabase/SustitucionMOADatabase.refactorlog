@@ -28,4 +28,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Proveedor_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="ca2e51c3-d75d-498a-81d1-cdb213322dcc" ChangeDateTime="11/16/2020 14:21:01">
+    <Property Name="ElementName" Value="[dbo].[Notificacion].[Mensajee]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Notificacion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Mensaje" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="206f2746-1c1f-430d-b395-1c3d5739c9b6" ChangeDateTime="11/16/2020 14:21:49">
+    <Property Name="ElementName" Value="[dbo].[NotificacionRoles].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[NotificacionRoles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IdNotificacion" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="be9f43a5-3da9-45c2-8d27-ca409945aa7c" ChangeDateTime="11/16/2020 14:26:28">
+    <Property Name="ElementName" Value="[dbo].[TipoDeUsuarioNotificacion].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TipoDeUsuarioNotificacion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Notificacion_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7cbeeabb-ece7-49f7-8529-50d2d5f6e8a1" ChangeDateTime="11/16/2020 14:28:20">
+    <Property Name="ElementName" Value="[dbo].[TipoDeUsuarioNotificacion].[TipoDeUsuario_Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TipoDeUsuarioNotificacion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TipoUsuario_Id" />
+  </Operation>
 </Operations>

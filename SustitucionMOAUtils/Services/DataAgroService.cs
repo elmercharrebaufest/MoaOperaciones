@@ -290,6 +290,8 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
+            resultado = "El proveedor (CUIT: "+ proveedor.CUIT + ") ha sido habilitado para cargar la documentación.";
+
             return resultado;
         }
 

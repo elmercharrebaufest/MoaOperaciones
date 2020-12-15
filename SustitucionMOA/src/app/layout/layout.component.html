@@ -298,7 +298,7 @@
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/contrato/vigente')" href="#">
-                                    <!--data-toggle="tab">-->Contratos
+                                    <!--data-toggle="tab">-->Contratos 
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranosSelected()">
@@ -337,6 +337,30 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="misReportes">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                           href="#collapseRepo" aria-expanded="false" aria-controls="collapseRepo">
+                            Mis Cargas <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseRepo" class="collapse" aria-labelledby="misReportes" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/reporte/contrato')" href="#">
+                                    <!--data-toggle="tab">-->Contratos
+                                </a>
+                            </div>
+                            <!--<div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/reporte/cupo')" href="#">
+                                    Cupos
+                                </a>
+                            </div>-->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="infoFinanciera">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
@@ -376,6 +400,9 @@
                             </div>
                             <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
+                            </div>
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Contratos</a>
                             </div>
                             <div>
                                 <a (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
@@ -438,7 +465,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isAuthorized('ABM USUARIOS')">
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && (isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS'))">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseU" aria-expanded="false" aria-controls="collapseU">
@@ -457,7 +484,11 @@
                                     <!--data-toggle="tab">-->Altas Pendientes
                                 </a>
                             </div>
-
+                            <div *ngIf="isAuthorized('ABM NOTIFICACIONES')">
+                                <a (click)="goToSeccion('/notificaciones')" href="#">
+                                    Notificaciones
+                                </a>
+                            </div>
 
                         </div>
                     </div>
@@ -466,36 +497,36 @@
 
                 <!-- DEPRECADO! -->
                 <!-- <nav>
-                <ul class="nav">
-                    
-
-
-                    <li>
-                        <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
-                            (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
-                            href="#">
-                            data-toggle="tab">Aduana
-                        </a>
-                    </li>
-                    <li>
-                        <a class="animate " [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
-                            (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
-                            data-toggle="tab">RYD
-                        </a>
-                    </li>
-                    <li>
-                        <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
-                            (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
-                            href="#">
-                            data-toggle="tab">RYD Mantenimiento
-                        </a>
-                    </li>
+        <ul class="nav">
 
 
 
+            <li>
+                <a class="animate" [ngClass]="(isSelectedMenu('aduana')) ? 'active' : ''"
+                    (click)="goToSeccion('/aduana/pesada-online')" *ngIf="isAuthorized('CONSULTAR PESADAS')"
+                    href="#">
+                    data-toggle="tab">Aduana
+                </a>
+            </li>
+            <li>
+                <a class="animate " [ngClass]="(isSelectedMenu('ryd')) ? 'active' : ''"
+                    (click)="goToSeccion('/ryd/carga-pesada')" *ngIf="isAuthorized('REGISTRAR PESADA')" href="#">
+                    data-toggle="tab">RYD
+                </a>
+            </li>
+            <li>
+                <a class="animate" [ngClass]="(isSelectedMenu('ryd-mantenimiento')) ? 'active' : ''"
+                    (click)="goToSeccion('/ryd-mantenimiento/balanzas')" *ngIf="isAuthorized('ABM BALANZAS')"
+                    href="#">
+                    data-toggle="tab">RYD Mantenimiento
+                </a>
+            </li>
 
-                </ul>
-            </nav> -->
+
+
+
+        </ul>
+    </nav> -->
             </div>
         </div>
     </barra-nav>
@@ -510,22 +541,54 @@
     <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                 aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
-            aria-hidden="true"></i>{{mensajeSuccess}}</div>
+            aria-hidden="true"></i>{{mensajeSuccess}}
+    </div>
     <!-- Tab panes -->
-    <div class="SubMenu-wrapper" [hidden]="!tieneSecciones">
-        <div class="SubMenu myTab clearfix">
+    <div class="SubMenu-wrapper row">
+        <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
             <div class="tab-content ">
                 <div class="tab-pane fade active in" id="Inicio">
                     <ul class="nav">
                         <li *ngFor="let seccion of seccionList"><a class="animate"
                                 [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
                                 (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+                        
                     </ul>
                 </div>
             </div>
         </div>
+        
+        <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1" style="float: right;">
+            <div class="tooltipAyuda">
+                <img src="Content/images/buttons/information.svg"/>
+                <span>Ayuda</span>
+            </div>
+            <span class="tooltiptexto" aria-hidden="true">
+                {{this.textoTooltip}}
+                <br>
+                {{this.textoTooltip2}}
+            </span>
+        </div>
+
+        
+        <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1" style="float: right;">
+            <div class="tooltipAyuda">
+                <img src="Content/images/buttons/information.svg"/>
+                <span>Ayuda</span>
+            </div>
+            <span class="tooltiptextoPrimerLog" aria-hidden="true">
+                <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i class="glyphicon glyphicon-remove"></i></button>
+                <br>
+                {{this.textoTooltip}}
+                <br>
+                {{this.textoTooltip2}}
+            </span>
+        </div>
     </div>
+
     <!-- END Tab panes -->
+    
+    
     <router-outlet></router-outlet>
 </div>
 <header-user id="userSmall" style="display:none; margin-right: 25px;">

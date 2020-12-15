@@ -5,9 +5,11 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +24,15 @@ namespace SustitucionMOATest.Services
         private VendedorService target;
         private Mock<IRepositorio> repositorioMock;
         private Mock<IDataAgroService> dataAgroServiceMock;
+        private Mock<IVendedorHabilitadoConsumerMOA> vendedorHabilitadoConsumerMock;
 
         [SetUp]
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
             dataAgroServiceMock = new Mock<IDataAgroService>();
-            target = new VendedorService(repositorioMock.Object, dataAgroServiceMock.Object);
+            vendedorHabilitadoConsumerMock = new Mock<IVendedorHabilitadoConsumerMOA>();
+            target = new VendedorService(repositorioMock.Object, dataAgroServiceMock.Object, vendedorHabilitadoConsumerMock.Object);
         }
 
         public void GetVendedoresPendientesTest()
@@ -330,14 +334,14 @@ namespace SustitucionMOATest.Services
         public void GetVendedoresConUsuarioExistenteTest()
         {
             var mailUsuario = "existente@mail.com";
-            var proveedores = new List<Proveedor>() { 
-                new Proveedor { 
-                    CUIT = "23-102394598-7", 
-                    CodigoProveedor = "C12331234", 
-                    Mail = mailUsuario, 
+            var proveedores = new List<Proveedor>() {
+                new Proveedor {
+                    CUIT = "23-102394598-7",
+                    CodigoProveedor = "C12331234",
+                    Mail = mailUsuario,
                     RazonSocial = "Test SA",
                     UsuariosAsociados = new List<Usuario>()
-                } 
+                }
             };
             var usuario = new Usuario()
             {
@@ -426,6 +430,179 @@ namespace SustitucionMOATest.Services
             var ex = Assert.Throws<InfoCustomException>(() => target.GetVendedoresPendientes(mailUsuario, codigoProveedor: ""));
             Assert.AreEqual(ex.Message, respuesta);
             repositorioMock.Verify(x => x.Obtener<Usuario>(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.AtMost(2));
+        }
+
+
+        [Test]
+        public void GetVendedorStatusExistente()
+        {
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string CUIT = "23123464943";
+            string usuario = "";
+            response.status = "Habilitado";
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request(CUIT, "MOA", usuario)).Returns(response);
+
+            var result = target.GetVendedorStatus(CUIT, usuario);
+
+            Assert.AreEqual("Habilitado", result.status);
+        }
+
+        [Test]
+        public void GetVendedorStatusNoEncontrado()
+        {
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string CUIT = "23123464943";
+            string usuario = "";
+            response.status = "Habilitado";
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("1111111", "MOA", usuario)).Returns(response);
+
+            var respuesta = InfoMsg.ProveedorSinAlta;
+
+            var ex = Assert.Throws<InfoCustomException>(() => target.GetVendedorStatus(CUIT, usuario));
+            Assert.AreEqual(ex.Message, respuesta);
+        }
+
+        [Test]
+        public void GetVendedorStatusEstadoNoExistente()
+        {
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string CUIT = "23123464943";
+            string usuario = "";
+            response.status = "Proveedor inexistente";
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request(CUIT, "MOA", usuario)).Returns(response);
+
+            var respuesta = InfoMsg.ProveedorSinAlta;
+
+            var ex = Assert.Throws<InfoCustomException>(() => target.GetVendedorStatus(CUIT, usuario));
+            Assert.AreEqual(ex.Message, respuesta);
+        }
+
+        [Test]
+        public void GetVendedorStatusCUITVacio()
+        {
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string CUIT = "23123464943";
+            string usuario = "";
+            response.status = "Habilitado";
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request(CUIT, "MOA", usuario)).Returns(response);
+
+            var respuesta = string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT");
+
+            var ex = Assert.Throws<ValidationCustomException>(() => target.GetVendedorStatus("", usuario));
+            Assert.AreEqual(ex.Message, respuesta);
+        }
+
+        [Test]
+        public void GetVariosVendedoresStatus()
+        {
+            List<string> cuitsVendedores = new List<string>
+            {
+                "23123464943",
+                "30711160163"
+            };
+
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string usuario = "";
+            response.status = "Habilitado";
+
+            response.cabeceras = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle.Cabecera>
+            {
+                new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle.Cabecera
+                {
+                    proveedor = "Pepe",
+                    descripcion = "Lui"
+                }
+            };
+
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("23123464943", "MOA", usuario)).Returns(response);
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("30711160163", "MOA", usuario)).Returns(response);
+
+            var result = target.GetVariosVendedoresStatus(cuitsVendedores, usuario);
+
+            var expected = new List<EstadoVendedorDto>() {
+                new EstadoVendedorDto { CUIT = "23123464943", Estado = "Habilitado", CodigoProveedor ="Pepe", RazonSocial ="Lui" },
+                new EstadoVendedorDto { CUIT = "30711160163", Estado = "Habilitado", CodigoProveedor ="Pepe", RazonSocial ="Lui"  }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetVariosVendedoresStatusUnoInexistente()
+        {
+            List<string> cuitsVendedores = new List<string>
+            {
+                "23123464943",
+                "22222"
+            };
+
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string usuario = "";
+            response.status = "Habilitado";
+
+            response.cabeceras = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle.Cabecera>
+            {
+                new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle.Cabecera
+                {
+                    proveedor = "Pepe",
+                    descripcion = "Lui"
+                }
+            };
+
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("23123464943", "MOA", usuario)).Returns(response);
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("30711160163", "MOA", usuario)).Returns(response);
+
+            var result = target.GetVariosVendedoresStatus(cuitsVendedores, usuario);
+
+            var expected = new List<EstadoVendedorDto>() {
+                new EstadoVendedorDto { CUIT = "23123464943", Estado = "Habilitado", CodigoProveedor ="Pepe", RazonSocial ="Lui" },
+                new EstadoVendedorDto { CUIT = "22222", Estado =  InfoMsg.ProveedorSinAlta  }
+            };
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetVariosVendedoresStatusUnoInexistenteConException()
+        {
+            List<string> cuitsVendedores = new List<string>
+            {
+                "23123464943",
+                "30711160163"
+            };
+
+            VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoWSMOAResponse();
+
+            string usuario = "";
+            response.status = "Habilitado";
+
+            response.cabeceras = new List<SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle.Cabecera>
+            {
+                new SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle.Cabecera
+                {
+                    proveedor = "Pepe",
+                    descripcion = "Lui"
+                }
+            };
+
+            var cuitNoEncontradoException = new InfoCustomException("CUIT No Encontrado");
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("23123464943", "MOA", usuario)).Returns(response);
+            vendedorHabilitadoConsumerMock.Setup(x => x.Request("30711160163", "MOA", usuario)).Throws(cuitNoEncontradoException);
+
+            var result = target.GetVariosVendedoresStatus(cuitsVendedores, usuario);
+
+            var expected = new List<EstadoVendedorDto>() {
+                new EstadoVendedorDto { CUIT = "23123464943", Estado = "Habilitado", CodigoProveedor ="Pepe", RazonSocial ="Lui" },
+                new EstadoVendedorDto { CUIT = "30711160163", Estado = cuitNoEncontradoException.Message  }
+            };
+
+            Assert.AreEqual(expected, result);
         }
     }
 }
