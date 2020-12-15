@@ -24,6 +24,7 @@ import { Component, ViewChild } from '@angular/core';
 import { CrearContratoService } from './crear-contrato.service';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
+import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
 import { SessionDataService } from './../common/services/SessionDataService';
 import { SecurityService } from './../common/services/SecurityService';
@@ -203,6 +204,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     };
     CrearContratoBaseComponent.prototype.habilitaciones = function (contrato) {
         var _this = this;
+        this.spinnerCampana.showIt();
         this.unsubscribe();
         this.subscription = this.service.habilitaciones(contrato.MaterialId, contrato.TipoNegocioId).subscribe(function (result) {
             if (result.logout == true) {
@@ -264,7 +266,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     }
                 }
             }
+            _this.spinnerCampana.hideIt();
         }, function (error) {
+            _this.spinnerCampana.hideIt();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -436,6 +440,10 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         ViewChild(SpinnerComponent),
         __metadata("design:type", SpinnerComponent)
     ], CrearContratoBaseComponent.prototype, "spinnerComponent", void 0);
+    __decorate([
+        ViewChild("spinnerCampana"),
+        __metadata("design:type", SpinnerSmallComponent)
+    ], CrearContratoBaseComponent.prototype, "spinnerCampana", void 0);
     CrearContratoBaseComponent = __decorate([
         Component({
             selector: 'app-contrato',

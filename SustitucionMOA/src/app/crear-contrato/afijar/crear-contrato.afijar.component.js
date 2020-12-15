@@ -35,7 +35,6 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         _super.prototype.ngOnInit.call(this);
         this.obteneDatosContrato(this.contrato);
         this.contrato.CondicionFijacionId = 7;
-        document.getElementById("openModalConfirmModal").click();
     };
     CrearContratoAFijarComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();

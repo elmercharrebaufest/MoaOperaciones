@@ -1,7 +1,7 @@
 $("document").ready(function () {
   $("#emailVerificationControl_success_message").html(
     "Se ha enviado el código de verificación a su e-mail"
-  );
+    );
 
   $("input:radio").css("width", "10%");
   $("input:radio").each(function () {
@@ -44,20 +44,23 @@ $("document").ready(function () {
   $(".verificationInfoText").remove();
   $(".verificationSuccessText").remove();
   $(".verificationErrorText").remove();
-  $(".verificationControlContent > .buttons").prepend(
+
+    $(".verificationControlContent > .buttons").prepend(
     '<div class="verificationInfoText" role="alert">' + info + "</div>"
-  );
+    );
+
   $(".verificationControlContent > .buttons").prepend(
     '<div class="verificationSuccessText" role="alert">' + success + "</div>"
-  );
+    );
+    
   $(".verificationControlContent > .buttons").prepend(
     '<div class="verificationErrorText error" role="alert">' + error + "</div>"
   );
   $(".EmailBox > div").append(
     '<p class="info">Para continuar con el registro debe validar su e-mail</p>'
-  );
+    );
   $("#emailVerificationControl_success_message").text(
-    "Se ha enviado el código de verificación a su Bandeja de entrada. Ingréselo para continuar con el registro."
+    "Se ha enviado el código de verificación a su Bandeja de entrada. Ingréselo para continuar con el registro"
   );
   $("#claimVerificationServerError").text(
     "Ya existe un usuario con el e-mail especificado. Elija otro diferente."
@@ -71,6 +74,14 @@ $(#emailVerificationCode).addClass('input-error');
 $(#reenterPassword).addClass('input-error');
 $(#extension_CUIT ).addClass('input-error');
 */
+
+    var emailMensajeVerificacion = new MutationObserver(function () {
+        $("#emailVerificationControl_success_message").text(
+            "Se ha enviado el código de verificación a su Bandeja de entrada. Ingréselo para continuar con el registro."
+        );
+    });
+    var mensajeVerificacion = $("#emailVerificationControl_success_message")[0];
+    emailMensajeVerificacion.observe(mensajeVerificacion, { attributes: true });
 
   var observerMailRepetido = new MutationObserver(function () {
     $("#claimVerificationServerError").text(
