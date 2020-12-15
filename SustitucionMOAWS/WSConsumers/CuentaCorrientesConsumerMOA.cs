@@ -110,6 +110,7 @@ namespace SustitucionMOAWS.WSConsumers
                     docNo = cuentaCorrienteInfo.DOC_NO,
                     fecVto = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.FEC_VTO),
                     fiscYear = cuentaCorrienteInfo.FISC_YEAR,
+                    saldo = cuentaCorrienteInfo.SALDO,
                     haber = cuentaCorrienteInfo.HABER,
                     importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
                     ukurs= cuentaCorrienteInfo.UKURS,
