@@ -34,17 +34,17 @@ namespace SustitucionMOAUtils.Services
             {
                 if (proveedor == null || proveedor == "")
                 {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Proveedor"));
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Proveedor"));
                 }
 
                 VendedorDetalleWSMOAResponse responseVendedorDetalle = new VendedorDetalleConsumerMOA().request(proveedor, proveedor);
                 if (responseVendedorDetalle == null)
                 {
-                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", proveedor));
+                    throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Proveedor", proveedor));
                 }
 
                 if (responseVendedorDetalle.error != null && responseVendedorDetalle.error != "" && responseVendedorDetalle.error != "11" && responseVendedorDetalle.error != "00")
-                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Datos Fiscales", "Proveedor: " + proveedor));
+                    throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Datos Fiscales", "Proveedor: " + proveedor));
 
                 DataAgroAuthWSMOAResponse responseDataAgroAuth = (DataAgroAuthWSMOAResponse)new DataAgroAuthConsumerMOA().request(Int64.Parse(responseVendedorDetalle.cabeceras[0].cuit), nombre);
 
@@ -107,18 +107,18 @@ namespace SustitucionMOAUtils.Services
                                 Proveedor_Id = proveedor.Id,
                                 Usuario_Id = usuario.Id,
                                 EstadoAprobacion = proveedor.EstadoAprobacion,
-                                Observacion = "El mail no coincide con el registrado en Data Agro"
+                                Observacion = "El mail del registro no coincide con el del proveedor."
                             };
                             repositorio.Agregar(hist);
 
-                            proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
+                            proveedor.Observaciones = "El mail del registro no coincide con el del proveedor. Comunicarse con su comercial.";
                         }
                     }
                     else
                     {
                         Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                         usuario.Roles.Add(rolDesabilitado);
-                        proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                        proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
 
                         var hist = new ProveedorHistorialAprobacion
                         {
@@ -137,7 +137,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
-                    proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                    proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
 
                     var hist = new ProveedorHistorialAprobacion
                     {
@@ -210,12 +210,12 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
-                    proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
+                    proveedor.Observaciones = "El mail del registro no coincide con el del proveedor. Comunicarse con su comercial.";
                 }
             }
             else
             {
-                proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
                 proveedor.Observaciones = "El mail del registro no se encuentra habilitado. Comunicarse con su comercial.";
             }
         }
@@ -231,6 +231,7 @@ namespace SustitucionMOAUtils.Services
             }
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
             var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+
             var hist = new ProveedorHistorialAprobacion
             {
                 Fecha = DateTime.Now,
@@ -238,6 +239,7 @@ namespace SustitucionMOAUtils.Services
                 Usuario_Id = usuarioId,
                 EstadoAprobacion = proveedor.EstadoAprobacion,
             };
+
             if (respuesta.HayError)
             {
                 hist.Observacion = respuesta.ListaErrores.First().Message;
@@ -256,7 +258,6 @@ namespace SustitucionMOAUtils.Services
 
             hist.Observacion = "Proveedor habilitado en DataAgro";
 
-            proveedor.HistorialAprobaciones.Add(hist);
             proveedor.Comercial = string.Concat(respuesta.ComercialNombres, " ", respuesta.ComercialApellido);
             proveedor.IdComercialDataAgro = respuesta.ComercialId;
             proveedor.IdDataAgro = respuesta.ProveedorId;
@@ -271,11 +272,18 @@ namespace SustitucionMOAUtils.Services
 
             if (respuesta.ProveedorOperando)
             {
-                resultado = "El proveedor ha sido habilitado en estado 'Aprobado' debido a que tenía contratos. De tratarse de un usuario nuevo recuerde actualizar los roles. ";
+                resultado = "El proveedor ha sido habilitado en estado 'Aprobado' debido a que tenía contratos. De tratarse de un usuario nuevo recuerde actualizar los roles.";
                 proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
+
+                proveedor.HistorialAprobaciones.Clear();
+
+                var historiales = repositorio.Listar<ProveedorHistorialAprobacion>(h => h.Proveedor_Id == proveedor.Id);
+
+                repositorio.RemoverTodos(historiales);
             }
             else 
             {
+                proveedor.HistorialAprobaciones.Add(hist);
                 resultado = "El proveedor ha sido habilitado para cargar la documentación.";
                 proveedor.EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
             }
