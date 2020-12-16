@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\SI_MPMF_MOAOP_VENDED_HABILITService.wsdl" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/2c3e0f45f64f37a28c141bbea8455a11" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_VENDED_HABILIT.wsdl" MetadataType="Wsdl" ID="e1234692-5f81-4c85-903b-b3585e4a9da8" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/SI_MPMF_MOAOP_VENDED_HABILITService.wsdl" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_VENDED_HABILIT.wsdl" MetadataType="Wsdl" ID="bc623c41-30f1-465d-a2e1-0ac448328cf3" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/2c3e0f45f64f37a28c141bbea8455a11" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

@@ -40,16 +40,18 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <table *ngIf="isVisible()" id="tableModal"
-                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
-                       cellspacing="0" role="grid" aria-describedby="tableModal_info"
-                       style="width: 100%; padding:10px 0; background: white !important;">
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                    style="width: 100%; padding:10px 0; background: white !important;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
                                 Codigo<div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -57,8 +59,10 @@
                                 CUIT
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -66,8 +70,10 @@
                                 Razon Social
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -75,8 +81,10 @@
                                 Corredor
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocialCorredor' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -84,8 +92,10 @@
                                 Comercial
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -93,8 +103,10 @@
                                 SISA
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SISAEstadoCuit' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -102,8 +114,10 @@
                                 Estado Siper
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -111,8 +125,10 @@
                                 Ultima Edición
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -120,8 +136,10 @@
                                 Fecha Solicitud
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -130,8 +148,10 @@
                                 Estado
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -144,10 +164,10 @@
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
-                                ; let odd = odd" role="row" [class.odd]="!odd"
-                           tabindex="0" (click)="copiar(empresa.Mail,empresa.Id)"
-                            id="h{{empresa.Id}}" data-toggle="popover" data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"  data-content="Mail Copiado al portapapeles"
-                            >
+                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0"
+                            (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}" data-toggle="popover"
+                            data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"
+                            data-content="Mail Copiado al portapapeles">
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial || "-"}}</td>
@@ -164,17 +184,17 @@
 
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
                             <td>
-                                <button *ngIf="empresa.EstadoAprobacion != 3" type="button"
-                                        style="width: 70px;font-size: 12px;" class="btn-custom btn-add btn-chico"
-                                        (click)="abrirModal(empresa)">
+                                <button *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11"
+                                    type="button" style="width: 70px;font-size: 12px;"
+                                    class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
                                     Ver
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton"
-                                        data-toggle="modal" data-target="#myModal"></button>
+                                    data-toggle="modal" data-target="#myModal"></button>
 
-                                <button *ngIf="empresa.EstadoAprobacion === 3" type="button"
-                                        style="width: 70px;font-size: 12px;" class="btn-custom btn-add btn-chico"
-                                        (click)="VerificarEstadoDataAgro(empresa)">
+                                <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
+                                    type="button" style="width: 70px;font-size: 12px;"
+                                    class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
                                     Verificar DataAgro
                                 </button>
                             </td>
@@ -184,15 +204,15 @@
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
                             <a class="paginate_button current"
-                               *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
                         </span>
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                           [class.disabled]="pT.isLastPage()">
+                            [class.disabled]="pT.isLastPage()">
                             Siguiente
                         </a>
                     </div>
@@ -490,6 +510,14 @@
                                 </mdb-step>
                             </div>
                         </mdb-stepper>
+                    </div>
+                    <div class="row">
+                        <div class="form-group align-right">
+                            <button [disabled]="listaArchivos.length === 0" type="button" class="btn-custom btn-mediano btn-add"
+                                (click)="descargarArchivos(empresaSeleccionada.Mail, empresaSeleccionada.Id)">
+                                Descargar Archivos
+                            </button>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="accordion" id="accordionExample">

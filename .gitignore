@@ -271,3 +271,7 @@ SustitucionMOADatabase/SustitucionMOADatabase.jfm
 /SustitucionMOA/OLD
 /SustitucionMOA/dist
 /SustitucionMOA/.vscode/*
+
+
+/SustitucionMOA/src/**/*.js
+/SustitucionMOA/src/**/*.map

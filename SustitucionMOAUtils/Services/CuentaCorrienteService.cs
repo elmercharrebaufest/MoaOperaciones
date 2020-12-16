@@ -95,7 +95,7 @@ namespace SustitucionMOAUtils.Services
 
                 ValidarRespuesta(data);
 
-                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
+                return ExcelExport.ToExcel(data.cuentasCorrientes, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Moneda", "Importe [ARS]", "Saldo", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Movimientos");
             }
             catch (InfoCustomException)
             {
@@ -123,12 +123,42 @@ namespace SustitucionMOAUtils.Services
                 ValidarRespuesta(data);
                 List<CuentaCorrienteAgrupada> list = new List<CuentaCorrienteAgrupada>();
 
-                if (data.cuentasCorrientesSinAgrupar != null)
-                    list.Add(data.cuentasCorrientesSinAgrupar);
-
                 list.AddRange(data.cuentasCorrientesAgrupadas);
                 
                 return ExcelExport.ToExcelCuentaCorrienteAgrupada(list, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Saldo", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Cuenta Corriente");
+
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+
+            //return "";
+        }
+
+        public string DownloadCuentasCorrientesPartidasAbiertas(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
+        {
+            try
+            {
+                FechaWS fechas = CommonService.toDate(fechaInicio, fechaFin);
+
+                CuentaCorrienteAgrupadaExcelWSMOAResponse data = (CuentaCorrienteAgrupadaExcelWSMOAResponse)new CuentaCorrientesAgrupadaExcelConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
+                ValidarRespuesta(data);
+                List<CuentaCorrienteAgrupada> list = new List<CuentaCorrienteAgrupada>();
+
+                if (data.cuentasCorrientesSinAgrupar != null)
+                    list.Add(data.cuentasCorrientesSinAgrupar);
+
+
+                return ExcelExport.ToExcelCuentaCorrientePartidasAbiertas(list, new string[] { "Fecha Documento", "Fecha Vencimiento", "Nro. Documento", "Descripcion", "Contrato", "Tipo Cambio", "Debe", "Haber", "Saldo", "Moneda", "Importe [ARS]", "Agrupador", "Doc. Pago", "Nro. Comprobante", "Periodo Fiscal" }, "Reporte Cuenta Corriente");
 
             }
             catch (InfoCustomException)

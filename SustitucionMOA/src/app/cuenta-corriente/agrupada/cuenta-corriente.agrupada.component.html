@@ -7,15 +7,16 @@
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                    *ngIf="!this.spinnerSmallComponent.visible">
-                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                   *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate align-right">
+                        Exportar <img src="Content/images/buttons/EXPORT.svg" />
                     </div>
                 </a>
             </div>
         </div>
         <!--End Title-->
         <!--Search-->
-        <div class="row  myRow firstSection mySearch">
+        <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Refinar resultados</title-caps>
@@ -28,7 +29,7 @@
                     Por N&deg; Legal:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="filtroNroLegal"
-                            (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
+                               (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="showSearch" onClick="openSearch()">
@@ -45,6 +46,7 @@
                 </div>
             </div>
         </div>
+          
         <!--Aplicaciones-->
         <div class="row myRow">
             <div class="clearfix myTables">
@@ -74,7 +76,7 @@
                             <th tabindex="0" rowspan="1" colspan="1">Importe AR$</th>
                         </tr>
                     </thead>
-                    <tbody *ngIf="isSinAgruparVisible()">
+                    <!--<tbody *ngIf="isSinAgruparVisible()">
                         <tr *ngFor="let cuentaCorrienteElemSA of data.cuentasCorrientesSinAgrupar.cuentasCorrientes | customFilter : 'xblnr' : filtroNroLegal"
                             role="row">
                             <td tabindex="0"><a
@@ -101,7 +103,7 @@
                                 {{data.cuentasCorrientesSinAgrupar.total}}
                             </td>
                         </tr>
-                    </tbody>
+                    </tbody>-->
                     <ng-container *ngIf="isAgrupadasVisible()">
                         <ng-container
                             *ngFor="let cuentaCorrienteA of data.cuentasCorrientesAgrupadas | slice:0:itemsEnPantalla | customFilterContain: 'cuentasCorrientes' : 'xblnr' : filtroNroLegal">

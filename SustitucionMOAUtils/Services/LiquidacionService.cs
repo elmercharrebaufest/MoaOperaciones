@@ -515,6 +515,5 @@ namespace SustitucionMOAUtils.Services
             if (data.error != null && data.error != "" && data.error != "00")
                 throw new ValidationCustomException(data.error);
         }
-
     }
 }

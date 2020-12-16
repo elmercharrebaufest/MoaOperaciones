@@ -1,1 +1,0 @@
-{"version":3,"file":"informeComercial.js","sourceRoot":"","sources":["informeComercial.ts"],"names":[],"mappings":"AAEA,OAAO,EAAE,iBAAiB,EAAE,MAAM,qBAAqB,CAAC;AAExD;IAsBI;QACI,IAAI,CAAC,YAAY,GAAG,IAAI,KAAK,EAAmB,CAAC;QACjD,IAAI,CAAC,aAAa,GAAG,IAAI,KAAK,EAAe,CAAC;QAC9C,IAAI,CAAC,iBAAiB,GAAG,IAAI,iBAAiB,EAAE,CAAC;IACrD,CAAC;IACL,uBAAC;AAAD,CAAC,AA3BD,IA2BC"}

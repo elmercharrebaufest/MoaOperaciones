@@ -37,6 +37,6 @@
     public ObservacionTercero: string;
 
     constructor() {
-
+        this.TipoNegocioId = 1;
     }
 }

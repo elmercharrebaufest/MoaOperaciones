@@ -1,0 +1,305 @@
+﻿<style>
+    .fieldset {
+        max-width: 650px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 2px 2px #88888854;
+        padding: 20px;
+        margin-top: 15px;
+    }
+
+    .subtitulo {
+        box-sizing: border-box;
+        color: blue;
+        display: table;
+        max-width: 100%;
+        padding: 0;
+        white-space: normal;
+        font-weight: 600 !important;
+        font-size: large;
+    }
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 28px;
+        background-color: transparent !important;
+        margin: 0 !important;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .labelSwitch {
+        top: 5px;
+        position: relative;
+        margin-left: 7px;
+    }
+</style>
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Crear <strong>Fijacion</strong> </div>
+        </div>
+        <mensaje></mensaje>
+        <fieldset class="fieldset">
+            <label class="subtitulo">Condiciones Generales</label>
+            <div class="form-group col-md-12" *ngIf="isVisibleProveedor()">
+                <label for="Proveedorid" class="font-weight-bold">Proveedor</label>
+                <input [(ngModel)]="contrato.Proveedorid" class="form-control" type="hidden"
+                       id="proveedorinf" style="font-weight: 100 !important;">
+                <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
+                                 (selected)='selectEventProveedor($event)' [(ngModel)]="proveedor"
+                                 (inputChanged)='onChangeSearchProveedor($event)'
+                                 (inputFocused)='selectEventProveedor($event)' [itemTemplate]="itemTemplate2"
+                                 [notFoundText]="autocompleteNotFoundText"
+                                 [notFoundTemplate]="notFoundTemplate2">
+                </ng-autocomplete>
+
+                <ng-template #itemTemplate2 let-item>
+                    <a [innerHTML]="item.RazonSocial"></a>
+                </ng-template>
+
+                <ng-template #notFoundTemplate2 let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                </ng-template>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="tipocontrato" class="font-weight-bold">Tipo de contrato</label>
+                    <select class="form-control" name="tipocontrato" readonly disabled>
+                        <option value="3" selected>Fijacion</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="destino">Destino</label>
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
+                        <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="material">Material</label>
+                    <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId" (change)="onChangeMaterial()">
+                        <option *ngFor="let item of materiales" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label for="contato">Contrato</label>
+                    <input [(ngModel)]="contrato.ContratoId" class="form-control" type="hidden"
+                           id="contratoinf" style="font-weight: 100 !important;">
+                    <ng-autocomplete [data]="pendientesFijar" [searchKeyword]="keyword3"
+                                     (selected)='selectEventContratoId($event)' [(ngModel)]="pendienteFijar"
+                                     (inputChanged)='onChangeSearchContratoId($event)'
+                                     (inputFocused)='selectEventContratoId($event)' [itemTemplate]="itemTemplate3"
+                                     [notFoundText]="autocompleteNotFoundText"
+                                     [notFoundTemplate]="notFoundTemplate2">
+                    </ng-autocomplete>
+
+                    <ng-template #itemTemplate3 let-item>
+                        <a [innerHTML]="item.Filtro"></a>
+                    </ng-template>
+
+                    <ng-template #notFoundTemplate3 let-notFound>
+                        <div [innerHTML]="notFound"></div>
+                    </ng-template>
+
+                </div>
+            </div>
+            <div class="row center-block" *ngIf="isVisibleContratoDetalle()">
+
+
+                <label class="col-md-3 text-center">Kgs Pendientes</label>
+                <label class="col-md-3 text-center">Aplicados</label>
+                <label class="col-md-3 text-center">Desde</label>
+                <label class="col-md-3 text-center">Hasta</label>
+
+                <span class="col-md-3 text-center">{{pendienteFijar.KilosPendiente}}</span>
+                <span class="col-md-3 text-center">{{pendienteFijar.KilosAplicados}}</span>
+                <span class="col-md-3 text-center">{{pendienteFijar.FechaDesde}}</span>
+                <span class="col-md-3 text-center">{{pendienteFijar.FechaHasta}}</span>
+
+
+
+                <div id="impo-a-precio">
+                    <label class="col-md-3 text-center">Bonif a Precio</label>
+                </div>
+                <div id="impo-sobre-precio">
+                    <label class="col-md-3 text-center">Bonif Sobre Precio</label>
+                </div>
+                <div id="porcenteaje-a-precio">
+                    <label class="col-md-3 text-center">Porc. a Precio</label>
+                </div>
+                <div id="porcenteaje-sobre-precio">
+                    <label class="col-md-3 text-center">Porc. Sobre Precio</label>
+                </div>
+
+                <div id="impo-a-precio">
+                    <span class="col-md-3 text-center">{{pendienteFijar.ImporteAPrecio}} {{pendienteFijar.MonedaAPrecio}}</span>
+                </div>
+                <div id="impo-sobre-precio">
+                    <span class="col-md-3 text-center">{{pendienteFijar.ImporteSobrePrecio}} {{pendienteFijar.MonedaSobrePrecio}}</span>
+                </div>
+                <div id="porcenteaje-a-precio">
+                    <span class="col-md-3 text-center">{{pendienteFijar.PorcentajeAPrecio}}</span>
+                </div>
+                <div id="porcenteaje-sobre-precio">
+                    <span class="col-md-3 text-center">{{pendienteFijar.PorcentajeSobrePrecio}}</span>
+                </div>
+
+                <div>
+                    <div class="col-md-12">
+                        <label style="padding:0;">
+                            Cond fijacion:
+                        </label>
+                        <span>{{pendienteFijar.CondicionFijacionDescripcion}}</span>
+                    </div>
+                    <div class="col-md-12">
+                        <label style="padding:0;">
+                            Cond Pago:
+                        </label>
+                        <span>{{pendienteFijar.CondicionPagoDescripcion}}</span>
+                    </div>
+                </div>
+                <br />
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="cantidad">Cantidad (Kg.)</label>
+                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="moneda">Moneda</label>
+                    <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)" [disabled]="disablePrecio()">
+                        <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="precio">Precio</label>
+                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
+                </div>
+                <div class="form-group col-md-2" *ngIf="isVisiblePizarra()">
+                    <label class=""> Pizarra</label><label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.Pizarra" (change)="changePizarra($event)">
+                        <span class="slider round"></span>
+
+                    </label>
+
+                </div>
+            </div>
+
+
+
+            <label class="subtitulo"> </label>
+            <div class="row">
+
+                <div class="col-md-12">
+                    <label for="ObservacionTercero">Observaciones</label>
+                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <spinner></spinner>
+                    <button type="button" class="btn btn-info btn-lg" (click)="grabarContratoFijacion()" *ngIf="!this.spinnerComponent.visible"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                        Grabar
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+
+
+
+
+    </section>
+    <!--End CONTENT-->
+</div>
+
+<!-- Modal confirmar -->
+<a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal" style="display:none;">    Click    to Open Confirm Modal</a>
+<div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    El contrato se genero correctamente.
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="irACargas()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

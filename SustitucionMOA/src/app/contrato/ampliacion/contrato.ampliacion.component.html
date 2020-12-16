@@ -109,6 +109,15 @@
                                     </span>
                                 </div>   
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Pactado')">
+                                Pactado
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Pactado' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Pactado' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>      
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ampliado')">
                                 Ampliado
                                 <div>

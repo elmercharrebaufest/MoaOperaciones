@@ -16,6 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ArchivoDto> ObtenerArchivosSubidos(string mail, int proveedorId, bool esOperador);
         string EnviarSolicitudUsuario(string mail, int proveedorId, AltaEmpresaViewModel altaEmpresa);
         string ObtenerArchivo(string mail, int archivoID, int proveedorId);
+        string ObtenerArchivos(string mail, int proveedorId, string pathBase);
         string EliminarArchivo(string mail, int archivoID, int proveedorId);
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId);
         AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId);

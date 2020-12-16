@@ -86,6 +86,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                cuit = cuit.Replace("-", "");
                 return JsonCustom(new { data = _vendedorService.GetVendedorStatus(cuit, SessionPersister.Proveedor) });
             }
             catch (InfoCustomException e)
@@ -108,6 +109,36 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_VENDEDOR_STATUS)]
+        public ActionResult GetVariosVendedoresStatus(string cuitStr)
+        {
+            try
+            {
+                cuitStr = cuitStr.Replace("-", "");
+                List<string> cuitVendedores = cuitStr.Split(',').ToList();
+
+                return JsonCustom(new { data = _vendedorService.GetVariosVendedoresStatus(cuitVendedores, SessionPersister.Proveedor) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_VENDEDOR_PENDIENTES)]
         public ActionResult GetVendedoresPendientes()

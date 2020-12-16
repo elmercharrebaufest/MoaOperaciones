@@ -54,7 +54,7 @@ var ContratoBaseComponent = /** @class */ (function (_super) {
             new Seccion('/contrato/vigente', 'contrato', 'Vigentes'),
             new Seccion('/contrato/fijacion', 'contrato', 'Fijaciones'),
             new Seccion('/contrato/ampliacion', 'contrato', 'Ampliaciones'),
-            new Seccion('/contrato/anulacion', 'contrato', 'Anulaciones'),
+            new Seccion('/contrato/anulacion', 'contrato', 'Anulaciones')
         ]);
         this.getData();
     };

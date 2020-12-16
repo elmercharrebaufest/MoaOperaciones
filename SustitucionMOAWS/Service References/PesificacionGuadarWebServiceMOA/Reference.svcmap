@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Martin\Desktop\Molinos\guardar.xml" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/aa6a1a5c7ff732ac967e71df626000e9" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_GUARDAR_PESIF.wsdl" MetadataType="Wsdl" ID="c098bf85-0cf0-47e3-8134-5e57e9b182ed" SourceId="1" SourceUrl="file:///C:/Users/Martin/Desktop/Molinos/guardar.xml" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_GUARDAR_PESIF.wsdl" MetadataType="Wsdl" ID="fca92cae-1fc4-413a-a93f-61a7cf752c4b" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/aa6a1a5c7ff732ac967e71df626000e9" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

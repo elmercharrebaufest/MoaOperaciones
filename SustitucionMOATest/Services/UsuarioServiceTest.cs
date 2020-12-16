@@ -93,10 +93,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.HabilitarUsuario(mailUsuario);
 
-
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-
-
 
             var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
@@ -152,7 +149,6 @@ namespace SustitucionMOATest.Services
                   TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
                   Proveedores = new List<Proveedor> { proveedor }
               });
-
 
             repositorioMock
                     .Setup(y => y.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
@@ -223,6 +219,34 @@ namespace SustitucionMOATest.Services
             vendedorServiceMock.Verify(x => x.GetVendedores(It.IsAny<string>()), Times.Once);
 
             Assert.AreEqual(result, respuesta);
+        }
+
+        [Test]
+        public void SeccionVisitadaTest()
+        {
+            var mailUsuario = "existente@mail.com";
+
+            repositorioMock
+              .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+              .Returns(new Usuario
+              {
+                  Id = 1,
+                  Mail = mailUsuario,
+                  Roles = new List<Rol> { new Rol { Nombre = "DESHABILITADO EN DATAAGRO", Codigo = "DDAG", EsEditable = true } },
+                  TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
+                  SeccionesVisitadas = "descargas-prueba",
+              }) ;
+
+            var expected = "descargas-prueba-noEstaba";
+
+            target.SeccionVisitada(mailUsuario, "noEstaba");
+
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+
+            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            Assert.AreEqual(expected, resultUser.SeccionesVisitadas);
         }
     }
 }

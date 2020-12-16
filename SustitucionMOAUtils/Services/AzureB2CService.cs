@@ -27,7 +27,7 @@ namespace SustitucionMOAUtils.Services
 
         public Usuario LoguearUsuario(string mail, string CUIT, string granosFlag)
         {
-            Usuario usuario = new Usuario { Mail = mail, CUITRegistro = CUIT };
+            Usuario usuario = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
 
             if (ExisteUsuario(usuario))
             {
@@ -50,14 +50,14 @@ namespace SustitucionMOAUtils.Services
             switch (granosFlag.ToLower())
             {
                 case "granos":
-                    UsuarioGranos usuarioGranos = new UsuarioGranos { Mail = mail, CUITRegistro = CUIT };
+                    UsuarioGranos usuarioGranos = new UsuarioGranos { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
 
                     RegistrarUsuarioGranos(ref usuarioGranos);
                     usuario = usuarioGranos;
                     break;
 
                 case "no granos":
-                    Usuario usuarioNoGranos = new Usuario { Mail = mail, CUITRegistro = CUIT };
+                    Usuario usuarioNoGranos = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
 
                     usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
                     RegistrarUsuarioGenerico(ref usuarioNoGranos);
@@ -66,7 +66,7 @@ namespace SustitucionMOAUtils.Services
                     break;
 
                 case "ambos":
-                    Usuario usuarioAmbos = new Usuario { Mail = mail, CUITRegistro = CUIT };
+                    Usuario usuarioAmbos = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
 
                     usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("A");
 
@@ -76,7 +76,7 @@ namespace SustitucionMOAUtils.Services
                     break;
 
                 case "corredor":
-                    Usuario usuarioCorredor = new Usuario { Mail = mail, CUITRegistro = CUIT };
+                    Usuario usuarioCorredor = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
 
                     RegistrarUsuarioCorredor(ref usuarioCorredor);
 
@@ -84,7 +84,7 @@ namespace SustitucionMOAUtils.Services
                     break;
 
                 case "cliente":
-                    Usuario usuarioCliente = new Usuario { Mail = mail, CUITRegistro = CUIT };
+                    Usuario usuarioCliente = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
 
                     usuarioCliente.TipoUsuario = ObtenerTipoPorNombreCorto("CLI");
 
@@ -195,7 +195,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Rol rolDesabilitado = ObtenerRolPorCodigo("DDAG");
                     usuario.Roles.Add(rolDesabilitado);
-                    proveedor.EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro;
+                    proveedor.EstadoAprobacion = EstadoAprobacion.SinAlta;
 
                     var hist = new ProveedorHistorialAprobacion
                     {

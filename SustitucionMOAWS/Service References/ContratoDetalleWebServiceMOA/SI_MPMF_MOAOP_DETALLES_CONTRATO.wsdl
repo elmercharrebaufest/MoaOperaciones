@@ -483,7 +483,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="PRODUCTO">
             <xsd:annotation>
-              <xsd:documentation>Material Description (Short Text)</xsd:documentation>
+              <xsd:documentation>Material Description</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -857,7 +857,7 @@
           <xsd:element minOccurs="0" name="CALIFICACION">
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="20" />
+                <xsd:maxLength value="25" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
@@ -972,7 +972,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="VENDEDOR">
             <xsd:annotation>
-              <xsd:documentation>Vendor Account Number</xsd:documentation>
+              <xsd:documentation>Vendor's account number</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -1254,7 +1254,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="BRUTO">
             <xsd:annotation>
-              <xsd:documentation>Amount in Document Currency</xsd:documentation>
+              <xsd:documentation>Amount in document currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -1265,7 +1265,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="IVA">
             <xsd:annotation>
-              <xsd:documentation>Amount in Document Currency</xsd:documentation>
+              <xsd:documentation>Amount in document currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -1287,7 +1287,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="NETO">
             <xsd:annotation>
-              <xsd:documentation>Amount in Document Currency</xsd:documentation>
+              <xsd:documentation>Amount in document currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -1343,10 +1343,10 @@
   </wsdl:binding>
   <wsdl:service name="SI_MPMF_MOAOP_DETALLES_CONTRATOService">
     <wsdl:port name="HTTP_Port" binding="p1:SI_MPMF_MOAOP_DETALLES_CONTRATOBinding">
-      <address location="http://gvicpiqa01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </wsdl:port>
     <wsdl:port name="HTTPS_Port" binding="p1:SI_MPMF_MOAOP_DETALLES_CONTRATOBinding">
-      <address location="https://gvicpiqa01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

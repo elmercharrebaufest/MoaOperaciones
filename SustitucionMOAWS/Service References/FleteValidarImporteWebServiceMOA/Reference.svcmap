@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\SI_MPMF_MOAOP_VAL_IMPORTE.xml" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/751eb47c300e39f79de51bd5129a4dbd" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_VAL_IMPORTE.wsdl" MetadataType="Wsdl" ID="4ae0c4d4-61dd-4bc6-aa67-b831f9d1534d" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/SI_MPMF_MOAOP_VAL_IMPORTE.xml" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_VAL_IMPORTE.wsdl" MetadataType="Wsdl" ID="3d90f72f-5299-4d53-aee7-971850ac2687" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/751eb47c300e39f79de51bd5129a4dbd" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

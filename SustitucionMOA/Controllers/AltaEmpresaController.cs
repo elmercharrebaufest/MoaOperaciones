@@ -36,20 +36,6 @@ namespace SustitucionMOA.Controllers
                 var empresas = altaEmpresaService.GetEmpresas();
                 foreach (var item in empresas)
                 {
-
-                    if (item.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                        || item.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                        || item.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                        || item.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                        )
-                    {
-                        ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(item.CUIT);
-                        if (result != null)
-                        {
-                            item.SISAEstadoCuit = result.ProveedorSISAEstadoCuit;
-                        }
-                    }
-
                     item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
                     foreach (var item2 in item.HistorialAprobaciones)
                     {
@@ -105,7 +91,8 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString())
+                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString())
                 };
                 List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
                 {

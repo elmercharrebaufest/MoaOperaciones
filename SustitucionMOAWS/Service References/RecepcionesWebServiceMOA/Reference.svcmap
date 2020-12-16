@@ -19,10 +19,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="C:\Users\Lucs\Desktop\Z_MPMF_MOAOP_RECEPCIONES.xml" Protocol="file" SourceId="1" />
+    <MetadataSource Address="http://GSLOPIDEVQA00.molinosagro.ad:50000/dir/wsdl?p=ic/551418cc7e353b28927c4ad2e6bc28b8" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MPMF_MOAOP_RECEPCIONES.wsdl" MetadataType="Wsdl" ID="ed1ba9bb-6f3f-4bc6-93ad-40a1b0df610e" SourceId="1" SourceUrl="file:///C:/Users/Lucs/Desktop/Z_MPMF_MOAOP_RECEPCIONES.xml" />
+    <MetadataFile FileName="SI_MPMF_MOAOP_RECEPCIONES.wsdl" MetadataType="Wsdl" ID="21e8e864-3563-43ae-8f9b-8336b0ed7f48" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/551418cc7e353b28927c4ad2e6bc28b8" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

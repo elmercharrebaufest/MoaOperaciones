@@ -25,11 +25,13 @@ namespace SustitucionMOAUtils.Services
 
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer;
 
-        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService)
+        public VendedorService(IRepositorio repositorio, IDataAgroService dataAgroService, IVendedorHabilitadoConsumerMOA vendedorHabilitadoConsumer)
         {
             this.repositorio = repositorio;
             this.dataAgroService = dataAgroService;
+            this.vendedorHabilitadoConsumer = vendedorHabilitadoConsumer;
         }
 
         public VendedorDetalleWSMOAResponse GetDatosFiscales(string vendedor, string proveedor)
@@ -110,7 +112,7 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
                 }
 
-                VendedorHabilitadoWSMOAResponse response = new VendedorHabilitadoConsumerMOA().request(cuit, "MOA", user);
+                VendedorHabilitadoWSMOAResponse response = vendedorHabilitadoConsumer.Request(cuit, "MOA", user);
                 if (response == null)
                 {
                     throw new InfoCustomException(InfoMsg.ProveedorSinAlta);
@@ -120,6 +122,75 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(InfoMsg.ProveedorSinAlta);
 
                 return response;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+
+        public List<EstadoVendedorDto> GetVariosVendedoresStatus(List<string> cuitsVendedores, string user)
+        {
+            try
+            {
+                List<EstadoVendedorDto> listaResultados = new List<EstadoVendedorDto>();
+
+                foreach (string cuit in cuitsVendedores.Select(s => s.Trim()).Distinct().ToList())
+                {
+                    var estadoVendedorDto = new EstadoVendedorDto
+                    {
+                        CUIT = cuit
+                    };
+
+                    if (cuit == null || cuit == "")
+                    {
+                        estadoVendedorDto.Estado = string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT");
+                    }
+                    VendedorHabilitadoWSMOAResponse response;
+
+                    try
+                    {
+                        response = vendedorHabilitadoConsumer.Request(cuit, "MOA", user);
+                    }
+                    catch (InfoCustomException ex)
+                    {
+                        estadoVendedorDto.Estado = ex.Message;
+                        listaResultados.Add(estadoVendedorDto);
+                        continue;
+                    }
+
+                    if (response == null)
+                    {
+                        estadoVendedorDto.Estado = InfoMsg.ProveedorSinAlta;
+                    }
+                    else
+                    {
+
+                        if (response.status == null || response.status == "" || response.status == "Proveedor inexistente")
+                        {
+                            estadoVendedorDto.Estado = InfoMsg.ProveedorSinAlta;
+                        }
+                        else
+                        {
+                            estadoVendedorDto.CodigoProveedor = response.cabeceras.FirstOrDefault().proveedor;
+                            estadoVendedorDto.RazonSocial = response.cabeceras.FirstOrDefault().descripcion;
+                            estadoVendedorDto.Estado = response.status;
+                        }
+                    }
+
+                    listaResultados.Add(estadoVendedorDto);
+                }
+
+                return listaResultados;
             }
             catch (InfoCustomException)
             {
@@ -195,14 +266,11 @@ namespace SustitucionMOAUtils.Services
                             EstadoSIPER = proveedor.EstadoSIPER
                         })
                 );
-
-                UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
-
-                listadoProveedores.AddRange(response.usuarios.Select(x => new ProveedorDto(x)));
             }
             else
             {
                 var proveedores = usuario.Proveedores.ToList();
+
 
                 if (filtro != null)
                 {
@@ -246,9 +314,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
-            {
                 throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
-            }
 
             var nuevoVendedor = new Proveedor
             {
@@ -264,7 +330,13 @@ namespace SustitucionMOAUtils.Services
 
                 if (infoDA.HayError)
                 {
-                    throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                    if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
+                        infoDA.ComercialId = usuario.ObtenerCorredor().IdComercialDataAgro.Value;
+                        infoDA.ComercialNombres = usuario.ObtenerCorredor().Comercial;
+                    }
+                    else {
+                        throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                    }
                 }
                 var hist = new ProveedorHistorialAprobacion
                 {
@@ -275,6 +347,7 @@ namespace SustitucionMOAUtils.Services
                 };
                 nuevoVendedor.HistorialAprobaciones.Add(hist);
 
+                nuevoVendedor.IdProveedorCorredor = usuario.ObtenerCorredor().Id;
                 nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
                 nuevoVendedor.Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
                 nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
@@ -292,9 +365,9 @@ namespace SustitucionMOAUtils.Services
                     Observacion = nuevoVendedor.Observaciones
                 };
                 nuevoVendedor.HistorialAprobaciones.Add(hist);
-                usuario.Proveedores.Add(nuevoVendedor);
             }
 
+            usuario.Proveedores.Add(nuevoVendedor);
 
             repositorio.GuardarCambios();
 

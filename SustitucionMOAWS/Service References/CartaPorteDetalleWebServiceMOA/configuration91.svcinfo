@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="V/u2L3sZw6iT34uBtMjc3768oCs=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="atduQr+JEm8cult9Dg+WL7InKuE=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLE_CCPPBinding2">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLE_CCPPBinding">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding2</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -110,10 +110,10 @@
         </property>
       </properties>
     </bindingConfiguration>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLE_CCPPBinding3">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLE_CCPPBinding1">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding3</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding1</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -221,10 +221,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port13" contract="CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPP" bindingType="basicHttpBinding" address="http://gvicpidev01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn:OPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLE_CCPPBinding2">
+    <endpoint name="HTTP_Port13" contract="CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPP" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLE_CCPPBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://gvicpidev01.ar.molinos.local:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
+          <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -233,7 +233,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding2</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPP</serializedValue>
@@ -306,10 +306,10 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port13" contract="CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPP" bindingType="basicHttpBinding" address="https://gvicpidev01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn:OPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLE_CCPPBinding3">
+    <endpoint name="HTTPS_Port13" contract="CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPP" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MPMF_MOAOP_DETALLE_CCPPBinding1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>https://gvicpidev01.ar.molinos.local:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
+          <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -318,7 +318,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding3</serializedValue>
+          <serializedValue>SI_MPMF_MOAOP_DETALLE_CCPPBinding1</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>CartaPorteDetalleWebServiceMOA.SI_MPMF_MOAOP_DETALLE_CCPP</serializedValue>
