@@ -24,14 +24,14 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     }
 
     contrato: ContratoAFijar = new ContratoAFijar();
-    
+
 
     ngOnInit() {
         super.ngOnInit();
 
-        this.obteneDatosContrato(this.contrato);
-        this.contrato.CondicionFijacionId = 7;       
-       
+        this.negocioHabilitado(this.contrato);
+        this.contrato.CondicionFijacionId = 7;
+
     }
 
     ngAfterViewInit(): void {
@@ -255,10 +255,10 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     }
 
     isVisibleEstablecimiento(): boolean {
-        return this.contrato.ProvinciaId == 1;
+        return this.contrato.ProvinciaId == 1 && this.contrato.ClasificacionId == 1;
     }
 
-    grabarContratoAPrecio() {
+    grabarContratoAFijar() {
         if (!this.validarContrato()) {
             return false;
         }
@@ -304,11 +304,13 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         console.log(this.contrato);
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAFijar(this.contrato).subscribe(
                 result => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -337,12 +339,14 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
 
             );
         } catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -413,6 +417,8 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         if (this.contrato.ClasificacionId == 1) {
             this.contrato.PlanCanje = false;
             this.contrato.Consignatario = false;
+        } else {
+            this.contrato.EstablecimientoPropio = null;
         }
     }
     isNotProductor(event) {

@@ -9,13 +9,15 @@ import { SpinnerSmallComponent } from '../common/view-child/spinner-small/spinne
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 @NgModule({
   imports: [
     CommonModule,
     ReporteRoutingModule,
     SharedModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    AutocompleteLibModule
   ],
     declarations: [
       ReporteBaseComponent,

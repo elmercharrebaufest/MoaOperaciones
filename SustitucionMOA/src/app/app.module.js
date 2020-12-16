@@ -45,6 +45,7 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
+import { BlockUIModule } from 'ng-block-ui';
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -62,6 +63,7 @@ var AppModule = /** @class */ (function () {
                 ReCaptchaModule,
                 AutocompleteLibModule,
                 SharedModule,
+                BlockUIModule.forRoot(),
             ],
             declarations: [
                 AppComponent,

@@ -148,7 +148,6 @@ namespace SustitucionMOA.Controllers
                 contratoAPrecio.MonedaSustentable = "USDM ";
                 contratoAPrecio.ContratoSAP = "";
                 contratoAPrecio.CantidadCamiones = null;
-                contratoAPrecio.Pizarra = false;
 
 
                 string result = crearContratoService.CrearContratoAPrecio(contratoAPrecio);
@@ -275,7 +274,7 @@ namespace SustitucionMOA.Controllers
                     var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
                     string codigoProveedor = SessionPersister.Proveedor;
 
-                    var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor); 
+                    var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
                     return JsonCustom(crearContratoService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
                 }
                 else
@@ -571,7 +570,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         private string obteberContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor)
         {
             DataSourceRequest request = new DataSourceRequest();
@@ -659,6 +657,64 @@ namespace SustitucionMOA.Controllers
             request.Filter.Filters = filtros;
             string result = crearContratoService.GetContratos(request);
             return result;
+        }
+
+        public ActionResult ValidarProveedor(string proveedorId)
+        {
+            try
+            {
+                return JsonCustom(crearContratoService.ValidarProveedor(proveedorId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult TraerPrecioMoaMateriales(int tipoNegocioId = 0)
+        {
+            try
+            {
+                return JsonCustom(crearContratoService.TraerPrecioMoaMateriales(tipoNegocioId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

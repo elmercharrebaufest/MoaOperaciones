@@ -132,6 +132,7 @@ export class ReporteBaseComponent extends ListBaseComponent {
                     });
 
                     this.obtenerMateriales();
+                    this.validarDirecto();
                 }
             },
             error => {
@@ -175,7 +176,6 @@ export class ReporteBaseComponent extends ListBaseComponent {
     }
 
     validarDirecto() {
-        this.unsubscribe();
         this.subscription = this.service.validarDirecto().subscribe(
             result => {
                 if (result.logout == true) {

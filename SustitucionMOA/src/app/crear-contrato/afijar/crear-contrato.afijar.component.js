@@ -33,9 +33,8 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     };
     CrearContratoAFijarComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
-        this.obteneDatosContrato(this.contrato);
+        this.negocioHabilitado(this.contrato);
         this.contrato.CondicionFijacionId = 7;
-        document.getElementById("openModalConfirmModal").click();
     };
     CrearContratoAFijarComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -231,9 +230,9 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         return this.contrato.BoletoId != 3;
     };
     CrearContratoAFijarComponent.prototype.isVisibleEstablecimiento = function () {
-        return this.contrato.ProvinciaId == 1;
+        return this.contrato.ProvinciaId == 1 && this.contrato.ClasificacionId == 1;
     };
-    CrearContratoAFijarComponent.prototype.grabarContratoAPrecio = function () {
+    CrearContratoAFijarComponent.prototype.grabarContratoAFijar = function () {
         var _this = this;
         if (!this.validarContrato()) {
             return false;
@@ -275,10 +274,12 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         console.log(this.contrato);
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAFijar(this.contrato).subscribe(function (result) {
+                _this.blockUI.stop();
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -307,11 +308,13 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
                     }
                 }
             }, function (error) {
+                _this.blockUI.stop();
                 _this.spinnerComponent.hideIt();
                 _this.mensajeComponent.setErrorMsg(error.message);
             });
         }
         catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -377,6 +380,9 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         if (this.contrato.ClasificacionId == 1) {
             this.contrato.PlanCanje = false;
             this.contrato.Consignatario = false;
+        }
+        else {
+            this.contrato.EstablecimientoPropio = null;
         }
     };
     CrearContratoAFijarComponent.prototype.isNotProductor = function (event) {

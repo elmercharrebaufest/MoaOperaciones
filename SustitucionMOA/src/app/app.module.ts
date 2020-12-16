@@ -43,7 +43,7 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
-
+import { BlockUIModule } from 'ng-block-ui';
 
 @NgModule({
   imports: [
@@ -58,6 +58,7 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     ReCaptchaModule,
     AutocompleteLibModule,
     SharedModule,
+    BlockUIModule.forRoot(),
   ],
   declarations: [
     AppComponent,

@@ -205,6 +205,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\blockui.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />

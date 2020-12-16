@@ -29,6 +29,10 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     calidadTercero: boolean = null;
     dolarizadoTercero: boolean = null;
 
+    proveedores = [];
+    keyword2 = "RazonSocial";
+    proveedorid: any = null;
+
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
     }

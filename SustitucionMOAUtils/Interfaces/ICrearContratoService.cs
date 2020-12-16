@@ -22,5 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerFijacionesAutomaticas(string cuitProveedor, string cuitCorredor, int materialId, string filtro, int fijacionId);
         string CrearContratoFijacion(ContratoFijacion contratoFijacion);
         string GetContratos(DataSourceRequest request);
+        string ValidarProveedor(string proveedorId);
+        string TraerPrecioMoaMateriales(int tipoNegocioId);
     }
 }

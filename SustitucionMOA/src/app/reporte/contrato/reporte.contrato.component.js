@@ -40,6 +40,9 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         _this.pagoDiferidoTercero = null;
         _this.calidadTercero = null;
         _this.dolarizadoTercero = null;
+        _this.proveedores = [];
+        _this.keyword2 = "RazonSocial";
+        _this.proveedorid = null;
         return _this;
     }
     ReporteContratoComponent.prototype.setTabs = function () {

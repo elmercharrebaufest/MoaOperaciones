@@ -68,11 +68,11 @@
                     <title-caps>Refinar resultados</title-caps>
                 </div>
                 <!--<div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-                    <p>Ver</p>
-                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-                </div>-->
+        <p>Ver</p>
+        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+    </div>-->
                 <div class="col-xs-12 col-sm-6 col-md-5" *ngIf="isVisibleProveedor()">
-                    <label for="Proveedorid" class="font-weight-bold">Por Proveedor</label>
+                    <p for="Proveedorid" class="font-weight-bold">Proveedor</p>
                     <input [(ngModel)]="proveedorid" class="form-control" type="hidden"
                            id="proveedorinf" style="font-weight: 100 !important;">
                     <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
@@ -243,9 +243,8 @@
                         </select>
                     </div>
                 </div>
-
-                <button type="button" class="btn btn-info btn-lg" (click)="obteneContratos()"
-                        style="margin: 10px 14px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="obteneContratos()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; margin-top: 40px !important;">
                     Buscar
                 </button>
             </div>

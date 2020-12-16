@@ -24,6 +24,7 @@ import { Component, ViewChild } from '@angular/core';
 import { CrearContratoService } from './crear-contrato.service';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
+import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
 import { SessionDataService } from './../common/services/SessionDataService';
 import { SecurityService } from './../common/services/SecurityService';
@@ -31,6 +32,7 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
 import { Seccion } from './../common/models/Seccion';
+import { BlockUI } from 'ng-block-ui';
 var CrearContratoBaseComponent = /** @class */ (function (_super) {
     __extends(CrearContratoBaseComponent, _super);
     function CrearContratoBaseComponent(service, navService, sessionDataService, securityService, floatMsgService, modalService) {
@@ -50,6 +52,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.keyword2 = "RazonSocial";
         _this.keyword3 = "ContratoId";
         _this.autocompleteNotFoundText = "No encontrado";
+        _this.mensajeModal = "";
         _this.fechaInicio = new Date().toLocaleDateString('en-GB');
         _this.fechaFin = new Date().toLocaleDateString('en-GB');
         _this.fechafInicio = new Date().toLocaleDateString('en-GB');
@@ -57,6 +60,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.datosContrato = new Array();
         _this.materiales = new Array();
         _this.monedas = new Array();
+        _this.monedasTodas = new Array();
         _this.destinos = new Array();
         _this.campanias = new Array();
         _this.campaniasTodas = new Array();
@@ -85,6 +89,66 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         ]);
         //this.obteneDatosContrato();
     };
+    CrearContratoBaseComponent.prototype.negocioHabilitado = function (contrato) {
+        var _this = this;
+        this.blockUI.start('');
+        this.unsubscribe();
+        this.subscription = this.service.traerPrecioMoaMateriales(contrato.TipoNegocioId).subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.blockUI.stop();
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.blockUI.stop();
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var precio = JSON.parse(result);
+                var table = '<tr><th rowspan="2" class="">PRECIO MOA</th>';
+                var retirados = true;
+                for (var i = 0; i < precio.length; i++) {
+                    table += '<th class="">' + precio[i][0].Material + '</th>';
+                }
+                table += '</tr>';
+                for (i = 0; i < precio.length; i++) {
+                    var preciopornegocio = precio[i].filter(function (x) { return x.TipoNegocioId == contrato.TipoNegocioId; });
+                    table += '<td>';
+                    var matRetirado = true;
+                    if (preciopornegocio[0].Retirado == false ||
+                        preciopornegocio[1].Retirado == false ||
+                        preciopornegocio[0].Pizarra == true) {
+                        retirados = false;
+                        matRetirado = false;
+                    }
+                    if (matRetirado == true) {
+                        table += '<span style="color:red;font-weight:bold;">Sin precio</span>';
+                    }
+                    else {
+                        table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
+                        table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
+                        table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                    }
+                    table += '</td>';
+                }
+                if (retirados == false) {
+                    _this.obteneDatosContrato(contrato);
+                }
+                else {
+                    _this.blockUI.stop();
+                    alert("negocio no habilitado");
+                }
+                $("#tabla-precio-moa").html(table);
+            }
+        }, function (error) {
+            _this.blockUI.stop();
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
     CrearContratoBaseComponent.prototype.obteneDatosContrato = function (contrato) {
         var _this = this;
         this.unsubscribe();
@@ -109,15 +173,17 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     _this.materiales.push(el);
                 });
                 obj.Datos.Bolsa.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.bolsasConfirma.push(el);
-                    if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
-                        _this.bolsasFisico.push(el);
-                    if (element.Descripcion == "Bs As")
-                        _this.bolsasCarta.push(el);
+                    if (element.Id != 8 && element.Id != 9) {
+                        var el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        };
+                        _this.bolsasConfirma.push(el);
+                        if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
+                            _this.bolsasFisico.push(el);
+                        if (element.Descripcion == "Bs As")
+                            _this.bolsasCarta.push(el);
+                    }
                 });
                 obj.Datos.Clasificacion.forEach(function (element) {
                     var el = {
@@ -154,7 +220,8 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         Id: element.MonedaId,
                         Descripcion: element.Descripcion
                     };
-                    _this.monedas.push(el);
+                    //this.monedas.push(el);
+                    _this.monedasTodas.push(el);
                 });
                 obj.Datos.Condicion.forEach(function (element) {
                     var el = {
@@ -165,8 +232,10 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 });
                 _this.validarDirecto(contrato);
             }
+            _this.blockUI.stop();
         }, function (error) {
             _this.spinnerComponent.hideIt();
+            _this.blockUI.stop();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false;
@@ -203,6 +272,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     };
     CrearContratoBaseComponent.prototype.habilitaciones = function (contrato) {
         var _this = this;
+        this.spinnerCampana.showIt();
         this.unsubscribe();
         this.subscription = this.service.habilitaciones(contrato.MaterialId, contrato.TipoNegocioId).subscribe(function (result) {
             if (result.logout == true) {
@@ -232,9 +302,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         _this.datosPizarra = null;
                     }
                     _this.datosPrecioMoa = JSON.parse(obj.TraerPrecioMoa);
+                    var leng = _this.datosPrecioMoa.length;
+                    var items = _this.datosPrecioMoa;
                     if (contrato.TipoNegocioId == 1) {
-                        var leng = _this.datosPrecioMoa.length;
-                        var items = _this.datosPrecioMoa;
                         for (var i = 0; i < leng; i++) {
                             var item = items[i];
                             console.log(item);
@@ -262,9 +332,30 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     if (contrato.TipoNegocioId == 3) {
                         _this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                     }
+                    if (contrato.TipoNegocioId == 2 || contrato.TipoNegocioId == 3) {
+                        _this.monedas = new Array();
+                        for (var i = 0; i < leng; i++) {
+                            var item = items[i];
+                            if (item.Precio > 0) {
+                                var elMoneda;
+                                if (item.MonedaId == "ARP  ") {
+                                    elMoneda = { Id: "ARP  ", Descripcion: "ARP" };
+                                }
+                                if (item.MonedaId == "USDM ") {
+                                    elMoneda = { Id: "USDM ", Descripcion: "USD" };
+                                }
+                                _this.monedas.push(elMoneda);
+                            }
+                        }
+                        if (_this.monedas.length == 0 && obj.HabilitarPizarra != "") {
+                            contrato.Pizarra = true;
+                        }
+                    }
                 }
             }
+            _this.spinnerCampana.hideIt();
         }, function (error) {
+            _this.spinnerCampana.hideIt();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -321,6 +412,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 //contrato.MonedaId = this.monedas[0].Id;
                 //contrato.MaterialId = this.materiales[0].Id;
                 //contrato.CampanaId = this.campanias[0].Id;
+                if (contrato.TipoNegocioId == 1 || contrato.TipoNegocioId == 2) {
+                    _this.validarProveedor(idProveedorDataAgro, contrato);
+                }
             }
         }, function (error) {
             _this.spinnerComponent.hideIt();
@@ -426,8 +520,52 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     };
     ;
     CrearContratoBaseComponent.prototype.irACargas = function () {
-        this.navService.navegarSeccion("reporte/contrato");
+        this.navService.navegarSeccion("/reporte/contrato");
     };
+    CrearContratoBaseComponent.prototype.validarProveedor = function (proveedorId, contrato) {
+        var _this = this;
+        this.subscription = this.service.validarProveedor(proveedorId).subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = result;
+                if (obj != null) {
+                    obj = JSON.parse(obj);
+                }
+                console.log(obj);
+                if ((contrato.ClasificacionId == 2 || contrato.ClasificacionId == 3) &&
+                    ((contrato.PlanCanje == true && obj.Ruca.Acopiador.PlanCanje == "NO") ||
+                        (contrato.Consignatario == true && obj.Ruca.Acopiador.Consignatario == "NO") ||
+                        (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Acopiador.Directo == "NO"))) {
+                    _this.mensajeModal = "No est\u00E1 habilitado en Ruca";
+                    document.getElementById("openModalMensajeModal").click();
+                    return;
+                }
+                if (obj.FechaActualizacion == "NO") {
+                    _this.mensajeModal = "Falta fecha de actualizaci\u00F3n de legajo";
+                    document.getElementById("openModalMensajeModal").click();
+                    return;
+                }
+            }
+            _this.spinnerCampana.hideIt();
+        }, function (error) {
+            _this.spinnerCampana.hideIt();
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    __decorate([
+        BlockUI(),
+        __metadata("design:type", Object)
+    ], CrearContratoBaseComponent.prototype, "blockUI", void 0);
     __decorate([
         ViewChild(MensajeComponent),
         __metadata("design:type", MensajeComponent)
@@ -436,6 +574,10 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         ViewChild(SpinnerComponent),
         __metadata("design:type", SpinnerComponent)
     ], CrearContratoBaseComponent.prototype, "spinnerComponent", void 0);
+    __decorate([
+        ViewChild("spinnerCampana"),
+        __metadata("design:type", SpinnerSmallComponent)
+    ], CrearContratoBaseComponent.prototype, "spinnerCampana", void 0);
     CrearContratoBaseComponent = __decorate([
         Component({
             selector: 'app-contrato',

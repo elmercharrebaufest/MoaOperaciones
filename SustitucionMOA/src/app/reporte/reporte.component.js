@@ -140,6 +140,7 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
                     _this.condicionFijacion.push(el);
                 });
                 _this.obtenerMateriales();
+                _this.validarDirecto();
             }
         }, function (error) {
             _this.spinnerComponent.hideIt();
@@ -173,7 +174,6 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
     };
     ReporteBaseComponent.prototype.validarDirecto = function () {
         var _this = this;
-        this.unsubscribe();
         this.subscription = this.service.validarDirecto().subscribe(function (result) {
             if (result.logout == true) {
                 _this.sessionDataService.logout();
