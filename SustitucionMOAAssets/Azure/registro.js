@@ -66,21 +66,22 @@ $("document").ready(function () {
     $("#cliente_option").hide();
 
     $("#extension_CUIT").mask("99-99999999-9");
-    /*
-  $(#newPassword).addClass('input-error');
-  $(#email).addClass('input-error');
-  $(#emailVerificationCode).addClass('input-error');
-  $(#reenterPassword).addClass('input-error');
-  $(#extension_CUIT ).addClass('input-error');
-  */
-
-    var observerMailRepetido = new MutationObserver(function () {
-        $("#claimVerificationServerError").text(
-            "Ya existe un usuario con el e-mail especificado. Elija otro diferente."
+    
+    var emailMensajeVerificacion = new MutationObserver(function () {
+        $("#emailVerificationControl_success_message").text(
+            "Se ha enviado el código de verificación a su Bandeja de entrada. Ingréselo para continuar con el registro."
         );
     });
-    var targetMailRepetido = $("#claimVerificationServerError")[0];
-    observerMailRepetido.observe(targetMailRepetido, { attributes: true });
+    var mensajeVerificacion = $("#emailVerificationControl_success_message")[0];
+    emailMensajeVerificacion.observe(mensajeVerificacion, { attributes: true });
+
+  var observerMailRepetido = new MutationObserver(function () {
+    $("#claimVerificationServerError").text(
+      "Ya existe un usuario con el e-mail especificado. Elija otro diferente."
+    );
+  });
+  var targetMailRepetido = $("#claimVerificationServerError")[0];
+  observerMailRepetido.observe(targetMailRepetido, { attributes: true });
 });
 
 $("#extension_CUIT").change(function () {
