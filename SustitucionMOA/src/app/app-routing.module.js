@@ -16,6 +16,8 @@ import { NoAutorizadoComponent } from "./error/error.no-autorizado.component";
 import { HomeComponent } from "./home/home.component";
 import { HomeNGSComponent } from "./home/no-granos/home.no-granos.component";
 import { LayoutComponent } from "./layout/layout.component";
+import { AltaNotificacionesComponent } from "./notificaciones/alta-notificaciones/alta-notificaciones.component";
+import { ListadoNotificacionesComponent } from "./notificaciones/listado-notificaciones/listado-notificaciones.component";
 import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuario.cambio-vendedor.component";
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
@@ -116,6 +118,9 @@ var appRoutes = [
                 path: "crear-contrato",
                 loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
             },
+            { path: "notificaciones", component: ListadoNotificacionesComponent },
+            { path: "notificaciones/alta", component: AltaNotificacionesComponent },
+            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent }
         ],
     },
     { path: "**", component: HomeComponent },
