@@ -86,14 +86,6 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
             else {
                 var obj = JSON.parse(result);
                 _this.datosContrato = obj;
-                obj.Datos.material.forEach(function (element) {
-                    var el = {
-                        Id: element.MaterialId.toString(),
-                        Descripcion: element.Descripcion
-                    };
-                    _this.materiales.push(el);
-                });
-                console.log(_this.materiales);
                 obj.Datos.Bolsa.forEach(function (element) {
                     var el = {
                         Id: element.Id,
@@ -147,12 +139,28 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
                     };
                     _this.condicionFijacion.push(el);
                 });
+                _this.obtenerMateriales();
             }
         }, function (error) {
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false;
+    };
+    ReporteBaseComponent.prototype.obtenerMateriales = function () {
+        var _this = this;
+        this.subscription = this.service.obtenerMateriales().subscribe(function (result) {
+            var obj = JSON.parse(result);
+            obj.Datos.forEach(function (element) {
+                var el = {
+                    Id: element.MaterialId.toString(),
+                    Descripcion: element.Descripcion
+                };
+                _this.materiales.push(el);
+            });
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
     };
     ReporteBaseComponent.prototype.isVisible = function () {
         if (this.data && this.data.length != 0)
