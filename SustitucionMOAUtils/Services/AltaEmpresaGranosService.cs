@@ -300,18 +300,23 @@ namespace SustitucionMOAUtils.Services
 
             var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
 
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+            Proveedor proveedor;
+
+            if(proveedorId > 0)
+                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            else
+                proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
             ValidarEstadoSolicitud(proveedor);
 
-            if (usuario.TipoUsuario.Nombre == "Corredor")
+            if (proveedor.TipoProveedor.Nombre == "Corredor")
             {
                 if (!ValidarArchivosSubidosCorredor(proveedor, infoProveedor))
                 {
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-            else if (usuario.TipoUsuario.Nombre == "No Granos")
+            else if (proveedor.TipoProveedor.Nombre == "No Granos")
             {
                 if (!ValidarArchivosSubidosNoGranos(proveedor, altaEmpresa))
                 {
@@ -442,8 +447,6 @@ namespace SustitucionMOAUtils.Services
         }
         public bool ValidarArchivosSubidosNoGranos(Proveedor proveedor, AltaEmpresaViewModel altaEmpresa)
         {
-            
-
             if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.ConstanciaCUIT))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CUIT"));
@@ -456,13 +459,18 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Convenio (CM05 vigente)"));
             }
-            //if (infoProveedor.EstadoSISA != "1")
-            //{
-            //    if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
-            //    {
-            //        throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
-            //    }
-            //}
+
+            if (proveedor.IngresoAPlanta?? false)
+            {
+                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.NotaSiniestralidadART))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Nota Siniestralidad ART"));
+                }
+                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.ProtocoloSanitarioCovid))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Protocolo Sanitario Covid"));
+                }
+            }
 
             return true;
         }
@@ -539,11 +547,11 @@ namespace SustitucionMOAUtils.Services
                     proveedor = usuario.ObtenerProveedor();
 
                 var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
-               
+
 
                 //ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
                 //result = new ResultadoValidarProveedorComercial {
-                    
+
                 //};
                 var info = new InfoProveedorDataAgroDto
                 {
@@ -552,6 +560,7 @@ namespace SustitucionMOAUtils.Services
                     //EstadoSISA = result.ProveedorSISAEstadoCuit,
                     ProveedorCUIT = CUITProveedor,
                     RazonSocial = proveedor.RazonSocial,
+                    IngresoAPlanta = proveedor.IngresoAPlanta ?? false
                 };
 
                 return info;

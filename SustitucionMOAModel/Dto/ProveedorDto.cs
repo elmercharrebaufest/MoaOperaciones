@@ -32,6 +32,10 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocialCorredor { get; set; }
         public int IdTipoUsuario { get; set; }
 
+        public bool? IngresoAPlanta { get; set; }
+
+        public bool? AltaInterna { get; set; }
+
         public ProveedorDto() { }
         public ProveedorDto(Proveedor proveedor)
         {

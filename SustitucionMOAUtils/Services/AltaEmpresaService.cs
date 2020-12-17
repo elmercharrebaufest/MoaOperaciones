@@ -40,7 +40,9 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro)
+                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                                || (x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente && (x.AltaInterna?? false)))
+                                && x.HistorialAprobaciones.Count > 0
                                 );
 
                 List<ProveedorDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorDto
@@ -59,6 +61,8 @@ namespace SustitucionMOAUtils.Services
                     FechaSolicitud = proveedor.FechaSolicitud,
                     Comercial = proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
+                    AltaInterna = proveedor.AltaInterna,
+                    IngresoAPlanta = proveedor.IngresoAPlanta,
                     UltimaEdicion = proveedor.HistorialAprobaciones.FirstOrDefault() != null ? proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                     HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                     {
@@ -68,7 +72,8 @@ namespace SustitucionMOAUtils.Services
                         Observacion = a.Observacion,
                         Usuario = a.Usuario.Mail
                     }).ToList(),
-                    IdTipoUsuario = proveedor.UsuariosAsociados.FirstOrDefault().TipoUsuario.Id
+                    IdTipoUsuario = proveedor.TipoProveedor.Id
+                    //IdTipoUsuario = (proveedor.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente && (proveedor.AltaInterna ?? false)) ? 3: proveedor.UsuariosAsociados.FirstOrDefault().TipoUsuario.Id
                 }).ToList();
 
                 if (proveedorDtos.Count == 0)

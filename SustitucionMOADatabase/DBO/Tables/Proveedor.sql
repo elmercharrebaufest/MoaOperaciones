@@ -27,6 +27,9 @@ CREATE TABLE [dbo].[Proveedor](
     [IdSituacionIVA] INT NULL, 
     [IdIngresoBruto] INT NULL, 
     [CBU] VARCHAR(50) NULL, 
+    [IngresoAPlanta] BIT NULL, 
+    [AltaInterna] BIT NULL, 
+    [TipoProveedor_Id] INT NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

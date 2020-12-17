@@ -54,6 +54,9 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     proveedorId: number = null;
     readonlyCUIT: boolean = false;
     readonlyEmail: boolean = false;
+    ingresoAPlanta: boolean = false;
+    altaInterna: boolean = false;
+    
     observacionesParaElProveedor: string = "";
 
     ngOnInit() {
@@ -110,7 +113,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         try {
             this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago,
                 this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId,
-                this.observacionesParaElProveedor, this.RequiereVerificacionCompras).subscribe(
+                this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {

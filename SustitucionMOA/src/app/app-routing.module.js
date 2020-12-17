@@ -114,6 +114,7 @@ var appRoutes = [
             },
             { path: "estado-solicitud", component: EstadoSolicitudComponent },
             { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
+            { path: "alta-empresa-no-granos/:id", component: EmpresaNoGranosComponent },
             { path: "altas", component: AltasComponent },
             {
                 path: "crear-contrato",

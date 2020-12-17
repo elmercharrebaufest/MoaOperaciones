@@ -42,7 +42,7 @@ namespace SustitucionMOAUtils.Services
         }
         public string GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail,
-            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras)
+            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna)
         {
             if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor))
             {
@@ -75,8 +75,16 @@ namespace SustitucionMOAUtils.Services
             proveedor.FacturacionAnual = FacturacionAnual;
             proveedor.SolicitanteInterno = SolicitanteInterno;
             proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
+            proveedor.IngresoAPlanta = ingresoAPlanta;
+            proveedor.AltaInterna = altaInterna;
+            proveedor.TipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
+
 
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
+
+            if (proveedor.HistorialAprobaciones == null)
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+
             proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
                     {
@@ -145,6 +153,7 @@ namespace SustitucionMOAUtils.Services
 
             return string.Format(SuccessMsg.UsuarioDeshabilitadoOK, proveedor.CUIT);
         }
+
 
     }
 }

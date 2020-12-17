@@ -443,7 +443,7 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ALTA_EMPRESA_NO_GRANOS)]
         public ActionResult GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, 
             string condicionDePago, string servicioPrestado, string organizacionDeCompra, string razonDeEleccion, int facturacionAnual, string solicitanteInterno, 
-            int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras)
+            int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna)
         {
             try
             {
@@ -512,7 +512,7 @@ namespace SustitucionMOA.Controllers
                 {
                     data = altaEmpresaNoGranosService.GrabarNuevoProveedorNoGranos(razonSocial, cuit, email, telefono, realizarAnalisisNOSIS, IdRubro, condicionDePago,
                     servicioPrestado, organizacionDeCompra, razonDeEleccion, facturacionAnual, solicitanteInterno, ClaimsPrincipalExtension.GetClaimValue("emails"), 
-                    idProveedor, observacionesParaElProveedor, requiereVerificacionCompras)
+                    idProveedor, observacionesParaElProveedor, requiereVerificacionCompras, ingresoAPlanta, altaInterna)
                 });
             }
             catch (InfoCustomException e)

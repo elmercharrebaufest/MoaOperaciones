@@ -12,7 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         string GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail, 
-            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras);
+            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna);
         List<RubroDto> GetRubros();
         string RechazarProveedorNoGranos(int idProveedor, string usuarioMail, string observacionesParaElProveedor);
     }

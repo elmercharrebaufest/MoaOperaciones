@@ -16,6 +16,9 @@ namespace SustitucionMOAModel.Entities
         public string CUIT { get; set; }
         public string RazonSocial { get; set; }
         public string CodigoProveedor { get; set; }
+
+        public virtual TipoUsuario TipoProveedor { get; set; }
+
         public string Mail { get; set; }
         public EstadoAprobacion EstadoAprobacion { get; set; }
         public string Observaciones { get; set; }
@@ -67,5 +70,8 @@ namespace SustitucionMOAModel.Entities
         public int? IdSituacionIVA { get; set; }
         public int? IdIngresoBruto { get; set; }
         public string CBU { get; set; }
+
+        public bool? IngresoAPlanta { get; set; }
+        public bool? AltaInterna { get; set; }
     }
 }

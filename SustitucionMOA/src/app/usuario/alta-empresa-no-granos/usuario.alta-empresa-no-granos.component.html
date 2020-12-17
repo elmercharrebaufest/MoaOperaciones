@@ -1,9 +1,9 @@
 ﻿<style>
     .btn-custom {
-        margin-left:0 !important;
-        margin-top:10px !important;
-        padding-left:10px;
-        padding-right:10px;
+        margin-left: 0 !important;
+        margin-top: 10px !important;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 </style>
 <div class="content-wraper">
@@ -30,14 +30,15 @@
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     CUIT:
                     <div class="styled-select">
-                        <input type="text" class="form-control" placeholder="" mask="00-00000000-0"
-                               [(ngModel)]="CUIT" maxlength="13" [readonly]="readonlyCUIT ? 'readonly' : null" />
+                        <input type="text" class="form-control" placeholder="" mask="00-00000000-0" [(ngModel)]="CUIT"
+                            maxlength="13" [readonly]="readonlyCUIT ? 'readonly' : null" />
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Email:
                     <div class="styled-select">
-                        <input type="text" class="form-control" placeholder="" [(ngModel)]="Email" [readonly]="readonlyEmail ? 'readonly' : null" />
+                        <input type="text" class="form-control" placeholder="" [(ngModel)]="Email"
+                            [readonly]="readonlyEmail ? 'readonly' : null" />
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
@@ -109,9 +110,23 @@
                         <textarea class="" placeholder="" [(ngModel)]="observacionesParaElProveedor"></textarea>
                     </div>
                 </div>
+                <div class="col-xs-12 col-sm-12 col-md-6">
+                    Proveedor con ingreso a planta:
+                    <div class="styled-select">
+                        <input type="checkbox" class="" placeholder="" [(ngModel)]="ingresoAPlanta">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6">
+                    Alta interna:
+                    <div class="styled-select">
+                        <input type="checkbox" class="" placeholder="" [(ngModel)]="altaInterna">
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
-                    <input type="button" class="btn btn-custom btn-add" placeholder="" value="Grabar" (click)="grabar()" *ngIf="!spinnerComponent.visible">
-                    <input type="button" class="btn btn-custom btn-remove" placeholder="" value="Rechazar" (click)="rechazar()" *ngIf="!spinnerComponent.visible && proveedorId>0">
+                    <input type="button" class="btn btn-custom btn-add" placeholder="" value="Grabar" (click)="grabar()"
+                        *ngIf="!spinnerComponent.visible">
+                    <input type="button" class="btn btn-custom btn-remove" placeholder="" value="Rechazar"
+                        (click)="rechazar()" *ngIf="!spinnerComponent.visible && proveedorId>0">
                     <spinner></spinner>
                 </div>
             </div>

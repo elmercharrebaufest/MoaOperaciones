@@ -15,6 +15,7 @@
     UltimaEdicion: Date;
     EstadoSIPER: string;
     IdTipoUsuario: number;
+    AltaInterna: boolean;
 
 }
 

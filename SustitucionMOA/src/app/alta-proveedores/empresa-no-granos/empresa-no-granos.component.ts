@@ -76,6 +76,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     IdSituacionIVA: number = 0;
     IdIngresoBruto: number = 0;
     CBUNoGranos: string = "";
+    ingresoAPlanta: boolean = false;
 
     constructor(
         protected service: EmpresaNoGranosService,
@@ -110,7 +111,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     protected spinnerCartaPresentacion: SpinnerSmallComponent;
 
     checkPermisos() {
-        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA NO GRANOS");
     }
 
     setTabs() {
@@ -191,6 +192,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                     //this.estadoSISA = result.EstadoSISA;
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
+                    this.ingresoAPlanta = result.IngresoAPlanta;
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -429,7 +431,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
 
         if (this.relacionConEmpleadosChecked == null) {
             this.mensajeComponent.setErrorMsg(
-                "Debe completar Vínculos a declarar con Empleados de Molinos agro S.A."
+                "Debe completar Vï¿½nculos a declarar con Empleados de Molinos agro S.A."
             );
             return true;
         }
@@ -439,7 +441,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         if (this.relacionConEmpleadosChecked == true) {
             if (this.empleados.length == 0) {
                 this.mensajeComponent.setErrorMsg(
-                    "Debe completar Vínculos a declarar con Empleados de Molinos agro S.A."
+                    "Debe completar Vï¿½nculos a declarar con Empleados de Molinos agro S.A."
                 );
             } else {
                 for (const item of this.empleados) {
@@ -448,7 +450,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                         item.NombreProveedora == ""
                     ) {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro."
+                            "Debe completar el nombre en todos los items de Vï¿½nculos a declarar con Empleados de Molinos agro."
                         );
                         return true;
                     }
@@ -457,7 +459,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                         item.CargoProveedora == ""
                     ) {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el cargo en todos los items de Vínculos a declarar con Empleados de Molinos agro."
+                            "Debe completar el cargo en todos los items de Vï¿½nculos a declarar con Empleados de Molinos agro."
                         );
                         return true;
                     }
@@ -466,13 +468,13 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                         item.NombreMolinos == ""
                     ) {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de Vínculos a declarar con Empleados de Molinos agro."
+                            "Debe completar el nombre en todos los items de Vï¿½nculos a declarar con Empleados de Molinos agro."
                         );
                         return true;
                     }
                     if (item.Vinculo == null || item.Vinculo == "") {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el vinculo en todos los items de Vínculos a declarar con Empleados de Molinos agro."
+                            "Debe completar el vinculo en todos los items de Vï¿½nculos a declarar con Empleados de Molinos agro."
                         );
                         return true;
                     }
@@ -482,7 +484,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
 
         if (this.relacionConFuncionariosChecked == null) {
             this.mensajeComponent.setErrorMsg(
-                "Debe completar Vínculos a declarar con Funcionarios Públicos"
+                "Debe completar Vï¿½nculos a declarar con Funcionarios Pï¿½blicos"
             );
             return true;
         }
@@ -492,19 +494,19 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         if (this.relacionConFuncionariosChecked == true) {
             if (this.funcionarios.length == 0) {
                 this.mensajeComponent.setErrorMsg(
-                    "Debe completar Vínculos a declarar con Funcionarios Públicos"
+                    "Debe completar Vï¿½nculos a declarar con Funcionarios Pï¿½blicos"
                 );
             } else {
                 for (const item of this.funcionarios) {
                     if (item.NombreFirma == null || item.NombreFirma == "") {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos."
+                            "Debe completar el nombre en todos los items de Vï¿½nculos a declarar con Funcionarios Pï¿½blicos."
                         );
                         return true;
                     }
                     if (item.CargoFirma == null || item.CargoFirma == "") {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos."
+                            "Debe completar el cargo en todos los items de Vï¿½nculos a declarar con Funcionarios Pï¿½blicos."
                         );
                         return true;
                     }
@@ -513,7 +515,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                         item.NombreFuncionario == ""
                     ) {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de Vínculos a declarar con Funcionarios Públicos."
+                            "Debe completar el nombre en todos los items de Vï¿½nculos a declarar con Funcionarios Pï¿½blicos."
                         );
                         return true;
                     }
@@ -522,13 +524,13 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                         item.CargoFuncionario == ""
                     ) {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el cargo en todos los items de Vínculos a declarar con Funcionarios Públicos."
+                            "Debe completar el cargo en todos los items de Vï¿½nculos a declarar con Funcionarios Pï¿½blicos."
                         );
                         return true;
                     }
                     if (item.Vinculo == null || item.Vinculo == "") {
                         this.mensajeComponent.setErrorMsg(
-                            "Debe completar el vinculo en todos los items de Vínculos a declarar con Funcionarios Públicos."
+                            "Debe completar el vinculo en todos los items de Vï¿½nculos a declarar con Funcionarios Pï¿½blicos."
                         );
                         return true;
                     }
@@ -537,7 +539,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         }
         if (this.codigoDeConducta == false) {
             this.mensajeComponent.setErrorMsg(
-                "Debe aceptar el Código de Conducta de Proveedores de Molinos agro S.A."
+                "Debe aceptar el Cï¿½digo de Conducta de Proveedores de Molinos agro S.A."
             );
             return true;
         }

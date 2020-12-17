@@ -395,7 +395,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     completarAlta(empresa: Empresa) {
-        console.log(empresa.Mail);
-       this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
+       this.goToSeccionParam('/alta-empresa-no-granos', empresa.Id.toString());
+       //this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
     }
 }

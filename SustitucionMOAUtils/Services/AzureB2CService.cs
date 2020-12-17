@@ -65,16 +65,6 @@ namespace SustitucionMOAUtils.Services
 
                     break;
 
-                case "ambos":
-                    Usuario usuarioAmbos = new Usuario { Mail = mail, CUITRegistro = CUIT };
-
-                    usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("A");
-
-                    RegistrarUsuarioGenerico(ref usuarioAmbos);
-
-                    usuario = usuarioAmbos;
-                    break;
-
                 case "corredor":
                     Usuario usuarioCorredor = new Usuario { Mail = mail, CUITRegistro = CUIT };
 
@@ -120,7 +110,8 @@ namespace SustitucionMOAUtils.Services
             Proveedor proveedor = new Proveedor
             {
                 CUIT = usuario.CUITRegistro,
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                TipoProveedor = ObtenerTipoPorNombreCorto("G")
             };
 
             return ValidarCUITProveedor(ref usuario, proveedor);
@@ -142,8 +133,9 @@ namespace SustitucionMOAUtils.Services
             {
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
-                Mail = usuario.Mail
-            };
+                Mail = usuario.Mail,
+                TipoProveedor = ObtenerTipoPorNombreCorto("NG")
+        };
             if (repositorio.Existe<Proveedor>(x=> x.CUIT == cuit))
             {
                 proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit); 
@@ -165,7 +157,8 @@ namespace SustitucionMOAUtils.Services
             {
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.Aprobado,
-                CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro)
+                CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro),
+                TipoProveedor = ObtenerTipoPorNombreCorto("CORR")
             };
 
             usuario.Roles = new List<Rol>();
