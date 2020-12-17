@@ -44,6 +44,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
         _this.esCorredorEnDataAgro = false;
+        _this.retirados = null;
         _this.cuitProveedorSeleccionado = "";
         _this.localidades = [];
         _this.proveedores = [];
@@ -107,10 +108,10 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
             }
             else {
                 var precio = JSON.parse(result);
-                var table = '<tr><th rowspan="2" class="">PRECIO MOA</th>';
-                var retirados = true;
+                var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>';
+                _this.retirados = true;
                 for (var i = 0; i < precio.length; i++) {
-                    table += '<th class="">' + precio[i][0].Material + '</th>';
+                    table += '<th style="font-size:20px;padding: 5px 10px;">' + precio[i][0].Material + '</th>';
                 }
                 table += '</tr>';
                 for (i = 0; i < precio.length; i++) {
@@ -120,25 +121,30 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     if (preciopornegocio[0].Retirado == false ||
                         preciopornegocio[1].Retirado == false ||
                         preciopornegocio[0].Pizarra == true) {
-                        retirados = false;
+                        _this.retirados = false;
                         matRetirado = false;
                     }
                     if (matRetirado == true) {
                         table += '<span style="color:red;font-weight:bold;">Sin precio</span>';
                     }
                     else {
-                        table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
-                        table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
-                        table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                        if (contrato.TipoNegocioId == 1) {
+                            table += preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';
+                        }
+                        else {
+                            table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
+                            table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
+                            table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                        }
                     }
                     table += '</td>';
                 }
-                if (retirados == false) {
+                if (_this.retirados == false) {
                     _this.obteneDatosContrato(contrato);
                 }
                 else {
                     _this.blockUI.stop();
-                    alert("negocio no habilitado");
+                    _this.mensajeComponent.setErrorMsg("Negocio no disponible");
                 }
                 $("#tabla-precio-moa").html(table);
             }

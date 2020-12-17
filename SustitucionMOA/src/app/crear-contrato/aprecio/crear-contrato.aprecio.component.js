@@ -204,7 +204,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 3;
+            this.contrato.StandardDeCalidadId = 4;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -280,6 +280,10 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
             return false;
         }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
+            return false;
+        }
         if (this.contrato.DestinoId == null || this.contrato.DestinoId == undefined) {
             this.mensajeComponent.setErrorMsg("Debe completar el Destino.");
             return false;
@@ -310,6 +314,10 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
         if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         return true;
@@ -344,6 +352,8 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
             this.contrato.Pizarra = false;
+            this.contrato.CalidadTercero = false;
+            this.contrato.SustentableTercero = false;
         }
     };
     CrearContratoAPrecioComponent.prototype.changePizarra = function () {
@@ -400,6 +410,9 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoAPrecioComponent.prototype.configuraciones = function () {
+    };
+    CrearContratoAPrecioComponent.prototype.isSoja = function () {
+        return this.contrato.MaterialId == 3;
     };
     CrearContratoAPrecioComponent = __decorate([
         Component({

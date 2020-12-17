@@ -160,7 +160,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
             });
         });
 
-
+        //this.obteneContratos();
     }   
 
     obteneContratos() {

@@ -39,6 +39,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
 
     }
     esCorredorEnDataAgro: boolean = false;
+    retirados: boolean = null;
     cuitProveedorSeleccionado: string = "";
     localidad: any;
     localidades = [];
@@ -104,10 +105,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     let precio = JSON.parse(result);
-                    var table = '<tr><th rowspan="2" class="">PRECIO MOA</th>';
-                    var retirados = true;
+                    var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>';
+                    this.retirados = true;
                     for (var i = 0; i < precio.length; i++) {
-                        table += '<th class="">' + precio[i][0].Material + '</th>';
+                        table += '<th style="font-size:20px;padding: 5px 10px;">' + precio[i][0].Material + '</th>';
                     }
                     table += '</tr>';
                     for (i = 0; i < precio.length; i++) {
@@ -117,24 +118,30 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         if (preciopornegocio[0].Retirado == false ||
                             preciopornegocio[1].Retirado == false ||
                             preciopornegocio[0].Pizarra == true) {
-                            retirados = false;
+                            this.retirados = false;
                             matRetirado = false;
                         }
                         if (matRetirado == true) {
                             table += '<span style="color:red;font-weight:bold;">Sin precio</span>';
                         } else {
-                            table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
-                            table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
-                            table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                            if (contrato.TipoNegocioId == 1) {
+                                table += preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';
+                            } else {
+                                table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
+                                table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
+                                table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                            }
+
                         }
                         table += '</td>';
                     }
 
-                    if (retirados == false) {
+                    if (this.retirados == false) {
                         this.obteneDatosContrato(contrato);
                     } else {
                         this.blockUI.stop();
-                        alert("negocio no habilitado");
+                        this.mensajeComponent.setErrorMsg("Negocio no disponible");
+
                     }
                     $("#tabla-precio-moa").html(table);
                 }
@@ -591,4 +598,6 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
 
         return false;
     }
+
+    
 }

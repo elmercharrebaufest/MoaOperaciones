@@ -35,6 +35,8 @@
     public Consignatario: boolean;
     public PlanCanje: boolean;
     public ObservacionTercero: string;
+    public CalidadTercero: boolean;
+    public SustentableTercero: boolean;
 
     constructor() {
         this.TipoNegocioId = 1;

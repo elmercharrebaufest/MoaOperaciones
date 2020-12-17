@@ -264,7 +264,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 3;
+            this.contrato.StandardDeCalidadId = 4;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -328,10 +328,14 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         //    this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Pago Diferido.");
         //    return false;
         //}
-        //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
-        //    return false;
-        //}
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            return false;
+        }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
+            return false;
+        }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
@@ -362,6 +366,10 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         }
         if ((this.contrato.BolsaId == null || this.contrato.BolsaId == undefined) && this.contrato.BoletoId != 3) {
             this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         //if (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "") {
@@ -396,7 +404,12 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     CrearContratoAFijarComponent.prototype.onChangeMaterial = function () {
         if (this.contrato.MaterialId != null) {
             this.habilitaciones(this.contrato);
+            this.contrato.CalidadTercero = false;
+            this.contrato.SustentableTercero = false;
         }
+    };
+    CrearContratoAFijarComponent.prototype.isSoja = function () {
+        return this.contrato.MaterialId == 3;
     };
     CrearContratoAFijarComponent = __decorate([
         Component({

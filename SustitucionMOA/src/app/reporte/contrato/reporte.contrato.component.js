@@ -161,6 +161,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                 maxView: 4
             });
         });
+        //this.obteneContratos();
     };
     ReporteContratoComponent.prototype.obteneContratos = function () {
         var _this = this;

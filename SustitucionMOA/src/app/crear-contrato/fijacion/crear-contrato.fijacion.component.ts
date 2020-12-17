@@ -219,21 +219,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 3;
 
-        //if (this.contrato.MaterialId == 1) {
-        //    this.contrato.StandardDeCalidadId = 2;
-        //}
-        //if (this.contrato.MaterialId == 2) {
-        //    this.contrato.StandardDeCalidadId = 7;
-        //}
-        //if (this.contrato.MaterialId == 3) {
-        //    this.contrato.StandardDeCalidadId = 3;
-        //}
-        //if (this.contrato.MaterialId == 4) {
-        //    this.contrato.StandardDeCalidadId = 5;
-        //}
-        //if (this.contrato.MaterialId == 5) {
-        //    this.contrato.StandardDeCalidadId = 5;
-        //}
+      
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
 
@@ -318,6 +304,10 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
 
         if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
 

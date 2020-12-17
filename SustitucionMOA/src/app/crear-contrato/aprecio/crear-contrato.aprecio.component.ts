@@ -232,7 +232,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 3;
+            this.contrato.StandardDeCalidadId = 4;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -314,6 +314,10 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
             return false;
         }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
+            return false;
+        }
 
         if (this.contrato.DestinoId == null || this.contrato.DestinoId == undefined) {
             this.mensajeComponent.setErrorMsg("Debe completar el Destino.");
@@ -345,6 +349,10 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         }
         if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         return true;
@@ -381,6 +389,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
             this.contrato.Pizarra = false;
+            this.contrato.CalidadTercero = false;
+            this.contrato.SustentableTercero = false;
 
         }
     }
@@ -445,5 +455,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     configuraciones() {
 
     }
-
+    isSoja(): boolean {
+        return this.contrato.MaterialId == 3;
+    }
 }
