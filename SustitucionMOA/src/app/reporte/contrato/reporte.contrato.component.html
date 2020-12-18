@@ -243,6 +243,16 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-xs-6 col-sm-6 col-md-15">
+                    <p>Sustentable</p>
+                    <div class="styled-select">
+                        <select class="form-control" name="condVend" [(ngModel)]="sustentableTercero">
+                            <option value="null">Todos</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
                 <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="obteneContratos()"
                         style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; margin-top: 40px !important;">
                     Buscar
@@ -441,6 +451,15 @@
                                         </span>
                                     </div>
                                 </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SustentableTercero')">
+                                    Sustentable
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SustentableTercero' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SustentableTercero' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -465,6 +484,7 @@
                                 <td>{{contratoInfo.PagoDiferidoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.DolarizadoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.CalidadTercero == true ? "Si":"No"}}</td>
+                                <td>{{contratoInfo.SustentableTercero == true ? "Si":"No"}}</td>
                             </tr>
                         </tbody>
                     </table>

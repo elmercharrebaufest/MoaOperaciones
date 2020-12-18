@@ -484,7 +484,7 @@ namespace SustitucionMOA.Controllers
         }
         public ActionResult GetContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
             int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
-            bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero)
+            bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, bool? sustentableTercero)
         {
             try
             {
@@ -497,7 +497,7 @@ namespace SustitucionMOA.Controllers
                 var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
 
 
-                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor);
+                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero);
 
                 return JsonCustom(result);
             }
@@ -522,7 +522,7 @@ namespace SustitucionMOA.Controllers
         }
         public ActionResult ExportContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
            int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
-           bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero)
+           bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, bool? sustentableTercero)
         {
             try
             {
@@ -534,7 +534,7 @@ namespace SustitucionMOA.Controllers
 
                 var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
 
-                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor);
+                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero);
                 System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
                 var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
                 var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
@@ -546,7 +546,7 @@ namespace SustitucionMOA.Controllers
                         item.FechaHasta = item.FechaHasta.Value.AddHours(-3);
                 }
                 var excel = ExcelExport.ToExcel(list, new string[] { "Cuit", "Proveedor", "Corredor", "ContratoCorredor", "TipoNegocio", "Cantidad", "Precio", "Moneda",
-                    "Destino", "FechaDesde", "FechaHasta", "Material", "Campaña", "Clasificacion", "Localidad", "Consignatario", "Estado", "Pago Diferido", "Dolarizado", "Calidad" }, "Reporte Contratos");
+                    "Destino", "FechaDesde", "FechaHasta", "Material", "Campaña", "Clasificacion", "Localidad", "Consignatario", "Estado", "Pago Diferido", "Dolarizado", "Calidad", "Sustentable" }, "Reporte Contratos");
 
                 return JsonCustom(excel);
             }
@@ -570,7 +570,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        private string obteberContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor)
+        private string obteberContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor, bool? sustentableTercero)
         {
             DataSourceRequest request = new DataSourceRequest();
             request.Filter = new Kendo.DynamicLinq.Filter();
@@ -644,6 +644,10 @@ namespace SustitucionMOA.Controllers
             if (dolarizadoTercero.HasValue)
             {
                 filtros.Add(new Kendo.DynamicLinq.Filter { Field = "DolarizadoTercero", Value = dolarizadoTercero, Operator = "eq" });
+            }
+            if (sustentableTercero.HasValue)
+            {
+                filtros.Add(new Kendo.DynamicLinq.Filter { Field = "SustentableTercero", Value = sustentableTercero, Operator = "eq" });
             }
             if (calidadTercero.HasValue)
             {

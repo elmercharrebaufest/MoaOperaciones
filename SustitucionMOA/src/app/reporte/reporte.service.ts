@@ -43,7 +43,7 @@ export class ReporteService extends BaseService {
                 map(this.extractData));
     }
     public obteneContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId,
-        boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
+        boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fechaDesde', fechaDesde);
         params.set('fechaHasta', fechaHasta);
@@ -62,6 +62,7 @@ export class ReporteService extends BaseService {
         params.set('pagoDiferidoTercero', pagoDiferidoTercero);
         params.set('calidadTercero', calidadTercero);
         params.set('dolarizadoTercero', dolarizadoTercero);
+        params.set('sustentableTercero', sustentableTercero);
         return this.http
             .get('/api/CrearContrato/GetContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
@@ -98,7 +99,7 @@ export class ReporteService extends BaseService {
     }
 
     public exportContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId,
-        boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
+        boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('fechaDesde', fechaDesde);
         params.set('fechaHasta', fechaHasta);
@@ -117,6 +118,8 @@ export class ReporteService extends BaseService {
         params.set('pagoDiferidoTercero', pagoDiferidoTercero);
         params.set('calidadTercero', calidadTercero);
         params.set('dolarizadoTercero', dolarizadoTercero);
+        params.set('sustentableTercero', sustentableTercero);
+        
         return this.http
             .get('/api/CrearContrato/ExportContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
