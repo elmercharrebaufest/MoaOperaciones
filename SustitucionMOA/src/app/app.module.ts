@@ -47,8 +47,6 @@ import { AltaNotificacionesComponent } from './notificaciones/alta-notificacione
 import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
-
-import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 import { BlockUIModule } from 'ng-block-ui';
 
 @NgModule({
