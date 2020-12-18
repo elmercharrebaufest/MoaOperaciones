@@ -60,151 +60,8 @@ export class ReporteBaseComponent extends ListBaseComponent {
                 //new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
             ]
         );
-        this.getDatosCombos();
     }
 
-    getDatosCombos() {
-        this.unsubscribe();
-        this.subscription = this.service.getDatosCombos().subscribe(
-            result => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    let obj = JSON.parse(result);
-                    this.datosContrato = obj;
-
-                    obj.Datos.Bolsa.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
-                        }
-                        this.bolsasConfirma.push(el);
-                        if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
-                            this.bolsasFisico.push(el);
-                        if (element.Descripcion == "Bs As")
-                            this.bolsasCarta.push(el);
-                    });
-                    obj.Datos.Clasificacion.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
-                        }
-                        this.condicionVendedor.push(el);
-                    });
-                    obj.Datos.Zona.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
-                        }
-                        this.zona.push(el);
-                    });
-                    obj.Datos.Destino.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
-                        }
-                        this.destinos.push(el);
-                    });
-                    obj.Datos.campania.forEach(element => {
-                        let el = {
-                            Id: element.CampaniaId,
-                            Descripcion: element.Descripcion
-                        }
-                        this.campanias.push(el);
-                    });
-                    obj.Datos.moneda.forEach(element => {
-                        let el = {
-                            Id: element.MonedaId,
-                            Descripcion: element.Descripcion
-                        }
-                        this.monedas.push(el);
-                    });
-                    obj.Datos.Condicion.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
-                        }
-                        this.condicionFijacion.push(el);
-                    });
-
-                    this.obtenerMateriales();
-                }
-            },
-            error => {
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-
-        );
-        return false;
-    }
-
-    obtenerMateriales() {
-
-        this.subscription = this.service.obtenerMateriales().subscribe(
-            (result) => {
-                let obj = JSON.parse(result);
-
-                obj.Datos.forEach(element => {
-                    let el = {
-                        Id: element.MaterialId.toString(),
-                        Descripcion: element.Descripcion
-                    }
-                    this.materiales.push(el);
-                });
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-    }
-
-    isVisible(): boolean {
-        if (this.data && this.data.length != 0)
-            return true;
-        else
-            return false;
-    }
-
-    isVisibleProveedor(): boolean {
-        return this.esCorredorEnDataAgro == true;
-    }
-
-    validarDirecto() {
-        this.unsubscribe();
-        this.subscription = this.service.validarDirecto().subscribe(
-            result => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    let obj = JSON.parse(result);
-                    if (obj != null && obj > 0) {
-                        this.corredorId = obj;
-                        this.esCorredorEnDataAgro = true;
-                    } else {
-                        this.getDatosCombos();
-                        this.esCorredorEnDataAgro = false;
-                    }
-                    console.log("this.esCorredorEnDataAgro", this.esCorredorEnDataAgro);
-                }
-            },
-            error => {
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-
-        );
-
-        return false;
-    }
 
     selectEventProveedor(item) {
         this.proveedorId = item.Id;
@@ -229,6 +86,39 @@ export class ReporteBaseComponent extends ListBaseComponent {
             );
         }
     }
+    isVisible(): boolean {
+        if (this.data && this.data.length != 0)
+            return true;
+        else
+            return false;
+    }
+
+    isVisibleProveedor(): boolean {
+        return this.esCorredorEnDataAgro == true;
+    }
+
+
+    obtenerMateriales() {
+
+        this.subscription = this.service.obtenerMateriales().subscribe(
+            (result) => {
+                let obj = JSON.parse(result);
+
+                obj.Datos.forEach(element => {
+                    let el = {
+                        Id: element.MaterialId.toString(),
+                        Descripcion: element.Descripcion
+                    }
+                    this.materiales.push(el);
+                });
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+
 
 
 }

@@ -30,8 +30,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
     }
     CrearContratoAPrecioComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
-        console.log("inicia el componente");
-        this.obteneDatosContrato(this.contrato);
+        this.negocioHabilitado(this.contrato);
     };
     CrearContratoAPrecioComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -177,7 +176,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         return this.contrato.BoletoId != 3;
     };
     CrearContratoAPrecioComponent.prototype.isVisibleEstablecimiento = function () {
-        return this.contrato.ProvinciaId == 1;
+        return this.contrato.ProvinciaId == 1 && this.contrato.ClasificacionId == 1;
     };
     CrearContratoAPrecioComponent.prototype.grabarContratoAPrecio = function () {
         var _this = this;
@@ -205,7 +204,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 3;
+            this.contrato.StandardDeCalidadId = 4;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -215,9 +214,11 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(function (result) {
+                _this.blockUI.stop();
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -249,11 +250,13 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
                     }
                 }
             }, function (error) {
+                _this.blockUI.stop();
                 _this.spinnerComponent.hideIt();
                 _this.mensajeComponent.setErrorMsg(error.message);
             });
         }
         catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -275,6 +278,10 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            return false;
+        }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
             return false;
         }
         if (this.contrato.DestinoId == null || this.contrato.DestinoId == undefined) {
@@ -305,8 +312,12 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
             return false;
         }
-        if (this.contrato.Pizarra == true && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
+        if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         return true;
@@ -321,6 +332,9 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         if (this.contrato.ClasificacionId == 1) {
             this.contrato.PlanCanje = false;
             this.contrato.Consignatario = false;
+        }
+        else {
+            this.contrato.EstablecimientoPropio = null;
         }
     };
     CrearContratoAPrecioComponent.prototype.isNotProductor = function (event) {
@@ -337,6 +351,9 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
+            this.contrato.Pizarra = false;
+            this.contrato.CalidadTercero = false;
+            this.contrato.SustentableTercero = false;
         }
     };
     CrearContratoAPrecioComponent.prototype.changePizarra = function () {
@@ -393,6 +410,9 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoAPrecioComponent.prototype.configuraciones = function () {
+    };
+    CrearContratoAPrecioComponent.prototype.isSoja = function () {
+        return this.contrato.MaterialId == 3;
     };
     CrearContratoAPrecioComponent = __decorate([
         Component({

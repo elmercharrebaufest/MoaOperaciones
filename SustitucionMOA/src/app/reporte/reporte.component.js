@@ -68,139 +68,6 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
         this.navService.setSeccionList([
             new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
         ]);
-        this.getDatosCombos();
-    };
-    ReporteBaseComponent.prototype.getDatosCombos = function () {
-        var _this = this;
-        this.unsubscribe();
-        this.subscription = this.service.getDatosCombos().subscribe(function (result) {
-            if (result.logout == true) {
-                _this.sessionDataService.logout();
-            }
-            else if (result.error != undefined && result.error != "") {
-                _this.mensajeComponent.setErrorMsg(result.error);
-            }
-            else if (result.info != undefined) {
-                _this.mensajeComponent.setInfoMsg(result.info);
-            }
-            else {
-                var obj = JSON.parse(result);
-                _this.datosContrato = obj;
-                obj.Datos.Bolsa.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.bolsasConfirma.push(el);
-                    if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
-                        _this.bolsasFisico.push(el);
-                    if (element.Descripcion == "Bs As")
-                        _this.bolsasCarta.push(el);
-                });
-                obj.Datos.Clasificacion.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.condicionVendedor.push(el);
-                });
-                obj.Datos.Zona.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.zona.push(el);
-                });
-                obj.Datos.Destino.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.destinos.push(el);
-                });
-                obj.Datos.campania.forEach(function (element) {
-                    var el = {
-                        Id: element.CampaniaId,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.campanias.push(el);
-                });
-                obj.Datos.moneda.forEach(function (element) {
-                    var el = {
-                        Id: element.MonedaId,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.monedas.push(el);
-                });
-                obj.Datos.Condicion.forEach(function (element) {
-                    var el = {
-                        Id: element.Id,
-                        Descripcion: element.Descripcion
-                    };
-                    _this.condicionFijacion.push(el);
-                });
-                _this.obtenerMateriales();
-            }
-        }, function (error) {
-            _this.spinnerComponent.hideIt();
-            _this.mensajeComponent.setErrorMsg(error.message);
-        });
-        return false;
-    };
-    ReporteBaseComponent.prototype.obtenerMateriales = function () {
-        var _this = this;
-        this.subscription = this.service.obtenerMateriales().subscribe(function (result) {
-            var obj = JSON.parse(result);
-            obj.Datos.forEach(function (element) {
-                var el = {
-                    Id: element.MaterialId.toString(),
-                    Descripcion: element.Descripcion
-                };
-                _this.materiales.push(el);
-            });
-        }, function (error) {
-            _this.mensajeComponent.setErrorMsg(error.message);
-        });
-    };
-    ReporteBaseComponent.prototype.isVisible = function () {
-        if (this.data && this.data.length != 0)
-            return true;
-        else
-            return false;
-    };
-    ReporteBaseComponent.prototype.isVisibleProveedor = function () {
-        return this.esCorredorEnDataAgro == true;
-    };
-    ReporteBaseComponent.prototype.validarDirecto = function () {
-        var _this = this;
-        this.unsubscribe();
-        this.subscription = this.service.validarDirecto().subscribe(function (result) {
-            if (result.logout == true) {
-                _this.sessionDataService.logout();
-            }
-            else if (result.error != undefined && result.error != "") {
-                _this.mensajeComponent.setErrorMsg(result.error);
-            }
-            else if (result.info != undefined) {
-                _this.mensajeComponent.setInfoMsg(result.info);
-            }
-            else {
-                var obj = JSON.parse(result);
-                if (obj != null && obj > 0) {
-                    _this.corredorId = obj;
-                    _this.esCorredorEnDataAgro = true;
-                }
-                else {
-                    _this.getDatosCombos();
-                    _this.esCorredorEnDataAgro = false;
-                }
-                console.log("this.esCorredorEnDataAgro", _this.esCorredorEnDataAgro);
-            }
-        }, function (error) {
-            _this.spinnerComponent.hideIt();
-            _this.mensajeComponent.setErrorMsg(error.message);
-        });
-        return false;
     };
     ReporteBaseComponent.prototype.selectEventProveedor = function (item) {
         this.proveedorId = item.Id;
@@ -220,6 +87,30 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
                 _this.mensajeComponent.setErrorMsg(error.message);
             });
         }
+    };
+    ReporteBaseComponent.prototype.isVisible = function () {
+        if (this.data && this.data.length != 0)
+            return true;
+        else
+            return false;
+    };
+    ReporteBaseComponent.prototype.isVisibleProveedor = function () {
+        return this.esCorredorEnDataAgro == true;
+    };
+    ReporteBaseComponent.prototype.obtenerMateriales = function () {
+        var _this = this;
+        this.subscription = this.service.obtenerMateriales().subscribe(function (result) {
+            var obj = JSON.parse(result);
+            obj.Datos.forEach(function (element) {
+                var el = {
+                    Id: element.MaterialId.toString(),
+                    Descripcion: element.Descripcion
+                };
+                _this.materiales.push(el);
+            });
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
     };
     ReporteBaseComponent = __decorate([
         Component({

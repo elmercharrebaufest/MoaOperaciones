@@ -20,15 +20,13 @@ declare var $: any;
     providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
 })
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
-   
+
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
-    
+
     ngOnInit() {
         super.ngOnInit();
-        console.log("inicia el componente")
-        this.obteneDatosContrato(this.contrato);
-
+        this.negocioHabilitado(this.contrato);
     }
 
     ngAfterViewInit(): void {
@@ -203,7 +201,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     isVisibleEstablecimiento(): boolean {
-        return this.contrato.ProvinciaId == 1;
+        return this.contrato.ProvinciaId == 1 && this.contrato.ClasificacionId == 1;
     }
 
     grabarContratoAPrecio() {
@@ -234,7 +232,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 3;
+            this.contrato.StandardDeCalidadId = 4;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -245,10 +243,12 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(
                 result => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -280,12 +280,14 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
 
             );
         } catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -310,6 +312,10 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         }
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            return false;
+        }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
             return false;
         }
 
@@ -341,8 +347,12 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
             return false;
         }
-        if (this.contrato.Pizarra == true &&(this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
+        if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         return true;
@@ -360,6 +370,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.ClasificacionId == 1) {
             this.contrato.PlanCanje = false;
             this.contrato.Consignatario = false;
+        } else {
+            this.contrato.EstablecimientoPropio = null;
         }
     }
     isNotProductor(event) {
@@ -376,6 +388,10 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
+            this.contrato.Pizarra = false;
+            this.contrato.CalidadTercero = false;
+            this.contrato.SustentableTercero = false;
+
         }
     }
     changePizarra() {
@@ -439,5 +455,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     configuraciones() {
 
     }
-
+    isSoja(): boolean {
+        return this.contrato.MaterialId == 3;
+    }
 }

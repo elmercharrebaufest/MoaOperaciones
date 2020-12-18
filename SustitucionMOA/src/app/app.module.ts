@@ -48,6 +48,8 @@ import { ListadoNotificacionesComponent } from './notificaciones/listado-notific
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 
+import { VendedorStatusService } from "./vendedor/vendedor_status.service";
+import { BlockUIModule } from 'ng-block-ui';
 
 @NgModule({
   imports: [
@@ -62,6 +64,7 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
     ReCaptchaModule,
     AutocompleteLibModule,
     SharedModule,
+    BlockUIModule.forRoot(),
   ],
   declarations: [
     AppComponent,

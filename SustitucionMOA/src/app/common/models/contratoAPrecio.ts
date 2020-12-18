@@ -39,6 +39,7 @@
     public ObservacionTercero: string;
     public CalidadTercero: boolean;
     public Pizarra: boolean;
+    public SustentableTercero: boolean;
 
     constructor() {
         this.TipoNegocioId = 2;

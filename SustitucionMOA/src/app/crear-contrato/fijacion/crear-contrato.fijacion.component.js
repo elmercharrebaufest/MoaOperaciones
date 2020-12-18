@@ -31,7 +31,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
     CrearContratoFijacionComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
         console.log("inicia el componente");
-        this.obteneDatosContrato(this.contrato);
+        this.negocioHabilitado(this.contrato);
     };
     CrearContratoFijacionComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -196,28 +196,15 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         this.contrato.EstadoId = 9;
         this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 3;
-        //if (this.contrato.MaterialId == 1) {
-        //    this.contrato.StandardDeCalidadId = 2;
-        //}
-        //if (this.contrato.MaterialId == 2) {
-        //    this.contrato.StandardDeCalidadId = 7;
-        //}
-        //if (this.contrato.MaterialId == 3) {
-        //    this.contrato.StandardDeCalidadId = 3;
-        //}
-        //if (this.contrato.MaterialId == 4) {
-        //    this.contrato.StandardDeCalidadId = 5;
-        //}
-        //if (this.contrato.MaterialId == 5) {
-        //    this.contrato.StandardDeCalidadId = 5;
-        //}
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoFijacion(this.contrato).subscribe(function (result) {
+                _this.blockUI.stop();
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -250,11 +237,13 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
                     }
                 }
             }, function (error) {
+                _this.blockUI.stop();
                 _this.spinnerComponent.hideIt();
                 _this.mensajeComponent.setErrorMsg(error.message);
             });
         }
         catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -280,8 +269,12 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
             return false;
         }
-        if (this.contrato.Pizarra == true && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
+        if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         return true;
@@ -314,6 +307,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
             this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
+            this.contrato.Pizarra = false;
         }
     };
     CrearContratoFijacionComponent.prototype.changePizarra = function () {
@@ -346,15 +340,24 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoFijacionComponent.prototype.selectEventContratoId = function (item) {
+        console.log(item);
         this.contrato.ContratoSAP = item.ContratoId;
         this.contrato.Posicion = item.Posicion;
-        var dateParts = item.DesdeEntrega.split("/");
+        var dateParts = item.DesdeEntrega.split("-");
         var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
         this.contrato.FechaDesde = dateObject;
-        dateParts = item.HastaEntrega.split("/");
+        //console.log("FechaDesde");
+        //console.log("dateParts", dateParts);
+        //console.log("dateObject", dateObject);
+        //console.log("this.contrato.FechaDesde", this.contrato.FechaDesde);
+        dateParts = item.HastaEntrega.split("-");
         dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
         this.contrato.FechaHasta = dateObject;
         this.contrato.FechaEntrega = dateObject;
+        //console.log("FechaHasta");
+        //console.log("dateParts", dateParts);
+        //console.log("dateObject", dateObject);
+        //console.log("this.contrato.FechaHasta", this.contrato.FechaHasta);
         this.contrato.CampanaId = item.CampanaId;
         this.contrato.DestinoId = item.Centro;
         this.contrato.TrigoEspecial = item.Calidad;
@@ -373,7 +376,8 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         //}
     };
     CrearContratoFijacionComponent.prototype.isVisibleContratoDetalle = function () {
-        return (this.pendienteFijar != null && this.pendienteFijar != undefined);
+        var result = !(this.pendienteFijar == null || this.pendienteFijar == "" || this.pendienteFijar == undefined);
+        return result;
     };
     CrearContratoFijacionComponent = __decorate([
         Component({

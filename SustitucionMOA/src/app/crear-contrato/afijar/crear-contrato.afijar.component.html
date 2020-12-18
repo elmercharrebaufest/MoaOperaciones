@@ -92,12 +92,17 @@
 <div class="content-wraper">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
+        <div class="row titleSection" style="border-bottom:none;">
+            <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
+                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
+            </table>
+        </div>
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Fijar</strong> </div>
         </div>
         <mensaje></mensaje>
-        <fieldset class="fieldset">
+        <fieldset class="fieldset" *ngIf="!this.retirados">
             <label class="subtitulo">Condiciones Generales</label>
             <div class="form-group col-md-12" *ngIf="isVisibleProveedor()">
                 <label for="Proveedorid" class="font-weight-bold">Proveedor</label>
@@ -181,8 +186,8 @@
                     <label for="camania">Campaña</label>
                     <spinner-small #spinnerCampana></spinner-small>
                     <select class="form-control" name="campania" [(ngModel)]="contrato.CampanaId" *ngIf="!this.spinnerCampana.visible">
-                            <option *ngFor="let item of campanias" value="{{item.Id}}">{{item.Descripcion}}</option>
-                        </select>
+                        <option *ngFor="let item of campanias" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
                 </div>
             </div>
             <div class="row">
@@ -283,38 +288,27 @@
                     </select>
                 </div>
             </div>
+            <div *ngIf="isSoja()">
+                <label class="subtitulo">Condiciones de Pago</label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group col-md-12">
+                            <label class="switch">
+                                <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
+                                <span class="slider round"></span>
 
-            <!--<label class="subtitulo">Condiciones De Pago</label>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group col-md-12" *ngIf="isVisiblePagoDiferido()">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.PagoDiferidoTercero" (change)="changePagoDiferido($event)">
-                            <span class="slider round"></span>
+                            </label><label class="labelSwitch"> Calidad</label>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="switch">
+                                <input type="checkbox" [(ngModel)]="contrato.SustentableTercero">
+                                <span class="slider round"></span>
 
-                        </label><label class="labelSwitch"> Pago diferido</label>
-                    </div>
-                    <div class="form-group col-md-12" *ngIf="isVisibleDolarizado()">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.DolarizadoTercero" (change)="changeDolarizado($event)">
-                            <span class="slider round"></span>
-
-                        </label><label class="labelSwitch"> Dolarizado</label>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
-                            <span class="slider round"></span>
-
-                        </label><label class="labelSwitch"> Calidad</label>
+                            </label><label class="labelSwitch"> Sustentable</label>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="ObservacionTercero">Observaciones</label>
-                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
-                </div>
-
-            </div>-->
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <label for="ObservacionTercero">Observaciones</label>
@@ -325,13 +319,17 @@
                     <label style="padding-top: 41px;">10% por multa de incumplimiento</label>
                 </div>
             </div>
+            <br />
             <div class="row">
                 <div class="form-group col-md-12">
                     <spinner></spinner>
-
-                    <button type="button" class="btn btn-info btn-lg" (click)="grabarContratoAPrecio()" *ngIf="!this.spinnerComponent.visible"
-                            style="margin-top: 10px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoAFijar()" *ngIf="!this.spinnerComponent.visible"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;">
                         Grabar
+                    </button>
+                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="irACargas()"
+                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
+                        Volver
                     </button>
                 </div>
             </div>
@@ -345,15 +343,12 @@
 </div>
 
 <!-- Modal confirmar -->
-<a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"  style="display:none;">    Click    to Open Confirm Modal</a>
-<div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+<a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal" style="display:none;">    Click    to Open Confirm Modal</a>
+<div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
      data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
             </div>
             <div class="modal-body modal-notificacion">
@@ -363,7 +358,32 @@
 
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="irACargas()">Aceptar</button>               
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="irACargas()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal mensaje -->
+<a href="#mensajeModal" class="trigger-btn" id="openModalMensajeModal" data-toggle="modal" style="display:none;">    Click    to Open mensaje Modal</a>
+<div class="modal fade fade-complete" id="mensajeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Mensaje</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    {{mensajeModal}}
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
             </div>
         </div>
     </div>

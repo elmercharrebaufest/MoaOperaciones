@@ -26,7 +26,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     ngOnInit() {
         super.ngOnInit();
         console.log("inicia el componente")
-        this.obteneDatosContrato(this.contrato);
+        this.negocioHabilitado(this.contrato);
 
     }
 
@@ -219,30 +219,18 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 3;
 
-        //if (this.contrato.MaterialId == 1) {
-        //    this.contrato.StandardDeCalidadId = 2;
-        //}
-        //if (this.contrato.MaterialId == 2) {
-        //    this.contrato.StandardDeCalidadId = 7;
-        //}
-        //if (this.contrato.MaterialId == 3) {
-        //    this.contrato.StandardDeCalidadId = 3;
-        //}
-        //if (this.contrato.MaterialId == 4) {
-        //    this.contrato.StandardDeCalidadId = 5;
-        //}
-        //if (this.contrato.MaterialId == 5) {
-        //    this.contrato.StandardDeCalidadId = 5;
-        //}
+      
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoFijacion(this.contrato).subscribe(
                 result => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -275,12 +263,14 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
 
             );
         } catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -312,8 +302,12 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             return false;
         }
 
-        if (this.contrato.Pizarra == true && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
+        if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
 
@@ -351,6 +345,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
+            this.contrato.Pizarra = false;
         }
     }
     changePizarra() {
@@ -385,15 +380,24 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     }
 
     selectEventContratoId(item: FijacionesAutomaticas) {
+        console.log(item);
         this.contrato.ContratoSAP = item.ContratoId;
         this.contrato.Posicion = item.Posicion;
-        var dateParts = item.DesdeEntrega.split("/");
+        var dateParts = item.DesdeEntrega.split("-");
         var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
         this.contrato.FechaDesde = dateObject;
-        dateParts = item.HastaEntrega.split("/");
+        //console.log("FechaDesde");
+        //console.log("dateParts", dateParts);
+        //console.log("dateObject", dateObject);
+        //console.log("this.contrato.FechaDesde", this.contrato.FechaDesde);
+        dateParts = item.HastaEntrega.split("-");
         dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
         this.contrato.FechaHasta = dateObject;
         this.contrato.FechaEntrega = dateObject;
+        //console.log("FechaHasta");
+        //console.log("dateParts", dateParts);
+        //console.log("dateObject", dateObject);
+        //console.log("this.contrato.FechaHasta", this.contrato.FechaHasta);
         this.contrato.CampanaId = item.CampanaId;
         this.contrato.DestinoId = item.Centro;
         this.contrato.TrigoEspecial = item.Calidad;
@@ -415,6 +419,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     }
 
     isVisibleContratoDetalle(): boolean {
-        return (this.pendienteFijar != null && this.pendienteFijar != undefined);
+        var result = !(this.pendienteFijar == null || this.pendienteFijar == "" || this.pendienteFijar == undefined);
+        return result;
     }
 }
