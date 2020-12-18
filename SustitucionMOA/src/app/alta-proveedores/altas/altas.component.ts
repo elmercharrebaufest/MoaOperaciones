@@ -440,7 +440,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
     copiar(str, id) {
         console.log(str, id);
-        $('[data-toggle="popover"]').popover('hide');
         const el = document.createElement('textarea');
         el.value = str;
         el.setAttribute('readonly', '');
@@ -450,8 +449,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        setTimeout(function () {
-            $("#h" + id).popover('show');
-        }, 100);
+
+        $("#h" + id).popover('show');
+        setTimeout(function(){$("#h" + id).popover('hide')}, 1500);
+
+        return false;
     }
 }
