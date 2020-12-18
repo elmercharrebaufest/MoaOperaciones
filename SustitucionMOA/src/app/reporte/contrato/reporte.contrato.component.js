@@ -161,7 +161,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                 maxView: 4
             });
         });
-        //this.obteneContratos();
+        this.getDatosCombos();
     };
     ReporteContratoComponent.prototype.obteneContratos = function () {
         var _this = this;
@@ -255,6 +255,115 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false; // <- Prevent href del a
+    };
+    ReporteContratoComponent.prototype.getDatosCombos = function () {
+        var _this = this;
+        this.unsubscribe();
+        this.subscription = this.service.getDatosCombos().subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = JSON.parse(result);
+                _this.datosContrato = obj;
+                obj.Datos.Bolsa.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.bolsasConfirma.push(el);
+                    if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
+                        _this.bolsasFisico.push(el);
+                    if (element.Descripcion == "Bs As")
+                        _this.bolsasCarta.push(el);
+                });
+                obj.Datos.Clasificacion.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.condicionVendedor.push(el);
+                });
+                obj.Datos.Zona.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.zona.push(el);
+                });
+                obj.Datos.Destino.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.destinos.push(el);
+                });
+                obj.Datos.campania.forEach(function (element) {
+                    var el = {
+                        Id: element.CampaniaId,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.campanias.push(el);
+                });
+                obj.Datos.moneda.forEach(function (element) {
+                    var el = {
+                        Id: element.MonedaId,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.monedas.push(el);
+                });
+                obj.Datos.Condicion.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.condicionFijacion.push(el);
+                });
+                _this.obtenerMateriales();
+                _this.validarDirecto();
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    ReporteContratoComponent.prototype.validarDirecto = function () {
+        var _this = this;
+        this.subscription = this.service.validarDirecto().subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = JSON.parse(result);
+                if (obj != null && obj > 0) {
+                    _this.corredorId = obj;
+                    _this.esCorredorEnDataAgro = true;
+                }
+                else {
+                    //this.getDatosCombos();
+                    _this.esCorredorEnDataAgro = false;
+                }
+                _this.obteneContratos();
+                console.log("this.esCorredorEnDataAgro", _this.esCorredorEnDataAgro);
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
     };
     ReporteContratoComponent = __decorate([
         Component({
