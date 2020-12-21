@@ -331,7 +331,21 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+            if (proveedor.RequiereVerificacionCompras ?? false)
+            {
+                proveedor.EstadoAprobacion = EstadoAprobacion.PendienteAprobacionCompras;
+            }
+            else
+            {
+                if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
+                {
+                    proveedor.EstadoAprobacion = EstadoAprobacion.EtapaFinal;
+                }
+                else
+                {
+                    proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+                }
+            }
 
             proveedor.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
             proveedor.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;

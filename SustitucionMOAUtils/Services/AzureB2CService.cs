@@ -129,16 +129,38 @@ namespace SustitucionMOAUtils.Services
             usuario.Proveedores = new List<Proveedor>();
 
             string cuit = usuario.CUITRegistro;
+            string mailUsuario = usuario.Mail;
+
             Proveedor proveedor = new Proveedor
             {
                 CUIT = usuario.CUITRegistro,
-                EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                EstadoAprobacion = EstadoAprobacion.AltaIncompleta,
                 Mail = usuario.Mail,
                 TipoProveedor = ObtenerTipoPorNombreCorto("NG")
-        };
-            if (repositorio.Existe<Proveedor>(x=> x.CUIT == cuit))
+            };
+
+            proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
             {
-                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit); 
+                new ProveedorHistorialAprobacion()
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.AltaIncompleta,
+                    Observacion = "Registro de usuario",
+                    Usuario_Id = usuario.Id
+                }
+            };
+
+            if (repositorio.Existe<Proveedor>(x=> x.CUIT == cuit && x.Mail == mailUsuario))
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario); 
+            }
+
+            if (proveedor.EstadoAprobacion == EstadoAprobacion.Aprobado)
+            {
+                var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
+
+                usuario.RemoverRoles();
+                usuario.AgregarRol(rolUsuarioNoGranos);
             }
 
             usuario.Proveedores.Add(proveedor);

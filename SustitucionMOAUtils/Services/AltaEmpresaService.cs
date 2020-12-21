@@ -29,7 +29,7 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public List<ProveedorDto> GetEmpresas()
+        public List<ProveedorAltaDto> GetEmpresas(int IdTipoProveedor)
         {
             try
             {
@@ -41,11 +41,15 @@ namespace SustitucionMOAUtils.Services
                                 || x.EstadoAprobacion == EstadoAprobacion.Aprobado
                                 || x.EstadoAprobacion == EstadoAprobacion.Rechazado
                                 || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
-                                || (x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente && (x.AltaInterna?? false)))
+                                || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
+                                || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
+                                || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
+                                || (x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente && (x.AltaInterna ?? false)))
                                 && x.HistorialAprobaciones.Count > 0
+                                && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
                                 );
 
-                List<ProveedorDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorDto
+                List<ProveedorAltaDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorAltaDto
                 {
                     CodigoProveedor = proveedor.CodigoProveedor ?? "",
                     CUIT = proveedor.CUIT,
@@ -72,8 +76,24 @@ namespace SustitucionMOAUtils.Services
                         Observacion = a.Observacion,
                         Usuario = a.Usuario.Mail
                     }).ToList(),
-                    IdTipoUsuario = proveedor.TipoProveedor.Id
-                    //IdTipoUsuario = (proveedor.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente && (proveedor.AltaInterna ?? false)) ? 3: proveedor.UsuariosAsociados.FirstOrDefault().TipoUsuario.Id
+                    IdTipoUsuario = proveedor.TipoProveedor.Id,
+                    CBU = proveedor.CBU,
+                    CondicionDePago = proveedor.CondicionDePago,
+                    FacturacionAnual = proveedor.FacturacionAnual,
+                    OrganizacionDeCompra = proveedor.OrganizacionDeCompra,
+                    RazonDeEleccion = proveedor.RazonDeEleccion,
+                    RealizarAnalisisNOSIS = proveedor.RealizarAnalisisNOSIS ?? false,
+                    Rubro = proveedor.Rubro != null ? proveedor.Rubro.Nombre : "",
+                    RequiereVerificacionCompras = proveedor.RequiereVerificacionCompras ?? false,
+                    SolicitanteInterno = proveedor.SolicitanteInterno,
+                    ServicioPrestado = proveedor.ServicioPrestado,
+                    Telefono = proveedor.Telefono,
+                    IdSituacionIVA = proveedor.IdSituacionIVA,
+                    SituacionIVA = ((SituacionIVA)(proveedor.IdSituacionIVA ?? 0)).ToFriendlyString(),
+                    IdIngresoBruto = proveedor.IdIngresoBruto,
+                    IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString()
+
+
                 }).ToList();
 
                 if (proveedorDtos.Count == 0)
@@ -170,7 +190,7 @@ namespace SustitucionMOAUtils.Services
                     var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
                     var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
-                    switch (usuario.TipoUsuario.Nombre)
+                    switch (proveedor.TipoProveedor.Nombre)
                     {
                         case "Granos":
                             usuario.RemoverRoles();
@@ -191,9 +211,28 @@ namespace SustitucionMOAUtils.Services
                                 usuario.AgregarRol(rolUsuarioGranos);
 
                             break;
+                        case "No Granos":
+                            var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
+
+                            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+                            if (usuario != null)
+                            {
+                                usuario.RemoverRoles();
+                                usuario.AgregarRol(rolUsuarioNoGranos);
+                            }
+
+                            break;
                     }
 
                 }
+
+                //Si el proveedor no tiene que pasar por analisis de nosis, lo mando al estado final directamente
+                if (estado == EstadoAprobacion.AprobacionPendiente)
+                {
+                    if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
+                        estado = EstadoAprobacion.EtapaFinal;
+                }
+
 
                 if (estado == EstadoAprobacion.Rechazado || estado == EstadoAprobacion.EdicionRequerida)
                 {
@@ -370,5 +409,12 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
     }
 }

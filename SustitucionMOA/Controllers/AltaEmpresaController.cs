@@ -29,11 +29,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult getEmpresas()
+        public ActionResult getEmpresas(int IdTipoProveedor)
         {
             try
             {
-                var empresas = altaEmpresaService.GetEmpresas();
+                var empresas = altaEmpresaService.GetEmpresas(IdTipoProveedor);
                 foreach (var item in empresas)
                 {
                     item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
@@ -91,7 +91,10 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString())
+                    new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString(), EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.RechazadoPorCompras.ToFriendlyString(), EstadoAprobacion.RechazadoPorCompras.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.AltaIncompleta.ToFriendlyString(), EstadoAprobacion.AltaIncompleta.ToFriendlyString())
                 };
                 List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
                 {

@@ -55,6 +55,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     observacionesProveedor: string = "";
     mensajeError: string = "";
     filtroAlta: string = "";
+    idTipoProveedor: number = 0;
 
 
     listaArchivos: Array<Archivo> = [];
@@ -79,7 +80,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.altaEmpresaService.getEmpresas().subscribe(
+            this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -394,8 +395,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
             );
     }
 
-    completarAlta(empresa: Empresa) {
+    altaInterna(empresa: Empresa) {
        this.goToSeccionParam('/alta-empresa-no-granos', empresa.Id.toString());
-       //this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
+    }
+
+    completarAlta(empresa: Empresa) {
+       this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
     }
 }
