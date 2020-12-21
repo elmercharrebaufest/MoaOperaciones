@@ -90,6 +90,7 @@ namespace SustitucionMOAUtils.Services
                             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
                             proveedor.FechaSolicitud = DateTime.Now;
 
+
                             Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
                             proveedor.EstadoAprobacion = respuesta.ProveedorOperando ? EstadoAprobacion.Aprobado : EstadoAprobacion.DocumentacionPendiente;
