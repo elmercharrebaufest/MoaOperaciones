@@ -42,7 +42,11 @@ namespace SustitucionMOA
 
 			app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
 
-			app.UseCookieAuthentication(new CookieAuthenticationOptions());
+			app.UseCookieAuthentication(new CookieAuthenticationOptions
+			{
+				// ASP.NET web host compatible cookie manager
+				CookieManager = new SystemWebChunkingCookieManager()
+			});
 
 
 			app.UseOpenIdConnectAuthentication(
@@ -50,6 +54,7 @@ namespace SustitucionMOA
 				{
 					// Generate the metadata address using the tenant and policy information
 					MetadataAddress = String.Format(Globals.WellKnownMetadata, Globals.Tenant, Globals.DefaultPolicy),
+
 
 					// These are standard OpenID Connect parameters, with values pulled from web.config
 					ClientId = Globals.ClientId,
@@ -72,8 +77,9 @@ namespace SustitucionMOA
 						NameClaimType = "name",
 						ValidateIssuer = false
 					},
-					
-					CookieManager = new SameSiteCookieManager(new SystemWebCookieManager()),
+
+					// ASP.NET web host compatible cookie manager
+					CookieManager = new SystemWebCookieManager(),
 
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
 					Scope = $"openid profile offline_access"
@@ -81,6 +87,7 @@ namespace SustitucionMOA
 				}
 			);
 		}
+
 
 
 		//Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 

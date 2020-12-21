@@ -24,6 +24,10 @@ export class AltaEmpresaService extends BaseService {
 
     public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string,estadoSIPER: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
+        console.log("abajo");
+        console.log(estadoSIPER);
+        console.log("arriba");
+
         params.set('empresaId', empresaId.toString());
         params.set('estado', estadoId.toString());
         params.set('observacion', observacion);

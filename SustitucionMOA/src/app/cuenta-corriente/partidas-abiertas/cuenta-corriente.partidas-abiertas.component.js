@@ -44,7 +44,7 @@ var CuentaCorrientePartidasAbiertasComponent = /** @class */ (function (_super) 
         _this.router = router;
         _this.tituloArchivo = "ReporteCuentasCorrientesAgrupadas.xls";
         _this.itemsEnPantalla = 5;
-        _this.showMostrarMas = true;
+        _this.showMostrarMas = false;
         _this.filtroNroLegal = "";
         _this.granosSelected = sessionStorage.getItem("granosSelected");
         sessionDataService.granosSelected$.subscribe(function (granosSelected) {
@@ -82,7 +82,7 @@ var CuentaCorrientePartidasAbiertasComponent = /** @class */ (function (_super) 
     CuentaCorrientePartidasAbiertasComponent.prototype.vaciarFiltros = function () {
         this.filtroNroLegal = "";
         this.itemsEnPantalla = 5;
-        this.showMostrarMas = true;
+        this.showMostrarMas = false;
     };
     CuentaCorrientePartidasAbiertasComponent.prototype.isGranos = function () {
         return this.granosSelected == "G";
@@ -103,7 +103,7 @@ var CuentaCorrientePartidasAbiertasComponent = /** @class */ (function (_super) 
         this.checkPermisos();
         this.navService.setSeccionList([
             new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
-            new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Saldos'),
+            new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de Pagos'),
             new Seccion('/cuenta-corriente/partidas-abiertas', 'cuenta-corriente', 'Partidas Abiertas'),
         ]);
         this.getData();

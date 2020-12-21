@@ -65,11 +65,12 @@ namespace SustitucionMOAUtils.Services
                     HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                     {
                         Id = a.Id,
-                        EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                        EstadoAprobacionDescripcion = a.EstadoAprobacion.ToFriendlyString(),
                         Fecha = a.Fecha,
                         Observacion = a.Observacion,
                         Usuario = a.Usuario.Mail
                     }).ToList()
+
                 }).ToList();
 
                 if (proveedorDtos.Count == 0)
@@ -157,7 +158,7 @@ namespace SustitucionMOAUtils.Services
                         Usuario_Id = usuarioId
                     }
                 );
-
+ 
                 proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
