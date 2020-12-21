@@ -755,6 +755,11 @@
                         (click)="cambiarEstado(4)">
                         Solicitar informaci&oacute;n
                     </button>
+                    <button type="button" class="btn-custom btn-mediano btn-add"
+                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 4) && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(12)">
+                        Anular solicitud de informaci&oacute;n
+                    </button>
                 </div>
             </div>
         </div>
