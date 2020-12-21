@@ -157,6 +157,22 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+
+        public decimal TraerTipoDeCambio()
+        {
+            try
+            {
+                var respuesta = new DataAgroConsumer().TraerTipoDeCambio();
+
+                return respuesta;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+        }
+
         public void ValidarNuevoProveedorMultifirma(ref Proveedor proveedor)
         {
             var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);

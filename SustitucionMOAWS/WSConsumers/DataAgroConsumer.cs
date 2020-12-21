@@ -45,6 +45,20 @@ namespace SustitucionMOAWS.WSConsumers
                 return false;
             }
         }
+
+        public decimal TraerTipoDeCambio()
+        {
+            try
+            {
+                return service.TraerTipoDeCambio(null);
+            }
+            //Significa que no estamos conectados
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
     }
 
 }

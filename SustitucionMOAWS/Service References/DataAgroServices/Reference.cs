@@ -3597,6 +3597,12 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ProveedorApocrifo", ReplyAction="http://tempuri.org/IDataAgroServices/ProveedorApocrifoResponse")]
         System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio", ReplyAction="http://tempuri.org/IDataAgroServices/TraerTipoDeCambioResponse")]
+        decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio", ReplyAction="http://tempuri.org/IDataAgroServices/TraerTipoDeCambioResponse")]
+        System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -3744,6 +3750,14 @@ namespace SustitucionMOAWS.DataAgroServices {
         
         public System.Threading.Tasks.Task<bool> ProveedorApocrifoAsync(string cuit) {
             return base.Channel.ProveedorApocrifoAsync(cuit);
+        }
+        
+        public decimal TraerTipoDeCambio(System.Nullable<System.DateTime> fecha) {
+            return base.Channel.TraerTipoDeCambio(fecha);
+        }
+        
+        public System.Threading.Tasks.Task<decimal> TraerTipoDeCambioAsync(System.Nullable<System.DateTime> fecha) {
+            return base.Channel.TraerTipoDeCambioAsync(fecha);
         }
     }
 }

@@ -56,12 +56,15 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     readonlyEmail: boolean = false;
     ingresoAPlanta: boolean = false;
     altaInterna: boolean = false;
+    tipoCambiario: number = 0;
     
     observacionesParaElProveedor: string = "";
 
     ngOnInit() {
         this.securityService.tienePermisoRedirect("ALTA EMPRESA NO GRANOS");
         this.getRubrosOptions();
+        this.getTipoCambiario();
+
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) {
                 this.proveedorId = params["id"];
@@ -90,6 +93,31 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.rubros = result.data;
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    getTipoCambiario() {
+        try {
+            this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.tipoCambiario = result.data;
+                        console.log(this.tipoCambiario);
                     }
                 },
                 error => {

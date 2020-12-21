@@ -15,5 +15,6 @@ namespace SustitucionMOAUtils.Interfaces
             int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna);
         List<RubroDto> GetRubros();
         string RechazarProveedorNoGranos(int idProveedor, string usuarioMail, string observacionesParaElProveedor);
+
     }
 }

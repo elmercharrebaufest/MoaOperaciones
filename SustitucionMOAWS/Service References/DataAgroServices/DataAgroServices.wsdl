@@ -105,6 +105,12 @@
   <wsdl:message name="IDataAgroServices_ProveedorApocrifo_OutputMessage">
     <wsdl:part name="parameters" element="tns:ProveedorApocrifoResponse" />
   </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerTipoDeCambio_InputMessage">
+    <wsdl:part name="parameters" element="tns:TraerTipoDeCambio" />
+  </wsdl:message>
+  <wsdl:message name="IDataAgroServices_TraerTipoDeCambio_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TraerTipoDeCambioResponse" />
+  </wsdl:message>
   <wsdl:portType name="IDataAgroServices">
     <wsdl:operation name="Ping">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/Ping" message="tns:IDataAgroServices_Ping_InputMessage" />
@@ -165,6 +171,10 @@
     <wsdl:operation name="ProveedorApocrifo">
       <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/ProveedorApocrifo" message="tns:IDataAgroServices_ProveedorApocrifo_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/ProveedorApocrifoResponse" message="tns:IDataAgroServices_ProveedorApocrifo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="TraerTipoDeCambio">
+      <wsdl:input wsaw:Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio" message="tns:IDataAgroServices_TraerTipoDeCambio_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IDataAgroServices/TraerTipoDeCambioResponse" message="tns:IDataAgroServices_TraerTipoDeCambio_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IDataAgroServices" type="tns:IDataAgroServices">
@@ -298,6 +308,15 @@
     </wsdl:operation>
     <wsdl:operation name="ProveedorApocrifo">
       <soap:operation soapAction="http://tempuri.org/IDataAgroServices/ProveedorApocrifo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TraerTipoDeCambio">
+      <soap:operation soapAction="http://tempuri.org/IDataAgroServices/TraerTipoDeCambio" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

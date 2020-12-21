@@ -151,4 +151,11 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/RechazarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
+
+    public getTipoCambiario(): Observable<any> {
+        return this.http
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
 }

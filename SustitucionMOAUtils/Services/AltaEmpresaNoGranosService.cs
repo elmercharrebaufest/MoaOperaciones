@@ -154,6 +154,5 @@ namespace SustitucionMOAUtils.Services
             return string.Format(SuccessMsg.UsuarioDeshabilitadoOK, proveedor.CUIT);
         }
 
-
     }
 }
