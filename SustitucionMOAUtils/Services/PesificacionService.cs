@@ -191,7 +191,19 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException("No se encontraron contratos para pesificar");
                 }
 
-                return responseGet.Contratos.Where(a => a.CantidadPendiente > 0).ToList();
+                return responseGet.Contratos.Where(a => a.CantidadPendiente > 0)
+                    .Select(x => new Contrato
+                    {
+                        NroContrato = x.NroContrato.TrimStart('0'),
+                        Fijacion = x.Fijacion.TrimStart('0'),
+                        CantidadPendiente = x.CantidadPendiente,
+                        Moneda = x.Moneda,
+                        MontoPendiente = x.MontoPendiente,
+                        NombreVendedor = x.NombreVendedor,
+                        Precio = x.Precio,
+                        Unidad = x.Unidad,
+                        Vendedor = x.Vendedor
+                    }).ToList();
             }
             catch (InfoCustomException e)
             {

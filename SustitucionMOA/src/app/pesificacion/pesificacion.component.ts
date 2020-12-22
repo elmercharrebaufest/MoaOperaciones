@@ -259,5 +259,17 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         return Math.round(num);
     };
 
+    changeFijacion() {
+        console.log("antes",this.fijacion);
+        this.fijacion = this.fijacion.replace(/^0+/, '');
+        console.log("despues",this.fijacion);
+    }
+
+    changeContrato() {
+        console.log("antes", this.contrato);
+        this.contrato = this.contrato.replace(/^0+/, '');
+        console.log("despues", this.contrato);
+    }
+
 }
 

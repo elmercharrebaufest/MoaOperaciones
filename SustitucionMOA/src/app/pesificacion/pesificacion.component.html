@@ -31,14 +31,14 @@
                                 Contrato: *
                                 <div class="styled-select ">
                                     <input type="search" class="fourRounded" placeholder="" aria-controls="tableModal"
-                                        [(ngModel)]="contrato">
+                                        [(ngModel)]="contrato" numeric decimals="0" (ngModelChange)="changeContrato($event)">
                                 </div>
                             </div>
                             <div class="col-xs-12">
                                 Fijacion:
                                 <div class="styled-select ">
                                     <input type="search" class="fourRounded" placeholder="" aria-controls="tableModal"
-                                        [(ngModel)]="fijacion">
+                                        [(ngModel)]="fijacion" numeric decimals="0" (ngModelChange)="changeFijacion($event)" >
                                 </div>
                             </div>
                             <div class="col-xs-12">
