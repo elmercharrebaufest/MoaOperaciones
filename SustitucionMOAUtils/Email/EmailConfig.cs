@@ -10,6 +10,7 @@ namespace SustitucionMOAUtils.Email
     public class EmailConfig
     {
         private static string emailAddTo = ConfigurationManager.AppSettings["EmailTo"];
+        private static string emailAddToDocumentacion = ConfigurationManager.AppSettings["EmailToDocumentacion"];
         private static string emailAddToFletes = ConfigurationManager.AppSettings["EmailToFletes"];
         private static string emailAddFrom = ConfigurationManager.AppSettings["EmailFrom"];
         private static string emailHost = ConfigurationManager.AppSettings["HostEmail"];
@@ -24,6 +25,11 @@ namespace SustitucionMOAUtils.Email
         public static string getEmailAddToFletes()
         {
             return emailAddToFletes;
+        }
+
+        public static string getEmailAddToDocumentacion()
+        {
+            return emailAddToDocumentacion;
         }
 
         public static string getEmailAddFrom()
