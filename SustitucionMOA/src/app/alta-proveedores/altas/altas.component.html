@@ -30,7 +30,8 @@
                     </div>
                 </div>
 
-                <div class="col-xs-6  col-sm-4 col-md-5">
+                <div class="col-xs-6  col-sm-4 col-md-5"
+                    *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
                     Tipo proveedor:
                     <div class="styled-select ">
                         <select [(ngModel)]="idTipoProveedor">
@@ -43,7 +44,7 @@
                 </div>
 
                 <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
-                    <div class="btn btn-custom btn-add" style="margin-top:23px">Buscar
+                    <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
                         <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
                     </div>
                 </a>
@@ -537,50 +538,40 @@
 
                         <div class="col-md-12">
                             <h3>Información del proveedor {{empresaSeleccionada.RazonSocial}}</h3>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Telefono: {{empresaSeleccionada.Telefono}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Rubro proveedor: {{empresaSeleccionada.Rubro}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Condición de Pago: {{empresaSeleccionada.CondicionDePago}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Servicio prestado a Molinos: {{empresaSeleccionada.ServicioPrestado}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Organización de Compra: {{empresaSeleccionada.OrganizacionDeCompra}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Razón de elección del proveedor: {{empresaSeleccionada.RazonDeEleccion}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Estimado facturación anual a MOA: {{empresaSeleccionada.FacturacionAnual}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Realizar Analisis NOSIS: {{empresaSeleccionada.RealizarAnalisisNOSIS}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Requiere Verificación de compras: {{empresaSeleccionada.RequiereVerificacionCompras}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Solicitante interno: {{empresaSeleccionada.SolicitanteInterno}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Proveedor con ingreso a planta: {{empresaSeleccionada.IngresoAPlanta}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Alta interna: {{empresaSeleccionada.AltaInterna}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Situación de I.V.A.: {{empresaSeleccionada.SituacionIVA}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                Ingresos Brutos: {{empresaSeleccionada.IngresoBruto}}
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6">
-                                CBU: {{empresaSeleccionada.CBU}}
+                            <div class="form-group grey">
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Telefono: <label>{{empresaSeleccionada.Telefono}}</label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Rubro: <label>{{empresaSeleccionada.Rubro}}</label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Condición de Pago: <label>{{empresaSeleccionada.CondicionDePago}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Servicio prestado a Molinos: <label>{{empresaSeleccionada.ServicioPrestado}}
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Organización de Compra: <label>{{empresaSeleccionada.OrganizacionDeCompra}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Razón de elección del proveedor: <label>{{empresaSeleccionada.RazonDeEleccion}}
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Estimado facturación anual a MOA: <label>{{empresaSeleccionada.FacturacionAnual}}
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Situación de I.V.A.: <label>{{empresaSeleccionada.SituacionIVA}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Ingresos Brutos: <label>{{empresaSeleccionada.IngresoBruto}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    CBU: <label>{{empresaSeleccionada.CBU}} </label>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-7">
@@ -598,7 +589,7 @@
                                     </a>
                                 </span>
                             </div>
-                            <div class="form-group grey ">
+                            <div class="">
                                 <label>
                                     Inscripción en IIBB -local o
                                     Convenio (CM05
@@ -615,76 +606,7 @@
                                     </a>
                                 </span>
                             </div>
-                            <div class="form-group grey ">
-                                <label>
-                                    Certificados de exclusión o
-                                    exención IVA.
-                                </label>&nbsp;
 
-                                <label style="color:red;"
-                                    *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIVA').length === 0">
-                                    Sin Adjuntar
-                                </label>
-
-                                <span
-                                    *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
-                                    <a (click)="descargarArchivo(archivo)">
-                                        {{archivo.Nombre}}
-                                    </a>
-                                </span>
-                            </div>
-                            <div class="form-group grey ">
-                                <label>
-                                    Certificados de exclusión o
-                                    exención IIBB.
-                                </label>
-
-                                <label style="color:red;"
-                                    *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB').length === 0">
-                                    Sin Adjuntar
-                                </label>
-                                <div
-                                    *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
-                                    <a (click)="descargarArchivo(archivo)">
-                                        {{archivo.Nombre}}
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="form-group grey ">
-                                <label>
-                                    Certificados de exclusión o
-                                    exención SUSS.
-                                </label>&nbsp;
-                                <label style="color:red;"
-                                    *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS').length === 0">
-                                    Sin Adjuntar
-                                </label>
-
-                                <span
-                                    *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
-                                    <a (click)="descargarArchivo(archivo)">
-                                        {{archivo.Nombre}}
-                                    </a>
-                                </span>
-                            </div>
-                            <div class="form-group grey ">
-                                <label>
-                                    Certificados de exclusión o
-                                    exención Ganancias.
-                                </label>&nbsp;
-
-                                <label style="color:red;"
-                                    *ngIf="(listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias').length === 0">
-                                    Sin Adjuntar
-                                </label>
-
-                                <span
-                                    *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
-                                    <a (click)="descargarArchivo(archivo)">
-                                        {{archivo.Nombre}}
-                                    </a>
-                                </span>
-                            </div>
                             <div class="form-group grey ">
                                 <label>
                                     SIPER.
@@ -702,8 +624,6 @@
                                     </a>
                                 </span>
                             </div>
-                        </div>
-                        <div class="col-md-5">
                             <mdb-step name="Step 4" label="Documentación">
                                 <h3>Otros archivos </h3>
                                 <div class="form-group grey ">
@@ -716,6 +636,40 @@
                                             {{archivo.Nombre}}
                                         </a>
                                     </div>
+                                </div>
+                            </mdb-step>
+                        </div>
+                        <div class="col-md-5">
+
+                            <mdb-step name="Step 4" label="Documentación" *ngIf="empresaSeleccionada.IngresoAPlanta">
+                                <h3>Ingreso a planta </h3>
+                                <div class="form-group grey ">
+                                    <label>Nota de siniestralidad ART:</label>&nbsp;
+                                    <label style="color:red;"
+                                        *ngIf="(listaArchivos | archivosFilterPipe:'notaSiniestralidadART').length === 0">
+                                        Sin Adjuntar
+                                    </label>
+
+                                    <span
+                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'notaSiniestralidadART'">
+                                        <a (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="form-group grey ">
+                                    <label>Protocolo Sanitario COVID:</label>&nbsp;
+                                    <label style="color:red;"
+                                        *ngIf="(listaArchivos | archivosFilterPipe:'protocoloSanitarioCovid').length === 0">
+                                        Sin Adjuntar
+                                    </label>
+
+                                    <span
+                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'protocoloSanitarioCovid'">
+                                        <a (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+                                    </span>
                                 </div>
                             </mdb-step>
                             <mdb-step name="Step 4" label="Documentación">
@@ -1004,22 +958,22 @@
 
 
                     <button type="button" class="btn-custom btn-mediano btn-guardar"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(2)">
                         Aprobar (Compras)
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-remove"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(12)">
                         Rechazar (Compras)
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 12 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 12 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(11)">
                         Anular rechazo (Compras)
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(4)">
                         Observar (Compras)
                     </button>

@@ -22,29 +22,32 @@
                     <title-caps>Datos Generales</title-caps>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
-                    Razón Social:
-                    <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="RazonSocial">
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
                     CUIT:
                     <div class="styled-select">
                         <input type="text" class="form-control" placeholder="" mask="00-00000000-0" [(ngModel)]="CUIT"
-                            maxlength="13" [readonly]="readonlyCUIT ? 'readonly' : null" />
+                            (change)="obtenerRazonSocial()" maxlength="13"
+                            [readonly]="readonlyCUIT ? 'readonly' : null" />
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
+                    Razón Social:
+                    <div class="styled-select">
+                        <input type="text" class="" placeholder="" [(ngModel)]="RazonSocial" maxlength="100"
+                            [readonly]="readonlyRazonSocial ? 'readonly' : null">
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-6">
                     Email:
                     <div class="styled-select">
-                        <input type="text" class="form-control" placeholder="" [(ngModel)]="Email"
+                        <input type="text" class="form-control" placeholder="" [(ngModel)]="Email" maxlength="100"
                             [readonly]="readonlyEmail ? 'readonly' : null" />
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Telefono:
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="Telefono">
+                        <input type="text" class="" placeholder="" [(ngModel)]="Telefono" maxlength="20">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
@@ -59,71 +62,66 @@
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Condición de Pago:
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="condicionDePago">
+                        <input type="text" class="" placeholder="" [(ngModel)]="condicionDePago" maxlength="100">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Servicio prestado a Molinos:
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="servicioPrestado">
+                        <input type="text" class="" placeholder="" [(ngModel)]="servicioPrestado" maxlength="100">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Organización de Compra:
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="organizacionDeCompra">
+                        <input type="text" class="" placeholder="" [(ngModel)]="organizacionDeCompra" maxlength="100">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Razón de elección del proveedor:
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="razonDeEleccion">
+                        <input type="text" class="" placeholder="" [(ngModel)]="razonDeEleccion" maxlength="200">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
-                    Estimado facturación anual a MOA:
+                    Estimado facturación anual a MOA ($):
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" numeric decimals="0" [(ngModel)]="facturacionAnual">
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-3">
-                    Realizar Analisis NOSIS:
-                    <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" [(ngModel)]="RealizarAnalisisNOSIS">
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-3">
-                    Requiere Verificación de compras:
-                    <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" [(ngModel)]="RequiereVerificacionCompras">
+                        <input type="text" class="" placeholder="" numeric decimals="0" [(ngModel)]="facturacionAnual"
+                            maxlength="12" (change)="calcularFacturacion()">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Solicitante interno:
                     <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="solicitanteInterno">
+                        <input type="text" class="" placeholder="" [(ngModel)]="solicitanteInterno" maxlength="100">
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" style="margin-right: 5px;" id="RealizarAnalisisNOSIS" placeholder=""
+                        [disabled]="nosisObligatorio" [(ngModel)]="RealizarAnalisisNOSIS">
+                    <label for="RealizarAnalisisNOSIS">Realizar Analisis NOSIS</label>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" style="margin-right: 5px;" id="RequiereVerificacionCompras"
+                        class="checkboxMargin" placeholder="" [(ngModel)]="RequiereVerificacionCompras">
+                    <label for="RequiereVerificacionCompras">Requiere Verificación de compras</label>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" style="margin-right: 5px;" id="ingresoAPlanta" class="checkboxMargin"
+                        placeholder="" [(ngModel)]="ingresoAPlanta">
+                    <label for="ingresoAPlanta">Proveedor con ingreso a planta</label>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" style="margin-right: 5px;" id="altaInterna" class="checkboxMargin"
+                        placeholder="" [(ngModel)]="altaInterna">
+                    <label for="altaInterna"> Alta interna</label>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
                     Observaciones para el Proveedor:
                     <div class="styled-select">
                         <textarea class="" placeholder="" [(ngModel)]="observacionesParaElProveedor"></textarea>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
-                    Proveedor con ingreso a planta:
-                    <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" [(ngModel)]="ingresoAPlanta">
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
-                    Alta interna:
-                    <div class="styled-select">
-                        <input type="checkbox" class="" placeholder="" [(ngModel)]="altaInterna">
-                    </div>
-                </div>
-
-
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <input type="button" class="btn btn-custom btn-add" placeholder="" value="Grabar" (click)="grabar()"
                         *ngIf="!spinnerComponent.visible">

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { e } from '@angular/core/src/render3';
 import { Router, ActivatedRoute, Params } from "@angular/router";
 import { DropdownOption, DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
@@ -57,6 +58,8 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     ingresoAPlanta: boolean = false;
     altaInterna: boolean = false;
     tipoCambiario: number = 0;
+    nosisObligatorio: boolean = false;
+    readonlyRazonSocial: boolean = false;
     
     observacionesParaElProveedor: string = "";
 
@@ -72,6 +75,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             if (params["cuit"] > 0) {
                 this.CUIT = params["cuit"];
                 this.readonlyCUIT = true;
+                this.obtenerRazonSocial();
             }
             if (params["mail"] != "" && params["mail"] != undefined && params["mail"] != null) {
                 this.Email = params["mail"];
@@ -117,7 +121,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.tipoCambiario = result.data;
-                        console.log(this.tipoCambiario);
+                        
                     }
                 },
                 error => {
@@ -130,6 +134,35 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         }
     }
 
+    obtenerRazonSocial() {
+        try {
+            this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        if (result != "") {
+                            this.RazonSocial = result;
+                            this.readonlyRazonSocial = true;
+                        }
+                        else {
+                            this.readonlyRazonSocial = false;
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
 
     grabar() {
         this.spinnerComponent.showIt();
@@ -201,6 +234,20 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         return false; //<-- Prevent Refresh
     }
 
+    calcularFacturacion() {
+        let facturacionDolares = this.facturacionAnual / this.tipoCambiario
+
+        if (facturacionDolares > 15000)
+        {
+            this.nosisObligatorio = true;
+            this.RealizarAnalisisNOSIS = true;
+        }
+        else
+        {
+            this.nosisObligatorio = false;
+        }
+    }
+
     limpiarCampos() {
         this.RazonSocial = "";
         this.CUIT = "";
@@ -219,6 +266,9 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         this.proveedorId = null;
         this.readonlyCUIT = false;
         this.readonlyEmail = false;
+        this.altaInterna = false;
+        this.ingresoAPlanta = false;
+        this.nosisObligatorio = false;
     }
 
 }

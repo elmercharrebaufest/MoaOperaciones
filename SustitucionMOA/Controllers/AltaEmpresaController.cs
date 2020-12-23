@@ -33,6 +33,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                if (!SessionPersister.User.permisos.Contains("VER ALTAS GRANOS"))
+                    IdTipoProveedor = 3;
+
                 var empresas = altaEmpresaService.GetEmpresas(IdTipoProveedor);
                 foreach (var item in empresas)
                 {

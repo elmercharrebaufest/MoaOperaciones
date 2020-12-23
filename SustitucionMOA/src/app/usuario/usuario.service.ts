@@ -158,4 +158,14 @@ export class UsuarioService extends BaseService {
                 map(this.extractData));
     }
 
+    public getRazonSocial(cuit: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cuit', cuit);
+
+        return this.http
+             .get('/api/AltaEmpresaNoGranos/GetRazonSocial', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+        
+    }
+
 }

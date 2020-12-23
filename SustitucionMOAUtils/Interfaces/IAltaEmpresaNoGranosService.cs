@@ -16,5 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<RubroDto> GetRubros();
         string RechazarProveedorNoGranos(int idProveedor, string usuarioMail, string observacionesParaElProveedor);
 
+        string GetRazonSocial(string CUIT);
+
     }
 }
