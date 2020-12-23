@@ -54,4 +54,12 @@ export class AltaEmpresaService extends BaseService {
             map(this.extractData));
     }
 
+    public GuardarSIPER(proveedorId: number, estadoSIPER: string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('proveedorId', proveedorId.toString());
+        params.set('estadoSIPER', estadoSIPER);
+        return this.http
+            .get('/api/AltaEmpresa/GuardarSIPER', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
 }

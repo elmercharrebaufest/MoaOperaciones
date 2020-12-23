@@ -3731,6 +3731,11 @@ div.panel-body a.active{
   border-style: solid;
 }
 
+.MensajeSIPER{
+  color:#707070 !important;
+  font-weight: 400 !important;
+}
+
 .acciones {
 	display: flex;
 	flex-direction: row;

@@ -65,11 +65,12 @@ namespace SustitucionMOAUtils.Services
                     HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                     {
                         Id = a.Id,
-                        EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                        EstadoAprobacionDescripcion = a.EstadoAprobacion.ToFriendlyString(),
                         Fecha = a.Fecha,
                         Observacion = a.Observacion,
                         Usuario = a.Usuario.Mail
                     }).ToList()
+
                 }).ToList();
 
                 if (proveedorDtos.Count == 0)
@@ -103,6 +104,32 @@ namespace SustitucionMOAUtils.Services
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public string GuardarSIPER(int proveedorId, string estadoSIPER)
+        {
+            try
+            {
+                Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+                if (proveedor == null)
+                {
+                    throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
+                }
+
+                if (!string.IsNullOrWhiteSpace(estadoSIPER))
+                {
+                    proveedor.EstadoSIPER = estadoSIPER;
+                }
+
+                repositorio.GuardarCambios();
+
+                return "Se guardo correctamente.";
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -158,7 +185,7 @@ namespace SustitucionMOAUtils.Services
                         Usuario_Id = usuarioId
                     }
                 );
-
+ 
                 proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))

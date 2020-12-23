@@ -10,6 +10,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Web.Mvc;
 
@@ -131,6 +132,19 @@ namespace SustitucionMOA.Controllers
             return newText.ToString();
         }
 
+        [System.Web.Http.HttpGet]
+        public ActionResult GuardarSIPER(int proveedorId, string estadoSIPER)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.GuardarSIPER(proveedorId, estadoSIPER) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         public ActionResult GetEstadoAprobacion()
         {
