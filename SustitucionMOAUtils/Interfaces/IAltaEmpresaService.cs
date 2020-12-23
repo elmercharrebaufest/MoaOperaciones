@@ -22,7 +22,8 @@ namespace SustitucionMOAUtils.Interfaces
 
         string DeshabilitarUsuario(string usuarioMail, int proveedorID, string observacion, string observarcionProveedor);
 
-
         string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion);
+
+        string GuardarSIPER(int proveedorId, string estadoSIPER);
     }
 }

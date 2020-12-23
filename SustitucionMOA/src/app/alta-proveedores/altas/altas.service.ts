@@ -24,10 +24,6 @@ export class AltaEmpresaService extends BaseService {
 
     public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string,estadoSIPER: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
-        console.log("abajo");
-        console.log(estadoSIPER);
-        console.log("arriba");
-
         params.set('empresaId', empresaId.toString());
         params.set('estado', estadoId.toString());
         params.set('observacion', observacion);
@@ -58,4 +54,12 @@ export class AltaEmpresaService extends BaseService {
             map(this.extractData));
     }
 
+    public GuardarSIPER(proveedorId: number, estadoSIPER: string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('proveedorId', proveedorId.toString());
+        params.set('estadoSIPER', estadoSIPER);
+        return this.http
+            .get('/api/AltaEmpresa/GuardarSIPER', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
 }

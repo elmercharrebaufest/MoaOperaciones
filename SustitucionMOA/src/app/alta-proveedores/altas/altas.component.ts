@@ -56,6 +56,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     observacionesProveedor: string = "";
     mensajeError: string = "";
     filtroAlta: string = "";
+    mensajeSIPERGuardado: string = "";
 
 
     listaArchivos: Array<Archivo> = [];
@@ -161,6 +162,37 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.orderDirection = 1;
             this.orderedByColumn = column;
         }
+    }
+
+    guardarSIPER(){
+        this.spinnerModal.showIt();
+        this.subscription = this.altaEmpresaService.GuardarSIPER(this.empresaSeleccionada.Id, this.empresaSeleccionada.EstadoSIPER).subscribe(
+            result => {
+                this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                        this.mensajeSIPERGuardado = result.error;
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                        this.mensajeSIPERGuardado = result.info;
+                        this.data = result.data;
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                    this.mensajeSIPERGuardado = "Ocurrio un error al guardar el SIPER."
+                }
+
+            );
+            
+            if (this.mensajeSIPERGuardado == "")
+                this.mensajeSIPERGuardado = "Se guardo correctamente."
+    }
+
+    resetVariables(){
+        this.mensajeSIPERGuardado = "";
     }
 
     cambiarEstado(estadoId: number) {

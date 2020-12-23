@@ -107,6 +107,32 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string GuardarSIPER(int proveedorId, string estadoSIPER)
+        {
+            try
+            {
+                Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+                if (proveedor == null)
+                {
+                    throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
+                }
+
+                if (!string.IsNullOrWhiteSpace(estadoSIPER))
+                {
+                    proveedor.EstadoSIPER = estadoSIPER;
+                }
+
+                repositorio.GuardarCambios();
+
+                return "Se guardo correctamente.";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public string SetEstadoAprobacion(int proveedorId,
                                           EstadoAprobacion estado,
                                           string observacion,
