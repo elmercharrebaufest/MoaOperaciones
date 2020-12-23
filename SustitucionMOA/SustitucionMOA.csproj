@@ -393,6 +393,9 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
+    <Content Include="src\assets\css\MolinosForms.css" />
+    <Content Include="src\assets\css\MolinosGeneral.css" />
+    <Content Include="src\assets\css\styles.css" />
     <Content Include="src\favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
