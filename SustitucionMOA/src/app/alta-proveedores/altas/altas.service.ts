@@ -15,9 +15,12 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class AltaEmpresaService extends BaseService {
 
-    public getEmpresas(): Observable<any> {
+    public getEmpresas(idTipoProveedor): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idTipoProveedor', idTipoProveedor.toString());
+
         return this.http
-            .get('/api/AltaEmpresa/getEmpresas', { headers: this.headers }).pipe(
+            .get('/api/AltaEmpresa/getEmpresas', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 

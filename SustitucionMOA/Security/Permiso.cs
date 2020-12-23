@@ -109,5 +109,9 @@
         public const string ABM_NOTIFICACONES = "ABM NOTIFICACIONES";
 
 
+        /* PERMISOS ALTA EMPRESA NO GRANOS*/
+        public const string ALTA_EMPRESA_NO_GRANOS = "ALTA EMPRESA NO GRANOS";
+
+
     }
 }

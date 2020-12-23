@@ -88,6 +88,7 @@
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
+    <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
     <Compile Include="Services\AltaEmpresaService.cs" />

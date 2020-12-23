@@ -192,6 +192,22 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+
+        public decimal TraerTipoDeCambio()
+        {
+            try
+            {
+                var respuesta = new DataAgroConsumer().TraerTipoDeCambio();
+
+                return respuesta;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+        }
+
         public void ValidarNuevoProveedorMultifirma(ref Proveedor proveedor)
         {
             var respuesta = ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
@@ -338,6 +354,12 @@ namespace SustitucionMOAUtils.Services
         {
             return string.Concat("00", CUIT.Substring(2, 8));
         }
+
+        public bool ProveedorApocrifo(string CUIT)
+        {
+            return new DataAgroConsumer().ProveedorApocrifo(CUIT);
+        }
+
     }
 
 }

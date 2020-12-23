@@ -29,6 +29,25 @@
 
                     </div>
                 </div>
+
+                <div class="col-xs-6  col-sm-4 col-md-5"
+                    *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
+                    Tipo proveedor:
+                    <div class="styled-select ">
+                        <select [(ngModel)]="idTipoProveedor">
+                            <option value="0" selected>Todos</option>
+                            <option value="2" selected>Granos</option>
+                            <option value="3" selected>No granos</option>
+                            <option value="4" selected>Corredor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
+                    <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
+                        <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
+                    </div>
+                </a>
             </div>
 
         </div>
@@ -164,8 +183,7 @@
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
-                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0"
-                            >
+                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0">
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial || "-"}}</td>
@@ -174,10 +192,12 @@
                             <td>{{empresa.SISAEstadoCuit || "-"}}</td>
                             <td>{{empresa.EstadoSIPER || "-"}}</td>
                             <td>
-                                {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}
+                                {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy') : ""
+                                }}
                             </td>
                             <td>
-                                {{ empresa.FechaSolicitud ? (empresa.FechaSolicitud.slice(6,-2) | date: 'dd/MM/yyyy') : "" }}
+                                {{ empresa.FechaSolicitud ? (empresa.FechaSolicitud.slice(6,-2) | date: 'dd/MM/yyyy') :
+                                "" }}
                             </td>
 
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
@@ -185,15 +205,29 @@
                                 <a (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}" data-toggle="popover"
                                     data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"
                                     data-content="Mail Copiado al portapapeles">
-                                    <span title="Copiar correo del proveedor" class="fa fa-envelope" style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                    <span title="Copiar correo del proveedor" class="fa fa-envelope"
+                                        style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                 </a>
-                                <button *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11"
+                                <button
+                                    *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 13  && empresa.EstadoAprobacion != 15"
                                     type="button" style="width: 70px;font-size: 12px;"
                                     class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
                                     Ver
                                 </button>
                                 <button type="button" style="display:none" id="openModalHiddenButton"
                                     data-toggle="modal" data-target="#myModal"></button>
+
+                                <button type="button"
+                                    *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna"
+                                    class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
+                                    Alta interna
+                                </button>
+
+                                <button type="button"
+                                    *ngIf="empresa.EstadoAprobacion === 15 && empresa.IdTipoUsuario === 3"
+                                    class="btn-custom btn-add btn-chico" (click)="completarAlta(empresa)">
+                                    Completar Alta
+                                </button>
 
                                 <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
                                     type="button" style="width: 70px;font-size: 12px;"
@@ -211,8 +245,8 @@
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
                                 *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                            <a class="paginate_button current"
-                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                                }}</a>
                         </span>
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
                             [class.disabled]="pT.isLastPage()">
@@ -233,7 +267,8 @@
     <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal" (click)=resetVariables()>
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
+                    (click)=resetVariables()>
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
@@ -248,7 +283,8 @@
                 <!-- DETALLE -->
 
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
-                    <div class="row myRow firstSection roundedInfo" id="container">
+                    <div class="row myRow firstSection roundedInfo" id="container"
+                        *ngIf="empresaSeleccionada.IdTipoUsuario != 3">
                         <mdb-stepper #stepper>
                             <div class="col-md-5">
                                 <mdb-step name="Step 1" label="Informe comercial"
@@ -379,18 +415,18 @@
                                     <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
                                     <div class="form-group grey"
                                         *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
-                                        Estado en SIPER <input type="number" class="form-control" [value]=""
-                                            [(ngModel)]="empresaSeleccionada.EstadoSIPER" /> 
+                                        Estado en SIPER <input type="text" class="form-control" [value]=""
+                                            [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
                                     </div>
-                                    <div class="guardarSIPER" style="text-align: center;" 
-                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    <div class="guardarSIPER" style="text-align: center;"
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                         <span class="adjuntar col-xs-12 col-sm-5" (click)="guardarSIPER()">
                                             Guardar SIPER
                                         </span>
                                     </div>
 
                                     <div class="MensajeSIPER" style="color:#707070 !important;"
-                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                         <p>{{this.mensajeSIPERGuardado}}</p>
                                     </div>
                                     <div class="form-group grey "
@@ -525,9 +561,198 @@
                             </div>
                         </mdb-stepper>
                     </div>
+
+                    <div id="divInfoNoGranos" class="row myRow firstSection roundedInfo"
+                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3">
+
+                        <div class="col-md-12">
+                            <h3>Información del proveedor {{empresaSeleccionada.RazonSocial}}</h3>
+                            <div class="form-group grey">
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Telefono: <label>{{empresaSeleccionada.Telefono}}</label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Rubro: <label>{{empresaSeleccionada.Rubro}}</label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Condición de Pago: <label>{{empresaSeleccionada.CondicionDePago}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Servicio prestado a Molinos: <label>{{empresaSeleccionada.ServicioPrestado}}
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Organización de Compra: <label>{{empresaSeleccionada.OrganizacionDeCompra}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Razón de elección del proveedor: <label>{{empresaSeleccionada.RazonDeEleccion}}
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Estimado facturación anual a MOA: <label>{{empresaSeleccionada.FacturacionAnual}}
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    Situación de I.V.A.: <label>{{empresaSeleccionada.SituacionIVA}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-7">
+                                    Ingresos Brutos: <label>{{empresaSeleccionada.IngresoBruto}} </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    CBU: <label>{{empresaSeleccionada.CBU}} </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <h3>Documentación Impositiva</h3>
+                            <div class="form-group grey ">
+                                <label>Constancia de CUIT</label>&nbsp;
+                                <label style="color:red;"
+                                    *ngIf="(listaArchivos | archivosFilterPipe:'constanciaCUIT').length === 0">
+                                    Sin Adjuntar
+                                </label>
+
+                                <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
+                                    <a (click)="descargarArchivo(archivo)">
+                                        {{archivo.Nombre}}
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="">
+                                <label>
+                                    Inscripción en IIBB -local o
+                                    Convenio (CM05
+                                    vigente)
+                                </label>&nbsp;
+                                <label style="color:red;"
+                                    *ngIf="(listaArchivos | archivosFilterPipe:'inscripcionIIBB').length === 0">
+                                    Sin Adjuntar
+                                </label>
+
+                                <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                                    <a (click)="descargarArchivo(archivo)">
+                                        {{archivo.Nombre}}
+                                    </a>
+                                </span>
+                            </div>
+
+                            <div class="form-group grey ">
+                                <label>
+                                    SIPER.
+                                </label>&nbsp;
+
+                                <label style="color:red;"
+                                    *ngIf="(listaArchivos | archivosFilterPipe:'SIPER').length === 0">
+                                    Sin
+                                    Adjuntar
+                                </label>
+
+                                <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                                    <a (click)="descargarArchivo(archivo)">
+                                        {{archivo.Nombre}}
+                                    </a>
+                                </span>
+                            </div>
+                            <mdb-step name="Step 4" label="Documentación">
+                                <h3>Otros archivos </h3>
+                                <div class="form-group grey ">
+                                    <label style="color:red;"
+                                        *ngIf="(listaArchivos | archivosFilterPipe:'otrosArchivos').length === 0">
+                                        Sin Adjuntar
+                                    </label>
+                                    <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
+                                        <a (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+                                    </div>
+                                </div>
+                            </mdb-step>
+                        </div>
+                        <div class="col-md-5">
+
+                            <mdb-step name="Step 4" label="Documentación" *ngIf="empresaSeleccionada.IngresoAPlanta">
+                                <h3>Ingreso a planta </h3>
+                                <div class="form-group grey ">
+                                    <label>Nota de siniestralidad ART:</label>&nbsp;
+                                    <label style="color:red;"
+                                        *ngIf="(listaArchivos | archivosFilterPipe:'notaSiniestralidadART').length === 0">
+                                        Sin Adjuntar
+                                    </label>
+
+                                    <span
+                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'notaSiniestralidadART'">
+                                        <a (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+                                    </span>
+                                </div>
+                                <div class="form-group grey ">
+                                    <label>Protocolo Sanitario COVID:</label>&nbsp;
+                                    <label style="color:red;"
+                                        *ngIf="(listaArchivos | archivosFilterPipe:'protocoloSanitarioCovid').length === 0">
+                                        Sin Adjuntar
+                                    </label>
+
+                                    <span
+                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'protocoloSanitarioCovid'">
+                                        <a (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+                                    </span>
+                                </div>
+                            </mdb-step>
+                            <mdb-step name="Step 4" label="Documentación">
+                                <h3>Documentacion Interna
+                                    <label class="label" for="archivosInternos"
+                                        *ngIf="[2,7,8].includes(empresaSeleccionada.EstadoAprobacion) && 
+                                            (isAuthorized('ABM EMPRESAS OPERADOR') || isAuthorized('ABM EMPRESAS APROBADOR'))">
+                                        <span class="adjuntar">
+                                            Adjuntar
+                                        </span>
+                                    </label>
+                                </h3>
+                                <div class="form-group grey ">
+
+                                    <input style="display:none" type="file" class="form-control-file"
+                                        id="archivosInternos" multiple
+                                        (change)="handleFileInput($event.target.files, 'archivosInternos')">
+
+
+                                    <label style="color:red;"
+                                        *ngIf="(listaArchivos | archivosFilterPipe:'archivosInternos').length === 0">
+                                        Sin Adjuntar
+                                    </label>
+                                    <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'archivosInternos'">
+                                        <a (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a style="color:red;" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+
+                                    </div>
+                                </div>
+                            </mdb-step>
+                            <mdb-step name="Step 6" label="Documentación">
+                                <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
+                                <div class="form-group grey "
+                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    Estado en SIPER <input type="text" class="form-control" [value]=""
+                                        [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
+                                </div>
+                                <div class="form-group grey "
+                                    *ngIf="empresaSeleccionada.EstadoAprobacion != 2 || !isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    Estado en SIPER: <label>{{empresaSeleccionada.EstadoSIPER}}</label>
+                                </div>
+                            </mdb-step>
+                        </div>
+
+                    </div>
+
                     <div class="row">
                         <div class="form-group align-right">
-                            <button [disabled]="listaArchivos.length === 0" type="button" class="btn-custom btn-mediano btn-add"
+                            <button [disabled]="listaArchivos.length === 0" type="button"
+                                class="btn-custom btn-mediano btn-add"
                                 (click)="descargarArchivos(empresaSeleccionada.Mail, empresaSeleccionada.Id)">
                                 Descargar Archivos
                             </button>
@@ -715,6 +940,7 @@
                 <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      ">
                     <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
                         <div class="alert alert-danger">
@@ -726,7 +952,7 @@
                         [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-right: 10px;"
-                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')">
+                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8 || empresaSeleccionada.EstadoAprobacion == 11) && isAuthorized('ABM EMPRESAS OPERADOR')">
                     <label class="observaciones" style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
@@ -770,6 +996,29 @@
                         *ngIf="(empresaSeleccionada.EstadoAprobacion == 4) && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(12)">
                         Anular solicitud de informaci&oacute;n
+                    </button>
+
+
+
+                    <button type="button" class="btn-custom btn-mediano btn-guardar"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(2)">
+                        Aprobar (Compras)
+                    </button>
+                    <button type="button" class="btn-custom btn-mediano btn-remove"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(14)">
+                        Rechazar (Compras)
+                    </button>
+                    <button type="button" class="btn-custom btn-mediano btn-add"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 14 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(13)">
+                        Anular rechazo (Compras)
+                    </button>
+                    <button type="button" class="btn-custom btn-mediano btn-add"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(4)">
+                        Observar (Compras)
                     </button>
                 </div>
             </div>

@@ -229,6 +229,7 @@ namespace SustitucionMOATest.Services
                 Archivos = new List<Archivo>(),
                 RelacionConEmpleados = new List<ProveedorRelacionConEmpleados>(),
                 RelacionConFuncionarios = new List<ProveedorRelacionConFuncionarios>(),
+                TipoProveedor = new TipoUsuario { Nombre = "Granos" , NombreCorto = "G" }
             };
 
 

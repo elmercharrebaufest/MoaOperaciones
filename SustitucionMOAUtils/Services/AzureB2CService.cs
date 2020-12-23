@@ -57,22 +57,12 @@ namespace SustitucionMOAUtils.Services
                     break;
 
                 case "no granos":
-                    Usuario usuarioNoGranos = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
+                    UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = ""  };
 
                     usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
-                    RegistrarUsuarioGenerico(ref usuarioNoGranos);
+                    RegistrarUsuarioNoGranos(ref usuarioNoGranos);
                     usuario = usuarioNoGranos;
 
-                    break;
-
-                case "ambos":
-                    Usuario usuarioAmbos = new Usuario { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
-
-                    usuarioAmbos.TipoUsuario = ObtenerTipoPorNombreCorto("A");
-
-                    RegistrarUsuarioGenerico(ref usuarioAmbos);
-
-                    usuario = usuarioAmbos;
                     break;
 
                 case "corredor":
@@ -120,10 +110,65 @@ namespace SustitucionMOAUtils.Services
             Proveedor proveedor = new Proveedor
             {
                 CUIT = usuario.CUITRegistro,
-                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                TipoProveedor = ObtenerTipoPorNombreCorto("G")
             };
 
             return ValidarCUITProveedor(ref usuario, proveedor);
+        }
+
+        public bool RegistrarUsuarioNoGranos(ref UsuarioNoGranos usuario)
+        {
+            Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+
+            usuario.Roles = new List<Rol>
+            {
+                nuevoNoGranos
+            };
+
+            usuario.Proveedores = new List<Proveedor>();
+
+            string cuit = usuario.CUITRegistro;
+            string mailUsuario = usuario.Mail;
+
+            Proveedor proveedor = new Proveedor
+            {
+                CUIT = usuario.CUITRegistro,
+                EstadoAprobacion = EstadoAprobacion.AltaIncompleta,
+                Mail = usuario.Mail,
+                TipoProveedor = ObtenerTipoPorNombreCorto("NG")
+            };
+
+            proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
+            {
+                new ProveedorHistorialAprobacion()
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.AltaIncompleta,
+                    Observacion = "Registro de usuario",
+                    Usuario_Id = usuario.Id
+                }
+            };
+
+            if (repositorio.Existe<Proveedor>(x=> x.CUIT == cuit && x.Mail == mailUsuario))
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario); 
+            }
+
+            if (proveedor.EstadoAprobacion == EstadoAprobacion.Aprobado)
+            {
+                var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
+
+                usuario.RemoverRoles();
+                usuario.AgregarRol(rolUsuarioNoGranos);
+            }
+
+            usuario.Proveedores.Add(proveedor);
+
+            usuario.Habilitado = true;
+
+            repositorio.Agregar(usuario);
+            return repositorio.GuardarCambios() == 1;
         }
 
         public bool RegistrarUsuarioCorredor(ref Usuario usuario)
@@ -134,7 +179,8 @@ namespace SustitucionMOAUtils.Services
             {
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.Aprobado,
-                CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro)
+                CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro),
+                TipoProveedor = ObtenerTipoPorNombreCorto("CORR")
             };
 
             usuario.Roles = new List<Rol>();

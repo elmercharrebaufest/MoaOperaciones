@@ -14,7 +14,10 @@
         Deshabilitado,
         AnularRechazo,
         SinAlta,
-        AnularObservacion
+        AnularObservacion,
+        PendienteAprobacionCompras,
+        RechazadoPorCompras,
+        AltaIncompleta
     }
 
     public static class EstadoDeAprobacionExtensions
@@ -47,6 +50,12 @@
                     return "Analisis de Nosis";
                 case EstadoAprobacion.EtapaFinal:
                     return "Etapa Final";
+                case EstadoAprobacion.PendienteAprobacionCompras:
+                    return "Pendiente aprobacion compras";
+                case EstadoAprobacion.RechazadoPorCompras:
+                    return "Rechazado por compras";
+                case EstadoAprobacion.AltaIncompleta:
+                    return "Alta Incompleta";
                 default:
                     return "Estado desconocido";
             }
