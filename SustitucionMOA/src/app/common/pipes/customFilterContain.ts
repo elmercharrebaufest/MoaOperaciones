@@ -8,10 +8,13 @@ export class CustomFilterContain implements PipeTransform {
         if (!values || !values.length) return [];
         if (!filterValue) return values;
 
+        filterValue = filterValue.trim();
+
         var filtered = [];
         for (var i = 0; i < values.length; i++) {
             for (var j = 0; j < values[i][field].length; j++) {
                 if (values[i][field][j][innerField].toUpperCase().indexOf(filterValue.toUpperCase()) >= 0) {
+                    filterValue = filterValue.trim();
                     filtered.push(values[i]);
                     break;
                 }

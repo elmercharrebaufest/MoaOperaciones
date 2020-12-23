@@ -314,9 +314,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
-            {
                 throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
-            }
 
             var nuevoVendedor = new Proveedor
             {
@@ -332,7 +330,13 @@ namespace SustitucionMOAUtils.Services
 
                 if (infoDA.HayError)
                 {
-                    throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                    if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
+                        infoDA.ComercialId = usuario.ObtenerCorredor().IdComercialDataAgro.Value;
+                        infoDA.ComercialNombres = usuario.ObtenerCorredor().Comercial;
+                    }
+                    else {
+                        throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+                    }
                 }
                 var hist = new ProveedorHistorialAprobacion
                 {

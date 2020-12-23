@@ -96,8 +96,6 @@ export class CuentaCorrientePartidasAbiertasComponent extends CuentaCorrienteBas
         return false;
     }
 
-
-
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();

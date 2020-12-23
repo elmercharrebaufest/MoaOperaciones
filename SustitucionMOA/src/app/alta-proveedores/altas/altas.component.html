@@ -165,9 +165,7 @@
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
                                 ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0"
-                            (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}" data-toggle="popover"
-                            data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"
-                            data-content="Mail Copiado al portapapeles">
+                            >
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial || "-"}}</td>
@@ -183,7 +181,12 @@
                             </td>
 
                             <td>{{empresa.EstadoAprobacionDescripcion}}</td>
-                            <td>
+                            <td class="acciones">
+                                <a (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}" data-toggle="popover"
+                                    data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"
+                                    data-content="Mail Copiado al portapapeles">
+                                    <span title="Copiar correo del proveedor" class="fa fa-envelope" style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                </a>
                                 <button *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11"
                                     type="button" style="width: 70px;font-size: 12px;"
                                     class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
@@ -750,7 +753,12 @@
                     <button type="button" class="btn-custom btn-mediano btn-add"
                         *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(4)">
-                        Observar
+                        Solicitar informaci&oacute;n
+                    </button>
+                    <button type="button" class="btn-custom btn-mediano btn-add"
+                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 4) && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="cambiarEstado(12)">
+                        Anular solicitud de informaci&oacute;n
                     </button>
                 </div>
             </div>

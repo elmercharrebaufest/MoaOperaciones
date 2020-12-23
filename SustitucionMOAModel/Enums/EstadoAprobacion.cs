@@ -13,7 +13,8 @@
         EtapaFinal,
         Deshabilitado,
         AnularRechazo,
-        SinAlta
+        SinAlta,
+        AnularObservacion
     }
 
     public static class EstadoDeAprobacionExtensions

@@ -322,7 +322,17 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+            //Si existe un historial le ponemos el anterior antes de ser observado. Si no, lo ponemos en el estado inicial del flujo de alta
+            var historialAnterior = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion != EstadoAprobacion.EdicionRequerida).OrderByDescending(x => x.Fecha).FirstOrDefault();
+
+            if (historialAnterior == null)
+            {
+                proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+            }
+            else
+            {
+                proveedor.EstadoAprobacion = historialAnterior.EstadoAprobacion;
+            }
 
             proveedor.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
             proveedor.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;
