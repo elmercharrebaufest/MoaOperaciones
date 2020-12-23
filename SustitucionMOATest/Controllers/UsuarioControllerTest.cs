@@ -22,6 +22,7 @@ namespace SustitucionMOATest.Controllers
         private UsuarioController target;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IRepositorio> repositorioMock;
+        private Mock<IAltaEmpresaNoGranosService> altaEmpresaNoGranosServiceMock;
         private string expectedJson;
         private string resultJson;
 
@@ -30,6 +31,7 @@ namespace SustitucionMOATest.Controllers
         {
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
+            altaEmpresaNoGranosServiceMock = new Mock<IAltaEmpresaNoGranosService>();
 
             var fakeIdentity = new GenericIdentity("User");
 
@@ -42,7 +44,7 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new UsuarioController(usuarioServiceMock.Object, repositorioMock.Object);
+            target = new UsuarioController(usuarioServiceMock.Object, repositorioMock.Object, altaEmpresaNoGranosServiceMock.Object);
         }
 
         [Test]

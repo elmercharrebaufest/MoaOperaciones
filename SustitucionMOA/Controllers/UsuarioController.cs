@@ -10,9 +10,11 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -26,12 +28,14 @@ namespace SustitucionMOA.Controllers
 
         private readonly IUsuarioService _usuarioService;
         private readonly IRepositorio repositorio;
+        private readonly IAltaEmpresaNoGranosService altaEmpresaNoGranosService;
         LoginService _loginService = new LoginService();
 
-        public UsuarioController (IUsuarioService usuarioService, IRepositorio repositorio)
+        public UsuarioController(IUsuarioService usuarioService, IRepositorio repositorio, IAltaEmpresaNoGranosService altaEmpresaNoGranosService)
         {
             this._usuarioService = usuarioService;
             this.repositorio = repositorio;
+            this.altaEmpresaNoGranosService = altaEmpresaNoGranosService;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
@@ -453,6 +457,152 @@ namespace SustitucionMOA.Controllers
         //    }
         //}
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ALTA_EMPRESA_NO_GRANOS)]
+        public ActionResult GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, 
+            string condicionDePago, string servicioPrestado, string organizacionDeCompra, string razonDeEleccion, int facturacionAnual, string solicitanteInterno, 
+            int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(razonSocial))
+                {
+                    throw new ValidationCustomException("Debe completar la Razon Social.");
+                }
 
+                if (string.IsNullOrWhiteSpace(cuit))
+                {
+                    throw new ValidationCustomException("Debe completar CUIT.");
+                }
+                else
+                {
+                    cuit = cuit.Replace("-", "");
+                    if (cuit.Length != 11)
+                    {
+                        throw new ValidationCustomException("El CUIT no tiene el formato correcto, ingrese el cuit sin guiones.");
+                    }
+                    else
+                    {
+                        long l = 0;
+                        if (!long.TryParse(cuit, out l))
+                        {
+                            throw new ValidationCustomException("El CUIT no tiene el formato correcto, ingrese el cuit sin guiones.");
+                        }
+                    }
+                }
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    throw new ValidationCustomException("Debe completar Email.");
+                }
+                else
+                {
+                    if (!IsValidEmail(email))
+                    {
+                        throw new ValidationCustomException("El Email no tiene un formato valido.");
+                    }
+                }
+                if (string.IsNullOrWhiteSpace(telefono))
+                {
+                    throw new ValidationCustomException("Debe completar Telefono.");
+                }
+                if (IdRubro <= 0)
+                {
+                    throw new ValidationCustomException("Debe completar el Rubro.");
+                }
+                if (facturacionAnual <= 0)
+                {
+                    throw new ValidationCustomException("Debe completar la Facturacion Anual.");
+                }
+                if (string.IsNullOrWhiteSpace(servicioPrestado))
+                {
+                    throw new ValidationCustomException("Debe completar Servicio prestado a Molinos.");
+                }
+                if (string.IsNullOrWhiteSpace(razonDeEleccion))
+                {
+                    throw new ValidationCustomException("Debe completar Razón de elección del proveedor.");
+                }
+                if (string.IsNullOrWhiteSpace(solicitanteInterno))
+                {
+                    throw new ValidationCustomException("Debe completar Solicitante interno.");
+                }
+
+                return JsonCustom(new
+                {
+                    data = altaEmpresaNoGranosService.GrabarNuevoProveedorNoGranos(razonSocial, cuit, email, telefono, realizarAnalisisNOSIS, IdRubro, condicionDePago,
+                    servicioPrestado, organizacionDeCompra, razonDeEleccion, facturacionAnual, solicitanteInterno, ClaimsPrincipalExtension.GetClaimValue("emails"), 
+                    idProveedor, observacionesParaElProveedor, requiereVerificacionCompras, ingresoAPlanta, altaInterna)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                return Regex.IsMatch(email, @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public ActionResult GetRubros()
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaNoGranosService.GetRubros() });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult RechazarProveedorNoGranos(int idProveedor, string observacionesParaElProveedor)
+        {
+            try
+            {
+
+                return JsonCustom(new
+                {
+                    data = altaEmpresaNoGranosService.RechazarProveedorNoGranos(idProveedor, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionesParaElProveedor)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

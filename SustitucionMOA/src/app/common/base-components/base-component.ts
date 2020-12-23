@@ -37,6 +37,10 @@ export class BaseComponent implements OnDestroy{
         this.navService.navegarSeccionParamDos(path, param, param2);
         return false;
     }
+    public goToSeccionParamTres(path: string, param: string, param2: string, param3: string) {
+        this.navService.navegarSeccionParamTres(path, param, param2, param3);
+        return false;
+    }
 
     public setMenuSeccionTab(menu: string, seccion: string) {
         this.navService.setMenuSeccionTab(menu, seccion);

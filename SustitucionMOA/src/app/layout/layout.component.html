@@ -460,6 +460,11 @@
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
                             </div>
+                            <div *ngIf="isAuthorized('ALTA EMPRESA NO GRANOS')">
+                                <a (click)="goToSeccion('/alta-empresa-no-granos')" href="#">
+                                    <!--data-toggle="tab">-->Alta Empresa
+                                </a>
+                            </div>
                             <div
                                 *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/estado-solicitud')" href="#">
@@ -478,7 +483,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default"
-                    *ngIf="isAuthorized('MENU') && (isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS'))">
+                    *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ALTA EMPRESA NO GRANOS'))">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseU" aria-expanded="false" aria-controls="collapseU">
@@ -500,6 +505,11 @@
                             <div *ngIf="isAuthorized('ABM NOTIFICACIONES')">
                                 <a (click)="goToSeccion('/notificaciones')" href="#">
                                     Notificaciones
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('ALTA EMPRESA NO GRANOS')">
+                                <a (click)="goToSeccion('/usuario/alta-empresa-no-granos')" href="#">
+                                    Alta Empresa No Granos
                                 </a>
                             </div>
 

@@ -22,5 +22,7 @@ namespace SustitucionMOAModel.Enums
         public const string DocumentacionEnBolsa = "documentacionEnBolsa";
         public const string OtrosArchivos = "otrosArchivos";
         public const string ArchivosInternos = "archivosInternos";
+        public const string NotaSiniestralidadART = "notaSiniestralidadART";
+        public const string ProtocoloSanitarioCovid = "protocoloSanitarioCovid";
     }
 }

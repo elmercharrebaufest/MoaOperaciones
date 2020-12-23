@@ -14,6 +14,9 @@
     SISAEstadoCuit: string;
     UltimaEdicion: Date;
     EstadoSIPER: string;
+    IdTipoUsuario: number;
+    AltaInterna: boolean;
+
 }
 
 export class HistorialAprobaciones {

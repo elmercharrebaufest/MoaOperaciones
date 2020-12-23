@@ -57,6 +57,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     mensajeError: string = "";
     filtroAlta: string = "";
     mensajeSIPERGuardado: string = "";
+    idTipoProveedor: number = 0;
 
 
     listaArchivos: Array<Archivo> = [];
@@ -81,7 +82,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.altaEmpresaService.getEmpresas().subscribe(
+            this.subscription = this.altaEmpresaService.getEmpresas(this.idTipoProveedor).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -486,5 +487,13 @@ export class AltasComponent extends BaseComponent implements OnInit {
         setTimeout(function(){$("#h" + id).popover('hide')}, 1500);
 
         return false;
+    }
+
+    altaInterna(empresa: Empresa) {
+       this.goToSeccionParam('/alta-empresa-no-granos', empresa.Id.toString());
+    }
+
+    completarAlta(empresa: Empresa) {
+       this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
     }
 }

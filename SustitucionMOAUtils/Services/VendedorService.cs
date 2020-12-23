@@ -321,7 +321,8 @@ namespace SustitucionMOAUtils.Services
                 CUIT = cuit,
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                CodigoProveedor = FormatearCodigoProveedor(cuit)
+                CodigoProveedor = FormatearCodigoProveedor(cuit),
+                TipoProveedor = ObtenerTipoPorNombreCorto("G")
             };
 
             if (usuario.EsCorredor())
@@ -406,5 +407,8 @@ namespace SustitucionMOAUtils.Services
         {
             return CUIT.Substring(2, 8);
         }
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+
+
     }
 }

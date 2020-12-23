@@ -295,6 +295,7 @@
     <Content Include="src\app\carta-porte\descarga\carta-porte.descarga.component.html" />
     <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
     <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
@@ -360,6 +361,7 @@
     <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
     <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
     <Content Include="src\app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />
+    <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.html" />
     <Content Include="src\app\usuario\list\usuario.list.component.html" />
     <Content Include="src\app\vendedor\vendedor_status.component.html" />
     <Content Include="config.html" />
@@ -861,6 +863,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
+    <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -951,6 +954,7 @@
     <TypeScriptCompile Include="src\app\liquidacion\liquidacion.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
+    <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

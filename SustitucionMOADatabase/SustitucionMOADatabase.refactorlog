@@ -56,4 +56,39 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="TipoUsuario_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="df815aa7-04dc-42b7-bfb0-96cb65b27f8e" ChangeDateTime="11/30/2020 14:43:07">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[RealizarAnalicisNOSIS]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RealizarAnalisisNOSIS" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="03230db8-29e3-4557-bf8d-714662c95a0b" ChangeDateTime="11/30/2020 17:28:52">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[CondiciondePago]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CondicionDePago" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8e1225f6-832f-4ffd-bc43-3dae746f006c" ChangeDateTime="11/30/2020 17:31:32">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[RazonDeeleccion]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RazonDeEleccion" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9c0fcf94-c7b4-488a-95d5-091b6c257334" ChangeDateTime="11/30/2020 20:18:50">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[Solicitante Interno]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SolicitanteInterno" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d446c416-9e21-4cda-acb0-9f740677fc5b" ChangeDateTime="12/03/2020 20:51:46">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[cbu]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CBU" />
+  </Operation>
 </Operations>
