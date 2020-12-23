@@ -27,6 +27,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -205,8 +206,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\css\MolinosForms2.css" />
-    <Content Include="Content\css\MolinosGeneral2.css" />
     <Content Include="Content\css\blockui.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
@@ -367,8 +366,6 @@
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\loader.css" />
-    <Content Include="Content\css\MolinosForms.css" />
-    <Content Include="Content\css\MolinosGeneral.css" />
     <Content Include="Content\css\ng2-select.css" />
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\css\tables.css" />
