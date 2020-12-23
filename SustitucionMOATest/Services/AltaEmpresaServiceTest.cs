@@ -36,7 +36,6 @@ namespace SustitucionMOATest.Services
         {
             var mailUsuario = "existente@mail.com";
 
-
             int proveedorId = 1;
 
             var proveedor = new Proveedor
@@ -45,7 +44,8 @@ namespace SustitucionMOATest.Services
                 EstadoAprobacion = EstadoAprobacion.Aprobado,
                 Observaciones = "Test",
                 RazonSocial = "RS",
-                Mail = mailUsuario
+                Mail = mailUsuario,
+                TipoProveedor = new TipoUsuario { Nombre = "Granos", NombreCorto = "G" }
             };
 
             var usuario = new Usuario
@@ -62,7 +62,8 @@ namespace SustitucionMOATest.Services
                         Id = proveedorId,
                         EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
                         RazonSocial = "RS",
-                        Mail = mailUsuario
+                        Mail = mailUsuario,
+                        TipoProveedor = new TipoUsuario { Nombre = "Granos", NombreCorto = "G" }
                     });
 
             repositorioMock

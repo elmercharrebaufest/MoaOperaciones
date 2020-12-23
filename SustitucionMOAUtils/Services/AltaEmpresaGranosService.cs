@@ -563,15 +563,15 @@ namespace SustitucionMOAUtils.Services
                 var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
 
 
-                //ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
                 //result = new ResultadoValidarProveedorComercial {
 
                 //};
                 var info = new InfoProveedorDataAgroDto
                 {
-                    //ProveedorCBU = result.ProveedorCBU,
-                    //ProveedorClasificacion = result.ProveedorClasificacion,
-                    //EstadoSISA = result.ProveedorSISAEstadoCuit,
+                    ProveedorCBU = result.ProveedorCBU,
+                    ProveedorClasificacion = result.ProveedorClasificacion,
+                    EstadoSISA = result.ProveedorSISAEstadoCuit,
                     ProveedorCUIT = CUITProveedor,
                     RazonSocial = proveedor.RazonSocial,
                     IngresoAPlanta = proveedor.IngresoAPlanta ?? false
