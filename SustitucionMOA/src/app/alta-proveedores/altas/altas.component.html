@@ -183,8 +183,7 @@
                                 | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
-                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0"
-                            >
+                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0">
                             <td>{{empresa.CodigoProveedor || "-"}}</td>
                             <td>{{empresa.CUIT}}</td>
                             <td>{{empresa.RazonSocial || "-"}}</td>
@@ -206,9 +205,11 @@
                                 <a (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}" data-toggle="popover"
                                     data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true"
                                     data-content="Mail Copiado al portapapeles">
-                                    <span title="Copiar correo del proveedor" class="fa fa-envelope" style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                    <span title="Copiar correo del proveedor" class="fa fa-envelope"
+                                        style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                 </a>
-                                <button *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11  && empresa.EstadoAprobacion != 13"
+                                <button
+                                    *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 13  && empresa.EstadoAprobacion != 15"
                                     type="button" style="width: 70px;font-size: 12px;"
                                     class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
                                     Ver
@@ -223,14 +224,14 @@
                                 </button>
 
                                 <button type="button"
-                                    *ngIf="empresa.EstadoAprobacion === 13 && empresa.IdTipoUsuario === 3"
+                                    *ngIf="empresa.EstadoAprobacion === 15 && empresa.IdTipoUsuario === 3"
                                     class="btn-custom btn-add btn-chico" (click)="completarAlta(empresa)">
                                     Completar Alta
                                 </button>
 
-                                <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11" type="button"
-                                    style="width: 70px;font-size: 12px;" class="btn-custom btn-add btn-chico"
-                                    (click)="VerificarEstadoDataAgro(empresa)">
+                                <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
+                                    type="button" style="width: 70px;font-size: 12px;"
+                                    class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
                                     Verificar DataAgro
                                 </button>
                             </td>
@@ -266,7 +267,8 @@
     <div class="modal-dialog" role="document" style="width: 1020px;">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal" (click)=resetVariables()>
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
+                    (click)=resetVariables()>
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
@@ -414,17 +416,17 @@
                                     <div class="form-group grey"
                                         *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                         Estado en SIPER <input type="text" class="form-control" [value]=""
-                                            [(ngModel)]="empresaSeleccionada.EstadoSIPER" /> 
+                                            [(ngModel)]="empresaSeleccionada.EstadoSIPER" />
                                     </div>
-                                    <div class="guardarSIPER" style="text-align: center;" 
-                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                    <div class="guardarSIPER" style="text-align: center;"
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                         <span class="adjuntar col-xs-12 col-sm-5" (click)="guardarSIPER()">
                                             Guardar SIPER
                                         </span>
                                     </div>
 
                                     <div class="MensajeSIPER" style="color:#707070 !important;"
-                                    *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
                                         <p>{{this.mensajeSIPERGuardado}}</p>
                                     </div>
                                     <div class="form-group grey "
@@ -749,7 +751,8 @@
 
                     <div class="row">
                         <div class="form-group align-right">
-                            <button [disabled]="listaArchivos.length === 0" type="button" class="btn-custom btn-mediano btn-add"
+                            <button [disabled]="listaArchivos.length === 0" type="button"
+                                class="btn-custom btn-mediano btn-add"
                                 (click)="descargarArchivos(empresaSeleccionada.Mail, empresaSeleccionada.Id)">
                                 Descargar Archivos
                             </button>
@@ -998,22 +1001,22 @@
 
 
                     <button type="button" class="btn-custom btn-mediano btn-guardar"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(2)">
                         Aprobar (Compras)
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-remove"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ALTA EMPRESA NO GRANOS')"
-                        (click)="cambiarEstado(12)">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(14)">
                         Rechazar (Compras)
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 12 && isAuthorized('ALTA EMPRESA NO GRANOS')"
-                        (click)="cambiarEstado(11)">
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 14 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(13)">
                         Anular rechazo (Compras)
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
-                        *ngIf="empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(4)">
                         Observar (Compras)
                     </button>

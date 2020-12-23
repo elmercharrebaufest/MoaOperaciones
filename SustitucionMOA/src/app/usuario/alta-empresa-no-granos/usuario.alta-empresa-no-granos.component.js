@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -60,6 +60,11 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         _this.proveedorId = null;
         _this.readonlyCUIT = false;
         _this.readonlyEmail = false;
+        _this.ingresoAPlanta = false;
+        _this.altaInterna = false;
+        _this.tipoCambiario = 0;
+        _this.nosisObligatorio = false;
+        _this.readonlyRazonSocial = false;
         _this.observacionesParaElProveedor = "";
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
@@ -70,6 +75,7 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         var _this = this;
         this.securityService.tienePermisoRedirect("ALTA EMPRESA NO GRANOS");
         this.getRubrosOptions();
+        this.getTipoCambiario();
         this.route.params.forEach(function (params) {
             if (params["id"] > 0) {
                 _this.proveedorId = params["id"];
@@ -77,6 +83,7 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
             if (params["cuit"] > 0) {
                 _this.CUIT = params["cuit"];
                 _this.readonlyCUIT = true;
+                _this.obtenerRazonSocial();
             }
             if (params["mail"] != "" && params["mail"] != undefined && params["mail"] != null) {
                 _this.Email = params["mail"];
@@ -108,6 +115,60 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg(e);
         }
     };
+    UsuarioAltaEmpresaNoGranosComponent.prototype.getTipoCambiario = function () {
+        var _this = this;
+        try {
+            this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(function (result) {
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    _this.tipoCambiario = result.data;
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    };
+    UsuarioAltaEmpresaNoGranosComponent.prototype.obtenerRazonSocial = function () {
+        var _this = this;
+        try {
+            this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(function (result) {
+                if (result.logout == true) {
+                    _this.sessionDataService.logout();
+                }
+                else if (result.error != undefined && result.error != "") {
+                    _this.mensajeComponent.setErrorMsg(result.error);
+                }
+                else if (result.info != undefined) {
+                    _this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    if (result != "") {
+                        _this.RazonSocial = result;
+                        _this.readonlyRazonSocial = true;
+                    }
+                    else {
+                        _this.readonlyRazonSocial = false;
+                    }
+                }
+            }, function (error) {
+                _this.mensajeComponent.setErrorMsg(error.message);
+            });
+        }
+        catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    };
     UsuarioAltaEmpresaNoGranosComponent.prototype.grabar = function () {
         var _this = this;
         this.spinnerComponent.showIt();
@@ -117,7 +178,7 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
             this.facturacionAnual = 0;
         }
         try {
-            this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago, this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId, this.observacionesParaElProveedor, this.RequiereVerificacionCompras).subscribe(function (result) {
+            this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago, this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId, this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna).subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -178,6 +239,16 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         }
         return false; //<-- Prevent Refresh
     };
+    UsuarioAltaEmpresaNoGranosComponent.prototype.calcularFacturacion = function () {
+        var facturacionDolares = this.facturacionAnual / this.tipoCambiario;
+        if (facturacionDolares > 15000) {
+            this.nosisObligatorio = true;
+            this.RealizarAnalisisNOSIS = true;
+        }
+        else {
+            this.nosisObligatorio = false;
+        }
+    };
     UsuarioAltaEmpresaNoGranosComponent.prototype.limpiarCampos = function () {
         this.RazonSocial = "";
         this.CUIT = "";
@@ -196,6 +267,9 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         this.proveedorId = null;
         this.readonlyCUIT = false;
         this.readonlyEmail = false;
+        this.altaInterna = false;
+        this.ingresoAPlanta = false;
+        this.nosisObligatorio = false;
     };
     __decorate([
         ViewChild(MensajeComponent),
