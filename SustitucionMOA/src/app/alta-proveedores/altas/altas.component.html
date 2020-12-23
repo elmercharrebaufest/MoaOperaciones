@@ -379,7 +379,7 @@
                                     <h3>SISA {{empresaSeleccionada.SISAEstadoCuit}}</h3>
                                     <div class="form-group grey"
                                         *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')">
-                                        Estado en SIPER <input type="text" class="form-control" [value]=""
+                                        Estado en SIPER <input type="number" class="form-control" [value]=""
                                             [(ngModel)]="empresaSeleccionada.EstadoSIPER" /> 
                                     </div>
                                     <div class="guardarSIPER" style="text-align: center;" 
