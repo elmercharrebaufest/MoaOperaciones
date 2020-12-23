@@ -220,12 +220,14 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="dist\assets\css\MolinosForms.css" />
+    <Content Include="dist\assets\css\MolinosGeneral.css" />
+    <Content Include="dist\assets\css\styles.css" />
+    <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
     <Content Include="dist\Content\css\font-awesome.min.css" />
     <Content Include="dist\Content\css\loader.css" />
-    <Content Include="dist\Content\css\MolinosForms.css" />
-    <Content Include="dist\Content\css\MolinosGeneral.css" />
     <Content Include="dist\Content\css\ng2-select.css" />
     <Content Include="dist\Content\css\normalize.css" />
     <Content Include="dist\Content\css\tables.css" />
