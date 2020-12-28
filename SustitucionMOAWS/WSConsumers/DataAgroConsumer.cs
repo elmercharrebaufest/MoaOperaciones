@@ -48,15 +48,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public decimal TraerTipoDeCambio()
         {
-            try
-            {
-                return service.TraerTipoDeCambio(null);
-            }
-            //Significa que no estamos conectados
-            catch (Exception ex)
-            {
-                return 0;
-            }
+            return service.TraerTipoDeCambio(null);
         }
 
     }
