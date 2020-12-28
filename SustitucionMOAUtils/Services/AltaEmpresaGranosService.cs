@@ -23,6 +23,7 @@ using System.Text;
 using System.Web;
 using System.Threading.Tasks;
 using System.IO.Compression;
+using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -299,13 +300,20 @@ namespace SustitucionMOAUtils.Services
 
         public string EnviarSolicitudUsuario(string mailUsuario, int proveedorId, AltaEmpresaViewModel altaEmpresa)
         {
+
+            Log.Info("Inicio enviar solicitud");
+
+            Log.Info("Obtener Usuario");
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             InfoProveedorDataAgroDto infoProveedor = null;
 
             Proveedor proveedor;
 
-            if(proveedorId > 0)
+            Log.Info("Obtener Proveedor. Proveedor ID: " + proveedorId.ToString());
+
+            if (proveedorId > 0)
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
             else
                 proveedor = usuario.ObtenerProveedorPorId(proveedorId);
@@ -313,7 +321,13 @@ namespace SustitucionMOAUtils.Services
             if (proveedor.TipoProveedor.Nombre != "No Granos")
                 infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
 
+
+            Log.Info("ValidarEstadoSolicitud");
+
             ValidarEstadoSolicitud(proveedor);
+
+
+            Log.Info("If para validar archivos. Tipo: " + proveedor.TipoProveedor.Nombre);
 
             if (proveedor.TipoProveedor.Nombre == "Corredor")
             {
@@ -337,32 +351,38 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+
+
             //Si existe un historial le ponemos el anterior antes de ser observado. Si no, lo ponemos en el estado inicial del flujo de alta
+            Log.Info("If para chequear historial anterior");
+
             var historialAnterior = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion != EstadoAprobacion.EdicionRequerida).OrderByDescending(x => x.Fecha).FirstOrDefault();
-            if (proveedor.RequiereVerificacionCompras ?? false)
-            {
-                proveedor.EstadoAprobacion = EstadoAprobacion.PendienteAprobacionCompras;
-            }
-            else
-            {
-                if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
-                {
-                    proveedor.EstadoAprobacion = EstadoAprobacion.EtapaFinal;
-                }
-                else
-                {
-                    proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-                }
-            }
 
             if (historialAnterior == null)
             {
-                proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+                Log.Info("If para chequear verificacion compras");
+                if (proveedor.RequiereVerificacionCompras ?? false)
+                {
+                    proveedor.EstadoAprobacion = EstadoAprobacion.PendienteAprobacionCompras;
+                }
+                else
+                {
+                    if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
+                    {
+                        proveedor.EstadoAprobacion = EstadoAprobacion.EtapaFinal;
+                    }
+                    else
+                    {
+                        proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
+                    }
+                }
             }
             else
             {
                 proveedor.EstadoAprobacion = historialAnterior.EstadoAprobacion;
             }
+
+            Log.Info("Pisamos datos");
 
             proveedor.VinculoConEmpleadosDeMolinos = altaEmpresa.VinculoConEmpleadosDeMolinos;
             proveedor.VinculoConFuncionariosPublicos = altaEmpresa.VinculoConFuncionariosPublicos;
@@ -370,8 +390,11 @@ namespace SustitucionMOAUtils.Services
             proveedor.IdIngresoBruto = altaEmpresa.IdIngresoBruto;
             proveedor.IdSituacionIVA = altaEmpresa.IdSituacionIVA;
 
+            Log.Info("Actualizamos vinculos");
+
             repositorio.RemoverTodos(proveedor.RelacionConEmpleados.ToList());
             repositorio.RemoverTodos(proveedor.RelacionConFuncionarios.ToList());
+
             foreach (var item in altaEmpresa.Empleados)
             {
                 proveedor.RelacionConEmpleados.Add(
@@ -398,6 +421,8 @@ namespace SustitucionMOAUtils.Services
                     });
             }
 
+            Log.Info("Actualizamos historial");
+
             if (proveedor.HistorialAprobaciones == null)
             {
                 proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
@@ -416,7 +441,11 @@ namespace SustitucionMOAUtils.Services
 
             proveedor.FechaSolicitud = DateTime.Now;
 
+            Log.Info("Guardamos");
+
             repositorio.GuardarCambios();
+
+            Log.Info("Fin");
 
             return SuccessMsg.ValidacionPendienteOK;
         }
