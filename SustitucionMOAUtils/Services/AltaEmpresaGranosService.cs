@@ -301,7 +301,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
+            InfoProveedorDataAgroDto infoProveedor = null;
 
             Proveedor proveedor;
 
@@ -309,6 +309,9 @@ namespace SustitucionMOAUtils.Services
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
             else
                 proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+
+            if (proveedor.TipoProveedor.Nombre != "No Granos")
+                infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
 
             ValidarEstadoSolicitud(proveedor);
 
