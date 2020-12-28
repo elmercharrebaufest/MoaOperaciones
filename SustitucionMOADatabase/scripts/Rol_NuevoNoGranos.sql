@@ -47,12 +47,45 @@ insert into rubro values ('VARIOS')
 
 COMMIT;
 
-insert into IngresoBruto values ('Responsable No Inscripto')
-insert into IngresoBruto values ('Exento')
-insert into IngresoBruto values ('Monotributo')
+
+SET IDENTITY_INSERT dbo.IngresoBruto ON 
+
+INSERT INTO dbo.IngresoBruto
+(
+	ID,
+    Nombre
+)
+VALUES
+( 1, N'Inscripto Local' -- Nombre - nvarchar(max)
+    )
 
 
-insert into SituacionIVA values ('Responsable Inscripto')
-insert into SituacionIVA values ('Responsable No Inscripto')
-insert into SituacionIVA values ('Exento')
-insert into SituacionIVA values ('Monotributo')
+	INSERT INTO dbo.IngresoBruto
+(
+	ID,
+    Nombre
+)
+VALUES
+( 2, N'Inscripto Convenio Multilateral' -- Nombre - nvarchar(max)
+    )
+
+	INSERT INTO dbo.IngresoBruto
+(
+	ID,
+    Nombre
+)
+VALUES
+( 3, N'No Inscripto' -- Nombre - nvarchar(max)
+    )
+SET IDENTITY_INSERT dbo.IngresoBruto OFF
+
+SET IDENTITY_INSERT dbo.SituacionIVA ON 
+
+INSERT INTO dbo.SituacionIVA
+  ([Id], [Nombre])
+VALUES
+( 1, N'Responsable Inscripto' ), 
+( 2, N'Responsable No Inscripto' ), 
+( 3, N'Exento' ), 
+( 4, N'Monotributo' )
+SET IDENTITY_INSERT dbo.SituacionIVA OFF

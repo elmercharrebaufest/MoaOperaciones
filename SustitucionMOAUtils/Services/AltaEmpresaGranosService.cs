@@ -351,14 +351,18 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-
-
-            //Si existe un historial le ponemos el anterior antes de ser observado. Si no, lo ponemos en el estado inicial del flujo de alta
             Log.Info("If para chequear historial anterior");
 
             var historialAnterior = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion != EstadoAprobacion.EdicionRequerida).OrderByDescending(x => x.Fecha).FirstOrDefault();
 
-            if (historialAnterior == null)
+            bool pasoPorEdicionRequerida = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion == EstadoAprobacion.EdicionRequerida).Any();
+            //Si existe un historial le ponemos el anterior antes de ser observado. Si no, lo ponemos en el estado inicial del flujo de alta
+            //Ademas, nos fijamos que lo hallan mandado a observar
+            if (historialAnterior != null && pasoPorEdicionRequerida)
+            {
+                proveedor.EstadoAprobacion = historialAnterior.EstadoAprobacion;
+            }
+            else
             {
                 Log.Info("If para chequear verificacion compras");
                 if (proveedor.RequiereVerificacionCompras ?? false)
@@ -377,10 +381,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-            else
-            {
-                proveedor.EstadoAprobacion = historialAnterior.EstadoAprobacion;
-            }
+           
 
             Log.Info("Pisamos datos");
 
