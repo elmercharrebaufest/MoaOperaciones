@@ -154,6 +154,27 @@ namespace SustitucionMOAUtils.Services
             return string.Format(SuccessMsg.UsuarioDeshabilitadoOK, proveedor.CUIT);
         }
 
+        public InfoProveedorNoGranosDto ObtenerInfoProveedorNoGranos(string mailUsuario, int proveedorId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            Proveedor proveedor;
+
+            if (proveedorId > 0)
+                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            else
+                proveedor = usuario.ObtenerProveedor();
+
+
+            var info = new InfoProveedorNoGranosDto
+            {
+                ProveedorCUIT = proveedor.CUIT,
+                RazonSocial = proveedor.RazonSocial,
+                IngresoAPlanta = proveedor.IngresoAPlanta ?? false
+            };
+
+            return info;
+        }
 
         public  string GetRazonSocial(string CUIT)
         {

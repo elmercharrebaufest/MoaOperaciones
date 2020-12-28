@@ -159,7 +159,7 @@ namespace SustitucionMOA.Controllers
                     var usuario = repositorio.Obtener<UsuarioNoGranos>(u => u.Mail == mail);
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
-                return JsonCustom(altaEmpresaService.ObtenerInfoProveedor(mail, proveedorId));
+                return JsonCustom(altaEmpresaNoGranosService.ObtenerInfoProveedorNoGranos(mail, proveedorId));
 
             }
             catch (InfoCustomException e)

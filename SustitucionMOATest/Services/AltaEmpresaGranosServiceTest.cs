@@ -170,7 +170,7 @@ namespace SustitucionMOATest.Services
                 Id = proveedorId,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 RazonSocial = "test",
-                CUIT = "12123456781",
+                CUIT = "233333333333",
                 Archivos = new List<Archivo>(),
             };
 
