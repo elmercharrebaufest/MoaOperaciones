@@ -67,6 +67,18 @@ namespace SustitucionMOAUtils.Logger
             }
         }
 
+        public static void Info(string mensaje)
+        {
+            try
+            {
+                DefaultLogger.Info(mensaje);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+
         public static void AzureError (Exception exception)
         {
             try
