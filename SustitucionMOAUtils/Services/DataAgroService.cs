@@ -6,6 +6,7 @@ using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -201,8 +202,9 @@ namespace SustitucionMOAUtils.Services
 
                 return respuesta;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex);
                 return 0;
             }
 
