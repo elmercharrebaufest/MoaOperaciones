@@ -627,4 +627,18 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         this.IdIngresoBruto = id;
     }
 
+    redirigir() {
+
+        document
+            .getElementById("openModalNotificacion")
+            .click();
+        
+        if (this.securityService.tienePermiso('ABM EMPRESAS')) {
+            this.navService.navegarSeccion(
+                "altas"
+            );
+        } else {
+            this.navService.navegarSeccion("/estado-solicitud");
+        }
+    }
 }

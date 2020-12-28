@@ -15,7 +15,8 @@
                             <div class="col-xs-12">
 
                                 <label for="constanciaCUIT">
-                                    <span class="link-adjuntar">Adjuntar</span> constancia de CUIT
+                                    <span class="link-adjuntar">Adjuntar</span> constancia de CUIT <span
+                                        class="requerido">*</span>
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
                                     (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
@@ -36,7 +37,8 @@
                             <div class="col-xs-12">
                                 <label for="inscripcionIIBB">
                                     <span class="link-adjuntar">Adjuntar</span>
-                                    Inscripci&oacute;n en IIBB o Convenio (CM05 vigente)
+                                    Inscripci&oacute;n en IIBB o Convenio (CM05 vigente) <span
+                                        class="requerido">*</span>
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
@@ -706,7 +708,7 @@
                         <label>&iexcl;Muchas gracias!</label><br />
                     </div>
                     <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+                        <button (click)="redirigir()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
                     </div>
                 </div>
             </div>
