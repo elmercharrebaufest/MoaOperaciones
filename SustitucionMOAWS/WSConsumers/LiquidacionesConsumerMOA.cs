@@ -54,8 +54,11 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     comprobante = liquidacion.COMPROBANTE,
                     contrato = liquidacion.CONTRATO,
+                    detallePago = liquidacion.ID_PAGO,
                     emitido = SAPFormatter.FormatearFecha(liquidacion.EMITIDO),
                     emitidoDate = SAPFormatter.GetDateTime(liquidacion.EMITIDO),
+                    pago = SAPFormatter.FormatearFecha(liquidacion.FACREDITACION),
+                    pagoDate = SAPFormatter.GetDateTime(liquidacion.FACREDITACION),
                     importeString = SAPFormatter.FormatearMonto(liquidacion.IMPORTE, liquidacion.MONEDA),
                     importe = liquidacion.IMPORTE,
                     ivaString = SAPFormatter.FormatearMonto(liquidacion.IVA, liquidacion.MONEDA),
