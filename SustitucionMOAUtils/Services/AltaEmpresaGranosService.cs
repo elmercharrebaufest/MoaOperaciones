@@ -563,40 +563,32 @@ namespace SustitucionMOAUtils.Services
 
         public InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId)
         {
-            try
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            Proveedor proveedor;
+
+            if (proveedorId > 0)
+                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            else
+                proveedor = usuario.ObtenerProveedor();
+
+            var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
+
+
+            ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+            //result = new ResultadoValidarProveedorComercial {
+
+            //};
+            var info = new InfoProveedorDataAgroDto
             {
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                ProveedorCBU = result.ProveedorCBU,
+                ProveedorClasificacion = result.ProveedorClasificacion,
+                EstadoSISA = result.ProveedorSISAEstadoCuit,
+                ProveedorCUIT = CUITProveedor,
+                RazonSocial = proveedor.RazonSocial
+            };
 
-                Proveedor proveedor;
-
-                if (proveedorId > 0)
-                    proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-                else
-                    proveedor = usuario.ObtenerProveedor();
-
-                var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
-
-
-                ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-                //result = new ResultadoValidarProveedorComercial {
-
-                //};
-                var info = new InfoProveedorDataAgroDto
-                {
-                    ProveedorCBU = result.ProveedorCBU,
-                    ProveedorClasificacion = result.ProveedorClasificacion,
-                    EstadoSISA = result.ProveedorSISAEstadoCuit,
-                    ProveedorCUIT = CUITProveedor,
-                    RazonSocial = proveedor.RazonSocial,
-                    IngresoAPlanta = proveedor.IngresoAPlanta ?? false
-                };
-
-                return info;
-            }
-            catch
-            {
-                return null;
-            }
+            return info;
         }
 
         public AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId)
