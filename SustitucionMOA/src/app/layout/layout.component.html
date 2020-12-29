@@ -415,13 +415,10 @@
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
-                                <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Contratos</a>
+                                <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Registro de
+                                    operaciones</a>
                             </div>
-                            <div>
-                                <a (click)="goToDataAgro()" *ngIf="isAuthorized('DATAAGROLOGIN')" href="#">
-                                    Registro de operaciones
-                                </a>
-                            </div>
+
                         </div>
                     </div>
                 </div>
