@@ -322,7 +322,8 @@
                                                 <label style="display:inline-block;">
                                                     No
                                                     <input type="radio" name="radioEmpleados" id="radioEmpleadosNo"
-                                                        value="false" (change)="relacionConEmpleadosCheckNo($event)">
+                                                        [readonly]="esUsuarioCompras" value="false"
+                                                        (change)="relacionConEmpleadosCheckNo($event)">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </div>
@@ -330,7 +331,8 @@
                                                 <label style=" display:inline-block;">
                                                     Si
                                                     <input type="radio" name="radioEmpleados" id="radioEmpleadosSi"
-                                                        value="true" (change)="relacionConEmpleadosCheckSi($event)">
+                                                        [readonly]="esUsuarioCompras" value="true"
+                                                        (change)="relacionConEmpleadosCheckSi($event)">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </div>

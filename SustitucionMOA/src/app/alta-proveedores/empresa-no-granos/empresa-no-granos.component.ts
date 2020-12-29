@@ -76,6 +76,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     IdSituacionIVA: number = 0;
     IdIngresoBruto: number = 0;
     CBUNoGranos: string = "";
+    esUsuarioCompras: boolean = false;
     ingresoAPlanta: boolean = false;
 
     constructor(
@@ -121,7 +122,9 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     ngOnInit() {
 
         this.route.params.forEach((params: Params) => {
-            if (params["id"] > 0) this.proveedorId = params["id"];
+            if (params["id"] > 0) {
+                this.proveedorId = params["id"];
+            }
         });
 
         this.setTabs();
@@ -133,6 +136,9 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         this.obtenerInfoProveedor();
 
 
+        if (this.securityService.tienePermiso('ABM EMPRESAS')) {
+            this.esUsuarioCompras = true;
+        }
 
         //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
         setTimeout(() => {
@@ -633,7 +639,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             .getElementById("openModalNotificacion")
             .click();
         
-        if (this.securityService.tienePermiso('ABM EMPRESAS')) {
+        if (this.esUsuarioCompras) {
             this.navService.navegarSeccion(
                 "altas"
             );
