@@ -72,7 +72,8 @@ namespace SustitucionMOAWS.WSConsumers
                     solapa = liquidacion.SOLAPA,
                     documento = liquidacion.DOCUMENTO,
                     sociedad = liquidacion.SOCIEDAD,
-                    ejercicio = liquidacion.EJERCICIO
+                    ejercicio = liquidacion.EJERCICIO,
+                    fijacion = liquidacion.FIJACION
                 }
                 );
             }
@@ -105,7 +106,8 @@ namespace SustitucionMOAWS.WSConsumers
                     producto = liquidacion.PRODUCTO,
                     tipo = liquidacion.TIPO,
                     secuencia = liquidacion.SECUENCIA,
-                    solapa = liquidacion.SOLAPA, 
+                    solapa = liquidacion.SOLAPA,
+                    fijacion = liquidacion.FIJACION
                 }
                 );
             }

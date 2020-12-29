@@ -22,6 +22,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
         public string observaciones { get; set; }
         public string secuencia { get; set; }
         public string solapa { get; set; }
+        public string fijacion { get; set; }
     }
 
     public class LiquidacionView : Liquidacion

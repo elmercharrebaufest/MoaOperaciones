@@ -18,6 +18,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public decimal total { get; set; }
         public string monedaTotal { get; set; }
         public string pedido { get; set; }
+        public string fijacion { get; set; }
     }
 
     public class LiquidacionView : Liquidacion
