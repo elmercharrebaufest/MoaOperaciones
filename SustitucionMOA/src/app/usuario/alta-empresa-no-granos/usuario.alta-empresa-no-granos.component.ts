@@ -136,6 +136,8 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
 
     obtenerRazonSocial() {
         try {
+            //Lo comento hasta que podamos usar otro servicio que funcione en QA
+            return true;
             this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(
                 result => {
                     if (result.logout == true) {

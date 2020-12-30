@@ -8,10 +8,10 @@ namespace SustitucionMOAModel.Enums
 {
     public enum SituacionIVA
     {
-        ResponsableInscripto,
-        ResponsableNoInscripto,
-        Exento,
-        Monotributo
+        ResponsableInscripto = 1,
+        ResponsableNoInscripto = 2,
+        Exento = 3,
+        Monotributo = 4
     }
 
     public static class SituacionIVAExtensions

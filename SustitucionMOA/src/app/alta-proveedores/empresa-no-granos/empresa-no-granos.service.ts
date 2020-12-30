@@ -197,10 +197,11 @@ export class EmpresaNoGranosService extends BaseService {
     //        .pipe(map(this.extractData));
     //}
 
-    enviarSolicitud(datos: any, proveedorId: number): Observable<any> {
+    enviarSolicitud(datos: any, esGuardarYNotificar:boolean, proveedorId: number): Observable<any> {
         let payload = new FormData();
         payload.append("datosJson", JSON.stringify(datos));
         payload.append("proveedorId", proveedorId.toString());
+        payload.append("esGuardarYNotificar", esGuardarYNotificar.toString());
 
         return this.http
             .post("/api/AltaEmpresaNoGranos/EnviarSolicitudUsuario", payload)

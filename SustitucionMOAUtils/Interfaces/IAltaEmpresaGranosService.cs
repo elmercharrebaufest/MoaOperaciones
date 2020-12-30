@@ -14,7 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario, int proveedorId);
         Task<string> ObtenerMaterialesDataAgro();
         List<ArchivoDto> ObtenerArchivosSubidos(string mail, int proveedorId, bool esOperador);
-        string EnviarSolicitudUsuario(string mail, int proveedorId, AltaEmpresaViewModel altaEmpresa);
+        string EnviarSolicitudUsuario(string mail, int proveedorId, bool esGuardarYNotificar, AltaEmpresaViewModel altaEmpresa);
         string ObtenerArchivo(string mail, int archivoID, int proveedorId);
         string ObtenerArchivos(string mail, int proveedorId, string pathBase);
         string EliminarArchivo(string mail, int archivoID, int proveedorId);

@@ -481,7 +481,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default"
-                    *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ALTA EMPRESA NO GRANOS'))">
+                    *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('VER ALTAS NO GRANOS') || isAuthorized('ABM NOTIFICACIONES')) ">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseU" aria-expanded="false" aria-controls="collapseU">
@@ -505,7 +505,7 @@
                                     Notificaciones
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('ALTA EMPRESA NO GRANOS')">
+                            <div *ngIf="isAuthorized('VER ALTAS NO GRANOS')">
                                 <a (click)="goToSeccion('/usuario/alta-empresa-no-granos')" href="#">
                                     Alta Empresa No Granos
                                 </a>

@@ -322,7 +322,8 @@
                                                 <label style="display:inline-block;">
                                                     No
                                                     <input type="radio" name="radioEmpleados" id="radioEmpleadosNo"
-                                                        value="false" (change)="relacionConEmpleadosCheckNo($event)">
+                                                        [disabled]="esUsuarioCompras" value="false"
+                                                        (change)="relacionConEmpleadosCheckNo($event)">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </div>
@@ -330,7 +331,8 @@
                                                 <label style=" display:inline-block;">
                                                     Si
                                                     <input type="radio" name="radioEmpleados" id="radioEmpleadosSi"
-                                                        value="true" (change)="relacionConEmpleadosCheckSi($event)">
+                                                        [disabled]="esUsuarioCompras" value="true"
+                                                        (change)="relacionConEmpleadosCheckSi($event)">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </div>
@@ -377,25 +379,27 @@
                                                         <td>
                                                             <input [(ngModel)]="field.NombreProveedora"
                                                                 class="form-control" type="text"
-                                                                style="font-weight: 300;"
+                                                                [disabled]="esUsuarioCompras" style="font-weight: 300;"
                                                                 name="{{field.NombreProveedora}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.CargoProveedora"
-                                                                class="form-control" type="text"
-                                                                name="{{field.CargoProveedora}}" />
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.CargoProveedora}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.NombreMolinos"
-                                                                class="form-control" type="text"
-                                                                name="{{field.NombreMolinos}}" />
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.NombreMolinos}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.Vinculo" class="form-control"
-                                                                type="text" name="{{field.Vinculo}}" />
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                name="{{field.Vinculo}}" />
                                                         </td>
                                                         <td width="75px">
                                                             <button class="btn-remove btn-custom" type="button"
+                                                                [disabled]="esUsuarioCompras"
                                                                 (click)="deleteFieldValueEmpleados(i)">
                                                                 Eliminar
                                                             </button>
@@ -405,7 +409,7 @@
                                             </table>
                                             <div class="btn-add-container">
                                                 <button class="btn-add btn-custom" type="button"
-                                                    (click)="addFieldValueEmpleados()">
+                                                    [disabled]="esUsuarioCompras" (click)="addFieldValueEmpleados()">
                                                     Agregar
                                                 </button>
 
@@ -450,6 +454,7 @@
                                                             Si
                                                             <input type="radio" name="radioFuncionarios"
                                                                 id="radioFuncionariosSi" value="true"
+                                                                [disabled]="esUsuarioCompras"
                                                                 (change)="relacionConFuncionariosCheckSi($event)">
                                                             <span class="checkmark"></span>
                                                         </label>
@@ -460,6 +465,7 @@
                                                         No
                                                         <input type="radio" name="radioFuncionarios"
                                                             id="radioFuncionariosNo" value="false"
+                                                            [disabled]="esUsuarioCompras"
                                                             (change)="relacionConFuncionariosCheckNo($event)">
                                                         <span class="checkmark"></span>
                                                     </label>
@@ -532,29 +538,33 @@
 
                                                         <td>
                                                             <input [(ngModel)]="field.NombreFirma" class="form-control"
-                                                                type="text" style="font-weight: 300;"
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                style="font-weight: 300;"
                                                                 name="{{field.NombreFirma}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.CargoFirma" class="form-control"
-                                                                type="text" name="{{field.CargoFirma}}" />
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                name="{{field.CargoFirma}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.NombreFuncionario"
-                                                                class="form-control" type="text"
-                                                                name="{{field.NombreFuncionario}}" />
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.NombreFuncionario}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.CargoFuncionario"
-                                                                class="form-control" type="text"
-                                                                name="{{field.CargoFuncionario}}" />
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.CargoFuncionario}}" />
                                                         </td>
                                                         <td>
                                                             <input [(ngModel)]="field.Vinculo" class="form-control"
-                                                                type="text" name="{{field.Vinculo}}" />
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                name="{{field.Vinculo}}" />
                                                         </td>
                                                         <td width="75px">
                                                             <button class="btn-remove btn-custom" type="button"
+                                                                [disabled]="esUsuarioCompras"
                                                                 (click)="deleteFieldValueFuncionarios(i)">
                                                                 Eliminar
                                                             </button>
@@ -566,7 +576,7 @@
                                             </table>
                                             <div class="btn-add-container">
                                                 <button class="btn-add btn-custom" type="button"
-                                                    (click)="addFieldValueFuncionarios()">
+                                                    [disabled]="esUsuarioCompras" (click)="addFieldValueFuncionarios()">
                                                     Agregar
                                                 </button>
 
@@ -624,6 +634,7 @@
                                         <div class="col-xs-12">
                                             <label class="form-check-label">
                                                 <input type="checkbox" class="form-check-input" value=""
+                                                    [disabled]="esUsuarioCompras"
                                                     [(ngModel)]="this.codigoDeConducta"><b>Acepto</b> - C&oacute;digo de
                                                 Conducta
                                                 de
@@ -649,8 +660,10 @@
                     <div class="step-actions enviar">
                         <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
                             data-target="#modalNotificaci&oacute;n" class="btn-custom btn-azul"></button>
+                        <input type="submit" (click)="onSubmit()" class="btn-custom btn-guardar btn-grande"
+                            *ngIf="esGuardarYNotificar" value="Guardar y notificar">
                         <input type="submit" (click)="onSubmit()" class="btn-custom btn-guardar btn-mediano"
-                            value="Enviar">
+                            *ngIf="!esGuardarYNotificar" value="Enviar">
                     </div>
                 </div>
             </div>

@@ -273,7 +273,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnviarSolicitudUsuario(int proveedorId, string datosJson)
+        public ActionResult EnviarSolicitudUsuario(int proveedorId, bool esGuardarYNotificar, string datosJson)
         {
             try
             {
@@ -281,7 +281,7 @@ namespace SustitucionMOA.Controllers
 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, altaEmpresa));
+                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, esGuardarYNotificar,  altaEmpresa));
             }
             catch (InfoCustomException e)
             {

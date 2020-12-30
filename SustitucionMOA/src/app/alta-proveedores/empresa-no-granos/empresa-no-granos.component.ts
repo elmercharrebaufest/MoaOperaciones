@@ -76,7 +76,10 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     IdSituacionIVA: number = 0;
     IdIngresoBruto: number = 0;
     CBUNoGranos: string = "";
+    esUsuarioCompras: boolean = false;
     ingresoAPlanta: boolean = false;
+
+    esGuardarYNotificar: boolean = false;
 
     constructor(
         protected service: EmpresaNoGranosService,
@@ -121,7 +124,9 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     ngOnInit() {
 
         this.route.params.forEach((params: Params) => {
-            if (params["id"] > 0) this.proveedorId = params["id"];
+            if (params["id"] > 0) {
+                this.proveedorId = params["id"];
+            }
         });
 
         this.setTabs();
@@ -132,6 +137,23 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         this.cargarSolicitudUsuario();
         this.obtenerInfoProveedor();
 
+
+        if (this.securityService.tienePermiso('ABM EMPRESAS')) {
+            this.esUsuarioCompras = true;
+        }
+
+
+        console.log("codigoDeConducta:", this.codigoDeConducta)
+        //Si no tiene firmado el codigo de conducta, significa que necesitamos que lo haga el proveedor. Por lo tanto, solo permitimos que guarde los archivos y datos de IVA, IIBB y Cbu
+  
+
+        console.log("esGuardarYNotificar:", this.esGuardarYNotificar)
+
+
+        setTimeout(() => { 
+        console.log("esGuardarYNotificar:", this.esGuardarYNotificar)
+
+        }, 2000);
 
 
         //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
@@ -342,8 +364,9 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             IdSituacionIVA: this.IdSituacionIVA,
             IdIngresoBruto: this.IdIngresoBruto,
         };
+
         this.subscription = this.service
-            .enviarSolicitud(datos, this.proveedorId)
+            .enviarSolicitud(datos, this.esGuardarYNotificar, this.proveedorId)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
@@ -416,133 +439,140 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     }
 
     validar() {
-        if (this.CBUNoGranos == null || this.CBUNoGranos.length != 22) {
-            this.mensajeComponent.setErrorMsg("Debe completar el CBU");
-            return true;
-        }
-        if (this.IdIngresoBruto == null || this.IdIngresoBruto <= 0) {
-            this.mensajeComponent.setErrorMsg("Debe completar la Ingresos Brutos");
-            return true;
-        }
+
         if (this.IdSituacionIVA == null || this.IdSituacionIVA <= 0) {
             this.mensajeComponent.setErrorMsg("Debe completar la Situacion de IVA");
             return true;
         }
 
-        if (this.relacionConEmpleadosChecked == null) {
-            this.mensajeComponent.setErrorMsg(
-                "Debe completar V�nculos a declarar con Empleados de Molinos agro S.A."
-            );
+        if (this.IdIngresoBruto == null || this.IdIngresoBruto <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Ingresos Brutos");
             return true;
-        }
-        if (this.relacionConEmpleadosChecked == false) {
-            this.empleados = [];
-        }
-        if (this.relacionConEmpleadosChecked == true) {
-            if (this.empleados.length == 0) {
-                this.mensajeComponent.setErrorMsg(
-                    "Debe completar V�nculos a declarar con Empleados de Molinos agro S.A."
-                );
-            } else {
-                for (const item of this.empleados) {
-                    if (
-                        item.NombreProveedora == null ||
-                        item.NombreProveedora == ""
-                    ) {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de V�nculos a declarar con Empleados de Molinos agro."
-                        );
-                        return true;
-                    }
-                    if (
-                        item.CargoProveedora == null ||
-                        item.CargoProveedora == ""
-                    ) {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el cargo en todos los items de V�nculos a declarar con Empleados de Molinos agro."
-                        );
-                        return true;
-                    }
-                    if (
-                        item.NombreMolinos == null ||
-                        item.NombreMolinos == ""
-                    ) {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de V�nculos a declarar con Empleados de Molinos agro."
-                        );
-                        return true;
-                    }
-                    if (item.Vinculo == null || item.Vinculo == "") {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el vinculo en todos los items de V�nculos a declarar con Empleados de Molinos agro."
-                        );
-                        return true;
-                    }
-                }
-            }
         }
 
-        if (this.relacionConFuncionariosChecked == null) {
-            this.mensajeComponent.setErrorMsg(
-                "Debe completar V�nculos a declarar con Funcionarios P�blicos"
-            );
+        if (this.CBUNoGranos == null || this.CBUNoGranos.length != 22) {
+            this.mensajeComponent.setErrorMsg("Debe completar el CBU");
             return true;
         }
-        if (this.relacionConFuncionariosChecked == false) {
-            this.funcionarios = [];
-        }
-        if (this.relacionConFuncionariosChecked == true) {
-            if (this.funcionarios.length == 0) {
+    
+        if(!this.esGuardarYNotificar)
+        {
+            if (this.relacionConEmpleadosChecked == null) {
                 this.mensajeComponent.setErrorMsg(
-                    "Debe completar V�nculos a declarar con Funcionarios P�blicos"
+                    "Debe completar V\u00EDnculos a declarar con Empleados de Molinos agro S.A."
                 );
-            } else {
-                for (const item of this.funcionarios) {
-                    if (item.NombreFirma == null || item.NombreFirma == "") {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de V�nculos a declarar con Funcionarios P�blicos."
-                        );
-                        return true;
-                    }
-                    if (item.CargoFirma == null || item.CargoFirma == "") {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el cargo en todos los items de V�nculos a declarar con Funcionarios P�blicos."
-                        );
-                        return true;
-                    }
-                    if (
-                        item.NombreFuncionario == null ||
-                        item.NombreFuncionario == ""
-                    ) {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el nombre en todos los items de V�nculos a declarar con Funcionarios P�blicos."
-                        );
-                        return true;
-                    }
-                    if (
-                        item.CargoFuncionario == null ||
-                        item.CargoFuncionario == ""
-                    ) {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el cargo en todos los items de V�nculos a declarar con Funcionarios P�blicos."
-                        );
-                        return true;
-                    }
-                    if (item.Vinculo == null || item.Vinculo == "") {
-                        this.mensajeComponent.setErrorMsg(
-                            "Debe completar el vinculo en todos los items de V�nculos a declarar con Funcionarios P�blicos."
-                        );
-                        return true;
+                return true;
+            }
+            if (this.relacionConEmpleadosChecked == false) {
+                this.empleados = [];
+            }
+            if (this.relacionConEmpleadosChecked == true) {
+                if (this.empleados.length == 0) {
+                    this.mensajeComponent.setErrorMsg(
+                        "Debe completar V\u00EDnculos a declarar con Empleados de Molinos agro S.A."
+                    );
+                } else {
+                    for (const item of this.empleados) {
+                        if (
+                            item.NombreProveedora == null ||
+                            item.NombreProveedora == ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el nombre en todos los items de V\u00EDnculos a declarar con Empleados de Molinos agro."
+                            );
+                            return true;
+                        }
+                        if (
+                            item.CargoProveedora == null ||
+                            item.CargoProveedora == ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el cargo en todos los items de V\u00EDnculos a declarar con Empleados de Molinos agro."
+                            );
+                            return true;
+                        }
+                        if (
+                            item.NombreMolinos == null ||
+                            item.NombreMolinos == ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el nombre en todos los items de V\u00EDnculos a declarar con Empleados de Molinos agro."
+                            );
+                            return true;
+                        }
+                        if (item.Vinculo == null || item.Vinculo == "") {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el vinculo en todos los items de V\u00EDnculos a declarar con Empleados de Molinos agro."
+                            );
+                            return true;
+                        }
                     }
                 }
             }
-        }
-        if (this.codigoDeConducta == false) {
-            this.mensajeComponent.setErrorMsg(
-                "Debe aceptar el C�digo de Conducta de Proveedores de Molinos agro S.A."
-            );
-            return true;
-        }
+
+            if (this.relacionConFuncionariosChecked == null) {
+                this.mensajeComponent.setErrorMsg(
+                    "Debe completar V\u00EDnculos a declarar con Funcionarios P\u00FAblicos"
+                );
+                return true;
+            }
+            if (this.relacionConFuncionariosChecked == false) {
+                this.funcionarios = [];
+            }
+            if (this.relacionConFuncionariosChecked == true) {
+                if (this.funcionarios.length == 0) {
+                    this.mensajeComponent.setErrorMsg(
+                        "Debe completar V\u00EDnculos a declarar con Funcionarios P\u00FAblicos"
+                    );
+                } else {
+                    for (const item of this.funcionarios) {
+                        if (item.NombreFirma == null || item.NombreFirma == "") {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el nombre en todos los items de V\u00EDnculos a declarar con Funcionarios P\u00FAblicos."
+                            );
+                            return true;
+                        }
+                        if (item.CargoFirma == null || item.CargoFirma == "") {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el cargo en todos los items de V\u00EDnculos a declarar con Funcionarios P\u00FAblicos."
+                            );
+                            return true;
+                        }
+                        if (
+                            item.NombreFuncionario == null ||
+                            item.NombreFuncionario == ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el nombre en todos los items de V\u00EDnculos a declarar con Funcionarios P\u00FAblicos."
+                            );
+                            return true;
+                        }
+                        if (
+                            item.CargoFuncionario == null ||
+                            item.CargoFuncionario == ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el cargo en todos los items de V\u00EDnculos a declarar con Funcionarios P\u00FAblicos."
+                            );
+                            return true;
+                        }
+                        if (item.Vinculo == null || item.Vinculo == "") {
+                            this.mensajeComponent.setErrorMsg(
+                                "Debe completar el vinculo en todos los items de V\u00EDnculos a declarar con Funcionarios P\u00FAblicos."
+                            );
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (!this.codigoDeConducta) {
+                this.mensajeComponent.setErrorMsg(
+                    "Debe aceptar el C\u00F3digo de Conducta de Proveedores de Molinos agro S.A."
+                );
+                return true;
+            }
+        } 
+
         return false;
     }
 
@@ -566,7 +596,25 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     cargarSolicitudUsuario() {
         this.subscription = this.service.cargarSolicitudUsuario("", this.proveedorId).subscribe(
             (result) => {
+
+                this.CBUNoGranos = result.CBU;
+
+                this.IdSituacionIVA = result.IdSituacionIVA;
+                if (this.IdSituacionIVA > 0 && this.IdSituacionIVA != null) {
+                    document
+                        .getElementById("IdSituacionIVA" + this.IdSituacionIVA.toString())
+                        .setAttribute("checked", "true");
+                }
+
+                this.IdIngresoBruto = result.IdIngresoBruto;
+                if (this.IdIngresoBruto > 0 && this.IdIngresoBruto != null) {
+                    document
+                        .getElementById("IdIngresoBruto" + this.IdIngresoBruto.toString())
+                        .setAttribute("checked", "true");
+                }
+                
                 if (result.VinculoConEmpleadosDeMolinos != null) {
+                    console.log("Entramos")
                     this.codigoConductaVisto = true;
                     this.codigoDeConducta = true;
 
@@ -596,22 +644,12 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
 
                     this.empleados = result.Empleados;
                     this.funcionarios = result.Funcionarios;
+                }
 
-                    this.CBUNoGranos = result.CBU;
 
-                    this.IdSituacionIVA = result.IdSituacionIVA;
-                    if (this.IdSituacionIVA > 0 && this.IdSituacionIVA != null) {
-                        document
-                            .getElementById("IdSituacionIVA" + this.IdSituacionIVA.toString())
-                            .setAttribute("checked", "true");
-                    }
-
-                    this.IdIngresoBruto = result.IdIngresoBruto;
-                    if (this.IdIngresoBruto > 0 && this.IdIngresoBruto != null) {
-                        document
-                            .getElementById("IdIngresoBruto" + this.IdIngresoBruto.toString())
-                            .setAttribute("checked", "true");
-                    }
+                if (this.esUsuarioCompras && !this.codigoDeConducta)
+                {
+                    this.esGuardarYNotificar = true;
                 }
             },
             (error) => {
@@ -633,7 +671,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             .getElementById("openModalNotificacion")
             .click();
         
-        if (this.securityService.tienePermiso('ABM EMPRESAS')) {
+        if (this.esUsuarioCompras) {
             this.navService.navegarSeccion(
                 "altas"
             );
