@@ -511,7 +511,7 @@ namespace SustitucionMOA.Controllers
 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, altaEmpresa));
+                return JsonCustom(altaEmpresaService.EnviarSolicitudUsuario(mail, proveedorId, false, altaEmpresa));
             }
             catch (InfoCustomException e)
             {

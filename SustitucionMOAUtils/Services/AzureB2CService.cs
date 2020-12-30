@@ -135,6 +135,7 @@ namespace SustitucionMOAUtils.Services
             {
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.AltaIncompleta,
+                Observaciones = "Comunicarse con su contratante.",
                 Mail = usuario.Mail,
                 TipoProveedor = ObtenerTipoPorNombreCorto("NG")
             };
