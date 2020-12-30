@@ -263,7 +263,7 @@ namespace SustitucionMOATest.Services
                 Empleados = Empleados,
                 Funcionarios = Funcionarios
             };
-            var result = target.EnviarSolicitudUsuario(mailUsuario, proveedorId, altaempresa);
+            var result = target.EnviarSolicitudUsuario(mailUsuario, proveedorId, false, altaempresa);
 
             var expected = SuccessMsg.ValidacionPendienteOK;
 
