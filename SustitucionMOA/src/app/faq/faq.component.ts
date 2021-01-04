@@ -72,14 +72,16 @@ export class FaqComponent extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([]);
         //this.getData();
+        this.displayListaPreguntas();
     }
 
     displayListaPreguntas() {
-        if ($('.post').css('display')=='block') {
-            $('.post').css('display', 'none');
-        }
-        else{
-            $('.post').css('display', 'block');    
-        }
+        $('.categoria1MenuFaq').click(function() {
+            $("#archive_posts").toggle();
+        });
+
+        $('.categoria2MenuFaq').click(function() {
+            $("#archive_posts2").toggle();
+        });
     }
 }
