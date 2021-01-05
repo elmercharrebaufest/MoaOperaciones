@@ -71,7 +71,6 @@ export class FaqComponent extends ListBaseComponent {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
-        //this.getData();
         this.displayListaPreguntas();
     }
 
@@ -79,9 +78,12 @@ export class FaqComponent extends ListBaseComponent {
         $('.categoria1MenuFaq').click(function() {
             $("#archive_posts").toggle();
         });
-
+        $('.faqCategoria1').click(function() {
+            $("#archive_posts").toggle();
+        });
         $('.categoria2MenuFaq').click(function() {
             $("#archive_posts2").toggle();
         });
     }
+    
 }
