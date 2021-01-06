@@ -192,10 +192,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 this.mensajeSIPERGuardado = "Se guardo correctamente."
     }
 
-    resetVariables(){
-        this.mensajeSIPERGuardado = "";
-    }
-
     isNullOrWhitespace( input: string ) {
         var userText = input.replace(/^\s+/, '').replace(/\s+$/, '');
 
