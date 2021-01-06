@@ -196,12 +196,26 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeSIPERGuardado = "";
     }
 
+    isNullOrWhitespace( input: string ) {
+        var userText = input.replace(/^\s+/, '').replace(/\s+$/, '');
+
+        if (typeof input === 'undefined' || input == null || userText === '') 
+        {
+            return true;
+        }
+        return false;
+    }
+
+    resetVariables(){
+        this.mensajeSIPERGuardado = "";
+    }
+
     cambiarEstado(estadoId: number) {
         if (estadoId == 4 && this.observacionesProveedor == "") {
             this.mensajeError = "Debe ingresar una observacion para el Proveedor.";
             return false;
         }
-        if (estadoId == 7 && this.empresaSeleccionada.SISAEstadoCuit != "1" && (this.empresaSeleccionada.EstadoSIPER == "" || this.empresaSeleccionada.EstadoSIPER == null)) {
+        if (estadoId == 7 && this.empresaSeleccionada.SISAEstadoCuit != "1" && (this.isNullOrWhitespace(this.empresaSeleccionada.EstadoSIPER))) {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
