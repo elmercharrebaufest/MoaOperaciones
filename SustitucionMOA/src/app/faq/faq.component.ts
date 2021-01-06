@@ -75,14 +75,15 @@ export class FaqComponent extends ListBaseComponent {
     }
 
     displayListaPreguntas() {
+        setTimeout('document.getElementsByClassName("categoria1MenuFaq").clicked = false;' , 10000);
         $('.categoria1MenuFaq').click(function() {
-            $("#archive_posts").toggle();
+            $("#archive_posts").slideToggle();
         });
         $('.faqCategoria1').click(function() {
-            $("#archive_posts").toggle();
+            $("#archive_posts").slideToggle();
         });
         $('.categoria2MenuFaq').click(function() {
-            $("#archive_posts2").toggle();
+            $("#archive_posts2").slideToggle();
         });
     }
     
