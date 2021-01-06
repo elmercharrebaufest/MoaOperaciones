@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="14l7DmJ6LYCSbfRPBiSIE46buok=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="lMJ4Uw2k4KgRi7G6/5vc8dllShLdp2YouyVtJ9TzJuE=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_PERMISOSBinding">
       <properties>

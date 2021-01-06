@@ -8,6 +8,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
 {
     public class Liquidacion
     {
+        public string pago { get; set; }
         public string emitido { get; set; }
         public string tipo { get; set; }
         public string comprobante { get; set; }
@@ -21,10 +22,12 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
         public string observaciones { get; set; }
         public string secuencia { get; set; }
         public string solapa { get; set; }
+        public string fijacion { get; set; }
     }
 
     public class LiquidacionView : Liquidacion
     {
+        public DateTime pagoDate { get; set; }
         public DateTime emitidoDate { get; set; }
         public string liquidadoString { get; set; }
         public string importeString { get; set; }
@@ -32,5 +35,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
         public string sociedad { get; set; }
         public string documento { get; set; }
         public string ejercicio { get; set; }
+        public string detallePago { get; set; }
     }
 }

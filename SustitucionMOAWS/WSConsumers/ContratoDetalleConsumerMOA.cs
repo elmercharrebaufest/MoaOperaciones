@@ -256,7 +256,7 @@ namespace SustitucionMOAWS.WSConsumers
                     tipo = hijo.TIPO,
                     totalString = SAPFormatter.FormatearMonto(hijo.TOTAL, hijo.MON_TOTAL),
                     total = hijo.TOTAL,
-                    comprobante = hijo.COMPROBANTE
+                    comprobante = hijo.COMPROBANTE,
                 });
             }
 

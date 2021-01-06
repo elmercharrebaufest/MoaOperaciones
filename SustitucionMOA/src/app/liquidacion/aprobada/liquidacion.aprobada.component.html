@@ -109,12 +109,12 @@
                                     </span>
                                 </div>
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Liquidacion')">
-                                Liquidacion
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('liquidado')">
+                                Liquidaci&oacute;n
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Liquidacion' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Liquidacion' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'liquidado' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'liquidado' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -136,6 +136,15 @@
                                     </span>
                                 </div>
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Fijación')">
+                                N° Fijación
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Fijación' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Fijación' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Ver CCPPs</th>
                         </tr>
                     </thead>
@@ -148,6 +157,7 @@
                             <td>{{liquidacion.liquidadoString}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', liquidacion.contrato)" href="#">{{liquidacion.contrato}}</a></td>
+                            <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', liquidacion.contrato, liquidacion.fijacion)" href="#">{{liquidacion.fijacion}}</a></td>
                             <td><a (click)="showModal(liquidacion.contrato, liquidacion.secuencia, liquidacion.comprobante)" href="#" class="animate"><span class="fa fa-search"></span></a></td>
                         </tr>
                     </tbody>

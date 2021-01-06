@@ -27,6 +27,7 @@ export class LiquidacionAprobadaComponent extends LiquidacionBaseComponent {
 
     tituloArchivo = "ReporteLiquidacionesAprobadas.xls";
     tituloArchivoModal = "ReporteVinculacion";
+    cerosFijacion: string = "00";
 
     setTabs() {
         this.setMenuSeccionTab("liquidacion", "Aprobadas");
@@ -40,7 +41,8 @@ export class LiquidacionAprobadaComponent extends LiquidacionBaseComponent {
             { etiqueta: "Producto", valor: liquidacion.producto },
             { etiqueta: "Liquidacion", valor: liquidacion.liquidadoString },
             { etiqueta: "Total", valor: liquidacion.importeString },
-            { etiqueta: "Contrato", valor: liquidacion.contrato }
+            { etiqueta: "Contrato", valor: liquidacion.contrato },
+            { etiqueta: "Fijación", valor: liquidacion.fijacion }
         ]);
         return false;
     }

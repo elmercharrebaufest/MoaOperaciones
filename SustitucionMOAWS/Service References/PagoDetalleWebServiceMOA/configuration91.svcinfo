@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="94OgbMe+tsqJak643Mo1P/RC8G8=">
+<SavedWcfConfigurationInformation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="9.1" CheckSum="23ICT2RKzh6tu67mzI1CMU02yttDJp9GKhgRFXynFsw=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="SI_MPMF_MOAOP_DETALLE_PAGOBinding">
       <properties>
