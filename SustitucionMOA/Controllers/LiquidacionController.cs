@@ -450,6 +450,34 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CONTRATO_DETALLE)]
+        public ActionResult descargarProformaFinal(string fijacion)
+        {
+            try
+            {
+                //Formato de Fijación entrante: 0[nro de contrato][nro de pedido]. La RFC espera dos parametros: [nro de contrato] (sin ceros) y como fijación: [nro de contrato][nro de pedido]
+                return JsonCustom(_liquidacionService.descargaProformaFinal(fijacion.Substring(1, fijacion.Length - 3), fijacion.Substring(1, fijacion.Length - 1)));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CONTRATO_DETALLE)]
         public ActionResult getFleteProcedencia(string contrato)
         {
             try

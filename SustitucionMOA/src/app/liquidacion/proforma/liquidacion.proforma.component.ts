@@ -37,6 +37,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
 
     data: any;
     tituloArchivoExcel = "ReporteProformaDeLiquidacion.xls";
+    tituloArchivoPDF = "ProformaFinal-";
     fijacion = "";
 
     setTabs() {
@@ -108,6 +109,49 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
                         link.click();
                         setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
                         return false;
+                    }
+                }
+            },
+            error => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+
+        );
+        return false;
+    }
+
+    descargarProforma(){
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service.descargarProformaFinal(this.fijacion).subscribe(
+            result => {
+                this.spinnerSmallComponent.hideIt();
+                if(result.pdf){
+                    var byteArray = new Uint8Array(result.pdf.data);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivoPDF + this.fijacion + '.pdf');
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = this.tituloArchivoPDF + this.fijacion + '.pdf';
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        return false;
+                    }
+                }
+                else{
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
                     }
                 }
             },

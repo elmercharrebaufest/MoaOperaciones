@@ -10,6 +10,7 @@ using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
+using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAModel.Models.WSMapMOA.Proforma;
 using SustitucionMOAModel.Models.WSMapMOA.Vincula.Detalle;
 using SustitucionMOAUtils.Export;
@@ -363,6 +364,28 @@ namespace SustitucionMOAUtils.Services
                 data.salidas.Add(data.pagoACuenta);
                 data.salidas.Add(data.saldoAPagar);
                 return ExcelExport.ToExcel(data.salidas, new string[] { "Contrato", "Caracteristica", "Moneda", "Importe", "Iva", "Total" }, "Reporte Proforma de Liquidacion (" + fijacion + ")");
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public PDFResponse descargaProformaFinal(string contrato, string fijacion)
+        {
+            try
+            {
+                PDFResponse data = new PDFProformaFinalConsumerMOA().request(contrato, fijacion);
+
+                return data;
             }
             catch (InfoCustomException e)
             {

@@ -177,6 +177,15 @@ export class LiquidacionProformaService extends LiquidacionService {
             .pipe(map(this.extractData));
     }
 
+    descargarProformaFinal(fijacion: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fijacion', fijacion);
+        return this.http
+            .get('/api/liquidacion/descargarProformaFinal', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
+            .pipe(map(this.extractData));
+    }
+
     getFleteProcedencia(contrato: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('contrato', contrato);
