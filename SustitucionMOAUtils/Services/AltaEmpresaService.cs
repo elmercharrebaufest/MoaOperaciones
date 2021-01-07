@@ -276,10 +276,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.EstadoSIPER = estadoSIPER;
                 }
-                else
-                {
-                    throw new Exception("El SIPER no puede ser nulo o un espacio en blanco.");
-                }
 
                 repositorio.GuardarCambios();
 
