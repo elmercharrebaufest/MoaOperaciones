@@ -75,15 +75,25 @@ export class FaqComponent extends ListBaseComponent {
     }
 
     displayListaPreguntas() {
-        setTimeout('document.getElementsByClassName("categoria1MenuFaq").clicked = false;' , 10000);
-        $('.categoria1MenuFaq').click(function() {
-            $("#archive_posts").slideToggle();
-        });
-        $('.faqCategoria1').click(function() {
-            $("#archive_posts").slideToggle();
-        });
         $('.categoria2MenuFaq').click(function() {
             $("#archive_posts2").slideToggle();
+        });
+
+        $('.categoria1MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria1').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
         });
     }
     

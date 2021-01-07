@@ -3806,3 +3806,10 @@ display: none;
   transition-delay: 0.5s;
   transition: height 0.5s ease;
 }
+.tituloCategoriaFaq {
+  font-size: 23px !important;
+  font-weight: bold !important;
+  margin-bottom: 0px !important;
+  color: #707070 !important;
+  font-weight: normal !important;
+}
