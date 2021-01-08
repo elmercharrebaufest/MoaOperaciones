@@ -40,6 +40,7 @@
     public CalidadTercero: boolean;
     public Pizarra: boolean;
     public SustentableTercero: boolean;
+    public ContratoCorredor: string;
 
     constructor() {
         this.TipoNegocioId = 2;
