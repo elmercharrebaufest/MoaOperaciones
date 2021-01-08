@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -96,21 +96,6 @@ var ReporteBaseComponent = /** @class */ (function (_super) {
     };
     ReporteBaseComponent.prototype.isVisibleProveedor = function () {
         return this.esCorredorEnDataAgro == true;
-    };
-    ReporteBaseComponent.prototype.obtenerMateriales = function () {
-        var _this = this;
-        this.subscription = this.service.obtenerMateriales().subscribe(function (result) {
-            var obj = JSON.parse(result);
-            obj.Datos.forEach(function (element) {
-                var el = {
-                    Id: element.MaterialId.toString(),
-                    Descripcion: element.Descripcion
-                };
-                _this.materiales.push(el);
-            });
-        }, function (error) {
-            _this.mensajeComponent.setErrorMsg(error.message);
-        });
     };
     ReporteBaseComponent = __decorate([
         Component({

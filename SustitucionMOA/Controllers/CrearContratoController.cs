@@ -237,6 +237,8 @@ namespace SustitucionMOA.Controllers
                 {
                     result = proveedor.IdDataAgro ?? 0;
                 }
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, $"ValidarDirecto userMail:{userMail}, codigoProveedor:{codigoProveedor},proveedor.CUIT:{proveedor.CUIT}, directo:{directo}");
+
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
