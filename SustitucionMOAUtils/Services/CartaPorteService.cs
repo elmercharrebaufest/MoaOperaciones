@@ -147,7 +147,7 @@ namespace SustitucionMOAUtils.Services
                 List<FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
                 CartaPorteDescargaExcelWSMOAResponse data = (CartaPorteDescargaExcelWSMOAResponse)new RecepcionesExcelConsumerMOA().request(proveedor, fechas);
                 ValidarRespuesta(data);
-                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" }, "Reporte Descargas");
+                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular", "Contrato Molinos", "CG" }, "Reporte Descargas");
             }
             catch (InfoCustomException)
             {
