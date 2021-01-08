@@ -258,7 +258,7 @@ export class ContratoDetalleComponent extends BaseComponent implements OnInit, A
             { etiqueta: "Fecha", valor: Liquidacion.fecha },
             { etiqueta: "Tipo", valor: Liquidacion.tipo },
             { etiqueta: "Comprobante", valor: Liquidacion.comprobante },
-            { etiqueta: "Nº Fijación", valor: Liquidacion.fijacion},
+            { etiqueta: "Nº Fijación", valor: Liquidacion.pedido},
             { etiqueta: "KG", valor: Liquidacion.cantidadString },
             { etiqueta: "Precio/tn", valor: Liquidacion.precioString },
             { etiqueta: "Total", valor: Liquidacion.totalString }

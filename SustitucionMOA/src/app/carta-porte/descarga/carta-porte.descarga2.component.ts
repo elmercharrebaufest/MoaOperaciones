@@ -39,6 +39,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
             { etiqueta: "CCPP Nº", valor: recepcionInfo.cartaPorte },
             { etiqueta: "Producto", valor: recepcionInfo.producto },
             { etiqueta: "Contrato", valor: recepcionInfo.contrnum },
+            { etiqueta: "CG", valor: recepcionInfo.cg },
             { etiqueta: "Recibido", valor: recepcionInfo.netoDescontadoString },
             { etiqueta: "Vendedor", valor: recepcionInfo.vendedor }
         ]);

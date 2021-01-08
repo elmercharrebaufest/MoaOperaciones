@@ -26,5 +26,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
     {
         public DateTime fechaDescargaDate { get; set; }
         public string netoDescontadoString { get; set; }
+        public string cg { get; set; }
     }
 }
