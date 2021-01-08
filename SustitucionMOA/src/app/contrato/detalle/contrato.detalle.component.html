@@ -385,28 +385,36 @@
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Tipo</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Comprobante</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">N° Fijaci&oacute;n</th>
                                     <th tabindex="0" rowspan="1" colspan="1">KG</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Precio/tn</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Total</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let liquidacion of data.liquidaciones" role="row" class="odd">
                                     <ng-container *ngIf="liquidacion.pedido == ''">
-                                        <td tabindex="0" style=""><a (click)="showModalTableLiquidacionesResponsive(liquidacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
+                                        <td tabindex="0"><a (click)="showModalTableLiquidacionesResponsive(liquidacion)" href="#" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{liquidacion.fecha}}</td>
                                         <td>{{liquidacion.tipo}}</td>
                                         <td>{{liquidacion.comprobante}}</td>
-                                        <td style="">{{liquidacion.cantidadString}}</td>
-                                        <td style="">{{liquidacion.precioString}}</td>
-                                        <td style="">{{liquidacion.totalString}}</td>
+                                        <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.fijacion)" href="#">{{liquidacion.pedido}}</a></td>
+                                        <td>{{liquidacion.cantidadString}}</td>
+                                        <td>{{liquidacion.precioString}}</td>
+                                        <td>{{liquidacion.totalString}}</td>
                                     </ng-container>
                                     <ng-container *ngIf="liquidacion.pedido != ''">
                                         <td tabindex="0" style="">{{liquidacion.fecha}}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>{{liquidacion.tipo}}   <a (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)" href="#">Ver Proforma</a></td>
+                                        <td>{{liquidacion.tipo}}</td>
+                                        <td>{{liquidacion.comprobante}}</td>
+                                        <td><a class="animate" (click)="goToSeccionParamDos('/contrato/detalle-fijacion/', data.contrato, liquidacion.fijacion)" href="#">{{liquidacion.pedido}}</a></td>
+                                        <td *ngIf="liquidacion.cantidadString != '0'">{{liquidacion.cantidadString}}</td>
+                                        <td *ngIf="liquidacion.cantidadString == '0'"></td>
+                                        <td *ngIf="liquidacion.precioString != '0,00'">{{liquidacion.precioString}}</td>
+                                        <td *ngIf="liquidacion.precioString == '0,00'"></td>
+                                        <td *ngIf="liquidacion.totalString != '0,00'">{{liquidacion.totalString}}</td>
+                                        <td *ngIf="liquidacion.totalString == '0,00'"></td>
+                                        <td><a (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)" href="#">Ver Proforma</a></td>
                                     </ng-container>
                                 </tr>
                             </tbody>
