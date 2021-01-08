@@ -324,6 +324,9 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
                         if (obj.HayError) {
                             let errores = "";
                             obj.Errores.forEach(element => {
+                                if (element.Message == "Proveedor No Operable por Riesgo Comercial Alto") {
+                                    element.Message = "Proveedor no operable, contactese con la mesa comercial";
+                                }
                                 errores = errores + element.Message + " - ";
                             });
 
