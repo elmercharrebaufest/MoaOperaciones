@@ -114,7 +114,8 @@ namespace SustitucionMOAWS.WSConsumers
                     titular = aplicacionInfo.TITULAR,
                     descripcionTitular = aplicacionInfo.DESC_TITULAR,
                     vendedor = aplicacionInfo.VENDEDOR,
-                    vendedorId = aplicacionInfo.ID_VENDEDOR
+                    vendedorId = aplicacionInfo.ID_VENDEDOR,
+                    cg = aplicacionInfo.CG
                 });
             }
             return result;
