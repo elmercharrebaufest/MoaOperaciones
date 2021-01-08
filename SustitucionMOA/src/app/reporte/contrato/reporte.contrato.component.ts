@@ -333,7 +333,6 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                     });
 
                     this.obtenerMateriales();
-                    this.validarDirecto();
                 }
             },
             error => {
@@ -376,5 +375,28 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
 
         return false;
     }
+
+
+    obtenerMateriales() {
+
+        this.subscription = this.service.obtenerMateriales().subscribe(
+            (result) => {
+                let obj = JSON.parse(result);
+
+                obj.Datos.forEach(element => {
+                    let el = {
+                        Id: element.MaterialId.toString(),
+                        Descripcion: element.Descripcion
+                    }
+                    this.materiales.push(el);
+                });
+                this.validarDirecto();
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
 
 }
