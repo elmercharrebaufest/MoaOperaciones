@@ -383,7 +383,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                PDFResponse data = new PDFProformaFinalConsumerMOA().request(contrato, fijacion);
+                PDFResponse data = new PDFProformaFinalConsumerMOA().request(contrato, fijacion.EndsWith("00") ? null : fijacion);
 
                 return data;
             }
