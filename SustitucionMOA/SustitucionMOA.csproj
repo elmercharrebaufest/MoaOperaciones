@@ -212,6 +212,7 @@
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
     <Content Include="Content\images\buttons\Information.svg" />
     <Content Include="Content\images\buttons\information2.svg" />
+    <Content Include="Content\images\buttons\upload.png" />
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />

@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -220,6 +220,9 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
                     if (obj.HayError) {
                         var errores_1 = "";
                         obj.Errores.forEach(function (element) {
+                            if (element.Message == "Proveedor No Operable por Riesgo Comercial Alto") {
+                                element.Message = "Proveedor no operable, contactese con la mesa comercial";
+                            }
                             errores_1 = errores_1 + element.Message + " - ";
                         });
                         _this.mensajeComponent.setErrorMsg(errores_1);
