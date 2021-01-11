@@ -194,6 +194,8 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
         
         private string dESC_TITULARField;
         
+        private string cgField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string FECHA_DESCARGA {
@@ -419,6 +421,18 @@ namespace SustitucionMOAWS.RecepcionesWebServiceMOA {
             set {
                 this.dESC_TITULARField = value;
                 this.RaisePropertyChanged("DESC_TITULAR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public string CG {
+            get {
+                return this.cgField;
+            }
+            set {
+                this.cgField = value;
+                this.RaisePropertyChanged("CG");
             }
         }
         

@@ -19,12 +19,13 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public string titular { get; set; }
         public string descripcionTitular { get; set; }
         public string contrnum { get; set; }
-
+        public string cg { get; set; }
     }
 
     public class CartaPorteDescargaView : CartaPorteDescarga
     {
         public DateTime fechaDescargaDate { get; set; }
         public string netoDescontadoString { get; set; }
+        public string cg { get; set; }
     }
 }

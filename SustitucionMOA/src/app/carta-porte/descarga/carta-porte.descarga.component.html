@@ -146,6 +146,16 @@
                                 </div> 
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
+                                (click)="orderColumnBy('cg')">
+                                CG
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cg' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cg' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="text-align: left;"
                                 (click)="orderColumnBy('netoDescontado')">
                                 Recibido
                                 <div>
@@ -207,6 +217,7 @@
                                     (click)="goToSeccionParam('/contrato/detalle', recepcionInfo.contrnum)"
                                     href="#">{{recepcionInfo.contrnum}}</a>
                             </td>
+                            <td style="text-align: left;">{{recepcionInfo.cg}}</td>
                             <td style="text-align: left;">{{recepcionInfo.netoDescontadoString}}</td>
                             <td *ngIf="isCorredor()" style="text-align: left;">{{recepcionInfo.vendedor}}</td>
                         </tr>
