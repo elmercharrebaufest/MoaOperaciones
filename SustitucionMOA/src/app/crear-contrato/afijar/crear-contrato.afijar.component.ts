@@ -358,19 +358,18 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
 
     validarContrato() {
         //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Dolarizado.");
-        //    return false;
+        //  this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");        //    return false;
         //}
         //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Pago Diferido.");
+        //    this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
         //    return false;
         //}
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;
         }
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la Tarifa Sustentable.");
             return false;
         }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {

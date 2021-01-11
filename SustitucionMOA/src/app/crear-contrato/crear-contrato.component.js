@@ -108,7 +108,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
             }
             else {
                 var precio = JSON.parse(result);
-                var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>';
+                var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">' + (contrato.TipoNegocioId == 1 ? "HABILITACION" : "PRECIO") + ' MOA</th>';
                 _this.retirados = true;
                 for (var i = 0; i < precio.length; i++) {
                     table += '<th style="font-size:20px;padding: 5px 10px;">' + precio[i][0].Material + '</th>';
@@ -125,7 +125,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         matRetirado = false;
                     }
                     if (matRetirado == true) {
-                        table += '<span style="color:red;font-weight:bold;">Sin precio</span>';
+                        table += '<span style="color:red;font-weight:bold;">' + (contrato.TipoNegocioId == 1 ? "No habilitado" : "Sin precio") + '</span>';
                     }
                     else {
                         if (contrato.TipoNegocioId == 1) {
