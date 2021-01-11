@@ -613,8 +613,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var archivoSubido in proveedor.Archivos)
                     {
-                        string fileName = Path.GetFileName(archivoSubido.Ruta);
-                        archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                        //Hay casos en prod de archivos que no están fisicamente pero si en la tabla. Mejor chequeemos que exista y si no seguimos con otro
+                        if (File.Exists(archivoSubido.Ruta))
+                        {
+                            string fileName = Path.GetFileName(archivoSubido.Ruta);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                        }
+
                     }
                 }
             }

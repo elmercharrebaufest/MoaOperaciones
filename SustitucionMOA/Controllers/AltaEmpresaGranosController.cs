@@ -452,6 +452,7 @@ namespace SustitucionMOA.Controllers
                 
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
+
                 string rutaZip= altaEmpresaService.ObtenerArchivos(mail, proveedorId, path);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
