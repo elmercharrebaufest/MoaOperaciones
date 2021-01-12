@@ -113,6 +113,7 @@ namespace SustitucionMOAUtils.Services
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.Aprobado
                         )
                     {
                         ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
