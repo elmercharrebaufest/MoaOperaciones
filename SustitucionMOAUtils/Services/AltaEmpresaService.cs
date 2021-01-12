@@ -46,7 +46,7 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
                                     || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                                    || (x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente && (x.AltaInterna ?? false)))
+                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
                                 && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
                                 );
