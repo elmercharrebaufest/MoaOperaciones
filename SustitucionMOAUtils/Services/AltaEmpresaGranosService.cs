@@ -265,8 +265,6 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(rutaCarpeta);
 
-                proveedor.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
-
                 //Si subieron otros archivos anteriormente, los borramos
                 DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
 
@@ -276,7 +274,16 @@ namespace SustitucionMOAUtils.Services
                     {
                         file.Delete();
                     }
+
+                    var archivoRemover = proveedor.Archivos.Where(a => a.FileKey == fileKey).FirstOrDefault();
+
+                    if (archivoRemover != null)
+                    {
+                        repositorio.Remover(archivoRemover);
+                    }
                 }
+
+                proveedor.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
 
                 fileSubido.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();
