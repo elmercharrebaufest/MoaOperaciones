@@ -270,7 +270,7 @@ namespace SustitucionMOAUtils.Services
                 //Si subieron otros archivos anteriormente, los borramos
                 DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
 
-                if (fileKey != FileKeys.CertificadoExclusionIIBB || fileKey != FileKeys.OtrosArchivos)
+                if (fileKey != FileKeys.CertificadoExclusionIIBB && fileKey != FileKeys.OtrosArchivos)
                 {
                     foreach (FileInfo file in carpeta.GetFiles())
                     {
