@@ -30,5 +30,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
         public string netoDescontadoString { get; set; }
         
         public string totalAplicadosString { get; set; }
+        public string cg { get; set; }
     }
 }

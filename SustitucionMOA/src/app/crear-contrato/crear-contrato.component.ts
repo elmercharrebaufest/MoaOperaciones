@@ -105,7 +105,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     let precio = JSON.parse(result);
-                    var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>';
+                    var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">' + (contrato.TipoNegocioId == 1 ? "HABILITACION" : "PRECIO") +' MOA</th>';
                     this.retirados = true;
                     for (var i = 0; i < precio.length; i++) {
                         table += '<th style="font-size:20px;padding: 5px 10px;">' + precio[i][0].Material + '</th>';
@@ -122,7 +122,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                             matRetirado = false;
                         }
                         if (matRetirado == true) {
-                            table += '<span style="color:red;font-weight:bold;">Sin precio</span>';
+                            table += '<span style="color:red;font-weight:bold;">' + (contrato.TipoNegocioId == 1 ? "No habilitado" : "Sin precio") +'</span>';
                         } else {
                             if (contrato.TipoNegocioId == 1) {
                                 table += preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';

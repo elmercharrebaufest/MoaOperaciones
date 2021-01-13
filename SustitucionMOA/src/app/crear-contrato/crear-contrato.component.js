@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -108,7 +108,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
             }
             else {
                 var precio = JSON.parse(result);
-                var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>';
+                var table = '<tr><th rowspan="2" style="font-size:20px;padding: 5px 10px;">' + (contrato.TipoNegocioId == 1 ? "HABILITACION" : "PRECIO") + ' MOA</th>';
                 _this.retirados = true;
                 for (var i = 0; i < precio.length; i++) {
                     table += '<th style="font-size:20px;padding: 5px 10px;">' + precio[i][0].Material + '</th>';
@@ -125,7 +125,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         matRetirado = false;
                     }
                     if (matRetirado == true) {
-                        table += '<span style="color:red;font-weight:bold;">Sin precio</span>';
+                        table += '<span style="color:red;font-weight:bold;">' + (contrato.TipoNegocioId == 1 ? "No habilitado" : "Sin precio") + '</span>';
                     }
                     else {
                         if (contrato.TipoNegocioId == 1) {

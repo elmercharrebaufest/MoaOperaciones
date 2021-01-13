@@ -65,7 +65,46 @@
         </div>
         <!--End Title-->
         <!--Datos de entrega-->
-        <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas">
+        <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas && data.entregasDescargas[0].cg != ''">
+            <div class="row titleSection titleSectionNoBorder">
+                <div class="col-xs-12 col-sm-12"><strong>Datos de entrega</strong></div>
+                <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen"
+                     style="padding: 10px 10px;">
+                    <div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="black" style="text-align: center;">Fecha</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].fecha}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="black" style="text-align: center;">Producto</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].descripcionProducto}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="black" style="text-align: center;">Descargado en planta</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].descargaCentro}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="black" style="text-align: center;">Procedencia</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].procedencia}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-1">
+                            <p class="black" style="text-align: center;">Total Recibidos</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].netoDescontadoString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-1">
+                            <p class="black" style="text-align: center;">Total Aplicados</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].totalAplicadosString}}</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-2">
+                            <p class="black" style="text-align: center;">CG</p>
+                            <p style="text-align: center;">{{data.entregasDescargas[0].cg}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="Entrega" class="firstSection row myRow" *ngIf="data.entregasDescargas && data.entregasDescargas[0].cg == ''">
             <div class="row titleSection titleSectionNoBorder">
                 <div class="col-xs-12 col-sm-12"><strong>Datos de entrega</strong></div>
                 <div class="col-xs-12 rowInfoGrey rounded shadow animate rowInfoRoundedGreen"
@@ -102,7 +141,7 @@
 
         <div class="row myRow titleSection titleSectionNoBorder">
             <!--aplicaciones-->
-            <div id="Aplicaciones" class="col-xs-12 col-sm-8">
+            <div id="Aplicaciones" class="col-xs-12 col-sm-7">
                 <div id="showAplicaciones" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showAplicaciones()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>
@@ -162,7 +201,7 @@
             </div>
             <!-- end aplicaciones -->
             <!-- DESCARGA---->
-            <div id="Descarga" class="col-xs-12 col-sm-4" *ngIf="data.entregasDescargas">
+            <div id="Descarga" class="col-xs-12 col-sm-5" *ngIf="data.entregasDescargas">
                 <div id="showDescarga" class="showBtn height-auto btn-grande btnSection btnInfo animate" onClick="showDescarga()">
                     <div>
                         <li class="fa fa-angle-double-right" aria-hidden="true"></li>

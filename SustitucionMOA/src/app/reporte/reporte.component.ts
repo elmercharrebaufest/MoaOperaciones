@@ -98,27 +98,6 @@ export class ReporteBaseComponent extends ListBaseComponent {
     }
 
 
-    obtenerMateriales() {
-
-        this.subscription = this.service.obtenerMateriales().subscribe(
-            (result) => {
-                let obj = JSON.parse(result);
-
-                obj.Datos.forEach(element => {
-                    let el = {
-                        Id: element.MaterialId.toString(),
-                        Descripcion: element.Descripcion
-                    }
-                    this.materiales.push(el);
-                });
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-    }
-
-
 
 
 }

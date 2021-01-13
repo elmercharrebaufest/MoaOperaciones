@@ -101,6 +101,11 @@
         </div>
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Precio</strong> </div>
+            <!--<div class="col-xs-12 col-sm-2 " *ngIf="isVisibleProveedor()">
+                <a (click)="altaMasiva()" href="#" style="text-decoration:none!important">
+                    <div class="btnSection animate align-right">Alta Masiva <img src="Content/images/buttons/upload.png" width="19" height="19" /></div>
+                </a>
+            </div>-->
         </div>
         <mensaje></mensaje>
         <fieldset class="fieldset" *ngIf="!this.retirados">
@@ -250,7 +255,7 @@
 
                         <option value="1">Confirma</option>
                         <option value="2">Físico</option>
-                        <option value="3">Ninguno</option>
+                        <option value="3">A cargo del vendedor</option>
                         <option value="4">Carta Oferta</option>
                         <!--<option value="5">Físico</option>-->
                     </select>
@@ -272,7 +277,10 @@
                     <label for="EstablecimientoAlquilado"> Alquilado</label>
                 </div>
                 <div class="form-group col-md-6">
-
+                    <!--<div *ngIf="isVisibleProveedor()">
+                        <label for="ContratoCorredor" class="font-weight-bold">Contrato Corredor</label>
+                        <input type="text" class="form-control" name="ContratoCorredor" [(ngModel)]="contrato.ContratoCorredor">
+                    </div>-->
                 </div>
             </div>
             <label class="subtitulo">Condiciones De Pago</label>

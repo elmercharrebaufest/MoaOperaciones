@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -295,6 +295,9 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
                     if (obj.HayError) {
                         var errores_1 = "";
                         obj.Errores.forEach(function (element) {
+                            if (element.Message == "Proveedor No Operable por Riesgo Comercial Alto") {
+                                element.Message = "Proveedor no operable, contactese con la mesa comercial";
+                            }
                             errores_1 = errores_1 + element.Message + " - ";
                         });
                         _this.mensajeComponent.setErrorMsg(errores_1);
@@ -321,19 +324,18 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     };
     CrearContratoAFijarComponent.prototype.validarContrato = function () {
         //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Dolarizado.");
-        //    return false;
+        //  this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");        //    return false;
         //}
         //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Pago Diferido.");
+        //    this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
         //    return false;
         //}
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;
         }
         if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la Sustentable.");
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la Tarifa Sustentable.");
             return false;
         }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
