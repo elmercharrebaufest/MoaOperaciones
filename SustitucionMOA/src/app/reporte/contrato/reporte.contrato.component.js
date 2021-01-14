@@ -41,6 +41,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         _this.calidadTercero = null;
         _this.dolarizadoTercero = null;
         _this.sustentableTercero = null;
+        _this.contratoCorredor = "";
         _this.proveedores = [];
         _this.keyword2 = "RazonSocial";
         _this.proveedorid = null;
@@ -170,7 +171,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         if (this.validar()) {
             this.unsubscribe();
-            this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero).subscribe(function (result) {
+            this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 var resultlist = JSON.parse(result);
                 _this.data = resultlist.Data;
@@ -224,7 +225,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero).subscribe(function (result) {
+        this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
