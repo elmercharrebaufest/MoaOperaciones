@@ -38,6 +38,7 @@
     public CalidadTercero: boolean;
     public SustentableTercero: boolean;
     public ContratoCorredor: string;
+    public ContratoVendedor: string;
 
 
     constructor() {
