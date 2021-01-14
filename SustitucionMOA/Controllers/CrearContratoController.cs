@@ -21,6 +21,7 @@ using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 using Kendo.DynamicLinq;
 using System.Web.Script.Serialization;
 using SustitucionMOAUtils.Export;
+using System.Data;
 
 namespace SustitucionMOA.Controllers
 {
@@ -722,5 +723,179 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+        [HttpPost]
+        public ActionResult AltaMasivaAcuerdo()
+        {
+            try
+            {
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                string codigoProveedor = SessionPersister.Proveedor;
+
+                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+
+                var contratoAcuerdo = Request.Form.Get("contratoAcuerdo");
+
+
+                List<string> errores = new List<string>();
+                if (Request.Files.Count == 0)
+                {
+                    errores.Add(string.Concat("Debe seleccionar el archivo."));
+                    return JsonCustom(new { info = errores });
+                }
+                if (Request.Files.Count > 1)
+                {
+                    errores.Add(string.Concat("Debe seleccionar un solo archivo."));
+                    return JsonCustom(new { info = errores });
+                }
+
+                var fileSubido = Request.Files[0];
+                var extension = Path.GetExtension(fileSubido.FileName).ToUpper();
+                if (extension != ".XLSX" || extension != ".XLS")
+                {
+                    errores.Add(string.Concat("Archivo no soportado. Debe subir un Excel en formato xlsx."));
+                    return JsonCustom(new { info = errores });
+                }
+                if (fileSubido.ContentLength > 0)
+                {
+                    var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
+                    var result = "";
+
+
+
+                    if (dsExcel != null && dsExcel.Tables.Count > 0 && dsExcel.Tables[0].Rows.Count > 0)
+                    {
+                        var dtExcel = dsExcel.Tables[0];
+                        List<string> resultado = new List<string>();
+                        List<ContratoAPrecio> fichadas = ValidarExcel(dtExcel, resultado);
+                        if (resultado.Count == 0 && fichadas.Count > 0)
+                        {
+
+                        }
+                        else
+                        {
+                            errores.AddRange(resultado);
+                        }
+                    }
+                    else
+                    {
+                        errores.Add("El archivo no tiene Contratos para procesar.");
+
+                    }
+
+                    if (!result.Equals(SuccessMsg.ArchivoSubidoOK))
+                    {
+                        errores.Add(string.Concat("Ocurrió un error con el archivo ", fileSubido.FileName, ": ", result));
+                    }
+                }
+                else
+                {
+                    errores.Add(string.Concat("El archivo ", fileSubido.FileName, " está vacío."));
+                }
+
+
+                if (errores.Count > 0)
+                {
+                    return JsonCustom(new { info = errores });
+                }
+
+                return JsonCustom(new { data = SuccessMsg.ArchivoSubidoOK });
+
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public static DateTime FromExcelSerialDate(int SerialDate)
+        {
+            if (SerialDate > 59) SerialDate -= 1; //Excel/Lotus 2/29/1900 bug   
+            return new DateTime(1899, 12, 31).AddDays(SerialDate);
+        }
+        private List<ContratoAPrecio> ValidarExcel(DataTable dtExcel, List<string> resultado)
+        {
+
+            var fichadas = new List<ContratoAPrecio>();
+            var rows = dtExcel.AsEnumerable().Select(x => x.ItemArray);
+            var i = 3;
+            foreach (var r in rows.AsEnumerable().Skip(1))
+            {
+                i++;
+                string contrato = "";
+                string material = "";
+                string cosecha = "";
+                string fecha = "";
+                string fechaEntregaDesde = "";
+                string fechaEntregaHasta = "";
+                string cantidad = "";
+                string cuit = "";
+                string vendedor = "";
+                string clasificacion = "";
+                string planCanje = "";
+                string consignatario = "";
+                string destino = "";
+                string procedencia = "";
+                string provincia = "";
+                var fechad = new DateTime();
+                var hora = new TimeSpan();
+                var TipoDeDatoInvalido = ". TipoDeDatoInvalido";
+                if (!String.IsNullOrEmpty(r[0].ToString()) && r[0].ToString().GetType().Equals(typeof(System.String)))
+                {
+                    contrato = r[0].ToString();
+                }
+                else
+                {
+                    resultado.Add("Error en la Columna: A Fila: " + i + TipoDeDatoInvalido);
+                }
+                //if (r[3] != null && r[3].GetType().Equals(typeof(double)))
+                //{
+                //    fecha = FromExcelSerialDate(Convert.ToInt32(r[3]));
+                //    if (fecha > DateTime.Now)
+                //    {
+                //        resultado.Errores.Add("Error en la Columna D fila: " + i + " " + Textos.FechaInválida, Textos.FechaInválida);
+                //    }
+                //}
+                //else
+                //{
+                //    resultado.Add("Error en la Columna D fila: " + i, Textos.TipoDeDatoInvalido);
+                //}
+
+
+                if (resultado.Count == 0)
+                {
+
+                    fichadas.Add(new ContratoAPrecio
+                    {
+
+                    });
+                }
+
+            }
+            if (fichadas.Count <= 0)
+            {
+                resultado.Add("SinDatos");
+            }
+            return fichadas;
+        }
+
+
+
     }
 }

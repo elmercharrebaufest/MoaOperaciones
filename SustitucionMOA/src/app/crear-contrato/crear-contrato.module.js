@@ -11,6 +11,7 @@ import { CrearContratoBaseComponent } from './crear-contrato.component';
 import { CrearContratoAPrecioComponent } from './aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from './afijar/crear-contrato.afijar.component';
 import { CrearContratoFijacionComponent } from './fijacion/crear-contrato.fijacion.component';
+import { CrearContratoAltaMasivaComponent } from './alta-masiva/crear-contrato.alta-masiva.component';
 import { CrearContratoService } from './crear-contrato.service';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -32,6 +33,7 @@ var CrearContratoModule = /** @class */ (function () {
                 CrearContratoFijacionComponent,
                 CrearContratoAFijarComponent,
                 CrearContratoAPrecioComponent,
+                CrearContratoAltaMasivaComponent,
             ],
             providers: [
                 CrearContratoService

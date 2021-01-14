@@ -81,15 +81,16 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([
+        //this.navService.setSeccionList([
 
-            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
-            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+        //    new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+        //    new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+        //    new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+        //    new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Fijacion'),
 
-        ]);
-        //this.obteneDatosContrato();
+        //]);
     }
+
     negocioHabilitado(contrato) {
         this.blockUI.start('');
         this.unsubscribe();
@@ -155,6 +156,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         );
         return false;
     }
+
     obteneDatosContrato(contrato) {
         this.unsubscribe();
         this.subscription = this.service.obteneDatosContrato(contrato.TipoNegocioId).subscribe(
@@ -265,9 +267,24 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     if (obj != null && obj > 0) {
                         contrato.CorredorId = obj;
                         this.esCorredorEnDataAgro = true;
+                        this.navService.setSeccionList([
+
+                            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+                            new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'alta masiva'),
+
+                        ]);
                     } else {
                         this.obtenerDatosCompraNet(contrato, "");
                         this.esCorredorEnDataAgro = false;
+                        this.navService.setSeccionList([
+
+                            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+
+                        ]);
                     }
                 }
             },
@@ -599,5 +616,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         return false;
     }
 
+    altaMasiva() {
+        this.navService.navegarSeccion("/crear-contrato/alta-masiva");
+    };
     
 }

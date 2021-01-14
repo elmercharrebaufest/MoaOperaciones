@@ -5,6 +5,7 @@ import { CrearContratoBaseComponent } from './crear-contrato.component';
 import { CrearContratoAPrecioComponent } from './aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from './afijar/crear-contrato.afijar.component';
 import { CrearContratoFijacionComponent } from './fijacion/crear-contrato.fijacion.component';
+import { CrearContratoAltaMasivaComponent } from './alta-masiva/crear-contrato.alta-masiva.component';
 import { CrearContratoService } from './crear-contrato.service';
 import { SpinnerSmallComponent } from '../common/view-child/spinner-small/spinner-small.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
@@ -25,6 +26,7 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
         CrearContratoFijacionComponent,
         CrearContratoAFijarComponent,
         CrearContratoAPrecioComponent,
+        CrearContratoAltaMasivaComponent,
     ],
     providers: [
         CrearContratoService

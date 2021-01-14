@@ -83,12 +83,12 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     CrearContratoBaseComponent.prototype.ngOnInit = function () {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([
-            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
-            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
-        ]);
-        //this.obteneDatosContrato();
+        //this.navService.setSeccionList([
+        //    new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+        //    new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+        //    new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+        //    new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Fijacion'),
+        //]);
     };
     CrearContratoBaseComponent.prototype.negocioHabilitado = function (contrato) {
         var _this = this;
@@ -264,10 +264,21 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 if (obj != null && obj > 0) {
                     contrato.CorredorId = obj;
                     _this.esCorredorEnDataAgro = true;
+                    _this.navService.setSeccionList([
+                        new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                        new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                        new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+                        new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'alta masiva'),
+                    ]);
                 }
                 else {
                     _this.obtenerDatosCompraNet(contrato, "");
                     _this.esCorredorEnDataAgro = false;
+                    _this.navService.setSeccionList([
+                        new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                        new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                        new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+                    ]);
                 }
             }
         }, function (error) {
@@ -568,6 +579,10 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         });
         return false;
     };
+    CrearContratoBaseComponent.prototype.altaMasiva = function () {
+        this.navService.navegarSeccion("/crear-contrato/alta-masiva");
+    };
+    ;
     __decorate([
         BlockUI(),
         __metadata("design:type", Object)

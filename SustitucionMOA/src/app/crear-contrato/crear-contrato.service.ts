@@ -15,6 +15,9 @@ import { ContratoFijacion } from '../common/models/contratoFijacion';
 
 @Injectable()
 export class CrearContratoService extends BaseService {
+    //grabarContratoAltaMasiva(contratoAcuerdo: string, adjunto: FileList) {
+    //    throw new Error("Method not implemented.");
+    //}
 
     obteneDatosContrato(tiponegocio: number): Observable<any> {
         this.headers = new Headers();
@@ -190,6 +193,23 @@ export class CrearContratoService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    AltaMasivaAcuerdo(
+        files: FileList,
+        contratoAcuerdo: string
+    ): Observable<any> {
+        let formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            let fileToUpload = files.item(i);
+            formData.append("file", fileToUpload, fileToUpload.name);
+        }
+
+        formData.append("contratoAcuerdo", contratoAcuerdo.toString());
+
+        return this.http
+            .post("/api/CrearContrato/AltaMasivaAcuerdo", formData)
+            .pipe(map(this.extractData));
+    }
 }
 
 @Injectable()
@@ -215,3 +235,8 @@ export class CrearContratoFijacionService extends CrearContratoService {
 
 }
 
+@Injectable()
+export class CrearContratoAltaMasivaService extends CrearContratoService {
+
+   
+}
