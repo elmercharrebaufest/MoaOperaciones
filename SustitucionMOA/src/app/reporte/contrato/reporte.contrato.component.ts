@@ -29,6 +29,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     calidadTercero: boolean = null;
     dolarizadoTercero: boolean = null;
     sustentableTercero: boolean = null;
+    contratoCorredor: string = "";
 
     proveedores = [];
     keyword2 = "RazonSocial";
@@ -170,7 +171,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         if (this.validar()) {
             this.unsubscribe();
             this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
-                this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero).subscribe(
+                this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
                         var resultlist = JSON.parse(result);
@@ -230,7 +231,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
-            this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero).subscribe(
+            this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
             result => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {

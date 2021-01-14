@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -51,7 +51,7 @@ var ReporteService = /** @class */ (function (_super) {
         return this.http
             .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers }).pipe(map(this.extractData));
     };
-    ReporteService.prototype.obteneContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero) {
+    ReporteService.prototype.obteneContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero, contratoCorredor) {
         var params = new URLSearchParams();
         params.set('fechaDesde', fechaDesde);
         params.set('fechaHasta', fechaHasta);
@@ -71,6 +71,7 @@ var ReporteService = /** @class */ (function (_super) {
         params.set('calidadTercero', calidadTercero);
         params.set('dolarizadoTercero', dolarizadoTercero);
         params.set('sustentableTercero', sustentableTercero);
+        params.set('contratoCorredor', contratoCorredor);
         return this.http
             .get('/api/CrearContrato/GetContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
@@ -100,7 +101,7 @@ var ReporteService = /** @class */ (function (_super) {
             .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
             .pipe(map(this.extractData));
     };
-    ReporteService.prototype.exportContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero) {
+    ReporteService.prototype.exportContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero, contratoCorredor) {
         var params = new URLSearchParams();
         params.set('fechaDesde', fechaDesde);
         params.set('fechaHasta', fechaHasta);
@@ -120,6 +121,7 @@ var ReporteService = /** @class */ (function (_super) {
         params.set('calidadTercero', calidadTercero);
         params.set('dolarizadoTercero', dolarizadoTercero);
         params.set('sustentableTercero', sustentableTercero);
+        params.set('contratoCorredor', contratoCorredor);
         return this.http
             .get('/api/CrearContrato/ExportContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
