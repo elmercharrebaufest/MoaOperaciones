@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     RazonSocialCorredor = proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : "",
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial = proveedor.Comercial,
+                    Comercial = proveedor.TipoProveedor.NombreCorto == "NG"? "No granos" : proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     AltaInterna = proveedor.AltaInterna,
                     IngresoAPlanta = proveedor.IngresoAPlanta,

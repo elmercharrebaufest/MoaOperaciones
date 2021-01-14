@@ -62,6 +62,7 @@ namespace SustitucionMOAUtils.Services
                 proveedor = repositorio.Obtener<Proveedor>(idProveedor);
             }
             proveedor.CUIT = cuit;
+            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
             proveedor.RazonSocial = razonSocial;
             proveedor.Mail = email;
             proveedor.Telefono = telefono;
@@ -73,7 +74,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.OrganizacionDeCompra = OrganizacionDeCompra;
             proveedor.RazonDeEleccion = RazonDeEleccion;
             proveedor.FacturacionAnual = FacturacionAnual;
-            proveedor.SolicitanteInterno = SolicitanteInterno;
+            proveedor.SolicitanteInterno = usuarioMail;
             proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
             proveedor.IngresoAPlanta = ingresoAPlanta;
             proveedor.AltaInterna = altaInterna;
@@ -223,6 +224,10 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
         }
     }
 }

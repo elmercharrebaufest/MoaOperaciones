@@ -187,6 +187,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
                             this.mensajeComponent.setSuccessMsg(result.data);
+
                             this.limpiarCampos();
                         }
                     },
@@ -263,7 +264,6 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         this.organizacionDeCompra = "";
         this.razonDeEleccion = "";
         this.facturacionAnual = null;
-        this.solicitanteInterno = "";
         this.observacionesParaElProveedor = "";
         this.proveedorId = null;
         this.readonlyCUIT = false;

@@ -385,14 +385,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
-                        {
-                            proveedor.EstadoAprobacion = EstadoAprobacion.EtapaFinal;
-                        }
-                        else
-                        {
-                            proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-                        }
+                        proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
                     }
                 }
 
@@ -571,7 +564,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Inscripcion IIBB"));
             }
-            if (altaEmpresa.IdIngresoBruto == 2 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
+            if (altaEmpresa.IdIngresoBruto == 2 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.FormularioCM05))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Convenio (CM05 vigente)"));
             }

@@ -37,8 +37,8 @@
                             <div class="col-xs-12">
                                 <label for="inscripcionIIBB">
                                     <span class="link-adjuntar">Adjuntar</span>
-                                    Inscripci&oacute;n en IIBB o Convenio (CM05 vigente) <span
-                                        class="requerido">*</span>
+                                    Inscripci&oacute;n en IIBB <span class="requerido"
+                                        *ngIf="IdIngresoBruto == 1">*</span>
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
@@ -46,6 +46,28 @@
 
                                 <div class="container-archivos">
                                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+                                <label for="formularioCM05">
+                                    <span class="link-adjuntar">Adjuntar</span>
+                                    CM05 <span class="requerido" *ngIf="IdIngresoBruto == 2">*</span>
+                                </label>
+
+                                <input style="display:none" type="file" class="form-control-file" id="formularioCM05"
+                                    (change)="handleFileInput($event.target.files, 'formularioCM05')">
+
+                                <div class="container-archivos">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'formularioCM05'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo)">
                                             {{archivo.Nombre}}
                                         </a>
