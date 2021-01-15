@@ -60,6 +60,9 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     tipoCambiario: number = 0;
     nosisObligatorio: boolean = false;
     readonlyRazonSocial: boolean = false;
+    siperObligatorio: boolean = false;
+    observacionInterna: string = "";
+    
     
     observacionesParaElProveedor: string = "";
 
@@ -83,7 +86,6 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             }
         });
     }
-
 
     getRubrosOptions() {
         try {
@@ -176,7 +178,9 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         try {
             this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago,
                 this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId,
-                this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna).subscribe(
+                this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna, this.siperObligatorio,
+                this.observacionInterna
+            ).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
@@ -186,7 +190,13 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
+                            this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+
+                            if (this.altaInterna) {
+                                setTimeout(() => {
+                                    this.goToSeccionParam('/alta-empresa-no-granos',  result.data.IdEntidad.toString());
+                                }, 1000);
+                            }
 
                             this.limpiarCampos();
                         }
@@ -271,6 +281,14 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         this.altaInterna = false;
         this.ingresoAPlanta = false;
         this.nosisObligatorio = false;
+
+        this.siperObligatorio = false;
+        this.observacionInterna = "";
     }
 
+    verificarIngresoAPlanta() {
+        if (this.ingresoAPlanta)
+            this.RequiereVerificacionCompras = true;
+    }
+    
 }

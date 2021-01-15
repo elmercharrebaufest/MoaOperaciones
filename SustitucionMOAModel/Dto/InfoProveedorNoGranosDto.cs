@@ -12,5 +12,6 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocial { get; set; }
 
         public bool IngresoAPlanta { get; set; }
+        public bool SiperObligatorio { get; set; }
     }
 }

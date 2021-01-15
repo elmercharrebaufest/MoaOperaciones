@@ -97,12 +97,13 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
                     <input type="checkbox" style="margin-right: 5px;" id="RequiereVerificacionCompras"
-                        class="checkboxMargin" placeholder="" [(ngModel)]="RequiereVerificacionCompras">
+                        [disabled]="ingresoAPlanta" class="checkboxMargin" placeholder=""
+                        [(ngModel)]="RequiereVerificacionCompras">
                     <label for="RequiereVerificacionCompras">Requiere Verificación de compras</label>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
                     <input type="checkbox" style="margin-right: 5px;" id="ingresoAPlanta" class="checkboxMargin"
-                        placeholder="" [(ngModel)]="ingresoAPlanta">
+                        placeholder="" [(ngModel)]="ingresoAPlanta" (change)="verificarIngresoAPlanta()">
                     <label for="ingresoAPlanta">Proveedor con ingreso a planta</label>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
@@ -110,10 +111,24 @@
                         placeholder="" [(ngModel)]="altaInterna">
                     <label for="altaInterna"> Alta interna</label>
                 </div>
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" style="margin-right: 5px;" id="siperObligatorio" class="checkboxMargin"
+                        placeholder="" [(ngModel)]="siperObligatorio">
+                    <label for="siperObligatorio"> SIPER obligatorio</label>
+                </div>
+
+
+
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     Observaciones para el Proveedor:
                     <div class="styled-select">
                         <textarea class="" placeholder="" [(ngModel)]="observacionesParaElProveedor"></textarea>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    Observaciones internas:
+                    <div class="styled-select">
+                        <textarea class="" placeholder="" [(ngModel)]="observacionInterna"></textarea>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">

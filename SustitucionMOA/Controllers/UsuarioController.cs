@@ -460,7 +460,8 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ALTA_EMPRESA_NO_GRANOS)]
         public ActionResult GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, 
             string condicionDePago, string servicioPrestado, string organizacionDeCompra, string razonDeEleccion, int facturacionAnual, string solicitanteInterno, 
-            int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna)
+            int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio,
+            string observacionInterna)
         {
             try
             {
@@ -520,16 +521,13 @@ namespace SustitucionMOA.Controllers
                 {
                     throw new ValidationCustomException("Debe completar Razón de elección del proveedor.");
                 }
-                if (string.IsNullOrWhiteSpace(solicitanteInterno))
-                {
-                    throw new ValidationCustomException("Debe completar Solicitante interno.");
-                }
+           
 
                 return JsonCustom(new
                 {
                     data = altaEmpresaNoGranosService.GrabarNuevoProveedorNoGranos(razonSocial, cuit, email, telefono, realizarAnalisisNOSIS, IdRubro, condicionDePago,
                     servicioPrestado, organizacionDeCompra, razonDeEleccion, facturacionAnual, solicitanteInterno, ClaimsPrincipalExtension.GetClaimValue("emails"), 
-                    idProveedor, observacionesParaElProveedor, requiereVerificacionCompras, ingresoAPlanta, altaInterna)
+                    idProveedor, observacionesParaElProveedor, requiereVerificacionCompras, ingresoAPlanta, altaInterna, siperObligatorio, observacionInterna)
                 });
             }
             catch (InfoCustomException e)

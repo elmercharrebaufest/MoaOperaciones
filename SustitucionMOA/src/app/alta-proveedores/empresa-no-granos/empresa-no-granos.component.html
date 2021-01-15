@@ -82,7 +82,7 @@
                             <div class="col-xs-12">
                                 <label for="SIPER">
                                     <span class="link-adjuntar">Adjuntar</span> SIPER
-                                    <span *ngIf="estadoSISA != '1'" class="requerido">*</span>
+                                    <span *ngIf="siperObligatorio" class="requerido">*</span>
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="SIPER"
                                     (change)="handleFileInput($event.target.files, 'SIPER')">

@@ -622,6 +622,10 @@
                                     Alta interna: <label>{{empresaSeleccionada.AltaInterna ? 'Si':
                                         'No'}} </label>
                                 </div>
+                                <div class="col-xs-12 col-sm-12 col-md-5">
+                                    SIPER oblogatorio: <label>{{empresaSeleccionada.SiperObligatorio ? 'Si':
+                                        'No'}} </label>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-7">
@@ -1025,6 +1029,11 @@
                         *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8) && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(4)">
                         Solicitar informaci&oacute;n
+                    </button>
+                    <button type="button" class="btn-custom btn-mediano btn-add"
+                        *ngIf="(empresaSeleccionada.EstadoAprobacion == 4) && isAuthorized('ABM EMPRESAS OPERADOR')"
+                        (click)="solicitarInformacion()">
+                        Volver a solicitar
                     </button>
                     <button type="button" class="btn-custom btn-mediano btn-add"
                         *ngIf="(empresaSeleccionada.EstadoAprobacion == 4) && isAuthorized('ABM EMPRESAS OPERADOR')"

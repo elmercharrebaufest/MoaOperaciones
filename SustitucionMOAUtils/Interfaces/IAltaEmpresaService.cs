@@ -25,5 +25,8 @@ namespace SustitucionMOAUtils.Interfaces
         string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion);
 
         string GuardarSIPER(int proveedorId, string estadoSIPER);
+
+        string SolicitarInformacion(int proveedorId);
+
     }
 }
