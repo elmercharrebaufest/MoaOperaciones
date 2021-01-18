@@ -141,6 +141,8 @@ namespace SustitucionMOA.Controllers
 
                 Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
 
+                seccionesVisitadas = usuario.SeccionesVisitadas;
+
                 if (permisos.Count() == 1 && permisos.Contains("DATAAGROLOGIN"))
                 {
                     DataAgroAuthWSMOAResponse data = dataAgroService.goToDataAgro(usuario.ObtenerCodigoProveedor(), usuario.ObtenerRazonSocial());
