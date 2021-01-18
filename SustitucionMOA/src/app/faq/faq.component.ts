@@ -84,6 +84,7 @@ export class FaqComponent extends ListBaseComponent {
             e.preventDefault();
             if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
                 $("#archive_posts").slideToggle();
+                $("#archivepostsMobile").slideToggle();
             }
             $link.data('lockedAt', +new Date());
         });
@@ -92,6 +93,25 @@ export class FaqComponent extends ListBaseComponent {
             o.preventDefault();
             if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
                 $("#archive_posts").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+
+
+        //MOBILE
+        $('.categoria1MenuFaqMobile').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archivepostsMobile").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria1').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archivepostsMobile").slideToggle();
             }
             $ok.data('lockedAt', +new Date());
         });

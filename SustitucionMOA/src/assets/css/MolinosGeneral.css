@@ -3776,21 +3776,14 @@ div.panel-body a.active{
   display: unset;
   }
 }
-.categoria1MenuFaq{
+.categoria1MenuFaq, .categoria2MenuFaq{
   color: #03753e;
   font-size: 16px;
   font-weight: bold;
   font-family: Roboto Regular;
   cursor: pointer;
 }
-.categoria2MenuFaq{
-  color: #03753e;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: Roboto Regular;
-  cursor: pointer;
-}
-.archive_posts {
+.archive_posts, .archivepostsMobile {
 margin-left: 1em;
 margin-top: 0;
 margin-bottom: 1em;
@@ -3812,4 +3805,12 @@ display: none;
   margin-bottom: 0px !important;
   color: #707070 !important;
   font-weight: normal !important;
+}
+.aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
+  text-decoration:none;
+  color: #03753e;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Roboto Regular;
+  cursor: pointer;
 }
