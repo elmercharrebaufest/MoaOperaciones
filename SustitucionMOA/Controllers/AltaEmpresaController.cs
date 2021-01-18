@@ -161,7 +161,9 @@ namespace SustitucionMOA.Controllers
 
                 if (data.Estado == EstadoAprobacion.AnalisisDeNosis
                     || data.Estado == EstadoAprobacion.EtapaFinal
-                    || data.Estado == EstadoAprobacion.AprobacionPendiente)
+                    || data.Estado == EstadoAprobacion.AprobacionPendiente
+                    || data.Estado == EstadoAprobacion.PendienteAprobacionCompras
+                    )
                 {
                     data.EstadoDescripcion = "Alta en Gestión";
                 }

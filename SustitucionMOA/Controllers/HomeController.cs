@@ -199,7 +199,7 @@ namespace SustitucionMOA.Controllers
                             }
                             else
                             {
-                                redirectURL = "/dato-fiscal/documentacion";
+                                redirectURL = "/alta-empresa-no-granos";
                             }
                         }
                         else

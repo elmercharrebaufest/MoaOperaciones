@@ -17,6 +17,9 @@ import { UsuarioService } from './../usuario.service';
 @Component({
     selector: 'app-usuario-alta-empresa-no-granos',
     templateUrl: `usuario.alta-empresa-no-granos.component.html`,
+    styleUrls: [
+        './usuario.alta-empresa-no-granos.component.css',
+    ],
     providers: [UsuarioService]
 })
 export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implements OnInit {
@@ -57,12 +60,13 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     readonlyEmail: boolean = false;
     ingresoAPlanta: boolean = false;
     altaInterna: boolean = false;
-    tipoCambiario: number = 0;
+    tipoCambiario: number = 1;
     nosisObligatorio: boolean = false;
     readonlyRazonSocial: boolean = false;
     siperObligatorio: boolean = false;
     observacionInterna: string = "";
-    
+    mensajeSuccess: string = "";
+    IdProveedorResultado: number = 0;
     
     observacionesParaElProveedor: string = "";
 
@@ -123,7 +127,6 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.tipoCambiario = result.data;
-                        
                     }
                 },
                 error => {
@@ -190,15 +193,14 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
-                            this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                            //this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                            this.mensajeSuccess = result.data.Mensaje;
 
-                            if (this.altaInterna) {
-                                setTimeout(() => {
-                                    this.goToSeccionParam('/alta-empresa-no-granos',  result.data.IdEntidad.toString());
-                                }, 1000);
-                            }
+                            this.IdProveedorResultado = result.data.IdEntidad;
 
-                            this.limpiarCampos();
+                            document
+                            .getElementById("openModalNotificacion")
+                            .click();   
                         }
                     },
                     error => {
@@ -248,7 +250,11 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     }
 
     calcularFacturacion() {
+
+        if (this.tipoCambiario <= 0)
+            this.tipoCambiario = 1;
         let facturacionDolares = this.facturacionAnual / this.tipoCambiario
+
 
         if (facturacionDolares > 15000)
         {
@@ -284,11 +290,25 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
 
         this.siperObligatorio = false;
         this.observacionInterna = "";
+        this.IdProveedorResultado = 0;
     }
 
     verificarIngresoAPlanta() {
         if (this.ingresoAPlanta)
             this.RequiereVerificacionCompras = true;
+    }
+
+    redirigir() {
+        document
+            .getElementById("openModalNotificacion")
+            .click();
+
+        if (this.altaInterna) {
+            this.goToSeccionParam('/alta-empresa-no-granos', this.IdProveedorResultado.toString());
+        }
+        else {
+            this.limpiarCampos();
+        }
     }
     
 }

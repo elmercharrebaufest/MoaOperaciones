@@ -1,12 +1,4 @@
-﻿<style>
-    .btn-custom {
-        margin-left: 0 !important;
-        margin-top: 10px !important;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-</style>
-<div class="content-wraper">
+﻿<div class="content-wraper">
     <!-- CONTENT-->
 
     <section class="container-fluid clearfix">
@@ -145,4 +137,27 @@
         <!-- END form-->
     </section>
     <!--End CONTENT-->
+</div>
+
+<button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
+    data-target="#modalNotificaci&oacute;n"></button>
+<div class="modal fade fade-complete" id="modalNotificaci&oacute;n" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                    onClick="abrirModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Proveedor cargado correctamente</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <label>{{mensajeSuccess}}</label>
+                <div class="modal-footer">
+                    <button (click)="redirigir()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
