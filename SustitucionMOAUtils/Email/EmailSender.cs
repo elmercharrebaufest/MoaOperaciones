@@ -18,7 +18,11 @@ namespace SustitucionMOAUtils.Email
             }
 
             SmtpClient client = getSmtpClient();
-            MailMessage mail = new MailMessage(EmailConfig.getEmailAddFrom(), EmailConfig.getEmailAddTo());
+            var to = EmailConfig.getEmailAddTo();
+
+            if (new string[] { "RETENCIONES", "ACTUALIZACIONES" }.Any(c => c.Equals(contactoContenido.categoria, StringComparison.OrdinalIgnoreCase))) to = EmailConfig.getEmailAddToDocumentacion();
+
+            MailMessage mail = new MailMessage(EmailConfig.getEmailAddFrom(), to);
             mail.Subject = contactoContenido.categoria;
             mail.Body = bodyBuilder(contactoContenido);
             mail.ReplyToList.Add(contactoContenido.email);
