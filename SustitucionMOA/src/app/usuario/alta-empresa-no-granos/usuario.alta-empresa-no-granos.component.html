@@ -1,12 +1,4 @@
-﻿<style>
-    .btn-custom {
-        margin-left: 0 !important;
-        margin-top: 10px !important;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-</style>
-<div class="content-wraper">
+﻿<div class="content-wraper">
     <!-- CONTENT-->
 
     <section class="container-fluid clearfix">
@@ -90,12 +82,6 @@
                             maxlength="12" (change)="calcularFacturacion()">
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
-                    Solicitante interno:
-                    <div class="styled-select">
-                        <input type="text" class="" placeholder="" [(ngModel)]="solicitanteInterno" maxlength="100">
-                    </div>
-                </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
                     <input type="checkbox" style="margin-right: 5px;" id="RealizarAnalisisNOSIS" placeholder=""
                         [disabled]="nosisObligatorio" [(ngModel)]="RealizarAnalisisNOSIS">
@@ -103,12 +89,13 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
                     <input type="checkbox" style="margin-right: 5px;" id="RequiereVerificacionCompras"
-                        class="checkboxMargin" placeholder="" [(ngModel)]="RequiereVerificacionCompras">
+                        [disabled]="ingresoAPlanta" class="checkboxMargin" placeholder=""
+                        [(ngModel)]="RequiereVerificacionCompras">
                     <label for="RequiereVerificacionCompras">Requiere Verificación de compras</label>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
                     <input type="checkbox" style="margin-right: 5px;" id="ingresoAPlanta" class="checkboxMargin"
-                        placeholder="" [(ngModel)]="ingresoAPlanta">
+                        placeholder="" [(ngModel)]="ingresoAPlanta" (change)="verificarIngresoAPlanta()">
                     <label for="ingresoAPlanta">Proveedor con ingreso a planta</label>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
@@ -116,10 +103,24 @@
                         placeholder="" [(ngModel)]="altaInterna">
                     <label for="altaInterna"> Alta interna</label>
                 </div>
+                <div class="col-xs-12 col-sm-12 col-md-3">
+                    <input type="checkbox" style="margin-right: 5px;" id="siperObligatorio" class="checkboxMargin"
+                        placeholder="" [(ngModel)]="siperObligatorio">
+                    <label for="siperObligatorio"> SIPER obligatorio</label>
+                </div>
+
+
+
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     Observaciones para el Proveedor:
                     <div class="styled-select">
                         <textarea class="" placeholder="" [(ngModel)]="observacionesParaElProveedor"></textarea>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    Observaciones internas:
+                    <div class="styled-select">
+                        <textarea class="" placeholder="" [(ngModel)]="observacionInterna"></textarea>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
@@ -136,4 +137,27 @@
         <!-- END form-->
     </section>
     <!--End CONTENT-->
+</div>
+
+<button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
+    data-target="#modalNotificaci&oacute;n"></button>
+<div class="modal fade fade-complete" id="modalNotificaci&oacute;n" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                    onClick="abrirModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Proveedor cargado correctamente</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <label>{{mensajeSuccess}}</label>
+                <div class="modal-footer">
+                    <button (click)="redirigir()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

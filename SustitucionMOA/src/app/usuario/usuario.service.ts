@@ -117,7 +117,8 @@ export class UsuarioService extends BaseService {
 
     grabarNuevoProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any, realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any,
         servicioPrestado: any, organizacionDeCompra: any, razonDeEleccion: any, facturacionAnual: any, solicitanteInterno: any, idProveedor: any,
-        observacionesParaElProveedor: any, requiereVerificacionCompras: any, ingresoAPlanta : any, altaInterna : any) {
+        observacionesParaElProveedor: any, requiereVerificacionCompras: any, ingresoAPlanta: any, altaInterna: any, siperObligatorio: any,
+        observacionInterna: any) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('razonSocial', razonSocial);
         params.set('cuit', cuit);
@@ -136,6 +137,8 @@ export class UsuarioService extends BaseService {
         params.set('requiereVerificacionCompras', requiereVerificacionCompras);
         params.set('ingresoAPlanta', ingresoAPlanta);
         params.set('altaInterna', altaInterna);
+        params.set('siperObligatorio', siperObligatorio);
+        params.set('observacionInterna', observacionInterna);
 
         return this.http
             .get('/api/usuario/GrabarNuevoProveedorNoGranos', { search: params, headers: this.headers }).pipe(

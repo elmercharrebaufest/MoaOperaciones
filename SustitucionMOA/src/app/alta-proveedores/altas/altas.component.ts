@@ -192,10 +192,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 this.mensajeSIPERGuardado = "Se guardo correctamente."
     }
 
-    isNullOrWhitespace( input: string ) {
+    isNullOrWhitespace(input: string) {
+        
+        if (typeof input === 'undefined' || input == null)
+            return true;
+        
         var userText = input.replace(/^\s+/, '').replace(/\s+$/, '');
 
-        if (typeof input === 'undefined' || input == null || userText === '') 
+        if (userText === '') 
         {
             return true;
         }
@@ -251,6 +255,37 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+
+    solicitarInformacion() {
+        try {
+            this.altaEmpresaService.solicitarInformacion(this.empresaSeleccionada.Id).subscribe(
+                result => {
+                    this.getEmpresa();
+                    this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                    this.mensajeError = "";
+                    document.getElementById("hidemyModal").click();
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerModal.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
 
     VerificarEstadoDataAgro(empresa: Empresa) {
         this.spinnerComponent.showIt();

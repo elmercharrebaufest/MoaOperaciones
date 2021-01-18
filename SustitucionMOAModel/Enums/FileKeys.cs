@@ -18,6 +18,7 @@ namespace SustitucionMOAModel.Enums
         public const string CertificadoExclusionIIBB = "certificadoExclusionIIBB";
         public const string CertificadoExclusionIVA = "certificadoExclusionIVA";
         public const string CertificadoExclusionSUSS = "certificadoExclusionSUSS";
+        public const string FormularioCM05 = "formularioCM05";
         public const string SIPER = "SIPER";
         public const string DocumentacionEnBolsa = "documentacionEnBolsa";
         public const string OtrosArchivos = "otrosArchivos";

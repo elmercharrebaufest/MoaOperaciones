@@ -360,6 +360,7 @@
     <Content Include="src\app\ryd\carga-pesadas\carga-pesadas.component.html" />
     <Content Include="src\app\ryd\informe\informe.component.html" />
     <Content Include="src\app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.css" />
     <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
     <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
     <Content Include="src\app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />

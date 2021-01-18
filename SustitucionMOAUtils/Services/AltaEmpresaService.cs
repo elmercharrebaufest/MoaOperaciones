@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     RazonSocialCorredor = proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : "",
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial = proveedor.Comercial,
+                    Comercial = proveedor.TipoProveedor.NombreCorto == "NG"? "No granos" : proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     AltaInterna = proveedor.AltaInterna,
                     IngresoAPlanta = proveedor.IngresoAPlanta,
@@ -93,8 +93,8 @@ namespace SustitucionMOAUtils.Services
                     IdSituacionIVA = proveedor.IdSituacionIVA,
                     SituacionIVA = ((SituacionIVA)(proveedor.IdSituacionIVA ?? 0)).ToFriendlyString(),
                     IdIngresoBruto = proveedor.IdIngresoBruto,
-                    IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString()
-
+                    IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString(),
+                    SiperObligatorio = proveedor.SiperObligatorio
 
                 }).ToList();
 
@@ -282,41 +282,46 @@ namespace SustitucionMOAUtils.Services
 
                 if (enviarMail)
                 {
-                    try
-                    {
-                        ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-                        List<string> copia = null;
-                        if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
-                        {
-                            copia = new List<string> { resultadoValidarProveedorComercial.ComercialMail };
-                        }
-                        if (estado == EstadoAprobacion.Aprobado)
-                        {
-                            EnviarMailAprobado(proveedor, copia);
-                        }
-                        else if (estado == EstadoAprobacion.Rechazado)
-                        {
-                            EnviarMailRechazado(proveedor, observacionParaElProveedor, copia);
-
-                        }
-                        else if (estado == EstadoAprobacion.EdicionRequerida)
-                        {
-                            EnviarMailEdicionRequerida(proveedor, observacionParaElProveedor, copia);
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
-                    }
-
+                    NotificarProveedor(estado, observacionParaElProveedor, proveedor);
                 }
+
                 return string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
 
             }
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        private void NotificarProveedor(EstadoAprobacion estado, string observacionParaElProveedor, Proveedor proveedor)
+        {
+            try
+            {
+                ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                List<string> copia = null;
+                if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
+                {
+                    copia = new List<string> { resultadoValidarProveedorComercial.ComercialMail };
+                }
+                if (estado == EstadoAprobacion.Aprobado)
+                {
+                    EnviarMailAprobado(proveedor, copia);
+                }
+                else if (estado == EstadoAprobacion.Rechazado)
+                {
+                    EnviarMailRechazado(proveedor, observacionParaElProveedor, copia);
+
+                }
+                else if (estado == EstadoAprobacion.EdicionRequerida)
+                {
+                    EnviarMailEdicionRequerida(proveedor, observacionParaElProveedor, copia);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
             }
         }
 
@@ -450,5 +455,13 @@ namespace SustitucionMOAUtils.Services
             return string.Concat("00", CUIT.Substring(2, 8));
         }
 
+        public string SolicitarInformacion(int proveedorId)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            NotificarProveedor(EstadoAprobacion.EdicionRequerida, "Seguimos esperando la documentación solicitada ", proveedor);
+
+            return "Proveedor notificado correctamente";
+        }
     }
 }

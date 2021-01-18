@@ -37,6 +37,16 @@ export class AltaEmpresaService extends BaseService {
             map(this.extractData));
     }
 
+    public solicitarInformacion(empresaId: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('empresaId', empresaId.toString());
+        return this.http
+            .get('/api/AltaEmpresa/solicitarInformacion', { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+
+
     public getEstados(): Observable<any> {
         return this.http
             .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(

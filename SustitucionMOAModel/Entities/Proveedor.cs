@@ -73,5 +73,8 @@ namespace SustitucionMOAModel.Entities
 
         public bool? IngresoAPlanta { get; set; }
         public bool? AltaInterna { get; set; }
+
+        public bool? SiperObligatorio { get; set; }
+
     }
 }

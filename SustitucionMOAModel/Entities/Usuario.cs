@@ -125,6 +125,7 @@ namespace SustitucionMOAModel.Entities
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NUECORR")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("NUENOGRAN")).Any() ||
                 !Habilitado;
         }
 

@@ -30,7 +30,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult getEmpresas(int IdTipoProveedor)
+        public ActionResult GetEmpresas(int IdTipoProveedor)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
-        public ActionResult setEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER)
+        public ActionResult SetEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace SustitucionMOA.Controllers
             }
         }
         
-        public ActionResult getEstados()
+        public ActionResult GetEstados()
         {
             try
             {
@@ -161,7 +161,9 @@ namespace SustitucionMOA.Controllers
 
                 if (data.Estado == EstadoAprobacion.AnalisisDeNosis
                     || data.Estado == EstadoAprobacion.EtapaFinal
-                    || data.Estado == EstadoAprobacion.AprobacionPendiente)
+                    || data.Estado == EstadoAprobacion.AprobacionPendiente
+                    || data.Estado == EstadoAprobacion.PendienteAprobacionCompras
+                    )
                 {
                     data.EstadoDescripcion = "Alta en Gestión";
                 }
@@ -191,6 +193,27 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = dataAgroService.VerificarEstadoProveedor(proveedorID, ClaimsPrincipalExtension.GetClaimValue("emails")) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult SolicitarInformacion (int empresaId)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.SolicitarInformacion(empresaId) });
             }
             catch (InfoCustomException e)
             {
