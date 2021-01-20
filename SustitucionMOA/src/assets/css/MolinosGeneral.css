@@ -3761,22 +3761,12 @@ div.panel-body a.active{
 .categoriaOnMobile{
   position: relative;
 }
-@media screen and (max-width : 1920px){
-  .categoriaOnMobile{
-  visibility:hidden;
-  display: none;
-  }
-}
-@media screen and (max-width : 906px){
- .categoriaOnDesktop{
-  visibility:hidden;
-  display: none;
-  }
+
  .categoriaOnMobile{
   visibility:visible;
   display: unset;
   }
-}
+
 .categoria1MenuFaq, .categoria2MenuFaq, .categoria3MenuFaq, .categoria4MenuFaq, .categoria5MenuFaq{
   color: #03753e;
   font-size: 16px;

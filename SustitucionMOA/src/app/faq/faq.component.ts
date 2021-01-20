@@ -142,21 +142,83 @@ export class FaqComponent extends ListBaseComponent {
             }
             $ok.data('lockedAt', +new Date());
         });
- 
-        //MOBILE
-        $('.categoria1MenuFaqMobile').on('click', function(e){
+        $('.categoria5MenuFaq').on('click', function(e){
             var $link = $(e.target);
             e.preventDefault();
             if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archivepostsMobile").slideToggle();
+                $("#archive_posts5").slideToggle();
             }
             $link.data('lockedAt', +new Date());
         });
-        $('.faqCategoria1').on('click', function(o){
+        $('.faqCategoria5').on('click', function(o){
             var $ok = $(o.target);
             o.preventDefault();
             if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archivepostsMobile").slideToggle();
+                $("#archive_posts5").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria6MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts6").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria6').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts6").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria7MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts7").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria7').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts7").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria8MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts8").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria8').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts8").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria9MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts9").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria9').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts9").slideToggle();
             }
             $ok.data('lockedAt', +new Date());
         });
