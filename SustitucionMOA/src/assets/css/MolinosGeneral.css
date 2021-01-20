@@ -3752,11 +3752,12 @@ div.panel-body a.active{
   font-size: 16px;
   background-color: white;
 }
+/*
 .categoriaOnDesktop{
-  position: sticky;
+  position: fixed;
   top: 100px;
-  /*sino position: fixed;*/
-}
+  /*sino position: fixed;
+}*/
 .categoriaOnMobile{
   position: relative;
 }
@@ -3776,7 +3777,7 @@ div.panel-body a.active{
   display: unset;
   }
 }
-.categoria1MenuFaq, .categoria2MenuFaq{
+.categoria1MenuFaq, .categoria2MenuFaq, .categoria3MenuFaq, .categoria4MenuFaq, .categoria5MenuFaq{
   color: #03753e;
   font-size: 16px;
   font-weight: bold;
@@ -3813,4 +3814,7 @@ display: none;
   font-weight: bold;
   font-family: Roboto Regular;
   cursor: pointer;
+}
+.grisOscuro{
+  color: #707070 !important;
 }

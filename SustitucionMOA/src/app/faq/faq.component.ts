@@ -75,16 +75,13 @@ export class FaqComponent extends ListBaseComponent {
     }
 
     displayListaPreguntas() {
-        $('.categoria2MenuFaq').click(function() {
-            $("#archive_posts2").slideToggle();
-        });
 
+        //WEB
         $('.categoria1MenuFaq').on('click', function(e){
             var $link = $(e.target);
             e.preventDefault();
             if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
                 $("#archive_posts").slideToggle();
-                $("#archivepostsMobile").slideToggle();
             }
             $link.data('lockedAt', +new Date());
         });
@@ -97,7 +94,55 @@ export class FaqComponent extends ListBaseComponent {
             $ok.data('lockedAt', +new Date());
         });
 
-
+        $('.categoria2MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts2").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria2').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts2").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria3MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts3").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria3').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts3").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria4MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts4").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria4').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts4").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+ 
         //MOBILE
         $('.categoria1MenuFaqMobile').on('click', function(e){
             var $link = $(e.target);
