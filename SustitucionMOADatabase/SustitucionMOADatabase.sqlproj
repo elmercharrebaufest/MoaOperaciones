@@ -96,6 +96,7 @@
     <None Include="DatabasePublishQA.xml" />
     <None Include="DatabasePublishPreProd.xml" />
     <None Include="scripts\Rol_NuevoNoGranos.sql" />
+    <None Include="scripts\RolNuevoCliente.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />

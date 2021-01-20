@@ -256,6 +256,18 @@ namespace SustitucionMOAUtils.Services
                             }
 
                             break;
+
+                        case "Cliente":
+                            var rolUsuarioCliente = ObtenerRolPorCodigo("CLIENT");
+
+                            if (usuario != null)
+                            {
+                                usuario.RemoverRoles();
+                                usuario.AgregarRol(rolUsuarioCliente);
+
+                            }
+
+                            break;
                     }
 
                 }
