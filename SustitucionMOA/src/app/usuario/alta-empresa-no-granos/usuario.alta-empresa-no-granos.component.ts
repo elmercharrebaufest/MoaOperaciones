@@ -174,7 +174,7 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     grabar() {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        console.log(this.facturacionAnual);
+
         if (this.facturacionAnual == null) {
             this.facturacionAnual = 0;
         }

@@ -979,6 +979,7 @@
                      || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS'))
                      ">
                     <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
                         <div class="alert alert-danger">
@@ -989,8 +990,10 @@
                     <textarea placeholder="Ingrese aqui las observaciones internas" [value]=""
                         [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
-                <div class="row" style="padding-left: 10px;padding-right: 10px;"
-                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8 || empresaSeleccionada.EstadoAprobacion == 11) && isAuthorized('ABM EMPRESAS OPERADOR')">
+                <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="((empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8 || empresaSeleccionada.EstadoAprobacion == 11) && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS'))
+                    
+                    ">
                     <label class="observaciones" style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>
