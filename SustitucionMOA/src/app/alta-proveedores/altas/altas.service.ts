@@ -32,9 +32,9 @@ export class AltaEmpresaService extends BaseService {
         params.set('observacion', observacion);
         params.set('observacionParaElProveedor', observacionesProveedor);
         params.set('estadoSIPER', estadoSIPER);
+
         return this.http
-            .get('/api/AltaEmpresa/setEstadoAprobacion', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+            .post('/api/AltaEmpresa/setEstadoAprobacion', params, this.headersPost).map(this.extractData);
     }
 
     public solicitarInformacion(empresaId: number): Observable<any> {
