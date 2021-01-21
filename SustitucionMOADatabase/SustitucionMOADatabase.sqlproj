@@ -91,6 +91,11 @@
     <Build Include="DBO\Tables\IngresoBruto.sql" />
     <Build Include="DBO\Tables\SituacionIVA.sql" />
     <None Include="scripts\CreacionRolCompras.sql" />
+    <Build Include="DBO\Tables\Categoria.sql" />
+    <Build Include="DBO\Tables\Comentario.sql" />
+    <Build Include="DBO\Tables\ComentarioArchivo.sql" />
+    <Build Include="DBO\Tables\Consulta.sql" />
+    <Build Include="DBO\Tables\EstadoConsulta.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
