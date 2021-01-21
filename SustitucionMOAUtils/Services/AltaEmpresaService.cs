@@ -174,6 +174,10 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                
+                //Como del front estoy enviando la info en encoding URI tengo que decodificarlo.
+                observacion = Uri.UnescapeDataString(observacion);
+                observacionParaElProveedor = Uri.UnescapeDataString(observacionParaElProveedor);
 
                 if (proveedor == null)
                 {
