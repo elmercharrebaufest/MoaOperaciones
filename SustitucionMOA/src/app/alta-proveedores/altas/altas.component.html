@@ -955,7 +955,8 @@
                                     <th tabindex="0" rowspan="1" colspan="1">Estado</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Usuario</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
-                                    <th tabindex="0" rowspan="1" colspan="1">Observacion</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Observacion interna</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Comentario</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -965,6 +966,7 @@
                                     <td>{{hist.Usuario}}</td>
                                     <td>{{hist.Fecha.slice(6,-2) | date: 'dd-MM-yyyy HH:mm'}}</td>
                                     <td>{{hist.Observacion}}</td>
+                                    <td>{{hist.ObservacionParaProveedor}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -979,6 +981,7 @@
                      || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 11 && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS'))
                      ">
                     <div class="col-xs-12" *ngIf="isVisibleError()" style="text-align:left;">
                         <div class="alert alert-danger">
@@ -989,8 +992,10 @@
                     <textarea placeholder="Ingrese aqui las observaciones internas" [value]=""
                         [(ngModel)]="observaciones" aria-controls="tableModal"></textarea>
                 </div>
-                <div class="row" style="padding-left: 10px;padding-right: 10px;"
-                    *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8 || empresaSeleccionada.EstadoAprobacion == 11) && isAuthorized('ABM EMPRESAS OPERADOR')">
+                <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="((empresaSeleccionada.EstadoAprobacion == 2 || empresaSeleccionada.EstadoAprobacion == 8 || empresaSeleccionada.EstadoAprobacion == 11) && isAuthorized('ABM EMPRESAS OPERADOR'))
+                     || (empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS'))
+                    
+                    ">
                     <label class="observaciones" style="float:left;">Notificaciones para el Proveedor</label>
                     <textarea placeholder="Ingrese aqui las notificaciones para el Proveedor" [value]=""
                         [(ngModel)]="observacionesProveedor" aria-controls="tableModal"></textarea>

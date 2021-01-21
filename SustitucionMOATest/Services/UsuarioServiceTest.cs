@@ -184,11 +184,12 @@ namespace SustitucionMOATest.Services
               {
                   Id = 1,
                   Mail = mailUsuario,
+                  CUITRegistro = "23333333333",
                   Roles = new List<Rol> { new Rol { Nombre = "DESHABILITADO EN DATAAGRO", Codigo = "DDAG", EsEditable = true } },
                   TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
               });
 
-            var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario);
+            var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario, "");
 
             List<int> idRoles = new List<int> { 1, 2};
 

@@ -17,7 +17,8 @@ namespace SustitucionMOAModel.Dto
         public string EstadoAprobacionDescripcion { get; set; }
         public string Observacion { get; set; }
         public DateTime Fecha { get; set; }
-
+        public string ObservacionParaProveedor { get; set; }
+        
         public ProveedorHistorialAprobacionDto() { }
 
         public ProveedorHistorialAprobacionDto(ProveedorHistorialAprobacion historial)
@@ -27,6 +28,7 @@ namespace SustitucionMOAModel.Dto
             Fecha = historial.Fecha;
             Observacion = historial.Observacion;
             Usuario = historial.Usuario.Mail;
+            ObservacionParaProveedor = historial.ObservacionParaProveedor;
         }
 
         public override bool Equals(object obj)
