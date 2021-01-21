@@ -224,6 +224,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
+        /*
+        this.observacionesProveedor = this.observacionesProveedor.replace("<", "esSignoMenor");
+        this.observaciones = this.observaciones.replace("<", "esSignoMenor");
+        */
         this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
