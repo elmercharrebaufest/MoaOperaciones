@@ -24,5 +24,7 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("Usuario_Id")]
         public virtual Usuario Usuario { get; set; }
+
+        public string ObservacionParaProveedor { get; set; }
     }
 }

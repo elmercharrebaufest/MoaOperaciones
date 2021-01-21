@@ -18,6 +18,8 @@ namespace SustitucionMOAModel.Models.ViewModel.AltaEmpresa
         public string CBU { get; set; }
         public int? IdSituacionIVA { get; set; }
         public int? IdIngresoBruto { get; set; }
+
+        public string Comentarios { get; set; }
     }
 
 

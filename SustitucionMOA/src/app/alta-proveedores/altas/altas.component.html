@@ -955,7 +955,8 @@
                                     <th tabindex="0" rowspan="1" colspan="1">Estado</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Usuario</th>
                                     <th tabindex="0" rowspan="1" colspan="1">Fecha</th>
-                                    <th tabindex="0" rowspan="1" colspan="1">Observacion</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Observacion interna</th>
+                                    <th tabindex="0" rowspan="1" colspan="1">Comentario</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -965,6 +966,7 @@
                                     <td>{{hist.Usuario}}</td>
                                     <td>{{hist.Fecha.slice(6,-2) | date: 'dd-MM-yyyy HH:mm'}}</td>
                                     <td>{{hist.Observacion}}</td>
+                                    <td>{{hist.ObservacionParaProveedor}}</td>
                                 </tr>
                             </tbody>
                         </table>
