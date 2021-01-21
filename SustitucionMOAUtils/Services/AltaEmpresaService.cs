@@ -21,7 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
 
-        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Template","EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -34,7 +34,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => 
+                                 x =>
                                  (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
                                     || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                                     || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial =  proveedor.Comercial,
+                    Comercial = proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     AltaInterna = proveedor.AltaInterna,
                     IngresoAPlanta = proveedor.IngresoAPlanta,
@@ -187,7 +187,7 @@ namespace SustitucionMOAUtils.Services
 
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
-                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion}.Contains(estado))
+                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion }.Contains(estado))
                 {
                     //Lo inicializo así por las dudas, en el peor de los casos queda igual
                     EstadoAprobacion estadoAnterior = estado;
@@ -217,7 +217,7 @@ namespace SustitucionMOAUtils.Services
                         ObservacionParaProveedor = observacionParaElProveedor
                     }
                 );
- 
+
                 proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
@@ -289,7 +289,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 string mensajeResultado = "";
-                if(estado == EstadoAprobacion.AprobacionPendiente && proveedor.TipoProveedor.NombreCorto == "NG")
+                if (estado == EstadoAprobacion.AprobacionPendiente && proveedor.TipoProveedor.NombreCorto == "NG")
                 {
                     mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoCompras, proveedor.RazonSocial);
                 }
@@ -298,10 +298,10 @@ namespace SustitucionMOAUtils.Services
                     mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
                 }
 
-                if(enviarMail && !mailEnviado)
+                if (enviarMail && !mailEnviado)
                 {
                     mensajeResultado = string.Concat(mensajeResultado, " No se pudo enviar mail al proveedor.");
-                    throw new InfoCustomException(mensajeResultado); 
+                    throw new InfoCustomException(mensajeResultado);
                 }
 
                 return mensajeResultado;
@@ -317,11 +317,15 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                var copia = new List<string>();
+
                 ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-                var copia = new List<string>() ;
-                if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
+                if (resultadoValidarProveedorComercial != null)
                 {
-                    copia.Add(resultadoValidarProveedorComercial.ComercialMail);
+                    if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
+                    {
+                        copia.Add(resultadoValidarProveedorComercial.ComercialMail);
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(proveedor.SolicitanteInterno))
@@ -345,7 +349,7 @@ namespace SustitucionMOAUtils.Services
 
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }
