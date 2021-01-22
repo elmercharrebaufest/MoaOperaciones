@@ -465,11 +465,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(razonSocial))
-                {
-                    throw new ValidationCustomException("Debe completar la Razon Social.");
-                }
-
+               
                 if (string.IsNullOrWhiteSpace(cuit))
                 {
                     throw new ValidationCustomException("Debe completar CUIT.");
@@ -479,17 +475,24 @@ namespace SustitucionMOA.Controllers
                     cuit = cuit.Replace("-", "");
                     if (cuit.Length != 11)
                     {
-                        throw new ValidationCustomException("El CUIT no tiene el formato correcto, ingrese el cuit sin guiones.");
+                        throw new ValidationCustomException("El CUIT no tiene el formato correcto.");
                     }
                     else
                     {
                         long l = 0;
                         if (!long.TryParse(cuit, out l))
                         {
-                            throw new ValidationCustomException("El CUIT no tiene el formato correcto, ingrese el cuit sin guiones.");
+                            throw new ValidationCustomException("El CUIT no tiene el formato correcto.");
                         }
                     }
                 }
+
+                if (string.IsNullOrWhiteSpace(razonSocial))
+                {
+                    throw new ValidationCustomException("Debe completar la Razon Social.");
+                }
+
+
                 if (string.IsNullOrWhiteSpace(email))
                 {
                     throw new ValidationCustomException("Debe completar Email.");
@@ -521,7 +524,6 @@ namespace SustitucionMOA.Controllers
                 {
                     throw new ValidationCustomException("Debe completar Razón de elección del proveedor.");
                 }
-           
 
                 return JsonCustom(new
                 {
