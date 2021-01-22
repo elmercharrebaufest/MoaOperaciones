@@ -8,6 +8,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ContactoMail
 {
     public class ContactoContenido
     {
+        public string asunto { get; set; }
         public string proveedor { get; set; }
         public string nombre { get; set; }
         public string email { get; set; }

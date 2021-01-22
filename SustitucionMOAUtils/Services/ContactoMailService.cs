@@ -1,20 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class ContactoMailService
+    public class ContactoMailService : IContactoMailService
     {
+        protected readonly IRepositorio repositorio;
+        public ContactoMailService(IRepositorio repositorio)
+        {
+            this.repositorio = repositorio;
+        }
+        private string ArmarRutaCarpeta(string rutaArchivosProveedores, Comentario comentario)
+        {
+            return string.Format("{0}/{1}/{2}", rutaArchivosProveedores, comentario.Usuario_Id, comentario.Consulta_Id);
+        }
+
+        private string GuardarArchivo(HttpPostedFileBase fileSubido, Comentario comentario, string fileKey)
+        {
+            try
+            {
+                string fileName = string.Format("{0}_{1}", comentario.Id, Path.GetFileName(fileSubido.FileName));
+
+                string rutaArchivosProveedores = ConfigurationManager.AppSettings["RutaArchivosContacto"];
+
+                string rutaCarpeta = ArmarRutaCarpeta(rutaArchivosProveedores, comentario);
+
+                string rutaArchivo = string.Format("{0}/{1}", rutaCarpeta, fileName);
+
+                if (File.Exists(rutaArchivo))
+                {
+                    return ErrorMsg.ErrorArchivoRepetido;
+                }
+
+                Directory.CreateDirectory(rutaCarpeta);
+
+                comentario.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
+
+                fileSubido.SaveAs(rutaArchivo);
+                repositorio.GuardarCambios();
+
+                return SuccessMsg.ArchivoSubidoOK;
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         public string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file)
         {
             try
@@ -34,7 +89,34 @@ namespace SustitucionMOAUtils.Services
                 catch (ValidationCustomException e) { throw e; }
                 catch { }
 
-                EmailSender.send(contactoContenido, archivoBytes, fileName);
+                //var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var categoria = repositorio.Obtener<Categoria>(u => u.Code == contactoContenido.categoria);
+                var proveedor = repositorio.Obtener<Proveedor>(contactoContenido.proveedor);
+                var estadoInicial = repositorio.Obtener<EstadoConsulta>(contactoContenido.proveedor);
+                //guardar en base
+                Consulta nuevaConsulta = new Consulta()
+                {
+                    Id = -1,
+                    Asunto = contactoContenido.asunto,
+                    Categoria = categoria,
+                    Categoria_Id = categoria.Id,
+                    Proveedor = proveedor,
+                    Proveedor_Id = proveedor.Id,
+                    Comprobante = contactoContenido.comprobante,
+                    Contrato = contactoContenido.contrato,
+                    CUIT = contactoContenido.cuit,
+                    Email = contactoContenido.email,
+                    EstadoConsulta = estadoInicial,
+                    EstadoConsulta_Id = estadoInicial.Id,
+                    FechaCreacion = DateTime.Now,
+                    FechaPago = DateTime.Parse(contactoContenido.fechaPago),
+                    
+                };
+                
+
+
+
+                //EmailSender.send(contactoContenido, archivoBytes, fileName);
                 return SuccessMsg.EnvioMsjOk;
             }
             catch (ValidationCustomException e)
