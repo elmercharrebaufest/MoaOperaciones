@@ -17,6 +17,7 @@ import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuari
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
+import { MisConsultasComponent } from "./mis-consultas/mis-consultas.component"
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -123,7 +124,9 @@ const appRoutes: Routes = [
 
       { path: "notificaciones", component: ListadoNotificacionesComponent},
       { path: "notificaciones/alta", component: AltaNotificacionesComponent},
-      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent}
+      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent},
+      
+      { path: "mis-consultas", component: MisConsultasComponent}
 
     ],
   },
