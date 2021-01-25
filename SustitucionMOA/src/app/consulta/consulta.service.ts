@@ -1,18 +1,13 @@
-import {map} from 'rxjs/operators';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
-import { Observable } from 'rxjs';
-
-
-
 import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
+import { timeoutWith, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable()
-export class MisConsultasService extends BaseService {
-
-
+export class ConsultaService extends BaseService {
     public sendContactoMail(
         proveedor: string,
         nombre: string,
@@ -51,5 +46,18 @@ export class MisConsultasService extends BaseService {
             .get('/api/contactoMail/getCategorias', { headers: this.headers }).pipe(
             map(this.extractData));
     }
-
 }
+
+/*
+@Injectable()
+export class LiquidacionAprobadaService extends LiquidacionService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getAprobadas');
+    }
+
+    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadAprobadas');
+    }
+}
+*/

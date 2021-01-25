@@ -51,8 +51,8 @@ import { ListadoNotificacionesComponent } from './notificaciones/listado-notific
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';
-import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
-import { MisConsultasService } from './mis-consultas/mis-consultas.service';
+import { ConsultaBaseComponent } from "./consulta/consulta.component";
+import { ConsultaService } from "./consulta/consulta.service";
 
 @NgModule({
   imports: [
@@ -90,7 +90,7 @@ import { MisConsultasService } from './mis-consultas/mis-consultas.service';
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-    MisConsultasComponent
+    ConsultaBaseComponent
   ],
   providers: [
     DatePipe,
@@ -109,7 +109,7 @@ import { MisConsultasService } from './mis-consultas/mis-consultas.service';
     EmpresaGranosService,
     EstadoSolicitudService,
     NotificacionesService,
-    MisConsultasService
+    ConsultaService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
