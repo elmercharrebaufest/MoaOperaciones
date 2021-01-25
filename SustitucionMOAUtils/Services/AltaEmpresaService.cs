@@ -170,7 +170,8 @@ namespace SustitucionMOAUtils.Services
                                           string usuarioMail,
                                           string observacionParaElProveedor,
                                           string estadoSIPER,
-                                          bool enviarMail)
+                                          bool enviarMail,
+                                          string razonSocial)
         {
             try
             {
@@ -270,8 +271,9 @@ namespace SustitucionMOAUtils.Services
                             {
                                 usuario.RemoverRoles();
                                 usuario.AgregarRol(rolUsuarioCliente);
-
                             }
+
+                            proveedor.RazonSocial = razonSocial;
 
                             break;
                     }

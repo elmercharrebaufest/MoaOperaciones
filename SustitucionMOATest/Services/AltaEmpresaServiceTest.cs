@@ -97,7 +97,7 @@ namespace SustitucionMOATest.Services
             var observacionParaElProveedor = "";
             var estadoSIPER = "";
 
-            var result = target.SetEstadoAprobacion(proveedorId, EstadoAprobacion.Aprobado, observacion, mailUsuario, observacionParaElProveedor, estadoSIPER, false);
+            var result = target.SetEstadoAprobacion(proveedorId, EstadoAprobacion.Aprobado, observacion, mailUsuario, observacionParaElProveedor, estadoSIPER, false, "");
 
 
             repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);

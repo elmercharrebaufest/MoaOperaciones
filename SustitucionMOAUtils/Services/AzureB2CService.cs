@@ -336,7 +336,8 @@ namespace SustitucionMOAUtils.Services
                 CUIT = usuario.CUITRegistro,
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.EtapaFinal,
-                Observaciones = "Esperando aprobación."
+                Observaciones = "Esperando aprobación.",
+                TipoProveedor = ObtenerTipoPorNombreCorto("CLI")
             };
 
             proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>

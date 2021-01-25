@@ -16,7 +16,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<ProveedorAltaDto> GetEmpresas(int IdTipoProveedor);
 
-        string SetEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER, bool enviarMail);
+        string SetEstadoAprobacion(int proveedorId, EstadoAprobacion estado, string observacion, string usuarioMail, string observacionParaElProveedor, string estadoSIPER, bool enviarMail,
+                                          string razonSocial);
 
         EstadoAprobacionDto GetEstadoAprobacion(string mail);
 

@@ -59,13 +59,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     mensajeSIPERGuardado: string = "";
     idTipoProveedor: number = 0;
 
-
     listaArchivos: Array<Archivo> = [];
 
     empleados: Array<RelacionConEmpleados> = [];
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
+    razonSocial: string = "";
+
     ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
@@ -231,7 +232,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {
-            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER).subscribe(
+            this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER, this.razonSocial).subscribe(
                 result => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
