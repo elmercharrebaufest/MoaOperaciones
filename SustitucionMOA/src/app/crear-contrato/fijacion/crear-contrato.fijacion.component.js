@@ -30,6 +30,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
     }
     CrearContratoFijacionComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
+        this.contrato.TipoNegocioId = 3;
         console.log("inicia el componente");
         this.negocioHabilitado(this.contrato);
     };
@@ -107,7 +108,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         this.setMenuSeccionTab("crear-contrato", "Fijacion");
     };
     CrearContratoFijacionComponent.prototype.selectEventProveedor = function (item) {
-        this.contrato.MaterialId = null;
+        //this.contrato.MaterialId = null;
         this.pendientesFijar = [];
         this.pendienteFijar = null;
         this.contrato.ProveedorId = item.Id;
@@ -307,16 +308,16 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
             this.pendientesFijar = [];
             this.pendienteFijar = null;
             this.contrato.CampanaId = null;
-            this.habilitaciones(this.contrato);
+            //this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
             this.contrato.Pizarra = false;
         }
     };
-    CrearContratoFijacionComponent.prototype.changePizarra = function () {
-        this.contrato.Precio = 0;
-        this.contrato.MonedaId = null;
-    };
+    //changePizarra() {
+    //    this.contrato.Precio = 0;
+    //    this.contrato.MonedaId = null;
+    //}
     CrearContratoFijacionComponent.prototype.disablePrecio = function () {
         return this.contrato.Pizarra == true;
     };
