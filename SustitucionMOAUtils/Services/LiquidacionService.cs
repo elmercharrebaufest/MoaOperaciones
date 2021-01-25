@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel.Liquidacion;
 using SustitucionMOAModel.Models.WSMapMOA.Liquidacion;
@@ -13,14 +18,27 @@ using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAModel.Models.WSMapMOA.Proforma;
 using SustitucionMOAModel.Models.WSMapMOA.Vincula.Detalle;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Export;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class LiquidacionService
+    public class LiquidacionService: ILiquidacionService
     {
+        protected readonly IRepositorio repositorio;
+        protected readonly IAzureService azureService;
+        private readonly string[] formatosDeArchivoValidos = new string[] { ".pdf", ".png", ".jpg" };
+        private const string FECHA_REGEX = @"([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}";
+
+        public LiquidacionService(IRepositorio repositorio, IAzureService azureService)
+        {
+            this.repositorio = repositorio;
+            this.azureService = azureService;
+        }
+
         public LiquidacionViewModel getAprobadas(string proveedor, string fechaInicio, string fechaFin)
         {
             return getLiquidaciones(proveedor, "APROBADA", fechaInicio, fechaFin);
@@ -444,6 +462,82 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public async Task NotificarLiquidacionesAsync(HttpFileCollectionBase liquidaciones, string codigoProveedor)
+        {
+            List<string> archivosNoProcesados = new List<string>();
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor);
+            //No existe proveedor para la sesión, termino
+            if (proveedor == null) return;
+
+            for (int i = 0; i < liquidaciones.Count; i++)
+            {
+                var liquidacion = liquidaciones[i];
+                //En caso que nos venga un archivo no valido, lo skipeamos
+                if (liquidacion.ContentLength > 0 && formatosDeArchivoValidos.Contains(System.IO.Path.GetExtension(liquidacion.FileName).ToLower()))
+                {
+                    var operacionOCRId = await azureService.AnalizarImagenAsync(liquidacion);
+
+                    //Segun la documentación de Microsoft es necesario este sleep para poder obtener la info de la lectura OCR. Validar si lo queremos hacer en el momento o en background
+                    Thread.Sleep(2000);
+
+                    var resultadosOCR = await azureService.ObtenerResultadoOCRAsync(operacionOCRId);
+                    var coe = resultadosOCR.FirstOrDefault(rocr => rocr.Contains("C.O.E")).Split(':')[1].Trim();
+                    //TODO: validar si el chequeo de coe hace falta y de ser así si deberíamos validar si ya existe ese coe asociado al proveedor o el coe es único globalmente
+                    if (!string.IsNullOrEmpty(coe))
+                    {
+                        if(!repositorio.Existe<LiquidacionInformada>(li => li.COE == coe))
+                        {
+                            var fechaStr = resultadosOCR.Select(rocr => Regex.Match(rocr, FECHA_REGEX)).Where(rm => !string.IsNullOrEmpty(rm.Value)).Select(m => m.Value).FirstOrDefault();
+
+                            DateTime? fecha = null;
+                            if (!string.IsNullOrEmpty(fechaStr))
+                            {
+                                fecha = DateTime.ParseExact(fechaStr, "dd/MM/yyyy", CultureInfo.CurrentCulture);
+                            }
+
+                            var liquidacionInformada = new LiquidacionInformada()
+                            {
+                                Id = Guid.Parse(operacionOCRId),
+                                Proveedor_Id = proveedor.Id,
+                                COE = coe,
+                                FechaComprobante = fecha,
+                                FechaInformada = DateTime.Now
+                            };
+
+                            repositorio.Agregar(liquidacionInformada);
+                            repositorio.GuardarCambios();
+
+                            //Subo el archivo al blob storage una vez procesado
+                            await azureService.SubirArchivoABlobStorageAsync(liquidacion, coe);
+                        }
+                        else
+                        {
+                            archivosNoProcesados.Add($"El documento {liquidacion.FileName} correponde a un COE ya informado");
+                        }
+                    }
+                    else
+                    {
+                        archivosNoProcesados.Add($"No se pudo obtener el valor de COE para el documento {liquidacion.FileName}");
+                    }
+                }
+            }
+
+            if (archivosNoProcesados.Any()) throw new InfoCustomException(string.Join(". ", archivosNoProcesados));
+        }
+
+        public IList<LiquidacionInformada> GetLiquidacionInformadas(string codigoProveedor)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == codigoProveedor);
+            //No existe proveedor para la sesión, termino
+            if (proveedor == null) throw new InfoCustomException("No existe un proveedor registrado para el código seleccionado");
+
+            var liquidaciones = repositorio.Listar<LiquidacionInformada>(li => li.Proveedor_Id == proveedor.Id);
+            
+            if (!liquidaciones.Any()) throw new InfoCustomException("No se encontraron liquidaciones informadas");
+
+            return liquidaciones;
         }
 
         private void validarRespuesta(LiquidacionExcelWSMOAResponse data)

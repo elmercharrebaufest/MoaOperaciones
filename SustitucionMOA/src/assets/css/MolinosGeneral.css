@@ -3365,6 +3365,7 @@ a.PagoTablaLink:hover {
   border-top-right-radius: 10px;
   margin-bottom: 20px;
   font-size: 15px;
+  min-height: 50px;
 }
 
 i.arrow{

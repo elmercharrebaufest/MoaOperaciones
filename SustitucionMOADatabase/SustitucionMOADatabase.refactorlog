@@ -91,4 +91,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CBU" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="744caa48-f397-425d-8fa3-a7445b085b81" ChangeDateTime="01/12/2021 14:44:07">
+    <Property Name="ElementName" Value="[dbo].[Liquidacion].[FECHA]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Liquidacion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Fecha" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="47406043-4f09-4f80-bde3-c9bf0195d673" ChangeDateTime="01/20/2021 11:54:42">
+    <Property Name="ElementName" Value="[dbo].[LiquidacionInformada].[Fecha]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LiquidacionInformada]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FechaComprobante" />
+  </Operation>
 </Operations>

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
 namespace SustitucionMOAUtils.Email
 {
@@ -69,6 +70,18 @@ namespace SustitucionMOAUtils.Email
 
             client.Send(mail);
 
+        }
+
+        public static void sendReporte(ReporteBase reporte)
+        {
+            SmtpClient client = getSmtpClient();
+            var template = File.ReadAllText(reporte.Template);
+            var cuerpo = string.Format(template, reporte.GetFecha(), reporte.GetBody());
+            MailMessage mail = new MailMessage(EmailConfig.getEmailAddFrom(), reporte.Destinatario);
+            mail.Subject = reporte.Asunto;
+            mail.Body = cuerpo;
+
+            client.Send(mail);
         }
 
         private static SmtpClient getSmtpClient() {
