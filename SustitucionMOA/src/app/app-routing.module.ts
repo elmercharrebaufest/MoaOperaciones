@@ -53,6 +53,10 @@ const appRoutes: Routes = [
         loadChildren: "./carta-porte/carta-porte.module#CartaPorteModule",
       },
       {
+        path: "ordenes-de-carga",
+        loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
+      },
+      {
         path: "comprobante-ngs",
         loadChildren:
           "./liquidacion/no-granos/liquidacion-no-granos.module#LiquidacionNoGranosModule",
