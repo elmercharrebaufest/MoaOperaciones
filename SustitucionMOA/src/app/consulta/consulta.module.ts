@@ -2,10 +2,11 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { MisConsultasComponent } from "./mis-consultas/mis-consultas.component";
 //import { LiquidacionAprobadaService, LiquidacionObservadaService, LiquidacionPagaService, LiquidacionProformaService, LiquidacionService } from './liquidacion.service';
 import { ConsultaRoutingModule } from './consulta-routing.module';
 import { ConsultaService } from './consulta.service';
+import { CrearConsultaComponent } from './crear-consulta/crear-consulta.component';
+import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ConsultaService } from './consulta.service';
     NgxPaginationModule
   ],
     declarations: [
-      MisConsultasComponent
+      MisConsultasComponent,
+      CrearConsultaComponent
     ],
     providers: [
       ConsultaService

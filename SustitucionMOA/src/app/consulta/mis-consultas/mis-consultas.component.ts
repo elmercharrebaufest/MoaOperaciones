@@ -49,4 +49,10 @@ export class MisConsultasComponent extends ListBaseComponent {
     setTabs() {
         this.setMenuSeccionTab("consulta", "mis-consultas");
     }
+
+    ngOnInit(){
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas'), new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta')]);
+    }
 }
