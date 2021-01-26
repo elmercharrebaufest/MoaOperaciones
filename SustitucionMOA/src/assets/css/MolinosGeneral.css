@@ -3440,7 +3440,8 @@ a.link-header[aria-expanded=false] span{
 #operar,
 #documentacion,
 #contacto,
-#usuarios {
+#usuarios,
+#mis-consultas {
     height: 35px;
 }
 
@@ -3741,4 +3742,22 @@ div.panel-body a.active{
 	flex-direction: row;
 	justify-content: left;
 	align-items: center;
+}
+.crearConsultaComentario{
+  height: 228px;
+  margin-top: 40px;
+}
+.crearConsultaTitulos{
+  top: 239px !important;
+  left: 276px !important;
+  width: 51px !important;
+  height: 21px !important;
+
+  text-align: left !important;
+  letter-spacing: 0px !important;
+  color: #373A3C !important;
+  opacity: 1 !important;
+  /*font-size: 18px;*/
+  font: normal normal normal 16px Roboto Regular;
+  font-weight: 600;
 }

@@ -81,6 +81,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     siperObligatorio: boolean = false; 
 
     esGuardarYNotificar: boolean = false;
+    Comentarios: string = "";
 
     constructor(
         protected service: EmpresaNoGranosService,
@@ -353,6 +354,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             CBU: this.CBUNoGranos,
             IdSituacionIVA: this.IdSituacionIVA,
             IdIngresoBruto: this.IdIngresoBruto,
+            Comentarios: this.Comentarios
         };
 
         this.subscription = this.service

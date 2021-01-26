@@ -21,7 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
 
-        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Template","EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -34,7 +34,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => 
+                                 x =>
                                  (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
                                     || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                                     || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
@@ -63,9 +63,9 @@ namespace SustitucionMOAUtils.Services
                     Mail = proveedor.Mail ?? "",
                     Observaciones = proveedor.Observaciones,
                     RazonSocial = proveedor.RazonSocial ?? "",
-                    RazonSocialCorredor = proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : "",
+                    RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial = proveedor.TipoProveedor.NombreCorto == "NG"? "No granos" : proveedor.Comercial,
+                    Comercial = proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     AltaInterna = proveedor.AltaInterna,
                     IngresoAPlanta = proveedor.IngresoAPlanta,
@@ -76,7 +76,8 @@ namespace SustitucionMOAUtils.Services
                         EstadoAprobacionDescripcion = a.EstadoAprobacion.ToFriendlyString(),
                         Fecha = a.Fecha,
                         Observacion = a.Observacion,
-                        Usuario = a.Usuario.Mail
+                        Usuario = a.Usuario.Mail,
+                        ObservacionParaProveedor = a.ObservacionParaProveedor
                     }).ToList(),
                     IdTipoUsuario = proveedor.TipoProveedor.Id,
                     CBU = proveedor.CBU,
@@ -174,6 +175,10 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                
+                //Como del front estoy enviando la info en encoding URI tengo que decodificarlo.
+                observacion = Uri.UnescapeDataString(observacion);
+                observacionParaElProveedor = Uri.UnescapeDataString(observacionParaElProveedor);
 
                 if (proveedor == null)
                 {
@@ -186,7 +191,7 @@ namespace SustitucionMOAUtils.Services
 
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
-                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion}.Contains(estado))
+                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion }.Contains(estado))
                 {
                     //Lo inicializo así por las dudas, en el peor de los casos queda igual
                     EstadoAprobacion estadoAnterior = estado;
@@ -212,10 +217,11 @@ namespace SustitucionMOAUtils.Services
                         EstadoAprobacion = estado,
                         Observacion = string.IsNullOrEmpty(observacion) ? estado.ToFriendlyString() : observacion,
                         Proveedor_Id = proveedorId,
-                        Usuario_Id = usuarioId
+                        Usuario_Id = usuarioId,
+                        ObservacionParaProveedor = observacionParaElProveedor
                     }
                 );
- 
+
                 proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
@@ -280,12 +286,29 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.GuardarCambios();
 
+                var mailEnviado = false;
                 if (enviarMail)
                 {
-                    NotificarProveedor(estado, observacionParaElProveedor, proveedor);
+                    mailEnviado = NotificarProveedor(estado, observacionParaElProveedor, proveedor);
                 }
 
-                return string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
+                string mensajeResultado = "";
+                if (estado == EstadoAprobacion.AprobacionPendiente && proveedor.TipoProveedor.NombreCorto == "NG")
+                {
+                    mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoCompras, proveedor.RazonSocial);
+                }
+                else
+                {
+                    mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
+                }
+
+                if (enviarMail && !mailEnviado)
+                {
+                    mensajeResultado = string.Concat(mensajeResultado, " No se pudo enviar mail al proveedor.");
+                    throw new InfoCustomException(mensajeResultado);
+                }
+
+                return mensajeResultado;
 
             }
             catch (Exception)
@@ -294,16 +317,26 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void NotificarProveedor(EstadoAprobacion estado, string observacionParaElProveedor, Proveedor proveedor)
+        private bool NotificarProveedor(EstadoAprobacion estado, string observacionParaElProveedor, Proveedor proveedor)
         {
             try
             {
+                var copia = new List<string>();
+
                 ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-                List<string> copia = null;
-                if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
+                if (resultadoValidarProveedorComercial != null)
                 {
-                    copia = new List<string> { resultadoValidarProveedorComercial.ComercialMail };
+                    if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
+                    {
+                        copia.Add(resultadoValidarProveedorComercial.ComercialMail);
+                    }
                 }
+
+                if (!string.IsNullOrWhiteSpace(proveedor.SolicitanteInterno))
+                {
+                    copia.Add(proveedor.SolicitanteInterno);
+                }
+
                 if (estado == EstadoAprobacion.Aprobado)
                 {
                     EnviarMailAprobado(proveedor, copia);
@@ -316,12 +349,13 @@ namespace SustitucionMOAUtils.Services
                 else if (estado == EstadoAprobacion.EdicionRequerida)
                 {
                     EnviarMailEdicionRequerida(proveedor, observacionParaElProveedor, copia);
-
                 }
+
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
+                return false;
             }
         }
 

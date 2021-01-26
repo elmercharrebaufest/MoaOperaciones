@@ -16,6 +16,7 @@
     EstadoSIPER: string;
     IdTipoUsuario: number;
     AltaInterna: boolean;
+    SiperObligatorio: boolean;
 
 }
 

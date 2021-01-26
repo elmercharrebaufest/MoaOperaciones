@@ -215,10 +215,19 @@ export class AltasComponent extends BaseComponent implements OnInit {
             this.mensajeError = "Debe ingresar una observacion para el Proveedor.";
             return false;
         }
-        if (estadoId == 7 && this.empresaSeleccionada.SISAEstadoCuit != "1" && (this.isNullOrWhitespace(this.empresaSeleccionada.EstadoSIPER))) {
+        if (
+            estadoId == 7 
+            && this.isNullOrWhitespace(this.empresaSeleccionada.EstadoSIPER)
+            //Para los no granos solo valido el SIPER si es requerido que mande el siper
+            && ((this.empresaSeleccionada.SiperObligatorio && this.empresaSeleccionada.IdTipoUsuario == 3)
+                || (this.empresaSeleccionada.SISAEstadoCuit != "1" && this.empresaSeleccionada.IdTipoUsuario != 3))) {
             this.mensajeError = "Debe ingresar Estado en SIPER.";
             return false;
         }
+        /*
+        this.observacionesProveedor = this.observacionesProveedor.replace("<", "esSignoMenor");
+        this.observaciones = this.observaciones.replace("<", "esSignoMenor");
+        */
         this.spinnerModal.showIt();
         this.mensajeComponent.setMsgsEmpty();
         try {

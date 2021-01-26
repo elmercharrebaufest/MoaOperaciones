@@ -305,6 +305,9 @@
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
@@ -845,6 +848,8 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js.map" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -923,6 +928,13 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />

@@ -440,10 +440,11 @@ namespace SustitucionMOAUtils.Services
                     new ProveedorHistorialAprobacion
                     {
                         Fecha = DateTime.Now,
-                        EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
                         Observacion = "Envía solicitud",
                         Proveedor_Id = proveedorId,
-                        Usuario_Id = usuario.Id
+                        Usuario_Id = usuario.Id,
+                        ObservacionParaProveedor = altaEmpresa.Comentarios
                     }
                 );
             }
@@ -560,11 +561,12 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CUIT"));
             }
-            if (altaEmpresa.IdIngresoBruto == 1 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
+            if ((altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.Local || altaEmpresa.IdIngresoBruto ==  (int)IngresosBrutos.ConvenioMultilateral) 
+                && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Inscripcion IIBB"));
             }
-            if (altaEmpresa.IdIngresoBruto == 2 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.FormularioCM05))
+            if (altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.ConvenioMultilateral && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.FormularioCM05))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Convenio (CM05 vigente)"));
             }

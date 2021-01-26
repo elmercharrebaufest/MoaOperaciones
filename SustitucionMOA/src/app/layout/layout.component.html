@@ -472,11 +472,36 @@
                         </div>
                     </div>
                 </div>
+                <!--
+                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                    <div class="panel-heading seccion" role="tab" id="operar">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseConsultas" aria-expanded="false" aria-controls="collapseConsultas">
+                            Consultas <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseConsultas" class="collapse" aria-labelledby="operar" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONTACTO MAIL') && isGranosSelected()">
+                                <a (click)="goToSeccion('/mis-consultas')" href="#"> Mis Consultas</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
                             href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
+                        </a>
+                    </div>
+                </div>
+                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                    <div class="panel-heading seccion" role="tab" id="contacto">
+                        <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
+                            href="#" data-parent="#accordionMenu">
+                            <!--data-toggle="tab">-->Consulta
                         </a>
                     </div>
                 </div>

@@ -5,6 +5,7 @@
 	[EstadoAprobacion][int]  NOT NULL,
 	[Observacion] varchar(max) NULL,
 	[Fecha] DATETIME NOT NULL DEFAULT (getdate()), 
+    [ObservacionParaProveedor] VARCHAR(MAX) NULL, 
     CONSTRAINT [PK_dbo.ProveedorHistorialAprobacion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
