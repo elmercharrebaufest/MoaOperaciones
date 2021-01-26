@@ -305,6 +305,7 @@
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js" />
@@ -933,6 +934,7 @@
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
@@ -1127,6 +1129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="src\app\consulta\detalle\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
   </ItemGroup>
