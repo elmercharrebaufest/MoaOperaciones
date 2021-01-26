@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ContactoMail
     {
         public string asunto { get; set; }
         public string proveedor { get; set; }
+        public int proveedor_id { get; set; }
         public string nombre { get; set; }
         public string email { get; set; }
         public string telefono { get; set; }
@@ -25,6 +26,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.ContactoMail
         public string importe { get; set; }
         public decimal importeDecimal { get; set; }
         public string impuesto { get; set; }
+        public decimal impuestoDecimal { get; set; }
         public string inscripcion { get; set; }
         public string motivo { get; set; }
     }

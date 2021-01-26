@@ -4,9 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
@@ -15,7 +17,14 @@ namespace SustitucionMOA.Controllers
 {
     public class ContactoMailController : BaseController
     {
-        ContactoMailService _contactoMailService = new ContactoMailService();
+        protected readonly IRepositorio repositorio;
+        ContactoMailService _contactoMailService;
+
+        public ContactoMailController(IRepositorio repositorio, ContactoMailService contactoMailService)
+        {
+            this.repositorio = repositorio;
+            this._contactoMailService = contactoMailService;
+        }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         public ActionResult sendContactoMail(string contacto, HttpPostedFileBase file)
@@ -23,8 +32,9 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var contactoContenido = JsonConvert.DeserializeObject<ContactoContenido>(contacto);
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(new { data = _contactoMailService.sendContactoMail(contactoContenido, file) });
+                return JsonCustom(new { data = _contactoMailService.sendContactoMail(contactoContenido, file, userMail) });
             }
             catch (InfoCustomException e)
             {

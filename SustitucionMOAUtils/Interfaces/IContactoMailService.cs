@@ -10,7 +10,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IContactoMailService
     {
-        string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file);
+        string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file, string mailUsuario);
         List<CategoriaContacto> getCategorias();
 
     }

@@ -63,6 +63,7 @@
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />
     <Compile Include="Entities\Rubro.cs" />
+    <Compile Include="Enums\EstadosConsulta.cs" />
     <Compile Include="Enums\IngresosBrutos.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />

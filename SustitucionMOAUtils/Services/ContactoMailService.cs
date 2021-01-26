@@ -9,6 +9,7 @@ using System.Web;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
@@ -25,6 +26,7 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
         }
+        
         private string ArmarRutaCarpeta(string rutaArchivosProveedores, Comentario comentario)
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosProveedores, comentario.Usuario_Id, comentario.Consulta_Id);
@@ -70,7 +72,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file)
+        public string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file, string mailUsuario)
         {
             try
             {
@@ -89,11 +91,13 @@ namespace SustitucionMOAUtils.Services
                 catch (ValidationCustomException e) { throw e; }
                 catch { }
 
-                //var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 var categoria = repositorio.Obtener<Categoria>(u => u.Code == contactoContenido.categoria);
-                var proveedor = repositorio.Obtener<Proveedor>(contactoContenido.proveedor);
-                var estadoInicial = repositorio.Obtener<EstadoConsulta>(contactoContenido.proveedor);
-                //guardar en base
+                var proveedor = repositorio.Obtener<Proveedor>(contactoContenido.proveedor_id);
+                var estadoInicialCode = EstadosConsulta.Iniciado.Code();
+                var estadoInicial = repositorio.ObtenerNoTracking<EstadoConsulta>(x => x.Code == estadoInicialCode);
+                
+                var now = DateTime.Now;
                 Consulta nuevaConsulta = new Consulta()
                 {
                     Id = -1,
@@ -108,13 +112,37 @@ namespace SustitucionMOAUtils.Services
                     Email = contactoContenido.email,
                     EstadoConsulta = estadoInicial,
                     EstadoConsulta_Id = estadoInicial.Id,
-                    FechaCreacion = DateTime.Now,
-                    FechaPago = DateTime.Parse(contactoContenido.fechaPago),
-                    
+                    FechaCreacion = now,
+                    FechaUltimaModificacion = now,
+                    FechaPago = string.IsNullOrEmpty(contactoContenido.fechaPago) ? (DateTime?)null : DateTime.Parse(contactoContenido.fechaPago),
+                    Importe = contactoContenido.importeDecimal,
+                    Impuesto = contactoContenido.impuestoDecimal,
+                    Inscripcion = contactoContenido.inscripcion,
+                    Motivo = contactoContenido.motivo,
+                    Nombre = contactoContenido.nombre,
+                    NombreVendedor = contactoContenido.nombreVendedor,
+                    RazonSocial = contactoContenido.razonSocial,
+                    Telefono = contactoContenido.telefono
                 };
+
+                Comentario nuevoComentario = new Comentario()
+                {
+                    Consulta = nuevaConsulta,
+                    Consulta_Id = nuevaConsulta.Id,
+                    Detalle = contactoContenido.comentario,
+                    Fecha = DateTime.Now,
+                    Id = -1,
+                    Usuario = usuario,
+                    Usuario_Id = usuario.Id
+                };
+
+                repositorio.Agregar<Consulta>(nuevaConsulta);
+                repositorio.Agregar<Comentario>(nuevoComentario);
+
+                repositorio.GuardarCambios();
                 
-
-
+                if(file != null)
+                    GuardarArchivo(file, nuevoComentario, FileKeys.ArchivosInternos);
 
                 //EmailSender.send(contactoContenido, archivoBytes, fileName);
                 return SuccessMsg.EnvioMsjOk;
@@ -137,8 +165,13 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                List<CategoriaContacto> categorias = new ContactoMailCategoriasConsumerMOA().request();
-                return categorias;
+                var categorias = repositorio.Listar<Categoria>();
+                return categorias.Select(x => new CategoriaContacto()
+                {
+                    value = x.Code,
+                    label = x.Nombre,
+                    camposAdicionales = x.CamposAdicionales ? "A" : string.Empty
+                }).ToList();
             }
             catch (ValidationCustomException e)
             {
