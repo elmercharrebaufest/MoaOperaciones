@@ -68,9 +68,9 @@
                     <title-caps>Refinar resultados</title-caps>
                 </div>
                 <!--<div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
-        <p>Ver</p>
-        <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
-    </div>-->
+                    <p>Ver</p>
+                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                </div>-->
                 <div class="col-xs-12 col-sm-6 col-md-5" *ngIf="isVisibleProveedor()">
                     <p for="Proveedorid" class="font-weight-bold">Proveedor</p>
                     <input [(ngModel)]="proveedorid" class="form-control" type="hidden"
@@ -212,7 +212,7 @@
                         <input type="search" class="" placeholder="" aria-controls="tableModal" [(ngModel)]="contratoCorredor">
                     </div>
                 </div>
-                
+
                 <div class="col-xs-6 col-sm-6 col-md-15">
                     <p>Calidad</p>
                     <div class="styled-select">
@@ -261,14 +261,14 @@
         </div>
         <!-- End Search-->
         <!-- Tables-->
-
+        <p class="mySearch" style="padding:0;margin:0;"><b style="color: red;font-size: 31px;bottom: -9px;position: relative;">*</b>Los precio pizarra se conocerán al día hábil siguiente.</p>
         <div class="row myRow">
             <div class="clearfix myTables">
 
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <div style="overflow-x: auto; width: 100%;">
-                    <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;margin-top:0;">
                         <thead>
                             <tr role="row">
                                 <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado_Contrato')">

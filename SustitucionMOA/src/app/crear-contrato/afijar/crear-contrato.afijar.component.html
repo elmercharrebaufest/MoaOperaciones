@@ -88,6 +88,9 @@
         position: relative;
         margin-left: 7px;
     }
+    .material {
+        cursor: pointer;
+    }
 </style>
 <div class="content-wraper">
     <!-- CONTENT-->
@@ -95,6 +98,21 @@
         <div class="row titleSection" style="border-bottom:none;">
             <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
+                <tbody>
+                    <tr>
+                        <th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>
+                        <th style="font-size:20px;padding: 5px 10px;">Maiz</th>
+                        <th style="font-size:20px;padding: 5px 10px;">Trigo</th>
+                        <th style="font-size:20px;padding: 5px 10px;">Soja</th>
+                        <th style="font-size:20px;padding: 5px 10px;">Girasol</th>
+                    </tr>
+                    <tr>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,1)">{{precioMaiz == true?"Disponible":precioMaiz == false?"No Disponible":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,1)">{{precioTrigo == true?"Disponible":precioTrigo == false?"No Disponible":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,1)">{{precioSoja == true?"Disponible":precioSoja == false?"No Disponible":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,1)">{{precioGirasol == true?"Disponible":precioGirasol == false?"No Disponible":""}}</span></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <!--Title-->
@@ -107,7 +125,7 @@
             </div>-->
         </div>
         <mensaje></mensaje>
-        <fieldset class="fieldset" *ngIf="!this.retirados">
+        <fieldset class="fieldset" *ngIf="this.precioSeleccionado">
             <label class="subtitulo">Condiciones Generales</label>
             <div class="form-group col-md-12" *ngIf="isVisibleProveedor()">
                 <label for="Proveedorid" class="font-weight-bold">Proveedor</label>
@@ -207,15 +225,15 @@
                     </select>
                 </div>
                 <!--<div class="form-group col-md-4">
-                    <label for="precio">Precio</label>
-                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="moneda">Moneda</label>
-                    <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
-                        <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
-                    </select>
-                </div>-->
+            <label for="precio">Precio</label>
+            <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+        </div>
+        <div class="form-group col-md-2">
+            <label for="moneda">Moneda</label>
+            <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+            </select>
+        </div>-->
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
@@ -299,35 +317,38 @@
                     <input type="text" class="form-control" name="ContratoVendedor" [(ngModel)]="contrato.ContratoVendedor">
                 </div>
                 <div class="form-group col-md-6" *ngIf="isVisibleProveedor()">
-                        <label for="ContratoCorredor" class="font-weight-bold">Contrato Corredor</label>
-                        <input type="text" class="form-control" name="ContratoCorredor" [(ngModel)]="contrato.ContratoCorredor">
+                    <label for="ContratoCorredor" class="font-weight-bold">Contrato Corredor</label>
+                    <input type="text" class="form-control" name="ContratoCorredor" [(ngModel)]="contrato.ContratoCorredor">
                 </div>
             </div>
-            <div *ngIf="isSoja()">
-                <label class="subtitulo">Condiciones de Pago</label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group col-md-12">
-                            <label class="switch">
-                                <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
-                                <span class="slider round"></span>
+            <div class="row">
+                <div class="form-group col-md-4" *ngIf="isSoja()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
+                        <span class="slider round"></span>
 
-                            </label><label class="labelSwitch"> Calidad</label>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <label class="switch">
-                                <input type="checkbox" [(ngModel)]="contrato.SustentableTercero">
-                                <span class="slider round"></span>
-
-                            </label><label class="labelSwitch"> Sustentable</label>
-                        </div>
-                    </div>
+                    </label><label class="labelSwitch"> Calidad</label>
                 </div>
+                <div class="form-group col-md-8" *ngIf="contrato.CalidadTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionCalidadTercero" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4" *ngIf="isSoja()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.SustentableTercero">
+                        <span class="slider round"></span>
+                    </label><label class="labelSwitch"> Sustentable</label>
+                </div>
+                <div class="form-group col-md-8" *ngIf="contrato.SustentableTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionSustentableTercero" class="form-control" />
+                </div>
+
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <label for="ObservacionTercero">Observaciones</label>
-                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="ObservacionTercero"></textarea>
                 </div>
 
                 <div class="col-md-6">
@@ -338,7 +359,7 @@
             <div class="row">
                 <div class="form-group col-md-12">
                     <spinner></spinner>
-                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoAFijar()" *ngIf="!this.spinnerComponent.visible"
+                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoAFijar()" angIf="isVisibleGrabar()"
                             style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;">
                         Grabar
                     </button>
@@ -399,6 +420,45 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal precios -->
+<a href="#PreciosModal" class="trigger-btn" id="openModalPreciosModal" data-toggle="modal" style="display:none;">    Click    to Open Precios Modal</a>
+<div class="modal fade fade-complete" id="PreciosModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Seleccione el precio disponible</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-ampliacion-table" id="preciosMateriales">
+                    <thead>
+                        <tr role="row">
+                            <td><b>Material</b></td>
+                            <td><b>Entrega Desde</b></td>
+                            <td><b>Entrega Hasta</b></td>
+                            <td><b>Fijacion Desde</b></td>
+                            <td><b>Fijacion Hasta</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of precioPorNegocioSeleccionado" role="row" class="material" (click)="seleccionarPrecio(item,contrato)" data-dismiss="modal">
+                            <td>{{item.Material}}</td>
+                            <td>{{item.DesdeEntrega | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{item.HastaEntrega | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{item.DesdeFijacion | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{item.HastaFijacion | date: 'dd/MM/yyyy'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
