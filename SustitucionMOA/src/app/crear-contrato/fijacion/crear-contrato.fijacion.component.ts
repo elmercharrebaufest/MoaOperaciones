@@ -224,6 +224,14 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
 
+        this.contrato.ObservacionTercero = this.ObservacionTercero;
+        if (this.contrato.DolarizadoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
+        }
+        if (this.contrato.PagoDiferidoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+        }
+
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
@@ -314,7 +322,14 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
-
+        if ((this.ObservacionDolarizadoTercero == "" || this.ObservacionDolarizadoTercero == undefined) && this.contrato.DolarizadoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
+            return false;
+        }
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
+            return false;
+        }
         return true;
     }
 

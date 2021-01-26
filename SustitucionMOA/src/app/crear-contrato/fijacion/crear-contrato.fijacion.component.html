@@ -157,7 +157,7 @@
                 </div>
                 <!--</div>
 
-                <div class="row">-->
+        <div class="row">-->
                 <div class="form-group col-md-6">
                     <label for="material">Material</label>
                     <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId" (change)="onChangeMaterial()">
@@ -276,14 +276,36 @@
 
 
 
-            <label class="subtitulo"> </label>
+            <label class="subtitulo">Condiciones De Pago</label>
             <div class="row">
+                <div class="form-group col-md-4" *ngIf="isVisiblePagoDiferido()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.PagoDiferidoTercero" (change)="changePagoDiferido($event)">
+                        <span class="slider round"></span>
 
+                    </label><label class="labelSwitch"> Pago diferido</label>
+                </div>
+                <div class="form-group col-md-8" *ngIf="contrato.PagoDiferidoTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionPagoDiferidoTercero" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4" *ngIf="isVisibleDolarizado()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.DolarizadoTercero" (change)="changeDolarizado($event)">
+                        <span class="slider round"></span>
+
+                    </label><label class="labelSwitch"> Dolarizado</label>
+                </div>
+                <div class="form-group col-md-8" *ngIf="contrato.DolarizadoTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionDolarizadoTercero" class="form-control" />
+                </div>
+            </div>            
+            <div class="row">
                 <div class="col-md-12">
                     <label for="ObservacionTercero">Observaciones</label>
-                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="ObservacionTercero"></textarea>
                 </div>
-
             </div>
             <br />
             <div class="row">
