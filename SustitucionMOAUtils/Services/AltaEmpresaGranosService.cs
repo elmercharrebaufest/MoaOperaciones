@@ -268,7 +268,7 @@ namespace SustitucionMOAUtils.Services
                 //Si subieron otros archivos anteriormente, los borramos
                 DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
 
-                if (fileKey != FileKeys.CertificadoExclusionIIBB && fileKey != FileKeys.OtrosArchivos)
+                if (fileKey != FileKeys.CertificadoExclusionIIBB && fileKey != FileKeys.OtrosArchivos && fileKey != FileKeys.ArchivosInternos)
                 {
                     foreach (FileInfo file in carpeta.GetFiles())
                     {
@@ -385,14 +385,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
-                        {
-                            proveedor.EstadoAprobacion = EstadoAprobacion.EtapaFinal;
-                        }
-                        else
-                        {
-                            proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-                        }
+                        proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
                     }
                 }
 
@@ -447,10 +440,11 @@ namespace SustitucionMOAUtils.Services
                     new ProveedorHistorialAprobacion
                     {
                         Fecha = DateTime.Now,
-                        EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                        EstadoAprobacion = proveedor.EstadoAprobacion,
                         Observacion = "Envía solicitud",
                         Proveedor_Id = proveedorId,
-                        Usuario_Id = usuario.Id
+                        Usuario_Id = usuario.Id,
+                        ObservacionParaProveedor = altaEmpresa.Comentarios
                     }
                 );
             }
@@ -567,11 +561,12 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CUIT"));
             }
-            if (altaEmpresa.IdIngresoBruto == 1 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
+            if ((altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.Local || altaEmpresa.IdIngresoBruto ==  (int)IngresosBrutos.ConvenioMultilateral) 
+                && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Inscripcion IIBB"));
             }
-            if (altaEmpresa.IdIngresoBruto == 2 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
+            if (altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.ConvenioMultilateral && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.FormularioCM05))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Convenio (CM05 vigente)"));
             }
@@ -585,6 +580,14 @@ namespace SustitucionMOAUtils.Services
                 if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.ProtocoloSanitarioCovid))
                 {
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Protocolo Sanitario Covid"));
+                }
+            }
+
+            if (proveedor.SiperObligatorio ?? false)
+            {
+                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
                 }
             }
 

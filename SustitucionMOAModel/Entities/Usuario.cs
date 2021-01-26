@@ -34,6 +34,9 @@ namespace SustitucionMOAModel.Entities
         public Proveedor ObtenerProveedor()
         {
             //Por ahora los usuarios van a tener solo un proveedor. Devolvemos ese
+            if (Proveedores == null)
+                return null;
+
             var proveedor = Proveedores.Where(p => p.CUIT == this.CUITRegistro).FirstOrDefault();
 
             if (proveedor == null)
@@ -125,6 +128,7 @@ namespace SustitucionMOAModel.Entities
                 Roles.Where(r => r.Codigo.Equals("DDAG")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NOIMP")).Any() ||
                 Roles.Where(r => r.Codigo.Equals("NUECORR")).Any() ||
+                Roles.Where(r => r.Codigo.Equals("NUENOGRAN")).Any() ||
                 !Habilitado;
         }
 

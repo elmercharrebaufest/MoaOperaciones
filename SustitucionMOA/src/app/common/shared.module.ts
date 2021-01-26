@@ -12,6 +12,7 @@ import { SpinnerSmallComponent } from "./view-child/spinner-small/spinner-small.
 import { CustomFilter } from "./pipes/customFilter";
 import { CustomFilterOr } from "./pipes/customFilterOr";
 import { CustomFilterContain } from "./pipes/customFilterContain";
+import { CustomNumericFilter } from "./pipes/customNumericFilter";
 import { OrderedColumn } from "./pipes/orderedColumn";
 import { ShortenStringPipe } from "./pipes/shortenString";
 import { BaseComponent } from './base-components/base-component';
@@ -20,8 +21,8 @@ import { ArchivoPipe } from './pipes/archivos.pipe';
 
 @NgModule({
     imports: [CommonModule, FormsModule],
-    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
-    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
+    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
+    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule]
 })
 export class SharedModule { }

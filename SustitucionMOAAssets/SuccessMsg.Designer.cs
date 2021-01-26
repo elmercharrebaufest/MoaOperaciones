@@ -178,7 +178,16 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to La empresa ({0}) se actualizo correctamente.
+        ///   Looks up a localized string similar to La empresa ({0}) se actualizo correctamente. Solicitud enviada a Datos Maestros..
+        /// </summary>
+        public static string EmpresaCambioEstadoCompras {
+            get {
+                return ResourceManager.GetString("EmpresaCambioEstadoCompras", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La empresa ({0}) se actualizo correctamente..
         /// </summary>
         public static string EmpresaCambioEstadoOK {
             get {

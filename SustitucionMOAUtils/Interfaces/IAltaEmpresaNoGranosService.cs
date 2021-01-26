@@ -10,9 +10,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IAltaEmpresaNoGranosService
     {
-        string GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
+        Resultado GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail, 
-            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna);
+            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio, string observacionInterna);
         List<RubroDto> GetRubros();
         string RechazarProveedorNoGranos(int idProveedor, string usuarioMail, string observacionesParaElProveedor);
 

@@ -78,8 +78,10 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     CBUNoGranos: string = "";
     esUsuarioCompras: boolean = false;
     ingresoAPlanta: boolean = false;
+    siperObligatorio: boolean = false; 
 
     esGuardarYNotificar: boolean = false;
+    Comentarios: string = "";
 
     constructor(
         protected service: EmpresaNoGranosService,
@@ -138,22 +140,10 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         this.obtenerInfoProveedor();
 
 
+        //Si no tiene firmado el codigo de conducta, significa que necesitamos que lo haga el proveedor. Por lo tanto, solo permitimos que guarde los archivos y datos de IVA, IIBB y Cbu
         if (this.securityService.tienePermiso('ABM EMPRESAS')) {
             this.esUsuarioCompras = true;
         }
-
-
-        console.log("codigoDeConducta:", this.codigoDeConducta)
-        //Si no tiene firmado el codigo de conducta, significa que necesitamos que lo haga el proveedor. Por lo tanto, solo permitimos que guarde los archivos y datos de IVA, IIBB y Cbu
-  
-
-        console.log("esGuardarYNotificar:", this.esGuardarYNotificar)
-
-
-        setTimeout(() => { 
-        console.log("esGuardarYNotificar:", this.esGuardarYNotificar)
-
-        }, 2000);
 
 
         //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
@@ -215,6 +205,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
                     this.ingresoAPlanta = result.IngresoAPlanta;
+                    this.siperObligatorio = result.SiperObligatorio;
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -363,6 +354,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             CBU: this.CBUNoGranos,
             IdSituacionIVA: this.IdSituacionIVA,
             IdIngresoBruto: this.IdIngresoBruto,
+            Comentarios: this.Comentarios
         };
 
         this.subscription = this.service

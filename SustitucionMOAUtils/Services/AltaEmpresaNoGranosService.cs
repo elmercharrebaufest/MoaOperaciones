@@ -40,9 +40,9 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
-        public string GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
+        public Resultado GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
             , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string SolicitanteInterno, string usuarioMail,
-            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna)
+            int? idProveedor, string observacionesParaElProveedor,bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio, string observacionInterna)
         {
             if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Id != idProveedor))
             {
@@ -62,6 +62,7 @@ namespace SustitucionMOAUtils.Services
                 proveedor = repositorio.Obtener<Proveedor>(idProveedor);
             }
             proveedor.CUIT = cuit;
+            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
             proveedor.RazonSocial = razonSocial;
             proveedor.Mail = email;
             proveedor.Telefono = telefono;
@@ -73,12 +74,12 @@ namespace SustitucionMOAUtils.Services
             proveedor.OrganizacionDeCompra = OrganizacionDeCompra;
             proveedor.RazonDeEleccion = RazonDeEleccion;
             proveedor.FacturacionAnual = FacturacionAnual;
-            proveedor.SolicitanteInterno = SolicitanteInterno;
+            proveedor.SolicitanteInterno = usuarioMail;
             proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
             proveedor.IngresoAPlanta = ingresoAPlanta;
             proveedor.AltaInterna = altaInterna;
             proveedor.TipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
-
+            proveedor.SiperObligatorio = siperObligatorio;
 
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
@@ -90,7 +91,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Fecha = DateTime.Now,
                         EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                        Observacion = "",
+                        Observacion = observacionInterna,
                         Usuario_Id = usuarioId
                     }
                 );
@@ -101,7 +102,15 @@ namespace SustitucionMOAUtils.Services
             
             repositorio.GuardarCambios();
             EnviarMailAltaNoGranos(proveedor, observacionesParaElProveedor, null, "Molinos Agro - Alta Iniciada", "iniciada");
-            return SuccessMsg.AltaVendedorOK;
+
+            var resultado = new Resultado
+            {
+                Mensaje = SuccessMsg.AltaVendedorOK,
+                IdEntidad = proveedor.Id,
+            };
+
+            return resultado;
+
         }
 
 
@@ -170,13 +179,14 @@ namespace SustitucionMOAUtils.Services
             {
                 ProveedorCUIT = proveedor.CUIT,
                 RazonSocial = proveedor.RazonSocial,
-                IngresoAPlanta = proveedor.IngresoAPlanta ?? false
+                IngresoAPlanta = proveedor.IngresoAPlanta ?? false,
+                SiperObligatorio = proveedor.SiperObligatorio ?? false
             };
 
             return info;
         }
 
-        public  string GetRazonSocial(string CUIT)
+        public string GetRazonSocial(string CUIT)
         {
             try
             {
@@ -223,6 +233,10 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
         }
     }
 }

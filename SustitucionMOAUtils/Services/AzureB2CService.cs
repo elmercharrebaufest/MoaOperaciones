@@ -47,6 +47,12 @@ namespace SustitucionMOAUtils.Services
 
         private Usuario RegistrarUsuario(string mail, string CUIT, string granosFlag, ref Usuario usuario)
         {
+            // Si existe un proveedor no granos con el mismo CUIT, automaticamente le cambiamos el tipo a no granos. Con esto nos evitamos tener que editarlos cuando se registraron mal
+            if (VerificarUsuarioNoGranos(CUIT))
+            {
+                granosFlag = "no granos";
+            }
+
             switch (granosFlag.ToLower())
             {
                 case "granos":
@@ -85,6 +91,11 @@ namespace SustitucionMOAUtils.Services
             }
 
             return usuario;
+        }
+
+        private bool VerificarUsuarioNoGranos(string CUIT)
+        {
+            return repositorio.Existe<Proveedor>(p => p.CUIT == CUIT && p.TipoProveedor.NombreCorto == "NG");
         }
 
         private Usuario BuscarUsuarioPorMail(string mail)

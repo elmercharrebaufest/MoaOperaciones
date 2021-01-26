@@ -17,6 +17,9 @@ import { UsuarioService } from './../usuario.service';
 @Component({
     selector: 'app-usuario-alta-empresa-no-granos',
     templateUrl: `usuario.alta-empresa-no-granos.component.html`,
+    styleUrls: [
+        './usuario.alta-empresa-no-granos.component.css',
+    ],
     providers: [UsuarioService]
 })
 export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implements OnInit {
@@ -57,9 +60,13 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     readonlyEmail: boolean = false;
     ingresoAPlanta: boolean = false;
     altaInterna: boolean = false;
-    tipoCambiario: number = 0;
+    tipoCambiario: number = 1;
     nosisObligatorio: boolean = false;
     readonlyRazonSocial: boolean = false;
+    siperObligatorio: boolean = false;
+    observacionInterna: string = "";
+    mensajeSuccess: string = "";
+    IdProveedorResultado: number = 0;
     
     observacionesParaElProveedor: string = "";
 
@@ -83,7 +90,6 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
             }
         });
     }
-
 
     getRubrosOptions() {
         try {
@@ -121,7 +127,6 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.tipoCambiario = result.data;
-                        
                     }
                 },
                 error => {
@@ -169,14 +174,16 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     grabar() {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        console.log(this.facturacionAnual);
+
         if (this.facturacionAnual == null) {
             this.facturacionAnual = 0;
         }
         try {
             this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago,
                 this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId,
-                this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna).subscribe(
+                this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna, this.siperObligatorio,
+                this.observacionInterna
+            ).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
                         if (result.logout == true) {
@@ -186,8 +193,14 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
                         } else if (result.info != undefined) {
                             this.mensajeComponent.setInfoMsg(result.info);
                         } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
-                            this.limpiarCampos();
+                            //this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                            this.mensajeSuccess = result.data.Mensaje;
+
+                            this.IdProveedorResultado = result.data.IdEntidad;
+
+                            document
+                            .getElementById("openModalNotificacion")
+                            .click();   
                         }
                     },
                     error => {
@@ -237,7 +250,11 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
     }
 
     calcularFacturacion() {
+
+        if (this.tipoCambiario <= 0)
+            this.tipoCambiario = 1;
         let facturacionDolares = this.facturacionAnual / this.tipoCambiario
+
 
         if (facturacionDolares > 15000)
         {
@@ -263,7 +280,6 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         this.organizacionDeCompra = "";
         this.razonDeEleccion = "";
         this.facturacionAnual = null;
-        this.solicitanteInterno = "";
         this.observacionesParaElProveedor = "";
         this.proveedorId = null;
         this.readonlyCUIT = false;
@@ -271,6 +287,28 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
         this.altaInterna = false;
         this.ingresoAPlanta = false;
         this.nosisObligatorio = false;
+
+        this.siperObligatorio = false;
+        this.observacionInterna = "";
+        this.IdProveedorResultado = 0;
     }
 
+    verificarIngresoAPlanta() {
+        if (this.ingresoAPlanta)
+            this.RequiereVerificacionCompras = true;
+    }
+
+    redirigir() {
+        document
+            .getElementById("openModalNotificacion")
+            .click();
+
+        if (this.altaInterna) {
+            this.goToSeccionParam('/alta-empresa-no-granos', this.IdProveedorResultado.toString());
+        }
+        else {
+            this.limpiarCampos();
+        }
+    }
+    
 }

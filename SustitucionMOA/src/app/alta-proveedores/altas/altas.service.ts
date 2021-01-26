@@ -29,13 +29,22 @@ export class AltaEmpresaService extends BaseService {
         let params: URLSearchParams = new URLSearchParams();
         params.set('empresaId', empresaId.toString());
         params.set('estado', estadoId.toString());
-        params.set('observacion', observacion);
-        params.set('observacionParaElProveedor', observacionesProveedor);
+        params.set('observacion', encodeURIComponent(observacion));
+        params.set('observacionParaElProveedor', encodeURIComponent(observacionesProveedor));
         params.set('estadoSIPER', estadoSIPER);
         return this.http
-            .get('/api/AltaEmpresa/setEstadoAprobacion', { search: params, headers: this.headers }).pipe(
+            .post('/api/AltaEmpresa/setEstadoAprobacion', params, this.headersPost).map(this.extractData);
+    }
+
+    public solicitarInformacion(empresaId: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('empresaId', empresaId.toString());
+        return this.http
+            .get('/api/AltaEmpresa/solicitarInformacion', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
+
+
 
     public getEstados(): Observable<any> {
         return this.http

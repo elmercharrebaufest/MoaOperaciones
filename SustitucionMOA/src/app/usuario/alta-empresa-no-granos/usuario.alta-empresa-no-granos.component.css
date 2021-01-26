@@ -1,0 +1,20 @@
+    .btn-custom {
+        margin-left: 0 !important;
+        margin-top: 10px !important;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .modal-content {
+        border-radius: 11px !important;
+    }
+
+    .modal-notificacion {
+        font-size: 16px;
+    }
+
+    .modal-footer {
+        border-top: none !important;
+        justify-content: center;
+        display: flex;
+    }
