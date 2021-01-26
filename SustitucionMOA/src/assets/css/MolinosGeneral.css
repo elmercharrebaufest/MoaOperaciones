@@ -3750,7 +3750,6 @@ div.panel-body a.active{
 .crearConsultaTitulos{
   top: 239px !important;
   left: 276px !important;
-  width: 51px !important;
   height: 21px !important;
 
   text-align: left !important;
@@ -3760,4 +3759,14 @@ div.panel-body a.active{
   /*font-size: 18px;*/
   font: normal normal normal 16px Roboto Regular;
   font-weight: 600;
+}
+.btn-enviar{
+  top: 733px;
+  left: 546px;
+  width: 120px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
 }
