@@ -280,6 +280,14 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
+            return false;
+        }
+        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
+            return false;
+        }
         return true;
     };
     CrearContratoFijacionComponent.prototype.changePlanCanje = function (event) {

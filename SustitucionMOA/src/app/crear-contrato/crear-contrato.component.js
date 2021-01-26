@@ -118,9 +118,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     var preciopornegocio = precio[i].filter(function (x) { return x.TipoNegocioId == contrato.TipoNegocioId; });
                     table += '<td>';
                     var matRetirado = true;
-                    if (preciopornegocio[0].Retirado == false ||
-                        preciopornegocio[1].Retirado == false ||
-                        preciopornegocio[0].Pizarra == true) {
+                    if ((preciopornegocio[0] && preciopornegocio[0].Retirado == false) ||
+                        (preciopornegocio[1] && preciopornegocio[1].Retirado == false) ||
+                        (preciopornegocio[0] && preciopornegocio[0].Pizarra == true)) {
                         _this.retirados = false;
                         matRetirado = false;
                     }
@@ -129,12 +129,12 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                     }
                     else {
                         if (contrato.TipoNegocioId == 1) {
-                            table += preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';
+                            table += preciopornegocio[0] && preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';
                         }
                         else {
-                            table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
-                            table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
-                            table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                            table += preciopornegocio[0] && preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
+                            table += preciopornegocio[1] && preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
+                            table += preciopornegocio[0] && preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
                         }
                     }
                     table += '</td>';

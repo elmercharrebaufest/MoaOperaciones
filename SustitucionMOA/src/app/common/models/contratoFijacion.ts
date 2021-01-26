@@ -39,7 +39,8 @@
     public ContratoId: number;
     public Posicion: string;
     public TrigoEspecial: boolean;
-
+    public DolarizadoTercero: boolean;
+    public PagoDiferidoTercero: boolean;
     constructor() {
         this.TipoNegocioId = 3;
     }

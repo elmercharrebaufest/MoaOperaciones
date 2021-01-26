@@ -137,9 +137,9 @@
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
-            <!--</div>
+                <!--</div>
 
-            <div class="row">-->
+        <div class="row">-->
                 <div class="form-group col-md-6">
                     <label for="material">Material</label>
                     <select class="form-control" name="material" [(ngModel)]="contrato.MaterialId" (change)="onChangeMaterial()">
@@ -258,10 +258,25 @@
 
 
 
-            <label class="subtitulo"> </label>
+            <label class="subtitulo">Condiciones De Pago</label>
             <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group col-md-12" *ngIf="isVisiblePagoDiferido()">
+                        <label class="switch">
+                            <input type="checkbox" [(ngModel)]="contrato.PagoDiferidoTercero" (change)="changePagoDiferido($event)">
+                            <span class="slider round"></span>
 
-                <div class="col-md-12">
+                        </label><label class="labelSwitch"> Pago diferido</label>
+                    </div>
+                    <div class="form-group col-md-12" *ngIf="isVisibleDolarizado()">
+                        <label class="switch">
+                            <input type="checkbox" [(ngModel)]="contrato.DolarizadoTercero" (change)="changeDolarizado($event)">
+                            <span class="slider round"></span>
+
+                        </label><label class="labelSwitch"> Dolarizado</label>
+                    </div>                    
+                </div>
+                <div class="col-md-6">
                     <label for="ObservacionTercero">Observaciones</label>
                     <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
                 </div>
@@ -272,8 +287,8 @@
                 <div class="form-group col-md-12">
                     <spinner></spinner>
                     <!--<a (click)="grabarContratoFijacion()" href="#" style="text-decoration:none!important;float:left;" *ngIf="!this.spinnerComponent.visible">
-                    <div class="btn-custom btn-mediano btn-add animate ">Grabar </div>
-                </a>-->
+                <div class="btn-custom btn-mediano btn-add animate ">Grabar </div>
+            </a>-->
                     <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoFijacion()" *ngIf="!this.spinnerComponent.visible"
                             style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;">
                         Grabar

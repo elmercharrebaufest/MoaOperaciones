@@ -115,9 +115,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         let preciopornegocio = precio[i].filter(x => x.TipoNegocioId == contrato.TipoNegocioId)
                         table += '<td>';
                         var matRetirado = true;
-                        if (preciopornegocio[0].Retirado == false ||
-                            preciopornegocio[1].Retirado == false ||
-                            preciopornegocio[0].Pizarra == true) {
+                        if ((preciopornegocio[0] && preciopornegocio[0].Retirado == false) ||
+                            (preciopornegocio[1] && preciopornegocio[1].Retirado == false) ||
+                            (preciopornegocio[0] && preciopornegocio[0].Pizarra == true)) {
                             this.retirados = false;
                             matRetirado = false;
                         }
@@ -125,11 +125,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                             table += '<span style="color:red;font-weight:bold;">' + (contrato.TipoNegocioId == 1 ? "No habilitado" : "Sin precio") +'</span>';
                         } else {
                             if (contrato.TipoNegocioId == 1) {
-                                table += preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';
+                                table += preciopornegocio[0] && preciopornegocio[0].DesdeFijacion != null ? '<span style="color: #017940;font-weight: bolder;font-size: small;">Habilitado</span><br/>' : '';
                             } else {
-                                table += preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
-                                table += preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
-                                table += preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
+                                table += preciopornegocio[0] && preciopornegocio[0].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[0].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[0].MonedaId + '</span><br/>' : '';
+                                table += preciopornegocio[1] && preciopornegocio[1].Precio > 0 ? '<span style="color: #017940;font-weight: bolder;font-size: small;">' + preciopornegocio[1].Precio.toLocaleString().replace(',', '.') + ' ' + preciopornegocio[1].MonedaId + '</span><br/>' : '';
+                                table += preciopornegocio[0] && preciopornegocio[0].Pizarra == true ? '<span style="color: #017940;font-weight: bolder;font-size: small;"> Pizarra </span><br/>' : '';
                             }
 
                         }
