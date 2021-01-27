@@ -52,10 +52,7 @@ const appRoutes: Routes = [
         path: "carta-porte",
         loadChildren: "./carta-porte/carta-porte.module#CartaPorteModule",
       },
-      {
-        path: "ordenes-de-carga",
-        loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
-      },
+     
       {
         path: "comprobante-ngs",
         loadChildren:
@@ -127,7 +124,11 @@ const appRoutes: Routes = [
 
       { path: "notificaciones", component: ListadoNotificacionesComponent},
       { path: "notificaciones/alta", component: AltaNotificacionesComponent},
-      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent}
+      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
+       {
+        path: "ordenes-de-carga",
+        loadChildren: "./ordenes-de-carga/ordenes-de-carga.module#OrdenesDeCargaModule",
+      },
 
     ],
   },
