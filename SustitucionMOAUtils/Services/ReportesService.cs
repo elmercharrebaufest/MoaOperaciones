@@ -34,7 +34,7 @@ namespace SustitucionMOAUtils.Services
                 EmailSender.sendReporte(new ReporteLiquidacionesInformadas()
                 {
                     Asunto = "Reporte de Liquidaciones Informadas - Resumen Diario",
-                    Destinatario = ConfigurationManager.AppSettings["EmailToFletes"],
+                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
                     Liquidaciones = liquidacionesAReportar,
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLiquidacionesInformadas.html")
                 });

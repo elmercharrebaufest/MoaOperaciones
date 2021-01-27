@@ -77,9 +77,23 @@ namespace SustitucionMOAUtils.Email
             SmtpClient client = getSmtpClient();
             var template = File.ReadAllText(reporte.Template);
             var cuerpo = string.Format(template, reporte.GetFecha(), reporte.GetBody());
-            MailMessage mail = new MailMessage(EmailConfig.getEmailAddFrom(), reporte.Destinatario);
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(EmailConfig.getEmailAddFrom());
             mail.Subject = reporte.Asunto;
             mail.Body = cuerpo;
+
+            //Mas de un destinatario
+            if (reporte.Destinatario.Contains(",")){
+                foreach (var destinatario in reporte.Destinatario.Split(','))
+                {
+                    mail.To.Add(destinatario);
+                }
+            }
+            //Solo un destinatario
+            else
+            {
+                mail.To.Add(reporte.Destinatario);
+            }
 
             client.Send(mail);
         }

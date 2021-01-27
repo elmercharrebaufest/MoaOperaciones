@@ -53,11 +53,11 @@ export class LiquidacionInformarComponent extends LiquidacionBaseComponent{
             return false;
         }
 
-        // if (this.captchaOk == null) {
-        //     this.blockUI.stop();
-        //     this.floatMsgService.setErrorMsg("Debe completar el Captcha");
-        //     return false;
-        // }
+        if (this.captchaOk == null) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg("Debe completar el Captcha");
+            return false;
+        }
 
         this.unsubscribe();
         try {
@@ -95,10 +95,17 @@ export class LiquidacionInformarComponent extends LiquidacionBaseComponent{
 
     cargarArchivo(event: any) {
         let archivosNuevos = [];
-        for(let file of event.target.files){
-            archivosNuevos.push(file);
+        if(archivosNuevos.length + event.target.files.length > 10){
+            this.floatMsgService.setMsgsEmpty();
+            this.floatMsgService.setInfoMsg('El límite máximo de archivos es 10. Por favor, revise los archivos e intente nuevamente.');
+            this.vaciarCampos();
         }
-        this.files = archivosNuevos;
+        else{
+            for(let file of event.target.files){
+                archivosNuevos.push(file);
+            }
+            this.files = archivosNuevos;
+        }
     }
 
     handleCorrectCaptcha(event: any) {
