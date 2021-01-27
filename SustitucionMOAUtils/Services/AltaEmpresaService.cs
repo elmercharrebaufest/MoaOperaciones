@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial = proveedor.Comercial,
+                    Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     AltaInterna = proveedor.AltaInterna,
                     IngresoAPlanta = proveedor.IngresoAPlanta,
@@ -222,7 +222,6 @@ namespace SustitucionMOAUtils.Services
                     }
                 );
 
-                proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
                 {
@@ -266,6 +265,63 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
+                if (estado == EstadoAprobacion.AnularAprobacion)
+                {
+                    var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+                    var rolUsuarioNuevoGranos = ObtenerRolPorCodigo("NUEG");
+
+                    switch (proveedor.TipoProveedor.Nombre)
+                    {
+                        case "Granos":
+                            {
+                                var actualizarRoles = true;
+
+                                //Si es multifirma y tiene algun otro proveedor aprobado, no le tocamos los roles. Esto no debería ocurrir nunca, pero no esta mal tenerlo en cuenta
+                                if (usuario.Roles.Where(r => r.Codigo == "MF").Any())
+                                {
+                                    if (usuario.Proveedores.Where(p => p.EstadoAprobacion == 0 && p.CUIT != proveedor.CUIT).Any())
+                                    {
+                                        actualizarRoles = false;
+                                    }
+                                }
+
+                                if (actualizarRoles)
+                                {
+                                    usuario.RemoverRoles();
+                                    usuario.AgregarRol(rolUsuarioNuevoGranos);
+                                }
+                            }
+
+                            break;
+
+                        case "Corredor":
+                            {
+                                var actualizarRoles = true;
+
+                                if (usuario.Proveedores.Where(p => p.EstadoAprobacion == 0 && p.CUIT != proveedor.CUIT).Any())
+                                {
+                                    actualizarRoles = false;
+                                }
+
+                                if (actualizarRoles)
+                                {
+                                    var rolNuevoCorredor = ObtenerRolPorCodigo("NUECORR");
+                                    usuario.AgregarRol(rolNuevoCorredor);
+                                    usuario.RemoverRol("CORR");
+                                }
+                            }
+                            break;
+                        case "No Granos":
+                            {
+                                var nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+                                usuario.RemoverRoles();
+                                usuario.AgregarRol(nuevoNoGranos);
+                            }
+                            break;
+                    }
+                    estado = EstadoAprobacion.EtapaFinal;
+                }
+
                 //Si el proveedor no tiene que pasar por analisis de nosis, lo mando al estado final directamente
                 if (estado == EstadoAprobacion.AprobacionPendiente)
                 {
@@ -283,6 +339,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.EstadoSIPER = estadoSIPER;
                 }
+
+                proveedor.EstadoAprobacion = estado;
+
 
                 repositorio.GuardarCambios();
 
