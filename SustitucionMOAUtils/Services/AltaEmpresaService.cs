@@ -21,7 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
 
-        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Template","EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -34,7 +34,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => 
+                                 x =>
                                  (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
                                     || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                                     || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
@@ -65,7 +65,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial =  proveedor.Comercial,
+                    Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     AltaInterna = proveedor.AltaInterna,
                     IngresoAPlanta = proveedor.IngresoAPlanta,
@@ -187,7 +187,7 @@ namespace SustitucionMOAUtils.Services
 
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
-                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion}.Contains(estado))
+                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion }.Contains(estado))
                 {
                     //Lo inicializo así por las dudas, en el peor de los casos queda igual
                     EstadoAprobacion estadoAnterior = estado;
@@ -217,8 +217,7 @@ namespace SustitucionMOAUtils.Services
                         ObservacionParaProveedor = observacionParaElProveedor
                     }
                 );
- 
-                proveedor.EstadoAprobacion = estado;
+
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
                 {
@@ -262,6 +261,63 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
+                if (estado == EstadoAprobacion.AnularAprobacion)
+                {
+                    var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+                    var rolUsuarioNuevoGranos = ObtenerRolPorCodigo("NUEG");
+
+                    switch (proveedor.TipoProveedor.Nombre)
+                    {
+                        case "Granos":
+                            {
+                                var actualizarRoles = true;
+
+                                //Si es multifirma y tiene algun otro proveedor aprobado, no le tocamos los roles. Esto no debería ocurrir nunca, pero no esta mal tenerlo en cuenta
+                                if (usuario.Roles.Where(r => r.Codigo == "MF").Any())
+                                {
+                                    if (usuario.Proveedores.Where(p => p.EstadoAprobacion == 0 && p.CUIT != proveedor.CUIT).Any())
+                                    {
+                                        actualizarRoles = false;
+                                    }
+                                }
+
+                                if (actualizarRoles)
+                                {
+                                    usuario.RemoverRoles();
+                                    usuario.AgregarRol(rolUsuarioNuevoGranos);
+                                }
+                            }
+
+                            break;
+
+                        case "Corredor":
+                            {
+                                var actualizarRoles = true;
+
+                                if (usuario.Proveedores.Where(p => p.EstadoAprobacion == 0 && p.CUIT != proveedor.CUIT).Any())
+                                {
+                                    actualizarRoles = false;
+                                }
+
+                                if (actualizarRoles)
+                                {
+                                    var rolNuevoCorredor = ObtenerRolPorCodigo("NUECORR");
+                                    usuario.AgregarRol(rolNuevoCorredor);
+                                    usuario.RemoverRol("CORR");
+                                }
+                            }
+                            break;
+                        case "No Granos":
+                            {
+                                var nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+                                usuario.RemoverRoles();
+                                usuario.AgregarRol(nuevoNoGranos);
+                            }
+                            break;
+                    }
+                    estado = EstadoAprobacion.EtapaFinal;
+                }
+
                 //Si el proveedor no tiene que pasar por analisis de nosis, lo mando al estado final directamente
                 if (estado == EstadoAprobacion.AprobacionPendiente)
                 {
@@ -280,6 +336,9 @@ namespace SustitucionMOAUtils.Services
                     proveedor.EstadoSIPER = estadoSIPER;
                 }
 
+                proveedor.EstadoAprobacion = estado;
+
+
                 repositorio.GuardarCambios();
 
                 var mailEnviado = false;
@@ -289,7 +348,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 string mensajeResultado = "";
-                if(estado == EstadoAprobacion.AprobacionPendiente && proveedor.TipoProveedor.NombreCorto == "NG")
+                if (estado == EstadoAprobacion.AprobacionPendiente && proveedor.TipoProveedor.NombreCorto == "NG")
                 {
                     mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoCompras, proveedor.RazonSocial);
                 }
@@ -298,10 +357,10 @@ namespace SustitucionMOAUtils.Services
                     mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
                 }
 
-                if(enviarMail && !mailEnviado)
+                if (enviarMail && !mailEnviado)
                 {
                     mensajeResultado = string.Concat(mensajeResultado, " No se pudo enviar mail al proveedor.");
-                    throw new InfoCustomException(mensajeResultado); 
+                    throw new InfoCustomException(mensajeResultado);
                 }
 
                 return mensajeResultado;
@@ -318,7 +377,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-                var copia = new List<string>() ;
+                var copia = new List<string>();
                 if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
                 {
                     copia.Add(resultadoValidarProveedorComercial.ComercialMail);
@@ -345,7 +404,7 @@ namespace SustitucionMOAUtils.Services
 
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }

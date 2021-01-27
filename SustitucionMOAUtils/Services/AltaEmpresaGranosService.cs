@@ -374,6 +374,9 @@ namespace SustitucionMOAUtils.Services
                 //Ademas, nos fijamos que lo hallan mandado a observar
                 if (historialAnterior != null && pasoPorEdicionRequerida)
                 {
+                    if (historialAnterior.EstadoAprobacion == EstadoAprobacion.AnularAprobacion)
+                        historialAnterior.EstadoAprobacion = EstadoAprobacion.EtapaFinal;
+
                     proveedor.EstadoAprobacion = historialAnterior.EstadoAprobacion;
                 }
                 else

@@ -1046,8 +1046,6 @@
                         Anular solicitud de informaci&oacute;n
                     </button>
 
-
-
                     <button type="button" class="btn-custom btn-mediano btn-guardar"
                         *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(2)">
@@ -1066,7 +1064,13 @@
                     <button type="button" class="btn-custom btn-mediano btn-add"
                         *ngIf="empresaSeleccionada.EstadoAprobacion == 13 && isAuthorized('ALTA EMPRESA NO GRANOS')"
                         (click)="cambiarEstado(4)">
-                        Observar (Compras)
+                        Solicitar informaci&oacute;n (Compras)
+                    </button>
+
+                    <button type="button" class="btn-custom btn-mediano btn-remove"
+                        *ngIf="empresaSeleccionada.EstadoAprobacion == 0 && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                        (click)="cambiarEstado(16)">
+                        Anular aprobación
                     </button>
                 </div>
             </div>
