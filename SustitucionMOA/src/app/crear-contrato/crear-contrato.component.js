@@ -336,9 +336,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         };
                         _this.campanias.push(el);
                     });
-                    //if (contrato.TipoNegocioId == 3) {
-                    //    this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
-                    //}
+                    if (contrato.TipoNegocioId == 3 && _this.esCorredorEnDataAgro == false) {
+                        _this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
+                    }
                 }
             }
             _this.spinnerCampana.hideIt();
