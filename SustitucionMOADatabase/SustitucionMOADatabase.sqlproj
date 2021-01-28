@@ -91,6 +91,7 @@
     <Build Include="DBO\Tables\IngresoBruto.sql" />
     <Build Include="DBO\Tables\SituacionIVA.sql" />
     <None Include="scripts\CreacionRolCompras.sql" />
+    <Build Include="DBO\Tables\LiquidacionInformada.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

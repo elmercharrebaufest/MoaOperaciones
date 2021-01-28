@@ -6,21 +6,27 @@ import { LiquidacionAprobadaComponent } from "./aprobada/liquidacion.aprobada.co
 import { LiquidacionObservadaComponent } from "./observada/liquidacion.observada.component";
 import { LiquidacionPagaComponent } from "./paga/liquidacion.paga.component";
 import { LiquidacionProformaComponent } from "./proforma/liquidacion.proforma.component";
-import { LiquidacionAprobadaService, LiquidacionObservadaService, LiquidacionPagaService, LiquidacionProformaService, LiquidacionService } from './liquidacion.service';
+import { LiquidacionAprobadaService, LiquidacionObservadaService, LiquidacionPagaService, LiquidacionProformaService, LiquidacionService, LiquidacionInformarService, LiquidacionInformadaService } from './liquidacion.service';
 import { LiquidacionRoutingModule } from './liquidacion-routing.module';
+import { LiquidacionInformarComponent } from './informar/liquidacion.informar.component';
+import { LiquidacionInformadaComponent } from './informada/liquidacion.informada.component';
+import { ReCaptchaModule } from 'angular2-recaptcha';
 
 @NgModule({
   imports: [
     CommonModule,
     LiquidacionRoutingModule,
     SharedModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReCaptchaModule
   ],
     declarations: [
       LiquidacionAprobadaComponent,
       LiquidacionObservadaComponent,
       LiquidacionPagaComponent,
-      LiquidacionProformaComponent
+      LiquidacionProformaComponent,
+      LiquidacionInformarComponent,
+      LiquidacionInformadaComponent
     ],
     providers: [
       LiquidacionService,
@@ -28,6 +34,8 @@ import { LiquidacionRoutingModule } from './liquidacion-routing.module';
       LiquidacionObservadaService,
       LiquidacionPagaService,
       LiquidacionProformaService,
+      LiquidacionInformarService,
+      LiquidacionInformadaService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
