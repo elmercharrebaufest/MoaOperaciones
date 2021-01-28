@@ -7,6 +7,7 @@ import { ConsultaRoutingModule } from './consulta-routing.module';
 import { ConsultaService } from './consulta.service';
 import { CrearConsultaComponent } from './crear-consulta/crear-consulta.component';
 import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
+import { DetalleConsultaComponent } from './detalle/consulta-detalle.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
   ],
     declarations: [
       MisConsultasComponent,
-      CrearConsultaComponent
+      CrearConsultaComponent,
+      DetalleConsultaComponent
     ],
     providers: [
       ConsultaService

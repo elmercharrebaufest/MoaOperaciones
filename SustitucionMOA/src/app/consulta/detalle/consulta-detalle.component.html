@@ -1,0 +1,77 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>ASUNTO / TITULO</strong> </div>
+        </div>
+    </section>
+    <div class="row myRow firstSection">
+        <div class="rounded shadow col-xs-12 col-sm-6 col-md-9">
+            <div *ngFor="let comentario of ComentariosList, let i = index">
+                <div *ngIf="comentario.nombre == 'Martin'">
+                    <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || comentario.fecha != ComentariosList[i-1].fecha">
+                        <p class="fechaComentarioTexto">
+                            {{comentario.fecha}}
+                        </p>
+                    </div>
+                    <div class="row myRow">
+                        <div class="comentarioPropio col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.comentario">
+                            {{comentario.comentario}}
+                        </div>
+                    </div>
+                    <p class="col-xs-12 col-sm-6 col-md-7">
+                        {{comentario.hora}}
+                    </p>
+                </div>
+                <div *ngIf="comentario.nombre == 'juan'">
+                    <div class="col-xs-12 col-sm-6 col-md-12">
+                        <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || comentario.fecha != ComentariosList[i-1].fecha">
+                            <p class="fechaComentarioTexto">
+                                {{comentario.fecha}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row myRow">
+                        <div class="comentarioRespuesta col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.comentario">
+                            {{comentario.comentario}}
+                        </div>
+                    </div>
+                    <p class="horaComentarioRespuesta col-xs-12 col-sm-6 col-md-12">
+                        {{comentario.hora}}
+                    </p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-9" style="margin-top: 50px;">
+                <textarea type="search" [(ngModel)]="comentario" class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
+            </div>
+            <div class="myRow row">
+                <div class="col text-center">
+                    <a class="mx-auto d-block" (click)="sendContactoMail()" href="#" style="text-decoration:none!important">
+                        <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
+                    </a>
+                </div>
+            </div>  
+        </div>
+
+        <!--MENU LATERAL-->
+        <div class="rounded shadow col-xs-12 col-sm-6 col-md-3 menuLateralConsulta">
+            <div>
+                Creado el FechaInicio
+                <hr>
+                <div>
+                    <p class="menuLateralConsulta bold">Estado</p>
+                    <div class="styled-select perfiles-select">
+                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categoriaOptions"></dropdown>
+                    </div>
+                </div>
+                <div>
+                    <p class="menuLateralConsulta bold">Categoria</p>
+                    <div class="styled-select perfiles-select">
+                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categoriaOptions"></dropdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3761,12 +3761,100 @@ div.panel-body a.active{
   font-weight: 600;
 }
 .btn-enviar{
-  top: 733px;
-  left: 546px;
   width: 120px;
   height: 36px;
   background: #009688 0% 0% no-repeat padding-box;
   box-shadow: 0px 2px 2px #0000003D;
   border-radius: 2px;
   opacity: 1;
+}
+.margin-left{
+  margin-left: 20px;
+}
+.menuLateralConsulta{
+  text-align: left;
+  font: normal normal normal 16px/28px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  left: 10px;
+}
+.bold{
+  font-weight: bold;
+}
+.añadirComentario{
+  width: 600px;
+  height: 100px;
+
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  opacity: 1;
+  font: normal normal normal 16px Roboto Regular;
+}
+.btn-enviar-comentario{
+  width: 85px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
+.fechaComentario{
+  padding: 4px;
+  height: 27px;
+  background: white 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+}
+.fechaComentarioTexto{
+  width: 102px;
+  padding: 4px;
+  height: 27px;
+  background: #707070 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+
+  text-align: center;
+  font: normal normal normal 14px/19px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+}
+.comentarioPropio{
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 15px;
+  padding: 20px;
+  width: auto;
+  max-width: 58.33333333%;
+
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+.comentarioRespuesta{
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 15px;
+  padding: 20px;
+  float: right;
+  width: auto;
+  max-width: 58.33333333%;
+  
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+  opacity: 1;
+}
+.horaComentarioRespuesta{
+  text-align: right;
 }
