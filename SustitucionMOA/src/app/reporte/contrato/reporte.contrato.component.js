@@ -45,6 +45,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         _this.proveedores = [];
         _this.keyword2 = "RazonSocial";
         _this.proveedorid = null;
+        _this.motivoAnulacion = "";
         return _this;
     }
     ReporteContratoComponent.prototype.setTabs = function () {
@@ -197,7 +198,9 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                         PagoDiferidoTercero: x.PagoDiferidoTercero,
                         DolarizadoTercero: x.DolarizadoTercero,
                         CalidadTercero: x.CalidadTercero,
-                        SustentableTercero: x.SustentableTercero
+                        SustentableTercero: x.SustentableTercero,
+                        TipoNegocioId: x.TipoNegocioId,
+                        Id: x.Id,
                     };
                     return item;
                 });
@@ -382,6 +385,35 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         }, function (error) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });
+    };
+    ReporteContratoComponent.prototype.anularNegocio = function () {
+        var _this = this;
+        if (this.motivoAnulacion == null || this.motivoAnulacion == "") {
+            this.mensajeComponent.setErrorMsg("Ingrese el motivo de anulacion.");
+            document.getElementById("openModalanularModal").click();
+            return;
+        }
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.anularNegocio(this.negocioParAanular.Id, this.negocioParAanular.TipoNegocioId, this.motivoAnulacion).subscribe(function (result) {
+            _this.obteneContratos();
+            var obj = JSON.parse(result);
+            if (obj.HayError) {
+                _this.mensajeComponent.setErrorMsg(obj.Errores[0].Message);
+            }
+            else {
+                _this.mensajeComponent.setSuccessMsg("El contrato se anulo correctamente.");
+            }
+            document.getElementById("openModalanularModal").click();
+            _this.motivoAnulacion = "";
+            _this.negocioParAanular = null;
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
+    ReporteContratoComponent.prototype.anular = function (negocio) {
+        console.log(negocio);
+        this.negocioParAanular = negocio;
+        document.getElementById("openModalanularModal").click();
     };
     ReporteContratoComponent = __decorate([
         Component({

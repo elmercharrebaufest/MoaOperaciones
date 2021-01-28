@@ -341,9 +341,9 @@ export class CrearContratoBaseComponent extends BaseComponent {
                             this.campanias.push(el);
                         });
 
-                        //if (contrato.TipoNegocioId == 3) {
-                        //    this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
-                        //}
+                        if (contrato.TipoNegocioId == 3 && this.esCorredorEnDataAgro == false) {
+                            this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
+                        }
 
                     }
                 }

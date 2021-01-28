@@ -271,7 +271,7 @@
                     <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;margin-top:0;">
                         <thead>
                             <tr role="row">
-                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado_Contrato')">
+                                <th tabindex="0" rowspan="1" colspan="1" style="min-width:57px !important;" (click)="orderColumnBy('Estado_Contrato')">
                                     Estado
                                     <div>
                                         <span>
@@ -464,7 +464,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                                <td class="{{contratoInfo.Estado_Contrato}}">{{contratoInfo.Estado_Contrato}}</td>
+                                <td class="{{contratoInfo.Estado_Contrato}}"><a title="Anular" href="javascript:void(0);" *ngIf="contratoInfo.Estado_Contrato == 'Carga'" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;{{contratoInfo.Estado_Contrato}}</td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>
@@ -505,3 +505,27 @@
     </section>
 </div>
 <!--End CONTENT-->
+<!-- Modal anular -->
+<a href="#anularModal" class="trigger-btn" id="openModalanularModal" data-toggle="modal" style="display:none;">    Click    to Open anular Modal</a>
+<div class="modal fade fade-complete" id="anularModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Anular Contrato </h4>
+            </div>
+            <div class="">
+                <div class="col-md-12">
+                    <label for="ObservacionTercero">Motivo de anulacion:</label>
+                    <textarea class="form-control" name="motivoAnulacion" [(ngModel)]="motivoAnulacion"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="anularNegocio()">Anular</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+
+            </div>
+        </div>
+    </div>
+</div>
