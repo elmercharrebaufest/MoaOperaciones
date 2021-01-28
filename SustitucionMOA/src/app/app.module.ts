@@ -50,7 +50,8 @@ import { AltaNotificacionesComponent } from './notificaciones/alta-notificacione
 import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
-import { BlockUIModule } from 'ng-block-ui';
+import { BlockUIModule } from 'ng-block-ui';;
+import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 
 @NgModule({
   imports: [
@@ -87,7 +88,8 @@ import { BlockUIModule } from 'ng-block-ui';
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
-    NumericDirective
+    NumericDirective,
+    TicketPesadaComponent
   ],
   providers: [
     DatePipe,
