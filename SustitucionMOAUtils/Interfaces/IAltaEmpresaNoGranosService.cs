@@ -19,6 +19,6 @@ namespace SustitucionMOAUtils.Interfaces
         InfoProveedorNoGranosDto ObtenerInfoProveedorNoGranos(string mailUsuario, int proveedorId);
 
         string GetRazonSocial(string CUIT);
-
+        byte[] DescargarFormularioNG(ProveedorAltaDto proveedorDto);
     }
 }
