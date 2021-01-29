@@ -322,7 +322,8 @@ namespace SustitucionMOAUtils.Services
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 CodigoProveedor = FormatearCodigoProveedor(cuit),
-                TipoProveedor = ObtenerTipoPorNombreCorto("G")
+                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                FechaSolicitud = DateTime.Now
             };
 
             if (usuario.EsCorredor())
@@ -342,7 +343,8 @@ namespace SustitucionMOAUtils.Services
                         infoDA.ComercialId = infoDACorredor.ComercialId;
                         comercial = string.Concat(infoDACorredor.ComercialNombres, " ", infoDACorredor.ComercialApellido);
                     }
-                    else {
+                    else
+                    {
                         throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
                     }
                 }
