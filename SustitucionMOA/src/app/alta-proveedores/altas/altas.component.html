@@ -790,13 +790,13 @@
                     <div class="row">
                         <div class="form-group align-right">
                             <button [disabled]="listaArchivos.length === 0" type="button"
-                                    class="btn-custom btn-mediano btn-add" style="display:inline-flex;"
+                                    class="btn-custom btn-mediano btn-add" style="float: right;"
                                     (click)="descargarArchivos(empresaSeleccionada.Mail, empresaSeleccionada.Id)">
                                 Descargar Archivos
                             </button>
 
                             <button *ngIf="empresaSeleccionada.IdTipoUsuario === 1 || empresaSeleccionada.IdTipoUsuario === 3" type="button"
-                                    class="btn-custom btn-mediano btn-add" style="display:inline-flex;"
+                                    class="btn-custom btn-mediano btn-add" style="float: right;"
                                     (click)="descargarFormularioNG(empresaSeleccionada.Id)">
                                 Descargar Formulario de Solicitud de alta
                             </button>

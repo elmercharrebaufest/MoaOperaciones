@@ -124,7 +124,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.cuitProveedorSeleccionado = item.CUIT;
         console.log("prov: ", item.Id);
         if (item != null && item.Id != null && item.Id > 0) {
-            this.obtenerDatosCompraNet(this.contrato, item.Id);            
+            this.obtenerDatosCompraNet(this.contrato, item.Id);
         }
     }
 
@@ -220,7 +220,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 3;
 
-      
+
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
 
@@ -302,13 +302,13 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         if (this.contrato.DestinoId == null || this.contrato.DestinoId == undefined) {
             this.mensajeComponent.setErrorMsg("Debe completar el Destino.");
             return false;
-        } 
+        }
         if (this.contrato.MaterialId == null || this.contrato.MaterialId == undefined) {
             this.mensajeComponent.setErrorMsg("Debe completar el Material.");
             return false;
         }
 
-        
+
         if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
             this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
             return false;
@@ -399,27 +399,30 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     }
 
     selectEventContratoId(item: FijacionesAutomaticas) {
-        console.log(item);
-        this.contrato.ContratoSAP = item.ContratoId;
-        this.contrato.Posicion = item.Posicion;
-        var dateParts = item.DesdeEntrega.split("-");
-        var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
-        this.contrato.FechaDesde = dateObject;
-        //console.log("FechaDesde");
-        //console.log("dateParts", dateParts);
-        //console.log("dateObject", dateObject);
-        //console.log("this.contrato.FechaDesde", this.contrato.FechaDesde);
-        dateParts = item.HastaEntrega.split("-");
-        dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
-        this.contrato.FechaHasta = dateObject;
-        this.contrato.FechaEntrega = dateObject;
-        //console.log("FechaHasta");
-        //console.log("dateParts", dateParts);
-        //console.log("dateObject", dateObject);
-        //console.log("this.contrato.FechaHasta", this.contrato.FechaHasta);
-        this.contrato.CampanaId = item.CampanaId;
-        this.contrato.DestinoId = item.Centro;
-        this.contrato.TrigoEspecial = item.Calidad;
+        if (item) {
+            console.log(item);
+            this.contrato.ContratoSAP = item.ContratoId;
+            this.contrato.Posicion = item.Posicion;
+            var dateParts = item.DesdeEntrega.split("-");
+            var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+            this.contrato.FechaDesde = dateObject;
+            //console.log("FechaDesde");
+            //console.log("dateParts", dateParts);
+            //console.log("dateObject", dateObject);
+            //console.log("this.contrato.FechaDesde", this.contrato.FechaDesde);
+            dateParts = item.HastaEntrega.split("-");
+            dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+            this.contrato.FechaHasta = dateObject;
+            this.contrato.FechaEntrega = dateObject;
+            //console.log("FechaHasta");
+            //console.log("dateParts", dateParts);
+            //console.log("dateObject", dateObject);
+            //console.log("this.contrato.FechaHasta", this.contrato.FechaHasta);
+            this.contrato.CampanaId = item.CampanaId;
+            this.contrato.DestinoId = item.Centro;
+            this.contrato.TrigoEspecial = item.Calidad;
+        }
+
 
     }
 
