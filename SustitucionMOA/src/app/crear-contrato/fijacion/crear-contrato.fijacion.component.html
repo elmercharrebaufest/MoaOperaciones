@@ -177,7 +177,9 @@
                                      (inputChanged)='onChangeSearchContratoId($event)'
                                      (inputFocused)='selectEventContratoId($event)' [itemTemplate]="itemTemplate3"
                                      [notFoundText]="autocompleteNotFoundText"
-                                     [notFoundTemplate]="notFoundTemplate2">
+                                     [notFoundTemplate]="notFoundTemplate2"
+                                     minQueryLength="8"
+                                     initialValue="2">
                     </ng-autocomplete>
 
                     <ng-template #itemTemplate3 let-item>
