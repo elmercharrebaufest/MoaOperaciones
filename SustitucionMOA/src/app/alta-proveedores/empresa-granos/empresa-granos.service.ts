@@ -285,21 +285,20 @@ export class EmpresaGranosService extends BaseService {
     descargarFormularioNG(empresaId: number) : Observable < any > {
             let payload = new FormData();           
 
-        payload.append("empresaId", empresaId.toString());
+    payload.append("empresaId", empresaId.toString());
 
-            return this.http
-                .post("/api/AltaEmpresaNoGranos/DescargarFormularioNG", payload)
-                .pipe(
-                    timeoutWith(
-                        30000,
-                        throwError(
-                            new Error(
-                                "Se exedio el tiempo de espera, por favor intentelo mas tarde"
-                            )
+        return this.http
+            .post("/api/AltaEmpresaNoGranos/DescargarFormularioNG", payload)
+            .pipe(
+                timeoutWith(
+                    30000,
+                    throwError(
+                        new Error(
+                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
                         )
                     )
                 )
-                .pipe(map(this.extractData));
-        }
-    }
+            )
+            .pipe(map(this.extractData));
+    }    
 }
