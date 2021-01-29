@@ -81,6 +81,7 @@ namespace SustitucionMOAUtils.Email
             mail.From = new MailAddress(EmailConfig.getEmailAddFrom());
             mail.Subject = reporte.Asunto;
             mail.Body = cuerpo;
+            mail.IsBodyHtml = true;
 
             //Mas de un destinatario
             if (reporte.Destinatario.Contains(",")){
