@@ -16,6 +16,7 @@ using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WSConsumers; 
 
@@ -23,6 +24,12 @@ namespace SustitucionMOAUtils.Services
 {
     public class CartaPorteService : ICartaPorteService
     {
+        readonly IScatoConsumer scatoConsumer;
+
+        public CartaPorteService (IScatoConsumer scatoConsumer)
+        {
+            this.scatoConsumer = scatoConsumer;
+        }
 
         public CartaPorteDescargaViewModel GetDescargas(string proveedor, string fechaInicio, string fechaFin)
         {
@@ -274,8 +281,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ScatoConsumer scatoConsumer = new ScatoConsumer();
-
                 return scatoConsumer.ObtenerFotoCartaPorte(cartaPorteId);
             }
             catch (InfoCustomException)
@@ -296,8 +301,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ScatoConsumer scatoConsumer = new ScatoConsumer();
-
                 return scatoConsumer.ObtenerFotoCartasPorte(cartaPorteIds);
             }
             catch (InfoCustomException)

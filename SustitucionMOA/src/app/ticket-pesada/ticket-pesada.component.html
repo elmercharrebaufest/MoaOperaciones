@@ -1,3 +1,34 @@
-<p>
-  ticket-pesada works!
-</p>
+<div class="container">
+  <div>
+    <img class="logoTicketPesada" src="/Content/images/header/logoEndosado.png"> <br />
+  </div>
+  <div>
+    Información de operaciones y entregas para proveedores de Materias Primas
+  </div>
+
+  <div>
+    <div>
+      Numero de carta de Porte
+      <input type="text" [(ngModel)]="TicketPesada.NumeroCartaPorte">
+    </div>
+
+    <div>
+      Patente del cami&oacute;n
+      <input type="text" [(ngModel)]="TicketPesada.PatenteCamion">
+    </div>
+
+    <div>
+      Mail
+      <input type="text" [(ngModel)]="TicketPesada.Mail">
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
+      <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)"
+        site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
+    </div>
+
+    <div>
+      <button class="btn-custom btn-guardar btn-grande" (click)="enviar()">Buscar comprobantes</button>
+    </div>
+  </div>
+</div>
