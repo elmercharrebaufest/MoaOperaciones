@@ -92,6 +92,7 @@ namespace SustitucionMOA.Controllers
                 List<KeyValuePair<string, string>> estadosIntermedios = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>(EstadoAprobacion.AprobacionPendiente.ToFriendlyString(), EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.DocumentacionPendiente.ToFriendlyString(), EstadoAprobacion.DocumentacionPendiente.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),

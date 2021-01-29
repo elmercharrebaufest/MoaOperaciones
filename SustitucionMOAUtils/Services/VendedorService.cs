@@ -322,7 +322,8 @@ namespace SustitucionMOAUtils.Services
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 CodigoProveedor = FormatearCodigoProveedor(cuit),
-                TipoProveedor = ObtenerTipoPorNombreCorto("G")
+                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                FechaSolicitud = DateTime.Now
             };
 
             if (usuario.EsCorredor())
@@ -331,11 +332,13 @@ namespace SustitucionMOAUtils.Services
 
                 if (infoDA.HayError)
                 {
-                    if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
+                    if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado")
+                    {
                         infoDA.ComercialId = usuario.ObtenerCorredor().IdComercialDataAgro.Value;
                         infoDA.ComercialNombres = usuario.ObtenerCorredor().Comercial;
                     }
-                    else {
+                    else
+                    {
                         throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
                     }
                 }
