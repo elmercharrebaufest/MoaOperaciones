@@ -20,7 +20,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
-        public ActionResult Comentarios(int consultaId, Comentario comentario)
+        public JsonResult Comentarios(int consultaId, Comentario comentario)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpGet]
-        public ActionResult Detalle(int consultaId)
+        public JsonResult Detalle(int consultaId)
         {
             try
             {
@@ -72,11 +72,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPatch]
-        public ActionResult Recategorizar(int consultaId, int categoriaId)
+        public JsonResult Recategorizar(int consultaId, int categoriaId)
         {
             try
             {
-                if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                if (consultaId <= 0 || categoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
                 consultaService.RecategorizarConsulta(consultaId, categoriaId);
 
@@ -99,7 +99,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPatch]
-        public ActionResult ActualizarEstado(int consultaId, int estadoConsultaId)
+        public JsonResult ActualizarEstado(int consultaId, int estadoConsultaId)
         {
             try
             {
