@@ -22,6 +22,10 @@ namespace SustitucionMOAUtils.Services
 
         public void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
         {
+            var estado = repositorio.Obtener<Consulta>(c => c.Id == estadoConsultaId);
+
+            if (estado == null) throw new InfoCustomException("No existe el estado");
+
             var consulta = GetConsulta(consultaId);
 
             consulta.EstadoConsulta_Id = estadoConsultaId;
@@ -74,6 +78,10 @@ namespace SustitucionMOAUtils.Services
 
         public void RecategorizarConsulta(int consultaId, int categoriaId)
         {
+            var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
+
+            if(categoria == null) throw new InfoCustomException("No existe la categoria");
+            
             var consulta = GetConsulta(consultaId);
 
             consulta.Categoria_Id = categoriaId;

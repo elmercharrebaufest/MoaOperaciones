@@ -103,7 +103,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                if (consultaId <= 0 || estadoConsultaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
                 consultaService.ActualizarEstadoConsulta(consultaId, estadoConsultaId);
 
