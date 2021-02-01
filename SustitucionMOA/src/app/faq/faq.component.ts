@@ -74,7 +74,7 @@ export class FaqComponent extends ListBaseComponent {
         this.displayListaPreguntas();
     }
 
-    displayListaPreguntas() {
+    async displayListaPreguntas() {
 
         //WEB
         $('.categoria1MenuFaq').on('click', function(e){
@@ -219,6 +219,38 @@ export class FaqComponent extends ListBaseComponent {
             o.preventDefault();
             if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
                 $("#archive_posts9").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria10MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts10").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria10').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts10").slideToggle();
+            }
+            $ok.data('lockedAt', +new Date());
+        });
+        $('.categoria11MenuFaq').on('click', function(e){
+            var $link = $(e.target);
+            e.preventDefault();
+            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
+                $("#archive_posts11").slideToggle();
+            }
+            $link.data('lockedAt', +new Date());
+        });
+        $('.faqCategoria11').on('click', function(o){
+            var $ok = $(o.target);
+            o.preventDefault();
+            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
+                $("#archive_posts11").slideToggle();
             }
             $ok.data('lockedAt', +new Date());
         });
