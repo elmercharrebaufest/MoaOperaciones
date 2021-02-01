@@ -6,4 +6,49 @@
 
 body {
     background-color: white!important;
+    font-size: 64px;
+}
+
+.container {
+    display: flex;
+    align-content: center;
+    flex-direction:column;
+    justify-content: center;
+    max-width: 20em;
+}
+
+.btnContainer {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    margin-top: 2em;
+}
+
+.logoContainer {
+    justify-content: center;
+    display: flex;
+    margin-top: 3em;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.subtitulo {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.captchaContainer{
+    margin: 15px 0px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
 }

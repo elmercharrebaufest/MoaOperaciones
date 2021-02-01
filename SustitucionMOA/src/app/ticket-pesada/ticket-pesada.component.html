@@ -1,33 +1,57 @@
 <div class="container">
-  <div>
+  <div class="logoContainer">
     <img class="logoTicketPesada" src="/Content/images/header/logoEndosado.png"> <br />
   </div>
-  <div>
-    Información de operaciones y entregas para proveedores de Materias Primas
+  <div class="subtitulo">
+    <h5>
+      Información de operaciones y entregas para proveedores de Materias Primas
+    </h5>
   </div>
 
-  <div>
-    <div>
-      Numero de carta de Porte
-      <input type="text" [(ngModel)]="TicketPesada.NumeroCartaPorte">
+  <div class="inputContainer mySearch">
+    <div class="row myRow">
+      <div class="clearfix myTables">
+        <mensaje></mensaje>
+        <spinner></spinner>
+      </div>
     </div>
 
-    <div>
-      Patente del cami&oacute;n
-      <input type="text" [(ngModel)]="TicketPesada.PatenteCamion">
+    <div class="formulario-campo">
+      <div class="formulario-label">
+        N&uacute;mero de carta de Porte
+      </div>
+      <div class="styled-select">
+        <input [(ngModel)]="TicketPesada.NumeroCartaPorte" type="text" pattern="\d*">
+
+      </div>
     </div>
 
-    <div>
-      Mail
-      <input type="text" [(ngModel)]="TicketPesada.Mail">
+    <div class="formulario-campo">
+      <div class="formulario-label">
+        Patente del cami&oacute;n
+      </div>
+      <div class="styled-select">
+        <input type="text" [(ngModel)]="TicketPesada.PatenteCamion">
+      </div>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
+    <div class="formulario-campo">
+      <div>
+        <div class="formulario-label">
+          Mail
+        </div>
+        <div class="styled-select">
+          <input type="text" [(ngModel)]="TicketPesada.Mail">
+        </div>
+      </div>
+    </div>
+
+    <div class="formulario-campo captchaContainer">
       <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)"
         site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
     </div>
 
-    <div>
+    <div class="btnContainer">
       <button class="btn-custom btn-guardar btn-grande" (click)="enviar()">Buscar comprobantes</button>
     </div>
   </div>

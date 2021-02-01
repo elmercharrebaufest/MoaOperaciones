@@ -4,16 +4,16 @@ import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
-import { ConsultaTicketPesda } from '../common/models/ticket-pesada/consulta-ticket-pesada';
+import { ConsultaTicketPesada } from '../common/models/ticket-pesada/consulta-ticket-pesada';
 
 @Injectable()
-export class TicketPesadaesService extends BaseService {
+export class TicketPesadaService extends BaseService {
 
     constructor(protected http: Http) {
         super(http);
     }
 
-    public buscarTicket(ticketPesada: ConsultaTicketPesda): Observable<any> {
+    public ObtenerTicketPesada(ticketPesada: ConsultaTicketPesada): Observable<any> {
         let payload = new FormData();
         payload.append(
             "ticketPesadaJson",

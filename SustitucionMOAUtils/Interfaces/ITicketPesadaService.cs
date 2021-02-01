@@ -10,6 +10,6 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface ITicketPesadaService
     {
-        List<CartaPorteFoto> ObtenerTicket(ConsultaTicketPesada consultaTicketPesada);
+        byte[] ObtenerTicket(ConsultaTicketPesada consultaTicketPesada);
     }
 }

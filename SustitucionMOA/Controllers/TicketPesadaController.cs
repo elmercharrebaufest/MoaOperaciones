@@ -20,20 +20,24 @@ namespace SustitucionMOA.Controllers
 {
     public class TicketPesadaController : BaseController
     {
-        //readonly INotificacionService notificacionService;
+        readonly ITicketPesadaService ticketPesadaService;
 
-        public TicketPesadaController()
+        public TicketPesadaController(ITicketPesadaService ticketPesadaService)
         {
-            //this.notificacionService = notificacionService;
+            this.ticketPesadaService = ticketPesadaService;
         }
         //notificacionService.ObtenerNotificacion(notificacionId)
-        public ActionResult Obtener(string ticketPesadaJson)
+        public JsonResult Obtener(string ticketPesadaJson)
         {
             try
             {
-                var notificacion = JsonConvert.DeserializeObject<ConsultaTicketPesada>(ticketPesadaJson);
+                var consultaTicketPesada = JsonConvert.DeserializeObject<ConsultaTicketPesada>(ticketPesadaJson);
 
-                return JsonCustom(new { data = "" });
+                var archivoArray = ticketPesadaService.ObtenerTicket(consultaTicketPesada);
+
+                var nombreAchivo = string.Format("Ticket Pesada CCPP {0}.zip", consultaTicketPesada.NumeroCartaPorte);
+
+                return JsonCustom(File(archivoArray, "application/zip", nombreAchivo));
             }
             catch (InfoCustomException e)
             {

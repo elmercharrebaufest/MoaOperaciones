@@ -87,6 +87,8 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<IScatoConsumer>().To(typeof(ScatoConsumer)).InScope(ctx => OperationContext.Current);
 
+            kernel.Bind<ITicketPesadaService>().To(typeof(TicketPesadaService)).InScope(ctx => OperationContext.Current);
+
 
 
 
