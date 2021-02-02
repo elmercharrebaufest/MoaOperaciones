@@ -317,8 +317,6 @@
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\faq\faq.component.html" />
-    <Content Include="src\app\faq\faq.component.js" />
-    <Content Include="src\app\faq\faq.service.js" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
@@ -860,8 +858,6 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
-    <Content Include="src\app\faq\faq.component.js.map" />
-    <Content Include="src\app\faq\faq.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
