@@ -9,11 +9,13 @@ import { RouterModule } from '@angular/router';
 import { CrearContratoAPrecioComponent } from './aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from './afijar/crear-contrato.afijar.component';
 import { CrearContratoFijacionComponent } from './fijacion/crear-contrato.fijacion.component';
+import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contrato.cargarnegocio.component';
 var routes = [
     { path: '', component: CrearContratoAPrecioComponent },
     { path: 'aprecio', component: CrearContratoAPrecioComponent },
     { path: "afijar", component: CrearContratoAFijarComponent },
     { path: "fijacion", component: CrearContratoFijacionComponent },
+    { path: "cargarnegocio", component: CrearContratoCargarNegocioComponent },
 ];
 var CrearContratoRoutingModule = /** @class */ (function () {
     function CrearContratoRoutingModule() {

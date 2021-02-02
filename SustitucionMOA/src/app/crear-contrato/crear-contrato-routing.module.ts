@@ -4,12 +4,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { CrearContratoAPrecioComponent } from './aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from './afijar/crear-contrato.afijar.component';
 import { CrearContratoFijacionComponent } from './fijacion/crear-contrato.fijacion.component';
+import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contrato.cargarnegocio.component';
 
 const routes: Routes = [
     { path: '', component: CrearContratoAPrecioComponent },
     { path: 'aprecio', component: CrearContratoAPrecioComponent },
     { path: "afijar", component: CrearContratoAFijarComponent },
     { path: "fijacion", component: CrearContratoFijacionComponent },
+    { path: "cargarnegocio", component: CrearContratoCargarNegocioComponent },
 
 ];
 

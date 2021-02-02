@@ -91,6 +91,7 @@ export class CrearContratoBaseComponent extends BaseComponent {
     precioGirasol: boolean = null;
     checkPermisos() { this.securityService.tienePermisoRedirect("CREAR CONTRATOS"); }
     precioSeleccionado: boolean = false;
+    materialSeleccionado: string = "";
     ObservacionPagoDiferidoTercero: string = "";
     ObservacionDolarizadoTercero: string = "";
     ObservacionCalidadTercero: string = "";
@@ -102,6 +103,7 @@ export class CrearContratoBaseComponent extends BaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([
 
+            //new Seccion('/crear-contrato/cargarnegocio', 'crear-contrato', 'Seleccione un negcio'),
             new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
             new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
             new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
@@ -656,10 +658,14 @@ export class CrearContratoBaseComponent extends BaseComponent {
         this.materiales.push({ Id: precio.MaterialId, Descripcion: precio.Material });
         contrato.MaterialId = precio.MaterialId;
         this.precioSeleccionado = true;
+        this.materialSeleccionado = precio.Material;
         this.habilitaciones(contrato);
     }
 
     isVisibleGrabar() {
         return !this.spinnerComponent.visible;
+    }
+    isMaterialSeleccionado(material:string) {
+        return this.materialSeleccionado == "" || this.materialSeleccionado == material;
     }
 }

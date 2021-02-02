@@ -97,28 +97,29 @@
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
-        <div class="row titleSection" style="border-bottom:none;">
+        <div class="row titleSection" style="border-bottom:none;" *ngIf="!this.precioSeleccionado">
+            <div class="col-xs-12 col-sm-10 "style="border-bottom:1px solid #707070;">Seleccione el material para iniciar la carga </div>
             <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
                 <tbody>
                     <tr>
                         <th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Maiz</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Trigo</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Soja</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Girasol</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(1,2)" *ngIf="isMaterialSeleccionado('Maiz')">Maiz</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(2,2)" *ngIf="isMaterialSeleccionado('Trigo')">Trigo</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(3,2)" *ngIf="isMaterialSeleccionado('Soja')">Soja</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(4,2)" *ngIf="isMaterialSeleccionado('Girasol')">Girasol</th>
                     </tr>
                     <tr>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,2)">{{precioMaiz == true?"Disponible":precioMaiz == false?"Sin Precio":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,2)">{{precioTrigo == true?"Disponible":precioTrigo == false?"Sin Precio":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,2)">{{precioSoja == true?"Disponible":precioSoja == false?"Sin Precio":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,2)">{{precioGirasol == true?"Disponible":precioGirasol == false?"Sin Precio":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,2)" *ngIf="isMaterialSeleccionado('Maiz')">{{precioMaiz == true?"En mercado":precioMaiz == false?"Sin Precio":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,2)" *ngIf="isMaterialSeleccionado('Trigo')">{{precioTrigo == true?"En mercado":precioTrigo == false?"Sin Precio":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,2)" *ngIf="isMaterialSeleccionado('Soja')">{{precioSoja == true?"En mercado":precioSoja == false?"Sin Precio":""}}</span></td>
+                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,2)" *ngIf="isMaterialSeleccionado('Girasol')">{{precioGirasol == true?"En mercado":precioGirasol == false?"Sin Precio":""}}</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Precio</strong> </div>
+        <div class="row titleSection"  *ngIf="this.precioSeleccionado">
+            <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Precio {{materialSeleccionado}}</strong> </div>
             <!--<div class="col-xs-12 col-sm-2 " *ngIf="isVisibleProveedor()">
                 <a (click)="altaMasiva()" href="#" style="text-decoration:none!important">
                     <div class="btnSection animate align-right">Alta Masiva <img src="Content/images/buttons/upload.png" width="19" height="19" /></div>

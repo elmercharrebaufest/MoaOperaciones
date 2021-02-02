@@ -204,14 +204,15 @@ export class CrearContratoAPrecioService extends CrearContratoService {
 
 @Injectable()
 export class CrearContratoAFijarService extends CrearContratoService {
-
     
 }
 
 @Injectable()
 export class CrearContratoFijacionService extends CrearContratoService {
-
-    
+ 
+}
+@Injectable()
+export class CrearContratoCargarNegocioService extends CrearContratoService {
 
 }
 

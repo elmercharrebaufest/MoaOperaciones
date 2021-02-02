@@ -351,7 +351,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
+                <!--<div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="misReportes">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseRepo" aria-expanded="false" aria-controls="collapseRepo">
@@ -362,17 +362,12 @@
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/reporte/contrato')" href="#">
-                                    <!--data-toggle="tab">-->Contratos
+                                   Contratos
                                 </a>
                             </div>
-                            <!--<div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
-                                <a (click)="goToSeccion('/reporte/cupo')" href="#">
-                                    Cupos
-                                </a>
-                            </div>-->
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="infoFinanciera">
@@ -415,10 +410,11 @@
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
-                                <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Registro de
-                                    operaciones</a>
+                                <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#"> Carga de negocios</a>
                             </div>
-
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                                <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
+                            </div>
                         </div>
                     </div>
                 </div>

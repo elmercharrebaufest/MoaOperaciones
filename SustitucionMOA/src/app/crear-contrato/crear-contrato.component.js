@@ -88,6 +88,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.precioSoja = null;
         _this.precioGirasol = null;
         _this.precioSeleccionado = false;
+        _this.materialSeleccionado = "";
         _this.ObservacionPagoDiferidoTercero = "";
         _this.ObservacionDolarizadoTercero = "";
         _this.ObservacionCalidadTercero = "";
@@ -103,6 +104,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([
+            //new Seccion('/crear-contrato/cargarnegocio', 'crear-contrato', 'Seleccione un negcio'),
             new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
             new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
             new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
@@ -628,10 +630,14 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.materiales.push({ Id: precio.MaterialId, Descripcion: precio.Material });
         contrato.MaterialId = precio.MaterialId;
         this.precioSeleccionado = true;
+        this.materialSeleccionado = precio.Material;
         this.habilitaciones(contrato);
     };
     CrearContratoBaseComponent.prototype.isVisibleGrabar = function () {
         return !this.spinnerComponent.visible;
+    };
+    CrearContratoBaseComponent.prototype.isMaterialSeleccionado = function (material) {
+        return this.materialSeleccionado == "" || this.materialSeleccionado == material;
     };
     __decorate([
         BlockUI(),
