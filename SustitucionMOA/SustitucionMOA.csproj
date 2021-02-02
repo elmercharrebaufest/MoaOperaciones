@@ -305,6 +305,8 @@
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
+    <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js" />
@@ -873,6 +875,7 @@
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
+    <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -933,6 +936,8 @@
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />

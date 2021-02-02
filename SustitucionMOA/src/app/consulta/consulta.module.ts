@@ -7,13 +7,14 @@ import { ConsultaRoutingModule } from './consulta-routing.module';
 import { ConsultaService } from './consulta.service';
 import { CrearConsultaComponent } from './crear-consulta/crear-consulta.component';
 import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
+import { DetalleConsultaComponent } from './detalle/consulta-detalle.component';
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SliderModule } from 'primeng/slider';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
-import {ToggleButtonModule} from 'primeng/togglebutton';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import {ToggleButtonModule} from 'primeng/togglebutton';
   ],
     declarations: [
       MisConsultasComponent,
-      CrearConsultaComponent
+      CrearConsultaComponent,
+      DetalleConsultaComponent
     ],
     providers: [
       ConsultaService
