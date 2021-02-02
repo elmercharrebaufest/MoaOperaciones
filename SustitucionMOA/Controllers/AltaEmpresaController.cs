@@ -65,11 +65,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
         [HttpPost]
-        public ActionResult SetEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER, string razonSocial)
+        public ActionResult SetEstadoAprobacion(int empresaId, EstadoAprobacion estado, string observacion, string observacionParaElProveedor, string estadoSIPER, string razonSocial, string codigoCliente)
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.SetEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER, true, razonSocial) });
+                return JsonCustom(new { data = altaEmpresaService.SetEstadoAprobacion(empresaId, estado, observacion, ClaimsPrincipalExtension.GetClaimValue("emails"), observacionParaElProveedor, estadoSIPER, true, razonSocial, codigoCliente) });
             }
             catch (InfoCustomException e)
             {
@@ -210,7 +210,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult SolicitarInformacion (int empresaId)
+        public ActionResult SolicitarInformacion(int empresaId)
         {
             try
             {

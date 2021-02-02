@@ -105,3 +105,12 @@ thead tr th{
 .modal-footer{
   padding: 15px 35px !important;
 }
+
+.historialContainer {
+  padding-top: 10px;
+}
+
+.infoClienteContainer{
+  display: flex;
+  flex-direction: column;
+}

@@ -212,11 +212,15 @@
             <div class="UserBar clearfix">
                 <nav>
                     <ul class="nav">
-                        <li class="" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
+                        <li class="">
                             <div class="user-info-container">
-                                <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="user-name">
+                                <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="user-name"
+                                    *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
                                     <strong>{{nombre}}</strong>
                                 </a>
+                                <strong class="user-name"
+                                    *ngIf="!isAuthorized('CONSULTAR DATOS FISCALES')">{{nombre}}</strong>
+
                                 <span class="user-code">C&oacute;digo de proveedor {{proveedor}} </span>
                             </div>
                         </li>

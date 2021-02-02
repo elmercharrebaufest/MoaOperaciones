@@ -345,8 +345,9 @@ namespace SustitucionMOAUtils.Services
                 new ProveedorHistorialAprobacion()
                 {
                     Fecha = DateTime.Now,
+                    Proveedor_Id = proveedor.Id,
                     EstadoAprobacion = EstadoAprobacion.EtapaFinal,
-                    Observacion = "Registro de usuario Cliente",
+                    Observacion = "Registro de usuario cliente",
                     Usuario_Id = usuario.Id
                 }
             };

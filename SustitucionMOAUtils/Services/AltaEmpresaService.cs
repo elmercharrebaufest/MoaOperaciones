@@ -49,6 +49,7 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
                                 && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
+                                && x.TipoProveedor.Id == 5
                                 );
 
                 List<ProveedorAltaDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorAltaDto
@@ -171,7 +172,8 @@ namespace SustitucionMOAUtils.Services
                                           string observacionParaElProveedor,
                                           string estadoSIPER,
                                           bool enviarMail,
-                                          string razonSocial)
+                                          string razonSocial,
+                                          string codigoCliente)
         {
             try
             {
@@ -273,6 +275,7 @@ namespace SustitucionMOAUtils.Services
                                 usuario.AgregarRol(rolUsuarioCliente);
                             }
 
+                            proveedor.CodigoProveedor = codigoCliente;
                             proveedor.RazonSocial = razonSocial;
 
                             break;
