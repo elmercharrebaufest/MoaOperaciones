@@ -19,7 +19,7 @@ namespace SustitucionMOAModel.Dto
             Id = comentario.Id;
             Detalle = comentario.Detalle;
             Fecha = comentario.Fecha;
-            Archivos = comentario.Archivos.Select(a => new ArchivoDto(a)).ToList();
+            //Archivos = comentario.Archivos.Select(a => new ArchivoDto(a)).ToList();
         }
     }
 }

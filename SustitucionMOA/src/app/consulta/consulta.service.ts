@@ -58,6 +58,12 @@ export class ConsultaService extends BaseService {
             .get('/api/contactoMail/listarConsultas', { headers: this.headers }).pipe(
             map(this.extractData));
     }
+
+    public getConsultaDetalle(idConsulta): Observable<any> {
+        return this.http
+            .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
 }
 
 /*
