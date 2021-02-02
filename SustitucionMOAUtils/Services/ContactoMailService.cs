@@ -72,6 +72,31 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<ConsultaVM> listarConsultas(string email)
+        {
+            var ret = new List<ConsultaVM>();
+
+            ret = repositorio.Listar<Consulta>().Select(x => 
+            new ConsultaVM()
+            {
+                id = x.Id,
+                asunto = x.Asunto,
+                categoria = x.Categoria.Nombre,
+                comprobante = x.Comprobante,
+                contrato = x.Contrato,
+                cuit = x.CUIT,
+                estado = x.EstadoConsulta.Descripcion,
+                fechaCreacion = x.FechaCreacion,
+                fechaUltimaModificacion = x.FechaUltimaModificacion,
+                idCategoria = x.Categoria_Id,
+                idEstado = x.EstadoConsulta_Id,
+                inscripcion = x.Inscripcion,
+                razonSocial = x.RazonSocial 
+            }).ToList();
+
+            return ret;
+        }
+
         public string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file, string mailUsuario)
         {
             try
@@ -110,7 +135,6 @@ namespace SustitucionMOAUtils.Services
                     Contrato = contactoContenido.contrato,
                     CUIT = contactoContenido.cuit,
                     Email = contactoContenido.email,
-                    EstadoConsulta = estadoInicial,
                     EstadoConsulta_Id = estadoInicial.Id,
                     FechaCreacion = now,
                     FechaUltimaModificacion = now,
@@ -168,9 +192,36 @@ namespace SustitucionMOAUtils.Services
                 var categorias = repositorio.Listar<Categoria>();
                 return categorias.Select(x => new CategoriaContacto()
                 {
+                    id = x.Id,
                     value = x.Code,
                     label = x.Nombre,
                     camposAdicionales = x.CamposAdicionales ? "A" : string.Empty
+                }).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<EstadoConsultaVM> getEstados()
+        {
+            try
+            {
+                var estados = repositorio.Listar<EstadoConsulta>();
+                return estados.Select(x => new EstadoConsultaVM()
+                {
+                    id = x.Id,
+                    nombre = x.Descripcion,
+                    color = x.Color
                 }).ToList();
             }
             catch (ValidationCustomException e)

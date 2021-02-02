@@ -7,6 +7,7 @@ import {
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
@@ -57,6 +58,7 @@ import { ConsultaService } from "./consulta/consulta.service";
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpModule,
     AppRoutingModule,
     FormsModule,

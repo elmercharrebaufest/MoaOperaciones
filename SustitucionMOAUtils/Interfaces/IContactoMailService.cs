@@ -12,6 +12,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         string sendContactoMail(ContactoContenido contactoContenido, HttpPostedFileBase file, string mailUsuario);
         List<CategoriaContacto> getCategorias();
+        List<EstadoConsultaVM> getEstados();
+        List<ConsultaVM> listarConsultas(string email);
 
     }
 }
