@@ -1,6 +1,5 @@
 ﻿import { Component, Renderer, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router } from "@angular/router";
-
 import { Seccion } from './../common/models/seccion';
 import { LayoutService } from './layout.service';
 import { SessionDataService } from './../common/services/SessionDataService';
@@ -10,7 +9,6 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mensaje-modal.component';
-
 import { LoginGuard } from './../common/security/login-guard';
 import { ok } from 'assert';
 declare var $: any;

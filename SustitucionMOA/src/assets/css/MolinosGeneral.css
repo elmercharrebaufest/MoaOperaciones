@@ -2654,7 +2654,7 @@ fa-file-word-o {
 .documentos p {
   font-size: 16px;
   margin-bottom: 0px;
-  color: #959595;
+  color: #707070;
   font-weight: normal;
 }
 .documentos title-caps {
@@ -2717,7 +2717,7 @@ fa-file-word-o {
   margin-bottom: 5px;
 }
 .documento .doc-description{
-  color: #959595;
+  color: #707070;
   font-weight: normal;
   margin: 10px 0px 5px 0px;
 }
@@ -3418,12 +3418,12 @@ i.unselected{
   cursor: pointer;
 }
 
-a.link-header[aria-expanded=true] span{
+a.link-header[aria-expanded=true] span, div.link-header[aria-expanded=true] span{
   transform: rotate(180deg);
   transition: all 0.25s ease-out;
 }
 
-a.link-header[aria-expanded=false] span{
+a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] span{
   transition: all 0.25s ease-out;
 }
 
@@ -3441,7 +3441,8 @@ a.link-header[aria-expanded=false] span{
 #operar,
 #documentacion,
 #contacto,
-#usuarios {
+#usuarios,
+#faq {
     height: 35px;
 }
 
@@ -3742,4 +3743,69 @@ div.panel-body a.active{
 	flex-direction: row;
 	justify-content: left;
 	align-items: center;
+}
+
+/* Preguntas frecuentes o Faq */
+
+.faqTexto {
+  padding: 20px;
+  font-family: Roboto Regular;
+  font-size: 16px;
+  background-color: white;
+}
+/*
+.categoriaOnDesktop{
+  position: fixed;
+  top: 100px;
+  /*sino position: fixed;
+}*/
+.categoriaOnMobile{
+  position: relative;
+}
+
+ .categoriaOnMobile{
+  visibility:visible;
+  display: unset;
+  }
+
+.categoria1MenuFaq, .categoria2MenuFaq, .categoria3MenuFaq, .categoria4MenuFaq, .categoria5MenuFaq{
+  color: #03753e;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Roboto Regular;
+  cursor: pointer;
+}
+.archive_posts, .archivepostsMobile {
+margin-left: 1em;
+margin-top: 0;
+margin-bottom: 1em;
+list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
+font-weight: normal;
+display: none;
+}
+.tituloPregunta{
+  font-weight: bold;
+}
+.collapsing {
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.5s;
+  transition: height 0.5s ease;
+}
+.tituloCategoriaFaq {
+  font-size: 23px !important;
+  font-weight: bold !important;
+  margin-bottom: 0px !important;
+  color: #707070 !important;
+  font-weight: normal !important;
+}
+.aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
+  text-decoration:none;
+  color: #03753e;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Roboto Regular;
+  cursor: pointer;
+}
+.grisOscuro{
+  color: #707070 !important;
 }
