@@ -56,4 +56,53 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="TipoUsuario_Id" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="df815aa7-04dc-42b7-bfb0-96cb65b27f8e" ChangeDateTime="11/30/2020 14:43:07">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[RealizarAnalicisNOSIS]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RealizarAnalisisNOSIS" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="03230db8-29e3-4557-bf8d-714662c95a0b" ChangeDateTime="11/30/2020 17:28:52">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[CondiciondePago]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CondicionDePago" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8e1225f6-832f-4ffd-bc43-3dae746f006c" ChangeDateTime="11/30/2020 17:31:32">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[RazonDeeleccion]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="RazonDeEleccion" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9c0fcf94-c7b4-488a-95d5-091b6c257334" ChangeDateTime="11/30/2020 20:18:50">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[Solicitante Interno]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SolicitanteInterno" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d446c416-9e21-4cda-acb0-9f740677fc5b" ChangeDateTime="12/03/2020 20:51:46">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[cbu]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CBU" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="744caa48-f397-425d-8fa3-a7445b085b81" ChangeDateTime="01/12/2021 14:44:07">
+    <Property Name="ElementName" Value="[dbo].[Liquidacion].[FECHA]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Liquidacion]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Fecha" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="47406043-4f09-4f80-bde3-c9bf0195d673" ChangeDateTime="01/20/2021 11:54:42">
+    <Property Name="ElementName" Value="[dbo].[LiquidacionInformada].[Fecha]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[LiquidacionInformada]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="FechaComprobante" />
+  </Operation>
 </Operations>

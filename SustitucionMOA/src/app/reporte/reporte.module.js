@@ -13,6 +13,7 @@ import { ReporteCupoComponent } from './cupo/reporte.cupo.component';
 import { ReporteService } from './reporte.service';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 var ReporteModule = /** @class */ (function () {
     function ReporteModule() {
     }
@@ -22,7 +23,8 @@ var ReporteModule = /** @class */ (function () {
                 CommonModule,
                 ReporteRoutingModule,
                 SharedModule,
-                NgxPaginationModule
+                NgxPaginationModule,
+                AutocompleteLibModule
             ],
             declarations: [
                 ReporteBaseComponent,

@@ -207,6 +207,13 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="0" name="CG">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="12" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
         </xsd:sequence>
       </xsd:complexType>
       <xsd:complexType name="ZMPES6190">
@@ -244,7 +251,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="DESC_PRODUCTO">
             <xsd:annotation>
-              <xsd:documentation>Material Description (Short Text)</xsd:documentation>
+              <xsd:documentation>Material Description</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -313,6 +320,13 @@
               <xsd:restriction base="xsd:decimal">
                 <xsd:totalDigits value="13" />
                 <xsd:fractionDigits value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CG">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="12" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>

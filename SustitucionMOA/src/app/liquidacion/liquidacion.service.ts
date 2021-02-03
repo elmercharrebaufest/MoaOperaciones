@@ -177,6 +177,15 @@ export class LiquidacionProformaService extends LiquidacionService {
             .pipe(map(this.extractData));
     }
 
+    descargarProformaFinal(fijacion: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('fijacion', fijacion);
+        return this.http
+            .get('/api/liquidacion/descargarProformaFinal', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Tiempo de respuesta agotado, por favor intentar nuevamente"))))
+            .pipe(map(this.extractData));
+    }
+
     getFleteProcedencia(contrato: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('contrato', contrato);
@@ -188,3 +197,28 @@ export class LiquidacionProformaService extends LiquidacionService {
 
 }
 
+@Injectable()
+export class LiquidacionInformarService extends LiquidacionService{
+    notificarLiquidaciones(
+        archivos: File[]): Observable<any> {
+        var payload = new FormData();
+
+        for (let i = 0; i < archivos.length; i++) {
+            let fileToUpload = archivos[i];
+            payload.append("file", fileToUpload, fileToUpload.name);
+        }
+
+        return this.http
+            .post('/api/liquidacion/notificar', payload, this.headersPost).pipe(
+            map(this.extractData));
+    }   
+}
+
+@Injectable()
+export class LiquidacionInformadaService extends LiquidacionService {
+
+    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
+        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getInformadas');
+    }
+
+}

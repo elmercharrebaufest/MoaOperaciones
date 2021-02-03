@@ -51,7 +51,7 @@ var ReporteService = /** @class */ (function (_super) {
         return this.http
             .get('/api/AltaEmpresaGranos/GetMateriales', { headers: this.headers }).pipe(map(this.extractData));
     };
-    ReporteService.prototype.obteneContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
+    ReporteService.prototype.obteneContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero, contratoCorredor) {
         var params = new URLSearchParams();
         params.set('fechaDesde', fechaDesde);
         params.set('fechaHasta', fechaHasta);
@@ -70,6 +70,8 @@ var ReporteService = /** @class */ (function (_super) {
         params.set('pagoDiferidoTercero', pagoDiferidoTercero);
         params.set('calidadTercero', calidadTercero);
         params.set('dolarizadoTercero', dolarizadoTercero);
+        params.set('sustentableTercero', sustentableTercero);
+        params.set('contratoCorredor', contratoCorredor);
         return this.http
             .get('/api/CrearContrato/GetContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
@@ -99,7 +101,7 @@ var ReporteService = /** @class */ (function (_super) {
             .get('/api/CrearContrato/ValidarDirecto', { headers: this.headers })
             .pipe(map(this.extractData));
     };
-    ReporteService.prototype.exportContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero) {
+    ReporteService.prototype.exportContratos = function (fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, sustentableTercero, contratoCorredor) {
         var params = new URLSearchParams();
         params.set('fechaDesde', fechaDesde);
         params.set('fechaHasta', fechaHasta);
@@ -118,9 +120,19 @@ var ReporteService = /** @class */ (function (_super) {
         params.set('pagoDiferidoTercero', pagoDiferidoTercero);
         params.set('calidadTercero', calidadTercero);
         params.set('dolarizadoTercero', dolarizadoTercero);
+        params.set('sustentableTercero', sustentableTercero);
+        params.set('contratoCorredor', contratoCorredor);
         return this.http
             .get('/api/CrearContrato/ExportContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
+    };
+    ReporteService.prototype.anularNegocio = function (negocioId, tipoNegocioId, motivo) {
+        var params = new URLSearchParams();
+        params.set('negocioId', negocioId);
+        params.set('tipoNegocioId', tipoNegocioId);
+        params.set('motivo', motivo);
+        return this.http
+            .get('/api/CrearContrato/AnularNegocio', { search: params, headers: this.headers }).pipe(map(this.extractData));
     };
     ReporteService = __decorate([
         Injectable()

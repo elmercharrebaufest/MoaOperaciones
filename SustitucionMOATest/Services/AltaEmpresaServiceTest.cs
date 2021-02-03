@@ -36,7 +36,6 @@ namespace SustitucionMOATest.Services
         {
             var mailUsuario = "existente@mail.com";
 
-
             int proveedorId = 1;
 
             var proveedor = new Proveedor
@@ -45,7 +44,8 @@ namespace SustitucionMOATest.Services
                 EstadoAprobacion = EstadoAprobacion.Aprobado,
                 Observaciones = "Test",
                 RazonSocial = "RS",
-                Mail = mailUsuario
+                Mail = mailUsuario,
+                TipoProveedor = new TipoUsuario { Nombre = "Granos", NombreCorto = "G" }
             };
 
             var usuario = new Usuario
@@ -62,7 +62,8 @@ namespace SustitucionMOATest.Services
                         Id = proveedorId,
                         EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
                         RazonSocial = "RS",
-                        Mail = mailUsuario
+                        Mail = mailUsuario,
+                        TipoProveedor = new TipoUsuario { Nombre = "Granos", NombreCorto = "G" }
                     });
 
             repositorioMock
@@ -127,6 +128,42 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Rol>()), Times.Never);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test()]
+        public void GuardarSIPER()
+        {
+            var mailUsuario = "existente@mail.com";
+            int proveedorId = 1;
+
+            var proveedor = new Proveedor
+            {
+                Id = proveedorId,
+                EstadoAprobacion = EstadoAprobacion.Aprobado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = mailUsuario
+            };
+
+            repositorioMock
+                    .Setup(y => y.Obtener<Proveedor>(It.IsAny<int>()))
+                    .Returns(new Proveedor
+                    {
+                        Id = proveedorId,
+                        EstadoAprobacion = EstadoAprobacion.AprobacionPendiente,
+                        RazonSocial = "RS",
+                        Mail = mailUsuario
+                    });
+
+            var expected = string.Format("Se guardo correctamente.");
+
+            var result = target.GuardarSIPER(proveedorId, "55");
+
+
+            repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
 
             Assert.AreEqual(expected, result);
         }

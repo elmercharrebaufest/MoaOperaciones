@@ -54,8 +54,11 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     comprobante = liquidacion.COMPROBANTE,
                     contrato = liquidacion.CONTRATO,
+                    detallePago = liquidacion.ID_PAGO,
                     emitido = SAPFormatter.FormatearFecha(liquidacion.EMITIDO),
                     emitidoDate = SAPFormatter.GetDateTime(liquidacion.EMITIDO),
+                    pago = SAPFormatter.FormatearFecha(liquidacion.FACREDITACION),
+                    pagoDate = SAPFormatter.GetDateTime(liquidacion.FACREDITACION),
                     importeString = SAPFormatter.FormatearMonto(liquidacion.IMPORTE, liquidacion.MONEDA),
                     importe = liquidacion.IMPORTE,
                     ivaString = SAPFormatter.FormatearMonto(liquidacion.IVA, liquidacion.MONEDA),
@@ -69,7 +72,8 @@ namespace SustitucionMOAWS.WSConsumers
                     solapa = liquidacion.SOLAPA,
                     documento = liquidacion.DOCUMENTO,
                     sociedad = liquidacion.SOCIEDAD,
-                    ejercicio = liquidacion.EJERCICIO
+                    ejercicio = liquidacion.EJERCICIO,
+                    fijacion = liquidacion.FIJACION
                 }
                 );
             }
@@ -102,7 +106,8 @@ namespace SustitucionMOAWS.WSConsumers
                     producto = liquidacion.PRODUCTO,
                     tipo = liquidacion.TIPO,
                     secuencia = liquidacion.SECUENCIA,
-                    solapa = liquidacion.SOLAPA, 
+                    solapa = liquidacion.SOLAPA,
+                    fijacion = liquidacion.FIJACION
                 }
                 );
             }

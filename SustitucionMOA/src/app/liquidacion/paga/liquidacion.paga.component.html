@@ -72,12 +72,12 @@
                 <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate liquidacion-paga-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('emitidoDate')">
-                                Vencimiento
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('pagoDate')">
+                                Fecha de pago
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'emitidoDate' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'emitidoDate' && orderDirection < 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'pagoDate' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'pagoDate' && orderDirection < 0 }"></i>
                                     </span>
                                 </div> 
                             </th>
@@ -135,18 +135,28 @@
                                     </span>
                                 </div> 
                             </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('detalle')">
+                                Detalle de pago
+                                <div>
+                                    <span>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'detalle' && orderDirection > 0 }"></i>
+                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'detalle' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div> 
+                            </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="">Ver CCPPs</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let liquidacion of data.liquidaciones | customFilter : 'producto' : productoSelected | customFilter : 'observaciones' : observacionSelected | customFilterOr : 'contrato' : 'comprobante' : filtroComprobanteOContrato | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td><a (click)="showModalTableResponsive(liquidacion)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{liquidacion.emitido}}</td>
+                            <td><a (click)="showModalTableResponsive(liquidacion)" class="btnShowModal"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{liquidacion.pago}}</td>
                             <td>{{liquidacion.tipo}}</td>
                             <td><a (click)="descargaPDF(liquidacion.documento, liquidacion.ejercicio)" href="#"><span class="fa  fa-file-pdf-o " *ngIf="liquidacion.comprobante != ''"></span> {{liquidacion.comprobante}}</a></td>
                             <td>{{liquidacion.producto}}</td>
                             <td>{{liquidacion.liquidadoString}}</td>
                             <td>{{liquidacion.importeString}}</td>
                             <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', liquidacion.contrato)" href="#">{{liquidacion.contrato}}</a></td>
+                            <td><a class="animate" (click)="goToSeccionParam('pago/detalle', liquidacion.detallePago)" href="#">{{liquidacion.detallePago}}</a></td>
                             <td><a (click)="showModal(liquidacion.contrato, liquidacion.secuencia, liquidacion.comprobante)" href="#" class="animate"><span class="fa fa-search"></span></a></td>
                         </tr>
                     </tbody>

@@ -16,7 +16,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     entregaDesde: any = null;
     entregaHasta: any = null;
     fijacionHasta: any = null;
-    
+
     proveedor: any = null;
     boletoId: string = "";
     clasificacionId: string = "";
@@ -28,7 +28,14 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     pagoDiferidoTercero: boolean = null;
     calidadTercero: boolean = null;
     dolarizadoTercero: boolean = null;
+    sustentableTercero: boolean = null;
+    contratoCorredor: string = "";
 
+    proveedores = [];
+    keyword2 = "RazonSocial";
+    proveedorid: any = null;
+    motivoAnulacion: string = "";
+    negocioParAanular: any;
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
     }
@@ -156,8 +163,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
             });
         });
 
-
-    }   
+        this.getDatosCombos();
+    }
 
     obteneContratos() {
         this.mensajeComponent.setMsgsEmpty();
@@ -165,7 +172,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         if (this.validar()) {
             this.unsubscribe();
             this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
-                this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero).subscribe(
+                this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
                     result => {
                         this.spinnerComponent.hideIt();
                         var resultlist = JSON.parse(result);
@@ -192,6 +199,9 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                                 PagoDiferidoTercero: x.PagoDiferidoTercero,
                                 DolarizadoTercero: x.DolarizadoTercero,
                                 CalidadTercero: x.CalidadTercero,
+                                SustentableTercero: x.SustentableTercero,
+                                TipoNegocioId: x.TipoNegocioId,
+                                Id: x.Id,
                             };
                             return item;
                         });
@@ -224,9 +234,44 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
-            this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero).subscribe(
+            this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
+                result => {
+                    this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        var blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(blob, "Contratos.xls");
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = "Contratos.xls";
+                            link.click();
+                            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                            return false;
+                        }
+                    }
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        return false;  // <- Prevent href del a
+    }
+
+    getDatosCombos() {
+        this.unsubscribe();
+        this.subscription = this.service.getDatosCombos().subscribe(
             result => {
-                this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -234,27 +279,159 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    var blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // IE11
-                        window.navigator.msSaveOrOpenBlob(blob, "Contratos.xls");
-                    } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
-                        document.body.appendChild(link);
-                        link.href = url;
-                        link.download = "Contratos.xls";
-                        link.click();
-                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                        return false;
-                    }
+                    let obj = JSON.parse(result);
+                    this.datosContrato = obj;
+
+                    obj.Datos.Bolsa.forEach(element => {
+                        let el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        }
+                        this.bolsasConfirma.push(el);
+                        if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
+                            this.bolsasFisico.push(el);
+                        if (element.Descripcion == "Bs As")
+                            this.bolsasCarta.push(el);
+                    });
+                    obj.Datos.Clasificacion.forEach(element => {
+                        let el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        }
+                        this.condicionVendedor.push(el);
+                    });
+                    obj.Datos.Zona.forEach(element => {
+                        let el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        }
+                        this.zona.push(el);
+                    });
+                    obj.Datos.Destino.forEach(element => {
+                        let el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        }
+                        this.destinos.push(el);
+                    });
+                    obj.Datos.campania.forEach(element => {
+                        let el = {
+                            Id: element.CampaniaId,
+                            Descripcion: element.Descripcion
+                        }
+                        this.campanias.push(el);
+                    });
+                    obj.Datos.moneda.forEach(element => {
+                        let el = {
+                            Id: element.MonedaId,
+                            Descripcion: element.Descripcion
+                        }
+                        this.monedas.push(el);
+                    });
+                    obj.Datos.Condicion.forEach(element => {
+                        let el = {
+                            Id: element.Id,
+                            Descripcion: element.Descripcion
+                        }
+                        this.condicionFijacion.push(el);
+                    });
+
+                    this.obtenerMateriales();
                 }
             },
             error => {
-                this.spinnerSmallComponent.hideIt();
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+
+        );
+        return false;
+    }
+
+    validarDirecto() {
+        this.subscription = this.service.validarDirecto().subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    let obj = JSON.parse(result);
+                    if (obj != null && obj > 0) {
+                        this.corredorId = obj;
+                        this.esCorredorEnDataAgro = true;
+                    } else {
+                        //this.getDatosCombos();
+                        this.esCorredorEnDataAgro = false;
+                    }
+                    this.obteneContratos();
+                    console.log("this.esCorredorEnDataAgro", this.esCorredorEnDataAgro);
+                }
+            },
+            error => {
+                this.spinnerComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+
+        );
+
+        return false;
+    }
+
+
+    obtenerMateriales() {
+
+        this.subscription = this.service.obtenerMateriales().subscribe(
+            (result) => {
+                let obj = JSON.parse(result);
+
+                obj.Datos.forEach(element => {
+                    let el = {
+                        Id: element.MaterialId.toString(),
+                        Descripcion: element.Descripcion
+                    }
+                    this.materiales.push(el);
+                });
+                this.validarDirecto();
+            },
+            (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
-        return false;  // <- Prevent href del a
     }
+
+    anularNegocio() {
+        if (this.motivoAnulacion == null || this.motivoAnulacion == "") {
+            this.mensajeComponent.setErrorMsg("Ingrese el motivo de anulacion.");
+            document.getElementById("openModalanularModal").click();
+            return;
+        }
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.anularNegocio(this.negocioParAanular.Id, this.negocioParAanular.TipoNegocioId, this.motivoAnulacion).subscribe(
+            (result) => {
+                this.obteneContratos();
+                let obj = JSON.parse(result);
+                if (obj.HayError) {
+                    this.mensajeComponent.setErrorMsg(obj.Errores[0].Message);
+                } else {
+                    this.mensajeComponent.setSuccessMsg("El contrato se anulo correctamente.");
+                }
+                document.getElementById("openModalanularModal").click();
+                this.motivoAnulacion = "";
+                this.negocioParAanular = null;
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    anular(negocio) {
+        console.log(negocio);
+        this.negocioParAanular = negocio;
+        document.getElementById("openModalanularModal").click();
+    }
+
 }

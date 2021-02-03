@@ -14,6 +14,12 @@ namespace SustitucionMOAModel.Models.ViewModel.AltaEmpresa
         public bool? VinculoConFuncionariosPublicos { get; set; }
 
         public List<AltaEmpresaFuncionariosViewModel> Funcionarios { get; set; } = new List<AltaEmpresaFuncionariosViewModel>();
+        
+        public string CBU { get; set; }
+        public int? IdSituacionIVA { get; set; }
+        public int? IdIngresoBruto { get; set; }
+
+        public string Comentarios { get; set; }
     }
 
 

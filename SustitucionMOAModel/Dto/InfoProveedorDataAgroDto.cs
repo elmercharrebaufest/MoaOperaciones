@@ -12,6 +12,7 @@ namespace SustitucionMOAModel.Dto
         
         public string ProveedorCUIT { get; set; }
 
+
         public override bool Equals(object obj)
         {
             return obj is InfoProveedorDataAgroDto dto &&

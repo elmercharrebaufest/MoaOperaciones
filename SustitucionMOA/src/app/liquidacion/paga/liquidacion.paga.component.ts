@@ -32,13 +32,14 @@ export class LiquidacionPagaComponent extends LiquidacionBaseComponent {
 
     showModalTableResponsive(liquidacion: any) {
         this.modalService.openModalTableResponsive("Liquidación", [
-            { etiqueta: "Vencimiento", valor: liquidacion.emitido },
+            { etiqueta: "Fecha de pago", valor: liquidacion.pago },
             { etiqueta: "Tipo", valor: liquidacion.tipo },
             { etiqueta: "Comprobante", valor: liquidacion.comprobante },
             { etiqueta: "Producto", valor: liquidacion.producto },
             { etiqueta: "Liquidacion", valor: liquidacion.liquidadoString },
             { etiqueta: "Total", valor: liquidacion.importeString },
-            { etiqueta: "Contrato", valor: liquidacion.contrato }
+            { etiqueta: "Contrato", valor: liquidacion.contrato },
+            { etiqueta: "Detalle", valor: liquidacion.detallePago}
         ]);
         return false;
     }

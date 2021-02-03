@@ -321,23 +321,38 @@ namespace SustitucionMOAUtils.Services
                 CUIT = cuit,
                 Mail = usuario.Mail,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                CodigoProveedor = FormatearCodigoProveedor(cuit)
+                CodigoProveedor = FormatearCodigoProveedor(cuit),
+                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                FechaSolicitud = DateTime.Now
             };
 
             if (usuario.EsCorredor())
             {
                 var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit);
-
+                string comercial = "";
                 if (infoDA.HayError)
                 {
                     if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
-                        infoDA.ComercialId = usuario.ObtenerCorredor().IdComercialDataAgro.Value;
-                        infoDA.ComercialNombres = usuario.ObtenerCorredor().Comercial;
+                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT);
+
+                        if (infoDACorredor.HayError)
+                        {
+                            throw new ValidationCustomException(infoDACorredor.ListaErrores[0].Message);
+                        }
+
+                        infoDA.ComercialId = infoDACorredor.ComercialId;
+                        comercial = string.Concat(infoDACorredor.ComercialNombres, " ", infoDACorredor.ComercialApellido);
                     }
-                    else {
+                    else
+                    {
                         throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
                     }
                 }
+                else
+                {
+                    comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
+                }
+
                 var hist = new ProveedorHistorialAprobacion
                 {
                     Fecha = DateTime.Now,
@@ -349,7 +364,7 @@ namespace SustitucionMOAUtils.Services
 
                 nuevoVendedor.IdProveedorCorredor = usuario.ObtenerCorredor().Id;
                 nuevoVendedor.RazonSocial = infoDA.ProveedorRazonSocial;
-                nuevoVendedor.Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido);
+                nuevoVendedor.Comercial = comercial;
                 nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
                 nuevoVendedor.IdDataAgro = infoDA.ProveedorId;
             }
@@ -406,5 +421,8 @@ namespace SustitucionMOAUtils.Services
         {
             return CUIT.Substring(2, 8);
         }
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+
+
     }
 }

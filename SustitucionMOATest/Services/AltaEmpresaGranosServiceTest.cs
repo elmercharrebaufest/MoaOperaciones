@@ -170,7 +170,7 @@ namespace SustitucionMOATest.Services
                 Id = proveedorId,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                 RazonSocial = "test",
-                CUIT = "12123456781",
+                CUIT = "233333333333",
                 Archivos = new List<Archivo>(),
             };
 
@@ -229,6 +229,7 @@ namespace SustitucionMOATest.Services
                 Archivos = new List<Archivo>(),
                 RelacionConEmpleados = new List<ProveedorRelacionConEmpleados>(),
                 RelacionConFuncionarios = new List<ProveedorRelacionConFuncionarios>(),
+                TipoProveedor = new TipoUsuario { Nombre = "Granos" , NombreCorto = "G" }
             };
 
 
@@ -262,7 +263,7 @@ namespace SustitucionMOATest.Services
                 Empleados = Empleados,
                 Funcionarios = Funcionarios
             };
-            var result = target.EnviarSolicitudUsuario(mailUsuario, proveedorId, altaempresa);
+            var result = target.EnviarSolicitudUsuario(mailUsuario, proveedorId, false, altaempresa);
 
             var expected = SuccessMsg.ValidacionPendienteOK;
 

@@ -40,6 +40,12 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         _this.pagoDiferidoTercero = null;
         _this.calidadTercero = null;
         _this.dolarizadoTercero = null;
+        _this.sustentableTercero = null;
+        _this.contratoCorredor = "";
+        _this.proveedores = [];
+        _this.keyword2 = "RazonSocial";
+        _this.proveedorid = null;
+        _this.motivoAnulacion = "";
         return _this;
     }
     ReporteContratoComponent.prototype.setTabs = function () {
@@ -158,6 +164,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                 maxView: 4
             });
         });
+        this.getDatosCombos();
     };
     ReporteContratoComponent.prototype.obteneContratos = function () {
         var _this = this;
@@ -165,7 +172,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         this.spinnerComponent.showIt();
         if (this.validar()) {
             this.unsubscribe();
-            this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero).subscribe(function (result) {
+            this.subscription = this.service.obteneContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 var resultlist = JSON.parse(result);
                 _this.data = resultlist.Data;
@@ -191,6 +198,9 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                         PagoDiferidoTercero: x.PagoDiferidoTercero,
                         DolarizadoTercero: x.DolarizadoTercero,
                         CalidadTercero: x.CalidadTercero,
+                        SustentableTercero: x.SustentableTercero,
+                        TipoNegocioId: x.TipoNegocioId,
+                        Id: x.Id,
                     };
                     return item;
                 });
@@ -218,7 +228,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
-        this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero).subscribe(function (result) {
+        this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId, this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(function (result) {
             _this.spinnerSmallComponent.hideIt();
             if (result.logout == true) {
                 _this.sessionDataService.logout();
@@ -251,6 +261,159 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
             _this.mensajeComponent.setErrorMsg(error.message);
         });
         return false; // <- Prevent href del a
+    };
+    ReporteContratoComponent.prototype.getDatosCombos = function () {
+        var _this = this;
+        this.unsubscribe();
+        this.subscription = this.service.getDatosCombos().subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = JSON.parse(result);
+                _this.datosContrato = obj;
+                obj.Datos.Bolsa.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.bolsasConfirma.push(el);
+                    if (el.Descripcion == "Bs As" || el.Descripcion == "Rosario")
+                        _this.bolsasFisico.push(el);
+                    if (element.Descripcion == "Bs As")
+                        _this.bolsasCarta.push(el);
+                });
+                obj.Datos.Clasificacion.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.condicionVendedor.push(el);
+                });
+                obj.Datos.Zona.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.zona.push(el);
+                });
+                obj.Datos.Destino.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.destinos.push(el);
+                });
+                obj.Datos.campania.forEach(function (element) {
+                    var el = {
+                        Id: element.CampaniaId,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.campanias.push(el);
+                });
+                obj.Datos.moneda.forEach(function (element) {
+                    var el = {
+                        Id: element.MonedaId,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.monedas.push(el);
+                });
+                obj.Datos.Condicion.forEach(function (element) {
+                    var el = {
+                        Id: element.Id,
+                        Descripcion: element.Descripcion
+                    };
+                    _this.condicionFijacion.push(el);
+                });
+                _this.obtenerMateriales();
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    ReporteContratoComponent.prototype.validarDirecto = function () {
+        var _this = this;
+        this.subscription = this.service.validarDirecto().subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+            }
+            else {
+                var obj = JSON.parse(result);
+                if (obj != null && obj > 0) {
+                    _this.corredorId = obj;
+                    _this.esCorredorEnDataAgro = true;
+                }
+                else {
+                    //this.getDatosCombos();
+                    _this.esCorredorEnDataAgro = false;
+                }
+                _this.obteneContratos();
+                console.log("this.esCorredorEnDataAgro", _this.esCorredorEnDataAgro);
+            }
+        }, function (error) {
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    ReporteContratoComponent.prototype.obtenerMateriales = function () {
+        var _this = this;
+        this.subscription = this.service.obtenerMateriales().subscribe(function (result) {
+            var obj = JSON.parse(result);
+            obj.Datos.forEach(function (element) {
+                var el = {
+                    Id: element.MaterialId.toString(),
+                    Descripcion: element.Descripcion
+                };
+                _this.materiales.push(el);
+            });
+            _this.validarDirecto();
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
+    ReporteContratoComponent.prototype.anularNegocio = function () {
+        var _this = this;
+        if (this.motivoAnulacion == null || this.motivoAnulacion == "") {
+            this.mensajeComponent.setErrorMsg("Ingrese el motivo de anulacion.");
+            document.getElementById("openModalanularModal").click();
+            return;
+        }
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.anularNegocio(this.negocioParAanular.Id, this.negocioParAanular.TipoNegocioId, this.motivoAnulacion).subscribe(function (result) {
+            _this.obteneContratos();
+            var obj = JSON.parse(result);
+            if (obj.HayError) {
+                _this.mensajeComponent.setErrorMsg(obj.Errores[0].Message);
+            }
+            else {
+                _this.mensajeComponent.setSuccessMsg("El contrato se anulo correctamente.");
+            }
+            document.getElementById("openModalanularModal").click();
+            _this.motivoAnulacion = "";
+            _this.negocioParAanular = null;
+        }, function (error) {
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+    };
+    ReporteContratoComponent.prototype.anular = function (negocio) {
+        console.log(negocio);
+        this.negocioParAanular = negocio;
+        document.getElementById("openModalanularModal").click();
     };
     ReporteContratoComponent = __decorate([
         Component({

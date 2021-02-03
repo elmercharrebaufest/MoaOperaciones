@@ -107,7 +107,8 @@ namespace SustitucionMOAWS.WSConsumers
                     tipoVehiculo = SAPFormatter.FormatearTipoVehiculo(entregaDescarga.TIP_VEHI),
                     totalAplicados = entregaDescarga.TOTAL_APLICADOS,
                     totalAplicadosString = SAPFormatter.FormatearCantidad(entregaDescarga.TOTAL_APLICADOS, "KG"),
-                    vendedor = entregaDescarga.VENDEDOR
+                    vendedor = entregaDescarga.VENDEDOR,
+                    cg = entregaDescarga.CG
                 });
 
                 result.NetoDescontadoTotal += entregaDescarga.NETO_DESCONTADO;

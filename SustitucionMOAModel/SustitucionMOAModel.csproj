@@ -52,8 +52,16 @@
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\EstadoVendedorDto.cs" />
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
+    <Compile Include="Dto\InfoProveedorNoGranosDto.cs" />
     <Compile Include="Dto\NotificacionDto.cs" />
+    <Compile Include="Dto\Resultado.cs" />
+    <Compile Include="Entities\LiquidacionInformada.cs" />
     <Compile Include="Entities\Notificacion.cs" />
+    <Compile Include="Dto\ProveedorAltaDto.cs" />
+    <Compile Include="Dto\RubroDto.cs" />
+    <Compile Include="Entities\Rubro.cs" />
+    <Compile Include="Enums\IngresosBrutos.cs" />
+    <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CampaniaDto.cs" />
     <Compile Include="Models\DataAgro\ContratoAFijar.cs" />
@@ -215,6 +223,9 @@
     <Compile Include="Models\WSMapMOA\Proforma\ProcedenciaFlete.cs" />
     <Compile Include="Models\WSMapMOA\Proforma\ProcedenciaFleteWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Proforma\Salida.cs" />
+    <Compile Include="Models\WSMapMOA\Reporte\ClaveReporte.cs" />
+    <Compile Include="Models\WSMapMOA\Reporte\ReporteBase.cs" />
+    <Compile Include="Models\WSMapMOA\Reporte\ReporteLiquidacionesInformadas.cs" />
     <Compile Include="Models\WSMapMOA\Usuario\Perfil\DropdownPerfilElement.cs" />
     <Compile Include="Models\WSMapMOA\Usuario\Perfil\DropdownTipoElement.cs" />
     <Compile Include="Models\WSMapMOA\Usuario\Perfil\GetPerfilesResponseMOA.cs" />

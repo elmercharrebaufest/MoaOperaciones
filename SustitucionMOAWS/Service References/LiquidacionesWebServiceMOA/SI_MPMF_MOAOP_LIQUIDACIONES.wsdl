@@ -106,7 +106,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="PRODUCTO">
             <xsd:annotation>
-              <xsd:documentation>Material Description (Short Text)</xsd:documentation>
+              <xsd:documentation>Material Description</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
@@ -216,6 +216,31 @@
                 <xsd:pattern value="\d+" />
               </xsd:restriction>
             </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FIJACION">
+            <xsd:annotation>
+              <xsd:documentation>Purchasing Document Number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="ID_PAGO">
+            <xsd:annotation>
+              <xsd:documentation>Additional Identification</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="6" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FACREDITACION" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Value date</xsd:documentation>
+            </xsd:annotation>
           </xsd:element>
         </xsd:sequence>
       </xsd:complexType>

@@ -141,7 +141,7 @@ a:hover {
 
 /* LOGIN*/
 .loginBody {
-  background-image: url(../images/header/login.jpg);
+  background-image: url(/Content/images/header/login.jpg);
   background-position: center center;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -479,7 +479,6 @@ SIDEBAR*/
   padding-left: 35px;
 }
 .SubMenu {
-  width: 100%;
   display: block;
   font-weight: 300;
   float: left;
@@ -1922,7 +1921,7 @@ font-size: 24px;
     background: none;
   }
   .loginBody {
-    background-image: url(../images/header/loginSmall.jpg);
+    background-image: url(/Content/images/header/loginSmall.jpg);
     background-position: bottom center;
     background-size: contain;
   }
@@ -2655,7 +2654,7 @@ fa-file-word-o {
 .documentos p {
   font-size: 16px;
   margin-bottom: 0px;
-  color: #959595;
+  color: #707070;
   font-weight: normal;
 }
 .documentos title-caps {
@@ -2718,7 +2717,7 @@ fa-file-word-o {
   margin-bottom: 5px;
 }
 .documento .doc-description{
-  color: #959595;
+  color: #707070;
   font-weight: normal;
   margin: 10px 0px 5px 0px;
 }
@@ -3366,6 +3365,7 @@ a.PagoTablaLink:hover {
   border-top-right-radius: 10px;
   margin-bottom: 20px;
   font-size: 15px;
+  min-height: 50px;
 }
 
 i.arrow{
@@ -3418,12 +3418,12 @@ i.unselected{
   cursor: pointer;
 }
 
-a.link-header[aria-expanded=true] span{
+a.link-header[aria-expanded=true] span, div.link-header[aria-expanded=true] span{
   transform: rotate(180deg);
   transition: all 0.25s ease-out;
 }
 
-a.link-header[aria-expanded=false] span{
+a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] span{
   transition: all 0.25s ease-out;
 }
 
@@ -3435,13 +3435,15 @@ a.link-header[aria-expanded=false] span{
   color: #067935;
 }
 
+#misReportes,
 #misOperaciones,
 #infoFinanciera,
 #operar,
 #documentacion,
 #contacto,
-#usuarios{
-  height: 35px;
+#usuarios,
+#faq {
+    height: 35px;
 }
 
 .panel-heading.seccion{
@@ -3458,17 +3460,17 @@ a.link-header span{
   position: relative;
   right: 10px;
 }
-
+#collapseRepo div.panel-body,
 #collapseMO div.panel-body,
 #collapseIF div.panel-body,
 #collapseO div.panel-body,
 #collapseDoc div.panel-body,
-#collapseU div.panel-body{
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  display: flex;
-  flex-direction: column;
-  width: 180px;
-  padding: 0;
+#collapseU div.panel-body {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    padding: 0;
 }
 
 div.panel-body a{
@@ -3545,6 +3547,10 @@ div.panel-body a.active{
   color: white !important;
   font-size: 14px;
   font-weight: 400!important;
+}
+
+.btn-custom:disabled {
+  opacity: 0.65;
 }
 
 .btn-grande {
@@ -3646,4 +3652,160 @@ div.panel-body a.active{
 
 .btn-custom span.fa{
   margin-left: 10px;
+}
+
+
+
+/*-------TOOLTIPS-----------*/
+
+.tooltipscontainer {
+  position: relative;
+  display: inline-block;
+  opacity: 1;
+  font-family: Roboto Regular;
+}
+
+.tooltipscontainer .tooltiptexto {
+  visibility: hidden;
+  width: 300px;
+  background-color: #ffffff;
+  color: #3f4845;
+  font-size: 16px;
+  border-radius: 11px;
+  padding: 20px;
+  font-family: Roboto Regular;
+  text-transform: none;
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+  /*border-style: solid;
+   Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -6px;
+  right: 160%;
+}
+
+.tooltipscontainer .tooltipAyuda {
+  width: 100px; 
+  float: right; 
+  font-size: 16px;
+  margin-bottom: 1px;
+}
+
+.tooltipscontainer:hover .tooltiptexto {
+  visibility: visible;
+  transition: .4s ease-in-out;
+}
+
+.tooltipscontainer .tooltiptextoPrimerLog {
+  visibility: visible;
+  width: 300px;
+  background-color: #ffffff;
+  color: #3f4845;
+  font-size: 16px;
+  border-radius: 11px;
+  padding: 20px;
+  font-family: Roboto Regular;
+  text-transform: none;
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+  /*border-style: solid;
+   Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -6px;
+  right: 160%;
+}
+
+/*-------END TOOLTIPS-----------*/
+
+.botonTransparente{
+  position: relative;
+  top: -5px;
+  left: 240px;
+  background-color: transparent;
+  border-color: white;
+  color:#3f4845;
+  border-style: solid;
+}
+
+.MensajeSIPER{
+  color:#707070 !important;
+  font-weight: 400 !important;
+}
+
+.acciones {
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+}
+
+/* Preguntas frecuentes o Faq */
+
+.faqTexto {
+  padding: 20px;
+  font-family: Roboto Regular;
+  font-size: 16px;
+  background-color: white;
+}
+/*
+.categoriaOnDesktop{
+  position: fixed;
+  top: 100px;
+  /*sino position: fixed;
+}*/
+.categoriaOnMobile{
+  position: relative;
+}
+
+ .categoriaOnMobile{
+  visibility:visible;
+  display: unset;
+  }
+
+.categoria1MenuFaq, .categoria2MenuFaq, .categoria3MenuFaq, .categoria4MenuFaq, .categoria5MenuFaq{
+  color: #03753e;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Roboto Regular;
+  cursor: pointer;
+}
+.archive_posts, .archivepostsMobile {
+margin-left: 1em;
+margin-top: 0;
+margin-bottom: 1em;
+list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
+font-weight: normal;
+display: none;
+}
+.tituloPregunta{
+  font-weight: bold;
+}
+.collapsing {
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.5s;
+  transition: height 0.5s ease;
+}
+.tituloCategoriaFaq {
+  font-size: 23px !important;
+  font-weight: bold !important;
+  margin-bottom: 0px !important;
+  color: #707070 !important;
+  font-weight: normal !important;
+}
+.aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
+  text-decoration:none;
+  color: #03753e;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: Roboto Regular;
+  cursor: pointer;
+}
+.grisOscuro{
+  color: #707070 !important;
 }

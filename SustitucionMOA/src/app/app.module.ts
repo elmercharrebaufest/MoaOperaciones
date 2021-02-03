@@ -42,11 +42,16 @@ import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuari
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
-import { VendedorStatusService } from "./vendedor/vendedor_status.service";;
+import { VendedorStatusService } from "./vendedor/vendedor_status.service";
+import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
+import { NumericDirective } from './common/directive/numeric.directive';
+import { NgxMaskModule } from "ngx-mask";
 import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
 import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
+import { BlockUIModule } from 'ng-block-ui';
+import { FaqComponent } from './faq/faq.component'
 
 
 @NgModule({
@@ -62,6 +67,8 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
     ReCaptchaModule,
     AutocompleteLibModule,
     SharedModule,
+    NgxMaskModule.forRoot(),
+    BlockUIModule.forRoot(),
   ],
   declarations: [
     AppComponent,
@@ -71,6 +78,7 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
     LayoutComponent,
     NoAutorizadoComponent,
     UsuarioListComponent,
+    UsuarioAltaEmpresaNoGranosComponent,
     UsuarioCambioVendedorComponent,
     VendedorStatusComponent,
     PesificacionComponent,
@@ -80,7 +88,9 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
     EstadoSolicitudComponent,
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
-    CarouselNotificacionesComponent
+    CarouselNotificacionesComponent,
+    NumericDirective,
+    FaqComponent
   ],
   providers: [
     DatePipe,

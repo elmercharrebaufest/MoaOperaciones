@@ -21,7 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
 
-        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Template","EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -29,23 +29,29 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public List<ProveedorDto> GetEmpresas()
+        public List<ProveedorAltaDto> GetEmpresas(int IdTipoProveedor)
         {
             try
             {
                 List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                                 x => (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                                || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                                || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                                || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                                || x.EstadoAprobacion == EstadoAprobacion.Aprobado
-                                || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                                || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
-                                || x.EstadoAprobacion == EstadoAprobacion.SinAlta)
+                                 x =>
+                                 (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                                    || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                                    || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                                    || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                                    || x.EstadoAprobacion == EstadoAprobacion.Aprobado
+                                    || x.EstadoAprobacion == EstadoAprobacion.Rechazado
+                                    || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                                    || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
+                                    || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
+                                    || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
+                                    || x.EstadoAprobacion == EstadoAprobacion.SinAlta
+                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
+                                && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
                                 );
 
-                List<ProveedorDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorDto
+                List<ProveedorAltaDto> proveedorDtos = proveedores.Select(proveedor => new ProveedorAltaDto
                 {
                     CodigoProveedor = proveedor.CodigoProveedor ?? "",
                     CUIT = proveedor.CUIT,
@@ -57,19 +63,40 @@ namespace SustitucionMOAUtils.Services
                     Mail = proveedor.Mail ?? "",
                     Observaciones = proveedor.Observaciones,
                     RazonSocial = proveedor.RazonSocial ?? "",
-                    RazonSocialCorredor = proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : "",
+                    RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
                     FechaSolicitud = proveedor.FechaSolicitud,
-                    Comercial = proveedor.Comercial,
+                    Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
+                    AltaInterna = proveedor.AltaInterna,
+                    IngresoAPlanta = proveedor.IngresoAPlanta,
                     UltimaEdicion = proveedor.HistorialAprobaciones.FirstOrDefault() != null ? proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                     HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                     {
                         Id = a.Id,
-                        EstadoAprobacionDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
+                        EstadoAprobacionDescripcion = a.EstadoAprobacion.ToFriendlyString(),
                         Fecha = a.Fecha,
                         Observacion = a.Observacion,
-                        Usuario = a.Usuario.Mail
-                    }).ToList()
+                        Usuario = a.Usuario.Mail,
+                        ObservacionParaProveedor = a.ObservacionParaProveedor
+                    }).ToList(),
+                    IdTipoUsuario = proveedor.TipoProveedor.Id,
+                    CBU = proveedor.CBU,
+                    CondicionDePago = proveedor.CondicionDePago,
+                    FacturacionAnual = proveedor.FacturacionAnual,
+                    OrganizacionDeCompra = proveedor.OrganizacionDeCompra,
+                    RazonDeEleccion = proveedor.RazonDeEleccion,
+                    RealizarAnalisisNOSIS = proveedor.RealizarAnalisisNOSIS ?? false,
+                    Rubro = proveedor.Rubro != null ? proveedor.Rubro.Nombre : "",
+                    RequiereVerificacionCompras = proveedor.RequiereVerificacionCompras ?? false,
+                    SolicitanteInterno = proveedor.SolicitanteInterno,
+                    ServicioPrestado = proveedor.ServicioPrestado,
+                    Telefono = proveedor.Telefono,
+                    IdSituacionIVA = proveedor.IdSituacionIVA,
+                    SituacionIVA = ((SituacionIVA)(proveedor.IdSituacionIVA ?? 0)).ToFriendlyString(),
+                    IdIngresoBruto = proveedor.IdIngresoBruto,
+                    IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString(),
+                    SiperObligatorio = proveedor.SiperObligatorio
+
                 }).ToList();
 
                 if (proveedorDtos.Count == 0)
@@ -87,6 +114,7 @@ namespace SustitucionMOAUtils.Services
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.EtapaFinal
                         || proveedorDto.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                        || proveedorDto.EstadoAprobacion == EstadoAprobacion.Aprobado
                         )
                     {
                         ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedorDto.CUIT);
@@ -106,6 +134,36 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public string GuardarSIPER(int proveedorId, string estadoSIPER)
+        {
+            try
+            {
+                Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+                if (proveedor == null)
+                {
+                    throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
+                }
+
+                if (!string.IsNullOrWhiteSpace(estadoSIPER))
+                {
+                    proveedor.EstadoSIPER = estadoSIPER;
+                }
+                else
+                {
+                    throw new Exception("El SIPER no puede ser nulo o un espacio en blanco.");
+                }
+
+                repositorio.GuardarCambios();
+
+                return "Se guardo correctamente.";
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public string SetEstadoAprobacion(int proveedorId,
                                           EstadoAprobacion estado,
                                           string observacion,
@@ -117,6 +175,10 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+                
+                //Como del front estoy enviando la info en encoding URI tengo que decodificarlo.
+                observacion = Uri.UnescapeDataString(observacion);
+                observacionParaElProveedor = Uri.UnescapeDataString(observacionParaElProveedor);
 
                 if (proveedor == null)
                 {
@@ -129,11 +191,11 @@ namespace SustitucionMOAUtils.Services
 
                 int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
-                if (estado == EstadoAprobacion.AnularRechazo)
+                if (new EstadoAprobacion[] { EstadoAprobacion.AnularRechazo, EstadoAprobacion.AnularObservacion }.Contains(estado))
                 {
                     //Lo inicializo así por las dudas, en el peor de los casos queda igual
-                    EstadoAprobacion estadoAnterior = EstadoAprobacion.Rechazado;
-                    var historialAnterior = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion != EstadoAprobacion.Rechazado).OrderByDescending(x => x.Fecha).FirstOrDefault();
+                    EstadoAprobacion estadoAnterior = estado;
+                    var historialAnterior = proveedor.HistorialAprobaciones.Where(h => !new EstadoAprobacion[] { EstadoAprobacion.Rechazado, EstadoAprobacion.EdicionRequerida }.Contains(h.EstadoAprobacion)).OrderByDescending(x => x.Fecha).FirstOrDefault();
 
                     if (historialAnterior == null)
                     {
@@ -147,18 +209,19 @@ namespace SustitucionMOAUtils.Services
                     estado = estadoAnterior;
                 }
 
+                //En caso de no venir observación se coloca el nuevo estado para que pueda visualizarse al menos ese paso a nuevo estado
                 proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
                     {
                         Fecha = DateTime.Now,
                         EstadoAprobacion = estado,
-                        Observacion = observacion,
+                        Observacion = string.IsNullOrEmpty(observacion) ? estado.ToFriendlyString() : observacion,
                         Proveedor_Id = proveedorId,
-                        Usuario_Id = usuarioId
+                        Usuario_Id = usuarioId,
+                        ObservacionParaProveedor = observacionParaElProveedor
                     }
                 );
 
-                proveedor.EstadoAprobacion = estado;
 
                 if (estado.Equals(EstadoAprobacion.Aprobado))
                 {
@@ -166,7 +229,7 @@ namespace SustitucionMOAUtils.Services
                     var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
                     var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
-                    switch (usuario.TipoUsuario.Nombre)
+                    switch (proveedor.TipoProveedor.Nombre)
                     {
                         case "Granos":
                             usuario.RemoverRoles();
@@ -187,9 +250,85 @@ namespace SustitucionMOAUtils.Services
                                 usuario.AgregarRol(rolUsuarioGranos);
 
                             break;
+                        case "No Granos":
+                            var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
+
+                            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+                            if (usuario != null)
+                            {
+                                usuario.RemoverRoles();
+                                usuario.AgregarRol(rolUsuarioNoGranos);
+                            }
+
+                            break;
                     }
 
                 }
+
+                if (estado == EstadoAprobacion.AnularAprobacion)
+                {
+                    var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+                    var rolUsuarioNuevoGranos = ObtenerRolPorCodigo("NUEG");
+
+                    switch (proveedor.TipoProveedor.Nombre)
+                    {
+                        case "Granos":
+                            {
+                                var actualizarRoles = true;
+
+                                //Si es multifirma y tiene algun otro proveedor aprobado, no le tocamos los roles. Esto no debería ocurrir nunca, pero no esta mal tenerlo en cuenta
+                                if (usuario.Roles.Where(r => r.Codigo == "MF").Any())
+                                {
+                                    if (usuario.Proveedores.Where(p => p.EstadoAprobacion == 0 && p.CUIT != proveedor.CUIT).Any())
+                                    {
+                                        actualizarRoles = false;
+                                    }
+                                }
+
+                                if (actualizarRoles)
+                                {
+                                    usuario.RemoverRoles();
+                                    usuario.AgregarRol(rolUsuarioNuevoGranos);
+                                }
+                            }
+
+                            break;
+
+                        case "Corredor":
+                            {
+                                var actualizarRoles = true;
+
+                                if (usuario.Proveedores.Where(p => p.EstadoAprobacion == 0 && p.CUIT != proveedor.CUIT).Any())
+                                {
+                                    actualizarRoles = false;
+                                }
+
+                                if (actualizarRoles)
+                                {
+                                    var rolNuevoCorredor = ObtenerRolPorCodigo("NUECORR");
+                                    usuario.AgregarRol(rolNuevoCorredor);
+                                    usuario.RemoverRol("CORR");
+                                }
+                            }
+                            break;
+                        case "No Granos":
+                            {
+                                var nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+                                usuario.RemoverRoles();
+                                usuario.AgregarRol(nuevoNoGranos);
+                            }
+                            break;
+                    }
+                    estado = EstadoAprobacion.EtapaFinal;
+                }
+
+                //Si el proveedor no tiene que pasar por analisis de nosis, lo mando al estado final directamente
+                if (estado == EstadoAprobacion.AprobacionPendiente)
+                {
+                    if (proveedor.TipoProveedor.NombreCorto == "NG" && !(proveedor.RealizarAnalisisNOSIS ?? false))
+                        estado = EstadoAprobacion.EtapaFinal;
+                }
+
 
                 if (estado == EstadoAprobacion.Rechazado || estado == EstadoAprobacion.EdicionRequerida)
                 {
@@ -201,45 +340,81 @@ namespace SustitucionMOAUtils.Services
                     proveedor.EstadoSIPER = estadoSIPER;
                 }
 
+                proveedor.EstadoAprobacion = estado;
+
+
                 repositorio.GuardarCambios();
 
+                var mailEnviado = false;
                 if (enviarMail)
                 {
-                    try
-                    {
-                        ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-                        List<string> copia = null;
-                        if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
-                        {
-                            copia = new List<string> { resultadoValidarProveedorComercial.ComercialMail };
-                        }
-                        if (estado == EstadoAprobacion.Aprobado)
-                        {
-                            EnviarMailAprobado(proveedor, copia);
-                        }
-                        else if (estado == EstadoAprobacion.Rechazado)
-                        {
-                            EnviarMailRechazado(proveedor, observacionParaElProveedor, copia);
-
-                        }
-                        else if (estado == EstadoAprobacion.EdicionRequerida)
-                        {
-                            EnviarMailEdicionRequerida(proveedor, observacionParaElProveedor, copia);
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new InfoCustomException(String.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial) + ". No se pudo enviar el mail al proveedor.");
-                    }
-
+                    mailEnviado = NotificarProveedor(estado, observacionParaElProveedor, proveedor);
                 }
-                return string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
+
+                string mensajeResultado = "";
+                if (estado == EstadoAprobacion.AprobacionPendiente && proveedor.TipoProveedor.NombreCorto == "NG")
+                {
+                    mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoCompras, proveedor.RazonSocial);
+                }
+                else
+                {
+                    mensajeResultado = string.Format(SuccessMsg.EmpresaCambioEstadoOK, proveedor.RazonSocial);
+                }
+
+                if (enviarMail && !mailEnviado)
+                {
+                    mensajeResultado = string.Concat(mensajeResultado, " No se pudo enviar mail al proveedor.");
+                    throw new InfoCustomException(mensajeResultado);
+                }
+
+                return mensajeResultado;
 
             }
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        private bool NotificarProveedor(EstadoAprobacion estado, string observacionParaElProveedor, Proveedor proveedor)
+        {
+            try
+            {
+                var copia = new List<string>();
+
+                ResultadoValidarProveedorComercial resultadoValidarProveedorComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                if (resultadoValidarProveedorComercial != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
+                    {
+                        copia.Add(resultadoValidarProveedorComercial.ComercialMail);
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(proveedor.SolicitanteInterno))
+                {
+                    copia.Add(proveedor.SolicitanteInterno);
+                }
+
+                if (estado == EstadoAprobacion.Aprobado)
+                {
+                    EnviarMailAprobado(proveedor, copia);
+                }
+                else if (estado == EstadoAprobacion.Rechazado)
+                {
+                    EnviarMailRechazado(proveedor, observacionParaElProveedor, copia);
+
+                }
+                else if (estado == EstadoAprobacion.EdicionRequerida)
+                {
+                    EnviarMailEdicionRequerida(proveedor, observacionParaElProveedor, copia);
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -365,6 +540,21 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
+        public string SolicitarInformacion(int proveedorId)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            NotificarProveedor(EstadoAprobacion.EdicionRequerida, "Seguimos esperando la documentación solicitada ", proveedor);
+
+            return "Proveedor notificado correctamente";
         }
     }
 }

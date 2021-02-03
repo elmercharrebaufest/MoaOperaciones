@@ -50,10 +50,11 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int? ZonaId { get; set; }
 
         public string ObservacionTercero { get; set; }
-        //public bool? CalidadTercero { get; set; }
-        //public bool? PagoDiferidoTercero { get; set; }
-        //public bool? DolarizadoTercero { get; set; }
-
+        public bool? CalidadTercero { get; set; }
+        public bool? SustentableTercero { get; set; }
+        public string ContratoCorredor { get; set; }
+        public string ContratoVendedor { get; set; }
 
     }
+
 }

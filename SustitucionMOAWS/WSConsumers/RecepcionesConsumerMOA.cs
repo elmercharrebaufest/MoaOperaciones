@@ -79,7 +79,8 @@ namespace SustitucionMOAWS.WSConsumers
                     descripcionTitular = recepcionInfo.DESC_TITULAR,
                     vendedor = recepcionInfo.VENDEDOR,
                     vendedorId = recepcionInfo.ID_VENDEDOR,
-                    contrnum = recepcionInfo.CONTRNUM
+                    contrnum = recepcionInfo.CONTRNUM,
+                    cg = recepcionInfo.CG
                 });
             }
             
@@ -113,7 +114,9 @@ namespace SustitucionMOAWS.WSConsumers
                     titular = aplicacionInfo.TITULAR,
                     descripcionTitular = aplicacionInfo.DESC_TITULAR,
                     vendedor = aplicacionInfo.VENDEDOR,
-                    vendedorId = aplicacionInfo.ID_VENDEDOR
+                    vendedorId = aplicacionInfo.ID_VENDEDOR,
+                    contrnum = aplicacionInfo.CONTRNUM,
+                    cg = aplicacionInfo.CG,
                 });
             }
             return result;

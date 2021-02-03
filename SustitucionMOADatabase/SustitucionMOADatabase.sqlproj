@@ -87,10 +87,16 @@
     <None Include="scripts\RolConsultarVendedoresMF.sql" />
     <Build Include="DBO\Tables\Notificacion.sql" />
     <Build Include="DBO\Tables\NotificacionRol.sql" />
+    <Build Include="DBO\Tables\Rubro.sql" />
+    <Build Include="DBO\Tables\IngresoBruto.sql" />
+    <Build Include="DBO\Tables\SituacionIVA.sql" />
+    <None Include="scripts\CreacionRolCompras.sql" />
+    <Build Include="DBO\Tables\LiquidacionInformada.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
     <None Include="DatabasePublishPreProd.xml" />
+    <None Include="scripts\Rol_NuevoNoGranos.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />

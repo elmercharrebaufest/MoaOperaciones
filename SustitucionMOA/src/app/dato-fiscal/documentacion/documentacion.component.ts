@@ -19,12 +19,19 @@ export class DocumentacionComponent extends BaseComponent implements OnInit {
     protected navService: NavService,
     protected securityService: SecurityService,
     protected floatMsgService: FloatMsgService,
-    protected modalService: ModalService
+    protected modalService: ModalService,
+    private sessionDataService: SessionDataService,
   ) {
     super(navService, securityService, floatMsgService, modalService);
+    this.isGranosSelected = sessionStorage.getItem("granosSelected");
+    sessionDataService.granosSelected$.subscribe(
+        granosSelected => {
+            this.isGranosSelected = granosSelected;
+        });
   }
 
   tipoUsuario: string;
+  isGranosSelected: string;
 
   setTabs() {
     this.setMenuSeccionTab("dato-fiscal", "Documentacion");
@@ -34,6 +41,10 @@ export class DocumentacionComponent extends BaseComponent implements OnInit {
     this.setTabs();
     var secciones = [];
     this.navService.setSeccionList(secciones);
+  }
+
+  isGranos() {
+    return this.isGranosSelected == "G";
   }
 
   // Se vuelve a la solucion de tener la documentacion dentro del proyecto

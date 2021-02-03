@@ -22,6 +22,7 @@ import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuario.cambio-vendedor.component";
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
+import { FaqComponent } from "./faq/faq.component";
 var appRoutes = [
     // { path: "documentacion", component: DocumentacionComponent },
     // {
@@ -120,7 +121,9 @@ var appRoutes = [
             },
             { path: "notificaciones", component: ListadoNotificacionesComponent },
             { path: "notificaciones/alta", component: AltaNotificacionesComponent },
-            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent }
+            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
+            { path: "faq",
+                component: FaqComponent }
         ],
     },
     { path: "**", component: HomeComponent },

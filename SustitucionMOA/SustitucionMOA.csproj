@@ -27,6 +27,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -65,6 +66,15 @@
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Storage.Blob, Version=11.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Storage.Blob.11.2.2\lib\net452\Microsoft.Azure.Storage.Blob.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Storage.Common, Version=11.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Storage.Common.11.2.2\lib\net452\Microsoft.Azure.Storage.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -108,7 +118,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
@@ -205,13 +215,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\css\MolinosForms2.css" />
-    <Content Include="Content\css\MolinosGeneral2.css" />
+    <Content Include="Content\css\blockui.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
     <Content Include="Content\images\buttons\Information.svg" />
     <Content Include="Content\images\buttons\information2.svg" />
+    <Content Include="Content\images\buttons\upload.png" />
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />
@@ -220,12 +230,14 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="dist\assets\css\MolinosForms.css" />
+    <Content Include="dist\assets\css\MolinosGeneral.css" />
+    <Content Include="dist\assets\css\styles.css" />
+    <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
     <Content Include="dist\Content\css\font-awesome.min.css" />
     <Content Include="dist\Content\css\loader.css" />
-    <Content Include="dist\Content\css\MolinosForms.css" />
-    <Content Include="dist\Content\css\MolinosGeneral.css" />
     <Content Include="dist\Content\css\ng2-select.css" />
     <Content Include="dist\Content\css\normalize.css" />
     <Content Include="dist\Content\css\tables.css" />
@@ -294,6 +306,7 @@
     <Content Include="src\app\carta-porte\descarga\carta-porte.descarga.component.html" />
     <Content Include="src\app\carta-porte\detalle\carta-porte.detalle.component.html" />
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
     <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
@@ -303,6 +316,7 @@
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
+    <Content Include="src\app\faq\faq.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
@@ -356,9 +370,11 @@
     <Content Include="src\app\ryd\carga-pesadas\carga-pesadas.component.html" />
     <Content Include="src\app\ryd\informe\informe.component.html" />
     <Content Include="src\app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.css" />
     <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
     <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
     <Content Include="src\app\usuario\cambio-vendedor\usuario.cambio-vendedor.component.html" />
+    <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.html" />
     <Content Include="src\app\usuario\list\usuario.list.component.html" />
     <Content Include="src\app\vendedor\vendedor_status.component.html" />
     <Content Include="config.html" />
@@ -366,8 +382,6 @@
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\loader.css" />
-    <Content Include="Content\css\MolinosForms.css" />
-    <Content Include="Content\css\MolinosGeneral.css" />
     <Content Include="Content\css\ng2-select.css" />
     <Content Include="Content\css\normalize.css" />
     <Content Include="Content\css\tables.css" />
@@ -395,6 +409,9 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
+    <Content Include="src\assets\css\MolinosForms.css" />
+    <Content Include="src\assets\css\MolinosGeneral.css" />
+    <Content Include="src\assets\css\styles.css" />
     <Content Include="src\favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -808,6 +825,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
+    <Content Include="Template\ReporteLiquidacionesInformadas.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Template\EstadoAlta.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -860,6 +880,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
+    <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -879,6 +900,7 @@
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
+    <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
@@ -918,6 +940,8 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
@@ -950,6 +974,7 @@
     <TypeScriptCompile Include="src\app\liquidacion\liquidacion.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
+    <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

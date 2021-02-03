@@ -72,7 +72,7 @@
                     <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
                 </div>-->
                 <div class="col-xs-12 col-sm-6 col-md-5" *ngIf="isVisibleProveedor()">
-                    <label for="Proveedorid" class="font-weight-bold">Por Proveedor</label>
+                    <p for="Proveedorid" class="font-weight-bold">Proveedor</p>
                     <input [(ngModel)]="proveedorid" class="form-control" type="hidden"
                            id="proveedorinf" style="font-weight: 100 !important;">
                     <ng-autocomplete [data]="proveedores" [searchKeyword]="keyword2"
@@ -209,7 +209,7 @@
                 <div class="col-xs-12 col-sm-6 col-md-15" *ngIf="isVisibleProveedor()">
                     <p>Contrato Corredor</p>
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" aria-controls="tableModal" [(ngModel)]="contratoCorredor">
                     </div>
                 </div>
 
@@ -243,26 +243,35 @@
                         </select>
                     </div>
                 </div>
-
-                <button type="button" class="btn btn-info btn-lg" (click)="obteneContratos()"
-                        style="margin: 10px 14px; height: 30px; align-items: center; display: inline-flex; background: #172f8f; border: none;">
+                <div class="col-xs-6 col-sm-6 col-md-15">
+                    <p>Sustentable</p>
+                    <div class="styled-select">
+                        <select class="form-control" name="condVend" [(ngModel)]="sustentableTercero">
+                            <option value="null">Todos</option>
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="obteneContratos()"
+                        style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex; margin-top: 40px !important;">
                     Buscar
                 </button>
             </div>
         </div>
         <!-- End Search-->
         <!-- Tables-->
-
+        <p class="mySearch" style="padding:0;margin:0;"><b style="color: red;font-size: 31px;bottom: -9px;position: relative;">*</b>Los precio pizarra se conocerán al día hábil siguiente.</p>
         <div class="row myRow">
             <div class="clearfix myTables">
 
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <div style="overflow-x: auto; width: 100%;">
-                    <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    <table *ngIf="isVisible()" id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;margin-top:0;">
                         <thead>
                             <tr role="row">
-                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Estado_Contrato')">
+                                <th tabindex="0" rowspan="1" colspan="1" style="min-width:57px !important;" (click)="orderColumnBy('Estado_Contrato')">
                                     Estado
                                     <div>
                                         <span>
@@ -289,7 +298,7 @@
                                         </span>
                                     </div>
                                 </th>
-                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Corredor')" *ngIf="isCorredor()">
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Corredor')" *ngIf="isVisibleProveedor()">
                                     Corredor
                                     <div>
                                         <span>
@@ -298,7 +307,7 @@
                                         </span>
                                     </div>
                                 </th>
-                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ContratoCorredor')" *ngIf="isCorredor()">
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('ContratoCorredor')" *ngIf="isVisibleProveedor()">
                                     Contrato Corredor
                                     <div>
                                         <span>
@@ -442,15 +451,24 @@
                                         </span>
                                     </div>
                                 </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('SustentableTercero')">
+                                    Sustentable
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'SustentableTercero' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'SustentableTercero' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                                <td class="{{contratoInfo.Estado_Contrato}}">{{contratoInfo.Estado_Contrato}}</td>
+                                <td class="{{contratoInfo.Estado_Contrato}}"><a title="Anular" href="javascript:void(0);" *ngIf="contratoInfo.Estado_Contrato == 'Carga'" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;{{contratoInfo.Estado_Contrato}}</td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
-                                <td *ngIf="isCorredor()">{{contratoInfo.Corredor}}</td>
-                                <td *ngIf="isCorredor()">{{contratoInfo.ContratoCorredor}}</td>
+                                <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>
+                                <td *ngIf="isVisibleProveedor()">{{contratoInfo.ContratoCorredor}}</td>
                                 <td>{{contratoInfo.TipoNegocio}}</td>
                                 <td>{{contratoInfo.Cantidad}}</td>
                                 <td>{{contratoInfo.Precio}}</td>
@@ -466,6 +484,7 @@
                                 <td>{{contratoInfo.PagoDiferidoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.DolarizadoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.CalidadTercero == true ? "Si":"No"}}</td>
+                                <td>{{contratoInfo.SustentableTercero == true ? "Si":"No"}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -486,3 +505,27 @@
     </section>
 </div>
 <!--End CONTENT-->
+<!-- Modal anular -->
+<a href="#anularModal" class="trigger-btn" id="openModalanularModal" data-toggle="modal" style="display:none;">    Click    to Open anular Modal</a>
+<div class="modal fade fade-complete" id="anularModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Anular Contrato </h4>
+            </div>
+            <div class="">
+                <div class="col-md-12">
+                    <label for="ObservacionTercero">Motivo de anulacion:</label>
+                    <textarea class="form-control" name="motivoAnulacion" [(ngModel)]="motivoAnulacion"></textarea>
+                </div>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="anularNegocio()">Anular</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+
+            </div>
+        </div>
+    </div>
+</div>

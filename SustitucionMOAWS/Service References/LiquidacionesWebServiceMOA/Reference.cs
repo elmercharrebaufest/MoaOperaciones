@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -71,7 +71,7 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -115,6 +115,12 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
         private string dOCUMENTOField;
         
         private string eJERCICIOField;
+        
+        private string fIJACIONField;
+        
+        private string iD_PAGOField;
+        
+        private string fACREDITACIONField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -341,6 +347,42 @@ namespace SustitucionMOAWS.LiquidacionesWebServiceMOA {
             set {
                 this.eJERCICIOField = value;
                 this.RaisePropertyChanged("EJERCICIO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public string FIJACION {
+            get {
+                return this.fIJACIONField;
+            }
+            set {
+                this.fIJACIONField = value;
+                this.RaisePropertyChanged("FIJACION");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=17)]
+        public string ID_PAGO {
+            get {
+                return this.iD_PAGOField;
+            }
+            set {
+                this.iD_PAGOField = value;
+                this.RaisePropertyChanged("ID_PAGO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=18)]
+        public string FACREDITACION {
+            get {
+                return this.fACREDITACIONField;
+            }
+            set {
+                this.fACREDITACIONField = value;
+                this.RaisePropertyChanged("FACREDITACION");
             }
         }
         

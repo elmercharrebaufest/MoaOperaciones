@@ -6,6 +6,7 @@ using SustitucionMOAModel.Models.WSMapMOA.DataAgro;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -75,6 +76,7 @@ namespace SustitucionMOAUtils.Services
                 usuario.TipoUsuario = ObtenerTipoPorNombreCorto("G");
                 proveedor.Mail = usuario.Mail;
 
+
                 if (respuesta != null)
                 {
                     if (!respuesta.HayError)
@@ -87,6 +89,7 @@ namespace SustitucionMOAUtils.Services
                             proveedor.IdDataAgro = respuesta.ProveedorId;
                             proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
                             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+                            proveedor.FechaSolicitud = DateTime.Now;
 
                             Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
 
@@ -186,6 +189,23 @@ namespace SustitucionMOAUtils.Services
             catch (Exception)
             {
                 return null;
+            }
+
+        }
+
+
+        public decimal TraerTipoDeCambio()
+        {
+            try
+            {
+                var respuesta = new DataAgroConsumer().TraerTipoDeCambio();
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return 0;
             }
 
         }
@@ -336,6 +356,12 @@ namespace SustitucionMOAUtils.Services
         {
             return string.Concat("00", CUIT.Substring(2, 8));
         }
+
+        public bool ProveedorApocrifo(string CUIT)
+        {
+            return new DataAgroConsumer().ProveedorApocrifo(CUIT);
+        }
+
     }
 
 }

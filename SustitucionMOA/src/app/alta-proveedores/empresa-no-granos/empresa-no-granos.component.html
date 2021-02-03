@@ -1,1 +1,810 @@
-<p>HOLA</p>
+<div class="content-wraper">
+    <div class="row titleSection">Alta Proveedores: <strong>{{razonSocial}} ({{proveedorCUIT}})</strong></div>
+    <mensaje #msjEmpresaGranos></mensaje>
+    <spinner-small></spinner-small>
+    <div class="myRow firstSection" id="container">
+        <div>
+
+            <div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="step-container shadow" name="Step 3" label="Documentaci&oacute;n Impositiva">
+                        <div class="col-xs-12 col-md-12 step-container-header">
+                            Documentaci&oacute;n Impositiva
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+
+                                <label for="constanciaCUIT">
+                                    <span class="link-adjuntar">Adjuntar</span> constancia de CUIT <span
+                                        class="requerido">*</span>
+                                </label>
+                                <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
+                                    (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+
+                                <div class="container-archivos">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+                                <label for="inscripcionIIBB">
+                                    <span class="link-adjuntar">Adjuntar</span>
+                                    Inscripci&oacute;n en IIBB <span class="requerido"
+                                        *ngIf="IdIngresoBruto == 1 || IdIngresoBruto == 2">*</span>
+                                </label>
+
+                                <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
+                                    (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+
+                                <div class="container-archivos">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+                                <label for="formularioCM05">
+                                    <span class="link-adjuntar">Adjuntar</span>
+                                    CM05 <span class="requerido" *ngIf="IdIngresoBruto == 2">*</span>
+                                </label>
+
+                                <input style="display:none" type="file" class="form-control-file" id="formularioCM05"
+                                    (change)="handleFileInput($event.target.files, 'formularioCM05')">
+
+                                <div class="container-archivos">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'formularioCM05'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+                                <label for="SIPER">
+                                    <span class="link-adjuntar">Adjuntar</span> SIPER
+                                    <span *ngIf="siperObligatorio" class="requerido">*</span>
+                                </label>
+                                <input style="display:none" type="file" class="form-control-file" id="SIPER"
+                                    (change)="handleFileInput($event.target.files, 'SIPER')">
+
+                                <div class="container-archivos">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="step-container shadow" name="Step 4" label="Documentaci&oacute;n">
+                        <div class="col-xs-12 col-md-12 step-container-header">
+                            Otros archivos
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+
+                                <label for="otrosArchivos">
+                                    <span class="link-adjuntar">
+                                        Adjuntar
+                                    </span>
+                                </label>
+                                <div class="container-archivos">
+                                    <input style="display:none" type="file" class="form-control-file" id="otrosArchivos"
+                                        multiple (change)="handleFileInput($event.target.files, 'otrosArchivos')">
+
+                                    <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-container shadow" name="Step 4" label="Documentaci&oacute;n"
+                        *ngIf="ingresoAPlanta">
+                        <div class="col-xs-12 col-md-12 step-container-header">
+                            Documentación de ingreso a planta
+                        </div>
+                        <div class="container-fluid">
+                            <div class="col-xs-12">
+                                <label for="notaSiniestralidadART">
+                                    <span class="link-adjuntar">Adjuntar</span> Nota de siniestralidad ART
+                                    <span class="requerido">*</span>
+                                </label>
+                                <input style="display:none" type="file" class="form-control-file"
+                                    id="notaSiniestralidadART"
+                                    (change)="handleFileInput($event.target.files, 'notaSiniestralidadART')">
+
+                                <div class="container-archivos">
+                                    <span
+                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'notaSiniestralidadART'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <label for="protocoloSanitarioCovid">
+                                    <span class="link-adjuntar">Adjuntar</span> Protocolo Sanitario COVID
+                                    <span class="requerido">*</span>
+                                </label>
+                                <input style="display:none" type="file" class="form-control-file"
+                                    id="protocoloSanitarioCovid"
+                                    (change)="handleFileInput($event.target.files, 'protocoloSanitarioCovid')">
+
+                                <div class="container-archivos">
+                                    <span
+                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'protocoloSanitarioCovid'">
+                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
+                                            {{archivo.Nombre}}
+                                        </a>
+
+                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
+                                            title="Eliminar Adjunto">Eliminar</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="container-fluid">
+                    <div class="col-xs-12">
+                        <div class="accordion" id="accordionExample">
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingIVA">
+                                    <h5 class="mb-0">
+                                        <button class="titulos " type="button" data-toggle="collapse"
+                                            data-target="#collapseIVA" aria-expanded="false"
+                                            aria-controls="collapseIVA">
+                                            Situaci&oacute;n de IVA<span class="requerido">*</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseIVA" class="collapse card-container in" aria-labelledby="headingIVA"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body" style="width: 100%;">
+                                        <div class="col-xs-12">
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    Responsable Inscripto
+                                                    <input type="radio" name="sitIVA" id="IdSituacionIVA1"
+                                                        value="ResponsableInscripto" (change)="sitIVACheck(1)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    Responsable No Inscripto
+                                                    <input type="radio" name="sitIVA" id="IdSituacionIVA2"
+                                                        value="ResponsableNoInscripto" (change)="sitIVACheck(2)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    Exento
+                                                    <input type="radio" name="sitIVA" id="IdSituacionIVA3"
+                                                        value="Exento" (change)="sitIVACheck(3)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    Monotributo
+                                                    <input type="radio" name="sitIVA" id="IdSituacionIVA4"
+                                                        value="Monotributo" (change)="sitIVACheck(4)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingIIBB">
+                                    <h5 class="mb-0">
+                                        <button class="titulos " type="button" data-toggle="collapse"
+                                            data-target="#collapseIIBB" aria-expanded="false"
+                                            aria-controls="collapseIIBB">
+                                            Ingresos Brutos<span class="requerido">*</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseIIBB" class="collapse card-container in" aria-labelledby="headingIIBB"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body" style="width: 100%;">
+                                        <div class="col-xs-12">
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    Inscripto Local
+                                                    <input type="radio" name="sitIIBB" id="IdIngresoBruto1"
+                                                        value="Local" (change)="sitIIBBCheck(1)">
+                                                    <span class="checkmark"></span><br />(obligatoria carga constancia)
+                                                </label>
+                                            </div>
+                                            <div class="form-group form-check col-xs-5">
+                                                <label style="display:inline-block;">
+                                                    Inscripto Convenio Multilateral
+                                                    <input type="radio" name="sitIIBB" id="IdIngresoBruto2"
+                                                        value="Multilateral" (change)="sitIIBBCheck(2)">
+                                                    <span class="checkmark"></span><br />(obligatoria carga de
+                                                    CM05/padr&oacute;n web)
+                                                </label>
+                                            </div>
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    No Inscripto
+                                                    <input type="radio" name="sitIIBB" id="IdIngresoBruto3"
+                                                        value="Exento" (change)="sitIIBBCheck(3)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingCBU">
+                                    <h5 class="mb-0">
+                                        <button class="titulos " type="button" data-toggle="collapse"
+                                            data-target="#collapseCBU" aria-expanded="true" aria-controls="collapseCBU">
+                                            CBU<span class="requerido">*</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseCBU" class="collapse card-container in" aria-labelledby="headingCBU"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body" style="width: 100%;">
+                                        <div class="col-xs-12">
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    CBU
+                                                    <input type="text" name="" id="" value="Local"
+                                                        [(ngModel)]="CBUNoGranos" mask="0000000000000000000000"
+                                                        style="width:200px;" />
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingComentarios">
+                                    <h5 class="mb-0">
+                                        <button class="titulos " type="button" data-toggle="collapse"
+                                            data-target="#collapseComentarios" aria-expanded="true"
+                                            aria-controls="collapseComentarios">
+                                            Comentarios
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseComentarios" class="collapse card-container in"
+                                    aria-labelledby="headingComentarios" data-parent="#accordionExample">
+                                    <div class="card-body" style="width: 100%;">
+                                        <div class="col-xs-12">
+                                            <div class="form-group form-check col-xs-10">
+                                                <label style="float:left;">Ingrese los comentarios
+                                                    que desea incluir en la solicitud</label>
+                                                <textarea placeholder="Ingrese aqui los comentarios" [value]=""
+                                                    [(ngModel)]="Comentarios" aria-controls="tableModal"></textarea>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <button class="titulos " type="button" data-toggle="collapse"
+                                            data-target="#collapseOne" aria-expanded="false"
+                                            aria-controls="collapseOne">
+                                            V&iacute;nculos a declarar con Empleados de Molinos agro S.A.<span
+                                                class="requerido">*</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseOne" class="collapse card-container " aria-labelledby="headingOne"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div>
+                                            <label>
+                                                El titular la firma o cualquier empleado/representante de la misma que
+                                                participe
+                                                en
+                                                las negociaciones con Molinos Agro,
+                                                &iquest; Tienen vinculaciones con empleados de Molinos agro que afecten
+                                                o
+                                                puedan
+                                                afectar
+                                                la
+                                                objetividad o independencia en la relaci&oacute;n comercial?
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="col-xs-4"></div>
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style="display:inline-block;">
+                                                    No
+                                                    <input type="radio" name="radioEmpleados" id="radioEmpleadosNo"
+                                                        [disabled]="esUsuarioCompras" value="false"
+                                                        (change)="relacionConEmpleadosCheckNo($event)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            <div class="form-group form-check col-xs-3">
+                                                <label style=" display:inline-block;">
+                                                    Si
+                                                    <input type="radio" name="radioEmpleados" id="radioEmpleadosSi"
+                                                        [disabled]="esUsuarioCompras" value="true"
+                                                        (change)="relacionConEmpleadosCheckSi($event)">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-4"></div>
+                                        </div>
+                                        <div *ngIf="isVisibleTablaEmpleados()">
+
+                                            <table class="table table-bordered cssTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            <b>Nombre y Apellido</b> <br /><label
+                                                                style="font-weight:100;">
+                                                                (integrante
+                                                                de la Firma Proveedora)
+                                                            </label>
+                                                        </th>
+                                                        <th>
+                                                            <b>Cargo y/o Funci&oacute;n</b> <br /><label
+                                                                style="font-weight:100;">
+                                                                en la
+                                                                Firma Proveedora
+                                                            </label>
+                                                        </th>
+                                                        <th>
+                                                            <b>Nombre y Apellido</b> <br /><label
+                                                                style="font-weight:100;">
+                                                                (integrante
+                                                                de Molinos agro)
+                                                            </label>
+                                                        </th>
+                                                        <th>
+                                                            <b>V&iacute;nculo</b><br /><label style="font-weight:100;">
+                                                                (Comercial,
+                                                                personal, parentesco, deudor, acreedor, etc.)
+                                                            </label>
+                                                        </th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let field of empleados; let i = index">
+
+                                                        <td>
+                                                            <input [(ngModel)]="field.NombreProveedora"
+                                                                class="form-control" type="text"
+                                                                [disabled]="esUsuarioCompras" style="font-weight: 300;"
+                                                                name="{{field.NombreProveedora}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.CargoProveedora"
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.CargoProveedora}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.NombreMolinos"
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.NombreMolinos}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.Vinculo" class="form-control"
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                name="{{field.Vinculo}}" />
+                                                        </td>
+                                                        <td width="75px">
+                                                            <button class="btn-remove btn-custom" type="button"
+                                                                [disabled]="esUsuarioCompras"
+                                                                (click)="deleteFieldValueEmpleados(i)">
+                                                                Eliminar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="btn-add-container">
+                                                <button class="btn-add btn-custom" type="button"
+                                                    [disabled]="esUsuarioCompras" (click)="addFieldValueEmpleados()">
+                                                    Agregar
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingTwo">
+                                    <h5 class="mb-0">
+                                        <button class="collapsed titulos" type="button" data-toggle="collapse"
+                                            data-target="#collapseTwo" aria-expanded="false"
+                                            aria-controls="collapseTwo">
+                                            V&iacute;nculos a declarar con Funcionarios P&uacute;blicos <span
+                                                class="requerido">*</span>
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="collapseTwo" class="collapse card-container" aria-labelledby="headingTwo"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div>
+                                            <label>
+                                                Solicitamos declarar todo tipo de vinculaciones societarias o de
+                                                parentesco
+                                                -hasta
+                                                segundo grado de consanguinidad o afinidad-
+                                                del titular la firma o de cualquier empleado/representante de la misma
+                                                que
+                                                participe
+                                                en las negociaciones con Molinos agro,
+                                                con cualquier funcionario p&uacute;blico, actuales o pasadas.
+                                            </label>
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <div class="col-xs-12">
+                                                <div class="col-md-6 text-center">
+                                                    <div class="form-group form-check">
+                                                        <label style="display:inline-block;">
+                                                            Si
+                                                            <input type="radio" name="radioFuncionarios"
+                                                                id="radioFuncionariosSi" value="true"
+                                                                [disabled]="esUsuarioCompras"
+                                                                (change)="relacionConFuncionariosCheckSi($event)">
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 text-center">
+                                                    <label style="display:inline-block;">
+                                                        No
+                                                        <input type="radio" name="radioFuncionarios"
+                                                            id="radioFuncionariosNo" value="false"
+                                                            [disabled]="esUsuarioCompras"
+                                                            (change)="relacionConFuncionariosCheckNo($event)">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <div class="col-md-6" style="font-size:small;">
+                                                    En caso de existir vinculaciones con m&aacute;s de un funcionario o
+                                                    por
+                                                    m&aacute;s de
+                                                    un
+                                                    socio, accionista,
+                                                    representante o empleado; repetir la informaci&oacute;n de cada una
+                                                    de
+                                                    las
+                                                    vinculaciones.
+                                                </div>
+                                                <div class="col-md-6" style="font-size:small;">
+                                                    La opci&oacute;n elegida implica la declaraci&oacute;n expresa de
+                                                    inexistencia de
+                                                    v&iacute;nculos.
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div *ngIf="isVisibleTablaFuncionarios()">
+
+                                            <table class="table table-bordered cssTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Identificaci&oacute;n del integrante de la Firma
+                                                        </th>
+                                                        <th colspan="2">Identificaci&oacute;n del Funcionario
+                                                            P&uacute;blico
+                                                        </th>
+                                                        <th>Tipo de v&iacute;nculo</th>
+                                                        <th rowspan="2">Acciones</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><label style="font-weight:100;">Nombre y Apellido</label>
+                                                        </th>
+                                                        <th><label style="font-weight:100;">Cargo y/o
+                                                                Funci&oacute;n</label>
+                                                        </th>
+                                                        <th><label style="font-weight:100;">Nombre y Apellido</label>
+                                                        </th>
+                                                        <th>
+                                                            <label style="font-weight:100;">
+                                                                &aacute;mbito donde desempe�a sus
+                                                                funciones
+                                                                /
+                                                                Cargo
+                                                            </label>
+                                                        </th>
+                                                        <th>
+                                                            <label style="font-weight:100;">
+                                                                Comercial, personal, parentesco,
+                                                                deudor,
+                                                                acreedor, pleito pendiente, etc.
+                                                            </label>
+                                                        </th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let field of funcionarios; let i = index">
+
+                                                        <td>
+                                                            <input [(ngModel)]="field.NombreFirma" class="form-control"
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                style="font-weight: 300;"
+                                                                name="{{field.NombreFirma}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.CargoFirma" class="form-control"
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                name="{{field.CargoFirma}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.NombreFuncionario"
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.NombreFuncionario}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.CargoFuncionario"
+                                                                [disabled]="esUsuarioCompras" class="form-control"
+                                                                type="text" name="{{field.CargoFuncionario}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input [(ngModel)]="field.Vinculo" class="form-control"
+                                                                [disabled]="esUsuarioCompras" type="text"
+                                                                name="{{field.Vinculo}}" />
+                                                        </td>
+                                                        <td width="75px">
+                                                            <button class="btn-remove btn-custom" type="button"
+                                                                [disabled]="esUsuarioCompras"
+                                                                (click)="deleteFieldValueFuncionarios(i)">
+                                                                Eliminar
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+
+                                            </table>
+                                            <div class="btn-add-container">
+                                                <button class="btn-add btn-custom" type="button"
+                                                    [disabled]="esUsuarioCompras" (click)="addFieldValueFuncionarios()">
+                                                    Agregar
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card z-depth-0 bordered">
+                                <div class="card-header" id="headingThree">
+                                    <h5 class="mb-0" (click)="abrirCodigoConducta()">
+                                        <button class="titulos collapsed" type="button" data-toggle="collapse"
+                                            data-target="#collapseThree" aria-expanded="false"
+                                            aria-controls="collapseThree">
+                                            Aceptaci&oacute;n del C&oacute;digo de Conducta <span
+                                                class="requerido">*</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseThree" class="collapse  card-container " aria-labelledby="headingThree"
+                                    data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="col-xs-12">
+                                            <p>
+                                                Declaramos que hemos le&iacute;do el
+                                                <a (click)="abrirCodigoConducta(true)" class="trigger-btn">
+                                                    C&oacute;digo de
+                                                    Conducta de
+                                                    Proveedores de Molinos agro S.A.
+                                                </a>
+                                                ,
+                                                de cuyo contenido nos notificamos y declaramos comprender y aceptar.
+                                                <br />
+                                                Asimismo, manifestamos que:
+
+                                            </p>
+                                            <ol>
+                                                <li>
+                                                    Adherimos plenamente a los valores &eacute;ticos de Molinos agro,
+                                                    expresados en
+                                                    su
+                                                    C&oacute;digo de Conducta;
+                                                </li>
+                                                <li>
+                                                    Conocemos acabadamente la normativa nacional e internacional
+                                                    anticorrupci&oacute;n;
+                                                    como as&iacute; tambi&eacute;n
+                                                    de prevenci&oacute;n de lavado de activos y financiaci&oacute;n del
+                                                    terrorismo;
+                                                </li>
+                                                <li>No hemos efectuado ni efectuaremos pagos legalmente cuestionables.
+                                                </li>
+                                            </ol>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input" value=""
+                                                    [disabled]="esUsuarioCompras"
+                                                    [(ngModel)]="this.codigoDeConducta"><b>Acepto</b> - C&oacute;digo de
+                                                Conducta
+                                                de
+                                                Proveedores de Molinos agro S.A.
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div name="Step 7" label="Enviar">
+                    <br />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><span class="requerido">*</span> Los campos marcados son obligatorios</p>
+                        </div>
+                    </div>
+                    <div class="step-actions enviar">
+                        <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
+                            data-target="#modalNotificaci&oacute;n" class="btn-custom btn-azul"></button>
+                        <input type="submit" (click)="onSubmit()" class="btn-custom btn-guardar btn-grande"
+                            *ngIf="esGuardarYNotificar" value="Guardar y notificar">
+                        <input type="submit" (click)="onSubmit()" class="btn-custom btn-guardar btn-mediano"
+                            *ngIf="!esGuardarYNotificar" value="Enviar">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal confirmar eliminar -->
+        <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"
+            style="display:none;">
+            Click
+            to Open Confirm Modal
+        </a>
+        <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Esta seguro?</h4>
+                    </div>
+                    <div class="modal-body modal-notificacion">
+                        <p>
+                            &iquest; Realmente desea eliminar el adjunto {{nombreArchivoSeleccionado}}?
+                        </p>
+
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" (click)="eliminarArchivoSeleccionado()">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- modal notificacion -->
+        <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
+            data-target="#modalNotificaci&oacute;n"></button>
+        <div class="modal fade fade-complete" id="modalNotificaci&oacute;n" tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                            onClick="abrirModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
+                    </div>
+                    <div class="modal-body modal-notificacion">
+                        <label>&iexcl;Su solicitud fue enviada con &eacute;xito!</label><br />
+                        <label>Un asesor le informar&aacute; el estado de su registro.</label><br />
+                        <label>&iexcl;Muchas gracias!</label><br />
+                    </div>
+                    <div class="modal-footer">
+                        <button (click)="redirigir()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end modal notificacion -->
+        <!-- Modal Codigo de Conducta-->
+        <a href="#conductaModal" style="display:none;" class="trigger-btn" id="openModalconductaModal"
+            data-toggle="modal">
+            Click
+            to Open Conducta Modal
+        </a>
+        <div class="modal fade" id="conductaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">C&oacute;digo de Conducta</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="width:870px; height:800px;">
+                            <iframe id="iframeConducta" width="870" height="800"></iframe>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end modal Codigo de Conducta-->
+
+    </div>

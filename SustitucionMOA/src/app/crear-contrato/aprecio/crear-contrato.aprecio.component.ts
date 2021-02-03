@@ -20,15 +20,14 @@ declare var $: any;
     providers: [{ provide: CrearContratoService, useClass: CrearContratoAPrecioService }]
 })
 export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
-   
+
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
-    
+
     ngOnInit() {
         super.ngOnInit();
-        console.log("inicia el componente")
-        this.obteneDatosContrato(this.contrato);
-
+        this.contrato.TipoNegocioId = 2;
+        this.negocioHabilitado(this.contrato);
     }
 
     ngAfterViewInit(): void {
@@ -203,11 +202,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     isVisibleEstablecimiento(): boolean {
-        return this.contrato.ProvinciaId == 1;
+        return this.contrato.ProvinciaId == 1 && this.contrato.ClasificacionId == 1;
     }
 
     grabarContratoAPrecio() {
-        console.log(this.contrato);
+        
         if (!this.validarContrato()) {
             return false;
         }
@@ -234,7 +233,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 3;
+            this.contrato.StandardDeCalidadId = 4;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -242,13 +241,28 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.MaterialId == 5) {
             this.contrato.StandardDeCalidadId = 5;
         }
+        this.contrato.ObservacionTercero = this.ObservacionTercero;
+        if (this.contrato.DolarizadoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
+        }
+        if (this.contrato.PagoDiferidoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+        }
+        if (this.contrato.CalidadTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Calidad: " + this.ObservacionCalidadTercero;
+        }
+        if (this.contrato.SustentableTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Sustentable: " + this.ObservacionSustentableTercero;
+        }
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Grabando...');
         try {
             this.unsubscribe();
             this.subscription = this.service.grabarContratoAPrecio(this.contrato).subscribe(
                 result => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -262,6 +276,9 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                         if (obj.HayError) {
                             let errores = "";
                             obj.Errores.forEach(element => {
+                                if (element.Message == "Proveedor No Operable por Riesgo Comercial Alto") {
+                                    element.Message = "Proveedor no operable, contactese con la mesa comercial";
+                                }
                                 errores = errores + element.Message + " - ";
                             });
 
@@ -280,12 +297,14 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                     }
                 },
                 error => {
+                    this.blockUI.stop();
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
 
             );
         } catch (e) {
+            this.blockUI.stop();
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
         }
@@ -300,16 +319,20 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Dolarizado.");
+        if ((this.ObservacionDolarizadoTercero == "" || this.ObservacionDolarizadoTercero == undefined) && this.contrato.DolarizadoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar  la observacion si Pago Diferido.");
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observacion la calidad.");
+        if ((this.ObservacionCalidadTercero == "" || this.ObservacionCalidadTercero == undefined) && this.contrato.CalidadTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
+            return false;
+        }
+        if ((this.ObservacionSustentableTercero == "" || this.ObservacionSustentableTercero == undefined) && this.contrato.SustentableTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la Tarifa Sustentable.");
             return false;
         }
 
@@ -341,8 +364,12 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar la Bolsa.");
             return false;
         }
-        if (this.contrato.Pizarra == true &&(this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
+        if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
+            return false;
+        }
+        if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
+            this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
         return true;
@@ -360,6 +387,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.ClasificacionId == 1) {
             this.contrato.PlanCanje = false;
             this.contrato.Consignatario = false;
+        } else {
+            this.contrato.EstablecimientoPropio = null;
         }
     }
     isNotProductor(event) {
@@ -376,27 +405,31 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
-        }
-    }
-    changePizarra() {
-        this.contrato.Precio = 0;
-        this.contrato.MonedaId = null;
-        if (this.contrato.Pizarra == true) {
-            this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
-            this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
-            this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
-            this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
-            var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
-
-            $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-            $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
-
-            $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-            $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
-        } else {
+            this.contrato.Pizarra = false;
+            this.contrato.CalidadTercero = false;
+            this.contrato.SustentableTercero = false;
 
         }
     }
+    //changePizarra() {
+    //    this.contrato.Precio = 0;
+    //    this.contrato.MonedaId = null;
+    //    if (this.contrato.Pizarra == true) {
+    //        this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
+    //        this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
+    //        this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
+    //        this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
+    //        var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
+
+    //        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+    //        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+
+    //        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+    //        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+    //    } else {
+
+    //    }
+    //}
 
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;
@@ -423,11 +456,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                         this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
                         var entregaHasta = new Date(parseInt(item.HastaEntrega.substr(6)));
 
-                        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-                        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
 
-                        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-                        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
                     }
 
                 }
@@ -439,5 +472,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     configuraciones() {
 
     }
-
+    isSoja(): boolean {
+        return this.contrato.MaterialId == 3;
+    }
 }
