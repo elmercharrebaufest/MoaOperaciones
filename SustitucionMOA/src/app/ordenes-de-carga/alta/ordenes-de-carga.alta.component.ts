@@ -27,7 +27,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ordenDeCargaId: number = 0;
 
-    ordenDeCarga: OrdenDeCarga;
+    ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
     
     constructor(protected service: OrdenesDeCargaService,
@@ -61,6 +61,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     validarURL() {
      
+    }
+
+    cargaFalsa() {
+        this.ordenDeCarga.llenar()
     }
     
 

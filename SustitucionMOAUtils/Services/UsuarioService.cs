@@ -135,8 +135,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
-
         [Obsolete]
         public string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva)
         {

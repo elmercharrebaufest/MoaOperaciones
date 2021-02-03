@@ -10,8 +10,8 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IOrdenDeCargaService
     {
-        string Agregar(OrdenDeCarga ordenDeCarga);
-        List<OrdenDeCargaDto> Listar(Usuario usuario);
+        string Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        List<OrdenDeCargaDto> Listar(string mailUsuario);
     }
 
 }

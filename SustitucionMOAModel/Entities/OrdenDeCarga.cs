@@ -13,19 +13,19 @@ namespace SustitucionMOAModel.Entities
         [Key]
         public int Id { get; set; }
 
-        public int ClienteId { get; set; }
+        public int Cliente_Id { get; set; }
 
         public DateTime FechaCarga { get; set; }
 
-        public int CUITCliente { get; set; }
+        public string CUITCliente { get; set; }
 
         public string NombreChofer { get; set; }
 
         public string ApellidoChofer { get; set; }
 
-        public int CUITChofer { get; set; }
+        public string CUITChofer { get; set; }
 
-        public int CUITTransporte { get; set; }
+        public string CUITTransporte { get; set; }
 
         public string RazonSocialTransporte { get; set; }
 
@@ -42,5 +42,9 @@ namespace SustitucionMOAModel.Entities
         public bool CorredorSeleccionado { get; set; }
 
         public bool TransporteExiste { get; set; }
+
+        public string PatenteAcoplado { get; set; }
+
+        public string ChasisAcoplado { get; set; }
     }
 }

@@ -64,6 +64,11 @@ namespace SustitucionMOAModel.Entities
             return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).FirstOrDefault();
         }
 
+        public Proveedor ObtenerProveedorPorCUIT(string CUIT)
+        {
+            return Proveedores.Where(p => p.CUIT == CUIT).FirstOrDefault();
+        }
+
         public bool TieneProveedor(string codigoProveedor)
         {
             //Los administradores pueden elegir impersonarse como cualquier proveedor

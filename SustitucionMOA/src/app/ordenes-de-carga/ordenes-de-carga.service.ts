@@ -41,7 +41,7 @@ export class OrdenesDeCargaService extends BaseService{
         );
 
         return this.http
-            .post('/api/OrdenDeCarga/Grabar', payload)
+            .post('/api/OrdenDeCarga/Agregar', payload)
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }

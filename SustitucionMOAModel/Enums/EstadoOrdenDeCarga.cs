@@ -16,4 +16,25 @@ namespace SustitucionMOAModel.Enums
         Entregada,
         Vencida
     }
+
+    public static class EstadoOrdenDeCargaExtensions
+    {
+        public static string ObtenerSemaforo(this EstadoOrdenDeCarga me)
+        {
+            switch (me)
+            {
+                case EstadoOrdenDeCarga.Pendiente:
+                case EstadoOrdenDeCarga.Vencida:
+                    return "red";
+                case EstadoOrdenDeCarga.Confirmado:
+                case EstadoOrdenDeCarga.PendienteAprobacionCredito:
+                    return "yellow";
+                case EstadoOrdenDeCarga.EntregaGenerada:
+                case EstadoOrdenDeCarga.Entregada:
+                    return "green";
+                default:
+                    return "white";
+            }
+        }
+    }
 }

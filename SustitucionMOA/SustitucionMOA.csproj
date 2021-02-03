@@ -313,6 +313,10 @@
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.html" />
+    <Content Include="src\app\ordenes-de-carga\alta\ordenes-de-carga.alta.component.css" />
+    <Content Include="src\app\ordenes-de-carga\alta\ordenes-de-carga.alta.component.html" />
+    <Content Include="src\app\ordenes-de-carga\listado\ordenes-de-carga.listado.component.css" />
+    <Content Include="src\app\ordenes-de-carga\listado\ordenes-de-carga.listado.component.html" />
     <Content Include="src\app\reporte\contrato\reporte.contrato.component.html" />
     <Content Include="src\app\reporte\cupo\reporte.cupo.component.html" />
     <Content Include="src\app\contrato\ampliacion\contrato.ampliacion.component.html" />
@@ -934,6 +938,14 @@
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\alta\ordenes-de-carga.alta.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\alta\ordenes-de-carga.alta.component.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\listado\ordenes-de-carga.listado.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\listado\ordenes-de-carga.listado.component.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga.module.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\ordenes-de-carga\ordenes-de-carga.service.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.component.ts" />
     <TypeScriptCompile Include="src\app\reporte\reporte.module.ts" />

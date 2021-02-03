@@ -42,40 +42,24 @@
           <thead>
             <tr role="row">
               <th>Id</th>
-              <th>
-                Nombre
-              </th>
-              <th>Fecha inicio</th>
-              <th>Fecha fin</th>
-              <th>Habilitada</th>
-              <th></th>
+              <th>CUIT cliente</th>
+              <th>Estado</th>
+              <th>Semaforo</th>
+              <th>Semaforo</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let notificacion of data 
-                                | customFilter : 'Nombre' : filtroAlta
+            <tr *ngFor="let ordenDeCarga of data 
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                 ; let odd = odd" role="row" [class.odd]="!odd">
-              <td>{{notificacion.Id}}</td>
-              <td>{{notificacion.Nombre || "-"}}</td>
-              <td>{{ notificacion.FechaInicio.split(":")[0] }}:00</td>
-              <td>{{ notificacion.FechaFin.split(" ")[0] }}</td>
+              <td>{{ordenDeCarga.Id}}</td>
+              <td>{{ordenDeCarga.CUITCliente}}</td>
+              <td>{{ordenDeCarga.DescripcionEstado}}</td>
+              <td>{{ordenDeCarga.ColorSemaforo}}</td>
               <td>
-                <i *ngIf="notificacion.Habilitada" class="fa fa-check-circle"></i>
-                <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
-              </td>
-              <td>
-                <a (click)="goToSeccionParam('/ordenes-de-carga/alta', notificacion.Id)" class="cursor"
-                  role='button'>Editar</a>
-                <br><br>
-                <a *ngIf="!notificacion.Habilitada" (click)="habilitar(notificacion.Id)" class="cursor"
-                  role='button'>Habilitar</a>
-                <a *ngIf="notificacion.Habilitada" (click)="deshabilitar(notificacion.Id)" class="cursor"
-                  role='button'>Deshabilitar</a>
-                <br><br>
-                <a (click)="eliminar(notificacion.Id)" class="cursor" role='button'>Eliminar</a>
-
+                <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
+                </div>
               </td>
             </tr>
           </tbody>
