@@ -17,6 +17,7 @@ import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuari
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
+import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -91,6 +92,8 @@ const appRoutes: Routes = [
       },
       // { path: "usuario/alta", component: AltaUsuarioComponent },
       { path: "usuario/list", component: UsuarioListComponent },
+      { path: "usuario/alta-empresa-no-granos", component: UsuarioAltaEmpresaNoGranosComponent },
+      { path: "usuario/alta-empresa-no-granos/:id/:cuit/:mail", component: UsuarioAltaEmpresaNoGranosComponent },
       // {
       //   path: "usuario/cambio-contrasenia",
       //   component: CambioContraseniaComponent,
@@ -112,6 +115,7 @@ const appRoutes: Routes = [
       },
       { path: "estado-solicitud", component: EstadoSolicitudComponent },
       { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
+      { path: "alta-empresa-no-granos/:id", component: EmpresaNoGranosComponent },
       { path: "altas", component: AltasComponent },
         {
             path: "crear-contrato",
