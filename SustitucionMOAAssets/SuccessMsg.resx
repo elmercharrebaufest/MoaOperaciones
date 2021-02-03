@@ -198,6 +198,9 @@
   <data name="OlvideContraniaOk" xml:space="preserve">
     <value>Se le enviará un mail con una nueva contraseña</value>
   </data>
+  <data name="OrdenDeCargaAgregada" xml:space="preserve">
+    <value>La orden de carga se ha guardado correctamente.</value>
+  </data>
   <data name="RolesActualizadosOk" xml:space="preserve">
     <value>El rol del usuario {0}{1} ha sido actualizado correctamente.</value>
   </data>

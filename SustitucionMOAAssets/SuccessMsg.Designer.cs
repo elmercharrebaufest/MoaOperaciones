@@ -304,6 +304,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La orden de carga se ha guardado correctamente..
+        /// </summary>
+        public static string OrdenDeCargaAgregada {
+            get {
+                return ResourceManager.GetString("OrdenDeCargaAgregada", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El rol del usuario {0}{1} ha sido actualizado correctamente..
         /// </summary>
         public static string RolesActualizadosOk {

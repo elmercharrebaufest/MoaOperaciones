@@ -884,6 +884,7 @@
     <Compile Include="Controllers\LiquidacionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\NotificacionController.cs" />
+    <Compile Include="Controllers\OrdenDeCargaController.cs" />
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
@@ -1117,6 +1118,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
+    <Folder Include="Views\OrdenDeCarga\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">
