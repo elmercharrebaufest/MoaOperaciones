@@ -338,7 +338,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected()">
+                <div class="panel panel-default" *ngIf="isAuthorized('MENU') && isGranosSelected() && false">
                     <div class="panel-heading seccion" role="tab" id="misReportes">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseRepo" aria-expanded="false" aria-controls="collapseRepo">
@@ -401,7 +401,7 @@
                             <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
-                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected() && false">
                                 <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Contratos</a>
                             </div>
                             <div>
@@ -465,7 +465,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL') && false">
                     <div class="panel-heading seccion" role="tab" id="faq">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/faq')" href="#"
                             data-parent="#accordionMenu">
