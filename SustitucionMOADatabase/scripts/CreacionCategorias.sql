@@ -1,0 +1,28 @@
+﻿SET NOCOUNT ON
+BEGIN TRAN
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
+	VALUES ('001', 'ACTUALIZACIONES', 0)
+END
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
+	VALUES ('002', 'CONSULTAS GENERALES', 0)
+END
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
+	VALUES ('003', 'RECLAMO DE PAGOS', 0)
+END
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
+	VALUES ('004', 'RETENCIONES', 1)
+END
+
+COMMIT TRAN

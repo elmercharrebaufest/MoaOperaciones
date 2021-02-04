@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dbo].[EstadoConsulta]
 (
 	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Code] [varchar](10) NOT NULL,
 	[Descripcion] [nvarchar](max) NOT NULL,
 	[Color] [nvarchar](max) NOT NULL,
 CONSTRAINT [PK_dbo.EstadoConsulta] PRIMARY KEY CLUSTERED 

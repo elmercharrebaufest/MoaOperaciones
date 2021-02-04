@@ -11,6 +11,7 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
+        public string Code { get; set; }
         public string Descripcion { get; set; }
         public string Color { get; set; }
     }

@@ -6,28 +6,28 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Models.WSMapMOA.ContactoMail
 {
-    public class ContactoContenido
+    public class ConsultaVM
     {
+        public int id { get; set; }
         public string asunto { get; set; }
-        public string proveedor { get; set; }
-        public int proveedor_id { get; set; }
-        public string nombre { get; set; }
-        public string email { get; set; }
-        public string telefono { get; set; }
+        public string estado { get; set; }
+        public int idEstado { get; set; }
         public string categoria { get; set; }
-        public string camposAdicionales { get; set; }
-        public string comentario { get; set; }
+        public int idCategoria { get; set; }
+        public DateTime fechaCreacion { get; set; }
+        public DateTime fechaUltimaModificacion { get; set; }
+
+        //datos extendidos
+        //retenciones
         public string contrato { get; set; }
         public string razonSocial { get; set; }
         public string cuit { get; set; }
-        public string nombreVendedor { get; set; }
         public string comprobante { get; set; }
+        public string inscripcion { get; set; }
         public string fechaPago { get; set; }
         public string importe { get; set; }
         public decimal importeDecimal { get; set; }
         public string impuesto { get; set; }
         public decimal impuestoDecimal { get; set; }
-        public string inscripcion { get; set; }
-        public string motivo { get; set; }
     }
 }

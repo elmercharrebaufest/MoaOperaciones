@@ -49,13 +49,24 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public setEstadoConsulta(estadoId: number, consultaId: number){
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
-        params.set('estado', estadoId.toString());
-
-        return this.http.post
+    public getEstados(): Observable<any> {
+        return this.http
+            .get('/api/contactoMail/getEstados', { headers: this.headers }).pipe(
+            map(this.extractData));
     }
+
+    public listarConsultas(): Observable<any> {
+        return this.http
+            .get('/api/contactoMail/listarConsultas', { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+    public getConsultaDetalle(idConsulta): Observable<any> {
+        return this.http
+            .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+}
 
     public getDetalleConsulta(consultaId){
         let params: URLSearchParams = new URLSearchParams();
