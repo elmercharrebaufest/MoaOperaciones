@@ -61,6 +61,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     estadoConsulta: number;
     consultaId: number;
+    file: any;
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -72,19 +73,20 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
+        this.jqueryOnInit();
     }
 
     setEstadoConsulta(){
                
     }
 
-    /*
+    
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
         if (fileList.length > 0) {
             this.file = fileList[0];
         }
-    }*/
+    }
 
     getDetalleConsulta(){
         this.spinnerModal.showIt();
@@ -103,5 +105,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
+    }
+
+    jqueryOnInit(){
+        $(".adjuntarArchivo").click(function () {
+            $(".adjuntarArchivo1").click();
+        });
     }
 }
