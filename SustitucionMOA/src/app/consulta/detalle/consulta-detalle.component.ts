@@ -38,6 +38,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    ConsultaService: any;
 
     constructor(private route: ActivatedRoute, protected service: ConsultaService, protected navService: NavService,
         protected securityService: SecurityService,
@@ -58,6 +59,9 @@ export class DetalleConsultaComponent extends BaseComponent {
         {id: 5, nombre: "Martin", comentario: "ok como estas ?", fecha: "14/10/2021", hora: "15:30"}
     ];
 
+    estadoConsulta: number;
+    consultaId: number;
+
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
     setTabs() {
@@ -68,5 +72,36 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
+    }
+
+    setEstadoConsulta(){
+               
+    }
+
+    /*
+    cargarArchivo(event: any) {
+        let fileList: FileList = event.target.files;
+        if (fileList.length > 0) {
+            this.file = fileList[0];
+        }
+    }*/
+
+    getDetalleConsulta(){
+        this.spinnerModal.showIt();
+        this.subscription = this.ConsultaService.getDetalleConsulta(this.consultaId).subscribe(
+            result => {
+                this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
     }
 }
