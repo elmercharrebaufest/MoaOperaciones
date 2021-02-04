@@ -41,10 +41,24 @@ namespace SustitucionMOAModel.Entities
 
         public bool CorredorSeleccionado { get; set; }
 
+        public string Corredor { get; set; }
+
         public bool TransporteExiste { get; set; }
 
         public string PatenteAcoplado { get; set; }
 
         public string ChasisAcoplado { get; set; }
+
+        public void ActualizarEstado ()
+        {
+            if(string.IsNullOrEmpty(ContratoSAP) || !TransporteExiste || !CorredorSeleccionado)
+            {
+                Estado = EstadoOrdenDeCarga.Pendiente;
+            }
+            else
+            {
+                Estado = EstadoOrdenDeCarga.Confirmado;
+            }
+        }
     }
 }

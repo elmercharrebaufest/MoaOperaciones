@@ -25,15 +25,21 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Proveedor cliente;
+            ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
 
             if (ordenDeCarga.CUITCliente != "")
-                 cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+                cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
             else
-                 cliente = usuario.ObtenerProveedor();
+                cliente = usuario.ObtenerProveedor();
 
-            ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
+
+            VerificarContrato(ordenDeCarga);
+
+            VerificarCorredor(ordenDeCarga);
+
+            VerificarTransporte(ordenDeCarga);
 
             repositorio.Agregar(ordenDeCarga);
 
@@ -72,6 +78,61 @@ namespace SustitucionMOAUtils.Services
             }
 
             return listado;
+        }
+
+        private void VerificarContrato(OrdenDeCarga orden)
+        {
+            var contratosSAP = ObtenerContratos(orden.CUITCliente);
+
+            if(contratosSAP.Count == 1)
+            {
+                orden.ContratoSAP = contratosSAP.First();
+            }
+            else
+            {
+                orden.ContratoSAP = "";
+            }
+
+            orden.ActualizarEstado();
+        }
+
+        private List<string> ObtenerContratos(string CUIT)
+        {
+            return new List<string> { "1231231", "515121"};
+        }
+
+        private List<string> ObtenerCorredores(string CUIT)
+        {
+            return new List<string> { "PEPE", "LUIS" };
+        }
+
+        private void VerificarCorredor(OrdenDeCarga orden)
+        {
+            var corredoresCliente = ObtenerCorredores(orden.CUITCliente);
+
+            if (corredoresCliente.Count == 1)
+            {
+                orden.Corredor = corredoresCliente.First();
+                orden.CorredorSeleccionado = true;
+            }
+            else
+            {
+                orden.CorredorSeleccionado = false;
+            }
+
+            orden.ActualizarEstado();
+        }
+
+        private void VerificarTransporte(OrdenDeCarga orden)
+        {
+            orden.TransporteExiste = TransporteExiste(orden.CUITTransporte);
+        
+            orden.ActualizarEstado();
+        }
+
+        private bool TransporteExiste (string CUIT)
+        {
+            return CUIT.Contains("7");
         }
     }
 }
