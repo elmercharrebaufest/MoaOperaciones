@@ -21,7 +21,6 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
               "src/web.config",
               {"glob": "**/*", "input": "Content", "output": "Content"}
             ],
