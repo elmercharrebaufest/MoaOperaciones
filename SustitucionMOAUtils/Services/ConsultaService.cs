@@ -120,7 +120,7 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(ruta);
 
-                proveedor.Archivos.Add(new Archivo { FileKey = FileKeys.Consultas, Ruta = rutaArchivo });
+                comentario.Archivos.Add(new Archivo { FileKey = FileKeys.Consultas, Ruta = rutaArchivo });
 
                 file.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();
