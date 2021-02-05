@@ -1,13 +1,18 @@
-﻿using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -32,12 +37,14 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public void AgregarComentario(int consultaId, Comentario comentario)
+        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario)
         {
             var consulta = GetConsulta(consultaId);
 
             consulta.Comentarios.Add(comentario);
             repositorio.GuardarCambios();
+
+            return new ComentarioDto(comentario);
         }
 
         private Consulta GetConsulta(int consultaId)
@@ -86,6 +93,40 @@ namespace SustitucionMOAUtils.Services
 
             consulta.Categoria_Id = categoriaId;
             repositorio.GuardarCambios();
+        }
+
+        public string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files)
+        {
+            var comentario = repositorio.Obtener<Comentario>(comentarioId);
+
+            if (comentario == null) throw new InfoCustomException("No existe el comentario");
+            if (comentario.Consulta_Id != consultaId) throw new InfoCustomException("El comentario no corresponde a la consulta especificada");
+
+            var errores = new List<string>();
+            var proveedor = repositorio.Obtener<Consulta>(c => c.Id == consultaId).Proveedor;
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+                var fileName = Path.GetFileName(file.FileName);
+                var ruta = $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
+                var rutaArchivo = string.Concat(ruta, "/", fileName);
+
+                if (File.Exists(rutaArchivo))
+                {
+                    errores.Add($"{fileName}: {ErrorMsg.ErrorArchivoRepetido}");
+                    continue;
+                }
+
+                Directory.CreateDirectory(ruta);
+
+                proveedor.Archivos.Add(new Archivo { FileKey = FileKeys.Consultas, Ruta = rutaArchivo });
+
+                file.SaveAs(rutaArchivo);
+                repositorio.GuardarCambios();
+            }
+
+            return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
     }
 }

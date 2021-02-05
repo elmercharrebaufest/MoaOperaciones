@@ -26,9 +26,34 @@ namespace SustitucionMOA.Controllers
             {
                 if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
 
-                consultaService.AgregarComentario(consultaId, comentario);
+                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-                return JsonCustom(new { });
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        [Route("/{consultaId}/Comentario/{comentarioId}/Adjuntos")]
+        public JsonResult Adjuntos(int consultaId, int comentarioId)
+        {
+            try
+            {
+                if (consultaId <= 0 || comentarioId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+                if (Request.Files.Count <= 0) return Json(new { info = "No se adjuntaron archivos" }, JsonRequestBehavior.AllowGet);
+
+                return JsonCustom(new { data = consultaService.AgregarAdjuntoComentario(consultaId, comentarioId, Request.Files) });
             }
             catch (InfoCustomException e)
             {
