@@ -5,7 +5,7 @@ import { DetalleConsultaComponent } from './detalle/consulta-detalle.component';
 import { MisConsultasComponent } from './mis-consultas/mis-consultas.component';
 
 const routes: Routes = [
-    { path: '', component: MisConsultasComponent },
+    { path: '', component: CrearConsultaComponent },
     { path: "mis-consultas", component: MisConsultasComponent,},
     { path: "crear-consulta", component: CrearConsultaComponent,},
     { path: "detalle", component: DetalleConsultaComponent}

@@ -66,19 +66,22 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers }).pipe(
             map(this.extractData));
     }
-}
 
-    public getDetalleConsulta(consultaId){
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
+    public agregarComentario(consultaId: number, detalle: string){
+        var comentario = {detalle: detalle, fecha: new Date(), consultaId: consultaId}
         return this.http
-            .get('/api/consulta/Detalle', { search: params, headers: this.headers }).pipe(
+            .post(`/api/consulta/${consultaId}/Comentarios`, comentario, this.headersPost).map(this.extractData);
+    }
+
+    getDetalleConsulta(consultaId: number){
+        return this.http
+            .get(`/api/consulta/${consultaId}/Detalle`, { headers: this.headers }).pipe(
             map(this.extractData));
     }
 
-    public agregarComentario(consultaId: number, detalle: string, usuarioId: number){
-        var comentario = {detalle: detalle, fecha: new Date(), consultaId: consultaId, usuarioId: usuarioId}
-        return this.http
-            .post(`/api/consulta/${consultaId}/Comentarios`, comentario, this.headersPost).map(this.extractData);
+    public setEstadoConsulta(estadoId: number, consultaId: number){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
+        params.set('estado', estadoId.toString());
     }
 }

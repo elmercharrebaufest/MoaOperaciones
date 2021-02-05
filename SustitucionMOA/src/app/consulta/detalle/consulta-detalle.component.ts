@@ -50,18 +50,21 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.spinnerComponent = new SpinnerComponent();
     }
 
+    consulta = {email: "evilliate@baufest.com"}
+
     ComentariosList = [
-        {id: 0, nombre: "Martin", comentario: "Comentario 1, lorem ipsum.\nDol sit a ver", fecha: "11/10/2021", hora: "15:30"},
-        {id: 1, nombre: "juan", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "11/10/2021", hora: "15:30"},
-        {id: 2, nombre: "Martin", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "13/10/2021", hora: "15:30"},
-        {id: 3, nombre: "juan", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. \n Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "14/10/2021", hora: "15:30"},
-        {id: 4, nombre: "Martin", comentario: "ESTAMOS EN LA B.", fecha: "14/10/2021", hora: "15:30"},
-        {id: 5, nombre: "Martin", comentario: "ok como estas ?", fecha: "14/10/2021", hora: "15:30"}
+        {id: 0, email: "evilliate@baufest.com", nombre: "Martin", comentario: "Comentario 1, lorem ipsum.\nDol sit a ver", fecha: "11/10/2021", hora: "15:30"},
+        {id: 1, email: "noimporta", nombre: "juan", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "11/10/2021", hora: "15:30"},
+        {id: 2, email: "evilliate@baufest.com", nombre: "Martin", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "13/10/2021", hora: "15:30"},
+        {id: 3, email: "sssssss", nombre: "juan", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. \n Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "14/10/2021", hora: "15:30"},
+        {id: 4, email: "evilliate@baufest.com", nombre: "Martin", comentario: "ESTAMOS EN LA B.", fecha: "14/10/2021", hora: "15:30"},
+        {id: 5, email: "evilliate@baufest.com", nombre: "Martin", comentario: "ok como estas ?", fecha: "14/10/2021", hora: "15:30"}
     ];
 
     estadoConsulta: number;
-    consultaId: number;
+    consultaId = 11;
     file: any;
+    username = sessionStorage.getItem("userName");
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -72,13 +75,47 @@ export class DetalleConsultaComponent extends BaseComponent {
     ngOnInit(){
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([]);
+        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         this.jqueryOnInit();
+        this.getDetalleConsulta()
     }
 
     setEstadoConsulta(){
                
     }
+
+    // this.route.params.forEach((params: Params) => {
+        //     let idConsulta = params['idConsulta'];
+        //     this.unsubscribe();
+        //     this.subscription = this.service.getConsultaDetalle(idConsulta).subscribe(
+        //         result => {
+        //             if (result.logout == true) {
+        //                 this.sessionDataService.logout();
+        //             } else if (result.error != undefined && result.error != "") {
+        //                 this.mensajeComponent.setErrorMsg(result.error);
+        //             } else if (result.info != undefined) {
+        //                 this.mensajeComponent.setInfoMsg(result.info);
+        //             } else {
+        //                 this.ComentariosList = [];
+
+        //                 result.Comentarios.forEach(x => {
+        //                     this.ComentariosList.push(
+        //                         {
+        //                             id: x.Id,
+        //                             nombre: 'Martin',
+        //                             comentario: x.Detalle,
+        //                             fecha: '14/01/2021',
+        //                             hora: '15:30'
+        //                         }
+        //                     );
+        //                 });
+        //             }
+        //         },
+        //         error => {
+        //             this.mensajeComponent.setErrorMsg(error.message);
+        //         }
+        //     );
+        // });
 
     
     cargarArchivo(event: any) {
