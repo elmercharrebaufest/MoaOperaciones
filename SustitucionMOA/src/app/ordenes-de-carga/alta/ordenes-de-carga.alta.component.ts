@@ -102,7 +102,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.unsubscribe();
 
         this.subscription = this.service
-            .grabar(this.ordenDeCarga)
+            .agregar(this.ordenDeCarga)
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();

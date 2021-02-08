@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -12,7 +13,6 @@ using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-
     public class OrdenDeCargaService : IOrdenDeCargaService
     {
         protected readonly IRepositorio repositorio;
@@ -87,6 +87,20 @@ namespace SustitucionMOAUtils.Services
             return listado;
         }
 
+        public string AnularOrden(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            if (orden.Estado != EstadoOrdenDeCarga.EntregaGenerada)
+            {
+                throw new ValidationCustomException("La orden no puede anularse por su estado.");
+            }
+
+            orden.Estado = EstadoOrdenDeCarga.Anulada;
+
+            return "La orden ha sido anulada correctamente.";
+        }
+
 
         #region Etapa1
         private void VerificarContrato(OrdenDeCarga orden)
@@ -105,7 +119,7 @@ namespace SustitucionMOAUtils.Services
             orden.ActualizarEstado();
         }
 
-        private string SeleccionarContrato(int ordenId, string contratoSAP)
+        public string SeleccionarContrato(int ordenId, string contratoSAP)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
@@ -118,7 +132,7 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
         }
 
-        private string SeleccionarCorredor(int ordenId, string corredor)
+        public string SeleccionarCorredor(int ordenId, string corredor)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
@@ -132,12 +146,26 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
         }
 
-        private List<string> ObtenerContratos(string CUIT)
+        public List<string> ObtenerContratos(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            return ObtenerContratos(orden.CUITCliente);
+        }
+
+        public List<string> ObtenerContratos(string CUIT)
         {
             return new List<string> { "1231231", "515121" };
         }
 
-        private List<string> ObtenerCorredores(string CUIT)
+        public List<string> ObtenerCorredores(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            return ObtenerCorredores(orden.CUITCliente);
+        }
+
+        public List<string> ObtenerCorredores(string CUIT)
         {
             return new List<string> { "PEPE", "LUIS" };
         }
@@ -157,6 +185,13 @@ namespace SustitucionMOAUtils.Services
             }
 
             orden.ActualizarEstado();
+        }
+
+        public string VerificarTransporte(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            return VerificarTransporte(orden);
         }
 
         public string VerificarTransporte(OrdenDeCarga orden)
@@ -210,9 +245,15 @@ namespace SustitucionMOAUtils.Services
         }
         #endregion
 
-        #region Etapa2
+        public string VerificarSituacionCrediticia(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-        private void VerificarSituacionCrediticia(OrdenDeCarga orden)
+            return VerificarSituacionCrediticia(orden);
+        }
+
+        #region Etapa2
+        private string VerificarSituacionCrediticia(OrdenDeCarga orden)
         {
             if (orden.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito)
             {
@@ -221,10 +262,17 @@ namespace SustitucionMOAUtils.Services
                 if (!orden.AprobadoCredito)
                 {
                     NotificarSituacionCrediticia(orden);
+                    orden.ActualizarEstado();
                 }
+                else
+                {
+                    orden.ActualizarEstado();
 
-                orden.ActualizarEstado();
+                    EnviarASAP(orden);
+                }
             }
+
+            return "Orden actualizada correctamente";
         }
 
         private bool ObtenerSituacionCrediticia(string CUIT)
@@ -244,7 +292,7 @@ namespace SustitucionMOAUtils.Services
             mails.AddRange(mailsCobranzas.Split(';').ToList());
             mails.AddRange(mailsComerciales.Split(';').ToList());
 
-            var cliente = repositorio.Obtener<Cliente>(orden.Cliente_Id);
+            var cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
 
             string asunto = string.Concat("Orden de carga #", orden.Id);
             string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias.", orden.Id, cliente.RazonSocial);
@@ -253,8 +301,6 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
-        #endregion
-
 
         private void EnviarASAP(OrdenDeCarga orden)
         {
@@ -265,6 +311,7 @@ namespace SustitucionMOAUtils.Services
                 orden.ActualizarEstado();
             }
         }
+        #endregion
 
 
     }

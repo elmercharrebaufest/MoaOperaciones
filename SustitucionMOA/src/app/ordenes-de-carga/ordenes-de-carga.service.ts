@@ -32,7 +32,7 @@ export class OrdenesDeCargaService extends BaseService{
             .pipe(map(this.extractData));
     }
 
-    public grabar(ordenDeCarga :OrdenDeCarga): Observable<any> {
+    public agregar(ordenDeCarga :OrdenDeCarga): Observable<any> {
         let payload = new FormData();
         console.log(ordenDeCarga)
         payload.append(
@@ -46,4 +46,85 @@ export class OrdenesDeCargaService extends BaseService{
             .pipe(map(this.extractData));
     }
 
+    public anular(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/AnularOrden', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public notificarTransporte(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/NotificarTransporte', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public obtenerContratos(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/ObtenerContratos', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public obtenerCorredores(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/ObtenerCorredores', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public seleccionarContrato(ordenId: Number, contratoSAP: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+        params.set('contratoSAP', contratoSAP);
+
+        return this.http
+            .get('/api/OrdenDeCarga/SeleccionarContrato', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public seleccionarCorredor(ordenId: Number, corredor: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+        params.set('corredor', corredor);
+
+        return this.http
+            .get('/api/OrdenDeCarga/SeleccionarCorredor', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public verificarSituacionCrediticia(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/VerificarSituacionCrediticia', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+     public verificarTransporte(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/VerificarTransporte', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
 }

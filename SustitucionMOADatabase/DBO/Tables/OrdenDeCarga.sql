@@ -18,5 +18,9 @@
     [Observacion] VARCHAR(MAX) NULL, 
     [PatenteAcoplado] VARCHAR(10) NULL, 
     [ChasisAcoplado] VARCHAR(15) NULL, 
+    [Corredor] VARCHAR(150) NULL, 
+    [AprobadoCredito] BIT NULL, 
+    [InformadaSAP] BIT NULL, 
+    [FechaEntregaGenerada] DATETIME NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
 )
