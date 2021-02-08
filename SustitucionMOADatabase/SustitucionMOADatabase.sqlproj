@@ -96,6 +96,9 @@
     <Build Include="DBO\Tables\ComentarioArchivo.sql" />
     <Build Include="DBO\Tables\Consulta.sql" />
     <Build Include="DBO\Tables\EstadoConsulta.sql" />
+    <Build Include="DBO\Tables\SubCategoria.sql" />
+    <Build Include="DBO\Tables\ConsultaDetalle.sql" />
+    <Build Include="DBO\Tables\CausaConsulta.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
