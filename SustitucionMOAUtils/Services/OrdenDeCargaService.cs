@@ -3,9 +3,11 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 
 namespace SustitucionMOAUtils.Services
@@ -34,12 +36,17 @@ namespace SustitucionMOAUtils.Services
 
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
+            ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
 
             VerificarContrato(ordenDeCarga);
 
             VerificarCorredor(ordenDeCarga);
 
             VerificarTransporte(ordenDeCarga);
+
+            EnviarASAP(ordenDeCarga);
+
+            VerificarSituacionCrediticia(ordenDeCarga);
 
             repositorio.Agregar(ordenDeCarga);
 
@@ -80,11 +87,13 @@ namespace SustitucionMOAUtils.Services
             return listado;
         }
 
+
+        #region Etapa1
         private void VerificarContrato(OrdenDeCarga orden)
         {
             var contratosSAP = ObtenerContratos(orden.CUITCliente);
 
-            if(contratosSAP.Count == 1)
+            if (contratosSAP.Count == 1)
             {
                 orden.ContratoSAP = contratosSAP.First();
             }
@@ -96,9 +105,36 @@ namespace SustitucionMOAUtils.Services
             orden.ActualizarEstado();
         }
 
+        private string SeleccionarContrato(int ordenId, string contratoSAP)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            orden.ContratoSAP = contratoSAP;
+
+            orden.ActualizarEstado();
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
+        private string SeleccionarCorredor(int ordenId, string corredor)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            orden.Corredor = corredor;
+            orden.CorredorSeleccionado = true;
+
+            orden.ActualizarEstado();
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
         private List<string> ObtenerContratos(string CUIT)
         {
-            return new List<string> { "1231231", "515121"};
+            return new List<string> { "1231231", "515121" };
         }
 
         private List<string> ObtenerCorredores(string CUIT)
@@ -123,16 +159,113 @@ namespace SustitucionMOAUtils.Services
             orden.ActualizarEstado();
         }
 
-        private void VerificarTransporte(OrdenDeCarga orden)
+        public string VerificarTransporte(OrdenDeCarga orden)
         {
             orden.TransporteExiste = TransporteExiste(orden.CUITTransporte);
-        
-            orden.ActualizarEstado();
+
+            if (orden.TransporteExiste)
+            {
+                orden.ActualizarEstado();
+                return SuccessMsg.OrdenDeCargaActualizada;
+            }
+            else
+            {
+                return "El transporte no existe";
+            }
         }
 
-        private bool TransporteExiste (string CUIT)
+        private bool TransporteExiste(string CUIT)
         {
-            return CUIT.Contains("7");
+            return true;
         }
+
+        public string NotificarTransporte(int ordenDeCargaId)
+        {
+            string mensaje;
+
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
+
+            if (!TransporteExiste(orden.CUITTransporte))
+            {
+                string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+
+                var mails = mailsMesaVentaFas.Split(';').ToList();
+
+                string asunto = "ALTA TTE";
+
+                string cuerpo = string.Format("Razón Social: {0} <br> CUIT: {1}", orden.RazonSocialTransporte, orden.CUITTransporte);
+
+                EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+
+                mensaje = "Notificación enviada";
+            }
+            else
+            {
+                mensaje = "El transporte ya fue creado";
+                orden.TransporteExiste = true;
+                repositorio.GuardarCambios();
+            }
+
+            return mensaje;
+        }
+        #endregion
+
+        #region Etapa2
+
+        private void VerificarSituacionCrediticia(OrdenDeCarga orden)
+        {
+            if (orden.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito)
+            {
+                orden.AprobadoCredito = ObtenerSituacionCrediticia(orden.CUITCliente);
+
+                if (!orden.AprobadoCredito)
+                {
+                    NotificarSituacionCrediticia(orden);
+                }
+
+                orden.ActualizarEstado();
+            }
+        }
+
+        private bool ObtenerSituacionCrediticia(string CUIT)
+        {
+            return true;
+        }
+
+        private bool NotificarSituacionCrediticia(OrdenDeCarga orden)
+        {
+            string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+            string mailsCobranzas = ConfigurationManager.AppSettings["EmailToCobranzas"];
+            string mailsComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
+
+            var mails = new List<string>();
+
+            mails.AddRange(mailsMesaVentaFas.Split(';').ToList());
+            mails.AddRange(mailsCobranzas.Split(';').ToList());
+            mails.AddRange(mailsComerciales.Split(';').ToList());
+
+            var cliente = repositorio.Obtener<Cliente>(orden.Cliente_Id);
+
+            string asunto = string.Concat("Orden de carga #", orden.Id);
+            string cuerpo = string.Format("Orden de carga {0} de cliente {1} no pasó validaciones crediticias.", orden.Id, cliente.RazonSocial);
+
+            EmailSender.EnviarMail(mails, asunto, cuerpo, null, null, null, null);
+
+            return true;
+        }
+        #endregion
+
+
+        private void EnviarASAP(OrdenDeCarga orden)
+        {
+            if (orden.Estado == EstadoOrdenDeCarga.Confirmado)
+            {
+                orden.InformadaSAP = true;
+
+                orden.ActualizarEstado();
+            }
+        }
+
+
     }
 }

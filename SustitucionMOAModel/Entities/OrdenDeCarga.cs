@@ -49,6 +49,12 @@ namespace SustitucionMOAModel.Entities
 
         public string ChasisAcoplado { get; set; }
 
+        public bool AprobadoCredito { get; set; }
+
+        public bool InformadaSAP { get; set; }
+
+        public DateTime FechaEntregaGenerada { get; set; }
+
         public void ActualizarEstado ()
         {
             if(string.IsNullOrEmpty(ContratoSAP) || !TransporteExiste || !CorredorSeleccionado)
@@ -57,7 +63,21 @@ namespace SustitucionMOAModel.Entities
             }
             else
             {
-                Estado = EstadoOrdenDeCarga.Confirmado;
+                if (InformadaSAP)
+                {
+                    Estado = EstadoOrdenDeCarga.Confirmado;
+                }
+                else
+                { 
+                    if (AprobadoCredito)
+                    {
+                        Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
+                    }
+                    else
+                    {
+                        Estado = EstadoOrdenDeCarga.EntregaGenerada;
+                    }
+                }
             }
         }
     }

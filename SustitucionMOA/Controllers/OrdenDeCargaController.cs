@@ -50,7 +50,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         //[CustomPermisoAuthorizeAttribute(Roles = Permiso.c)]
         [HttpGet]
         public ActionResult GetListado()
