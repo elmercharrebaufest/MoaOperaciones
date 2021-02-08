@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -58,7 +59,15 @@ namespace SustitucionMOAUtils.Services
 
         public ConsultaDto ObtenerConsulta(int consultaId)
         {
-            return repositorio.Obtener<Consulta, ConsultaDto>(c => c.Id == consultaId, c => new ConsultaDto
+            var includes = new List<Expression<Func<Consulta, object>>>();
+            includes.Add(x => x.Comentarios);
+            //includes.Add(x => x.Comentarios.Select(y => y.Archivos));
+            includes.Add(x => x.Categoria);
+            includes.Add(x => x.EstadoConsulta);
+
+            var c = repositorio.Obtener<Consulta>(includes, y=> y.Id == consultaId);
+
+            return new ConsultaDto
             {
                 Id = c.Id,
                 Asunto = c.Asunto,
@@ -80,7 +89,7 @@ namespace SustitucionMOAUtils.Services
                 NombreVendedor = c.NombreVendedor,
                 RazonSocial = c.RazonSocial,
                 Telefono = c.Telefono
-            });
+            };
         }
 
         public void RecategorizarConsulta(int consultaId, int categoriaId)

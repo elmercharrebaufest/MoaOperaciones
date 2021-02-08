@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Models.WSMapMOA.ContactoMail
 {
-    public class CategoriaContacto
+    public class EstadoConsultaVM
     {
         public int id { get; set; }
-        public string value { get; set; }
-        public string label { get; set; }
-        public string camposAdicionales { get; set; }
+        public string nombre { get; set; }
+        public string color { get; set; }
     }
 }

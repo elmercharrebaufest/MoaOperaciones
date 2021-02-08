@@ -464,6 +464,18 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Rol> GetRolesUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == email);
+                return usuario.Roles.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
         {

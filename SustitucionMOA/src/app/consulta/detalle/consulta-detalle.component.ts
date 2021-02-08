@@ -68,5 +68,38 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([]);
+
+        // this.route.params.forEach((params: Params) => {
+        //     let idConsulta = params['idConsulta'];
+        //     this.unsubscribe();
+        //     this.subscription = this.service.getConsultaDetalle(idConsulta).subscribe(
+        //         result => {
+        //             if (result.logout == true) {
+        //                 this.sessionDataService.logout();
+        //             } else if (result.error != undefined && result.error != "") {
+        //                 this.mensajeComponent.setErrorMsg(result.error);
+        //             } else if (result.info != undefined) {
+        //                 this.mensajeComponent.setInfoMsg(result.info);
+        //             } else {
+        //                 this.ComentariosList = [];
+
+        //                 result.Comentarios.forEach(x => {
+        //                     this.ComentariosList.push(
+        //                         {
+        //                             id: x.Id,
+        //                             nombre: 'Martin',
+        //                             comentario: x.Detalle,
+        //                             fecha: '14/01/2021',
+        //                             hora: '15:30'
+        //                         }
+        //                     );
+        //                 });
+        //             }
+        //         },
+        //         error => {
+        //             this.mensajeComponent.setErrorMsg(error.message);
+        //         }
+        //     );
+        // });
     }
 }
