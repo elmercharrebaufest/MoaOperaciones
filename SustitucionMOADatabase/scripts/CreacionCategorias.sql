@@ -7,19 +7,19 @@ BEGIN
 	VALUES ('001', 'ACTUALIZACIONES', 0)
 END
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '002')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
 	VALUES ('002', 'CONSULTAS GENERALES', 0)
 END
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '003')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
 	VALUES ('003', 'RECLAMO DE PAGOS', 0)
 END
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '004')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
 	VALUES ('004', 'RETENCIONES', 1)

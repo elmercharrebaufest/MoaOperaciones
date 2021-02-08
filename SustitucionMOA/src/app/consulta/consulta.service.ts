@@ -5,6 +5,8 @@ import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { identifierModuleUrl } from '@angular/compiler';
+import { getLocaleDateTimeFormat } from '@angular/common';
 
 @Injectable()
 export class ConsultaService extends BaseService {
@@ -64,18 +66,22 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers }).pipe(
             map(this.extractData));
     }
-}
 
-/*
-@Injectable()
-export class LiquidacionAprobadaService extends LiquidacionService {
-
-    getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
-        return this.getLiquidacionesCommon(periodo, fecha_inicio, fecha_fin, 'getAprobadas');
+    public agregarComentario(consultaId: number, detalle: string){
+        var comentario = {detalle: detalle, fecha: new Date(), consultaId: consultaId}
+        return this.http
+            .post(`/api/consulta/${consultaId}/Comentarios`, comentario, this.headersPost).map(this.extractData);
     }
 
-    exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
-        return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadAprobadas');
+    getDetalleConsulta(consultaId: number){
+        return this.http
+            .get(`/api/consulta/${consultaId}/Detalle`, { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+    public setEstadoConsulta(estadoId: number, consultaId: number){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
+        params.set('estado', estadoId.toString());
     }
 }
-*/
