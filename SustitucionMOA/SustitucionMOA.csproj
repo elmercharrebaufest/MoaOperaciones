@@ -230,9 +230,6 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
-    <Content Include="dist\assets\css\MolinosForms.css" />
-    <Content Include="dist\assets\css\MolinosGeneral.css" />
-    <Content Include="dist\assets\css\styles.css" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -1131,6 +1128,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="dist\assets\css\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
   </ItemGroup>
