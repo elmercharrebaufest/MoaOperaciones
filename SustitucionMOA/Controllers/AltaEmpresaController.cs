@@ -38,14 +38,15 @@ namespace SustitucionMOA.Controllers
                     IdTipoProveedor = 3;
 
                 var empresas = altaEmpresaService.GetEmpresas(IdTipoProveedor);
-                foreach (var item in empresas)
-                {
-                    item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
-                    foreach (var item2 in item.HistorialAprobaciones)
-                    {
-                        item2.EstadoAprobacionDescripcion = AddSpacesToSentence(item2.EstadoAprobacionDescripcion);
-                    }
-                }
+                //MP: Comento esta parte, ya que esto ahora lo formateamos en el service. Ademas, esto generaba que se rompan algunos filtros
+                //foreach (var item in empresas)
+                //{
+                //    item.EstadoAprobacionDescripcion = AddSpacesToSentence(item.EstadoAprobacionDescripcion);
+                //    foreach (var item2 in item.HistorialAprobaciones)
+                //    {
+                //        item2.EstadoAprobacionDescripcion = AddSpacesToSentence(item2.EstadoAprobacionDescripcion);
+                //    }
+                //}
                 return JsonCustom(new { data = empresas });
             }
             catch (InfoCustomException e)
