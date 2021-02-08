@@ -7,17 +7,19 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
-    public class CategoriaDto
+    public class SubCategoriaDto
     {
         public int Id { get; set; }
         public string Code { get; set; }
         public string Nombre { get; set; }
+        public int CategoriaId { get; set; }
 
-        public CategoriaDto(Categoria categoria)
+        public SubCategoriaDto(SubCategoria subcategoria)
         {
-            Id = categoria.Id;
-            Code = categoria.Code;
-            Nombre = categoria.Nombre;
+            Id = subcategoria.Id;
+            Code = subcategoria.Code;
+            Nombre = subcategoria.Nombre;
+            CategoriaId = subcategoria.Categoria_Id;
         }
     }
 }

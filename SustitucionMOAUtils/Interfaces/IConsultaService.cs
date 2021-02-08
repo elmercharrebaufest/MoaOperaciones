@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using System.Collections.Generic;
 using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -11,5 +12,9 @@ namespace SustitucionMOAUtils.Interfaces
         ConsultaDto ObtenerConsulta(int consultaId);
         void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId);
         void RecategorizarConsulta(int consultaId, int categoriaId);
+        List<CategoriaDto> ObtenerCategorias();
+        List<EstadoConsultaDto> ObtenerEstados();
+        List<SubCategoriaDto> ObtenerSubCategorias();
+        List<ConsultaDto> ListarConsultas(string email);
     }
 }

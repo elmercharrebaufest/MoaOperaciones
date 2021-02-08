@@ -73,23 +73,23 @@ namespace SustitucionMOAUtils.Services
                 Asunto = c.Asunto,
                 Categoria = new CategoriaDto(c.Categoria),
                 Comentarios = c.Comentarios.Select(comentario => new ComentarioDto(comentario)).ToList(),
-                Comprobante = c.Comprobante,
-                Contrato = c.Contrato,
-                CUIT = c.CUIT,
-                Email = c.Email,
                 EstadoConsulta = new EstadoConsultaDto(c.EstadoConsulta),
                 FechaCreacion = c.FechaCreacion,
-                FechaPago = c.FechaPago,
                 FechaUltimaModificacion = c.FechaUltimaModificacion,
-                Importe = c.Importe,
-                Impuesto = c.Impuesto,
-                Inscripcion = c.Inscripcion,
-                Motivo = c.Motivo,
-                Nombre = c.Nombre,
-                NombreVendedor = c.NombreVendedor,
-                RazonSocial = c.RazonSocial,
-                Telefono = c.Telefono
             };
+        }
+
+        public List<ConsultaDto> ListarConsultas(string email)
+        {
+            var ret = new List<ConsultaDto>();
+
+            ret = repositorio.Listar<Consulta>().Select(x =>
+            new ConsultaDto()
+            {
+                
+            }).ToList();
+
+            return ret;
         }
 
         public void RecategorizarConsulta(int consultaId, int categoriaId)
@@ -112,13 +112,13 @@ namespace SustitucionMOAUtils.Services
             if (comentario.Consulta_Id != consultaId) throw new InfoCustomException("El comentario no corresponde a la consulta especificada");
 
             var errores = new List<string>();
-            var proveedor = repositorio.Obtener<Consulta>(c => c.Id == consultaId).Proveedor;
+            var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
 
             for (int i = 0; i < files.Count; i++)
             {
                 var file = files[i];
                 var fileName = Path.GetFileName(file.FileName);
-                var ruta = $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
+                var ruta = ""; // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
                 var rutaArchivo = string.Concat(ruta, "/", fileName);
 
                 if (File.Exists(rutaArchivo))
@@ -136,6 +136,69 @@ namespace SustitucionMOAUtils.Services
             }
 
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
+        }
+
+        public List<CategoriaDto> ObtenerCategorias()
+        {
+            try
+            {
+                var categorias = repositorio.Listar<Categoria>();
+                return categorias.Select(x => new CategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<SubCategoriaDto> ObtenerSubCategorias()
+        {
+            try
+            {
+                var subcategorias = repositorio.Listar<SubCategoria>();
+                return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<EstadoConsultaDto> ObtenerEstados()
+        {
+            try
+            {
+                var estados = repositorio.Listar<EstadoConsulta>();
+                return estados.Select(x => new EstadoConsultaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
         }
     }
 }

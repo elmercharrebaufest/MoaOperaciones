@@ -50,6 +50,7 @@
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
+    <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
     <Compile Include="Dto\ComentarioDto.cs" />
     <Compile Include="Dto\ConsultaDto.cs" />
@@ -60,13 +61,16 @@
     <Compile Include="Dto\NotificacionDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
     <Compile Include="Entities\Categoria.cs" />
+    <Compile Include="Entities\CausaConsulta.cs" />
     <Compile Include="Entities\Comentario.cs" />
     <Compile Include="Entities\Consulta.cs" />
+    <Compile Include="Entities\ConsultaDetalle.cs" />
     <Compile Include="Entities\EstadoConsulta.cs" />
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />
     <Compile Include="Entities\Rubro.cs" />
+    <Compile Include="Entities\SubCategoria.cs" />
     <Compile Include="Enums\EstadosConsulta.cs" />
     <Compile Include="Enums\IngresosBrutos.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />

@@ -8,7 +8,12 @@ namespace SustitucionMOAModel.Enums
 {
     public enum EstadosConsulta
     {
-        Iniciado
+        Iniciado,
+        Reasignado,
+        EnGestion,
+        SolicitudInformacion,
+        Rechazado,
+        Finalizado
     }
 
     public static class EstadoConsultaExtensions
@@ -17,8 +22,12 @@ namespace SustitucionMOAModel.Enums
         {
             switch (me)
             {
-                case EstadosConsulta.Iniciado:
-                    return "INI";
+                case EstadosConsulta.Iniciado: return "INI";
+                case EstadosConsulta.Reasignado: return "REA";
+                case EstadosConsulta.EnGestion: return "ENG";
+                case EstadosConsulta.SolicitudInformacion: return "SOL";
+                case EstadosConsulta.Rechazado: return "REC";
+                case EstadosConsulta.Finalizado: return "FIN";
                 default:
                     return string.Empty;
             }

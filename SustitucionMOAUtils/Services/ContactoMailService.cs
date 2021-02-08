@@ -79,19 +79,19 @@ namespace SustitucionMOAUtils.Services
             ret = repositorio.Listar<Consulta>().Select(x => 
             new ConsultaVM()
             {
-                id = x.Id,
-                asunto = x.Asunto,
-                categoria = x.Categoria.Nombre,
-                comprobante = x.Comprobante,
-                contrato = x.Contrato,
-                cuit = x.CUIT,
-                estado = x.EstadoConsulta.Descripcion,
-                fechaCreacion = x.FechaCreacion,
-                fechaUltimaModificacion = x.FechaUltimaModificacion,
-                idCategoria = x.Categoria_Id,
-                idEstado = x.EstadoConsulta_Id,
-                inscripcion = x.Inscripcion,
-                razonSocial = x.RazonSocial 
+                //id = x.Id,
+                //asunto = x.Asunto,
+                //categoria = x.Categoria.Nombre,
+                //comprobante = x.Comprobante,
+                //contrato = x.Contrato,
+                //cuit = x.CUIT,
+                //estado = x.EstadoConsulta.Descripcion,
+                //fechaCreacion = x.FechaCreacion,
+                //fechaUltimaModificacion = x.FechaUltimaModificacion,
+                //idCategoria = x.Categoria_Id,
+                //idEstado = x.EstadoConsulta_Id,
+                //inscripcion = x.Inscripcion,
+                //razonSocial = x.RazonSocial 
             }).ToList();
 
             return ret;
@@ -125,28 +125,28 @@ namespace SustitucionMOAUtils.Services
                 var now = DateTime.Now;
                 Consulta nuevaConsulta = new Consulta()
                 {
-                    Id = -1,
-                    Asunto = contactoContenido.asunto,
-                    Categoria = categoria,
-                    Categoria_Id = categoria.Id,
-                    Proveedor = proveedor,
-                    Proveedor_Id = proveedor.Id,
-                    Comprobante = contactoContenido.comprobante,
-                    Contrato = contactoContenido.contrato,
-                    CUIT = contactoContenido.cuit,
-                    Email = contactoContenido.email,
-                    EstadoConsulta_Id = estadoInicial.Id,
-                    FechaCreacion = now,
-                    FechaUltimaModificacion = now,
-                    FechaPago = string.IsNullOrEmpty(contactoContenido.fechaPago) ? (DateTime?)null : DateTime.Parse(contactoContenido.fechaPago),
-                    Importe = contactoContenido.importeDecimal,
-                    Impuesto = contactoContenido.impuestoDecimal,
-                    Inscripcion = contactoContenido.inscripcion,
-                    Motivo = contactoContenido.motivo,
-                    Nombre = contactoContenido.nombre,
-                    NombreVendedor = contactoContenido.nombreVendedor,
-                    RazonSocial = contactoContenido.razonSocial,
-                    Telefono = contactoContenido.telefono
+                    //Id = -1,
+                    //Asunto = contactoContenido.asunto,
+                    //Categoria = categoria,
+                    //Categoria_Id = categoria.Id,
+                    //Proveedor = proveedor,
+                    //Proveedor_Id = proveedor.Id,
+                    //Comprobante = contactoContenido.comprobante,
+                    //Contrato = contactoContenido.contrato,
+                    //CUIT = contactoContenido.cuit,
+                    //Email = contactoContenido.email,
+                    //EstadoConsulta_Id = estadoInicial.Id,
+                    //FechaCreacion = now,
+                    //FechaUltimaModificacion = now,
+                    //FechaPago = string.IsNullOrEmpty(contactoContenido.fechaPago) ? (DateTime?)null : DateTime.Parse(contactoContenido.fechaPago),
+                    //Importe = contactoContenido.importeDecimal,
+                    //Impuesto = contactoContenido.impuestoDecimal,
+                    //Inscripcion = contactoContenido.inscripcion,
+                    //Motivo = contactoContenido.motivo,
+                    //Nombre = contactoContenido.nombre,
+                    //NombreVendedor = contactoContenido.nombreVendedor,
+                    //RazonSocial = contactoContenido.razonSocial,
+                    //Telefono = contactoContenido.telefono
                 };
 
                 Comentario nuevoComentario = new Comentario()
