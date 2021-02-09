@@ -397,7 +397,8 @@
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
-                                <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#"> Carga de negocios</a>
+                                <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#"> Carga de
+                                    negocios</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
@@ -458,7 +459,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL') && false">
+                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="faq">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/faq')" href="#"
                             data-parent="#accordionMenu">

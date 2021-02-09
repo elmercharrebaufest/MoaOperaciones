@@ -40,14 +40,7 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([
-            new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
-            new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
-            new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas')
-            // ,
-            // new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
-            // new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
-        ]);
+        this.navService.setSeccionList([new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'), new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'), new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'), new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'), new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')]);
         this.getData();
     }
 
