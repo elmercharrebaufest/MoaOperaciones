@@ -37,7 +37,7 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("EstadoConsulta_Id")]
         public virtual EstadoConsulta EstadoConsulta { get; set; }
 
-        [InverseProperty("Consulta")]
+        [Required]
         public virtual ConsultaDetalle Detalle { get; set; }
 
         public virtual ICollection<Comentario> Comentarios { get; set; }
