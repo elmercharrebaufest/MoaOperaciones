@@ -7,6 +7,8 @@ CREATE TABLE [dbo].[Usuario](
 
  [UltimoLogin] SMALLDATETIME NULL, 
     [SeccionesVisitadas] NVARCHAR(MAX) NOT NULL DEFAULT '', 
+	[AceptoTyC] BIT NOT NULL DEFAULT 0, 
+	[AceptoTyCFecha] DATETIME, 
     CONSTRAINT [PK_dbo.Usuario] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

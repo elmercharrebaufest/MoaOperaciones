@@ -23,6 +23,8 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Proveedor> Proveedores { get; set; }
         [InverseProperty("Usuarios")]
         public virtual ICollection<Rol> Roles { get; set; }
+        public bool AceptoTyC { get; set; }
+        public DateTime? AceptoTyCFecha { get; set; }
 
         //public virtual ICollection<Archivo> Archivos { get; set; }
 
