@@ -49,7 +49,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         this.mensajeComponent = new MensajeComponent();
         this.spinnerCampana = new SpinnerSmallComponent();
     }
-
+    crearModificar: string = "Crear";
     id: number = 0;
     contratoEditar: any;
     esCorredorEnDataAgro: boolean = false;
@@ -119,7 +119,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         //this.obteneDatosContrato();
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) {
-                this.id = params["id"]
+                this.id = params["id"];
+                this.crearModificar = "Modificar";
             };
         });
     }

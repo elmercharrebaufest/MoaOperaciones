@@ -189,6 +189,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                         DestinoDescripcion: x.DestinoDescripcion,
                         FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),
                         FechaHasta: new Date(parseInt(x.FechaHasta.substr(6))),
+                        FechaOperacion: new Date(parseInt(x.FechaOperacion.substr(6))),
                         Material: x.Material,
                         Campania: x.Campania,
                         Clasificacion: x.Clasificacion,

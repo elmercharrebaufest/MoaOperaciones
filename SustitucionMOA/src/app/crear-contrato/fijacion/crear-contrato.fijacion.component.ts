@@ -311,7 +311,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             return false;
         }
 
-        
+
         //if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
         //    this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
         //    return false;
@@ -402,28 +402,30 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     }
 
     selectEventContratoId(item: FijacionesAutomaticas) {
-        console.log(item);
-        this.pendienteFijar = item;
-        this.contrato.ContratoSAP = item.ContratoId;
-        this.contrato.Posicion = item.Posicion;
-        var dateParts = item.DesdeEntrega.split("-");
-        var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
-        this.contrato.FechaDesde = dateObject;
-        //console.log("FechaDesde");
-        //console.log("dateParts", dateParts);
-        //console.log("dateObject", dateObject);
-        //console.log("this.contrato.FechaDesde", this.contrato.FechaDesde);
-        dateParts = item.HastaEntrega.split("-");
-        dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]); 
-        this.contrato.FechaHasta = dateObject;
-        this.contrato.FechaEntrega = dateObject;
-        //console.log("FechaHasta");
-        //console.log("dateParts", dateParts);
-        //console.log("dateObject", dateObject);
-        //console.log("this.contrato.FechaHasta", this.contrato.FechaHasta);
-        this.contrato.CampanaId = item.CampanaId;
-        this.contrato.DestinoId = item.Centro;
-        this.contrato.TrigoEspecial = item.Calidad;
+        if (item) {
+            this.pendienteFijar = item;
+            this.contrato.ContratoSAP = item.ContratoId;
+            this.contrato.Posicion = item.Posicion;
+            var dateParts = item.DesdeEntrega.split("-");
+            var dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+            this.contrato.FechaDesde = dateObject;
+            //console.log("FechaDesde");
+            //console.log("dateParts", dateParts);
+            //console.log("dateObject", dateObject);
+            //console.log("this.contrato.FechaDesde", this.contrato.FechaDesde);
+            dateParts = item.HastaEntrega.split("-");
+            dateObject = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+            this.contrato.FechaHasta = dateObject;
+            this.contrato.FechaEntrega = dateObject;
+            //console.log("FechaHasta");
+            //console.log("dateParts", dateParts);
+            //console.log("dateObject", dateObject);
+            //console.log("this.contrato.FechaHasta", this.contrato.FechaHasta);
+            this.contrato.CampanaId = item.CampanaId;
+            this.contrato.DestinoId = item.Centro;
+            this.contrato.TrigoEspecial = item.Calidad;
+        }
+
 
     }
 

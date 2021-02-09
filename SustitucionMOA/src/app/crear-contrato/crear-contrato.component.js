@@ -45,6 +45,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.securityService = securityService;
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
+        _this.crearModificar = "Crear";
         _this.id = 0;
         _this.esCorredorEnDataAgro = false;
         _this.retirados = null;
@@ -112,6 +113,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.route.params.forEach(function (params) {
             if (params["id"] > 0) {
                 _this.id = params["id"];
+                _this.crearModificar = "Modificar";
             }
             ;
         });

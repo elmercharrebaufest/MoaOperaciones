@@ -369,6 +369,17 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
+        if (this.contrato.CantidadCamiones > 0) {
+            var cantidadCamionesNecesarios = Math.ceil(this.contrato.Cantidad / 30000);
+            if (this.contrato.CantidadCamiones > cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es mayor a la necesaria");
+                return;
+            }
+            if (this.contrato.CantidadCamiones < cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es menor a la necesaria");
+                return;
+            }
+        }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
             this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
             return false;
