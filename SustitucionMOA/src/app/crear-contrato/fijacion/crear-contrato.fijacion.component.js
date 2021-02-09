@@ -365,7 +365,8 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoFijacionComponent.prototype.selectEventContratoId = function (item) {
-        if (item) {
+        if (item && item.ContratoId) {
+            console.log("a fijar", item);
             this.pendienteFijar = item;
             this.contrato.ContratoSAP = item.ContratoId;
             this.contrato.Posicion = item.Posicion;

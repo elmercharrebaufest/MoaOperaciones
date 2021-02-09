@@ -402,7 +402,8 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     }
 
     selectEventContratoId(item: FijacionesAutomaticas) {
-        if (item) {
+        if (item && item.ContratoId) {
+            console.log("a fijar", item);
             this.pendienteFijar = item;
             this.contrato.ContratoSAP = item.ContratoId;
             this.contrato.Posicion = item.Posicion;
