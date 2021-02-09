@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -28,6 +29,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                comentario.Usuario_Id = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(consultaService.AgregarComentario(consultaId, comentario));
             }
@@ -78,9 +80,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                userMail = string.Empty; //TODO: ver de setear email segun permiso
-                return JsonCustom(new { data = consultaService.ListarConsultas(userMail) });
+                var usuarioActual = ObtenerUsuarioActual();
+                //TODO: ver de setear email segun permiso
+                return JsonCustom(new { data = consultaService.ListarConsultas(-1) });
             }
             catch (InfoCustomException e)
             {
@@ -110,10 +112,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = usuarioService.GetUsuario(userMail);
                 var detalle = consultaService.ObtenerConsulta(consultaId);
-                detalle.UsuarioActualId = usuario.Id;
+                detalle.UsuarioActualId = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(detalle);
             }
@@ -134,11 +134,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPatch]
-        public JsonResult Recategorizar(int consultaId, int categoriaId, int subCategoriaId)
+        public JsonResult Recategorizar(int consultaId, int categoriaId, int? subCategoriaId)
         {
             try
             {
-                if (consultaId <= 0 || categoriaId <= 0 || subCategoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+                if (consultaId <= 0 || categoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
                 consultaService.RecategorizarConsulta(consultaId, categoriaId, subCategoriaId);
 
@@ -215,6 +215,12 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        private UsuarioDto ObtenerUsuarioActual()
+        {
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            return usuarioService.GetUsuario(userMail);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace SustitucionMOAModel.Entities
         public string CodigoProveedor { get; set; }
         public string RazonSocialProveedor { get; set; }
         public int Categoria_Id { get; set; }
-        public int SubCategoria_Id { get; set; }
+        public int? SubCategoria_Id { get; set; }
         public string Asunto { get; set; }
         public int EstadoConsulta_Id { get; set; }
         public DateTime FechaCreacion { get; set; }

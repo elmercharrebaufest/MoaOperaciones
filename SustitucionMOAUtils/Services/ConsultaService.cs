@@ -64,7 +64,9 @@ namespace SustitucionMOAUtils.Services
             var includes = new List<Expression<Func<Consulta, object>>>();
             includes.Add(x => x.Comentarios);
             includes.Add(x => x.Comentarios.Select(y => y.Archivos));
+            includes.Add(x => x.Comentarios.Select(y => y.Archivos.Select(z=> z.Archivo)));
             includes.Add(x => x.Categoria);
+            includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
 
             var c = repositorio.Obtener<Consulta>(includes, y=> y.Id == consultaId);
@@ -75,19 +77,9 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
-        public List<ConsultaDto> ListarConsultas(string email)
+        public List<ConsultaDto> ListarConsultas(int usuarioId)
         {
             var ret = new List<ConsultaDto>();
-            var usuarioId = -1;
-
-            if (!string.IsNullOrEmpty(email))
-            {
-                var usuario = repositorio.Obtener<Usuario>(x => x.Mail == email);
-
-                if (usuario == null) throw new InfoCustomException("No existe el usuario");
-
-                usuarioId = usuario.Id;
-            }
 
             var includes = new List<Expression<Func<Consulta, object>>>();
             includes.Add(x => x.Detalle);
@@ -102,13 +94,17 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
-        public void RecategorizarConsulta(int consultaId, int categoriaId, int subCategoriaId)
+        public void RecategorizarConsulta(int consultaId, int categoriaId, int? subCategoriaId)
         {
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
-            var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subCategoriaId);
 
-            if(categoria == null) throw new InfoCustomException("No existe la categoria");
-            if(subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
+            if (subCategoriaId.HasValue)
+            {
+                var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subCategoriaId);
+                if (subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
+            }
+
+            if (categoria == null) throw new InfoCustomException("No existe la categoria");
             
             var consulta = GetConsulta(consultaId);
 
