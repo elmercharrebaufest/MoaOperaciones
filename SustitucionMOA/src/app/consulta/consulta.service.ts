@@ -5,6 +5,7 @@ import { Formatter } from './../common/formatter/Formatter';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Comentario } from './consulta';
 import { identifierModuleUrl } from '@angular/compiler';
 import { getLocaleDateTimeFormat } from '@angular/common';
 
@@ -61,21 +62,34 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
+
+
     public getConsultaDetalle(idConsulta): Observable<any> {
         return this.http
             .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers }).pipe(
             map(this.extractData));
     }
 
-    public agregarComentario(consultaId: number, detalle: string){
-        var comentario = {detalle: detalle, fecha: new Date(), consultaId: consultaId}
+    public agregarComentario(consultaId: string, comentario: Comentario): Observable<any>{
+        let body = JSON.stringify(comentario);
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
         return this.http
-            .post(`/api/consulta/${consultaId}/Comentarios`, comentario, this.headersPost).map(this.extractData);
+            .post('/api/consulta/Comentarios', comentario, { search: params, headers: this.headers }).map(this.extractData);
     }
 
-    getDetalleConsulta(consultaId: number){
+    /*
+   public agregarComentario(consultaId: string, detalle: string){
+    var comentario = {detalle: detalle, fecha: new Date(), consultaId: consultaId}
+    return this.http
+        .post(`/api/consulta/Comentarios`, comentario, this.headersPost).map(this.extractData);
+   }*/
+
+    public getDetalleConsulta(consultaId: string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
         return this.http
-            .get(`/api/consulta/${consultaId}/Detalle`, { headers: this.headers }).pipe(
+            .get(`/api/Consulta/Detalle`, { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 

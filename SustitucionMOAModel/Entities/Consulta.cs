@@ -35,9 +35,6 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Proveedor_Id")]
         public virtual Proveedor Proveedor { get; set; }
 
-        [ForeignKey("Proveedor_Id")]
-        public virtual Proveedor Proveedor { get; set; }
-
         [ForeignKey("Categoria_Id")]
         public virtual Categoria Categoria { get; set; }
 

@@ -13,6 +13,7 @@ import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { BaseComponent } from '../../common/base-components/base-component';
+import { Comentario } from '../consulta';
 
 declare var $: any;
 
@@ -38,7 +39,6 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-    ConsultaService: any;
 
     constructor(private route: ActivatedRoute, protected service: ConsultaService, protected navService: NavService,
         protected securityService: SecurityService,
@@ -49,22 +49,16 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.mensajeComponent = new MensajeComponent();
             this.spinnerComponent = new SpinnerComponent();
     }
-
-    consulta = {email: "evilliate@baufest.com"}
-
-    ComentariosList = [
-        {id: 0, email: "evilliate@baufest.com", nombre: "Martin", comentario: "Comentario 1, lorem ipsum.\nDol sit a ver", fecha: "11/10/2021", hora: "15:30"},
-        {id: 1, email: "noimporta", nombre: "juan", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "11/10/2021", hora: "15:30"},
-        {id: 2, email: "evilliate@baufest.com", nombre: "Martin", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "13/10/2021", hora: "15:30"},
-        {id: 3, email: "sssssss", nombre: "juan", comentario: "Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo. \n Comentario 2, lorem ipsum dol sit a ver esto es un texto mas largo, mas largo, mas largo.", fecha: "14/10/2021", hora: "15:30"},
-        {id: 4, email: "evilliate@baufest.com", nombre: "Martin", comentario: "ESTAMOS EN LA B.", fecha: "14/10/2021", hora: "15:30"},
-        {id: 5, email: "evilliate@baufest.com", nombre: "Martin", comentario: "ok como estas ?", fecha: "14/10/2021", hora: "15:30"}
-    ];
-
+    
+    consulta: any;
+    comentariosList: any;
     estadoConsulta: number;
-    consultaId = 11;
+    consultaId: string;
     file: any;
+    fecha: any;
+    hora: any;
     username = sessionStorage.getItem("userName");
+    detalle: string = "";
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -77,11 +71,13 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         this.jqueryOnInit();
-        this.getDetalleConsulta()
+        this.getConsultaId();
+        this.getDetalleConsulta();
     }
 
-    setEstadoConsulta(){
-               
+    getConsultaId(){
+        const queryString = window.location.href;
+        this.consultaId = queryString.split('=')[1];
     }
 
     // this.route.params.forEach((params: Params) => {
@@ -125,10 +121,37 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
     }
 
-    getDetalleConsulta(){
-        this.spinnerModal.showIt();
-        this.subscription = this.ConsultaService.getDetalleConsulta(this.consultaId).subscribe(
+    postComentario(){
+        let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
+        console.log(this.detalle);
+        console.log("arriba");
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
             result => {
+                this.getDetalleConsulta();
+                this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
+    getDetalleConsulta(){
+        this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
+            result => {
+                this.consulta = result;
+                this.consulta.Comentarios.forEach(x => {
+                    x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
+                    x.Fecha = this.convertDate(x.Fecha);
+                });
+                console.log(this.consulta);
                 this.spinnerModal.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -148,5 +171,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+        $('.enviarComentario').click(function(e){
+            e.preventDefault()
+        })
     }
 }

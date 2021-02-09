@@ -29,3 +29,8 @@ export interface Categoria {
     camposAdicionales;
 }
 
+export class Comentario{
+    consulta_Id: any; 
+    Detalle: any; 
+    Fecha: any
+}
