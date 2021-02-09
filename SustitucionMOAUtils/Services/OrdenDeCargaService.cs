@@ -64,7 +64,7 @@ namespace SustitucionMOAUtils.Services
             List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
             if (usuario.EsAdmin())
             {
-                listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id)).Select(x => new OrdenDeCargaDto
+                listado = repositorio.Listar<OrdenDeCarga>().Select(x => new OrdenDeCargaDto
                 {
                     Id = x.Id,
                     CUITCliente = x.CUITCliente,
@@ -85,6 +85,49 @@ namespace SustitucionMOAUtils.Services
             }
 
             return listado;
+        }
+
+        public OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            OrdenDeCargaDetalleDto ordenDto;
+            OrdenDeCarga orden;
+            if (usuario.EsAdmin())
+            {
+                orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+                
+            }
+            else
+            {
+                var clientes = usuario.Proveedores.Select(c => c.Id);
+                orden = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.Id == ordenId).FirstOrDefault();
+            }
+
+            var cliente = repositorio.Obtener<Proveedor>(orden.Cliente_Id);
+
+            ordenDto = new OrdenDeCargaDetalleDto
+            {
+                Id = orden.Id,
+                CUITCliente = orden.CUITCliente,
+                DescripcionEstado = orden.Estado.ToString(),
+                ColorSemaforo = orden.Estado.ObtenerSemaforo(),
+                AprobadoCredito = orden.AprobadoCredito,
+                Cantidad = orden.Cantidad,
+                ChasisAcoplado = orden.ChasisAcoplado,
+                Chofer = $"{orden.ApellidoChofer}, {orden.NombreChofer} ({orden.CUITChofer})",
+                ContratoSAP = orden.ContratoSAP,
+                Corredor = orden.Corredor,
+                CorredorSeleccionado = orden.CorredorSeleccionado,
+                FechaCarga = orden.FechaCarga.ToString("dd/MM/yyyy hh:mm"),
+                FechaEntregaGenerada = orden.FechaEntregaGenerada?.ToString("dd/MM/yyyy hh:mm"),
+                InformadaSAP = orden.InformadaSAP,
+                Observacion = orden.Observacion,
+                PatenteAcoplado = orden.PatenteAcoplado,
+                RazonSocialCliente = cliente.RazonSocial
+            };
+
+            return ordenDto;
         }
 
         public string AnularOrden(int ordenId)

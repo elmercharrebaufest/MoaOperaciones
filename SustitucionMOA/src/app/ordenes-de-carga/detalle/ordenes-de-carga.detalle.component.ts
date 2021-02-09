@@ -1,0 +1,66 @@
+import { DatePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { BaseComponent } from '../../common/base-components/base-component';
+import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { ModalService } from '../../common/services/ModalService';
+import { NavService } from '../../common/services/NavService';
+import { SecurityService } from '../../common/services/SecurityService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { UsuarioService } from '../../usuario/usuario.service';
+import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
+
+@Component({
+  selector: 'app-ordenes-de-carga.detalle',
+  templateUrl: './ordenes-de-carga.detalle.component.html',
+  styleUrls: ['./ordenes-de-carga.detalle.component.css']
+})
+export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnInit {
+
+    ordenDeCargaId: number = 0;
+
+    ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
+    mensajeError: string = "";
+    
+    constructor(protected service: OrdenesDeCargaService,
+        protected usuarioService: UsuarioService, protected navService: NavService,
+        private route: ActivatedRoute,
+        protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        public datepipe: DatePipe) {
+        super(navService, securytiService, floatMsgService, modalService);
+    }
+
+  ngOnInit() {
+        this.route.params.forEach((params: Params) => {
+            if (params["id"] > 0) this.ordenDeCargaId = params["id"];
+        });
+
+        this.navService.setSeccionList([]);
+
+        if (this.ordenDeCargaId > 0) {
+            this.obtenerOrdenDeCarga();
+        }
+    }
+
+  obtenerOrdenDeCarga() {
+        try {
+            this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                    } else if (result.info != undefined) {
+                    } else {
+                      this.ordenDeCarga = result.data;
+                      console.log(this.ordenDeCarga)
+                    }
+                },
+                error => {
+                }
+            );
+        } catch (e) {
+        }
+    }
+}

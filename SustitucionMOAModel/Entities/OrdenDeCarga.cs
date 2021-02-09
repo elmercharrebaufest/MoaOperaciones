@@ -53,7 +53,7 @@ namespace SustitucionMOAModel.Entities
 
         public bool InformadaSAP { get; set; }
 
-        public DateTime FechaEntregaGenerada { get; set; }
+        public DateTime? FechaEntregaGenerada { get; set; }
 
         public void ActualizarEstado ()
         {

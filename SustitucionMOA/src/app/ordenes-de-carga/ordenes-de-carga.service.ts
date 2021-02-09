@@ -20,7 +20,7 @@ export class OrdenesDeCargaService extends BaseService{
         params.set('ordenDeCargaId', ordenDeCargaId.toString());
 
         return this.http
-            .get('/api/OrdenDeCarga/GetOrdenDeCarga', { search: params, headers: this.headers })
+            .get('/api/OrdenDeCarga/Get', { search: params, headers: this.headers })
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }

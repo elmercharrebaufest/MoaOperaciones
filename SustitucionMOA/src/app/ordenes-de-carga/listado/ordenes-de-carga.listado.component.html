@@ -46,6 +46,9 @@
               <th>Estado</th>
               <th>Semaforo</th>
               <th>Semaforo</th>
+              <th>
+                Detalle
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -60,6 +63,11 @@
               <td>
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                 </div>
+              </td>
+              <td>
+                <a (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
+                  Ver
+                </a>
               </td>
             </tr>
           </tbody>

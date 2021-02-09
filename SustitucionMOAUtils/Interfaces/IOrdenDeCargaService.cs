@@ -12,6 +12,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         string Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<OrdenDeCargaDto> Listar(string mailUsuario);
+        OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
+
         string AnularOrden(int ordenId);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
