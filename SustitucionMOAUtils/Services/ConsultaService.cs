@@ -49,6 +49,16 @@ namespace SustitucionMOAUtils.Services
 
             return new ComentarioDto(comentario);
         }
+        public ConsultaDto AgregarConsulta(Consulta consulta)
+        {
+            consulta.Id = -1;
+            consulta.Detalle.Id = -1;
+
+            repositorio.Agregar(consulta);
+            repositorio.GuardarCambios();
+
+            return new ConsultaDto(consulta);
+        }
 
         private Consulta GetConsulta(int consultaId)
         {

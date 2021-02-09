@@ -1,28 +1,51 @@
 ﻿SET NOCOUNT ON
 BEGIN TRAN
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '001')
+DECLARE @idCategoria INT
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'REI')
 BEGIN
-	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
-	VALUES ('001', 'ACTUALIZACIONES', 0)
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('REI', 'Reclamo Impositivo')
+
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('RET', 'Retenciones', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('PER', 'Percepciones', @idCategoria)
 END
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '002')
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'BOL')
 BEGIN
-	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
-	VALUES ('002', 'CONSULTAS GENERALES', 0)
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('BOL', 'Boletos')
+
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('CON', 'Contratos', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('REG', 'Registraciones', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('OPC', 'Oblea Plan Canje', @idCategoria)
 END
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '003')
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'ACT')
 BEGIN
-	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
-	VALUES ('003', 'RECLAMO DE PAGOS', 0)
-END
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('ACT', 'Actualización')
 
-IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = '004')
-BEGIN
-	INSERT INTO Categoria(Code, Nombre, CamposAdicionales)
-	VALUES ('004', 'RETENCIONES', 1)
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('IMP', 'Impositiva', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('INF', 'Informe comercial', @idCategoria)
 END
 
 COMMIT TRAN

@@ -50,6 +50,31 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
+        public JsonResult Consulta(Consulta consulta)
+        {
+            try
+            {
+                consulta.Usuario_Id = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(consultaService.AgregarConsulta(consulta));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
         [Route("/{consultaId}/Comentario/{comentarioId}/Adjuntos")]
         public JsonResult Adjuntos(int consultaId, int comentarioId)
         {
