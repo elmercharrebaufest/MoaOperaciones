@@ -280,6 +280,15 @@
                                         </span>
                                     </div>
                                 </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaOperacion')">
+                                    Fecha Operacion
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaOperacion' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaOperacion' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Cuit')">
                                     Cuit
                                     <div>
@@ -466,11 +475,13 @@
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                                 <td class="{{contratoInfo.Estado_Contrato}}">
                                     {{contratoInfo.Estado_Contrato}}
-                                    <span *ngIf="contratoInfo.Estado == 9"><br />
+                                    <span *ngIf="contratoInfo.Estado == 9">
+                                        <br />
                                         <a title="Anular" href="javascript:void(0);" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;
                                         <a title="Editar" href="javascript:void(0);" (click)="editar(contratoInfo)"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp;
                                     </span>
                                 </td>
+                                <td>{{contratoInfo.FechaOperacion | date: 'dd/MM/yyyy'}}</td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>

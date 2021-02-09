@@ -676,7 +676,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 else if (tipoNegocioId == 3)
                 {
-                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularFijacionCarga");
+                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularFijacion");
                 }
                 else
                 {
