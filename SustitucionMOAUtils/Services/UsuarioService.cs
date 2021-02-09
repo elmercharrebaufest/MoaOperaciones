@@ -135,6 +135,24 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public UsuarioDto GetUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x=> x.Mail == email);
+
+                if (usuario == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
+                }
+                return new UsuarioDto(usuario);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
 
         [Obsolete]

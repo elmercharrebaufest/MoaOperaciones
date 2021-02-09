@@ -13,10 +13,12 @@ namespace SustitucionMOA.Controllers
     public class ConsultaController : BaseController
     {
         private readonly IConsultaService consultaService;
+        private readonly IUsuarioService usuarioService;
 
-        public ConsultaController(IConsultaService consultaService)
+        public ConsultaController(IConsultaService consultaService, IUsuarioService usuarioService)
         {
             this.consultaService = consultaService;
+            this.usuarioService = usuarioService;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
@@ -77,6 +79,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                userMail = string.Empty; //TODO: ver de setear email segun permiso
                 return JsonCustom(new { data = consultaService.ListarConsultas(userMail) });
             }
             catch (InfoCustomException e)
@@ -107,8 +110,12 @@ namespace SustitucionMOA.Controllers
             try
             {
                 if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var usuario = usuarioService.GetUsuario(userMail);
+                var detalle = consultaService.ObtenerConsulta(consultaId);
+                detalle.UsuarioActualId = usuario.Id;
 
-                return JsonCustom(consultaService.ObtenerConsulta(consultaId));
+                return JsonCustom(detalle);
             }
             catch (InfoCustomException e)
             {
