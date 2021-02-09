@@ -51,7 +51,7 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(rutaCarpeta);
 
-                comentario.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
+                //comentario.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
 
                 fileSubido.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();

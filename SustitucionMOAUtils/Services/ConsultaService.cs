@@ -21,6 +21,8 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorio repositorio;
 
+        private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
+
         public ConsultaService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
@@ -61,46 +63,58 @@ namespace SustitucionMOAUtils.Services
         {
             var includes = new List<Expression<Func<Consulta, object>>>();
             includes.Add(x => x.Comentarios);
-            //includes.Add(x => x.Comentarios.Select(y => y.Archivos));
+            includes.Add(x => x.Comentarios.Select(y => y.Archivos));
             includes.Add(x => x.Categoria);
             includes.Add(x => x.EstadoConsulta);
 
             var c = repositorio.Obtener<Consulta>(includes, y=> y.Id == consultaId);
 
-            return new ConsultaDto
-            {
-                Id = c.Id,
-                Asunto = c.Asunto,
-                Categoria = new CategoriaDto(c.Categoria),
-                Comentarios = c.Comentarios.Select(comentario => new ComentarioDto(comentario)).ToList(),
-                EstadoConsulta = new EstadoConsultaDto(c.EstadoConsulta),
-                FechaCreacion = c.FechaCreacion,
-                FechaUltimaModificacion = c.FechaUltimaModificacion,
-            };
+            var ret = new ConsultaDto(c);
+            ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto(x)).ToList();
+
+            return ret;
         }
 
         public List<ConsultaDto> ListarConsultas(string email)
         {
             var ret = new List<ConsultaDto>();
+            var usuarioId = -1;
 
-            ret = repositorio.Listar<Consulta>().Select(x =>
-            new ConsultaDto()
+            if (!string.IsNullOrEmpty(email))
             {
-                
-            }).ToList();
+                var usuario = repositorio.Obtener<Usuario>(x => x.Mail == email);
+
+                if (usuario == null) throw new InfoCustomException("No existe el usuario");
+
+                usuarioId = usuario.Id;
+            }
+
+            var includes = new List<Expression<Func<Consulta, object>>>();
+            includes.Add(x => x.Detalle);
+            includes.Add(x => x.Detalle.CausaConsulta);
+            includes.Add(x => x.Categoria);
+            includes.Add(x => x.SubCategoria);
+            includes.Add(x => x.EstadoConsulta);
+
+            //TODO: filtro por permisos
+            ret = repositorio.Listar<Consulta>(x=> usuarioId < 0 || x.Usuario_Id == usuarioId, includes: includes).Select(x => new ConsultaDto(x)).ToList();
 
             return ret;
         }
 
-        public void RecategorizarConsulta(int consultaId, int categoriaId)
+        public void RecategorizarConsulta(int consultaId, int categoriaId, int subCategoriaId)
         {
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
+            var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subCategoriaId);
 
             if(categoria == null) throw new InfoCustomException("No existe la categoria");
+            if(subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
             
             var consulta = GetConsulta(consultaId);
 
             consulta.Categoria_Id = categoriaId;
+            consulta.SubCategoria_Id = subCategoriaId;
+
             repositorio.GuardarCambios();
         }
 
@@ -112,13 +126,13 @@ namespace SustitucionMOAUtils.Services
             if (comentario.Consulta_Id != consultaId) throw new InfoCustomException("El comentario no corresponde a la consulta especificada");
 
             var errores = new List<string>();
-            var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
 
             for (int i = 0; i < files.Count; i++)
             {
                 var file = files[i];
-                var fileName = Path.GetFileName(file.FileName);
-                var ruta = ""; // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
+                var fileName = string.Format("{0}_{1}", comentario.Id, Path.GetFileName(file.FileName));
+
+                var ruta = ArmarRutaCarpeta(comentario); // $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{proveedor.CUIT}/{proveedor.Id}/{FileKeys.Consultas}/{consultaId}";
                 var rutaArchivo = string.Concat(ruta, "/", fileName);
 
                 if (File.Exists(rutaArchivo))
@@ -129,7 +143,17 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(ruta);
 
-                comentario.Archivos.Add(new Archivo { FileKey = FileKeys.Consultas, Ruta = rutaArchivo });
+                var comentarioArchivo = new ComentarioArchivo()
+                {
+                    Archivo = new Archivo
+                    {
+                        FileKey = FileKeys.Consultas,
+                        Ruta = rutaArchivo
+                    },
+                    Comentario = comentario
+                };
+
+                comentario.Archivos.Add(comentarioArchivo);
 
                 file.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();
@@ -199,6 +223,11 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        private string ArmarRutaCarpeta(Comentario comentario)
+        {
+            return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
         }
     }
 }

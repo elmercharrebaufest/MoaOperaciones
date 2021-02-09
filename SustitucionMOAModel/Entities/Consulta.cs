@@ -22,6 +22,14 @@ namespace SustitucionMOAModel.Entities
         public int EstadoConsulta_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaUltimaModificacion { get; set; }
+        public int Usuario_Id { get; set; }
+
+
+        [ForeignKey("Usuario_Id")]
+        public virtual Usuario Usuario { get; set; }
+
+        [ForeignKey("Proveedor_Id")]
+        public virtual Proveedor Proveedor { get; set; }
 
         [ForeignKey("Categoria_Id")]
         public virtual Categoria Categoria { get; set; }

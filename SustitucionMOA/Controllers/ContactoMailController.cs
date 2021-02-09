@@ -50,8 +50,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                var error = e.Message + "-" + (e.InnerException != null ? e.InnerException.Message : string.Empty);
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, error);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }

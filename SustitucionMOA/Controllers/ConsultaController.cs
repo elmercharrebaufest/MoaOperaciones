@@ -127,13 +127,13 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPatch]
-        public JsonResult Recategorizar(int consultaId, int categoriaId)
+        public JsonResult Recategorizar(int consultaId, int categoriaId, int subCategoriaId)
         {
             try
             {
-                if (consultaId <= 0 || categoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+                if (consultaId <= 0 || categoriaId <= 0 || subCategoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
-                consultaService.RecategorizarConsulta(consultaId, categoriaId);
+                consultaService.RecategorizarConsulta(consultaId, categoriaId, subCategoriaId);
 
                 return JsonCustom(new { });
             }

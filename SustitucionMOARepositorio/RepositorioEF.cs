@@ -61,9 +61,9 @@ namespace SustitucionMOARepositorio
             return resultado.SingleOrDefault(filtro);
         }
 
-        public List<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc) where TEntidad : class
+        public List<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
         {
-            return ListarQueryable(Set<TEntidad>(), filtro, orden, direccionOrden, maxResultados).ToList();
+            return ListarQueryable(Set<TEntidad>(), filtro, orden, direccionOrden, maxResultados, includes).ToList();
         }
         public List<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> condicion = null) where TEntidad : class
         {
@@ -238,7 +238,7 @@ namespace SustitucionMOARepositorio
 
             return new ListaPaginada<TEntidad>(resultados.ToList(), paginacion.Pagina, paginacion.ItemsPorPagina, itemsTotales);
         }
-        private IQueryable<TEntidad> ListarQueryable<TEntidad>(IQueryable<TEntidad> resultado, Expression<Func<TEntidad, bool>> filtro, string orden, DirOrden direccionOrden, int maxResultados) where TEntidad : class
+        private IQueryable<TEntidad> ListarQueryable<TEntidad>(IQueryable<TEntidad> resultado, Expression<Func<TEntidad, bool>> filtro, string orden, DirOrden direccionOrden, int maxResultados, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class
         {
             if (filtro != null)
             {
@@ -256,6 +256,14 @@ namespace SustitucionMOARepositorio
                 resultado = direccionOrden == DirOrden.Asc
                                  ? resultado.OrderBy(selectorOrden)
                                  : resultado.OrderByDescending(selectorOrden);
+            }
+
+            if(includes != null)
+            {
+                foreach (var i in includes)
+                {
+                    resultado = resultado.Include(i);
+                }
             }
 
             return resultado;

@@ -23,7 +23,7 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Usuario_Id")]
         public virtual Usuario Usuario { get; set; }
 
-        public virtual ICollection<Archivo> Archivos { get; set; }
+        public virtual ICollection<ComentarioArchivo> Archivos { get; set; }
 
     }
 }

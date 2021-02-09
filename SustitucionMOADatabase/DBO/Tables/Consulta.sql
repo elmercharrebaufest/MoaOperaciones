@@ -6,9 +6,10 @@
 	[CodigoProveedor] varchar(max) NOT NULL,
 	[RazonSocialProveedor] varchar(max) NULL,
 	[Categoria_Id] INT NOT NULL,
-	[SubCategoria_Id] INT NOT NULL,
+	[SubCategoria_Id] INT NULL,
 	[Asunto] [nvarchar](max) NOT NULL,
 	[EstadoConsulta_Id] INT NOT NULL,
+	[Usuario_Id] INT NOT NULL,
 	[FechaCreacion] DATETIME2 NOT NULL DEFAULT (getdate()), 
 	[FechaUltimaModificacion] DATETIME2 NOT NULL DEFAULT (getdate()), 
 CONSTRAINT [PK_dbo.Consulta] PRIMARY KEY CLUSTERED 
@@ -23,7 +24,15 @@ REFERENCES [dbo].[Categoria] ([Id])
 ON DELETE CASCADE
 GO
 
-ALTER TABLE [dbo].[Categoria] CHECK CONSTRAINT [FK_dbo.Consulta_dbo.Categoria_Categoria_Id]
+ALTER TABLE [dbo].[Consulta] CHECK CONSTRAINT [FK_dbo.Consulta_dbo.Categoria_Categoria_Id]
+GO
+
+ALTER TABLE [dbo].[Consulta]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Consulta_dbo.SubCategoria_SubCategoria_Id] FOREIGN KEY([SubCategoria_Id])
+REFERENCES [dbo].[SubCategoria] ([Id])
+ON DELETE NO ACTION
+GO
+
+ALTER TABLE [dbo].[Consulta] CHECK CONSTRAINT [FK_dbo.Consulta_dbo.SubCategoria_SubCategoria_Id]
 GO
 
 ALTER TABLE [dbo].[Consulta]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Consulta_dbo.EstadoConsulta_EstadoConsulta_Id] FOREIGN KEY([EstadoConsulta_Id])
@@ -31,6 +40,13 @@ REFERENCES [dbo].[EstadoConsulta] ([Id])
 ON DELETE CASCADE
 GO
 
-ALTER TABLE [dbo].[EstadoConsulta] CHECK CONSTRAINT [FK_dbo.Consulta_dbo.EstadoConsulta_EstadoConsulta_Id]
+ALTER TABLE [dbo].[Consulta] CHECK CONSTRAINT [FK_dbo.Consulta_dbo.EstadoConsulta_EstadoConsulta_Id]
 GO
 
+ALTER TABLE [dbo].[Consulta]  WITH CHECK ADD  CONSTRAINT [FK_dbo.Consulta_dbo.Usuario_Usuario_Id] FOREIGN KEY([Usuario_Id])
+REFERENCES [dbo].[Usuario] ([Id])
+ON DELETE NO ACTION
+GO
+
+ALTER TABLE [dbo].[Consulta] CHECK CONSTRAINT [FK_dbo.Consulta_dbo.Usuario_Usuario_Id]
+GO

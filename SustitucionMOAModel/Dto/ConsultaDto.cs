@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,26 +11,67 @@ namespace SustitucionMOAModel.Dto
     public class ConsultaDto
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Email { get; set; }
-        public string Telefono { get; set; }
+        public string CodigoCorredor { get; set; }
+        public string RazonSocialCorredor { get; set; }
+        public string CodigoProveedor { get; set; }
+        public string RazonSocialProveedor { get; set; }
+        public int CategoriaId { get; set; }
+        public int SubCategoriaId { get; set; }
         public string Asunto { get; set; }
+        public int EstadoConsultaId { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaUltimaModificacion { get; set; }
-        public string RazonSocial { get; set; }
-        public string NombreVendedor { get; set; }
-        public string Contrato { get; set; }
-        public string CUIT { get; set; }
-        public string Comprobante { get; set; }
-        public DateTime? FechaPago { get; set; }
+        public int UsuarioId { get; set; }
+
+        //detalle
+        public DateTime? Fecha { get; set; }
+        public string ComprobanteNo { get; set; }
+        public string ContratoNo { get; set; }
         public Decimal? Importe { get; set; }
         public Decimal? Impuesto { get; set; }
-        public string Inscripcion { get; set; }
-        public string Motivo { get; set; }
+        public string BolsaEmisoraOblea { get; set; }
+
+
         public CategoriaDto Categoria { get; set; }
-
+        public SubCategoriaDto SubCategoria { get; set; }
         public EstadoConsultaDto EstadoConsulta { get; set; }
-
+        public CausaConsultaDto CausaConsulta { get; set; }
         public IList<ComentarioDto> Comentarios { get; set; }
+
+        public int? DiasReclamo { 
+            get {
+                if (this.EstadoConsulta != null && this.EstadoConsulta.Code == EstadosConsulta.Finalizado.Code())
+                    return null;
+
+                return (DateTime.Now - FechaCreacion).Days;
+            } 
+        }
+
+        public ConsultaDto(Consulta consulta)
+        {
+            this.Id = consulta.Id;
+            this.Asunto = consulta.Asunto;
+            this.CodigoCorredor = consulta.CodigoCorredor;
+            this.RazonSocialCorredor = consulta.RazonSocialCorredor;
+            this.CodigoProveedor = consulta.CodigoProveedor;
+            this.RazonSocialProveedor = consulta.RazonSocialProveedor;
+            this.CategoriaId = consulta.Categoria_Id;
+            this.Categoria = new CategoriaDto(consulta.Categoria);
+            this.SubCategoriaId = consulta.SubCategoria_Id;
+            this.SubCategoria = new SubCategoriaDto(consulta.SubCategoria);
+            this.EstadoConsultaId = consulta.EstadoConsulta_Id;
+            this.EstadoConsulta = new EstadoConsultaDto(consulta.EstadoConsulta);
+            this.FechaCreacion = consulta.FechaCreacion;
+            this.FechaUltimaModificacion = consulta.FechaUltimaModificacion;
+            this.UsuarioId = consulta.Usuario_Id;
+
+            this.Fecha = consulta.Detalle.Fecha;
+            this.ComprobanteNo = consulta.Detalle.ComprobanteNo;
+            this.ContratoNo = consulta.Detalle.ContratoNo;
+            this.Importe = consulta.Detalle.Importe;
+            this.Impuesto = consulta.Detalle.Impuesto;
+            this.BolsaEmisoraOblea = consulta.Detalle.BolsaEmisoraOblea;
+            this.CausaConsulta = new CausaConsultaDto(consulta.Detalle.CausaConsulta);
+        }
     }
 }

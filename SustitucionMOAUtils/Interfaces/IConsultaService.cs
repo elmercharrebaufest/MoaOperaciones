@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files);
         ConsultaDto ObtenerConsulta(int consultaId);
         void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId);
-        void RecategorizarConsulta(int consultaId, int categoriaId);
+        void RecategorizarConsulta(int consultaId, int categoriaId, int subCategoria);
         List<CategoriaDto> ObtenerCategorias();
         List<EstadoConsultaDto> ObtenerEstados();
         List<SubCategoriaDto> ObtenerSubCategorias();

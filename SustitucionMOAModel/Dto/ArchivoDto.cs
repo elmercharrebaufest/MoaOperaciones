@@ -21,7 +21,6 @@ namespace SustitucionMOAModel.Dto
             FileKey = archivo.FileKey;
             Nombre = ObtenerNombre(archivo.Ruta);
         }
-
         private string ObtenerNombre(string ruta)
         {
             if (Path.GetFileName(ruta) != null)
