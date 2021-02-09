@@ -59,12 +59,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
                 return JsonCustom(crearContratoService.ObteneDatosContrato(tiponegocio));
             }
             catch (InfoCustomException e)
@@ -142,12 +136,15 @@ namespace SustitucionMOA.Controllers
                 {
                     contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
                 }
-                contratoAPrecio.ComercialId = (int)proveedor.IdComercialDataAgro;
+                if (contratoAPrecio.ComercialId == 0)
+                {
+                    contratoAPrecio.ComercialId = (int)proveedor.IdComercialDataAgro;
+                }
                 contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAPrecio.ComercialCreadorId = null;
                 contratoAPrecio.MonedaSustentable = "USDM ";
                 contratoAPrecio.ContratoSAP = "";
-                contratoAPrecio.CantidadCamiones = null;
+                contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
 
 
                 string result = crearContratoService.CrearContratoAPrecio(contratoAPrecio);
@@ -190,12 +187,15 @@ namespace SustitucionMOA.Controllers
                 {
                     contratoAFijar.ProveedorId = (int)proveedor.IdDataAgro;
                 }
-                contratoAFijar.ComercialId = (int)proveedor.IdComercialDataAgro;
+                if (contratoAFijar.ComercialId == 0)
+                {
+                    contratoAFijar.ComercialId = (int)proveedor.IdComercialDataAgro;
+                }
                 contratoAFijar.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAFijar.ComercialCreadorId = null;
                 contratoAFijar.MonedaSustentable = "USDM ";
                 contratoAFijar.ContratoSAP = "";
-                contratoAFijar.CantidadCamiones = null;
+                contratoAFijar.CantidadCamiones = contratoAFijar.CantidadCamiones == 0 ? null : contratoAFijar.CantidadCamiones;
 
 
                 string result = crearContratoService.CrearContratoAFijar(contratoAFijar);
@@ -454,11 +454,14 @@ namespace SustitucionMOA.Controllers
                 {
                     contratoFijacion.ProveedorId = (int)proveedor.IdDataAgro;
                 }
-                contratoFijacion.ComercialId = (int)proveedor.IdComercialDataAgro;
+                if (contratoFijacion.ComercialId == 0)
+                {
+                    contratoFijacion.ComercialId = (int)proveedor.IdComercialDataAgro;
+                }
                 contratoFijacion.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoFijacion.ComercialCreadorId = null;
                 contratoFijacion.MonedaSustentable = "USDM ";
-                contratoFijacion.CantidadCamiones = null;
+                contratoFijacion.CantidadCamiones = contratoFijacion.CantidadCamiones == 0 ? null : contratoFijacion.CantidadCamiones;
 
 
                 string result = crearContratoService.CrearContratoFijacion(contratoFijacion);
@@ -673,7 +676,15 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(crearContratoService.ValidarProveedor(proveedorId));
+                if (!string.IsNullOrEmpty(proveedorId) && proveedorId != "0")
+                {
+                    return JsonCustom(crearContratoService.ValidarProveedor(proveedorId));
+                }
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                string codigoProveedor = SessionPersister.Proveedor;
+                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                return JsonCustom(crearContratoService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
             }
             catch (InfoCustomException e)
             {
@@ -727,10 +738,40 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult AnularNegocio(int negocioId , int tipoNegocioId , string motivo) {
+        public ActionResult AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
+        {
             try
             {
                 return JsonCustom(crearContratoService.AnularNegocio(negocioId, tipoNegocioId, motivo));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult TraerContratoCompleto(int negocioId, int tipoNegocioId)
+        {
+            try
+            {
+                return JsonCustom(crearContratoService.TraerContratoCompleto(negocioId, tipoNegocioId));
             }
             catch (InfoCustomException e)
             {

@@ -16,6 +16,9 @@ var routes = [
     { path: "afijar", component: CrearContratoAFijarComponent },
     { path: "fijacion", component: CrearContratoFijacionComponent },
     { path: "cargarnegocio", component: CrearContratoCargarNegocioComponent },
+    { path: 'aprecio/:id', component: CrearContratoAPrecioComponent },
+    { path: "afijar/:id", component: CrearContratoAFijarComponent },
+    { path: "fijacion/:id", component: CrearContratoFijacionComponent },
 ];
 var CrearContratoRoutingModule = /** @class */ (function () {
     function CrearContratoRoutingModule() {

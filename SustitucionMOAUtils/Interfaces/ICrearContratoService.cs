@@ -25,5 +25,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ValidarProveedor(string proveedorId);
         string TraerPrecioMoaMateriales(int tipoNegocioId);
         string AnularNegocio(int negocioId, int tipoNegocioId, string motivo);
+        string TraerContratoCompleto(int negocioId, int tipoNegocioId);
     }
 }

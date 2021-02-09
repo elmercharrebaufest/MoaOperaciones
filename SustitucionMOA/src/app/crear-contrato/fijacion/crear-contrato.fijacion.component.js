@@ -31,8 +31,14 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
     CrearContratoFijacionComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
         this.contrato.TipoNegocioId = 3;
+        this.contrato.Id = this.id;
         console.log("inicia el componente");
-        this.negocioHabilitado(this.contrato);
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        }
+        else {
+            this.negocioHabilitado(this.contrato);
+        }
     };
     CrearContratoFijacionComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -133,24 +139,26 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
             });
         }
     };
-    CrearContratoFijacionComponent.prototype.selectEventLocalidad = function (item) {
-        this.contrato.LocalidadId = item.LocalidadId;
-        this.contrato.ProvinciaId = item.ProvinciaId;
-        if (item.ProvinciaId != 1) {
-            this.contrato.EstablecimientoPropio = null;
-        }
-    };
-    CrearContratoFijacionComponent.prototype.onChangeSearchLocalidad = function (term) {
-        var _this = this;
-        if (term.length > 2) {
-            this.unsubscribe();
-            this.subscription = this.service.searchLocalidad(term).subscribe(function (result) {
-                _this.localidades = result;
-            }, function (error) {
-                _this.mensajeComponent.setErrorMsg(error.message);
-            });
-        }
-    };
+    //selectEventLocalidad(item) {
+    //    this.contrato.LocalidadId = item.LocalidadId;
+    //    this.contrato.ProvinciaId = item.ProvinciaId;
+    //    if (item.ProvinciaId != 1) {
+    //        this.contrato.EstablecimientoPropio = null;
+    //    }
+    //}
+    //onChangeSearchLocalidad(term: string) {
+    //    if (term.length > 2) {
+    //        this.unsubscribe();
+    //        this.subscription = this.service.searchLocalidad(term).subscribe(
+    //            result => {
+    //                this.localidades = result;
+    //            },
+    //            error => {
+    //                this.mensajeComponent.setErrorMsg(error.message);
+    //            }
+    //        );
+    //    }
+    //}
     CrearContratoFijacionComponent.prototype.onBoletoSelected = function () {
         this.contrato.BolsaId = 0;
         if (this.contrato.BoletoId == 1) {
@@ -175,9 +183,9 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
     CrearContratoFijacionComponent.prototype.isVisibleBolsa = function () {
         return this.contrato.BoletoId != 3;
     };
-    CrearContratoFijacionComponent.prototype.isVisibleEstablecimiento = function () {
-        return this.contrato.ProvinciaId == 1;
-    };
+    //isVisibleEstablecimiento(): boolean {
+    //    return this.contrato.ProvinciaId == 1;
+    //}
     CrearContratoFijacionComponent.prototype.grabarContratoFijacion = function () {
         var _this = this;
         console.log(this.contrato);
@@ -186,16 +194,11 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         }
         var hoy = new Date();
         var hoysinhora = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-        //var dateParts = $("#noCursor").val().split("/");
-        //this.contrato.FechaDesde = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        //dateParts = $("#noCursor2").val().split("/");
-        //this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        //this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
-        this.contrato.Id = 0;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
         this.contrato.EstadoId = 9;
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 3;
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
@@ -260,6 +263,10 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoFijacionComponent.prototype.validarContrato = function () {
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
         if (this.contrato.ContratoSAP == null || this.contrato.ContratoSAP == undefined || this.contrato.ContratoSAP == "" || this.pendienteFijar == null || this.pendienteFijar == undefined) {
             this.mensajeComponent.setErrorMsg("Debe completar el Contrato.");
             return false;
@@ -276,10 +283,10 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg("Debe completar el Material.");
             return false;
         }
-        if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
-            this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
-            return false;
-        }
+        //if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
+        //    this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
+        //    return false;
+        //}
         if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
             return false;
@@ -304,20 +311,19 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
     CrearContratoFijacionComponent.prototype.changeConsignatario = function (event) {
         this.contrato.PlanCanje = false;
     };
-    CrearContratoFijacionComponent.prototype.changeClasificacion = function (event) {
-        if (this.contrato.ClasificacionId == 1) {
-            this.contrato.PlanCanje = false;
-            this.contrato.Consignatario = false;
-        }
-    };
-    CrearContratoFijacionComponent.prototype.isNotProductor = function (event) {
-        if (this.contrato.ClasificacionId == 1) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    };
+    //changeClasificacion(event) {
+    //    if (this.contrato.ClasificacionId == 1) {
+    //        this.contrato.PlanCanje = false;
+    //        this.contrato.Consignatario = false;
+    //    }
+    //}
+    //isNotProductor(event) {
+    //    if (this.contrato.ClasificacionId == 1) {
+    //        return false;
+    //    } else {
+    //        return true;
+    //    }
+    //}
     CrearContratoFijacionComponent.prototype.onChangeMaterial = function () {
         if (this.contrato.MaterialId != null) {
             this.pendientesFijar = [];
@@ -360,6 +366,7 @@ var CrearContratoFijacionComponent = /** @class */ (function (_super) {
     };
     CrearContratoFijacionComponent.prototype.selectEventContratoId = function (item) {
         console.log(item);
+        this.pendienteFijar = item;
         this.contrato.ContratoSAP = item.ContratoId;
         this.contrato.Posicion = item.Posicion;
         var dateParts = item.DesdeEntrega.split("-");

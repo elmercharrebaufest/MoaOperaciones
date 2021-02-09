@@ -27,7 +27,13 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     ngOnInit() {
         super.ngOnInit();
         this.contrato.TipoNegocioId = 2;
-        this.negocioHabilitado(this.contrato);
+        this.contrato.Id = this.id;
+        console.log("id", this.id);
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        } else {
+            this.negocioHabilitado(this.contrato);
+        }
     }
 
     ngAfterViewInit(): void {
@@ -206,7 +212,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     grabarContratoAPrecio() {
-        
+
         if (!this.validarContrato()) {
             return false;
         }
@@ -217,13 +223,15 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         dateParts = $("#noCursor2").val().split("/");
         this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
         this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
 
-        this.contrato.Id = 0;
+
+        //this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
 
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 2;
 
         if (this.contrato.MaterialId == 1) {
@@ -233,7 +241,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 4;
+            this.contrato.StandardDeCalidadId = 3;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -312,9 +320,14 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
-        console.log(this.datosPizarra);
-        console.log(this.datosPrecioMoa);
-
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ContratoCorredor == null || this.contrato.ContratoCorredor == "")) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar el Contrato Corredor.");
+            return false;
+        }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;

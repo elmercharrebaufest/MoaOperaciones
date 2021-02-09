@@ -95,23 +95,23 @@
 <div class="content-wraper">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
-        <div class="row titleSection" style="border-bottom:none;" *ngIf="!this.precioSeleccionado">
-            <div class="col-xs-12 col-sm-10 " style="border-bottom:1px solid #707070;">Seleccione el material para iniciar la carga </div>
+        <div class="row titleSection" style="border-bottom:none;">
+            <div class="col-xs-12 col-sm-10 " style="border-bottom:1px solid #707070;" *ngIf="!this.precioSeleccionado">Seleccione el material para iniciar la carga </div>
             <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
-                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
+                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: auto; padding:10px 0;margin:0;">
                 <tbody>
                     <tr>
-                        <th rowspan="2" style="font-size:20px;padding: 5px 10px;">HABILITACION MOA</th>
-                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(1,1)" *ngIf="isMaterialSeleccionado('Maiz')">Maiz</th>
-                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(2,1)" *ngIf="isMaterialSeleccionado('Trigo')">Trigo</th>
-                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(3,1)" *ngIf="isMaterialSeleccionado('Soja')">Soja</th>
-                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;"  (click)="preciosDisponibles(4,1)" *ngIf="isMaterialSeleccionado('Girasol')">Girasol</th>
+                        <th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(1,1)" *ngIf="isMaterialSeleccionado('Maiz')">Maiz</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(2,1)" *ngIf="isMaterialSeleccionado('Trigo')">Trigo</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(3,1)" *ngIf="isMaterialSeleccionado('Soja')">Soja</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(4,1)" *ngIf="isMaterialSeleccionado('Girasol')">Girasol</th>
                     </tr>
                     <tr>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,1)" *ngIf="isMaterialSeleccionado('Maiz')">{{precioMaiz == true?"En mercado":precioMaiz == false?"No Disponible":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,1)" *ngIf="isMaterialSeleccionado('Trigo')">{{precioTrigo == true?"En mercado":precioTrigo == false?"No Disponible":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,1)" *ngIf="isMaterialSeleccionado('Soja')">{{precioSoja == true?"En mercado":precioSoja == false?"No Disponible":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,1)" *ngIf="isMaterialSeleccionado('Girasol')">{{precioGirasol == true?"En mercado":precioGirasol == false?"No Disponible":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Maiz')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,1)">{{precioMaiz == true?"En mercado":precioMaiz == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Trigo')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,1)">{{precioTrigo == true?"En mercado":precioTrigo == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Soja')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,1)">{{precioSoja == true?"En mercado":precioSoja == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Girasol')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,1)">{{precioGirasol == true?"En mercado":precioGirasol == false?"Sin Precio":""}}</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -226,15 +226,28 @@
                     </select>
                 </div>
                 <!--<div class="form-group col-md-4">
-                <label for="precio">Precio</label>
-                <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+            <label for="precio">Precio</label>
+            <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+        </div>
+        <div class="form-group col-md-2">
+            <label for="moneda">Moneda</label>
+            <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+            </select>
+        </div>-->
             </div>
-            <div class="form-group col-md-2">
-                <label for="moneda">Moneda</label>
-                <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
-                    <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
-                </select>
-            </div>-->
+            <div class="row" *ngIf="isVisibleProveedor()">
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Cantidad Camiones</label>
+                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.CantidadCamiones">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Zona </label>
+                    <select class="form-control" name="zona" [(ngModel)]="contrato.ComercialId">
+                        <option value="22">Corredor Rosario</option>
+                        <option value="0">Corredor Bs As</option>
+                    </select>
+                </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">

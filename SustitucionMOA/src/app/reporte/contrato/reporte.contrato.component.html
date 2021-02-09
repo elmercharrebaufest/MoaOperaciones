@@ -464,7 +464,13 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                                <td class="{{contratoInfo.Estado_Contrato}}"><a title="Anular" href="javascript:void(0);" *ngIf="contratoInfo.Estado_Contrato == 'Carga'" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;{{contratoInfo.Estado_Contrato}}</td>
+                                <td class="{{contratoInfo.Estado_Contrato}}">
+                                    {{contratoInfo.Estado_Contrato}}
+                                    <span *ngIf="contratoInfo.Estado == 9"><br />
+                                        <a title="Anular" href="javascript:void(0);" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;
+                                        <a title="Editar" href="javascript:void(0);" (click)="editar(contratoInfo)"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp;
+                                    </span>
+                                </td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>
@@ -480,7 +486,7 @@
                                 <td>{{contratoInfo.Campania}}</td>
                                 <td>{{contratoInfo.Clasificacion}}</td>
                                 <td>{{contratoInfo.Localidad}}</td>
-                                <td>{{contratoInfo.Consignatario}}</td>
+                                <td>{{contratoInfo.Consignatario == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.PagoDiferidoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.DolarizadoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.CalidadTercero == true ? "Si":"No"}}</td>
