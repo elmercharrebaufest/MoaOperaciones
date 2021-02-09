@@ -15,6 +15,7 @@ import { CrearContratoService } from './crear-contrato.service';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contrato.cargarnegocio.component';
 var CrearContratoModule = /** @class */ (function () {
     function CrearContratoModule() {
     }
@@ -32,6 +33,7 @@ var CrearContratoModule = /** @class */ (function () {
                 CrearContratoFijacionComponent,
                 CrearContratoAFijarComponent,
                 CrearContratoAPrecioComponent,
+                CrearContratoCargarNegocioComponent,
             ],
             providers: [
                 CrearContratoService

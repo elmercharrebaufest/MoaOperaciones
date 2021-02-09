@@ -88,6 +88,7 @@
         position: relative;
         margin-left: 7px;
     }
+
     .material {
         cursor: pointer;
     }
@@ -96,28 +97,29 @@
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <div class="row titleSection" style="border-bottom:none;">
+            <div class="col-xs-12 col-sm-10 " style="border-bottom:1px solid #707070;" *ngIf="!this.precioSeleccionado">Seleccione el material para iniciar la carga </div>
             <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
-                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
+                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: auto; padding:10px 0;margin:0;">
                 <tbody>
                     <tr>
                         <th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Maiz</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Trigo</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Soja</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Girasol</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(1,3)" *ngIf="isMaterialSeleccionado('Maiz')">Maiz</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(2,3)" *ngIf="isMaterialSeleccionado('Trigo')">Trigo</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(3,3)" *ngIf="isMaterialSeleccionado('Soja')">Soja</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(4,3)" *ngIf="isMaterialSeleccionado('Girasol')">Girasol</th>
                     </tr>
                     <tr>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,3)">{{precioMaiz == true?"Disponible":precioMaiz == false?"Sin Precio":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,3)">{{precioTrigo == true?"Disponible":precioTrigo == false?"Sin Precio":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,3)">{{precioSoja == true?"Disponible":precioSoja == false?"Sin Precio":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,3)">{{precioGirasol == true?"Disponible":precioGirasol == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Maiz')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,3)">{{precioMaiz == true?"En mercado":precioMaiz == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Trigo')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,3)">{{precioTrigo == true?"En mercado":precioTrigo == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Soja')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,3)">{{precioSoja == true?"En mercado":precioSoja == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Girasol')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,3)">{{precioGirasol == true?"En mercado":precioGirasol == false?"Sin Precio":""}}</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Crear <strong>Fijacion</strong> </div>
+        <div class="row titleSection" *ngIf="this.precioSeleccionado">
+            <div class="col-xs-12 col-sm-10 ">Crear <strong>Fijacion {{materialSeleccionado}}</strong> </div>
         </div>
         <mensaje></mensaje>
         <fieldset class="fieldset" *ngIf="this.precioSeleccionado">
@@ -173,7 +175,7 @@
                     <input [(ngModel)]="contrato.ContratoId" class="form-control" type="hidden"
                            id="contratoinf" style="font-weight: 100 !important;">
                     <ng-autocomplete [data]="pendientesFijar" [searchKeyword]="keyword3" *ngIf="!this.spinnerCampana.visible"
-                                     (selected)='selectEventContratoId($event)' [(ngModel)]="pendienteFijar"
+                                     (selected)='selectEventContratoId($event)' [(ngModel)]="pendienteFijarContrato"
                                      (inputChanged)='onChangeSearchContratoId($event)'
                                      (inputFocused)='selectEventContratoId($event)' [itemTemplate]="itemTemplate3"
                                      [notFoundText]="autocompleteNotFoundText"
@@ -275,7 +277,19 @@
 
                 </div>
             </div>
-
+            <div class="row" *ngIf="isVisibleProveedor()">
+                <!--<div class="form-group col-md-6">
+                    <label for="cantidad">Cantidad Camiones</label>
+                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.CantidadCamiones">
+                </div>-->
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Zona </label>
+                    <select class="form-control" name="zona" [(ngModel)]="contrato.ComercialId">
+                        <option value="22">Corredor Rosario</option>
+                        <option value="0">Corredor Bs As</option>
+                    </select>
+                </div>
+            </div>
 
 
             <label class="subtitulo">Condiciones De Pago</label>
@@ -302,7 +316,7 @@
                 <div class="form-group col-md-8" *ngIf="contrato.DolarizadoTercero == true">
                     <input type="text" [(ngModel)]="ObservacionDolarizadoTercero" class="form-control" />
                 </div>
-            </div>            
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <label for="ObservacionTercero">Observaciones</label>
@@ -350,6 +364,31 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="irACargas()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal mensaje -->
+<a href="#mensajeModal" class="trigger-btn" id="openModalMensajeModal" data-toggle="modal" style="display:none;">    Click    to Open mensaje Modal</a>
+<div class="modal fade fade-complete" id="mensajeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Mensaje</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    {{mensajeModal}}
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
             </div>
         </div>
     </div>

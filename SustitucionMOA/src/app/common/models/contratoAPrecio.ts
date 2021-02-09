@@ -42,8 +42,10 @@
     public SustentableTercero: boolean;
     public ContratoCorredor: string;
     public ContratoVendedor: string;
+    public CantidadCamiones: number;
 
     constructor() {
         this.TipoNegocioId = 2;
+        this.Id = 0;
     }
 }
