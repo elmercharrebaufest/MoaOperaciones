@@ -74,7 +74,7 @@ namespace SustitucionMOAUtils.Services
             var includes = new List<Expression<Func<Consulta, object>>>();
             includes.Add(x => x.Comentarios);
             includes.Add(x => x.Comentarios.Select(y => y.Archivos));
-            includes.Add(x => x.Comentarios.Select(y => y.Archivos.Select(z=> z.Archivo)));
+            includes.Add(x => x.Comentarios.Select(y => y.Archivos));
             includes.Add(x => x.Categoria);
             includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
@@ -87,7 +87,7 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
-        public List<ConsultaDto> ListarConsultas(int usuarioId)
+        public List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos)
         {
             var ret = new List<ConsultaDto>();
 
@@ -98,8 +98,10 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
 
-            //TODO: filtro por permisos
-            ret = repositorio.Listar<Consulta>(x=> usuarioId < 0 || x.Usuario_Id == usuarioId, includes: includes).Select(x => new ConsultaDto(x)).ToList();
+            var usuario = repositorio.Obtener<Usuario>(usuarioId);
+            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).ToList();
+            
+            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria)) || x.Usuario_Id == usuarioId , includes: includes).Select(x => new ConsultaDto(x)).ToList();
 
             return ret;
         }
@@ -149,17 +151,11 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(ruta);
 
-                var comentarioArchivo = new ComentarioArchivo()
+                comentario.Archivos.Add(new Archivo
                 {
-                    Archivo = new Archivo
-                    {
-                        FileKey = FileKeys.Consultas,
-                        Ruta = rutaArchivo
-                    },
-                    Comentario = comentario
-                };
-
-                comentario.Archivos.Add(comentarioArchivo);
+                    FileKey = FileKeys.Consultas,
+                    Ruta = rutaArchivo
+                });
 
                 file.SaveAs(rutaArchivo);
                 repositorio.GuardarCambios();

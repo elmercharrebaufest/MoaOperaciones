@@ -195,7 +195,6 @@ namespace SustitucionMOAUtils.Services
                     id = x.Id,
                     value = x.Code,
                     label = x.Nombre,
-                    camposAdicionales = x.CamposAdicionales ? "A" : string.Empty
                 }).ToList();
             }
             catch (ValidationCustomException e)

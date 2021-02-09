@@ -145,7 +145,10 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
                 }
-                return new UsuarioDto(usuario);
+                var ret = new UsuarioDto(usuario);
+                ret.Permisos = usuario.ObtenerPermisos();
+
+                return ret;
             }
             catch (Exception)
             {

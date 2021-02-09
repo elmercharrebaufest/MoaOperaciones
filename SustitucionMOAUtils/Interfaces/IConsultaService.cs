@@ -16,6 +16,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<CategoriaDto> ObtenerCategorias();
         List<EstadoConsultaDto> ObtenerEstados();
         List<SubCategoriaDto> ObtenerSubCategorias();
-        List<ConsultaDto> ListarConsultas(int usuarioId);
+        List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos);
     }
 }

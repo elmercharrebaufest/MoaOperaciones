@@ -106,8 +106,9 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var usuarioActual = ObtenerUsuarioActual();
-                //TODO: ver de setear email segun permiso
-                return JsonCustom(new { data = consultaService.ListarConsultas(-1) });
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+
+                return JsonCustom(new { data = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos) });
             }
             catch (InfoCustomException e)
             {
