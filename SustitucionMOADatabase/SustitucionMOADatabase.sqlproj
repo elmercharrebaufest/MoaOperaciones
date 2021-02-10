@@ -99,6 +99,9 @@
     <Build Include="DBO\Tables\SubCategoria.sql" />
     <Build Include="DBO\Tables\ConsultaDetalle.sql" />
     <Build Include="DBO\Tables\CausaConsulta.sql" />
+    <None Include="scripts\CreacionCategorias.sql" />
+    <None Include="scripts\CreacionCausasConsulta.sql" />
+    <Build Include="DBO\Tables\CategoriaRol.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
