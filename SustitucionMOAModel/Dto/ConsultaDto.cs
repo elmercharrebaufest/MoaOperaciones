@@ -58,21 +58,26 @@ namespace SustitucionMOAModel.Dto
             this.RazonSocialProveedor = consulta.RazonSocialProveedor;
             this.CategoriaId = consulta.Categoria_Id;
             this.Categoria = new CategoriaDto(consulta.Categoria);
-            this.SubCategoriaId = consulta.SubCategoria_Id;
-            this.SubCategoria = new SubCategoriaDto(consulta.SubCategoria);
+            if(consulta.SubCategoria != null)
+            {
+                this.SubCategoriaId = consulta.SubCategoria_Id;
+                this.SubCategoria = new SubCategoriaDto(consulta.SubCategoria);
+            }
             this.EstadoConsultaId = consulta.EstadoConsulta_Id;
             this.EstadoConsulta = new EstadoConsultaDto(consulta.EstadoConsulta);
             this.FechaCreacion = consulta.FechaCreacion;
             this.FechaUltimaModificacion = consulta.FechaUltimaModificacion;
             this.UsuarioId = consulta.Usuario_Id;
 
-            this.Fecha = consulta.Detalle.Fecha;
-            this.ComprobanteNo = consulta.Detalle.ComprobanteNo;
-            this.ContratoNo = consulta.Detalle.ContratoNo;
-            this.Importe = consulta.Detalle.Importe;
-            this.Impuesto = consulta.Detalle.Impuesto;
-            this.BolsaEmisoraOblea = consulta.Detalle.BolsaEmisoraOblea;
-            this.CausaConsulta = new CausaConsultaDto(consulta.Detalle.CausaConsulta);
+            if (consulta.Detalle != null) {
+                this.Fecha = consulta.Detalle.Fecha;
+                this.ComprobanteNo = consulta.Detalle.ComprobanteNo;
+                this.ContratoNo = consulta.Detalle.ContratoNo;
+                this.Importe = consulta.Detalle.Importe;
+                this.Impuesto = consulta.Detalle.Impuesto;
+                this.BolsaEmisoraOblea = consulta.Detalle.BolsaEmisoraOblea;
+                this.CausaConsulta = new CausaConsultaDto(consulta.Detalle.CausaConsulta);
+            }
         }
     }
 }

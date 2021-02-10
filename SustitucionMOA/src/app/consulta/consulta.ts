@@ -29,6 +29,13 @@ export interface Categoria {
     camposAdicionales;
 }
 
+export interface Subcategoria {
+    Id;
+    Code;
+    Nombre;
+    CategoriaId;
+}
+
 export class Comentario{
     consulta_Id: any; 
     Detalle: any; 

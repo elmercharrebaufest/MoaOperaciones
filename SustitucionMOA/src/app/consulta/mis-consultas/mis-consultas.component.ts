@@ -15,7 +15,7 @@ import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
-import { Categoria, Consulta, EstadoConsulta } from '../consulta';
+import { Categoria, Consulta, EstadoConsulta, Subcategoria } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { Calendar } from 'primeng/calendar';
 
@@ -57,8 +57,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     ngAfterViewInit(): void {
 
         this.listarConsultas();
-        this.getCategorias();
-        this.getEstados();
+        this.getCombos();
     }
     
     ngOnInit(){
@@ -115,9 +114,12 @@ export class MisConsultasComponent extends ListBaseComponent {
     consultas: Consulta[];
     estados: EstadoConsulta[];
     categorias: Categoria[];
+    subcategorias: Subcategoria[];
 
+    
     estadosList: SelectItem[];
     categoriasList: SelectItem[];
+    subcategoriasList: SelectItem[];
 
     fecha: any;
     es: any;
@@ -158,9 +160,9 @@ export class MisConsultasComponent extends ListBaseComponent {
             this.lastdate.selectionMode = 'single';
     }
 
-    getCategorias() {
+    getCombos() {
         try {
-            this.subscription = this.service.getCategorias().subscribe(
+            this.subscription = this.service.getCombos().subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -169,38 +171,15 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.categorias = result.data;
+                        this.categorias = result.categorias;
                         this.categoriasList = [];
                         this.categorias.forEach(x => this.categoriasList.push({ label: x.label, value: x.id}));
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                }
-
-                );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false; //<-- Prevent Refresh
-    }
-
-    getEstados() {
-        try {
-            this.subscription = this.service.getEstados().subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.estados = result.data;
+                        this.estados = result.estados;
                         this.estadosList = [];
                         this.estados.forEach(x => this.estadosList.push({ label: x.nombre, value: x.id}));
+                        this.subcategorias = result.subcategorias;
+                        this.subcategoriasList = [];
+                        this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
                     }
                 },
                 error => {

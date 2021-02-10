@@ -14,7 +14,6 @@ namespace SustitucionMOAModel.Entities
 
         public string Code { get; set; }
         public string Nombre { get; set; }
-        public bool CamposAdicionales { get; set; }
 
     }
 }

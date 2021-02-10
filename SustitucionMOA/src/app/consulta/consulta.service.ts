@@ -43,22 +43,15 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-
-    public getCategorias(): Observable<any> {
+    public getCombos(): Observable<any> {
         return this.http
-            .get('/api/contactoMail/getCategorias', { headers: this.headers }).pipe(
-            map(this.extractData));
-    }
-
-    public getEstados(): Observable<any> {
-        return this.http
-            .get('/api/contactoMail/getEstados', { headers: this.headers }).pipe(
+            .get('/api/consulta/Combos', { headers: this.headers }).pipe(
             map(this.extractData));
     }
 
     public listarConsultas(): Observable<any> {
         return this.http
-            .get('/api/contactoMail/listarConsultas', { headers: this.headers }).pipe(
+            .get('/api/consulta/Consultas', { headers: this.headers }).pipe(
             map(this.extractData));
     }
 
@@ -92,6 +85,7 @@ export class ConsultaService extends BaseService {
             .get(`/api/Consulta/Detalle`, { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
+
 
     public setEstadoConsulta(estadoId: number, consultaId: number){
         let params: URLSearchParams = new URLSearchParams();
