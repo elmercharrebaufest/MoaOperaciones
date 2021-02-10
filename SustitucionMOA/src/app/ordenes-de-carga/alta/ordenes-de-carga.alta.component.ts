@@ -129,11 +129,16 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             );
     }
 
-
-    redirigirAListado() {
+    aceptar() {
         document
             .getElementById("botonCerrarModal")
             .click();
+        
+        this.redirigirAListado();
+    }
+
+
+    redirigirAListado() {
         this.navService.navegarSeccion(
             "/ordenes-de-carga"
         );

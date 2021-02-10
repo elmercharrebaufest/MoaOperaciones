@@ -7,8 +7,6 @@
         <strong> Orden de carga #{{ordenDeCarga.Id}}</strong>
         <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
         <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
-        <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
-        </div>
       </div>
     </div>
     <!--End Title-->
@@ -74,6 +72,27 @@
               <div class="formulario-label">
                 Observaci&oacute;n: {{ordenDeCarga.Observacion}}
               </div>
+            </div>
+
+
+            <div class="containerBotones">
+              <div class="col-xs-0 col-md-3">
+                <input type="button" (click)="abrirModalContratos()" class="btn-custom btn-add btn-mediano"
+                  value="Contratos">
+              </div>
+              <div class="col-xs-5 col-md-2">
+                <input type="button" (click)="abrirModalCorredores()" class="btn-custom btn-add btn-mediano"
+                  value="Corredores">
+              </div>
+              <div class="col-xs-5 col-md-2">
+                <input type="button" (click)="notificarTransporte()" class="btn-custom btn-add btn-mediano"
+                  value="Transporte">
+              </div>
+              <div class="col-xs-5 col-md-2">
+                <input type="button" (click)="generarEntrega()" class="btn-custom btn-add btn-mediano"
+                  value="Generar Entrega">
+              </div>
+              <div class="col-xs-2 col-md-1"></div>
             </div>
           </div>
         </div>

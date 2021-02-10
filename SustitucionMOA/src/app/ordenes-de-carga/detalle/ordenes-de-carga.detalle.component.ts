@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
@@ -8,6 +8,8 @@ import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
+import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 
@@ -19,6 +21,11 @@ import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnInit {
 
     ordenDeCargaId: number = 0;
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
@@ -61,6 +68,29 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             );
         } catch (e) {
+        }
+    }
+
+    notificarTransporte() {
+        try {
+            this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.ordenDeCargaId = result.data;
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
         }
     }
 }
