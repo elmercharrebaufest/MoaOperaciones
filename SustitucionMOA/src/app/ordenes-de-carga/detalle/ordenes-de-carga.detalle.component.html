@@ -4,9 +4,11 @@
     <!--Title-->
     <div class="row titleSection">
       <div class="col-xs-12 col-sm-10 ">
-        <strong> Nueva orden de carga</strong>
+        <strong> Orden de carga #{{ordenDeCarga.Id}}</strong>
         <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
         <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
+        <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
+        </div>
       </div>
     </div>
     <!--End Title-->
@@ -20,155 +22,58 @@
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
         <div class="formulario-campo">
           <div class="col-xs-12 col-md-12 search-header">
-            <title-caps>Información de la orden de carga</title-caps>
+            <title-caps>Información</title-caps>
           </div>
           <div class="formulario">
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
-                CUIT tercero:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" id="CUITTercero" [(ngModel)]="ordenDeCarga.CUITTercero">
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                CUIT cliente:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" id="CUITCliente" [(ngModel)]="ordenDeCarga.CUITCliente">
-              </div>
-            </div>
-
-
-            <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Nombre chofer:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.NombreChofer">
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Apellido chofer:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.ApellidoChofer">
+                CUIT cliente: {{ordenDeCarga.CUITCliente}}
               </div>
             </div>
 
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
-                DNI/CUIL chofer:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer">
+                Nombre chofer:{{ordenDeCarga.Chofer}}
               </div>
             </div>
 
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
-                Patente acoplado:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.PatenteAcoplado">
+                Patente acoplado: {{ordenDeCarga.PatenteAcoplado}}
               </div>
             </div>
 
 
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
-                Chasis acopado:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.ChasisAcoplado">
+                Chasis acopado: {{ordenDeCarga.ChasisAcoplado}}
               </div>
             </div>
 
 
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
-                Razon social transporte:
+                Razon social transporte: {{ordenDeCarga.Transporte}}
               </div>
+            </div>
 
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.RazonSocialTransporte">
+            <div class="col-xs-12 col-md-6">
+              <div class="formulario-label">
+                Producto: {{ordenDeCarga.Producto}}
               </div>
             </div>
 
 
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
-                CUIT transporte:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte">
-              </div>
-            </div>
-
-
-            <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Producto:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.Producto">
-              </div>
-            </div>
-
-
-            <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Cantidad:
-              </div>
-
-              <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.Cantidad">
+                Cantidad: {{ordenDeCarga.Cantidad}}
               </div>
             </div>
 
             <div class="col-xs-12 col-md-12">
               <div class="formulario-label">
-                Observaci&oacute;n:
+                Observaci&oacute;n: {{ordenDeCarga.Observacion}}
               </div>
-              <div class="styled-select">
-                <textarea id="Observacion" [(ngModel)]="ordenDeCarga.Observacion" rows="5">
-
-                </textarea>
-              </div>
-            </div>
-
-
-            <div class="containerBotones">
-              <div class="col-xs-0 col-md-3">
-                <input type="button" (click)="cargaFalsa()" class="btn-custom btn-add btn-mediano" value="Llenar">
-
-              </div>
-              <div class="col-xs-5 col-md-2">
-                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
-                  value="Volver">
-              </div>
-              <div class="col-xs-2 col-md-1"></div>
-
-
-              <div class="col-xs-5 col-md-3">
-                <div class="step-actions enviar">
-                  <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                    data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                  <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
-                </div>
-              </div>
-              <div class="col-xs-0 col-md-2"></div>
             </div>
           </div>
         </div>
@@ -187,28 +92,3 @@
   </section>
   <!--End CONTENT-->
 </div>
-
-<!-- modal notificacion -->
-<button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-  data-target="#modalNotificación"></button>
-<div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close btn-close" style="display:none" data-dismiss="modal" aria-label="Close"
-          id="botonCerrarModal">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="myModalLabel">Notificación guardada correctamente </h4>
-      </div>
-      <div class="modal-body modal-notificacion">
-        <label>La notificación ha sido guardada correctamente.</label><br />
-      </div>
-      <div class="modal-footer">
-        <button (click)="redirigirAListado()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- end modal notificacion -->
