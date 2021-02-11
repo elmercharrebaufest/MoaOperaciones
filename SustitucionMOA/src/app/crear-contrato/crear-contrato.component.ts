@@ -26,7 +26,7 @@ declare var $: any;
     template: ``,
     providers: [CrearContratoService]
 })
-export class CrearContratoBaseComponent extends ListBaseComponent {
+export class CrearContratoBaseComponent extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -49,6 +49,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         this.mensajeComponent = new MensajeComponent();
         this.spinnerCampana = new SpinnerSmallComponent();
     }
+
     crearModificar: string = "Crear";
     id: number = 0;
     contratoEditar: any;
@@ -881,5 +882,5 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         );
         return false;
     };
-
+    
 }

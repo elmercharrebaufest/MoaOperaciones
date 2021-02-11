@@ -487,8 +487,8 @@
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.ContratoCorredor}}</td>
                                 <td>{{contratoInfo.TipoNegocio}}</td>
-                                <td>{{contratoInfo.Cantidad}}</td>
-                                <td>{{contratoInfo.Precio}}</td>
+                                <td>{{contratoInfo.Cantidad | number:'':'es'}}</td>
+                                <td>{{contratoInfo.Precio | number:'1.2-2':'es'}}</td>
                                 <td>{{contratoInfo.Moneda}}</td>
                                 <td>{{contratoInfo.DestinoDescripcion}}</td>
                                 <td>{{contratoInfo.FechaDesde | date: 'dd/MM/yyyy'}}</td>

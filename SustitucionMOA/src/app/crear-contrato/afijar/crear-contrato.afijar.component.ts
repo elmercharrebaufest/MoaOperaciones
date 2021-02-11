@@ -475,4 +475,5 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     isSoja(): boolean {
         return this.contrato.MaterialId == 3;
     }
+      
 }

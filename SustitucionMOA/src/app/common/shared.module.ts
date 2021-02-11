@@ -18,11 +18,12 @@ import { ShortenStringPipe } from "./pipes/shortenString";
 import { BaseComponent } from './base-components/base-component';
 import { ListBaseComponent } from './base-components/list-base-component';
 import { ArchivoPipe } from './pipes/archivos.pipe';
+import { NumericDirective } from './directive/numeric.directive';
 
 @NgModule({
     imports: [CommonModule, FormsModule],
-    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
-    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
+    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe, NumericDirective],
+    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe, NumericDirective,
         CommonModule, FormsModule]
 })
 export class SharedModule { }

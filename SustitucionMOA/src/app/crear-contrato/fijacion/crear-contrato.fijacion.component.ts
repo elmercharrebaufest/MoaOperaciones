@@ -447,5 +447,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     isVisibleContratoDetalle(): boolean {
         var result = !(this.pendienteFijar == null || this.pendienteFijar == "" || this.pendienteFijar == undefined);
         return result;
-    }
+    }      
+    
 }
