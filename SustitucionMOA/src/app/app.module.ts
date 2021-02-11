@@ -44,7 +44,6 @@ import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
-import { NumericDirective } from './common/directive/numeric.directive';
 import { NgxMaskModule } from "ngx-mask";
 import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
 import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
@@ -86,8 +85,7 @@ import { BlockUIModule } from 'ng-block-ui';
     EstadoSolicitudComponent,
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
-    CarouselNotificacionesComponent,
-    NumericDirective
+    CarouselNotificacionesComponent,    
   ],
   providers: [
     DatePipe,
@@ -108,6 +106,6 @@ import { BlockUIModule } from 'ng-block-ui';
     NotificacionesService
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule {}

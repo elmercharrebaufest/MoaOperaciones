@@ -20,6 +20,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { Component } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
+import { registerLocaleData } from '@angular/common';
+import es from '@angular/common/locales/es';
 var ReporteContratoComponent = /** @class */ (function (_super) {
     __extends(ReporteContratoComponent, _super);
     function ReporteContratoComponent() {
@@ -50,6 +52,9 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
     }
     ReporteContratoComponent.prototype.setTabs = function () {
         this.setMenuSeccionTab("reporte", "Contratos");
+    };
+    ReporteContratoComponent.prototype.ngOnInit = function () {
+        registerLocaleData(es);
     };
     ReporteContratoComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();

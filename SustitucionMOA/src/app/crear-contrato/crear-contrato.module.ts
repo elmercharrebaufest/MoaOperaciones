@@ -26,11 +26,11 @@ import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contr
         CrearContratoFijacionComponent,
         CrearContratoAFijarComponent,
         CrearContratoAPrecioComponent,
-        CrearContratoCargarNegocioComponent,
+        CrearContratoCargarNegocioComponent,        
     ],
     providers: [
         CrearContratoService
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CrearContratoModule { }

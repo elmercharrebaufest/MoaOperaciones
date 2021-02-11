@@ -254,7 +254,7 @@
             <div class="row">
                 <div class="form-group col-md-4">
                     <label for="cantidad">Cantidad (Kg.)</label>
-                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
+                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
                 </div>
                 <div class="form-group col-md-2">
                     <label for="moneda">Moneda</label>
@@ -264,7 +264,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="precio">Precio</label>
-                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
+                    <input type="text" class="form-control" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
                 </div>
                 <div class="form-group col-md-2" *ngIf="isVisiblePizarra()">
                     <label class=""> Pizarra</label><label class="switch">
@@ -283,8 +283,8 @@
                 <div class="form-group col-md-6">
                     <label for="cantidad">Zona </label>
                     <select class="form-control" name="zona" [(ngModel)]="contrato.ComercialId">
-                        <option value="22">Corredor Rosario</option>
-                        <option value="0">Corredor Bs As</option>
+                        <option value="35">Corredor Rosario</option>
+                        <option value="22">Corredor Bs As</option>
                     </select>
                 </div>
             </div>

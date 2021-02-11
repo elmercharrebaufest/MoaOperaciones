@@ -1,6 +1,9 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
+import { registerLocaleData } from '@angular/common';
+
+import es from '@angular/common/locales/es';
 declare var $: any;
 
 
@@ -9,7 +12,7 @@ declare var $: any;
     templateUrl: `reporte.contrato.component.html`,
     providers: [{ provide: ReporteService, useClass: ReporteContratoService }]
 })
-export class ReporteContratoComponent extends ReporteBaseComponent {
+export class ReporteContratoComponent extends ReporteBaseComponent implements OnInit{
 
     fechaDesde: any = null;
     fechaHasta: any = null;
@@ -38,6 +41,10 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     negocioParAanular: any;
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
+    }
+
+    ngOnInit() {
+        registerLocaleData(es);
     }
 
     ngAfterViewInit(): void {

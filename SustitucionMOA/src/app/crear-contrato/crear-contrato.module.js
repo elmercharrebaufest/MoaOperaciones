@@ -38,7 +38,7 @@ var CrearContratoModule = /** @class */ (function () {
             providers: [
                 CrearContratoService
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
     ], CrearContratoModule);
     return CrearContratoModule;
