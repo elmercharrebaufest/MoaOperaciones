@@ -22,8 +22,8 @@ import { NumericDirective } from './directive/numeric.directive';
 
 @NgModule({
     imports: [CommonModule, FormsModule],
-    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe, NumericDirective],
-    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe, NumericDirective,
+    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe, NumericDirective],
+    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe, NumericDirective,
         CommonModule, FormsModule]
 })
 export class SharedModule { }
