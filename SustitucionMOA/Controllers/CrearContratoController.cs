@@ -59,7 +59,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(crearContratoService.ObteneDatosContrato(tiponegocio));
+                string BolsaAutomatica = crearContratoService.ConfiguracionBolsaAutomatica();
+                string DatosContrato = crearContratoService.ObteneDatosContrato(tiponegocio);
+                return JsonCustom(new { DatosContrato, BolsaAutomatica });
             }
             catch (InfoCustomException e)
             {

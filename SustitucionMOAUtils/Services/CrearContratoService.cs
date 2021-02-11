@@ -774,5 +774,49 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public string ConfiguracionBolsaAutomatica()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/ConfiguracionBolsa/DatosConfiguracion");
+
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                var content = JsonConvert.SerializeObject(new { Page = 1, PageSize = 1000, Take = 1000, Skip = 0 });
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    return scapedJson;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
     }
 }

@@ -63,6 +63,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.fechaFin = new Date().toLocaleDateString('en-GB');
         _this.fechafInicio = new Date().toLocaleDateString('en-GB');
         _this.fechafFin = new Date().toLocaleDateString('en-GB');
+        _this.bolsasAutomaticas = new Array();
         _this.datosContrato = new Array();
         _this.materiales = new Array();
         _this.monedas = new Array();
@@ -214,7 +215,9 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
-                var obj = JSON.parse(result);
+                var obj2 = JSON.parse(result.BolsaAutomatica);
+                _this.bolsasAutomaticas = obj2.Data;
+                var obj = JSON.parse(result.DatosContrato);
                 _this.datosContrato = obj;
                 //obj.Datos.material.forEach(element => {
                 //    let el = {
@@ -397,6 +400,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 _this.datosCompraNet = obj;
                 contrato.ClasificacionId = obj.ClasificacionCompraNetId;
                 contrato.BolsaId = obj.BolsaCompraNetId;
+                _this.BolsaId = obj.BolsaCompraNetId;
                 contrato.BoletoId = obj.BoletoCompraNetId;
                 if (obj.BoletoCompraNetId == 1) {
                     _this.bolsasSelect = _this.bolsasConfirma;
@@ -435,6 +439,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 if (contrato.TipoNegocioId == 3) {
                     _this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                 }
+                _this.SeleccionAutomaticaBolsa(contrato);
             }
         }, function (error) {
             _this.blockUI.stop();
@@ -848,6 +853,27 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         return false;
     };
     ;
+    CrearContratoBaseComponent.prototype.SeleccionAutomaticaBolsa = function (contrato) {
+        console.log("SeleccionAutomaticaBolsa");
+        //if (contrato.BoletoId == 1) {
+        //    var p = this.bolsasAutomaticas.filter(a => a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId)
+        //    if (p.length == 1) {
+        //        if (p[0].BolsaId != contrato.BolsaId) {
+        //            contrato.BolsaId = p[0].BolsaId;
+        //            this.mensajeModal = 'Se cambio la bolsa a ' + p[0].Bolsa;
+        //            document.getElementById("openModalMensajeModal").click();
+        //        }
+        //    }
+        //}
+    };
+    CrearContratoBaseComponent.prototype.changeDestino = function (contrato) {
+        console.log("changeDestino");
+        console.log(contrato.DestinoId);
+        if (this.BolsaId != null) {
+            contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(contrato);
+    };
     __decorate([
         BlockUI(),
         __metadata("design:type", Object)
