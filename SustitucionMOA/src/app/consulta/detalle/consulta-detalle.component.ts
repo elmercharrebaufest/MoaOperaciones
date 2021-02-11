@@ -13,7 +13,7 @@ import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { BaseComponent } from '../../common/base-components/base-component';
-import { Comentario } from '../consulta';
+import { Comentario, Categoria, EstadoConsulta, Subcategoria } from '../consulta';
 
 declare var $: any;
 
@@ -49,7 +49,13 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.mensajeComponent = new MensajeComponent();
             this.spinnerComponent = new SpinnerComponent();
     }
-    
+    estados: EstadoConsulta[];
+    categorias: Categoria[];
+    subcategorias: Subcategoria[];
+
+    estadosList = ["hola", "dos", "tres"];
+    categoriasList: any
+
     consulta: any;
     comentariosList: any;
     estadoConsulta: number;
@@ -73,46 +79,13 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.jqueryOnInit();
         this.getConsultaId();
         this.getDetalleConsulta();
+        this.getCombos();
     }
 
     getConsultaId(){
         const queryString = window.location.href;
         this.consultaId = queryString.split('=')[1];
     }
-
-    // this.route.params.forEach((params: Params) => {
-        //     let idConsulta = params['idConsulta'];
-        //     this.unsubscribe();
-        //     this.subscription = this.service.getConsultaDetalle(idConsulta).subscribe(
-        //         result => {
-        //             if (result.logout == true) {
-        //                 this.sessionDataService.logout();
-        //             } else if (result.error != undefined && result.error != "") {
-        //                 this.mensajeComponent.setErrorMsg(result.error);
-        //             } else if (result.info != undefined) {
-        //                 this.mensajeComponent.setInfoMsg(result.info);
-        //             } else {
-        //                 this.ComentariosList = [];
-
-        //                 result.Comentarios.forEach(x => {
-        //                     this.ComentariosList.push(
-        //                         {
-        //                             id: x.Id,
-        //                             nombre: 'Martin',
-        //                             comentario: x.Detalle,
-        //                             fecha: '14/01/2021',
-        //                             hora: '15:30'
-        //                         }
-        //                     );
-        //                 });
-        //             }
-        //         },
-        //         error => {
-        //             this.mensajeComponent.setErrorMsg(error.message);
-        //         }
-        //     );
-        // });
-
     
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
@@ -123,8 +96,6 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     postComentario(){
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
-        console.log(this.detalle);
-        console.log("arriba");
         this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
             result => {
                 this.getDetalleConsulta();
@@ -143,6 +114,36 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
+    getCombos() {
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.categorias = result.categorias;
+                        console.log(this.categorias);
+                        this.estados = result.estados;
+                        this.subcategorias = result.subcategorias;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+                );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
     getDetalleConsulta(){
         this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
             result => {
@@ -152,6 +153,8 @@ export class DetalleConsultaComponent extends BaseComponent {
                     x.Fecha = this.convertDate(x.Fecha);
                 });
                 console.log(this.consulta);
+                this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
+                this.consulta.FechaCreacion = this.convertDate(this.consulta.FechaCreacion).substring(0, 10);
                 this.spinnerModal.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

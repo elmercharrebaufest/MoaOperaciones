@@ -9,7 +9,7 @@
     <div class="row myRow firstSection" style="overflow: hidden">
         <div class="detalleConsulta shadow col-xs-12 col-sm-6">
             <div *ngFor="let comentario of consulta.Comentarios, let i = index">
-                <div>
+                <div *ngIf="consulta.UsuarioActualId != comentario.UsuarioId">
                     <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
                         <p class="fechaComentarioTexto">
                             {{(comentario.Fecha).substring(0, 10)}}
@@ -24,8 +24,7 @@
                         {{(comentario.Fecha).substring(11, 16)}}
                     </p>
                 </div>
-                <!--
-                <div *ngIf="comentario.Detalle == 'Segundo comentario'">
+                <div *ngIf="consulta.UsuarioActualId == comentario.UsuarioId">
                     <div class="col-xs-12 col-sm-6 col-md-12">
                         <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
                             <p class="fechaComentarioTexto">
@@ -41,25 +40,25 @@
                     <p class="horaComentarioRespuesta col-xs-12 col-sm-6 col-md-12">
                         {{(comentario.Fecha).substring(11, 16)}}
                     </p>
-                </div>-->
+                </div>
             </div>
         </div>
 
         <!--MENU LATERAL-->
         <div class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
             <div>
-                Creado el FechaInicio
+                Creado el {{this.consulta.FechaCreacion}}
                 <hr>
                 <div>
                     <p class="menuLateralConsulta bold">Estado</p>
                     <div class="styled-select perfiles-select">
-                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categoriaOptions"></dropdown>
+                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="estados.value"></dropdown>
                     </div>
                 </div>
                 <div>
                     <p class="menuLateralConsulta bold">Categoria</p>
                     <div class="styled-select perfiles-select">
-                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categoriaOptions"></dropdown>
+                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categorias.labers"></dropdown>
                     </div>
                 </div>
             </div>
