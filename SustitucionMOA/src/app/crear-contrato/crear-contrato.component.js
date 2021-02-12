@@ -855,21 +855,21 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     ;
     CrearContratoBaseComponent.prototype.SeleccionAutomaticaBolsa = function (contrato) {
         console.log("SeleccionAutomaticaBolsa");
-        //if (contrato.BoletoId == 1) {
-        //    var p = this.bolsasAutomaticas.filter(a => a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId)
-        //    if (p.length == 1) {
-        //        if (p[0].BolsaId != contrato.BolsaId) {
-        //            contrato.BolsaId = p[0].BolsaId;
-        //            this.mensajeModal = 'Se cambio la bolsa a ' + p[0].Bolsa;
-        //            document.getElementById("openModalMensajeModal").click();
-        //        }
-        //    }
-        //}
+        if (contrato.BoletoId == 1) {
+            var p = this.bolsasAutomaticas.filter(function (a) { return a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId; });
+            if (p.length == 1) {
+                if (p[0].BolsaId != contrato.BolsaId) {
+                    contrato.BolsaId = p[0].BolsaId;
+                    this.mensajeModal = 'Se cambio la bolsa a ' + p[0].Bolsa;
+                    document.getElementById("openModalMensajeModal").click();
+                }
+            }
+        }
     };
     CrearContratoBaseComponent.prototype.changeDestino = function (contrato) {
         console.log("changeDestino");
         console.log(contrato.DestinoId);
-        if (this.BolsaId != null) {
+        if (this.BolsaId != null && contrato.BoletoId == 1) {
             contrato.BolsaId = this.BolsaId;
         }
         this.SeleccionAutomaticaBolsa(contrato);

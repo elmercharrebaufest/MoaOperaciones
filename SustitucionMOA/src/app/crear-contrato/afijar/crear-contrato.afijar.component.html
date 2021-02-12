@@ -157,7 +157,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="destino">Destino</label>
-                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId"  (change)="changeDestino(contrato)" >
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -283,7 +283,7 @@
                     <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
                                      (selected)='selectEventLocalidad($event)' [(ngModel)]="localidad"
                                      (inputChanged)='onChangeSearchLocalidad($event)'
-                                     (inputFocused)='selectEventLocalidad($event)' [itemTemplate]="itemTemplate"
+                                     [itemTemplate]="itemTemplate"
                                      [notFoundText]="autocompleteNotFoundText"
                                      [notFoundTemplate]="notFoundTemplate">
                     </ng-autocomplete>
