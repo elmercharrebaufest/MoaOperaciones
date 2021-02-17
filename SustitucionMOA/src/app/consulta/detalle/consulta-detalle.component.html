@@ -52,13 +52,22 @@
                 <div>
                     <p class="menuLateralConsulta bold">Estado</p>
                     <div class="styled-select perfiles-select">
-                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="estados.value"></dropdown>
+                        <select name="categorias" id="categorias" value="this.consulta.EstadoConsulta.Descripcion">
+                            <option *ngFor="let estado of this.estados" value="estado.Nombre">
+                                {{estado.Nombre}}
+                            </option>
+                        </select>
                     </div>
                 </div>
                 <div>
                     <p class="menuLateralConsulta bold">Categoria</p>
                     <div class="styled-select perfiles-select">
-                        <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categorias.labers"></dropdown>
+                        <select name="categorias" id="categorias" value="this.consulta.Categoria.Nombre">
+                            <option selected>{{this.consulta.Categoria.Nombre}}</option>
+                            <option *ngFor="let categoria of this.categorias" value="categoria.Id">
+                                {{categoria.Nombre}}
+                            </option>
+                        </select>
                     </div>
                 </div>
             </div>

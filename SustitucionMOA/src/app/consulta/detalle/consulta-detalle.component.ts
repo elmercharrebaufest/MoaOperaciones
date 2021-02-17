@@ -112,6 +112,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
+        this.detalle = "";
     }
 
     getCombos() {
