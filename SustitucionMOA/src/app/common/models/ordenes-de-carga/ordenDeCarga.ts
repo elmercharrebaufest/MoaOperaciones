@@ -1,3 +1,5 @@
+import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
+
 export class OrdenDeCarga  {
     CUITTercero: number;
     CUITCliente: number;
@@ -11,6 +13,10 @@ export class OrdenDeCarga  {
     Producto: string;
     Cantidad: number;
     Observacion: string;
+    Estado: EstadoOrdenDeCarga;
+    ContratoSAP: string;
+    Corredor: string;
+    TransporteExiste: boolean;
 
     constructor() {
     }

@@ -22,7 +22,7 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
         }
 
-        public string Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
@@ -46,13 +46,13 @@ namespace SustitucionMOAUtils.Services
 
             EnviarASAP(ordenDeCarga);
 
-            VerificarSituacionCrediticia(ordenDeCarga);
+            VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
 
             repositorio.Agregar(ordenDeCarga);
 
             repositorio.GuardarCambios();
 
-            return SuccessMsg.OrdenDeCargaAgregada;
+            return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
         public List<OrdenDeCargaDto> Listar(string mailUsuario)
@@ -96,7 +96,7 @@ namespace SustitucionMOAUtils.Services
             if (usuario.EsAdmin())
             {
                 orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-                
+
             }
             else
             {
@@ -152,7 +152,7 @@ namespace SustitucionMOAUtils.Services
 
             if (contratosSAP.Count == 1)
             {
-                orden.ContratoSAP = contratosSAP.First();
+                orden.ContratoSAP = contratosSAP.First().Value;
             }
             else
             {
@@ -189,28 +189,28 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
         }
 
-        public List<string> ObtenerContratos(int ordenId)
+        public Dictionary<string, string> ObtenerContratos(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             return ObtenerContratos(orden.CUITCliente);
         }
 
-        public List<string> ObtenerContratos(string CUIT)
+        public Dictionary<string, string> ObtenerContratos(string CUIT)
         {
-            return new List<string> { "1231231", "515121" };
+            return new Dictionary<string, string> { { "1", "1231231" }, { "2", "515121" } };
         }
 
-        public List<string> ObtenerCorredores(int ordenId)
+        public Dictionary<string, string> ObtenerCorredores(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             return ObtenerCorredores(orden.CUITCliente);
         }
 
-        public List<string> ObtenerCorredores(string CUIT)
+        public Dictionary<string, string> ObtenerCorredores(string CUIT)
         {
-            return new List<string> { "PEPE", "LUIS" };
+            return new Dictionary<string, string> { { "1", "PEPE" }, { "2", "LUIS" } };
         }
 
         private void VerificarCorredor(OrdenDeCarga orden)
@@ -219,7 +219,7 @@ namespace SustitucionMOAUtils.Services
 
             if (corredoresCliente.Count == 1)
             {
-                orden.Corredor = corredoresCliente.First();
+                orden.Corredor = corredoresCliente.First().Value;
                 orden.CorredorSeleccionado = true;
             }
             else
@@ -254,7 +254,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool TransporteExiste(string CUIT)
         {
-            return true;
+            return false;
         }
 
         public string NotificarTransporte(int ordenDeCargaId)
@@ -292,11 +292,11 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            return VerificarSituacionCrediticia(orden);
+            return VerificarSituacionCrediticia(orden, notificar: false);
         }
 
         #region Etapa2
-        private string VerificarSituacionCrediticia(OrdenDeCarga orden)
+        private string VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
         {
             if (orden.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito)
             {
@@ -304,7 +304,11 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.AprobadoCredito)
                 {
-                    NotificarSituacionCrediticia(orden);
+                    if (notificar)
+                    {
+                        NotificarSituacionCrediticia(orden);
+                    }
+
                     orden.ActualizarEstado();
                 }
                 else
@@ -320,7 +324,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool ObtenerSituacionCrediticia(string CUIT)
         {
-            return true;
+            return false;
         }
 
         private bool NotificarSituacionCrediticia(OrdenDeCarga orden)

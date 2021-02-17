@@ -65,7 +65,6 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     ReCaptchaModule,
     AutocompleteLibModule,
     SharedModule,
-    NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
   ],
   declarations: [

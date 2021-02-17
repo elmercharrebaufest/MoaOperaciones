@@ -29,7 +29,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
-    
+    mensajeSuccess: string = "";
+
+              
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -40,6 +42,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.ordenDeCarga.Cantidad = 30000;
+
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
@@ -49,25 +53,83 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         if (this.ordenDeCargaId > 0) {
             this.obtenerOrdenDeCarga();
         }
+
     }
 
-    ngAfterViewInit(): void {
-        
-    }
+
+
+
 
     validar() {
-        return true;
-    }
 
-    validarURL() {
-     
+        console.log("CUIT:", this.ordenDeCarga.CUITTercero.toString().length)
+        if (this.ordenDeCarga.CUITTercero.toString().length != 11)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de tercero válido.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.CUITCliente.toString().length != 11)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.NombreChofer.length < 2)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.ApellidoChofer.length < 2)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
+            return false;
+        }
+       
+        if (this.ordenDeCarga.CUITChofer.toString().length != 11)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de chofer válido.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.PatenteAcoplado.length < 6)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.ChasisAcoplado.length < 6)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válida.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.RazonSocialTransporte.length < 2)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.CUITTransporte.toString().length != 11)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
+            return false;
+        }
+
+        if (this.ordenDeCarga.Producto.length < 2)
+        {
+            this.mensajeComponent.setInfoMsg("Ingrese el producto.");
+            return false;
+        }
+        
+        return true;
     }
 
     cargaFalsa() {
         this.ordenDeCarga.llenar()
     }
     
-
     obtenerOrdenDeCarga() {
         try {
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
@@ -117,6 +179,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
+
+                        this.mensajeSuccess = result.data.Mensaje;
+
+                        this.ordenDeCargaId = result.data.IdEntidad;
+                        
                         document
                             .getElementById("openModalNotificacion")
                             .click();
@@ -134,9 +201,12 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             .getElementById("botonCerrarModal")
             .click();
         
-        this.redirigirAListado();
+        this.redirigirADetalles();
     }
 
+    redirigirADetalles() {
+        this.goToSeccionParam('/ordenes-de-carga/detalle/', this.ordenDeCargaId.toString())
+    }
 
     redirigirAListado() {
         this.navService.navegarSeccion(

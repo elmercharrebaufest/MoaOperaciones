@@ -12,21 +12,11 @@
     <!--End Title-->
     <!--Search-->
     <div class="mySearch">
-      <div *ngIf="mensajeError != ''" class="formulario-input;">
-        <div class="alert alert-danger">
-          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
-        </div>
-      </div>
+
       <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
         <div class="formulario-campo">
           <div class="col-xs-12 col-md-12 search-header">
             <title-caps>Información de la orden de carga</title-caps>
-          </div>
-          <div class="row myRow">
-            <div class="clearfix myTables">
-              <mensaje></mensaje>
-              <spinner></spinner>
-            </div>
           </div>
           <div class="formulario">
             <div class="col-xs-12 col-md-6">
@@ -35,7 +25,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" id="CUITTercero" [(ngModel)]="ordenDeCarga.CUITTercero">
+                <input type="text" id="CUITTercero" [(ngModel)]="ordenDeCarga.CUITTercero" mask="00-00000000-0">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -44,7 +34,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" id="CUITCliente" [(ngModel)]="ordenDeCarga.CUITCliente">
+                <input type="text" id="CUITCliente" [(ngModel)]="ordenDeCarga.CUITCliente" mask="00-00000000-0">
               </div>
             </div>
 
@@ -55,7 +45,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.NombreChofer">
+                <input type="text" [(ngModel)]="ordenDeCarga.NombreChofer" maxlength="25">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">
@@ -64,7 +54,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.ApellidoChofer">
+                <input type="text" [(ngModel)]="ordenDeCarga.ApellidoChofer" maxlength="25">
               </div>
             </div>
 
@@ -74,7 +64,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer">
+                <input type="text" [(ngModel)]="ordenDeCarga.CUITChofer" mask="00-00000000-0">
               </div>
             </div>
 
@@ -84,7 +74,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.PatenteAcoplado">
+                <input type="text" [(ngModel)]="ordenDeCarga.PatenteAcoplado" maxlength="7">
               </div>
             </div>
 
@@ -95,7 +85,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.ChasisAcoplado">
+                <input type="text" [(ngModel)]="ordenDeCarga.ChasisAcoplado" maxlength="50">
               </div>
             </div>
 
@@ -106,7 +96,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.RazonSocialTransporte">
+                <input type="text" [(ngModel)]="ordenDeCarga.RazonSocialTransporte" maxlength="50">
               </div>
             </div>
 
@@ -117,7 +107,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte">
+                <input type="text" [(ngModel)]="ordenDeCarga.CUITTransporte" mask="00-00000000-0">
               </div>
             </div>
 
@@ -128,7 +118,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.Producto">
+                <input type="text" [(ngModel)]="ordenDeCarga.Producto" maxlength="50">
               </div>
             </div>
 
@@ -139,7 +129,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.Cantidad">
+                <input type="text" [(ngModel)]="ordenDeCarga.Cantidad" disabled>
               </div>
             </div>
 
@@ -156,6 +146,11 @@
 
 
             <div class="containerBotones">
+              <div class="col-xs-12 col-md-12">
+                <mensaje></mensaje>
+                <spinner></spinner>
+              </div>
+
               <div class="col-xs-0 col-md-3">
                 <input type="button" (click)="cargaFalsa()" class="btn-custom btn-add btn-mediano" value="Llenar">
 
@@ -204,9 +199,9 @@
         <h4 class="modal-title" id="myModalLabel">Orden de carga guardada correctamente </h4>
       </div>
       <div class="modal-body modal-notificacion">
-        <label>La orden de carga ha sido guardada correctamente.</label><br />
+        <label>{{mensajeSuccess}}</label><br />
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="justify-content: center;align-content: center;display: flex;">
         <button (click)="aceptar()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
       </div>
     </div>

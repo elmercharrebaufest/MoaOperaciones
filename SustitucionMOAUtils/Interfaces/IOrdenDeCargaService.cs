@@ -10,14 +10,14 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IOrdenDeCargaService
     {
-        string Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<OrdenDeCargaDto> Listar(string mailUsuario);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
 
         string AnularOrden(int ordenId);
         string NotificarTransporte(int ordenId);
-        List<string> ObtenerContratos(int ordenId);
-        List<string> ObtenerCorredores(int ordenId);
+        Dictionary<string, string> ObtenerContratos(int ordenId);
+        Dictionary<string, string> ObtenerCorredores(int ordenId);
         string SeleccionarContrato(int ordenId, string contratoSAP);
         string SeleccionarCorredor(int ordenId, string corredor);
         string VerificarSituacionCrediticia(int ordenId);

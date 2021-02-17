@@ -18,11 +18,12 @@ import { ShortenStringPipe } from "./pipes/shortenString";
 import { BaseComponent } from './base-components/base-component';
 import { ListBaseComponent } from './base-components/list-base-component';
 import { ArchivoPipe } from './pipes/archivos.pipe';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, NgxMaskModule.forRoot()],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        CommonModule, FormsModule]
+        CommonModule, FormsModule, NgxMaskModule]
 })
 export class SharedModule { }

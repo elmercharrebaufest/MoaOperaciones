@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
+import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -29,6 +30,19 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
+
+    corredores: Map<number, string>;
+    corredorSeleccionado: number;
+
+    contratos: Map<number, string>;
+    contratoSeleccionado: number;
+
+    mostrarBotonContratos: boolean = false;
+    mostrarBotonCorredores: boolean = false;
+    mostrarBotonNotificarTransporte: boolean = false;
+    mostrarBotonVerificarTransporte: boolean = false;
+    mostrarBotonVerificarSituacionCrediticia: boolean = false;
+    mostrarBotonAnular: boolean = false;
     
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -51,6 +65,19 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
+    verificarBotones() {
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada)
+            return;
+        
+        this.mostrarBotonContratos = true;
+        this.mostrarBotonCorredores = false;
+        this.mostrarBotonNotificarTransporte = false;
+        this.mostrarBotonVerificarTransporte = false;
+        this.mostrarBotonVerificarSituacionCrediticia = false;
+        this.mostrarBotonAnular= false;
+        
+    }
+
   obtenerOrdenDeCarga() {
         try {
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
@@ -60,21 +87,28 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.error != undefined && result.error != "") {
                     } else if (result.info != undefined) {
                     } else {
-                      this.ordenDeCarga = result.data;
-                      console.log(this.ordenDeCarga)
+                        this.ordenDeCarga = result.data;
+                        this.verificarBotones()
                     }
                 },
                 error => {
+
                 }
             );
         } catch (e) {
         }
     }
 
+    
     notificarTransporte() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
         try {
-            this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
+            this.subscriptionDropDowns = this.service.notificarTransporte(this.ordenDeCargaId).subscribe(
                 result => {
+                    this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -82,7 +116,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.ordenDeCargaId = result.data;
+                        this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },
                 error => {
@@ -93,4 +127,188 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
+    
+    verificarTransporte() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.verificarTransporte(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+
+    verificarSituacionCrediticia() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.verificarSituacionCrediticia(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    abrirModalCorredores() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.obtenerCorredores(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        console.log(result.data)
+                        this.corredores = result.data;
+                        console.log(this.corredores)
+                        document.getElementById("openSeleccionarCorredor").click();
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    
+    seleccionarCorredor() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        console.log(this.corredorSeleccionado);
+        console.log(this.corredores[this.corredorSeleccionado]);
+        try {
+            this.subscriptionDropDowns = this.service.seleccionarCorredor(this.ordenDeCargaId, this.corredores[this.corredorSeleccionado]).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closeModalSeleccionarCorredor").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+
+    abrirModalContratos() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.obtenerContratos(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        console.log(result.data)
+                        this.contratos = result.data;
+                        console.log(this.contratos)
+                        document.getElementById("openSeleccionarContrato").click();
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+    
+    seleccionarContrato() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        console.log(this.corredorSeleccionado);
+        console.log(this.corredores[this.corredorSeleccionado]);
+        try {
+            this.subscriptionDropDowns = this.service.seleccionarContrato(this.ordenDeCargaId, this.corredores[this.corredorSeleccionado]).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closeModalSeleccionarContrato").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
 }

@@ -1,12 +1,22 @@
 <div class="content-wraper">
   <!-- CONTENT-->
   <section class="container-fluid clearfix">
+    <!-- Tables-->
+    <div class="row myRow">
+      <div class="clearfix myTables">
+        <mensaje></mensaje>
+        <spinner></spinner>
+      </div>
+    </div>
+    <!-- END tables-->
     <!--Title-->
     <div class="row titleSection">
       <div class="col-xs-12 col-sm-10 ">
         <strong> Orden de carga #{{ordenDeCarga.Id}}</strong>
         <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
         <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
+        <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
+        </div>
       </div>
     </div>
     <!--End Title-->
@@ -77,20 +87,31 @@
 
             <div class="containerBotones">
               <div class="col-xs-0 col-md-3">
-                <input type="button" (click)="abrirModalContratos()" class="btn-custom btn-add btn-mediano"
-                  value="Contratos">
+                <input type="button" (click)="abrirModalContratos()" *ngIf="mostrarBotonContratos"
+                  class="btn-custom btn-add btn-mediano" value="Contratos">
               </div>
               <div class="col-xs-5 col-md-2">
-                <input type="button" (click)="abrirModalCorredores()" class="btn-custom btn-add btn-mediano"
-                  value="Corredores">
+                <input type="button" (click)="abrirModalCorredores()" *ngIf="mostrarBotonCorredores"
+                  class="btn-custom btn-add btn-mediano" value="Corredores">
               </div>
               <div class="col-xs-5 col-md-2">
-                <input type="button" (click)="notificarTransporte()" class="btn-custom btn-add btn-mediano"
-                  value="Transporte">
+                <input type="button" (click)="notificarTransporte()" *ngIf="mostrarBotonNotificarTransporte"
+                  class="btn-custom btn-add btn-mediano" value="Notificar Transporte">
+              </div>
+
+              <div class="col-xs-5 col-md-2">
+                <input type="button" (click)="verificarTransporte()" *ngIf="mostrarBotonVerificarTransporte"
+                  class="btn-custom btn-add btn-mediano" value="Verificar Transporte">
               </div>
               <div class="col-xs-5 col-md-2">
-                <input type="button" (click)="generarEntrega()" class="btn-custom btn-add btn-mediano"
-                  value="Generar Entrega">
+                <input type="button" (click)="verificarSituacionCrediticia()"
+                  *ngIf="mostrarBotonVerificarSituacionCrediticia" class="btn-custom btn-add btn-mediano"
+                  value="Verificar credito">
+              </div>
+
+              <div class="col-xs-5 col-md-2">
+                <input type="button" (click)="anular()" *ngIf="mostrarBotonAnular"
+                  class="btn-custom btn-add btn-mediano" value="Anular">
               </div>
               <div class="col-xs-2 col-md-1"></div>
             </div>
@@ -100,14 +121,80 @@
     </div>
 
     <!-- End Search-->
-    <!-- Tables-->
-    <div class="row myRow">
-      <div class="clearfix myTables">
-        <mensaje></mensaje>
-        <spinner></spinner>
-      </div>
-    </div>
-    <!-- END tables-->
+
   </section>
   <!--End CONTENT-->
+
+
+  <button type="button" style="display:none" id="openSeleccionarCorredor" data-toggle="modal"
+    data-target="#modalSeleccionarCorredor"></button>
+  <!-- Modal -->
+  <div class="modal fade" id="modalSeleccionarCorredor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="modalSeleccionarCorredorLabel">Seleccionar corredor</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <span *ngFor="let corredor of corredores | keyvalue" class="col-xs-12 col-sm-12 col-md-12">
+              <input type="radio" name="corredorSeleccionado" id="corredor_{{corredor.key}}" value="{{corredor.key}}"
+                [(ngModel)]="corredorSeleccionado">
+              &nbsp;
+              <label for="corredor_{{corredor.key}}">{{corredor.value}}</label>
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+            id="closeModalSeleccionarCorredor" style="display: inline-flex;">Cancelar</button>
+          <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarCorredor()"
+            style="display: inline-flex;">
+            Confirmar
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" style="display:none" id="openSeleccionarContrato" data-toggle="modal"
+    data-target="#modalSeleccionarContrato"></button>
+  <!-- Modal -->
+  <div class="modal fade" id="modalSeleccionarContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="modalSeleccionarContratoLabel">Seleccionar contrato</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <span *ngFor="let contrato of contratos | keyvalue" class="col-xs-12 col-sm-12 col-md-12">
+              <input type="radio" name="contratoSeleccionado" id="contrato_{{contrato.key}}" value="{{contrato.key}}"
+                [(ngModel)]="contratoSeleccionado">
+              &nbsp;
+              <label for="contrato_{{contrato.key}}">{{contrato.value}}</label>
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
+            id="closeModalSeleccionarContrato" style="display: inline-flex;">Cancelar</button>
+          <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarContrato()"
+            style="display: inline-flex;">
+            Confirmar
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
