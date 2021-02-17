@@ -14,6 +14,7 @@ import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { element } from '@angular/core/src/render3/instructions';
+import { e } from '@angular/core/src/render3';
 
 
 declare var $: any;
@@ -49,6 +50,7 @@ export class FaqComponent extends ListBaseComponent {
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
+    x = true;
     proveedor: string;
     nombre: string;
     email: string;
@@ -74,186 +76,72 @@ export class FaqComponent extends ListBaseComponent {
         this.displayListaPreguntas();
     }
 
-    async displayListaPreguntas() {
-
-        //WEB
-        $('.categoria1MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
+    displayListaPreguntas() {
+        $('#1heading').on('click', async function(){
+            await $("#heading1").click();
         });
-        $('.faqCategoria1').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
+        $('.faqCategoria1').on('click', async function(){
+            await $("#1collapse").collapse("toggle");
         });
-
-        $('.categoria2MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts2").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
+        $('#2heading').on('click', async function(){
+            await $(".preguntasRespuesta2").collapse("toggle");
         });
-        $('.faqCategoria2').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts2").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
+        $('.faqCategoria2').on('click', async function(){
+            await $(".preguntasMenu2").collapse("toggle");
+        }); 
+        $('#3heading').on('click', async function(){
+            await $(".faqCategoria3").click();         
         });
-        $('.categoria3MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts3").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
+        $('.faqCategoria3').on('click', async function(){
+            await $("#3collapse").collapse("toggle");
+        }); 
+        $('#4heading').on('click', async function(){
+            await $("#heading4").click();         
         });
-        $('.faqCategoria3').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts3").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
+        $('#heading4').on('click', async function(){
+            await $("#4collapse").collapse("toggle");
+        }); 
+        $('#5heading').on('click', async function(){
+            await $("#heading5").click();         
         });
-        $('.categoria4MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts4").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
+        $('#heading5').on('click', async function(){
+            await $("#5collapse").collapse("toggle");
+        }); 
+        $('#6heading').on('click', async function(){
+            await $("#heading6").click();         
         });
-        $('.faqCategoria4').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts4").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
+        $('#heading6').on('click', async function(){
+            await $("#6collapse").collapse("toggle");
+        }); 
+        $('#7heading').on('click', async function(){
+            await $("#heading7").click();         
         });
-        $('.categoria5MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts5").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
+        $('#heading7').on('click', async function(){
+            await $("#7collapse").collapse("toggle");
+        }); 
+        $('#8heading').on('click', async function(){
+            await $("#heading8").click();         
         });
-        $('.faqCategoria5').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts5").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
+        $('#heading8').on('click', async function(){
+            await $("#8collapse").collapse("toggle");
+        }); 
+        $('#9heading').on('click', async function(){
+            await $("#heading9").click();         
         });
-        $('.categoria6MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts6").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
+        $('#heading9').on('click', async function(){
+            await $("#9collapse").collapse("toggle");
+        }); 
+        $('#10heading').on('click', async function(){
+            await $("#heading10").click();         
         });
-        $('.faqCategoria6').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts6").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
+        $('#heading10').on('click', async function(){
+            await $("#10collapse").collapse("toggle");
+        }); 
+        $('#11heading').on('click', async function(){
+            await $("#heading11").click();         
         });
-        $('.categoria7MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts7").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
-        });
-        $('.faqCategoria7').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts7").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
-        });
-        $('.categoria8MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts8").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
-        });
-        $('.faqCategoria8').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts8").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
-        });
-        $('.categoria9MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts9").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
-        });
-        $('.faqCategoria9').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts9").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
-        });
-        $('.categoria10MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts10").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
-        });
-        $('.faqCategoria10').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts10").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
-        });
-        $('.categoria11MenuFaq').on('click', function(e){
-            var $link = $(e.target);
-            e.preventDefault();
-            if(!$link.data('lockedAt') || +new Date() - $link.data('lockedAt') > 300) {
-                $("#archive_posts11").slideToggle();
-            }
-            $link.data('lockedAt', +new Date());
-        });
-        $('.faqCategoria11').on('click', function(o){
-            var $ok = $(o.target);
-            o.preventDefault();
-            if(!$ok.data('lockedAt') || +new Date() - $ok.data('lockedAt') > 300) {
-                $("#archive_posts11").slideToggle();
-            }
-            $ok.data('lockedAt', +new Date());
-        });
+        $('#heading11').on('click', async function(){
+            await $("#11collapse").collapse("toggle");
+        }); 
     }
-    
 }

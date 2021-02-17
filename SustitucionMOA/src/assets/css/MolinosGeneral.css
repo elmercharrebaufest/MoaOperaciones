@@ -3768,20 +3768,21 @@ div.panel-body a.active{
   display: unset;
   }
 
-.categoria1MenuFaq, .categoria2MenuFaq, .categoria3MenuFaq, .categoria4MenuFaq, .categoria5MenuFaq{
+.categoriaMenuFaq{
+  border-color: white;
   color: #03753e;
   font-size: 16px;
   font-weight: bold;
   font-family: Roboto Regular;
   cursor: pointer;
 }
-.archive_posts, .archivepostsMobile {
-margin-left: 1em;
-margin-top: 0;
-margin-bottom: 1em;
+/*
+.posts, .archivepostsMobile {
 list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
-font-weight: normal;
-display: none;
+}
+*/
+.posts{
+  margin-bottom: 7px;
 }
 .tituloPregunta{
   font-weight: bold;
@@ -3798,14 +3799,31 @@ display: none;
   color: #707070 !important;
   font-weight: normal !important;
 }
+.panel-default>.panel-heading{
+  background-color: white;
+  font-size: 23px !important;
+  font-weight: bold !important;
+  margin-bottom: 0px !important;
+  color: #707070 !important;
+  font-family: Roboto Regular;
+}
+.panel-title{
+  color: #707070 !important;
+  font-size: 21px !important;
+  font-weight: normal !important;
+  font-family: Roboto Regular;
+  text-transform: uppercase;
+}
 .aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
   text-decoration:none;
-  color: #03753e;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: Roboto Regular;
+  color: #03753e !important;
+  font-size: 16px !important;
+  font-weight: bold important;
   cursor: pointer;
 }
 .grisOscuro{
   color: #707070 !important;
+}
+.aFaqClickCat, .aFaqClickCat:hover, .aFaqClickCat:active, .aFaqClickCat:visited, .aFaqClickCat:focus{
+  text-decoration: none;
 }
