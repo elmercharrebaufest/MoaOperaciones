@@ -217,10 +217,14 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+
                 return JsonCustom(new { 
                     categorias = consultaService.ObtenerCategorias(),
                     subcategorias = consultaService.ObtenerSubCategorias(),
-                    estados = consultaService.ObtenerEstados()
+                    estados = consultaService.ObtenerEstados(),
+                    isExternal = false //!obtenerTodos
                 });
             }
             catch (InfoCustomException e)

@@ -9,7 +9,7 @@
         <div class="row myRow">
             <div class="clearfix myTables">
                 <div class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table">
-                    <p-table #dt [columns]="cols" [value]="consultas" dataKey="id" [paginator]="true" [rows]="5" >
+                    <p-table #dt [columns]="colsFiltered" [value]="consultas" dataKey="id" [paginator]="true" [rows]="5" >
                         <ng-template pTemplate="caption">
                             <div class="ui-helper-clearfix" style="text-align: right">
                                 <div style="float:left">
@@ -23,34 +23,33 @@
                         <ng-template pTemplate="header" let-columns>
                             <tr>
                                 <th style="width: 1em"></th>
-                                <th style="width: 3em" [pSortableColumn]="'id'">ID
-                                    <p-sortIcon [field]="'id'"></p-sortIcon>
-                                </th>
-                                <th style="width: 10em" [pSortableColumn]="'asunto'">Asunto
-                                    <p-sortIcon [field]="'asunto'"></p-sortIcon>
-                                </th>
-                                <th style="width: 5em" [pSortableColumn]="'estado'">Estado
-                                    <p-sortIcon [field]="'estado'"></p-sortIcon>
-                                </th>
-                                <th style="width: 5em" [pSortableColumn]="'categoria'">Categoria
-                                    <p-sortIcon [field]="'categoria'"></p-sortIcon>
-                                </th>
-                                <th style="width: 7em" [pSortableColumn]="'fechaUltimaModificacion'">Ult. Modif.
-                                    <p-sortIcon [field]="'fechaUltimaModificacion'"></p-sortIcon>
+                                <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngStyle]="{'width.em': col.width}">
+                                    {{col.header}}
+                                    <p-sortIcon [field]="col.field"></p-sortIcon>
                                 </th>
                                 <th style="width: 2em"></th>
                             </tr>
                             <tr>
                                 <th></th>
-                                <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                                <th *ngFor="let col of columns" [ngSwitch]="col.filterType">
+                                    <p-spinner *ngSwitchCase="'number'" (onChange)="dt.filter($event.value, col.field, 'equals')" style="width:100%"></p-spinner>
+                                    <input *ngSwitchCase="'text'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                                    <filtro-fecha *ngSwitchCase="'date'"></filtro-fecha>
+                                    <p-multiSelect *ngSwitchCase="'list'" [options]="col.listItems" defaultLabel="Todos" (onChange)="dt.filter($event.value, col.idField, 'in')" ></p-multiSelect>
+                                    <!-- <div *ngSwitchCase="'date'">
+
+                                        <p-toggleButton [(ngModel)]="desde" onLabel="Desde" offLabel="Desde" (onChange)="cambiarCalendar(dt)"></p-toggleButton>
+                                        <p-toggleButton [(ngModel)]="hasta" onLabel="Hasta" offLabel="Hasta" (onChange)="cambiarCalendar(dt)"></p-toggleButton>
+                                        <p-calendar #lastdate  [(ngModel)]="fecha" [locale]="es" [showIcon]="true" dateFormat="dd/mm/yyyy" [readonlyInput]="true"
+                                        selectionMode="single" (onClose)="onFechaRangeChange(dt)" (onSelect)="onFechaChange(dt)" [style]="{'width':'150%'}"
+                                        ></p-calendar>
+                                    </div> -->
+                                </th>
+
+                                <!-- <th *ngFor="let col of columns" [ngSwitch]="col.field">
                                     <input *ngSwitchCase="'id'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'equals')" size="5">
                                     <input *ngSwitchCase="'asunto'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')" size="30">
-                                    <!-- <div *ngSwitchCase="'year'">
-                                        Value < {{yearFilter}}
-                                        <i class="fa fa-close" (click)="yearFilter=null;dt.filter(null, col.field, col.filterMatchMode)" style="cursor:pointer" *ngIf="yearFilter"></i>
-                                        <p-slider [style]="{'width':'100%','margin-top':'8px'}" [(ngModel)]="yearFilter" [min]="2010" [max]="2021" (onChange)="onYearChange($event, dt)"></p-slider>
-                                    </div> -->
-                                    <!-- <p-dropdown *ngSwitchCase="'brand'" [options]="brands" [style]="{'width':'100%'}" (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown> -->
+                                    
                                     <p-multiSelect *ngSwitchCase="'estado'" [options]="estadosList" defaultLabel="Todos" (onChange)="dt.filter($event.value, 'idEstado', 'in')">
                                         <ng-template let-estado pTemplate="item">
                                             <span class="label label-default" [ngStyle]="{'background-color': obtenerColorEstado(estado.value)}" >{{estado.label}}</span>
@@ -64,7 +63,7 @@
                                         selectionMode="single" (onClose)="onFechaRangeChange(dt)" (onSelect)="onFechaChange(dt)" [style]="{'width':'150%'}"
                                         ></p-calendar>
                                     </div>
-                                </th>
+                                </th> -->
                                 <th></th>
                             </tr>
                         </ng-template>
