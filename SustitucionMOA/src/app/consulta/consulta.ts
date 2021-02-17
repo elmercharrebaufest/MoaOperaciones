@@ -17,16 +17,15 @@ export interface Consulta {
 }
 
 export interface EstadoConsulta {
-    id;
-    nombre;
-    color;
+    Id;
+    Descripcion;
+    Color;
 }
 
 export interface Categoria {
-    id;
-    value;
-    label;
-    camposAdicionales;
+    Id;
+    Code;
+    Nombre;
 }
 
 export interface Subcategoria {

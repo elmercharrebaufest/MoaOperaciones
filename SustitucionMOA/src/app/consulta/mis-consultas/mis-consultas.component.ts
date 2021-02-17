@@ -44,6 +44,31 @@ export class MisConsultasComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    @ViewChild("dt")
+    protected table: Table;
+
+    @ViewChild("lastdate")
+    protected lastdate: Calendar;
+
+    cols: any[];
+    colsFiltered: any[];
+    consultas: Consulta[];
+    estados: EstadoConsulta[];
+    categorias: Categoria[];
+    subcategorias: Subcategoria[];
+
+    
+    estadosList: SelectItem[];
+    categoriasList: SelectItem[];
+    subcategoriasList: SelectItem[];
+
+    fecha: any;
+    es: any;
+    desde: boolean;
+    hasta: boolean;
+
+    isExternal: boolean;
+
     constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
@@ -55,23 +80,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     ngAfterViewInit(): void {
-
         this.listarConsultas();
         this.getCombos();
-    }
-    
-    ngOnInit(){
-        this.setTabs();
-        this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
-
-        this.cols = [
-            { field: 'id', header: 'ID' },
-            { field: 'asunto', header: 'Asunto' },
-            { field: 'estado', header: 'Estado' },
-            { field: 'categoria', header: 'Categoria' },
-            { field: 'fechaUltimaModificacion', header: 'Ult. Modif.' }
-        ];
 
         this.es = {
             firstDayOfWeek: 1,
@@ -96,6 +106,14 @@ export class MisConsultasComponent extends ListBaseComponent {
             else 
                 return true;
           }
+
+        sessionStorage.setItem("periodo", "2");
+    }
+    
+    ngOnInit(){
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
     }
 
     addDays(date, days) {
@@ -104,27 +122,33 @@ export class MisConsultasComponent extends ListBaseComponent {
         return result;
       }
 
-    @ViewChild("dt")
-    protected table: Table;
+    setColumnas(){
+        this.cols = [
+            { field: 'id', header: 'ID', width: 3, filterType: 'number', visibleExternal: true },
+            { field: 'corredor', header: 'Corredor', width: 5, filterType: 'text', visibleExternal: false },
+            { field: 'proveedor', header: 'Proveedor', width: 5, filterType: 'text', visibleExternal: false },
+            { field: 'categoria', header: 'Categoria', width: 5, filterType: 'list', visibleExternal: true, listItems: this.categoriasList, idField: 'idCategoria', change: this.setSubcategorias },
+            { field: 'subcategoria', header: 'Subcategoria', width: 5, filterType: 'list', visibleExternal: false, listItems: this.subcategoriasList, idField: 'idSubCategoria' },
+            { field: 'asunto', header: 'Asunto', width: 10, filterType: 'text', visibleExternal: true },
+            { field: 'estado', header: 'Estado', width: 5, filterType: 'custom', visibleExternal: true },
+            { field: 'fechaInicio', header: 'Fecha Inicio', width: 7, filterType: 'date', visibleExternal: false },
+            { field: 'fechaUltimaModificacion', header: 'Ult. Modif.', width: 7, filterType: 'date', visibleExternal: true },
+            { field: 'diasReclamo', header: 'Dias de Rec', width: 5, filterType: 'number', visibleExternal: false }
+        ];
 
-    @ViewChild("lastdate")
-    protected lastdate: Calendar;
+        let isExternal = this.isExternal;
+        this.colsFiltered = this.cols.filter(x=> !isExternal || x.visibleExternal);
+    }
 
-    cols: any[];
-    consultas: Consulta[];
-    estados: EstadoConsulta[];
-    categorias: Categoria[];
-    subcategorias: Subcategoria[];
-
-    
-    estadosList: SelectItem[];
-    categoriasList: SelectItem[];
-    subcategoriasList: SelectItem[];
-
-    fecha: any;
-    es: any;
-    desde: boolean;
-    hasta: boolean;
+    setSubcategorias(categoriasSeleccionadas){
+       
+        if(this.subcategorias){
+            this.subcategoriasList = [];
+            this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+        }
+        
+        return this.subcategoriasList;
+    }
 
     onFechaChange(dt) {
         if (this.desde && !this.hasta)
@@ -145,9 +169,9 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     obtenerColorEstado(idEstado) {
-        var estado = this.estados.find(x=> x.id == idEstado);
+        var estado = this.estados.find(x=> x.Id == idEstado);
 
-        return estado.color || 'grey';
+        return estado.Color || 'grey';
     }
 
     cambiarCalendar(dt) {
@@ -173,13 +197,16 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else {
                         this.categorias = result.categorias;
                         this.categoriasList = [];
-                        this.categorias.forEach(x => this.categoriasList.push({ label: x.label, value: x.id}));
+                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id}));
                         this.estados = result.estados;
                         this.estadosList = [];
-                        this.estados.forEach(x => this.estadosList.push({ label: x.nombre, value: x.id}));
+                        this.estados.forEach(x => this.estadosList.push({ label: x.Descripcion, value: x.Id}));
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+
+                        this.isExternal = result.isExternal;
+                        this.setColumnas();
                     }
                 },
                 error => {
@@ -231,11 +258,5 @@ export class MisConsultasComponent extends ListBaseComponent {
         const re = /-?\d+/;
         const m = re.exec(date);
         return parseInt(m[0], 10);
-    }
-
-    mostrarCamposAdicionales(idCategoria) {
-        var categoria = this.categorias.find(x=>x.id == idCategoria);
-
-        return categoria.camposAdicionales
     }
 }
