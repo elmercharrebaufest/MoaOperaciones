@@ -12,6 +12,7 @@ export interface Consulta {
     CategoriaId;
     IdCategoria;
     SubCategoria;
+    IdSubCategoria;
     FechaCreacion;
     DiasReclamo;
 

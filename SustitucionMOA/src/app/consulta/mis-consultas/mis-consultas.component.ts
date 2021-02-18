@@ -120,15 +120,15 @@ export class MisConsultasComponent extends ListBaseComponent {
         var result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
-      }
+    }
 
     setColumnas(){
         this.cols = [
             { field: 'Id', header: 'ID', width: 3, filterType: 'number', visibleExternal: true },
             { field: 'RazonSocialCorredor', header: 'Corredor', width: 5, filterType: 'text', visibleExternal: false },
             { field: 'RazonSocialProveedor', header: 'Proveedor', width: 5, filterType: 'text', visibleExternal: false },
-            { field: 'Categoria.Nombre', header: 'Categoria', width: 5, filterType: 'list', visibleExternal: true, listItems: this.categoriasList, idField: 'idCategoria', change: this.setSubcategorias },
-            { field: 'SubCategoria', header: 'Subcategoria', width: 5, filterType: 'list', visibleExternal: false, listItems: this.subcategoriasList, idField: 'idSubCategoria' },
+            { field: 'Categoria.Nombre', header: 'Categoria', width: 5, filterType: 'custom', visibleExternal: true, listItems: this.categoriasList, idField: 'idCategoria', change: this.setSubcategorias },
+            { field: 'SubCategoria.Nombre', header: 'Subcategoria', width: 5, filterType: 'custom', visibleExternal: false, listItems: this.subcategoriasList, idField: 'idSubCategoria' },
             { field: 'Asunto', header: 'Asunto', width: 10, filterType: 'text', visibleExternal: true },
             { field: 'EstadoConsulta.Nombre', header: 'Estado', width: 5, filterType: 'custom', visibleExternal: true },
             { field: 'FechaCreacion', header: 'Fecha Inicio', width: 7, filterType: 'date', visibleExternal: false },
@@ -141,10 +141,9 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     setSubcategorias(categoriasSeleccionadas){
-       
         if(this.subcategorias){
             this.subcategoriasList = [];
-            this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+            this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.map(y=> y.Id).includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
         }
         
         return this.subcategoriasList;
