@@ -13,7 +13,19 @@ namespace SustitucionMOA
         {
             GlobalConfiguration.Configuration.UseSqlServerStorage("HfContexto");
             GlobalConfiguration.Configuration.UseNLogLogProvider();
+            app.UseHangfireServer();
             app.UseHangfireDashboard();
+            Register();
+        }
+
+        private void Register()
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
+
+            RecurringJob.AddOrUpdate<Jobs.IReporteLiquidacionesInformadasJob>(
+                "ReporteLiquidacionesInformadasJob",
+                j => j.Execute(),
+                "* * * * *", tz);
         }
     }
 }
