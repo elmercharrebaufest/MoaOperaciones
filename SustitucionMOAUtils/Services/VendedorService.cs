@@ -419,8 +419,9 @@ namespace SustitucionMOAUtils.Services
 
         private string FormatearCodigoProveedor(string CUIT)
         {
-            return CUIT.Substring(2, 8);
+            return string.Concat("00", CUIT.Substring(2, 8));
         }
+
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
 
 
