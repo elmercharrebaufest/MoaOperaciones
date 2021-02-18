@@ -20,7 +20,14 @@ namespace SustitucionMOA.Jobs
 
         public void Execute()
         {
-            Log.Info("JOB EJECUTANDO!");
+            try
+            {
+                _reportesService.EnviarReporteLiquidacionesInformadas();
+            }
+            catch(Exception e)
+            {
+                Log.Error(e);
+            }
         }
     }
 }
