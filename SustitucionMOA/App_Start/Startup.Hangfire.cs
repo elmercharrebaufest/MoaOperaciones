@@ -25,7 +25,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IReporteLiquidacionesInformadasJob>(
                 "ReporteLiquidacionesInformadasJob",
                 j => j.Execute(),
-                "30 6 * * 1-5", tz);
+                "30 6 * * *", tz);
         }
     }
 }

@@ -92,6 +92,8 @@
     <Build Include="DBO\Tables\SituacionIVA.sql" />
     <None Include="scripts\CreacionRolCompras.sql" />
     <Build Include="DBO\Tables\LiquidacionInformada.sql" />
+    <Build Include="scripts\Update Comerciales.sql" />
+    <Build Include="scripts\UpdateFechaSolicitud.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -106,5 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
+    <None Include="scripts\CrearHanfireDBSchema.sql" />
   </ItemGroup>
 </Project>
