@@ -315,7 +315,8 @@ namespace SustitucionMOA.Controllers
                 string HabilitarPizarra = crearContratoService.HabilitarPizarra(material, tiponegocio);
                 string HabilitarCampana = crearContratoService.HabilitarCampaña(material);
                 string TraerPrecioMoa = crearContratoService.TraerPrecioMoa(material, tiponegocio);
-                var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa };
+                string TraerPagosDiferido = crearContratoService.TraerPagosDiferido(material, tiponegocio);
+                var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido };
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)

@@ -105,6 +105,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     ObservacionCalidadTercero: string = "";
     ObservacionSustentableTercero: string = "";
     ObservacionTercero: string = "";
+    pagosDiferidos: any = new Array();
+    pagoDiferidoTerceroId: any = null;
+
     ngOnInit() {
 
         this.setTabs();
@@ -372,6 +375,19 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             this.campanias.push(el);
                         });
                         
+                        this.pagosDiferidos = new Array();
+                        if(obj.TraerPagosDiferido){
+                            JSON.parse(obj.TraerPagosDiferido).forEach(element => {
+                                let el = {
+                                    Id: element.Id,
+                                    Descripcion: `${element.CantidadDia} dias $${element.Importe}`,
+                                    CantidadDia: element.CantidadDia,
+                                    Importe: element.Importe
+                                }
+                                this.pagosDiferidos.push(el);
+                            });
+                        }   
+
                         if (contrato.TipoNegocioId == 3 ) {
                             this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                         } else {

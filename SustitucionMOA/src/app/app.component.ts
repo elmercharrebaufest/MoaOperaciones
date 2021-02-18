@@ -98,7 +98,7 @@ export class AppComponent {
         this.sessionDataService.setGranosFlag(result.granosFlag);
         this.sessionDataService.setSeccionesVisitadas(result.seccionesVisitadas);
 
-        sessionStorage.setItem("granosSelected", result.granosFlag);
+        sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
 
 
