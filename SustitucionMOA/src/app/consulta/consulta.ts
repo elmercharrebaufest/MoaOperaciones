@@ -1,18 +1,22 @@
 export interface Consulta {
-    id;
-    asunto;
-    estado;
-    idEstado;
-    fechaUltimaModificacion;
-    categoria;
-    idCategoria;
-    fechaCreacion;
+    Id;
+    CodigoCorredor;
+    RazonSocialCorredor;
+    RazonSocialProveedor;
 
-    contrato;
-    razonSocial;
-    cuit;
-    comprobante;
-    inscripcion;
+    Asunto;
+    EstadoConsulta;
+    EstadoConsultaId;
+    FechaUltimaModificacion;
+    Categoria;
+    CategoriaId;
+    IdCategoria;
+    SubCategoria;
+    FechaCreacion;
+    DiasReclamo;
+
+    ContratoNo;
+    ComprobanteNo;
 
 }
 

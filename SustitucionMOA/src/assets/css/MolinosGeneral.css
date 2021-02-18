@@ -3895,3 +3895,6 @@ div.panel-body a.active{
   background: #707070;  
   border-radius: 10px;
 }
+.ui-table-wrapper{
+  font-family: 'Roboto Regular';
+}

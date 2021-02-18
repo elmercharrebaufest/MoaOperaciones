@@ -69,19 +69,19 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
                             <tr [pSelectableRow]="rowData">
+                                <!--
                                 <td>
                                     <a style="cursor: pointer;" [pRowToggler]="rowData" *ngIf="mostrarCamposAdicionales(rowData.idCategoria)">
                                         <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                     </a>
-                                </td>
+                                </td>-->
                                 <td *ngFor="let col of columns" [ngSwitch]="col.field">
                                     <span *ngSwitchDefault> {{rowData[col.field]}} </span> 
                                     <span class="label label-default" *ngSwitchCase="'estado'" [ngStyle]="{'background-color': obtenerColorEstado(rowData.idEstado)}" >{{rowData[col.field]}}</span>
                                     <span *ngSwitchCase="'fechaUltimaModificacion'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                 </td>
                                 <td style="text-align: center">
-                                    <a [routerLink]="['/consulta/detalle', { idConsulta:this.consultas[0].Id } ]"><button pButton type="button" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button></a>
-                                    <!--<a [routerLink]="['/consulta/detalle', { idConsulta:rowData.id } ]"><button pButton type="button" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button></a>-->
+                                    <a [routerLink]="['/consulta/detalle', { idConsulta:rowData.id } ]"><button pButton type="button" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button></a>
                                 </td>
                             </tr>
                         </ng-template>

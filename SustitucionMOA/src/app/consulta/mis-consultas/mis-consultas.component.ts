@@ -124,16 +124,16 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas(){
         this.cols = [
-            { field: 'id', header: 'ID', width: 3, filterType: 'number', visibleExternal: true },
-            { field: 'corredor', header: 'Corredor', width: 5, filterType: 'text', visibleExternal: false },
-            { field: 'proveedor', header: 'Proveedor', width: 5, filterType: 'text', visibleExternal: false },
-            { field: 'categoria', header: 'Categoria', width: 5, filterType: 'list', visibleExternal: true, listItems: this.categoriasList, idField: 'idCategoria', change: this.setSubcategorias },
-            { field: 'subcategoria', header: 'Subcategoria', width: 5, filterType: 'list', visibleExternal: false, listItems: this.subcategoriasList, idField: 'idSubCategoria' },
-            { field: 'asunto', header: 'Asunto', width: 10, filterType: 'text', visibleExternal: true },
-            { field: 'estado', header: 'Estado', width: 5, filterType: 'custom', visibleExternal: true },
-            { field: 'fechaInicio', header: 'Fecha Inicio', width: 7, filterType: 'date', visibleExternal: false },
-            { field: 'fechaUltimaModificacion', header: 'Ult. Modif.', width: 7, filterType: 'date', visibleExternal: true },
-            { field: 'diasReclamo', header: 'Dias de Rec', width: 5, filterType: 'number', visibleExternal: false }
+            { field: 'Id', header: 'ID', width: 3, filterType: 'number', visibleExternal: true },
+            { field: 'RazonSocialCorredor', header: 'Corredor', width: 5, filterType: 'text', visibleExternal: false },
+            { field: 'RazonSocialProveedor', header: 'Proveedor', width: 5, filterType: 'text', visibleExternal: false },
+            { field: 'Categoria.Nombre', header: 'Categoria', width: 5, filterType: 'list', visibleExternal: true, listItems: this.categoriasList, idField: 'idCategoria', change: this.setSubcategorias },
+            { field: 'SubCategoria', header: 'Subcategoria', width: 5, filterType: 'list', visibleExternal: false, listItems: this.subcategoriasList, idField: 'idSubCategoria' },
+            { field: 'Asunto', header: 'Asunto', width: 10, filterType: 'text', visibleExternal: true },
+            { field: 'EstadoConsulta.Nombre', header: 'Estado', width: 5, filterType: 'custom', visibleExternal: true },
+            { field: 'FechaCreacion', header: 'Fecha Inicio', width: 7, filterType: 'date', visibleExternal: false },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', width: 7, filterType: 'date', visibleExternal: true },
+            { field: 'DiasReclamo', header: 'Dias de Rec', width: 5, filterType: 'number', visibleExternal: false }
         ];
 
         let isExternal = this.isExternal;
@@ -236,8 +236,8 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else {
                         this.consultas = result.data;
                         this.consultas.forEach(x=> {
-                            x.fechaCreacion = new Date(this.getDateFromAspNetFormat(x.fechaCreacion));
-                            x.fechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.fechaUltimaModificacion));
+                            x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
+                            x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
                     }
                 },
