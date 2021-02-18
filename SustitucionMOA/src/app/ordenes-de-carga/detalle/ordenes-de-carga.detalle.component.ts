@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { BaseComponent } from '../../common/base-components/base-component';
+import { CorredorContrato } from '../../common/models/ordenes-de-carga/corredorContrato';
 import { EstadoOrdenDeCarga } from '../../common/models/ordenes-de-carga/estadoOrdenDeCarga';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
@@ -15,9 +16,9 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 
 @Component({
-  selector: 'app-ordenes-de-carga.detalle',
-  templateUrl: './ordenes-de-carga.detalle.component.html',
-  styleUrls: ['./ordenes-de-carga.detalle.component.css']
+    selector: 'app-ordenes-de-carga.detalle',
+    templateUrl: './ordenes-de-carga.detalle.component.html',
+    styleUrls: ['./ordenes-de-carga.detalle.component.css']
 })
 export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnInit {
 
@@ -37,13 +38,16 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     contratos: Map<number, string>;
     contratoSeleccionado: number;
 
+    corredorContratoList: CorredorContrato[] = [];
+    corredorContratoSeleccionado: CorredorContrato;
+
     mostrarBotonContratos: boolean = false;
     mostrarBotonCorredores: boolean = false;
     mostrarBotonNotificarTransporte: boolean = false;
     mostrarBotonVerificarTransporte: boolean = false;
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
-    
+
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -53,7 +57,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         super(navService, securytiService, floatMsgService, modalService);
     }
 
-  ngOnInit() {
+    ngOnInit() {
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.ordenDeCargaId = params["id"];
         });
@@ -66,19 +70,30 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     verificarBotones() {
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada)
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Anulada) {
             return;
-        
-        this.mostrarBotonContratos = true;
-        this.mostrarBotonCorredores = false;
-        this.mostrarBotonNotificarTransporte = false;
-        this.mostrarBotonVerificarTransporte = false;
-        this.mostrarBotonVerificarSituacionCrediticia = false;
-        this.mostrarBotonAnular= false;
-        
+        }
+
+        if (this.ordenDeCarga.ContratoSAP === "" || this.ordenDeCarga.Corredor === "") {
+            this.mostrarBotonContratos = true;
+        }
+
+        if (!this.ordenDeCarga.TransporteExiste) {
+            this.mostrarBotonNotificarTransporte = true;
+            this.mostrarBotonVerificarTransporte = true;
+        }
+
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
+            this.mostrarBotonVerificarSituacionCrediticia = true;
+        }
+
+        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+            this.mostrarBotonAnular = true;
+        }
+
     }
 
-  obtenerOrdenDeCarga() {
+    obtenerOrdenDeCarga() {
         try {
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
@@ -99,7 +114,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    
+
     notificarTransporte() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -128,7 +143,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    
+
     verificarTransporte() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -156,7 +171,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-
 
     verificarSituacionCrediticia() {
         this.mensajeComponent.setMsgsEmpty();
@@ -202,9 +216,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        console.log(result.data)
                         this.corredores = result.data;
-                        console.log(this.corredores)
                         document.getElementById("openSeleccionarCorredor").click();
 
                     }
@@ -217,15 +229,46 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-    
-    seleccionarCorredor() {
+
+
+    abrirModalCorredoresYContratos() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+
+        try {
+            this.subscriptionDropDowns = this.service.obtenerContratosYCorredores(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.corredorContratoList = result.data;
+                        document.getElementById("openSeleccionarContratoYCorredor").click();
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    seleccionarContratoYCorredor() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
         console.log(this.corredorSeleccionado);
-        console.log(this.corredores[this.corredorSeleccionado]);
+        console.log(this.corredorContratoSeleccionado);
         try {
-            this.subscriptionDropDowns = this.service.seleccionarCorredor(this.ordenDeCargaId, this.corredores[this.corredorSeleccionado]).subscribe(
+            this.subscriptionDropDowns = this.service.seleccionarCorredorContrato(this.ordenDeCargaId, this.corredorContratoSeleccionado).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -270,36 +313,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         console.log(this.contratos)
                         document.getElementById("openSeleccionarContrato").click();
 
-                    }
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
-    
-    seleccionarContrato() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        console.log(this.corredorSeleccionado);
-        console.log(this.corredores[this.corredorSeleccionado]);
-        try {
-            this.subscriptionDropDowns = this.service.seleccionarContrato(this.ordenDeCargaId, this.corredores[this.corredorSeleccionado]).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        document.getElementById("closeModalSeleccionarContrato").click();
-                        this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },
                 error => {

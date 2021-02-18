@@ -6,12 +6,13 @@ import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
+import { CorredorContrato } from '../common/models/ordenes-de-carga/corredorContrato';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
-export class OrdenesDeCargaService extends BaseService{
- constructor(protected http: Http) {
+export class OrdenesDeCargaService extends BaseService {
+    constructor(protected http: Http) {
         super(http);
     }
 
@@ -32,13 +33,14 @@ export class OrdenesDeCargaService extends BaseService{
             .pipe(map(this.extractData));
     }
 
-    public agregar(ordenDeCarga :OrdenDeCarga): Observable<any> {
+    public agregar(ordenDeCarga: OrdenDeCarga): Observable<any> {
         let payload = new FormData();
         console.log(ordenDeCarga)
         payload.append(
             "ordenDeCargaJson",
             JSON.stringify(ordenDeCarga)
         );
+        console.log("payload:", payload)
 
         return this.http
             .post('/api/OrdenDeCarga/Agregar', payload)
@@ -76,6 +78,17 @@ export class OrdenesDeCargaService extends BaseService{
             .pipe(map(this.extractData));
     }
 
+    public obtenerContratosYCorredores(ordenId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenId', ordenId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/ObtenerContratosYCorredores', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+
     public obtenerCorredores(ordenId: Number): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('ordenId', ordenId.toString());
@@ -86,13 +99,23 @@ export class OrdenesDeCargaService extends BaseService{
             .pipe(map(this.extractData));
     }
 
-    public seleccionarContrato(ordenId: Number, contratoSAP: string): Observable<any> {
+    public seleccionarCorredorContrato(ordenId: Number, corredorContrato: CorredorContrato): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('ordenId', ordenId.toString());
-        params.set('contratoSAP', contratoSAP);
+        console.log("corredorContrato:", corredorContrato)
+
+        let payload = new FormData();
+        payload.append(
+            "corredorContratoJson",
+            JSON.stringify(corredorContrato)
+        );
+        payload.append(
+            "ordenId",
+            ordenId.toString()
+        );
 
         return this.http
-            .get('/api/OrdenDeCarga/SeleccionarContrato', { search: params, headers: this.headers })
+            .post('/api/OrdenDeCarga/SeleccionarCorredorContrato', payload)
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
@@ -118,7 +141,7 @@ export class OrdenesDeCargaService extends BaseService{
             .pipe(map(this.extractData));
     }
 
-     public verificarTransporte(ordenId: Number): Observable<any> {
+    public verificarTransporte(ordenId: Number): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('ordenId', ordenId.toString());
 

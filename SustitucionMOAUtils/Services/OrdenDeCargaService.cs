@@ -189,11 +189,42 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
         }
 
+
+        public string SeleccionarCorredorContrato(int ordenId, CorredorContratoDto corredorContrato)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+
+            orden.Corredor = corredorContrato.Corredor; ;
+            orden.ContratoSAP = corredorContrato.Contrato;
+            orden.CorredorSeleccionado = true;
+
+            orden.ActualizarEstado();
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaActualizada;
+        }
+
         public Dictionary<string, string> ObtenerContratos(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
             return ObtenerContratos(orden.CUITCliente);
+        }
+
+
+        public List<CorredorContratoDto> ObtenerContratosYCorredores (int ordenID)
+        {
+            var listado = new List<CorredorContratoDto>
+            {
+                new CorredorContratoDto(1, 1, "Pepe", "123"),
+                new CorredorContratoDto(1, 2, "Pepe", "456"),
+                new CorredorContratoDto(2, 3, "Luis", "789"),
+                new CorredorContratoDto(2, 4, "Luis", "234")
+            };
+
+
+            return listado;
         }
 
         public Dictionary<string, string> ObtenerContratos(string CUIT)

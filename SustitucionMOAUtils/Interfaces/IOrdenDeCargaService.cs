@@ -13,7 +13,6 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
         List<OrdenDeCargaDto> Listar(string mailUsuario);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
-
         string AnularOrden(int ordenId);
         string NotificarTransporte(int ordenId);
         Dictionary<string, string> ObtenerContratos(int ordenId);
@@ -22,6 +21,8 @@ namespace SustitucionMOAUtils.Interfaces
         string SeleccionarCorredor(int ordenId, string corredor);
         string VerificarSituacionCrediticia(int ordenId);
         string VerificarTransporte(int ordenId);
+        List<CorredorContratoDto> ObtenerContratosYCorredores(int ordenID);
+        string SeleccionarCorredorContrato(int ordenId, CorredorContratoDto corredorContrato);
     }
 
 }

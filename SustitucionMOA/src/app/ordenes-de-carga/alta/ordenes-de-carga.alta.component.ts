@@ -13,9 +13,9 @@ import { SpinnerComponent } from '../../common/view-child/spinner/spinner.compon
 import { UsuarioService } from '../../usuario/usuario.service';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 @Component({
-  selector: 'app-ordenes-de-carga.alta',
-  templateUrl: './ordenes-de-carga.alta.component.html',
-  styleUrls: ['./ordenes-de-carga.alta.component.css']
+    selector: 'app-ordenes-de-carga.alta',
+    templateUrl: './ordenes-de-carga.alta.component.html',
+    styleUrls: ['./ordenes-de-carga.alta.component.css']
 })
 export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
@@ -31,7 +31,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     mensajeError: string = "";
     mensajeSuccess: string = "";
 
-              
+
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -63,73 +63,63 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     validar() {
 
         console.log("CUIT:", this.ordenDeCarga.CUITTercero.toString().length)
-        if (this.ordenDeCarga.CUITTercero.toString().length != 11)
-        {
+        if (this.ordenDeCarga.CUITTercero.toString().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de tercero válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.CUITCliente.toString().length != 11)
-        {
+        if (this.ordenDeCarga.CUITCliente.toString().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.NombreChofer.length < 2)
-        {
+        if (this.ordenDeCarga.NombreChofer.length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
 
-        if (this.ordenDeCarga.ApellidoChofer.length < 2)
-        {
+        if (this.ordenDeCarga.ApellidoChofer.length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
-       
-        if (this.ordenDeCarga.CUITChofer.toString().length != 11)
-        {
+
+        if (this.ordenDeCarga.CUITChofer.toString().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de chofer válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.PatenteAcoplado.length < 6)
-        {
+        if (this.ordenDeCarga.PatenteAcoplado.length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
             return false;
         }
 
-        if (this.ordenDeCarga.ChasisAcoplado.length < 6)
-        {
+        if (this.ordenDeCarga.ChasisAcoplado.length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válida.");
             return false;
         }
 
-        if (this.ordenDeCarga.RazonSocialTransporte.length < 2)
-        {
+        if (this.ordenDeCarga.RazonSocialTransporte.length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
 
-        if (this.ordenDeCarga.CUITTransporte.toString().length != 11)
-        {
+        if (this.ordenDeCarga.CUITTransporte.toString().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.Producto.length < 2)
-        {
+        if (this.ordenDeCarga.Producto.length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el producto.");
             return false;
         }
-        
+
         return true;
     }
 
     cargaFalsa() {
         this.ordenDeCarga.llenar()
     }
-    
+
     obtenerOrdenDeCarga() {
         try {
             this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
@@ -183,7 +173,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                         this.mensajeSuccess = result.data.Mensaje;
 
                         this.ordenDeCargaId = result.data.IdEntidad;
-                        
+
                         document
                             .getElementById("openModalNotificacion")
                             .click();
@@ -200,7 +190,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         document
             .getElementById("botonCerrarModal")
             .click();
-        
+
         this.redirigirADetalles();
     }
 
