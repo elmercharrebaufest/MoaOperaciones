@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
+using Hangfire;
 
 [assembly: OwinStartup(typeof(SustitucionMOA.Startup))]
 
@@ -13,6 +14,7 @@ namespace SustitucionMOA
         {
             //Configuro la autenticación
             ConfigureAuth(app);
+            ConfigureHangfire(app);
         }
     }
 }
