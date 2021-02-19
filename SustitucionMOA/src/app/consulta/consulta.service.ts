@@ -92,4 +92,21 @@ export class ConsultaService extends BaseService {
         params.set('consultaId', consultaId.toString());
         params.set('estado', estadoId.toString());
     }
+
+    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subCategoriaId: number = null): Observable<any>{
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
+        params.set('estadoConsultaId', estadoId.toString());
+        params.set('categoriaId', categoriaId.toString());
+        if(subCategoriaId != null){
+            params.set('subCategoriaId', subCategoriaId.toString());
+        }
+        else{
+            params.set('subCategoriaId', null);
+        }
+        return this.http
+            .get(`/api/consulta/ActualizarCombos`, { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+
+    }
 }

@@ -126,6 +126,32 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
+        public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subCategoriaId)
+        {
+            var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
+            var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
+
+            if (estado == null) throw new InfoCustomException("No existe el estado");
+
+            if (subCategoriaId.HasValue)
+            {
+                var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subCategoriaId);
+                if (subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
+            }
+
+            if (categoria == null) throw new InfoCustomException("No existe la categoria");
+
+            var consulta = GetConsulta(consultaId);
+
+            consulta.Categoria_Id = categoriaId;
+            consulta.EstadoConsulta_Id = estadoConsultaId;
+            consulta.SubCategoria_Id = subCategoriaId;
+
+            repositorio.GuardarCambios();
+
+            return "Se guardo correctamente.";
+        }
+
         public string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files)
         {
             var comentario = repositorio.Obtener<Comentario>(comentarioId);
