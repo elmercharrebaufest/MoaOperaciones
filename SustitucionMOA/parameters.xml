@@ -98,6 +98,24 @@
                            /@value" />
 	</parameter>
 
+  <parameter name="ComputerVisionApiKey Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ComputerVisionApiKey']
+                           /@value" />
+  </parameter>
+
+  <parameter name="ComputerVisionEndpoint Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ComputerVisionEndpoint']
+                           /@value" />
+  </parameter>
+
+  <parameter name="BlobStorageEndpoint Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='BlobStorageEndpoint']
+                           /@value" />
+  </parameter>
+
 
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"

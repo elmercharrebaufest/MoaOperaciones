@@ -80,6 +80,8 @@ namespace SustitucionMOAUtils.Services
             proveedor.AltaInterna = altaInterna;
             proveedor.TipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
             proveedor.SiperObligatorio = siperObligatorio;
+            proveedor.FechaSolicitud = DateTime.Now;
+
 
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 

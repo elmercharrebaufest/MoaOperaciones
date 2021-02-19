@@ -33,6 +33,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
     };
     CrearContratoAFijarComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
+        this.contrato.TipoNegocioId = 1;
         this.negocioHabilitado(this.contrato);
         this.contrato.CondicionFijacionId = 7;
     };
@@ -272,6 +273,13 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         if (this.contrato.MaterialId == 5) {
             this.contrato.StandardDeCalidadId = 5;
         }
+        this.contrato.ObservacionTercero = this.ObservacionTercero;
+        if (this.contrato.CalidadTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Calidad: " + this.ObservacionCalidadTercero;
+        }
+        if (this.contrato.SustentableTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Sustentable: " + this.ObservacionSustentableTercero;
+        }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
@@ -330,11 +338,11 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         //    this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
         //    return false;
         //}
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
+        if ((this.ObservacionCalidadTercero == "" || this.ObservacionCalidadTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+        if ((this.ObservacionSustentableTercero == "" || this.ObservacionSustentableTercero == undefined) && this.contrato.SustentableTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la Tarifa Sustentable.");
             return false;
         }

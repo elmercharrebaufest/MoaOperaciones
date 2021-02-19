@@ -24,5 +24,6 @@ namespace SustitucionMOAUtils.Interfaces
         string GetContratos(DataSourceRequest request);
         string ValidarProveedor(string proveedorId);
         string TraerPrecioMoaMateriales(int tipoNegocioId);
+        string AnularNegocio(int negocioId, int tipoNegocioId, string motivo);
     }
 }

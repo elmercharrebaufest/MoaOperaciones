@@ -122,7 +122,8 @@ namespace SustitucionMOAUtils.Services
             {
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                TipoProveedor = ObtenerTipoPorNombreCorto("G")
+                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                FechaSolicitud = DateTime.Now
             };
 
             return ValidarCUITProveedor(ref usuario, proveedor);
@@ -148,7 +149,8 @@ namespace SustitucionMOAUtils.Services
                 EstadoAprobacion = EstadoAprobacion.AltaIncompleta,
                 Observaciones = "Comunicarse con su contratante.",
                 Mail = usuario.Mail,
-                TipoProveedor = ObtenerTipoPorNombreCorto("NG")
+                TipoProveedor = ObtenerTipoPorNombreCorto("NG"),
+                FechaSolicitud = DateTime.Now
             };
 
             proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
@@ -192,7 +194,9 @@ namespace SustitucionMOAUtils.Services
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.Aprobado,
                 CodigoProveedor = FormatearCodigoCorredor(usuario.CUITRegistro),
-                TipoProveedor = ObtenerTipoPorNombreCorto("CORR")
+                TipoProveedor = ObtenerTipoPorNombreCorto("CORR"),
+                FechaSolicitud = DateTime.Now
+
             };
 
             usuario.Roles = new List<Rol>();

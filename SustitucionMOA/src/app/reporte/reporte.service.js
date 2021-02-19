@@ -126,6 +126,14 @@ var ReporteService = /** @class */ (function (_super) {
             .get('/api/CrearContrato/ExportContratos', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     };
+    ReporteService.prototype.anularNegocio = function (negocioId, tipoNegocioId, motivo) {
+        var params = new URLSearchParams();
+        params.set('negocioId', negocioId);
+        params.set('tipoNegocioId', tipoNegocioId);
+        params.set('motivo', motivo);
+        return this.http
+            .get('/api/CrearContrato/AnularNegocio', { search: params, headers: this.headers }).pipe(map(this.extractData));
+    };
     ReporteService = __decorate([
         Injectable()
     ], ReporteService);

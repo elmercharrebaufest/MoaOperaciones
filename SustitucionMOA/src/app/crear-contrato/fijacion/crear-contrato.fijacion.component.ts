@@ -25,6 +25,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
 
     ngOnInit() {
         super.ngOnInit();
+        this.contrato.TipoNegocioId = 3;
         console.log("inicia el componente")
         this.negocioHabilitado(this.contrato);
 
@@ -116,14 +117,14 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     }
 
     selectEventProveedor(item) {
-        this.contrato.MaterialId = null;
+        //this.contrato.MaterialId = null;
         this.pendientesFijar = [];
         this.pendienteFijar = null;
         this.contrato.ProveedorId = item.Id;
         this.cuitProveedorSeleccionado = item.CUIT;
         console.log("prov: ", item.Id);
         if (item != null && item.Id != null && item.Id > 0) {
-            this.obtenerDatosCompraNet(this.contrato, item.Id);
+            this.obtenerDatosCompraNet(this.contrato, item.Id);            
         }
     }
 
@@ -223,6 +224,14 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.StandardDeCalidadId = null;
         this.contrato.PrecioNeto = this.contrato.Precio;
 
+        this.contrato.ObservacionTercero = this.ObservacionTercero;
+        if (this.contrato.DolarizadoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
+        }
+        if (this.contrato.PagoDiferidoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+        }
+
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
@@ -313,7 +322,14 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
             return false;
         }
-
+        if ((this.ObservacionDolarizadoTercero == "" || this.ObservacionDolarizadoTercero == undefined) && this.contrato.DolarizadoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
+            return false;
+        }
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
+            return false;
+        }
         return true;
     }
 
@@ -345,16 +361,16 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.pendientesFijar = [];
             this.pendienteFijar = null;
             this.contrato.CampanaId = null;
-            this.habilitaciones(this.contrato);
+            //this.habilitaciones(this.contrato);
             this.contrato.Precio = 0;
             this.contrato.MonedaId = null;
             this.contrato.Pizarra = false;
         }
     }
-    changePizarra() {
-        this.contrato.Precio = 0;
-        this.contrato.MonedaId = null;
-    }
+    //changePizarra() {
+    //    this.contrato.Precio = 0;
+    //    this.contrato.MonedaId = null;
+    //}
 
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;

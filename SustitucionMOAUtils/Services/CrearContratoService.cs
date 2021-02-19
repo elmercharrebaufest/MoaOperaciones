@@ -664,5 +664,61 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public string AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
+        {
+            try
+            {
+                var url = "";
+                if (tipoNegocioId == 1 || tipoNegocioId == 2)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularContrato");
+                }
+                else if (tipoNegocioId == 3)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularFijacionCarga");
+                }
+                else
+                {
+                    throw new ValidationCustomException("No se puede anular este tipo de negocios.");
+                }
+              
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                var content = JsonConvert.SerializeObject(new { negocioId = negocioId, MotivoRechazo= motivo });
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    return scapedJson;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
     }
 }
