@@ -10,5 +10,16 @@ namespace SustitucionMOAModel.Dto
     {
         public string Mensaje { get; set; }
         public int IdEntidad { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Resultado resultado &&
+                   Mensaje == resultado.Mensaje;
+        }
+
+        public override int GetHashCode()
+        {
+            return 653725650 + EqualityComparer<string>.Default.GetHashCode(Mensaje);
+        }
     }
 }

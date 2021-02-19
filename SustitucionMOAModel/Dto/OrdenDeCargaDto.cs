@@ -54,6 +54,6 @@ namespace SustitucionMOAModel.Dto
         public bool InformadaSAP { get; set; }
 
         public string FechaEntregaGenerada { get; set; }
-
+        public string Producto { get; set; }
     }
 }

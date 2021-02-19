@@ -101,6 +101,7 @@
     <Compile Include="Services\AzureB2CServiceTest.cs" />
     <Compile Include="Services\DataAgroServiceTest.cs" />
     <Compile Include="Services\NotificacionServiceTest.cs" />
+    <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
     <Compile Include="Services\UsuarioServiceTest.cs" />
     <Compile Include="Services\VendedorServiceTest.cs" />
   </ItemGroup>

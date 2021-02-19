@@ -36,6 +36,9 @@ namespace SustitucionMOAUtils.Services
 
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
+
+            
+
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
 
             VerificarContrato(ordenDeCarga);
@@ -124,7 +127,9 @@ namespace SustitucionMOAUtils.Services
                 InformadaSAP = orden.InformadaSAP,
                 Observacion = orden.Observacion,
                 PatenteAcoplado = orden.PatenteAcoplado,
-                RazonSocialCliente = cliente.RazonSocial
+                RazonSocialCliente = cliente.RazonSocial,
+                Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})",
+                Producto = orden.Producto
             };
 
             return ordenDto;
@@ -327,8 +332,6 @@ namespace SustitucionMOAUtils.Services
 
 
         #endregion
-
-
 
         #region Etapa2
 

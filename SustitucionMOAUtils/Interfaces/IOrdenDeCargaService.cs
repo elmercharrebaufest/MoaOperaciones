@@ -23,6 +23,7 @@ namespace SustitucionMOAUtils.Interfaces
         string VerificarTransporte(int ordenId);
         List<CorredorContratoDto> ObtenerContratosYCorredores(int ordenID);
         string SeleccionarCorredorContrato(int ordenId, CorredorContratoDto corredorContrato);
+        void VerificarTransporteBulk();
     }
 
 }

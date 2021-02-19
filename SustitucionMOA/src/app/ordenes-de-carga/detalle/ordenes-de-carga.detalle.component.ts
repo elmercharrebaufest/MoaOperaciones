@@ -18,7 +18,7 @@ import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
     templateUrl: './ordenes-de-carga.detalle.component.html',
-    styleUrls: ['./ordenes-de-carga.detalle.component.css']
+    styleUrls: ['./ordenes-de-carga.detalle.component.css', '../listado/ordenes-de-carga.listado.component.css']
 })
 export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnInit {
 
