@@ -67,6 +67,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     desde: boolean;
     hasta: boolean;
 
+    datesRange: SelectItem[] = [{label:'Desde', value:'desde'}, {label:'Hasta', value:'hasta'}];
     isExternal: boolean;
 
     constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
@@ -106,8 +107,6 @@ export class MisConsultasComponent extends ListBaseComponent {
             else 
                 return true;
           }
-
-        sessionStorage.setItem("periodo", "2");
     }
     
     ngOnInit(){
@@ -120,19 +119,19 @@ export class MisConsultasComponent extends ListBaseComponent {
         var result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;
-      }
+    }
 
     setColumnas(){
         this.cols = [
             { field: 'Id', header: 'ID', width: 3, filterType: 'number', visibleExternal: true },
             { field: 'RazonSocialCorredor', header: 'Corredor', width: 5, filterType: 'text', visibleExternal: false },
             { field: 'RazonSocialProveedor', header: 'Proveedor', width: 5, filterType: 'text', visibleExternal: false },
-            { field: 'Categoria.Nombre', header: 'Categoria', width: 5, filterType: 'list', visibleExternal: true, listItems: this.categoriasList, idField: 'idCategoria', change: this.setSubcategorias },
-            { field: 'SubCategoria', header: 'Subcategoria', width: 5, filterType: 'list', visibleExternal: false, listItems: this.subcategoriasList, idField: 'idSubCategoria' },
+            { field: 'Categoria', header: 'Categoria', width: 5, filterType: 'custom', visibleExternal: true },
+            { field: 'SubCategoria', header: 'Subcategoria', width: 5, filterType: 'custom', visibleExternal: false },
             { field: 'Asunto', header: 'Asunto', width: 10, filterType: 'text', visibleExternal: true },
-            { field: 'EstadoConsulta.Nombre', header: 'Estado', width: 5, filterType: 'custom', visibleExternal: true },
-            { field: 'FechaCreacion', header: 'Fecha Inicio', width: 7, filterType: 'date', visibleExternal: false },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', width: 7, filterType: 'date', visibleExternal: true },
+            { field: 'EstadoConsulta', header: 'Estado', width: 5, filterType: 'custom', visibleExternal: true },
+            { field: 'FechaCreacion', header: 'Fecha Inicio', width: 7, filterType: 'date', visibleExternal: false, selectionMode : 'single' },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', width: 7, filterType: 'date', visibleExternal: true, selectionMode : 'single' },
             { field: 'DiasReclamo', header: 'Dias de Rec', width: 5, filterType: 'number', visibleExternal: false }
         ];
 
@@ -141,47 +140,48 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     setSubcategorias(categoriasSeleccionadas){
-       
         if(this.subcategorias){
             this.subcategoriasList = [];
-            this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+            this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.map(y=> y.Id).includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
         }
         
         return this.subcategoriasList;
     }
 
-    onFechaChange(dt) {
-        if (this.desde && !this.hasta)
-            this.filtrarFecha(dt, this.fecha, null);
-        else if (!this.desde && this.hasta)
-            this.filtrarFecha(dt, null, this.fecha);
-        else if(!this.desde && !this.hasta)
-            this.filtrarFecha(dt, this.fecha, this.fecha);
+    onFechaChange(dt, col) {
+        col.selectedRange = col.selectedRange || [];
+        let desde = col.selectedRange.includes('desde') || false;
+        let hasta = col.selectedRange.includes('hasta') || false;
+
+        if (desde && !hasta)
+            this.filtrarFecha(dt, col.field, col.fecha, null);
+        else if (!desde && hasta)
+            this.filtrarFecha(dt, col.field, null, col.fecha);
+        else if(!desde && !hasta)
+            this.filtrarFecha(dt, col.field, col.fecha, col.fecha);
     }
 
-    onFechaRangeChange(dt) {
-        if(this.desde && this.hasta && this.fecha[0] != null && this.fecha[1] != null)
-            this.filtrarFecha(dt, this.fecha[0], this.fecha[1]);
+    onFechaRangeChange(dt, col) {
+        col.selectedRange = col.selectedRange || [];
+        let desde = col.selectedRange.includes('desde') || false;
+        let hasta = col.selectedRange.includes('hasta') || false;
+
+        if(desde && hasta && col.fecha[0] != null && col.fecha[1] != null)
+            this.filtrarFecha(dt, col.field, col.fecha[0], col.fecha[1]);
     }
 
-    filtrarFecha(dt, desde, hasta){
-        dt.filter([desde, hasta], 'fechaUltimaModificacion', 'dateRangeFilter');
+    filtrarFecha(dt, field, desde, hasta){
+        dt.filter([desde, hasta], field, 'dateRangeFilter');
     }
 
-    obtenerColorEstado(idEstado) {
-        var estado = this.estados.find(x=> x.Id == idEstado);
+    cambiarCalendar(dt, col) {
+        col.fecha = null;
+        this.filtrarFecha(dt, col.field, null, null);
 
-        return estado.Color || 'grey';
-    }
-
-    cambiarCalendar(dt) {
-        this.fecha = null;
-        this.filtrarFecha(dt, null, null);
-
-        if(this.desde && this.hasta)
-            this.lastdate.selectionMode = 'range';
+        if(col.selectedRange.length == 2)
+            col.selectionMode = 'range';
         else
-            this.lastdate.selectionMode = 'single';
+            col.selectionMode = 'single';
     }
 
     getCombos() {
@@ -236,6 +236,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else {
                         this.consultas = result.data;
                         this.consultas.forEach(x=> {
+                            x.Fecha = new Date(this.getDateFromAspNetFormat(x.Fecha));
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
@@ -258,5 +259,14 @@ export class MisConsultasComponent extends ListBaseComponent {
         const re = /-?\d+/;
         const m = re.exec(date);
         return parseInt(m[0], 10);
+    }
+
+    getIds(options){
+        return options.map(x=>x.Id);
+    }
+
+    loguear(e){
+        console.log(e);
+        debugger;
     }
 }
