@@ -118,7 +118,14 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" [(ngModel)]="ordenDeCarga.Producto" maxlength="50">
+                <select name="product" [(ngModel)]="ordenDeCarga.Producto">
+                  <option disabled hidden [value]="selectUndefinedOptionValue">
+                    Grano
+                  </option>
+                  <option *ngFor="let material of listaMateriales" value="{{material.Id}}">
+                    {{material.Descripcion}}
+                  </option>
+                </select>
               </div>
             </div>
 

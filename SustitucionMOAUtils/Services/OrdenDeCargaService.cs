@@ -212,7 +212,6 @@ namespace SustitucionMOAUtils.Services
             return ObtenerContratos(orden.CUITCliente);
         }
 
-
         public List<CorredorContratoDto> ObtenerContratosYCorredores (int ordenID)
         {
             var listado = new List<CorredorContratoDto>
@@ -317,7 +316,21 @@ namespace SustitucionMOAUtils.Services
 
             return mensaje;
         }
+
+        public void VerificarTransporteBulk()
+        {
+            foreach (var ordenDeCarga in repositorio.Listar<OrdenDeCarga>(o => !o.TransporteExiste))
+            {
+                VerificarTransporte(ordenDeCarga);
+            }
+        }
+
+
         #endregion
+
+
+
+        #region Etapa2
 
         public string VerificarSituacionCrediticia(int ordenId)
         {
@@ -326,7 +339,6 @@ namespace SustitucionMOAUtils.Services
             return VerificarSituacionCrediticia(orden, notificar: false);
         }
 
-        #region Etapa2
         private string VerificarSituacionCrediticia(OrdenDeCarga orden, bool notificar)
         {
             if (orden.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito)

@@ -1,7 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { AltaEmpresaService } from '../../alta-proveedores/altas/altas.service';
+import { EmpresaGranosService } from '../../alta-proveedores/empresa-granos/empresa-granos.service';
 import { BaseComponent } from '../../common/base-components/base-component';
+import { Material } from '../../common/models/material';
 import { OrdenDeCarga } from '../../common/models/ordenes-de-carga/ordenDeCarga';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -30,6 +33,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
     mensajeSuccess: string = "";
+    private selectUndefinedOptionValue: any;
+
+    listaMateriales: Material[];
 
 
     constructor(protected service: OrdenesDeCargaService,
@@ -37,6 +43,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         private route: ActivatedRoute,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected empresaGranosService: EmpresaGranosService,
         public datepipe: DatePipe) {
         super(navService, securytiService, floatMsgService, modalService);
     }
@@ -54,8 +61,30 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
             this.obtenerOrdenDeCarga();
         }
 
+        this.obtenerMateriales();
     }
 
+    obtenerMateriales() {
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
+        this.subscription = this.empresaGranosService.obtenerMateriales().subscribe(
+            (result) => {
+                let obj = JSON.parse(result);
+                // this.listaCampanias = new Array();
+                obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
+                    let mat = new Material();
+                    mat.Id = element.MaterialId;
+                    mat.Descripcion = element.Descripcion;
+                    mat.CampaniaActual = element.CampaniaActual;
+                    mat.CampaniaIdActual = element.CampaniaIdActual;
+                    this.listaMateriales.push(mat);
+                });
+
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
 
 
 
