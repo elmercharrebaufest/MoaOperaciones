@@ -43,10 +43,9 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
         this.navService.setSeccionList([
             new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
             new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
-            new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas')
-            // ,
-            // new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
-            // new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
+            new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
+            new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
+            new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
         ]);
         this.getData();
     }
