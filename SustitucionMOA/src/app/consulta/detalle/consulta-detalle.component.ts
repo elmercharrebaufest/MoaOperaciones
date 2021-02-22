@@ -49,12 +49,17 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.mensajeComponent = new MensajeComponent();
             this.spinnerComponent = new SpinnerComponent();
     }
+    categoriaSelected: any;
     estados: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
+    
+    categoriasList: any;
+    subcategoriasList: Subcategoria[];
 
-    estadosList = ["hola", "dos", "tres"];
-    categoriasList: any
+    estadoId: number;
+    categoriaId: number;
+    prueba: any;
 
     consulta: any;
     comentariosList: any;
@@ -94,6 +99,34 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
     }
 
+    actualizarCombos() {           
+        this.spinnerSmallComponent.showIt();
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        
+        this.categoriaId = $("#categoriaSelect").children("option:selected").val();
+        this.estadoId = $("#estadoSelect").children("option:selected").val();
+        this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId).subscribe(
+            result => {
+                this.spinnerComponent.hideIt();
+                this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
     postComentario(){
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
         this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
@@ -127,7 +160,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.categorias = result.categorias;
-                        console.log(this.categorias);
                         this.estados = result.estados;
                         this.subcategorias = result.subcategorias;
                     }
@@ -153,7 +185,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                     x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
                     x.Fecha = this.convertDate(x.Fecha);
                 });
-                console.log(this.consulta);
                 this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
                 this.consulta.FechaCreacion = this.convertDate(this.consulta.FechaCreacion).substring(0, 10);
                 this.spinnerModal.hideIt();
@@ -169,7 +200,8 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
-    }
+        }
+
 
     jqueryOnInit(){
         $(".adjuntarArchivo").click(function () {
@@ -177,6 +209,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         });
         $('.enviarComentario').click(function(e){
             e.preventDefault()
-        })
+        });
     }
 }
