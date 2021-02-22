@@ -37,8 +37,6 @@ namespace SustitucionMOAUtils.Services
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
 
-            
-
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
 
             VerificarContrato(ordenDeCarga);
@@ -62,10 +60,10 @@ namespace SustitucionMOAUtils.Services
         {
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var clientes = usuario.Proveedores.Select(c => c.Id);
+            var esComercial = usuario.Roles.Where(r => r.Codigo == "COMERCIAL").Any();
 
             List<OrdenDeCargaDto> listado = new List<OrdenDeCargaDto>();
-            if (usuario.EsAdmin())
+            if (esComercial)
             {
                 listado = repositorio.Listar<OrdenDeCarga>().Select(x => new OrdenDeCargaDto
                 {
@@ -78,6 +76,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                var clientes = usuario.Proveedores.Select(c => c.Id);
                 listado = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id)).Select(x => new OrdenDeCargaDto
                 {
                     Id = x.Id,
@@ -93,13 +92,14 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var esComercial = usuario.Roles.Where(r => r.Codigo == "COMERCIAL").Any();
 
             OrdenDeCargaDetalleDto ordenDto;
             OrdenDeCarga orden;
-            if (usuario.EsAdmin())
+
+            if (esComercial)
             {
                 orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
             }
             else
             {
@@ -139,14 +139,16 @@ namespace SustitucionMOAUtils.Services
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            if (orden.Estado != EstadoOrdenDeCarga.EntregaGenerada)
+            if (orden.InformadaSAP)
             {
-                throw new ValidationCustomException("La orden no puede anularse por su estado.");
+                throw new ValidationCustomException("La orden no puede anularse debido a que ya fue informada.");
             }
 
             orden.Estado = EstadoOrdenDeCarga.Anulada;
 
-            return "La orden ha sido anulada correctamente.";
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.OrdenDeCargaAnulada;
         }
 
 
@@ -217,7 +219,7 @@ namespace SustitucionMOAUtils.Services
             return ObtenerContratos(orden.CUITCliente);
         }
 
-        public List<CorredorContratoDto> ObtenerContratosYCorredores (int ordenID)
+        public List<CorredorContratoDto> ObtenerContratosYCorredores(int ordenID)
         {
             var listado = new List<CorredorContratoDto>
             {
