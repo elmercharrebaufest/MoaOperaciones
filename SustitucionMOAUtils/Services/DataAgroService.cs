@@ -71,11 +71,13 @@ namespace SustitucionMOAUtils.Services
             {
                 ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT);
 
+                var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
+
                 usuario.Roles = new List<Rol>();
                 usuario.Proveedores = new List<Proveedor>();
-                usuario.TipoUsuario = ObtenerTipoPorNombreCorto("G");
+                usuario.TipoUsuario = tipoUsuarioGranos;
                 proveedor.Mail = usuario.Mail;
-
+                proveedor.TipoProveedor = tipoUsuarioGranos;
 
                 if (respuesta != null)
                 {
