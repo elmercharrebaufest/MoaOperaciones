@@ -332,12 +332,12 @@
                     </label><label class="labelSwitch"> Pago diferido</label>
                 </div>
                 <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true">
-                    <select class="form-control" name="PagoDiferido" [(ngModel)]="contrato.pagoDiferidoTerceroId">
+                    <select class="form-control" name="PagoDiferido" [(ngModel)]="contrato.PagoDiferidoTerceroId">
                         <option *ngFor="let item of pagosDiferidos" value="{{item.Id}}">{{item.Descripcion}}</option>
                         <option value="-1">Otro</option>
                     </select>
                 </div>
-                <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true && contrato.pagoDiferidoTerceroId == -1">
+                <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true && contrato.PagoDiferidoTerceroId == -1">
                     <input type="text" [(ngModel)]="ObservacionPagoDiferidoTercero" class="form-control" />
                 </div>
             </div>

@@ -228,6 +228,10 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
+            if(this.contrato.PagoDiferidoTerceroId != -1){
+                this.ObservacionPagoDiferidoTercero = this.pagosDiferidos.find(x => x.Id == this.contrato.PagoDiferidoTerceroId).Descripcion;
+            }
+
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
         }
 
@@ -329,7 +333,11 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+        if (this.contrato.PagoDiferidoTerceroId == undefined && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar una opcion de Pago Diferido.");
+            return false;
+        }
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true && this.contrato.PagoDiferidoTerceroId == -1) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
             return false;
         }

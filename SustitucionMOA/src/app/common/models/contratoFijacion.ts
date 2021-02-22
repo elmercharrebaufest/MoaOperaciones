@@ -41,6 +41,7 @@
     public TrigoEspecial: boolean;
     public DolarizadoTercero: boolean;
     public PagoDiferidoTercero: boolean;
+    public PagoDiferidoTerceroId: number;
 
     constructor() {
         this.TipoNegocioId = 3;

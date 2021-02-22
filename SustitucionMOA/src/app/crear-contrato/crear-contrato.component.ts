@@ -106,7 +106,6 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     ObservacionSustentableTercero: string = "";
     ObservacionTercero: string = "";
     pagosDiferidos: any = new Array();
-    pagoDiferidoTerceroId: any = null;
 
     ngOnInit() {
 
@@ -809,6 +808,12 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         contrato.ContratoVendedor = obj.ContratoVendedor;
                         contrato.ContratoCorredor = obj.ContratoCorredor;
                         contrato.PagoDiferidoTercero = obj.PagoDiferidoTercero;
+                        contrato.PagoDiferidoTerceroId = obj.PagoDiferidoTerceroId;
+                        if(!obj.PagoDiferidoTerceroId && this.ObservacionPagoDiferidoTercero)
+                            contrato.PagoDiferidoTerceroId = -1;
+                        if(contrato.PagoDiferidoTerceroId > 0)
+                        this.ObservacionPagoDiferidoTercero = "";
+                        
                         contrato.DolarizadoTercero = obj.DolarizadoTercero;
                         contrato.CalidadTercero = obj.CalidadTercero;
                         contrato.SustentableTercero = obj.SustentableTercero;
