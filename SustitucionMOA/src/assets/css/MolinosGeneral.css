@@ -3898,3 +3898,15 @@ div.panel-body a.active{
 .ui-table-wrapper{
   font-family: 'Roboto Regular';
 }
+
+.filters-text-table {
+  width: 90% !important;
+}
+
+.filters-calendar-table {
+  width: calc(100% - 2.357em) !important;
+}
+
+.consulta-table th {
+  text-transform: capitalize !important;
+}

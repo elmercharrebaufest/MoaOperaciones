@@ -224,7 +224,7 @@ namespace SustitucionMOA.Controllers
                     categorias = consultaService.ObtenerCategorias(),
                     subcategorias = consultaService.ObtenerSubCategorias(),
                     estados = consultaService.ObtenerEstados(),
-                    isExternal = false //!obtenerTodos
+                    isExternal = !obtenerTodos
                 });
             }
             catch (InfoCustomException e)
