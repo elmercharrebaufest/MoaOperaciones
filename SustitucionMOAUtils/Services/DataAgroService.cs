@@ -77,6 +77,7 @@ namespace SustitucionMOAUtils.Services
                 usuario.Proveedores = new List<Proveedor>();
                 usuario.TipoUsuario = tipoUsuarioGranos;
                 proveedor.Mail = usuario.Mail;
+                proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
                 proveedor.TipoProveedor = tipoUsuarioGranos;
 
                 if (respuesta != null)
@@ -90,7 +91,7 @@ namespace SustitucionMOAUtils.Services
                             proveedor.IdComercialDataAgro = respuesta.ComercialId;
                             proveedor.IdDataAgro = respuesta.ProveedorId;
                             proveedor.RazonSocial = respuesta.ProveedorRazonSocial;
-                            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
+                           
                             proveedor.FechaSolicitud = DateTime.Now;
 
                             Rol rolUsuario = ObtenerRolPorCodigo(respuesta.ProveedorOperando ? "GRAN" : "NUEG");
