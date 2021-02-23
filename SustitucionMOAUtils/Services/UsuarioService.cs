@@ -435,6 +435,34 @@ namespace SustitucionMOAUtils.Services
                 usuario.AgregarRol(rolAAgregar);
             }
 
+            var esAdministradorMolinos = usuario
+                                            .Roles
+                                            .Where(
+                                                r => r.Codigo == "ADM"
+                                                || r.Codigo == "TODOS"
+                                                || r.Codigo == "OPE"
+                                                || r.Codigo == "APRO"
+                                                || r.Codigo == "COMPRAS"
+                                                || r.Codigo == "COMERCIAL")
+                                            .Any();
+
+            //Si es usuario de molinos, buscamos todos los proveedores que tiene, lo aprobamos y le sacamos el historial de aprobación. 
+            //Esto es para que estos proveedores no aparezcan en el listado de altas pendientes
+
+            if (esAdministradorMolinos)
+            {
+                foreach (var prov in usuario.Proveedores)
+                {
+                    prov.EstadoAprobacion = EstadoAprobacion.Aprobado;
+
+                    prov.Observaciones = "";
+
+                    var historial = repositorio.Listar<ProveedorHistorialAprobacion>(h => h.Proveedor_Id == prov.Id);
+
+                    repositorio.RemoverTodos(historial);
+                }
+            }
+
             repositorio.GuardarCambios();
             var proveedor = usuario.ObtenerProveedor();
             if (proveedor != null)
