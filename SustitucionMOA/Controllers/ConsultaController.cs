@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Web.Mvc;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
@@ -158,6 +159,24 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult DescargarArchivo(int archivoId)
+        {
+            try
+            {
+                string rutaArchivoSubido = consultaService.ObtenerRutaArchivo(archivoId);
+
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+                string fileName = Path.GetFileName(rutaArchivoSubido);
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPatch]
         public JsonResult Recategorizar(int consultaId, int categoriaId, int? subCategoriaId)
@@ -249,7 +268,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpGet]
-        public ActionResult ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subCategoriaId)
+        public ActionResult ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId)
         {
             try
             {
@@ -257,7 +276,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = consultaService.ActualizarCombos(consultaId, estadoConsultaId, categoriaId, subCategoriaId)
+                    data = consultaService.ActualizarCombos(consultaId, estadoConsultaId, categoriaId, subcategoriaId)
                 });
             }
             catch (InfoCustomException e)

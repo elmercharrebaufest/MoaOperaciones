@@ -74,7 +74,6 @@ namespace SustitucionMOAUtils.Services
             var includes = new List<Expression<Func<Consulta, object>>>();
             includes.Add(x => x.Comentarios);
             includes.Add(x => x.Comentarios.Select(y => y.Archivos));
-            includes.Add(x => x.Comentarios.Select(y => y.Archivos));
             includes.Add(x => x.Categoria);
             includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
@@ -85,6 +84,13 @@ namespace SustitucionMOAUtils.Services
             ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto(x)).ToList();
 
             return ret;
+        }
+
+        public string ObtenerRutaArchivo(int archivoId)
+        {
+            var archivo = repositorio.Obtener<Archivo>(archivoId);
+
+            return archivo?.Ruta;
         }
 
         public List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos)
@@ -126,26 +132,25 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subCategoriaId)
+        public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId)
         {
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
 
-            if (estado == null) throw new InfoCustomException("No existe el estado");
-
-            if (subCategoriaId.HasValue)
+            if (subcategoriaId.HasValue)
             {
-                var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subCategoriaId);
+                var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subcategoriaId);
                 if (subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
             }
 
+            if (estado == null) throw new InfoCustomException("No existe el estado");
             if (categoria == null) throw new InfoCustomException("No existe la categoria");
 
             var consulta = GetConsulta(consultaId);
 
             consulta.Categoria_Id = categoriaId;
             consulta.EstadoConsulta_Id = estadoConsultaId;
-            consulta.SubCategoria_Id = subCategoriaId;
+            consulta.SubCategoria_Id = subcategoriaId;
 
             repositorio.GuardarCambios();
 

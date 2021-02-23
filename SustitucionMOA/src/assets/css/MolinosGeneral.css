@@ -3779,6 +3779,8 @@ div.panel-body a.active{
   opacity: 1;
   left: 10px;
   width: 28%;
+  position: relative;
+  top: -353px;
 }
 .bold{
   font-weight: bold;
@@ -3828,7 +3830,7 @@ div.panel-body a.active{
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 4px;
   opacity: 1;
-  margin: 15px;
+  margin: 5px;
   padding: 20px;
   width: auto;
   max-width: 58.33333333%;
@@ -3844,7 +3846,7 @@ div.panel-body a.active{
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 4px;
   opacity: 1;
-  margin: 15px;
+  margin: 5px;
   padding: 20px;
   float: right;
   width: auto;
@@ -3861,7 +3863,7 @@ div.panel-body a.active{
 }
 .detalleConsulta{
   height: 350px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border-radius: 10px 10px 0px 0px;
   -moz-border-radius: 10px 10px 0px 0px;
   -webkit-border-radius: 10px 10px 0px 0px;
@@ -3898,6 +3900,54 @@ div.panel-body a.active{
 .ui-table-wrapper{
   font-family: 'Roboto Regular';
 }
+.archivosDetalle .fa {
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.widthAutoConsulta{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+}
+.archivosDetallePropio {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetalle {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetallePropio .fa{
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
 
 .filters-text-table {
   width: 90% !important;
@@ -3909,4 +3959,5 @@ div.panel-body a.active{
 
 .consulta-table th {
   text-transform: capitalize !important;
+}
 }
