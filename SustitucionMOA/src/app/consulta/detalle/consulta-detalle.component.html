@@ -8,8 +8,8 @@
     </section>
     <mensaje></mensaje>
     <spinner></spinner>
-    <div class="row myRow firstSection" style="overflow: hidden">
-        <div class="detalleConsulta shadow col-xs-12 col-sm-6">
+    <div class="row myRow firstSection" style="overflow: hidden" id="detalleConsulta1">
+        <div class="detalleConsulta shadow col-xs-12 col-sm-6" id="detalleConsulta">
             <div *ngFor="let comentario of consulta.Comentarios, let i = index">
                 <div *ngIf="consulta.UsuarioActualId != comentario.UsuarioId">
                     <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
@@ -22,10 +22,21 @@
                             {{comentario.Detalle}}
                         </div>
                     </div>
-                    <p class="col-xs-12 col-sm-6 col-md-7">
+                    <div class="widthAutoConsulta col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0" style="right: 10px;">
+                        <ng-container *ngFor="let Archivo of comentario.Archivos">
+                            <a class="archivosDescarga" (click)="descargarArchivo(Archivo.Id)"
+                                    style="text-decoration:none!important">
+                                <div class="archivosDetalle">
+                                    <p><i class="fa fa-file" aria-hidden="true"></i>{{Archivo.Nombre}}</p>
+                                </div>
+                            </a>
+                        </ng-container>
+                    </div>
+                    <p class="col-xs-12 col-sm-12 col-md-12">
                         {{(comentario.Fecha).substring(11, 16)}}
                     </p>
                 </div>
+
                 <div *ngIf="consulta.UsuarioActualId == comentario.UsuarioId">
                     <div class="col-xs-12 col-sm-6 col-md-12">
                         <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
@@ -39,64 +50,19 @@
                             {{comentario.Detalle}}
                         </div>
                     </div>
-                    <p class="horaComentarioRespuesta col-xs-12 col-sm-6 col-md-12">
+                    <div class="widthAutoConsulta col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0" style="float: right; right: -10px;">
+                        <ng-container *ngFor="let Archivo of comentario.Archivos">
+                            <a class="archivosDescarga" (click)="descargarArchivo(Archivo.Id)"
+                                    style="text-decoration:none!important">
+                                <div class="archivosDetallePropio">
+                                    <p><i class="fa fa-file" aria-hidden="true"></i>{{Archivo.Nombre}}</p>
+                                </div>
+                            </a>
+                        </ng-container>
+                    </div>
+                    <p class="horaComentarioRespuesta col-xs-12 col-sm-12 col-md-12">
                         {{(comentario.Fecha).substring(11, 16)}}
                     </p>
-                </div>
-            </div>
-        </div>
-
-        <!--MENU LATERAL-->
-        <div class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
-            <div>
-                Creado el {{this.consulta.FechaCreacion}}
-                <hr>
-                <div>
-                    <p class="menuLateralConsulta bold">Estado</p>
-                    <div class="styled-select perfiles-select">
-                        <select name="estadoSelect" id="estadoSelect">
-                            <option selected value="{{this.consulta.EstadoConsultaId}}" style="display: none;">
-                                {{this.consulta.EstadoConsulta.Descripcion}}
-                            </option>
-                            <option *ngFor="let estadoSelect of this.estados" value="{{estadoSelect.Id}}">
-                                {{estadoSelect.Descripcion}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <p class="menuLateralConsulta bold">Categoria</p>
-                    <div class="styled-select perfiles-select">
-                        <select name="categoriaSelect" id="categoriaSelect">
-                            <option selected value="{{this.consulta.CategoriaId}}" style="display: none;">
-                                {{this.consulta.Categoria.Nombre}}
-                            </option>
-                            <option *ngFor="let categoria of this.categorias" value="{{categoria.Id}}">
-                                {{categoria.Nombre}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <p class="menuLateralConsulta bold">Subcategorias</p>
-                    <div class="styled-select perfiles-select">
-                        <select name="subcategoriaSelect" id="subcategoriaSelect">
-                            <option selected value="{{this.consulta.SubCategoriaId}}" style="display: none;">
-                                {{this.consulta.SubCategoria.Nombre}}
-                            </option>
-                            <ng-container *ngFor="let subcategoria of this.subcategorias">
-                                <option value="{{subcategoria.Id}}" *ngIf="subcategoria.CategoriaId == consulta.CategoriaId">
-                                    {{subcategoria.Nombre}}
-                                </option>
-                            </ng-container>
-                        </select>
-                    </div>
-                </div>
-                <div style="margin-top: 10px;">
-                    <spinner-small></spinner-small>
-                    <a (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
-                        <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
-                    </a>
                 </div>
             </div>
         </div>
@@ -116,6 +82,53 @@
                 <a class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </a>
+            </div>
+        </div>
+        
+        <!--MENU LATERAL-->
+        <div class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
+            <div>
+                Creado el {{this.consulta.FechaCreacion}}
+                <hr>
+                <div>
+                    <p class="bold" style="margin: 7px;">Estado</p>
+                    <div class="styled-select perfiles-select">
+                        <select name="estadoSelect" id="estadoSelect">
+                            <option [attr.selected]="this.consulta.EstadoConsultaId == estadoSelect.Id ? true : null"
+                            *ngFor="let estadoSelect of this.estados" value="{{estadoSelect.Id}}">
+                                {{estadoSelect.Descripcion}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <p class="bold" style="margin: 7px;">Categoria</p>
+                    <div class="styled-select perfiles-select">
+                        <select name="categoriaSelect" id="categoriaSelect">
+                            <option [attr.selected]="this.consulta.CategoriaId == categoria.Id ? true : null" 
+                            *ngFor="let categoria of this.categorias" value="{{categoria.Id}}">
+                                {{categoria.Nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <p class="bold" style="margin: 7px;">Subcategorias</p>
+                    <div class="styled-select perfiles-select">
+                        <select name="subcategoriaSelect" id="subcategoriaSelect" class="form-control">
+                            <option [attr.selected]="this.consulta.SubCategoriaId == subcategoria.Id ? true : null" 
+                            *ngFor="let subcategoria of this.subcategorias" id="{{subcategoria.Id}}" value="{{subcategoria.CategoriaId}}">
+                                {{subcategoria.Nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <spinner-small></spinner-small>
+                    <a (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+                        <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
+                    </a>
+                </div>
             </div>
         </div>
         <spinner></spinner>

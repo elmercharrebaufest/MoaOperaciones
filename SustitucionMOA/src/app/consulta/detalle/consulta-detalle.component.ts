@@ -57,9 +57,9 @@ export class DetalleConsultaComponent extends BaseComponent {
     categoriasList: any;
     subcategoriasList: Subcategoria[];
 
+    subcategoriaId: any;
     estadoId: number;
     categoriaId: number;
-    prueba: any;
 
     consulta: any;
     comentariosList: any;
@@ -85,6 +85,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.getConsultaId();
         this.getDetalleConsulta();
         this.getCombos();
+        this.obtenerSubcategoria();
     }
 
     getConsultaId(){
@@ -105,8 +106,13 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         
         this.categoriaId = $("#categoriaSelect").children("option:selected").val();
-        this.estadoId = $("#estadoSelect").children("option:selected").val();
-        this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId).subscribe(
+        this.estadoId = $("#estadoSelect").children("option:selected").val();      
+        if($("#subcategoriaSelect").children("option:selected").attr('id') != null)
+            this.subcategoriaId = $("#subcategoriaSelect").children("option:selected").attr('id');
+        else
+            this.subcategoriaId = null;
+
+        this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId).subscribe(
             result => {
                 this.spinnerComponent.hideIt();
                 this.spinnerSmallComponent.hideIt();
@@ -127,11 +133,9 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
-    postComentario(){
-        let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
-        this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
+    postArchivos(comentarioId: number){
+        this.subscription = this.service.adjuntar(this.file, this.consultaId, comentarioId).subscribe(
             result => {
-                this.getDetalleConsulta();
                 this.spinnerModal.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -145,7 +149,76 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
+    }
+
+    postComentario(){
+        let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
+            result => {
+                this.postArchivos(result.Id);
+                this.getDetalleConsulta();
+                this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{       
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
         this.detalle = "";
+    }
+
+    prueba(){
+        var id = $("#categoriaSelect").children("option:selected").val();
+        $("#categoriaSelect").val(id).change();  
+    }
+
+    descargarArchivo(archivoId: number) {
+        this.service.DescargarArchivo(archivoId)
+        .subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
     }
 
     getCombos() {
@@ -200,15 +273,29 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
-        }
+    }
 
+    obtenerSubcategoria(){
+        $("#categoriaSelect").change(function() {
+            if ($(this).data('options') === undefined) {
+              $(this).data('options', $('#subcategoriaSelect option').clone());
+            }
+            var id = $("#categoriaSelect").children("option:selected").val();
+            var options = $(this).data('options').filter('[value=' + id + ']');
+            $('#subcategoriaSelect').html(options);
+        });
+    }
 
     jqueryOnInit(){
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
         $('.enviarComentario').click(function(e){
-            e.preventDefault()
+            e.preventDefault();
         });
+        $(".archivosDescarga").click(function(e) {
+            e.preventDefault();
+        })
     }
+    
 }

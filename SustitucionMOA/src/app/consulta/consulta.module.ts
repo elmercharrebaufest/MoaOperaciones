@@ -17,6 +17,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SpinnerModule } from 'primeng/spinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     CalendarModule,
     ToggleButtonModule,
     SpinnerModule,
-    SelectButtonModule
+    SelectButtonModule,
+    ReactiveFormsModule,
   ],
     declarations: [
       MisConsultasComponent,

@@ -71,13 +71,6 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/Comentarios', comentario, { search: params, headers: this.headers }).map(this.extractData);
     }
 
-    /*
-   public agregarComentario(consultaId: string, detalle: string){
-    var comentario = {detalle: detalle, fecha: new Date(), consultaId: consultaId}
-    return this.http
-        .post(`/api/consulta/Comentarios`, comentario, this.headersPost).map(this.extractData);
-   }*/
-
     public getDetalleConsulta(consultaId: string){
         let params: URLSearchParams = new URLSearchParams();
         params.set('consultaId', consultaId.toString());
@@ -93,20 +86,45 @@ export class ConsultaService extends BaseService {
         params.set('estado', estadoId.toString());
     }
 
-    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subCategoriaId: number = null): Observable<any>{
+    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null): Observable<any>{
         let params: URLSearchParams = new URLSearchParams();
         params.set('consultaId', consultaId.toString());
         params.set('estadoConsultaId', estadoId.toString());
         params.set('categoriaId', categoriaId.toString());
-        if(subCategoriaId != null){
-            params.set('subCategoriaId', subCategoriaId.toString());
-        }
-        else{
-            params.set('subCategoriaId', null);
+        if(subcategoriaId != null){
+            params.set('subcategoriaId', subcategoriaId.toString());
         }
         return this.http
             .get(`/api/consulta/ActualizarCombos`, { search: params, headers: this.headers }).pipe(
             map(this.extractData));
 
+    }
+
+    public adjuntar(archivo: any, consultaId: string, comentarioId: number): Observable<any> {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId);
+        payload.append('comentarioId', comentarioId.toString());
+        payload.append("file", archivo);
+        return this.http
+            .post('/api/consulta/Adjuntos', payload, this.headersPost).pipe(
+            map(this.extractData));
+    }
+
+    DescargarArchivo(archivoId: number): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append("Content-Type", "application/json");
+        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+        this.headers.append("Cache-control", "no-cache");
+        this.headers.append("Cache-control", "no-store");
+        this.headers.append("Expires", "0");
+        this.headers.append("Pragma", "no-cache");
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("archivoId", archivoId.toString());
+        return this.http
+            .get("/api/consulta/DescargarArchivo", {
+                search: params,
+                headers: this.headers,
+            })
+            .pipe(map(this.extractData));
     }
 }
