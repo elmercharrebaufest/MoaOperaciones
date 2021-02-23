@@ -3948,3 +3948,16 @@ div.panel-body a.active{
   margin-right: 5px;
   margin-bottom: 5px;
 }
+}
+
+.filters-text-table {
+  width: 90% !important;
+}
+
+.filters-calendar-table {
+  width: calc(100% - 2.357em) !important;
+}
+
+.consulta-table th {
+  text-transform: capitalize !important;
+}
