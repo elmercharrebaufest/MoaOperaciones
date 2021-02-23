@@ -61,11 +61,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     categoriasList: SelectItem[];
     subcategoriasList: SelectItem[];
 
-    fecha: any;
     es: any;
-    desde: boolean;
-    hasta: boolean;
-
     datesRange: SelectItem[] = [{label:'Desde', value:'desde'}, {label:'Hasta', value:'hasta'}];
     isExternal: boolean;
 
@@ -122,16 +118,16 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas(){
         this.cols = [
-            { field: 'Id', header: 'ID', width: 10, filterType: 'number', visibleExternal: true },
-            { field: 'RazonSocialCorredor', header: 'Corredor', width: 25, filterType: 'text', visibleExternal: false },
-            { field: 'RazonSocialProveedor', header: 'Proveedor', width: 25, filterType: 'text', visibleExternal: false },
-            { field: 'Categoria', header: 'Categoria', width: 15, filterType: 'custom', visibleExternal: true },
-            { field: 'SubCategoria', header: 'Subcategoria', width: 15, filterType: 'custom', visibleExternal: false },
-            { field: 'Asunto', header: 'Asunto', width: 40, filterType: 'text', visibleExternal: true },
-            { field: 'EstadoConsulta', header: 'Estado', width: 15, filterType: 'custom', visibleExternal: true },
-            { field: 'FechaCreacion', header: 'Fecha Inicio', width: 25, filterType: 'date', visibleExternal: false, selectionMode : 'single' },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', width: 25, filterType: 'date', visibleExternal: true, selectionMode : 'single' },
-            { field: 'DiasReclamo', header: 'Dias de Rec', width: 10, filterType: 'number', visibleExternal: false }
+            { field: 'Id',                      header: 'ID',           filterType: 'number',   visibleExternal: true },
+            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false },
+            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false },
+            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true },
+            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false },
+            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true },
+            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true },
+            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, selectionMode : 'single' },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  selectionMode : 'single' },
+            { field: 'DiasReclamo',             header: 'Dias de Rec',  filterType: 'number',   visibleExternal: false }
         ];
 
         let isExternal = this.isExternal;
@@ -262,10 +258,5 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getIds(options){
         return options.map(x=>x.Id);
-    }
-
-    loguear(e){
-        console.log(e);
-        debugger;
     }
 }

@@ -50,7 +50,7 @@
                                         </div>
                                         <div *ngSwitchCase="'date'">
                                             <p-selectButton [options]="datesRange" [(ngModel)]="col.selectedRange" multiple="multiple" (onChange)="cambiarCalendar(dt, col)" [style]="{'width.%': 90}"></p-selectButton>
-                                            <p-calendar #lastdate  [(ngModel)]="col.fecha" [locale]="es" [showIcon]="true" dateFormat="dd/mm/yy" [readonlyInput]="true" inputStyleClass="filters-calendar-table" [panelStyle]="{'width.rem': 30}"
+                                            <p-calendar [(ngModel)]="col.fecha" [locale]="es" [showIcon]="true" dateFormat="dd/mm/yy" [readonlyInput]="true" inputStyleClass="filters-calendar-table" [panelStyle]="{'width.rem': 30}"
                                             [(selectionMode)]="col.selectionMode" (onClose)="onFechaRangeChange(dt, col)" (onSelect)="onFechaChange(dt, col)" 
                                             ></p-calendar>
                                         </div>
@@ -86,7 +86,8 @@
                                         
                                             <div class="ui-g-12 ui-md-12">
                                                 <!-- Expanded para Reclamo Impositivo - Retenciones -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && rowData.SubCategoria.Code == 'RET'">
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && 
+                                                                         rowData.SubCategoria.Code == 'RET'">
                                                     <div class="ui-g-6">
                                                         <b>Fecha de pago:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
                                                     </div>
@@ -107,24 +108,60 @@
                                                     </div>
                                                 </div>
                                                 <!-- Expanded para Reclamo Impositivo - Percepciones -->
-                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && rowData.SubCategoria.Code == 'PER'">
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'REI' && 
+                                                                         rowData.SubCategoria.Code == 'PER'">
                                                     <div class="ui-g-6">
-                                                        <b>Fecha de pago:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
+                                                        <b>Fecha factura:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
                                                     </div>
                                                     <div class="ui-g-6">
-                                                        <b>Salida de pago n°:</b> {{rowData.ComprobanteNo}}
+                                                        <b>N° factura:</b> {{rowData.ComprobanteNo}}
                                                     </div>
                                                     <div class="ui-g-6">
-                                                        <b>Contrato/N° de factura:</b> {{rowData.ContratoNo}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Impuesto retenido:</b> {{rowData.Impuesto}}
-                                                    </div>
-                                                    <div class="ui-g-6">
-                                                        <b>Importe retención:</b> {{rowData.Importe}}
+                                                        <b>Impuesto percibido:</b> {{rowData.Impuesto}}
                                                     </div>
                                                     <div class="ui-g-6">
                                                         <b>Causa:</b> {{rowData.CausaConsulta.Nombre}}
+                                                    </div>
+                                                </div>
+                                                <!-- Expanded para Reclamo Boletos - Contratos -->
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'BOL' && 
+                                                                         rowData.SubCategoria.Code == 'REG'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                </div>
+                                                <!-- Expanded para Reclamo Boletos - Oblea Plan Canje -->
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'BOL' && 
+                                                                         rowData.SubCategoria.Code == 'OPC'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>Fecha emision de la oblea:</b> {{rowData.Fecha | date:'dd/MM/yyyy'}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>Bolsa emisora de oblea:</b> {{rowData.BolsaEmisoraOblea}}
+                                                    </div>
+                                                </div>
+                                                <!-- Expanded para Reclamo Actualizacion - Impositiva -->
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
+                                                                         rowData.SubCategoria.Code == 'IMP'">
+                                                    <div class="ui-g-6">
+                                                        <b>Impuesto:</b> {{rowData.Impuesto}}
+                                                    </div>
+                                                </div>
+                                                <!-- Expanded para Reclamo Actualizacion - Informe Comercial -->
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
+                                                                         rowData.SubCategoria.Code == 'INF'">
+                                                    <div class="ui-g-6">
+                                                        <b>Informe comercial:</b> {{rowData.Impuesto}} <!-- poner link al pdf -->
+                                                    </div>
+                                                </div>
+                                                <!-- Expanded para Reclamo Actualizacion - Carta Presentación -->
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'ACT' && 
+                                                                         rowData.SubCategoria.Code == 'CAR'">
+                                                    <div class="ui-g-6">
+                                                        <b>Carta presentación:</b> {{rowData.Impuesto}} <!-- poner link al pdf -->
                                                     </div>
                                                 </div>
                                             </div>
