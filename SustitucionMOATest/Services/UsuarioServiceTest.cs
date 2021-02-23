@@ -175,7 +175,7 @@ namespace SustitucionMOATest.Services
 
 
         [Test]
-        public void CambiarRolesUsuarioTest()
+        public void CambiarRolesUsuarioComunTest()
         {
             var mailUsuario = "existente@mail.com";
 
@@ -216,6 +216,70 @@ namespace SustitucionMOATest.Services
 
             var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
+            Assert.AreEqual(expected, result);
+            Assert.AreEqual(2, resultUser.Roles.Count);
+        }
+
+        [Test]
+        public void CambiarRolesUsuarioAdminTest()
+        {
+            var mailUsuario = "existente@mail.com";
+
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = mailUsuario,
+                CUITRegistro = "23333333333",
+                Roles = new List<Rol> { new Rol { Nombre = "DESHABILITADO EN DATAAGRO", Codigo = "DDAG", EsEditable = true } },
+                TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
+                Proveedores = new List<Proveedor>
+                      {
+                        new Proveedor
+                        {
+                            Id = 1, 
+                            EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro,
+                            CUIT = "23333333333",
+                            HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
+                            {
+                                new ProveedorHistorialAprobacion
+                                {
+                                    Id = 1,
+                                    Proveedor_Id = 1, Observacion = "TEST"
+                                }
+                            }
+                        }
+                      }
+            };
+
+            repositorioMock
+                .Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                .Returns(usuario);
+
+            var rolesList = new List<Rol>
+            {
+                new Rol { Id = 1, Codigo = "ADM" },
+                new Rol { Id = 2, Codigo = "Otro" }
+            };
+
+            repositorioMock
+                .Setup(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
+                .Returns<Expression<Func<Rol, bool>>>(expr => rolesList.Where(expr.Compile()).FirstOrDefault());
+
+            var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario, " ( CUIT: 23333333333)");
+
+            List<int> idRoles = new List<int> { 1, 2 };
+
+            int IdUsuario = 1;
+
+            var result = target.GuardarRoles(idRoles, IdUsuario);
+
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+
+            var resultUser = repositorioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            Assert.IsEmpty(usuario.Proveedores.First().HistorialAprobaciones);
             Assert.AreEqual(expected, result);
             Assert.AreEqual(2, resultUser.Roles.Count);
         }
