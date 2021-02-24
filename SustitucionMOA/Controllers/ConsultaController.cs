@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
@@ -108,8 +109,20 @@ namespace SustitucionMOA.Controllers
             {
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+                var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
+                var categorias = consultaService.ObtenerCategorias();
+                var estados = consultaService.ObtenerEstados();
 
-                return JsonCustom(new { data = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos) });
+                categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
+                estados.ForEach(x => x.Cantidad = consultas.Count(c => c.EstadoConsultaId == x.Id));
+
+                return JsonCustom(new { data = new
+                {
+                    consultas,
+                    categorias,
+                    estados
+                }
+            });
             }
             catch (InfoCustomException e)
             {

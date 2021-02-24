@@ -17,7 +17,7 @@ import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
 import { Categoria, Consulta, EstadoConsulta, Subcategoria } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Calendar } from 'primeng/calendar';
+import { formatDate } from '@angular/common';
 
 declare var $: any;
 
@@ -47,23 +47,23 @@ export class MisConsultasComponent extends ListBaseComponent {
     @ViewChild("dt")
     protected table: Table;
 
-    @ViewChild("lastdate")
-    protected lastdate: Calendar;
+    @ViewChild("containerList")
+    protected containerList: HTMLDivElement;
 
     cols: any[];
     colsFiltered: any[];
     consultas: Consulta[];
     estados: EstadoConsulta[];
+    estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
     
-    estadosList: SelectItem[];
-    categoriasList: SelectItem[];
     subcategoriasList: SelectItem[];
 
     es: any;
     datesRange: SelectItem[] = [{label:'Desde', value:'desde'}, {label:'Hasta', value:'hasta'}];
     isExternal: boolean;
+    showFilters: boolean;
 
     constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -118,16 +118,16 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas(){
         this.cols = [
-            { field: 'Id',                      header: 'ID',           filterType: 'number',   visibleExternal: true },
-            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false },
-            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false },
-            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true },
-            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false },
-            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true },
-            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true },
-            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, selectionMode : 'single' },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  selectionMode : 'single' },
-            { field: 'DiasReclamo',             header: 'Dias de Rec',  filterType: 'number',   visibleExternal: false }
+            { field: 'Id',                      header: 'ID',           filterType: 'number',   visibleExternal: true,  width: 10},
+            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false, width: 20 },
+            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false, width: 20 },
+            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 15 },
+            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 15 },
+            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 30 },
+            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10 },
+            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 20, selectionMode : 'single' },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 20, selectionMode : 'single' },
+            { field: 'DiasReclamo',             header: 'Dias de Rec',  filterType: 'number',   visibleExternal: false, width: 10 }
         ];
 
         let isExternal = this.isExternal;
@@ -191,11 +191,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.categorias = result.categorias;
-                        this.categoriasList = [];
-                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id}));
                         this.estados = result.estados;
-                        this.estadosList = [];
-                        this.estados.forEach(x => this.estadosList.push({ label: x.Descripcion, value: x.Id}));
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
@@ -208,7 +204,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
 
-                );
+            );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
@@ -229,12 +225,25 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.consultas = result.data;
+                        this.consultas = result.data.consultas;
                         this.consultas.forEach(x=> {
                             x.Fecha = new Date(this.getDateFromAspNetFormat(x.Fecha));
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
+                        this.estados.forEach(e => {
+                            let estado = result.data.estados.filter(x=> x.Id == e.Id)[0];
+                            e.Cantidad = estado.Cantidad;
+                        });
+
+                        this.categorias.forEach(c => {
+                            let categoria = result.data.categorias.filter(x=> x.Id == c.Id)[0];
+                            c.Cantidad = categoria.Cantidad;
+                        });
+
+                        let estadosCode = ['INI', 'GES'];
+                        this.estadosSummary = result.data.estados.filter(e=> estadosCode.indexOf(e.Code) >= 0);
+                        console.log(this.estadosSummary);
                     }
                 },
                 error => {
@@ -258,5 +267,86 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getIds(options){
         return options.map(x=>x.Id);
+    }
+
+    exportConsultas(){
+        var data = this.consultas.map(c => {
+            return {
+                "Id": c.Id,
+                "Corredor": c.RazonSocialCorredor || "",
+                "Proveedor": c.RazonSocialProveedor,
+                "Categoria": c.Categoria.Nombre,
+                "SubCategoria": c.SubCategoria.Nombre,
+                "Asunto": c.Asunto,
+                "Estado": c.EstadoConsulta.Descripcion,
+                "Fecha Creacion": formatDate(c.FechaCreacion, "dd/MM/yyyy", "en-EN"),
+                "Fecha Ultima Modificacion": formatDate(c.FechaUltimaModificacion, "dd/MM/yyyy", "en-EN"),
+                "Dias de Reclamo":c.DiasReclamo,
+                "Fecha de pago / Fecha factura / Fecha emision de la oblea": c.Fecha ? formatDate(c.Fecha, "dd/MM/yyyy", "en-EN") : "",
+                "Nro Salida de pago / Nro factura": c.ComprobanteNo || "",
+                "Nro Contrato": c.ContratoNo || "",
+                "Impuesto retenido / Impuesto percibido / Impuesto": c.Impuesto || "",
+                "Importe retención": c.Importe || "",
+                "Causa":c.CausaConsulta.Nombre || "",
+                "Bolsa emisora de oblea": c.BolsaEmisoraOblea || ""
+            }
+        });
+
+        this.DownloadJsonData(data, 'Consultas', true);
+    }
+
+    DownloadJsonData(JSONData, FileTitle, ShowLabel) {
+        //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+        let separator = ';';
+
+        var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+        var CSV = '';
+        //This condition will generate the Label/Header
+        if (ShowLabel) {
+          var row = "";
+          //This loop will extract the label from 1st index of on array
+          for (var index in arrData[0]) {
+            //Now convert each value to string and comma-seprated
+            row += index + separator;
+          }
+          row = row.slice(0, -1);
+          //append Label row with line break
+          CSV += row + '\r\n';
+        }
+        //1st loop is to extract each row
+        for (var i = 0; i < arrData.length; i++) {
+          var row = "";
+          //2nd loop will extract each column and convert it in string comma-seprated
+          for (var index in arrData[i]) {
+            row += '"' + arrData[i][index] + '"' + separator;
+          }
+          row.slice(0, row.length - 1);
+          //add a line break after each row
+          CSV += row + '\r\n';
+        }
+        if (CSV == '') {
+          alert("Invalid data");
+          return;
+        }
+        //Generate a file name
+        var filename = FileTitle + (new Date());
+        var blob = new Blob([CSV], {
+          type: 'text/csv;charset=utf-8;'
+        });
+        if (navigator.msSaveBlob) { // IE 10+
+          navigator.msSaveBlob(blob, filename);
+        } else {
+          var link = document.createElement("a");
+          if (link.download !== undefined) { // feature detection
+            // Browsers that support HTML5 download attribute
+            var url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.style.visibility = "hidden";
+            link.download = filename + ".csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }
     }
 }

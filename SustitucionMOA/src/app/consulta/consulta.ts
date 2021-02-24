@@ -32,14 +32,17 @@ export interface Consulta {
 
 export interface EstadoConsulta {
     Id;
+    Code;
     Descripcion;
     Color;
+    Cantidad;
 }
 
 export interface Categoria {
     Id;
     Code;
     Nombre;
+    Cantidad;
 }
 
 export interface Subcategoria {
@@ -47,6 +50,7 @@ export interface Subcategoria {
     Code;
     Nombre;
     CategoriaId;
+    Cantidad;
 }
 
 export class Comentario{

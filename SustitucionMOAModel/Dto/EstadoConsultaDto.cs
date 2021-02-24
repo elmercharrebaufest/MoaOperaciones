@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Dto
         public string Descripcion { get; set; }
         public string Color { get; set; }
         public string Code { get; set; }
+        public int Cantidad { get; set; }
 
         public EstadoConsultaDto(EstadoConsulta estadoConsulta)
         {
