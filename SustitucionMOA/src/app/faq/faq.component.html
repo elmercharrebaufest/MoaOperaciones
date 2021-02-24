@@ -9,7 +9,7 @@
         <!--End Title-->
         <!--                   Menu CATEGORIAS On Desktop      -->
         <div class="myRow firstSection roundedInfo col-xs-12 col-sm-12 col-md-12">
-            <div class="col-xs-12 col-sm-5 col-md-4 squareInfo animate datos categoriaOnDesktop">
+            <div class="col-xs-12 col-sm-5 col-md-3 squareInfo animate datosFaq categoriaOnDesktop">
                 <!--
                 <title-caps class="hideMobile blue">Categorias</title-caps>
                 <hr>
@@ -79,7 +79,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="4heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#4collapse" 
                             aria-expanded="false" aria-controls="4collapse">
                             <h4 class="panel-title">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="5heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#5collapse" 
                             aria-expanded="false" aria-controls="5collapse">
                             <h4 class="panel-title">
@@ -124,7 +124,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="6heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#6collapse" 
                             aria-expanded="false" aria-controls="6collapse">
                             <h4 class="panel-title">
@@ -151,7 +151,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isAuthorized('PESIFICACION') && isGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="7heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#7collapse" 
                             aria-expanded="false" aria-controls="7collapse">
                             <h4 class="panel-title">
@@ -175,7 +175,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="8heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#8collapse" 
                             aria-expanded="false" aria-controls="8collapse">
                             <h4 class="panel-title">
@@ -195,7 +195,7 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="9heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#9collapse" 
                             aria-expanded="false" aria-controls="9collapse">
                             <h4 class="panel-title">
@@ -229,29 +229,42 @@
                         </div>
                     </div>
 
-                    <div class="panel panel-default categoriaMenuFaq">
+                    <div *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranos()" class="panel panel-default categoriaMenuFaq">
                         <div class="panel-heading categoriaMenuFaq" role="tab" id="11heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#11collapse" 
                             aria-expanded="false" aria-controls="11collapse">
                             <h4 class="panel-title">
                                 <a class="collapsed aFaqClick">
-                                    No granos
+                                    Comprobantes
                                 </a>
                             </h4>
                         </div>
                         <div id="11collapse" class="panel-collapse collapse" data-parent="#accordionMenuTest" role="tabpanel" aria-labelledby="11heading">
                             <div class="panel-body">
-                                <a href="web/faq#heading10">Comprobantes</a>
-                                <ul>
                                     <li class="posts"><a href="web/faq#heading10">¿Dónde puedo visualizar mis facturas en la Web?</a></li>
                                     <li class="posts"><a href="web/faq#pregunta11.1">¿Qué debo hacer si mi Factura se encuentra observada?</a></li>
                                     <li class="posts"><a href="web/faq#pregunta11.2">¿Qué debo hacer si no veo mi Factura en el portal?</a></li>
-                                </ul>
-                                <a href="web/faq#pregunta11.3">Fletes</a>
-                                <ul>
-                                    <li class="posts"><a href="web/faq#pregunta11.3">¿Dónde puedo visualizar mis viajes a facturar?</a></li>
-                                    <li class="posts"><a href="web/faq#pregunta11.4">¿Dónde puedo visualizar mis viajes pendientes de facturar?</a></li>
-                                    <li class="posts"><a href="web/faq#pregunta11.5">¿Dónde puedo visualizar mis viajes ya facturados?</a></li>
-                                </ul>
+                                    <li class="posts"><a href="web/faq#pregunta11.3">¿como deben emitirse las facturas de credito electronicas?</a></li>
+                                    <li class="posts"><a href="web/faq#pregunta11.4">¿como se deben emitir comprobantes en moneda extranjera? (USD/EUR)</a></li>
+                                    <li class="posts"><a href="web/faq#pregunta11.5">¿Qué hago si me rechazaron una factura de credito electronica?</a></li>
+                                    <li class="posts"><a href="web/faq#pregunta11.6">¿como se deben emitir las diferencias de tipo de cambio?</a></li>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="isAuthorized('CONSULTAR FLETE') && isNoGranos()" class="panel panel-default categoriaMenuFaq">
+                        <div class="panel-heading categoriaMenuFaq" role="tab" id="12heading" data-toggle="collapse" data-parent="#accordionMenuTest" href="#12collapse" 
+                            aria-expanded="false" aria-controls="12collapse">
+                            <h4 class="panel-title">
+                                <a class="collapsed aFaqClick">
+                                    Fletes
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="12collapse" class="panel-collapse collapse" data-parent="#accordionMenuTest" role="tabpanel" aria-labelledby="12heading">
+                            <div class="panel-body">
+                                <li class="posts"><a href="web/faq#heading11">¿Dónde puedo visualizar mis viajes a facturar?</a></li>
+                                <li class="posts"><a href="web/faq#pregunta12.1">¿Dónde puedo visualizar mis viajes pendientes de facturar?</a></li>
+                                <li class="posts"><a href="web/faq#pregunta12.2">¿Dónde puedo visualizar mis viajes ya facturados?</a></li>
                             </div>
                         </div>
                     </div>
@@ -261,7 +274,7 @@
 
             <!--                  PREGUNTAS FRECUENTES      -->
 
-            <div class="col-xs-12 col-sm-7 col-md-8 squareInfo animate documentos pull-right">
+            <div class="col-xs-12 col-sm-7 col-md-9 squareInfo animate documentos pull-right">
                 <div class="container-fluid">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default documento">
@@ -379,7 +392,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading4" data-toggle="collapse" data-parent="#accordion" href="#categoria4" aria-expanded="false" aria-controls="categoria4">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -415,7 +428,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading5" data-toggle="collapse" data-parent="#accordion" href="#categoria5" aria-expanded="false" aria-controls="categoria5">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -457,7 +470,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading6" data-toggle="collapse" data-parent="#accordion" href="#categoria6" aria-expanded="false" aria-controls="categoria6">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -513,7 +526,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('PESIFICACION') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading7" data-toggle="collapse" data-parent="#accordion" href="#categoria7" aria-expanded="false" aria-controls="categoria7">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -593,7 +606,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading8" data-toggle="collapse" data-parent="#accordion" href="#categoria8" aria-expanded="false" aria-controls="categoria8">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -621,7 +634,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading9" data-toggle="collapse" data-parent="#accordion" href="#categoria9" aria-expanded="false" aria-controls="categoria9">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -659,7 +672,7 @@
                                     </a>
                                 </h4>
                             </div>
-                            <div id="categoria10" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading9">
+                            <div id="categoria10" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading10">
                                 <div class="panel-body">
                                     <label class="faqTexto">
                                         <h4 id="pregunta10.1" class="tituloPregunta">¿Puedo descargar o imprimir información de la Web?</h4>
@@ -669,22 +682,19 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading11" data-toggle="collapse" data-parent="#accordion" href="#categoria11" aria-expanded="false" aria-controls="categoria11">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
-                                        No granos
+                                        Comprobantes
                                         <span aria-hidden="true" id="ok" class="glyphicon glyphicon-chevron-down pull-right grisOscuro">
                                         </span>
                                     </a>
                                 </h4>
                             </div>
-                            <div id="categoria11" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading9">
+                            <div id="categoria11" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading11">
                                 <div class="panel-body">
                                     <label class="faqTexto">
-                                        <h3>Comprobantes</h3>
-                                        <br>
-                                        <br>
                                         <h4 id="pregunta11.1" class="tituloPregunta">¿Dónde puedo visualizar mis facturas en la Web?</h4>
                                         Dentro del portal, podrás consultar el estado de tus Facturas desplegando “Mis operaciones” en el menú lateral e ingresando a “Comprobantes” dentro de las siguientes solapas: Aprobadas – Observadas.
                                         <br>
@@ -697,18 +707,72 @@
                                         En caso de no ver tu factura en el portal podrás adjuntarla, desplegando “Mis Operaciones” en el menú lateral e ingresando a “Factura”, o enviar tu factura por mail, a proveedoresgraneles@molinosagro.com.ar   
                                         <br>
                                         <br>
-                                        <h3>Fletes</h3>
+                                        <h4 id="pregunta11.4" class="tituloPregunta">¿como deben emitirse las facturas de credito electronicas?</h4>
+                                        Es importante que a la hora de emitir una FCE se tengan en cuenta las siguientes cuestiones:<br>
+                                        <ul>
+                                            <li>
+                                                Se debe facturar una vez completado el servicio o entregado completamente el material.
+                                            </li>
+                                            <li>
+                                                Indicar en el comprobante el numero de orden de compra o el representante de MOA que contrató el servicio.
+                                            </li>
+                                            <li>
+                                                ES MUY IMPORTANTE que la fecha de vencimiento que se le coloque al comprobante COINCIDA con la acordada al momento de la contratación, de lo contrario el comprobante será rechazado.
+                                            </li>
+                                            <li>
+                                                Se debe poner a disposición de MOA el PDF original correspondiente a la siguiente casilla: proveedoresgraneles@molinosagro.com.ar
+                                            </li>
+                                        </ul>   
                                         <br>
                                         <br>
-                                        <h4 id="pregunta11.4" class="tituloPregunta">¿Dónde puedo visualizar mis viajes a facturar?</h4>
+                                        <h4 id="pregunta11.5" class="tituloPregunta">¿como se deben emitir comprobantes en moneda extranjera? (USD/EUR)</h4>
+                                        Conforme a la Ley 24.760, el emisor está obligado a emitir NC espejo código 203 para anular los comprobantes rechazados.<br>
+                                        La refacturación, si corresponde, deber respetar las condiciones del documento original, incluidos los días de condición de pago para establecer el nuevo vencimiento. Dicha NC debe también enviarse a la casilla de recepción de comprobantes para su correspondiente declaración.   
+                                        <br>
+                                        <br>
+                                        <h4 id="pregunta11.6" class="tituloPregunta">¿Qué hago si me rechazaron una factura de credito electronica?</h4>
+                                        Molinos Agro adopta para todas sus operaciones el Tipo de Cambio DIVISAS VENDEDOR BANCO NACION correspondiente al día anterior a la fecha de factura con la totalidad de los decimales publicados ese día
+                                        <br>
+                                        <br>
+                                        <h4 id="pregunta11.7" class="tituloPregunta">¿como se deben emitir las diferencias de tipo de cambio?</h4>
+                                        Su comprobante en moneda extranjera será abonada al tipo de cambio de emisión, no obstante, se reconocerá la diferencia de cambio existente entre el tipo de cambio de facturación y el tipo de cambio del día del pago previa emisión de la nota de debito correspondiente. Siempre el TC utilizado es la cotización DIVISAS VENDEDOR BANCO NACION.<br>
+                                        El cálculo se realiza según este ejemplo:<br>
+                                        <br>
+                                        <ul>
+                                            FC en USD por 1000 a TC de emisión 80<br>
+                                            Pago $ 80.000 TC del día del pago 90<br>
+                                            <br>
+                                            Diferencia de TC: 1000x90 – 1000x80 = $10.000<br>
+                                            <br>
+                                            ND a emitir: Neto: $ 8.264,46 IVA: $1.735,54 TOTAL: $ 10.000
+                                        </ul>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="isAuthorized('CONSULTAR FLETE') && isNoGranos()" class="panel panel-default documento">
+                            <div class="panel-heading" role="tab" id="heading12" data-toggle="collapse" data-parent="#accordion" href="#categoria12" aria-expanded="false" aria-controls="categoria12">
+                                <h4 class="panel-title">
+                                    <a class="collapsed aFaqClickCat">
+                                        Fletes
+                                        <span aria-hidden="true" id="ok" class="glyphicon glyphicon-chevron-down pull-right grisOscuro">
+                                        </span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="categoria12" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading12">
+                                <div class="panel-body">
+                                    <label class="faqTexto">
+                                        <h4 id="pregunta12.1" class="tituloPregunta">¿Dónde puedo visualizar mis viajes a facturar?</h4>
                                         Dentro del portal podrás visualizar tus viajes a facturar desplegando “Mis Operaciones” en el menú lateral e ingresando a “Fletes” dentro de la solapa: Viajes a Facturar. 
                                         <br>
                                         <br>
-                                        <h4 id="pregunta11.5" class="tituloPregunta">¿Dónde puedo visualizar mis viajes pendientes de facturar?</h4>
+                                        <h4 id="pregunta12.2" class="tituloPregunta">¿Dónde puedo visualizar mis viajes pendientes de facturar?</h4>
                                         Dentro del portal podrás visualizar tus viajes pendientes de facturar desplegando “Mis Operaciones” en el menú lateral e ingresando a  “Fletes” dentro de la solapa: Viajes pendientes. 
                                         <br>
                                         <br>
-                                        <h4 id="pregunta11.6" class="tituloPregunta">¿Dónde puedo visualizar mis viajes ya facturados?</h4>
+                                        <h4 id="pregunta12.3" class="tituloPregunta">¿Dónde puedo visualizar mis viajes ya facturados?</h4>
                                         Dentro del portal podrás visualizar tus viajes ya facturados desplegando “Mis Operaciones” en el menú lateral e ingresando a “Fletes” dentro de la solapa: Viajes Facturados. 
                                     </label>
                                 </div>

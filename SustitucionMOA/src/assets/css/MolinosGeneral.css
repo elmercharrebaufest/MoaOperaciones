@@ -3817,7 +3817,7 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
 .aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
   text-decoration:none;
   color: #03753e !important;
-  font-size: 16px !important;
+  font-size: 13px !important;
   font-weight: bold important;
   cursor: pointer;
 }
@@ -3826,4 +3826,12 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
 }
 .aFaqClickCat, .aFaqClickCat:hover, .aFaqClickCat:active, .aFaqClickCat:visited, .aFaqClickCat:focus{
   text-decoration: none;
+}
+.datosFaq {
+  border-radius: 11px;
+  background: white;
+  padding: 0px;
+  font-size: 16px;
+  color: #3f4845;
+  box-shadow: 0px 3px 6px #00000029;
 }

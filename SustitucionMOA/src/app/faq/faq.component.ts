@@ -44,12 +44,18 @@ export class FaqComponent extends ListBaseComponent {
 
     constructor(protected service: FaqService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.isGranosSelected = sessionStorage.getItem("granosSelected");
+        sessionDataService.granosSelected$.subscribe(
+        granosSelected => {
+            this.isGranosSelected = granosSelected;
+        });
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
+    isGranosSelected: string;
     x = true;
     proveedor: string;
     nombre: string;
@@ -64,6 +70,7 @@ export class FaqComponent extends ListBaseComponent {
     visibleButton: boolean = true;
     categoriaSelected: any;
     captchaOk: any = null;
+    granosFlag: string;
 
     setTabs() {
         this.setMenuSeccionTab("Faq", "Faq");
@@ -75,6 +82,25 @@ export class FaqComponent extends ListBaseComponent {
         this.navService.setSeccionList([]);
         this.displayListaPreguntas();
     }
+
+    isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
+    }
+
+    isGranos() {
+        this.isGranosSelected = sessionStorage.getItem("granosSelected");
+        this.granosFlag = sessionStorage.getItem("granosFlag");
+        if (this.granosFlag == "A" || this.isGranosSelected == "G" )
+            return true;
+    }
+
+    isNoGranos() {
+        this.isGranosSelected = sessionStorage.getItem("granosSelected");
+        this.granosFlag = sessionStorage.getItem("granosFlag");
+        if (this.isGranosSelected == "N" || this.granosFlag == "A")
+            return true;
+    }
+
 
     displayListaPreguntas() {
         $('#1heading').on('click', async function(){
@@ -142,6 +168,19 @@ export class FaqComponent extends ListBaseComponent {
         });
         $('#heading11').on('click', async function(){
             await $("#11collapse").collapse("toggle");
+        }); 
+        $('#12heading').on('click', async function(){
+            await $("#heading12").click();         
+        });
+        $('#heading12').on('click', async function(){
+            await $("#12collapse").collapse("toggle");
+        }); 
+
+        $('.panel-collapse').on('shown.bs.collapse', function (e) {
+            var $panel = $(this).closest('.panel');
+            $('html,body').animate({
+                scrollTop: $panel.offset().top - 200
+            }, 100); 
         }); 
     }
 }
