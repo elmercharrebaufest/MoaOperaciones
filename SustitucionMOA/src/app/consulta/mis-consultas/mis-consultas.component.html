@@ -9,11 +9,14 @@
         <div class="row myRow">
             <div class="clearfix">
                 <div class="display nowrap no-footer rounded shadow animate consulta-table" #containerList>
-                        <p-table #dt [columns]="colsFiltered" [value]="consultas" dataKey="id" [paginator]="true" [rows]="15" [responsive]="true" [scrollable]="true" ([style])="{'width.px': this.containerList.offsetWidth}">
+                        <p-table #dt [columns]="colsFiltered" [value]="consultas" dataKey="id" 
+                        [paginator]="true" [rows]="15" [responsive]="true" [scrollable]="false" 
+                        ([style])="{'width.px': this.containerList.offsetWidth}"
+                        sortField="FechaUltimaModificacion" sortOrder="-1">
                             <ng-template pTemplate="caption">
                                 <div class="ui-helper-clearfix" style="text-align: right">
                                     <div style="float:left">
-                                        <button type="button" pButton icon="fa fa-file-excel-o " iconPos="left" label="Exportar" (click)="exportConsultas()" style="background-color:#075088;"></button> &nbsp;
+                                        <button *ngIf="!isExternal" type="button" pButton icon="fa fa-file-excel-o " iconPos="left" label="Exportar" (click)="exportConsultas()" style="background-color:#075088;"></button> &nbsp;
                                         <button type="button" pButton icon="fa fa-refresh" (click)="listarConsultas()" style="background-color: #067935;"></button> &nbsp;
                                         <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel="" offLabel="" offIcon="pi pi-filter" ></p-toggleButton>
                                     </div>
@@ -25,23 +28,22 @@
                             </ng-template>
                             <ng-template pTemplate="colgroup" let-columns>
                                 <colgroup>
+                                    <col style="width: 3rem">
+                                    <col *ngFor="let col of columns"  [style.width.%]="col.width">
                                     <col style="width: 4rem">
-                                    <col *ngFor="let col of columns"  [style.width.rem]="col.width">
-                                    <col style="width: 5rem">
                                 </colgroup>
                             </ng-template>
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th style="width: 4rem"></th>
-                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" class="col" >
-                                            {{col.header}}
-                                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                                    <th style="width: 3rem"></th>
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" class="col"  >
+                                        <span class="consulta-table-header">{{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon></span> 
                                     </th>
-                                    <th style="width: 5rem"></th>
+                                    <th style="width: 4rem"></th>
                                 </tr>
                                 <tr *ngIf="this.showFilters">
-                                    <th style="width: 4rem"></th>
-                                    <th *ngFor="let col of columns" [ngSwitch]="col.filterType">
+                                    <th style="width: 3rem"></th>
+                                    <th *ngFor="let col of columns" [ngSwitch]="col.filterType" >
                                         <p-spinner *ngSwitchCase="'number'" (onChange)="dt.filter(col.numberValue, col.field, 'equals')" [(ngModel)]="col.numberValue" [inputStyle]="{'width.%': 90}"></p-spinner>
                                         <input *ngSwitchCase="'text'" pInputText type="text" (input)="dt.filter($event.target.value, col.field, 'contains')" class="filters-text-table" >
                                         <div *ngSwitchCase="'custom'">
@@ -69,17 +71,17 @@
                                             ></p-calendar>
                                         </div>
                                     </th>
-                                    <th style="width: 5rem"></th>
+                                    <th style="width: 4rem"></th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
                                 <tr [pSelectableRow]="rowData">
-                                    <td style="width: 4rem">
+                                    <td style="width: 4rem; padding: 0">
                                         <a style="cursor: pointer;" [pRowToggler]="rowData">
                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                         </a>
                                     </td>
-                                    <td *ngFor="let col of columns" [ngSwitch]="col.filterType">
+                                    <td *ngFor="let col of columns" [ngSwitch]="col.filterType" >
                                         <span *ngSwitchDefault> {{rowData[col.field]}} </span> 
                                         <div *ngSwitchCase="'custom'">
                                             <h4 *ngIf="col.field == 'EstadoConsulta'; else defaultField"><span class="label label-default" 
@@ -89,7 +91,7 @@
                                         </div>
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                     </td>
-                                    <td style="text-align: center; width: 5rem">
+                                    <td style="text-align: center; width: 5rem; padding: 0">
                                         <a [routerLink]="['/consulta/detalle', { idConsulta:rowData.Id } ]"><button pButton type="button" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button></a>
                                     </td>
                                 </tr>

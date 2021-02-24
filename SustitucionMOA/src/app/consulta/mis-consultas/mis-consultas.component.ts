@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
@@ -64,6 +64,11 @@ export class MisConsultasComponent extends ListBaseComponent {
     datesRange: SelectItem[] = [{label:'Desde', value:'desde'}, {label:'Hasta', value:'hasta'}];
     isExternal: boolean;
     showFilters: boolean;
+    windowSize: string;
+
+    @HostListener('window:resize', ['$event']) onResize(event) {
+        this.setColumnasByWindowSize();
+     }
 
     constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -118,20 +123,52 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     setColumnas(){
         this.cols = [
-            { field: 'Id',                      header: 'ID',           filterType: 'number',   visibleExternal: true,  width: 10},
-            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false, width: 20 },
-            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false, width: 20 },
-            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 15 },
-            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 15 },
-            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 30 },
-            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10 },
-            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 20, selectionMode : 'single' },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 20, selectionMode : 'single' },
-            { field: 'DiasReclamo',             header: 'Dias de Rec',  filterType: 'number',   visibleExternal: false, width: 10 }
+            { field: 'Id',                      header: 'Id',           filterType: 'text',     visibleExternal: true,  width: 6,  size: 4 },
+            { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false, width: 10, size: 4 },
+            { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false, width: 10, size: 3 },
+            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 10, size: 1 },
+            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2 },
+            { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 16, size: 0 },
+            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1 },
+            { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 2, selectionMode : 'single' },
+            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 12, size: 3, selectionMode : 'single' },
+            { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 }
         ];
 
         let isExternal = this.isExternal;
         this.colsFiltered = this.cols.filter(x=> !isExternal || x.visibleExternal);
+        this.setColumnasByWindowSize();
+    }
+
+    setColumnasByWindowSize(){
+        var size = window.innerWidth;
+
+        if(!this.isExternal){
+            if(size <= 640 && this.windowSize != 'xs'){
+                this.colsFiltered = this.cols.filter(x=> x.size <= 0)
+                this.windowSize = 'xs'
+            }
+
+            if(size > 640 && size <= 768 && this.windowSize != 's'){
+                this.colsFiltered = this.cols.filter(x=> x.size <= 1)
+                this.windowSize = 's'
+            }
+
+            if(size > 768 && size <= 1160 && this.windowSize != 'm'){
+                this.colsFiltered = this.cols.filter(x=> x.size <= 2)
+                this.windowSize = 'm'
+            }
+            
+            if(size > 1160 && size <= 1200 && this.windowSize != 'g'){
+                this.colsFiltered = this.cols.filter(x=> x.size <= 3)
+                this.windowSize = 'g'
+            }
+
+            if(size > 1200 && this.windowSize != 'xg'){
+                this.colsFiltered = this.cols.filter(x=> x.size <= 4)
+                this.windowSize = 'xg'
+            }
+        }
     }
 
     setSubcategorias(categoriasSeleccionadas){
@@ -190,8 +227,8 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.categorias = result.categorias;
-                        this.estados = result.estados;
+                        // this.categorias = result.categorias;
+                        // this.estados = result.estados;
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
@@ -231,11 +268,14 @@ export class MisConsultasComponent extends ListBaseComponent {
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
+
+                        this.estados = result.data.estados;
                         this.estados.forEach(e => {
                             let estado = result.data.estados.filter(x=> x.Id == e.Id)[0];
                             e.Cantidad = estado.Cantidad;
                         });
 
+                        this.categorias = result.data.categorias;
                         this.categorias.forEach(c => {
                             let categoria = result.data.categorias.filter(x=> x.Id == c.Id)[0];
                             c.Cantidad = categoria.Cantidad;
@@ -243,7 +283,6 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         let estadosCode = ['INI', 'GES'];
                         this.estadosSummary = result.data.estados.filter(e=> estadosCode.indexOf(e.Code) >= 0);
-                        console.log(this.estadosSummary);
                     }
                 },
                 error => {

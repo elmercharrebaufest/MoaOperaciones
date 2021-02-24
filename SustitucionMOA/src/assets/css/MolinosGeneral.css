@@ -122,7 +122,7 @@ a:hover {
   .col-sm-15 {
     width: 20%;
     float: left;
-  }
+  }  
 }
 @media (min-width: 992px) {
   .col-md-15 {
@@ -3960,3 +3960,11 @@ div.panel-body a.active{
 .consulta-table th {
   text-transform: capitalize !important;
 }
+
+.consulta-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+ 
