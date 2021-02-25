@@ -369,6 +369,8 @@
     <Content Include="src\app\ryd\carga-pesadas\carga-pesadas.component.html" />
     <Content Include="src\app\ryd\informe\informe.component.html" />
     <Content Include="src\app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="src\app\ticket-pesada\ticket-pesada.component.css" />
+    <Content Include="src\app\ticket-pesada\ticket-pesada.component.html" />
     <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.css" />
     <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
     <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
@@ -972,6 +974,9 @@
     <TypeScriptCompile Include="src\app\liquidacion\liquidacion.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.service.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
