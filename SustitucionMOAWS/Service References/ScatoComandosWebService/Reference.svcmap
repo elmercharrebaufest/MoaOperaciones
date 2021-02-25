@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="9ae9c439-7621-469a-8521-a9b411b2c9dc" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServicioComandos.xsd" MetadataType="Schema" ID="1c3fd825-ec28-4ef0-9aba-f7f79f041c6a" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd3" />
+    <MetadataFile FileName="ServicioComandos1.xsd" MetadataType="Schema" ID="306eb25d-a002-4a72-bdf3-17783050947f" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServicioComandos2.xsd" MetadataType="Schema" ID="c61009af-8006-4faf-9f22-184fc57bb344" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServicioComandos3.xsd" MetadataType="Schema" ID="fdb2a4e0-212f-4071-9364-34ad64e0a587" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServicioComandos4.xsd" MetadataType="Schema" ID="b1d78752-bae5-4812-8d25-a3192cb19924" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd7" />
+    <MetadataFile FileName="ServicioComandos5.xsd" MetadataType="Schema" ID="f84324c3-517e-4364-8496-8a64b41dae73" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd5" />
+    <MetadataFile FileName="ServicioComandos6.xsd" MetadataType="Schema" ID="d924cb13-3e34-4e56-9b41-8b8459510586" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd8" />
+    <MetadataFile FileName="ServicioComandos.wsdl" MetadataType="Wsdl" ID="a7c812e2-f96d-407b-9894-03312d0e931c" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="ServicioComandos7.xsd" MetadataType="Schema" ID="330da168-98c0-4181-b61f-40217326ff03" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd6" />
+    <MetadataFile FileName="ServicioComandos1.wsdl" MetadataType="Wsdl" ID="e03593b8-0568-444d-acc3-7ac575c94f70" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?wsdl" />
+    <MetadataFile FileName="ServicioComandos8.xsd" MetadataType="Schema" ID="b6414cfc-95b7-4567-b430-bf963cf69df9" SourceId="1" SourceUrl="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd4" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
