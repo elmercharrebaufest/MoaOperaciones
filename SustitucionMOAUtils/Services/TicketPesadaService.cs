@@ -2,18 +2,13 @@
 using ICSharpCode.SharpZipLib.Zip;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoComandosWebService;
-using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -21,9 +16,8 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IScatoComandosConsumer scatoComandosConsumer;
 
-        public TicketPesadaService(IScatoConsumer scatoConsumer, IScatoComandosConsumer scatoComandosConsumer)
+        public TicketPesadaService( IScatoComandosConsumer scatoComandosConsumer)
         {
-            this.scatoConsumer = scatoConsumer;
             this.scatoComandosConsumer = scatoComandosConsumer;
         }
 

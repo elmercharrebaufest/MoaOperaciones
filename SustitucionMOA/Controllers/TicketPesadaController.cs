@@ -1,20 +1,12 @@
-﻿using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
-using SustitucionMOA.Utils;
+﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
+using SustitucionMOAModel.Models;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.DataAgroServices;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Web.Mvc;
-using SustitucionMOAModel.Models;
 
 namespace SustitucionMOA.Controllers
 {
@@ -26,7 +18,7 @@ namespace SustitucionMOA.Controllers
         {
             this.ticketPesadaService = ticketPesadaService;
         }
-        //notificacionService.ObtenerNotificacion(notificacionId)
+
         public JsonResult Obtener(string ticketPesadaJson)
         {
             try
