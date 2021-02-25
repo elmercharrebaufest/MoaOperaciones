@@ -51,7 +51,6 @@ import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';
 import { FaqComponent } from './faq/faq.component'
-import { BlockUIModule } from 'ng-block-ui';;
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 
@@ -92,7 +91,6 @@ import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     FaqComponent,
-    NumericDirective,
     TicketPesadaComponent
   ],
   providers: [
@@ -117,4 +115,4 @@ import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
-export class AppModule {}
+export class AppModule { }
