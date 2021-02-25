@@ -53,7 +53,8 @@ import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
-import { ConsultaService } from "./consulta/consulta.service";
+import { ConsultaService } from "./consulta/consulta.service";;
+import { InformeComercialComponent } from './alta-proveedores/informe-comercial/informe-comercial.component'
 
 @NgModule({
   imports: [
@@ -92,7 +93,8 @@ import { ConsultaService } from "./consulta/consulta.service";
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-    ConsultaBaseComponent
+    ConsultaBaseComponent,
+    InformeComercialComponent
   ],
   providers: [
     DatePipe,
