@@ -266,7 +266,6 @@ export class MisConsultasComponent extends ListBaseComponent {
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
-
                         this.estados = result.data.estados;
                         this.estados.forEach(e => {
                             let estado = result.data.estados.filter(x=> x.Id == e.Id)[0];
@@ -294,12 +293,6 @@ export class MisConsultasComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
-    }
-
-    public getDateFromAspNetFormat(date: string): number {
-        const re = /-?\d+/;
-        const m = re.exec(date);
-        return parseInt(m[0], 10);
     }
 
     getIds(options){

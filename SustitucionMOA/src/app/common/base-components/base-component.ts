@@ -55,9 +55,12 @@ export class BaseComponent implements OnDestroy{
     }
 
     public getDateFromAspNetFormat(date: string): number {
-        const re = /-?\d+/;
-        const m = re.exec(date);
-        return parseInt(m[0], 10);
+        if (date){
+            const re = /-?\d+/;
+            const m = re.exec(date);
+            return parseInt(m[0], 10);
+        }
+        return null
     }
 
     public convertDate(date: any) {
