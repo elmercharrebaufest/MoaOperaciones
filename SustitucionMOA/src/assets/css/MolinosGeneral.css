@@ -3770,11 +3770,8 @@ div.panel-body a.active{
 
 .categoriaMenuFaq{
   border-color: white;
-  color: #03753e;
   font-size: 16px;
-  font-weight: bold;
   font-family: Roboto Regular;
-  cursor: pointer;
 }
 /*
 .posts, .archivepostsMobile {
@@ -3814,9 +3811,17 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
   font-family: Roboto Regular;
   text-transform: uppercase;
 }
-.aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
+.aFaqClick{
   text-decoration:none;
-  color: #03753e !important;
+  color: #707070 !important;
+  font-size: 13px !important;
+  font-weight: bold important;
+  cursor: pointer;
+}
+
+.aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
+  text-decoration:none;
+  color: #000000 !important;
   font-size: 13px !important;
   font-weight: bold important;
   cursor: pointer;
