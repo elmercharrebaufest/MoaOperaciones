@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Models
 {
     public class ConsultaTicketPesada
     {
-        public int NumeroCartaPorte { get; set; }
+        public string NumeroCartaPorte { get; set; }
         public string PatenteCamion { get; set; }
         public string Mail { get; set; }
     }

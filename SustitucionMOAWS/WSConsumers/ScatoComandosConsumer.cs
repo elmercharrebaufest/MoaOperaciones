@@ -4,26 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAModel.Models;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoComandosWebService;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    class ScatoComandosConsumer 
+    public class ScatoComandosConsumer: IScatoComandosConsumer
     {
         private readonly ServicioComandosClient servicioComandosClient = new ServicioComandosClient();
 
-        private void ObtenerTicketPesada(ConsultaTicketPesada consultaTicketPesada)
+        public ResultadoTickets ObtenerTicketPesada(string numeroCartaPorte)
         {
-            ObtenerTickets comando = new ObtenerTickets
+            return (ResultadoTickets)servicioComandosClient.Ejecutar(new ObtenerTickets
             {
-                CP = "1000"
-            };
-
-            var resultado = servicioComandosClient.Ejecutar(comando);
-
-            Console.Write("Test");
-
-            return ;
+                CP = numeroCartaPorte
+            });
         }
     }
 }

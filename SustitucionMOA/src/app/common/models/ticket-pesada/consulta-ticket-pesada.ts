@@ -1,7 +1,7 @@
 import { NumberSymbol } from "@angular/common"
 
-export class ConsultaTicketPesada  {
-    NumeroCartaPorte: number;
-    PatenteCamion: string;
-    Mail: string;
+export class ConsultaTicketPesada {
+    NumeroCartaPorte: string = "";
+    PatenteCamion: string = "";
+    Mail: string = "";
 }

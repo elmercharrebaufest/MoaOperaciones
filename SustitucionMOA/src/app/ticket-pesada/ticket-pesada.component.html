@@ -21,7 +21,7 @@
         N&uacute;mero de carta de Porte
       </div>
       <div class="styled-select">
-        <input [(ngModel)]="TicketPesada.NumeroCartaPorte" type="text" pattern="\d*">
+        <input [(ngModel)]="TicketPesada.NumeroCartaPorte" type="text" pattern="\d*" maxlength="15">
 
       </div>
     </div>
@@ -31,7 +31,7 @@
         Patente del cami&oacute;n
       </div>
       <div class="styled-select">
-        <input type="text" [(ngModel)]="TicketPesada.PatenteCamion">
+        <input type="text" [(ngModel)]="TicketPesada.PatenteCamion" maxlength="15">
       </div>
     </div>
 
@@ -41,7 +41,7 @@
           Mail
         </div>
         <div class="styled-select">
-          <input type="text" [(ngModel)]="TicketPesada.Mail">
+          <input type="text" [(ngModel)]="TicketPesada.Mail" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}">
         </div>
       </div>
     </div>

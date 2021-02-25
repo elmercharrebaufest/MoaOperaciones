@@ -14,7 +14,7 @@ body {
     align-content: center;
     flex-direction:column;
     justify-content: center;
-    max-width: 20em;
+    max-width: 30em;
 }
 
 .btnContainer {
@@ -22,6 +22,7 @@ body {
     align-content: center;
     justify-content: center;
     margin-top: 2em;
+    margin-bottom: 1em;
 }
 
 .logoContainer {
