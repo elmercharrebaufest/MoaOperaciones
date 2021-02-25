@@ -68,6 +68,7 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
+    <Compile Include="Models\ConsultaTicketPesada.cs" />
     <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />
