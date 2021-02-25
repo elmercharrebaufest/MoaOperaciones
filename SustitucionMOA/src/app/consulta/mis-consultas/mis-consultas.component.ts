@@ -61,7 +61,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     subcategoriasList: SelectItem[];
 
     es: any;
-    datesRange: SelectItem[] = [{label:'Desde', value:'desde'}, {label:'Hasta', value:'hasta'}];
+    datesRange: SelectItem[] = [{label:'Fecha', value:null},{label:'Desde', value:'desde'}, {label:'Hasta', value:'hasta'}, {label:'Rango', value:'rango'}];
     isExternal: boolean;
     showFilters: boolean;
     windowSize: string;
@@ -181,9 +181,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     onFechaChange(dt, col) {
-        col.selectedRange = col.selectedRange || [];
-        let desde = col.selectedRange.includes('desde') || false;
-        let hasta = col.selectedRange.includes('hasta') || false;
+        let desde = col.selectedRange == 'desde' || col.selectedRange == 'rango';
+        let hasta = col.selectedRange == 'hasta' || col.selectedRange == 'rango';
 
         if (desde && !hasta)
             this.filtrarFecha(dt, col.field, col.fecha, null);
@@ -194,9 +193,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     onFechaRangeChange(dt, col) {
-        col.selectedRange = col.selectedRange || [];
-        let desde = col.selectedRange.includes('desde') || false;
-        let hasta = col.selectedRange.includes('hasta') || false;
+        let desde = col.selectedRange == 'desde' || col.selectedRange == 'rango';
+        let hasta = col.selectedRange == 'hasta' || col.selectedRange == 'rango';
 
         if(desde && hasta && col.fecha[0] != null && col.fecha[1] != null)
             this.filtrarFecha(dt, col.field, col.fecha[0], col.fecha[1]);
@@ -210,7 +208,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         col.fecha = null;
         this.filtrarFecha(dt, col.field, null, null);
 
-        if(col.selectedRange.length == 2)
+        if(col.selectedRange == 'rango')
             col.selectionMode = 'range';
         else
             col.selectionMode = 'single';
