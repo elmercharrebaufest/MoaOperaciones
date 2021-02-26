@@ -70,10 +70,10 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
             }
         }
 
-        if (this.captchaOk == null) {
-            this.mensajeComponent.setErrorMsg("Debe completar el Captcha");
-            return true;
-        }
+        // if (this.captchaOk == null) {
+        //     this.mensajeComponent.setErrorMsg("Debe completar el Captcha");
+        //     return true;
+        // }
 
         return false;
     }
@@ -118,6 +118,9 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
                         link.download = nombreArchivo;
                         link.click();
                         setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+
+                        this.TicketPesada.NumeroCartaPorte = "";
+                        this.TicketPesada.PatenteCamion = "";
                         return false;
                     }
                 },
