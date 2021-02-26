@@ -3768,6 +3768,11 @@ div.panel-body a.active{
   border-radius: 2px;
   opacity: 1;
 }
+.enviarComentario{
+  border: none;
+  outline:none;
+  background-color: white;
+}
 .margin-left{
   margin-left: 20px;
 }

@@ -70,6 +70,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     hora: any;
     username = sessionStorage.getItem("userName");
     detalle: string = "";
+    hola = true;
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -86,6 +87,21 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.getDetalleConsulta();
         this.getCombos();
         this.obtenerSubcategoria();
+    }
+
+    ngAfterViewInit(): void {
+        this.obtenerSubcategoria();
+        this.selectSubcategorias();
+        this.scrollBottom();
+    }
+
+    scrollBottom(){
+        var objDiv = document.getElementById("detalleConsulta");
+        objDiv.scrollTop = objDiv.scrollHeight;
+    }
+
+    isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
     }
 
     getConsultaId(){
@@ -151,6 +167,12 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
+    postComentarioyScroll(){
+        this.postComentario();
+        setTimeout(() => {  this.scrollBottom(); }, 1000);
+        this.file = null;
+    }
+
     postComentario(){
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
         this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
@@ -176,7 +198,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.detalle = "";
     }
 
-    prueba(){
+    selectSubcategorias(){
         var id = $("#categoriaSelect").children("option:selected").val();
         $("#categoriaSelect").val(id).change();  
     }
@@ -295,7 +317,9 @@ export class DetalleConsultaComponent extends BaseComponent {
         });
         $(".archivosDescarga").click(function(e) {
             e.preventDefault();
-        })
+        });
+        $("#botonActualizarCombos").click(function(e) {
+            e.preventDefault();
+        });
     }
-    
 }

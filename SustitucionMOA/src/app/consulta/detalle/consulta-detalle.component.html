@@ -67,26 +67,33 @@
             </div>
         </div>
 
-        <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6">
+        <!--AÑANDIR COMENTARIO-->
+        <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6" id="contenedorNuevoComentario">
             <hr>
-            <!--AÑANDIR COMENTARIO-->
             <div class="col-xs-12 col-sm-12 col-md-9">
-                <textarea type="search" [(ngModel)]="this.detalle" [value]=""
+                <textarea [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))"
+                 type="search" [(ngModel)]="this.detalle" [value]=""
                 class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <input class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
-                <input class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
+                <input [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))"
+                 class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
+                <input [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))"
+                 class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
             </div>
-            <div (click)="postComentario()" class="col-xs-12 col-sm-12 col-md-2">
-                <a class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+            <div class="col-xs-12 col-sm-12 col-md-2">
+                <button [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))" 
+                (click)="postComentarioyScroll()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
-                </a>
+                </button>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <p *ngIf="this.file != null">{{this.file.name}}</p>
             </div>
         </div>
         
         <!--MENU LATERAL-->
-        <div class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
+        <div *ngIf="isAuthorized('CONSULTA ABM')" class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
             <div>
                 Creado el {{this.consulta.FechaCreacion}}
                 <hr>
@@ -125,7 +132,7 @@
                 </div>
                 <div style="margin-top: 10px;">
                     <spinner-small></spinner-small>
-                    <a (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+                    <a (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" id="botonActualizarCombos" href="#" style="text-decoration:none!important">
                         <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
                     </a>
                 </div>

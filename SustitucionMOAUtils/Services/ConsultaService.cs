@@ -105,9 +105,9 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
-            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).ToList();
+            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
             
-            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria)) || x.Usuario_Id == usuarioId , includes: includes).Select(x => new ConsultaDto(x)).ToList();
+            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes).Select(x => new ConsultaDto(x)).ToList();
 
             return ret;
         }
