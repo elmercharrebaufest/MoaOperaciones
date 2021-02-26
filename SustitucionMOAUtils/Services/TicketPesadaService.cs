@@ -16,7 +16,7 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IScatoComandosConsumer scatoComandosConsumer;
 
-        public TicketPesadaService( IScatoComandosConsumer scatoComandosConsumer)
+        public TicketPesadaService(IScatoComandosConsumer scatoComandosConsumer)
         {
             this.scatoComandosConsumer = scatoComandosConsumer;
         }
@@ -38,6 +38,33 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("La patente del cambio no coincide con la patente del camión.");
             }
 
+            byte[] archivoResultado = GenerarArchivoZip(resultado);
+
+            if (archivoResultado.Length < 50)
+            {
+                throw new ValidationCustomException("No hay documentos para la carta de porte ingresada.");
+            }
+
+            if (consultaTicketPesada.Mail != null)
+            {
+                if (consultaTicketPesada.Mail.Length > 0)
+                {
+                    try
+                    {
+                        EnviarMail(consultaTicketPesada, archivoResultado);
+                    }
+                    catch
+                    {
+                        //En el caso de que no podamos mandar el mail, ignoramos la excepción
+                    }
+                }
+            }
+
+            return archivoResultado;
+        }
+
+        private static byte[] GenerarArchivoZip(ResultadoTickets resultado)
+        {
             var outputMemStream = new MemoryStream();
 
             using (var zipStream = new ZipOutputStream(outputMemStream))
@@ -48,31 +75,15 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.TicketPesada.Length > 0)
                     {
-                        ZipEntry ticketPesadaEntry = new ZipEntry("TicketPesada.pdf")
-                        {
-                            DateTime = DateTime.Now,
-
-                        };
-                        Stream ticketPesadaStream = new MemoryStream(resultado.TicketPesada);
-                        zipStream.PutNextEntry(ticketPesadaEntry);
-                        StreamUtils.Copy(ticketPesadaStream, zipStream, new byte[4096]);
-                        zipStream.CloseEntry();
+                        AgregarAStream(resultado.TicketPesada, nombreArchivo:"TicketPesada.pdf", zipStream);
                     }
                 }
-
 
                 if (resultado.TicketReciboMunicipal != null)
                 {
                     if (resultado.TicketReciboMunicipal.Length > 0)
                     {
-                        ZipEntry ticketReciboMunicipalEntry = new ZipEntry("TicketReciboMunicipal.pdf")
-                        {
-                            DateTime = DateTime.Now,
-                        };
-                        Stream ticketReciboMunicipalStream = new MemoryStream(resultado.TicketReciboMunicipal);
-                        zipStream.PutNextEntry(ticketReciboMunicipalEntry);
-                        StreamUtils.Copy(ticketReciboMunicipalStream, zipStream, new byte[4096]);
-                        zipStream.CloseEntry();
+                        AgregarAStream(resultado.TicketReciboMunicipal, nombreArchivo: "TicketReciboMunicipal.pdf", zipStream);
                     }
                 }
 
@@ -80,18 +91,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.FotoCP.Fotos.Length > 0)
                     {
-                        int i = 1;                         
+                        int i = 1;
                         foreach (FotoDto foto in resultado.FotoCP.Fotos)
                         {
                             Stream fotoMemoryStream = new MemoryStream(foto.Foto);
 
-                            ZipEntry entry = new ZipEntry(string.Concat($"Foto CCPP {i++}.jpg"))
-                            {
-                                DateTime = DateTime.Now
-                            };
-                            zipStream.PutNextEntry(entry);
-                            StreamUtils.Copy(fotoMemoryStream, zipStream, new byte[4096]);
-                            zipStream.CloseEntry();
+                            AgregarAStream(foto.Foto, nombreArchivo: $"Foto CCPP { i++}.jpg", zipStream);
                         }
                     }
                 }
@@ -101,31 +106,32 @@ namespace SustitucionMOAUtils.Services
 
             outputMemStream.Position = 0;
 
-            if (consultaTicketPesada.Mail != null)
-            {
-                if (consultaTicketPesada.Mail.Length > 0)
-                {
-                    try
-                    {
-                        EnviarMail(consultaTicketPesada, outputMemStream.ToArray());
-                    }
-                    catch
-                    {
-                        //En el caso de que no podamos mandar el mail, ignoramos la excepción
-                    }
-                }
-            }
+            var archivoResultado = outputMemStream.ToArray();
+            return archivoResultado;
+        }
 
-            return outputMemStream.ToArray();
+        private static void AgregarAStream(byte[] archivo, string nombreArchivo , ZipOutputStream zipStream)
+        {
+            ZipEntry entry = new ZipEntry(nombreArchivo)
+            {
+                DateTime = DateTime.Now,
+            };
+
+            Stream stream = new MemoryStream(archivo);
+            zipStream.PutNextEntry(entry);
+            StreamUtils.Copy(stream, zipStream, new byte[4096]);
+            zipStream.CloseEntry();
         }
 
         private void EnviarMail(ConsultaTicketPesada consultaTicketPesada, byte[] adjunto)
         {
             var asunto = string.Format("Ticket pesada CCPP {0} - Pantente {1}", consultaTicketPesada.NumeroCartaPorte, consultaTicketPesada.PatenteCamion);
 
-            var nombreAchivo = string.Format("Ticket Pesada CCPP {0}", consultaTicketPesada.NumeroCartaPorte);
+            var nombreAchivo = string.Format("Ticket Pesada CCPP {0}.zip", consultaTicketPesada.NumeroCartaPorte);
 
-            EmailSender.EnviarMail(new List<string> { consultaTicketPesada.Mail }, asunto, asunto, null, null, adjunto, nombreAchivo);
+            string mensaje = string.Format("Te enviamos el archivo comprimido de la CCPP {0}.", consultaTicketPesada.NumeroCartaPorte);
+
+            EmailSender.EnviarMail(new List<string> { consultaTicketPesada.Mail }, asunto, mensaje, null, null, adjunto, nombreAchivo);
         }
     }
 }

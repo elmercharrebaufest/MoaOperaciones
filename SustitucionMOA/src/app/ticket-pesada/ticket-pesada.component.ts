@@ -118,6 +118,9 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
                         link.download = nombreArchivo;
                         link.click();
                         setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+
+                        this.TicketPesada.NumeroCartaPorte = "";
+                        this.TicketPesada.PatenteCamion = "";
                         return false;
                     }
                 },
