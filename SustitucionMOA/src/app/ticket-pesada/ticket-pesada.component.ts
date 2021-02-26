@@ -70,10 +70,10 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
             }
         }
 
-        // if (this.captchaOk == null) {
-        //     this.mensajeComponent.setErrorMsg("Debe completar el Captcha");
-        //     return true;
-        // }
+        if (this.captchaOk == null) {
+            this.mensajeComponent.setErrorMsg("Debe completar el Captcha");
+            return true;
+        }
 
         return false;
     }
