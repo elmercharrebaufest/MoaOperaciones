@@ -27,7 +27,7 @@ $("document").ready(function () {
         ticketPesadaUrl = "https://moaoperaciones.com.ar/web/ticket-pesada"
     } else if (currentURL.includes("moagroqa.b2clogin.com"))
     { 
-        ticketPesadaUrl = "http://moaoperacionesqa.com.ar/web/ticket-pesada"
+        ticketPesadaUrl = "http://moaoperacionesqa.molinosagro.com.ar/web/ticket-pesada"
     }
     else {
         ticketPesadaUrl = "http://localhost:4200/ticket-pesada"
