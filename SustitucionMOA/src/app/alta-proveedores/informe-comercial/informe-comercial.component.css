@@ -54,6 +54,7 @@ a:hover {
 .requerido {
   color: red;
   font-weight: bold;
+  font-size: 18px;
 }
 
 a:hover {

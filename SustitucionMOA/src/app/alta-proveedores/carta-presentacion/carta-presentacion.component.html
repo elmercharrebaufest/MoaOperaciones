@@ -1,380 +1,384 @@
-<label *ngIf="displayType==='link'">
-  <span id="openModalHiddenButtonCartaPresentacion" data-toggle="modal" data-target="#modalCartaPresentacion"
-    class="link-adjuntar">
-    Completar
-  </span>
-  la carta de presentación
-</label>
-<button *ngIf="displayType==='button'" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
-  data-target="#myModal" class="btn-custom btn-add btn-mediano">
-  Carta de presentación
-</button>
+<div>
+
+  <label *ngIf="displayType==='link'">
+    <span id="openModalHiddenButtonCartaPresentacion" data-toggle="modal" data-target="#modalCartaPresentacion"
+      class="link-adjuntar">
+      Completar
+    </span>
+    la carta de presentación
+  </label>
+  <button *ngIf="displayType==='button'" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
+    data-target="#modalCartaPresentacion" class="btn-custom btn-add btn-mediano">
+    Carta de presentación
+  </button>
 
 
-<!-- Modal Carta presentacion-->
+  <!-- Modal Carta presentacion-->
 
-<button type="button" style="display:none" id="cerrarCartaDePrestacionModal" data-toggle="modal"
-  data-target="#modalCartaPresentacion"></button>
-<div class="modal fade" id="modalCartaPresentacion" tabindex="-1" role="dialog"
-  aria-labelledby="cartaDePresentacionLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h4 class="modal-title" id="cartaDePresentacionLabel">Carta de presentación</h4>
-      </div>
-      <div class="modal-body">
-        <div class="tab-pane" id="tab2">
-          <div class="formulario">
-            <div class="titulo">
-              Corredor
-            </div>
-            <div class="formulario-campo">
-              <div class="col-md-6">
-                <div class="formulario-label">
-                  Bolsa
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.corredorBolsa"
-                    maxlength="100" />
-                  <span class="requerido">*</span>
-
-                </div>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Nro registro:
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.corredorNroRegistro"
-                    maxlength="100" />
-                  <span class="requerido">*</span>
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <div class="formulario">
-
-            <div class="titulo">
-              Vendedor
-            </div>
-            <div class="formulario-campo">
-              <div class="col-xs-12 col-md-6" style="display: none;">
-                <div class="formulario-label">
-                  Actividad
-                </div>
-                <div class="styled-elements">
-                  <select [(ngModel)]="cartaPresentacion.vendedorActividad" [value]=""
-                    class="dropdown-granos ng-pristine ng-valid ng-touched">
-                    <option value="proveedorClasificacion" selected="selected" selected>
-                      {{proveedorClasificacion}}</option>
-                    <option value="Productor">Productor</option>
-                    <option value="Acopiador">Acopiador</option>
-                    <option value="Otros">Otros</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Antigüedad en la actividad
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off"
-                    [(ngModel)]="cartaPresentacion.vendedorAntiguedadEnActividad" maxlength="100" />
-                </div>
-              </div>
-
-
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Domicilio fiscal
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorDomicilioFiscal"
-                    maxlength="100" />
-                  <span class="requerido">*</span>
-                </div>
-              </div>
-
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Antecedes comerciales
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off"
-                    [(ngModel)]="cartaPresentacion.vendedorAntecedentesComerciales" maxlength="100" />
-                </div>
-              </div>
-
-
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Mail de contacto
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorMailContacto"
-                    maxlength="100" />
-                  <span class="requerido">*</span>
-                </div>
-              </div>
-
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Teléfono de contacto
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorTelefonoContacto"
-                    maxlength="100" />
-                  <span class="requerido">*</span>
-                </div>
-              </div>
-              <div class="col-xs-12 col-md-6">
-                <div class="formulario-label">
-                  Domicilio real
-                </div>
-                <div class="styled-elements">
-                  <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorDomicilioReal"
-                    maxlength="100" />
-                  <span class="requerido">*</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <br />
-            </div>
-          </div>
-          <div class="formulario-campo">
-            <div class="formulario row">
-              <div class="col-md-3">
-                <div class="titulo formulario-campo">
-                  Campaña
-                </div>
-                <div class="styled-elements formulario-campo">
-                  <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual" [value]=listaCampanias[0]>
-                    <option disabled hidden [value]="selectUndefinedOptionValue"> Campaña
-                    </option>
-                    <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
-                      {{camp.CampaniaActual}}
-                    </option>
-                  </select>
-                  <span class="requerido">*</span>
-                </div>
-              </div>
-              <div class="col-md-9">
-              </div>
-            </div>
-            <div class="formulario">
-
-              <div class="titulo">Capacidad productiva
-              </div>
-              <table class="table table-borderless table-custom">
-                <tbody>
-                  <tr *ngFor="let field of cartaPresentacion.nuevosCampos; let i = index">
-                    <td width="140px">
-                      <div class="styled-elements">
-                        <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId" class="dropdown-granos">
-                          <option disabled hidden [value]="selectUndefinedOptionValue">
-                            Grano
-                          </option>
-                          <option *ngFor="let material of listaMateriales" value="{{material.Id}}">
-                            {{material.Descripcion}}
-                          </option>
-                        </select>
-                        <span class="requerido">*</span>
-
-                        <input [(ngModel)]="field.CampaniaId" type="text" value="0" name="{{field.CampaniaId}}"
-                          style="display:none;" />
-                      </div>
-                    </td>
-                    <td>
-                      <input [(ngModel)]="field.LocalidadId" type="hidden" style="font-weight: 100 !important;">
-
-                      <div>
-                        <div class=" col-md-10 ng-autocomplete">
-                          <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
-                            (selected)='selectEventCampoCartaPresentacion($event, i)' [(ngModel)]="field.Localidad"
-                            (inputChanged)='onChangeLocalidad($event)' [itemTemplate]="itemTemplate"
-                            [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
-                            [notFoundTemplate]="notFoundTemplate">
-                          </ng-autocomplete>
-                        </div>
-                        <div class="col-md-2">
-                          <span class="requerido">*</span>
-                        </div>
-                      </div>
-
-                      <ng-template #itemTemplate let-item>
-                        <a [innerHTML]="item.Nombre"></a>
-                      </ng-template>
-
-                      <ng-template #notFoundTemplate let-notFound>
-                        <div [innerHTML]="notFound"></div>
-                      </ng-template>
-                    </td>
-                    <td width="100px">
-                      <div class="styled-elements">
-
-                        <input [(ngModel)]="field.Hectareas" type="number" name="{{field.Hectareas}}"
-                          placeholder="HAS" />
-                      </div>
-                    </td>
-                    <td width="100px">
-                      <div class="styled-elements">
-
-                        <input [(ngModel)]="field.Toneladas" type="number" name="{{field.Toneladas}}"
-                          placeholder="TNS" />
-                        <span class="requerido">*</span>
-
-                      </div>
-                    </td>
-                    <td width="125px">
-                      <div class="styled-elements">
-
-                        <select [(ngModel)]="field.ArrendaPropia"
-                          class="dropdown-granos ng-pristine ng-valid ng-touched">
-                          <option disabled hidden [value]="selectUndefinedOptionValue">
-                            Condición
-                          </option>
-                          <option value="true">Propio</option>
-                          <option value="false">Alquilado</option>
-                        </select>
-                        <span class="requerido">*</span>
-
-                      </div>
-                    </td>
-                    <td width="75px">
-                      <button class="btn-remove btn-custom btn-chico" type="button"
-                        (click)="borrarCampoCartaPresentacion(i)">
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-
-                </tbody>
-
-              </table>
-              <div class="btn-add-container">
-                <button class="btn-add btn-custom btn-chico" type="button" (click)="agregarCampoCartaPresentacion()">
-                  Agregar
-                </button>
-
-              </div>
-            </div>
-
-            <!-- TABLA 2 -->
+  <button type="button" style="display:none" id="cerrarCartaDePrestacionModal" data-toggle="modal"
+    data-target="#modalCartaPresentacion"></button>
+  <div class="modal fade" id="modalCartaPresentacion" tabindex="-1" role="dialog"
+    aria-labelledby="cartaDePresentacionLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="cartaDePresentacionLabel">Carta de presentación</h4>
+        </div>
+        <div class="modal-body">
+          <div class="tab-pane" id="tab2">
             <div class="formulario">
               <div class="titulo">
-                Capacidad planta
+                Corredor
               </div>
-              <table class="table table-borderless table-custom">
-                <tbody>
-                  <tr *ngFor="let acopio of cartaPresentacion.nuevosAcopios; let i = index">
+              <div class="formulario-campo">
+                <div class="col-md-6">
+                  <div class="formulario-label">
+                    Bolsa
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.corredorBolsa"
+                      maxlength="100" />
+                    <span class="requerido">*</span>
 
-                    <td>
-                      <input [(ngModel)]="acopio.CampaniaID" type="text" value="0" name="{{acopio.CampaniaID}}"
-                        style="display:none;" />
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Nro registro:
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.corredorNroRegistro"
+                      maxlength="100" />
+                    <span class="requerido">*</span>
+                  </div>
 
-                      <input [(ngModel)]="acopio.LocalidadID" type="hidden" id="localidadalm_{{i}}"
-                        style="font-weight: 100 !important;">
-                      <div>
-                        <div class=" col-md-10 ng-autocomplete">
-                          <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
-                            (selected)='selectEventAcopioCartaPresentacion($event, i)' [(ngModel)]="acopio.Localidad"
-                            (inputChanged)='onChangeLocalidad($event)' [itemTemplate]="itemTemplate"
-                            [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
-                            [notFoundTemplate]="notFoundTemplate">
-                          </ng-autocomplete>
-                        </div>
-                        <div class="col-md-2">
+                </div>
+              </div>
+            </div>
+            <div class="formulario">
+
+              <div class="titulo">
+                Vendedor
+              </div>
+              <div class="formulario-campo">
+                <div class="col-xs-12 col-md-6" style="display: none;">
+                  <div class="formulario-label">
+                    Actividad
+                  </div>
+                  <div class="styled-elements">
+                    <select [(ngModel)]="cartaPresentacion.vendedorActividad" [value]=""
+                      class="dropdown-granos ng-pristine ng-valid ng-touched">
+                      <option value="proveedorClasificacion" selected="selected" selected>
+                        {{proveedorClasificacion}}</option>
+                      <option value="Productor">Productor</option>
+                      <option value="Acopiador">Acopiador</option>
+                      <option value="Otros">Otros</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Antigüedad en la actividad
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off"
+                      [(ngModel)]="cartaPresentacion.vendedorAntiguedadEnActividad" maxlength="100" />
+                  </div>
+                </div>
+
+
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Domicilio fiscal
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorDomicilioFiscal"
+                      maxlength="100" />
+                    <span class="requerido">*</span>
+                  </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Antecedes comerciales
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off"
+                      [(ngModel)]="cartaPresentacion.vendedorAntecedentesComerciales" maxlength="100" />
+                  </div>
+                </div>
+
+
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Mail de contacto
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorMailContacto"
+                      maxlength="100" />
+                    <span class="requerido">*</span>
+                  </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Teléfono de contacto
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off"
+                      [(ngModel)]="cartaPresentacion.vendedorTelefonoContacto" maxlength="100" />
+                    <span class="requerido">*</span>
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                  <div class="formulario-label">
+                    Domicilio real
+                  </div>
+                  <div class="styled-elements">
+                    <input type="text" autocomplete="chrome-off" [(ngModel)]="cartaPresentacion.vendedorDomicilioReal"
+                      maxlength="100" />
+                    <span class="requerido">*</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <br />
+              </div>
+            </div>
+            <div class="formulario-campo">
+              <div class="formulario row">
+                <div class="col-md-3">
+                  <div class="titulo formulario-campo">
+                    Campaña
+                  </div>
+                  <div class="styled-elements formulario-campo">
+                    <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual" [value]=listaCampanias[0]>
+                      <option disabled hidden [value]="selectUndefinedOptionValue"> Campaña
+                      </option>
+                      <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
+                        {{camp.CampaniaActual}}
+                      </option>
+                    </select>
+                    <span class="requerido">*</span>
+                  </div>
+                </div>
+                <div class="col-md-9">
+                </div>
+              </div>
+              <div class="formulario">
+
+                <div class="titulo">Capacidad productiva
+                </div>
+                <table class="table table-borderless table-custom">
+                  <tbody>
+                    <tr *ngFor="let field of cartaPresentacion.nuevosCampos; let i = index">
+                      <td width="140px">
+                        <div class="styled-elements">
+                          <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId" class="dropdown-granos">
+                            <option disabled hidden [value]="selectUndefinedOptionValue">
+                              Grano
+                            </option>
+                            <option *ngFor="let material of listaMateriales" value="{{material.Id}}">
+                              {{material.Descripcion}}
+                            </option>
+                          </select>
                           <span class="requerido">*</span>
+
+                          <input [(ngModel)]="field.CampaniaId" type="text" value="0" name="{{field.CampaniaId}}"
+                            style="display:none;" />
                         </div>
-                      </div>
-                      <ng-template #itemTemplate let-item>
-                        <a [innerHTML]="item.Nombre"></a>
-                      </ng-template>
+                      </td>
+                      <td>
+                        <input [(ngModel)]="field.LocalidadId" type="hidden" style="font-weight: 100 !important;">
 
-                      <ng-template #notFoundTemplate let-notFound>
-                        <div [innerHTML]="notFound"></div>
-                      </ng-template>
-                    </td>
-                    <td width="110px">
-                      <div class="styled-elements">
-                        <input [(ngModel)]="acopio.Toneladas" placeholder="TNS" type="number" />
-                        <span class="requerido">*</span>
+                        <div>
+                          <div class=" col-md-10 ng-autocomplete">
+                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                              (selected)='selectEventCampoCartaPresentacion($event, i)' [(ngModel)]="field.Localidad"
+                              (inputChanged)='onChangeLocalidad($event)' [itemTemplate]="itemTemplate"
+                              [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
+                              [notFoundTemplate]="notFoundTemplate">
+                            </ng-autocomplete>
+                          </div>
+                          <div class="col-md-2">
+                            <span class="requerido">*</span>
+                          </div>
+                        </div>
 
-                      </div>
-                    </td>
-                    <td width="125px">
-                      <div class="styled-elements">
-                        <select [(ngModel)]="acopio.ArrendaPropia"
-                          class="dropdown-granos ng-pristine ng-valid ng-touched">
-                          <option disabled hidden [value]="selectUndefinedOptionValue">
-                            Condición
-                          </option>
-                          <option value="true">Propio</option>
-                          <option value="false">Alquilado</option>
-                        </select>
-                        <span class="requerido">*</span>
+                        <ng-template #itemTemplate let-item>
+                          <a [innerHTML]="item.Nombre"></a>
+                        </ng-template>
 
-                      </div>
-                    </td>
-                    <td width="75px">
-                      <button class="btn-remove btn-custom btn-chico" type="button"
-                        (click)="borrarAcopioCartaPresentacion(i)">
-                        Eliminar
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="btn-add-container">
-                <button class="btn-add btn-custom btn-chico" type="button" (click)="agregarAcopioCartaPresentacion()">
-                  Agregar
-                </button>
+                        <ng-template #notFoundTemplate let-notFound>
+                          <div [innerHTML]="notFound"></div>
+                        </ng-template>
+                      </td>
+                      <td width="100px">
+                        <div class="styled-elements">
+
+                          <input [(ngModel)]="field.Hectareas" type="number" name="{{field.Hectareas}}"
+                            placeholder="HAS" />
+                        </div>
+                      </td>
+                      <td width="100px">
+                        <div class="styled-elements">
+
+                          <input [(ngModel)]="field.Toneladas" type="number" name="{{field.Toneladas}}"
+                            placeholder="TNS" />
+                          <span class="requerido">*</span>
+
+                        </div>
+                      </td>
+                      <td width="125px">
+                        <div class="styled-elements">
+
+                          <select [(ngModel)]="field.ArrendaPropia"
+                            class="dropdown-granos ng-pristine ng-valid ng-touched">
+                            <option disabled hidden [value]="selectUndefinedOptionValue">
+                              Condición
+                            </option>
+                            <option value="true">Propio</option>
+                            <option value="false">Alquilado</option>
+                          </select>
+                          <span class="requerido">*</span>
+
+                        </div>
+                      </td>
+                      <td width="75px">
+                        <button class="btn-remove btn-custom btn-chico" type="button"
+                          (click)="borrarCampoCartaPresentacion(i)">
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+
+                  </tbody>
+
+                </table>
+                <div class="btn-add-container">
+                  <button class="btn-add btn-custom btn-chico" type="button" (click)="agregarCampoCartaPresentacion()">
+                    Agregar
+                  </button>
+
+                </div>
+              </div>
+
+              <!-- TABLA 2 -->
+              <div class="formulario">
+                <div class="titulo">
+                  Capacidad planta
+                </div>
+                <table class="table table-borderless table-custom">
+                  <tbody>
+                    <tr *ngFor="let acopio of cartaPresentacion.nuevosAcopios; let i = index">
+
+                      <td>
+                        <input [(ngModel)]="acopio.CampaniaID" type="text" value="0" name="{{acopio.CampaniaID}}"
+                          style="display:none;" />
+
+                        <input [(ngModel)]="acopio.LocalidadID" type="hidden" id="localidadalm_{{i}}"
+                          style="font-weight: 100 !important;">
+                        <div>
+                          <div class=" col-md-10 ng-autocomplete">
+                            <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
+                              (selected)='selectEventAcopioCartaPresentacion($event, i)' [(ngModel)]="acopio.Localidad"
+                              (inputChanged)='onChangeLocalidad($event)' [itemTemplate]="itemTemplate"
+                              [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
+                              [notFoundTemplate]="notFoundTemplate">
+                            </ng-autocomplete>
+                          </div>
+                          <div class="col-md-2">
+                            <span class="requerido">*</span>
+                          </div>
+                        </div>
+                        <ng-template #itemTemplate let-item>
+                          <a [innerHTML]="item.Nombre"></a>
+                        </ng-template>
+
+                        <ng-template #notFoundTemplate let-notFound>
+                          <div [innerHTML]="notFound"></div>
+                        </ng-template>
+                      </td>
+                      <td width="110px">
+                        <div class="styled-elements">
+                          <input [(ngModel)]="acopio.Toneladas" placeholder="TNS" type="number" />
+                          <span class="requerido">*</span>
+
+                        </div>
+                      </td>
+                      <td width="125px">
+                        <div class="styled-elements">
+                          <select [(ngModel)]="acopio.ArrendaPropia"
+                            class="dropdown-granos ng-pristine ng-valid ng-touched">
+                            <option disabled hidden [value]="selectUndefinedOptionValue">
+                              Condición
+                            </option>
+                            <option value="true">Propio</option>
+                            <option value="false">Alquilado</option>
+                          </select>
+                          <span class="requerido">*</span>
+
+                        </div>
+                      </td>
+                      <td width="75px">
+                        <button class="btn-remove btn-custom btn-chico" type="button"
+                          (click)="borrarAcopioCartaPresentacion(i)">
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="btn-add-container">
+                  <button class="btn-add btn-custom btn-chico" type="button" (click)="agregarAcopioCartaPresentacion()">
+                    Agregar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="formulario" style="width:100%;text-align: center;">
-            <div *ngIf="mensajeError != ''" class="formulario-input;">
-              <div class="alert alert-danger">
-                <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+          <div class="modal-footer">
+            <div class="formulario" style="width:100%;text-align: center;">
+              <div *ngIf="mensajeError != ''" class="formulario-input;">
+                <div class="alert alert-danger">
+                  <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+                </div>
               </div>
-            </div>
-            <div class="formulario-input;">
-              <spinner-small #spinnerCartaPresentacion></spinner-small>
-            </div>
+              <div class="formulario-input;">
+                <spinner-small #spinnerCartaPresentacion></spinner-small>
+              </div>
 
-            <div class="formulario-input">
-              <div class="col-md-3">
+              <div class="formulario-input">
+                <div class="col-md-3">
 
-              </div>
-              <div class="col-md-2">
-                <button type="button" class="btn-custom btn-cerrar btn-mediano" data-dismiss="modal">Cerrar</button>
-              </div>
-              <div class="col-md-1">
+                </div>
+                <div class="col-md-2">
+                  <button type="button" class="btn-custom btn-cerrar btn-mediano" data-dismiss="modal">Cerrar</button>
+                </div>
+                <div class="col-md-1">
 
-              </div>
-              <div class="col-md-3">
-                <button class="btn-custom btn-guardar btn-grande" id="CartaPresentacionDescargar"
-                  (click)="generarCartaPresentacion()">Guardar y Descargar</button>
-              </div>
-              <div class="col-md-3">
+                </div>
+                <div class="col-md-3">
+                  <button class="btn-custom btn-guardar btn-grande" id="CartaPresentacionDescargar"
+                    (click)="generarCartaPresentacion()">Guardar y Descargar</button>
+                </div>
+                <div class="col-md-3">
 
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- end modal carta de presentanción -->
+
   </div>
-  <!-- end modal carta de presentanción -->
 
 </div>

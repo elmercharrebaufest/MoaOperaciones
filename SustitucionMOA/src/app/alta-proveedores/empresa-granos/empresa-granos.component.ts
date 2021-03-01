@@ -15,7 +15,6 @@ import { SpinnerSmallComponent } from "../../common/view-child/spinner-small/spi
 import { EmpresaGranosService } from "./empresa-granos.service";
 import { RelacionConEmpleados } from "../../common/models//RelacionConEmpleados";
 import { RelacionConFuncionarios } from "../../common/models/relacionConFuncionarios";
-import { CartaPresentacion } from "../../common/models/cartaPresentacion";
 
 @Component({
     selector: "app-empresa-granos",
@@ -58,7 +57,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     informe = new InformeComercial();
 
-    cartaPresentacion = new CartaPresentacion();
     searchTerm: FormControl = new FormControl();
     myLocalidades = <any>[];
     mensajeError: string = "";
@@ -105,9 +103,6 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     @ViewChild("spinnerModal")
     protected spinnerModal: SpinnerSmallComponent;
-
-    @ViewChild("spinnerCartaPresentacion")
-    protected spinnerCartaPresentacion: SpinnerSmallComponent;
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
