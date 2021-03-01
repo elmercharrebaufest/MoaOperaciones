@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { BaseComponent } from '../../common/base-components/base-component';
-import { Archivo } from '../../common/models/archivo';
 import { CartaPresentacion } from '../../common/models/cartaPresentacion';
 import { InformeComercial } from '../../common/models/informeComercial';
 import { Material } from '../../common/models/material';
@@ -13,17 +12,16 @@ import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
-import { AltaEmpresaService } from '../altas/altas.service';
 import { EmpresaGranosService } from '../empresa-granos/empresa-granos.service';
 
 @Component({
-  selector: 'app-informe-comercial',
-  templateUrl: './informe-comercial.component.html',
-  styleUrls: ['./informe-comercial.component.css'],
+  selector: 'app-carta-presentacion',
+  templateUrl: './carta-presentacion.component.html',
+  styleUrls: ['./carta-presentacion.component.css'],
   providers: [EmpresaGranosService],
 
 })
-export class InformeComercialComponent extends BaseComponent implements OnInit {
+export class CartaPresentacionComponent extends BaseComponent implements OnInit {
 
   constructor(protected service: EmpresaGranosService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
@@ -31,10 +29,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     super(navService, securytiService, floatMsgService, modalService);
   }
 
-  private newAttributeAlm: NuevoAcopio = new NuevoAcopio();
-  private newAttribute: NuevoProduccion = new NuevoProduccion();
   mensajeError: string = "";
-  informe = new InformeComercial();
   listaMateriales: Array<Material> = [];
   listaCampanias: any = [];
   data = [];
@@ -59,11 +54,20 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
   localidades: any = [];
   autocompleteNotFoundText = "No encontrado";
 
+  private nuevoAtributoCampo: NuevoProduccion = new NuevoProduccion();
+  private nuevoAtributoAcompio: NuevoAcopio = new NuevoAcopio();
+
+  @ViewChild("spinnerCartaPresentacion")
+  protected spinnerCartaPresentacion: SpinnerSmallComponent;
+
   private selectUndefinedOptionValue: any;
 
   esCorredor: boolean = false;
 
   esMultiFirma: boolean = false;
+
+  @ViewChild("spinnerModal")
+  protected spinnerModal: SpinnerSmallComponent;
 
   @Input() proveedorId: number;
 
@@ -71,9 +75,8 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
   ngOnInit(): void {
     this.navService.setSeccionList([]);
     this.obtenerCampanias();
-    this.addFieldValue();
-    this.addFieldValueAlm();
-
+    this.agregarCampoCartaPresentacion();
+    this.agregarAcopioCartaPresentacion();
 
     //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
     setTimeout(() => {
@@ -84,15 +87,12 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     }, 1000);
   }
 
-  @ViewChild("spinnerModal")
-  protected spinnerModal: SpinnerSmallComponent;
-
   obtenerCampanias() {
     this.subscription = this.service.obtenerCampanias().subscribe(
       (result) => {
         let obj = result;
         this.listaCampanias = new Array();
-        obj.forEach((element) => {
+        obj.forEach((element: { Descripcion: any; CampaniaId: any; }) => {
           let cam = {
             CampaniaActual: element.Descripcion,
             CampaniaIdActual: element.CampaniaId,
@@ -109,14 +109,6 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     );
   }
 
-  selectEventProduccion(item, index) {
-    this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
-  }
-
-  selectEventAlmacenamiento(item, index) {
-    this.informe.NuevosAcopios[index].LocalidadID = item.LocalidadId;
-  }
-
   obtenerMateriales() {
 
     //Sacamos lo de la lista de campaña, ya que ahora son independientes
@@ -124,7 +116,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
       (result) => {
         let obj = JSON.parse(result);
         // this.listaCampanias = new Array();
-        obj.Datos.forEach((element) => {
+        obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
           let mat = new Material();
           mat.Id = element.MaterialId;
           mat.Descripcion = element.Descripcion;
@@ -140,42 +132,29 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     );
   }
 
-  onChangeSearchInforme(term: string) {
-    if (term.length > 2) {
-      this.unsubscribe();
-      this.subscription = this.service.searchLocalidad(term).subscribe(
-        (result) => {
-          this.dataLocalidades = result;
-          console.log(this.dataLocalidades)
-        },
-        (error) => {
-
-          this.mensajeError = error.message;
-        }
-      );
-    }
+  agregarCampoCartaPresentacion() {
+    this.cartaPresentacion.nuevosCampos.push(this.nuevoAtributoCampo);
+    this.nuevoAtributoCampo = new NuevoProduccion();
   }
 
-  onChangeSearchProduccion(term: string) {
-    if (term.length > 2) {
-      this.unsubscribe();
-      this.subscription = this.service.searchLocalidad(term).subscribe(
-        (result) => {
-          this.dataLocalidades = result;
-        },
-        (error) => {
-          this.mensajeError = error.message;
-        }
-      );
-    }
+  borrarCampoCartaPresentacion(index) {
+    this.cartaPresentacion.nuevosCampos.splice(index, 1);
   }
 
-  onChangeSearchAlmacenamiento(term: string) {
+  agregarAcopioCartaPresentacion() {
+    this.cartaPresentacion.nuevosAcopios.push(this.nuevoAtributoAcompio);
+    this.nuevoAtributoAcompio = new NuevoAcopio();
+  }
+  borrarAcopioCartaPresentacion(index) {
+    this.cartaPresentacion.nuevosAcopios.splice(index, 1);
+  }
+
+  onChangeLocalidad(term: string) {
     if (term.length > 2) {
       this.unsubscribe();
       this.subscription = this.service.searchLocalidad(term).subscribe(
         (result) => {
-          this.dataLocalidades = result;
+          this.localidades = result;
         },
         (error) => {
           this.mensajeError = error.message;
@@ -184,90 +163,138 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     }
   }
 
-  selectEventInforme(item) {
-    this.informe.localidadId = item.LocalidadId;
-  }
-
-  selectEventCampoCartaPresentacion(item, index) {
+  selectEventCampoCartaPresentacion(item: { LocalidadId: number; }, index: string | number) {
     this.cartaPresentacion.nuevosCampos[index].LocalidadId =
       item.LocalidadId;
   }
 
-  selectEventAcopioCartaPresentacion(item, index) {
+  selectEventAcopioCartaPresentacion(item: { LocalidadId: number; }, index: string | number) {
     this.cartaPresentacion.nuevosAcopios[index].LocalidadID =
       item.LocalidadId;
   }
-  addFieldValue() {
-    this.informe.NuevosCampos.push(this.newAttribute);
-    this.newAttribute = new NuevoProduccion();
+
+  generarCartaPresentacion() {
+    this.spinnerCartaPresentacion.showIt();
+    this.unsubscribe();
+    this.cartaPresentacion.nuevosAcopios.forEach((campo) => {
+      campo.CampaniaID = this.campaniaActual;
+    });
+    this.cartaPresentacion.nuevosCampos.forEach((campo) => {
+      campo.CampaniaId = this.campaniaActual;
+    });
+
+    this.cartaPresentacion.campaniaID = this.campaniaActual;
+    this.cartaPresentacion.vendedorActividad = this.proveedorClasificacion;
+
+
+    if (this.validarCartaPresentacion()) {
+      this.spinnerCartaPresentacion.hideIt();
+      return;
+    }
+
+    this.mensajeError = "";
+    this.subscription = this.service
+      .generarCartaPresentacion(this.cartaPresentacion, this.proveedorId)
+      .subscribe(
+        (result) => {
+          this.spinnerCartaPresentacion.hideIt();
+          if (result.error) {
+            this.mensajeError = result.error;
+          } else {
+            var byteArray = new Uint8Array(result.data);
+            var blob = new Blob([byteArray], {
+              type: "application/pdf",
+            });
+            if (window.navigator.msSaveOrOpenBlob) {
+              // IE11
+              window.navigator.msSaveOrOpenBlob(
+                blob,
+                "Carta presentación.pdf"
+              );
+            } else {
+              var url = window.URL.createObjectURL(blob);
+              var link = document.createElement("a");
+              document.body.appendChild(link);
+              link.href = url;
+              link.download = "Carta presentación.pdf";
+              link.click();
+              setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+              }, 0);
+
+              return false;
+            }
+          }
+        },
+        (error) => {
+          this.spinnerCartaPresentacion.hideIt();
+          this.mensajeError = error.message;
+        }
+      );
   }
 
-  deleteFieldValue(index) {
-    this.informe.NuevosCampos.splice(index, 1);
-  }
+  validarCartaPresentacion() {
+    //Corredor
+    if (
+      this.cartaPresentacion.corredorBolsa == "" ||
+      !this.cartaPresentacion.corredorBolsa
+    ) {
+      this.mensajeError = "No completo el campo bolsa.";
+      return true;
+    }
 
-  addFieldValueAlm() {
-    this.informe.NuevosAcopios.push(this.newAttributeAlm);
-    this.newAttributeAlm = new NuevoAcopio();
-  }
+    if (
+      this.cartaPresentacion.corredorNroRegistro == "" ||
+      !this.cartaPresentacion.corredorNroRegistro
+    ) {
+      this.mensajeError = "No completo el número de registro.";
+      return true;
+    }
 
-  deleteFieldValueAlm(index) {
-    this.informe.NuevosAcopios.splice(index, 1);
-  }
+    // //Vendedor
+    // if (
+    //   this.cartaPresentacion.vendedorActividad == "" ||
+    //   !this.cartaPresentacion.vendedorActividad
+    // ) {
+    //   this.mensajeError = "No seleccionó la actividad.";
+    //   return true;
+    // }
 
-  validarInforme() {
-    if (this.informe.direccion == "" || !this.informe.direccion) {
-      this.mensajeError = "No completo la direccion.";
-      return true;
-    }
-    if (!this.informe.codigoPostal || this.informe.codigoPostal == "") {
-      this.mensajeError = "No completo el codigo postal.";
-      return true;
-    }
     if (
-      !this.informe.localidadId ||
-      this.informe.localidadId == null ||
-      this.informe.localidadId == 0
+      this.cartaPresentacion.vendedorDomicilioFiscal == "" ||
+      !this.cartaPresentacion.vendedorDomicilioFiscal
     ) {
-      this.mensajeError =
-        "No completo la Localidad en Domicilio Actividad.";
+      this.mensajeError = "No completo el domicilio fiscal.";
       return true;
     }
+
     if (
-      !this.informe.ContactoComercial.Apellido ||
-      this.informe.ContactoComercial.Apellido == ""
+      this.cartaPresentacion.vendedorMailContacto == "" ||
+      !this.cartaPresentacion.vendedorMailContacto
     ) {
-      this.mensajeError = "No completo el Apellido del contacto.";
+      this.mensajeError = "No completo el mail de contacto.";
       return true;
     }
+
     if (
-      !this.informe.ContactoComercial.Nombres ||
-      this.informe.ContactoComercial.Nombres == ""
+      this.cartaPresentacion.vendedorTelefonoContacto == "" ||
+      !this.cartaPresentacion.vendedorTelefonoContacto
     ) {
-      this.mensajeError = "No completo el Nombre del contacto.";
+      this.mensajeError = "No completo el teléfono de contacto.";
       return true;
     }
+
     if (
-      !this.informe.ContactoComercial.Puesto ||
-      this.informe.ContactoComercial.Puesto == ""
+      this.cartaPresentacion.campaniaID == 0 ||
+      !this.cartaPresentacion.campaniaID
     ) {
-      this.mensajeError = "No completo el Puesto del contacto.";
-      return true;
-    }
-    if (
-      !this.informe.ContactoComercial.Telefono1 ||
-      this.informe.ContactoComercial.Telefono1 == ""
-    ) {
-      this.mensajeError = "No completo el Telefono del contacto.";
-      return true;
-    }
-    if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
       this.mensajeError = "No completo la Campaña Actual.";
       return true;
     }
+
     var filaError = 0;
 
-    for (const item of this.informe.NuevosCampos) {
+    for (const item of this.cartaPresentacion.nuevosCampos) {
       filaError++;
       if (item.MaterialId == null || item.MaterialId == 0) {
         this.mensajeError = `Debe completar el grano en la fila ${filaError} de capacidad productiva.`;
@@ -277,6 +304,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
         this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
         return true;
       }
+
 
       if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e")) {
         this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
@@ -292,7 +320,6 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
         this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
         return true;
       }
-
       if (item.ArrendaPropia == null) {
         this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad productiva.`;
         return true;
@@ -300,23 +327,21 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     }
 
     filaError = 0;
-    this.informe.NuevosAcopios = this.informe.NuevosAcopios.filter(item => (
+    this.cartaPresentacion.nuevosAcopios = this.cartaPresentacion.nuevosAcopios.filter(item => (
       (item.LocalidadID == null || item.LocalidadID == 0) && (item.Toneladas == null || item.Toneladas == 0)) == false);
 
-    for (const item of this.informe.NuevosAcopios) {
-      filaError++;
+    for (const item of this.cartaPresentacion.nuevosAcopios) {
       if (item.LocalidadID == null || item.LocalidadID == 0) {
         this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad planta.`;
         return true;
       }
-
       if (item.Toneladas == null || item.Toneladas == 0) {
-        this.mensajeError = `Debe completar las Toneladas en la fila ${filaError} de capacidad planta.`;
+        this.mensajeError = `Debe completar las Toneladas en la fila ${filaError}  de capacidad planta.`;
         return true;
       }
 
       if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) {
-        this.mensajeError = `Las toneladas deben ser un número entero en ${filaError} de capacidad productiva.`;
+        this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad planta.`;
         return true;
       }
 
@@ -326,68 +351,5 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
       }
     }
     return false;
-  }
-
-
-  generarInformeComercial() {
-    this.spinnerModal.showIt();
-    this.unsubscribe();
-    this.informe.NuevosAcopios.forEach((campo) => {
-      campo.CampaniaID = this.campaniaActual;
-    });
-    this.informe.NuevosCampos.forEach((campo) => {
-      campo.CampaniaId = this.campaniaActual;
-    });
-    this.informe.CampaniaId = this.campaniaActual;
-    for (const item of this.listaCampanias) {
-      if (item.CampaniaIdActual == this.campaniaActual) {
-        this.informe.Campania = item.CampaniaActual;
-      }
-    }
-
-    if (this.validarInforme()) {
-      this.spinnerModal.hideIt();
-      return;
-    }
-
-    this.mensajeError = "";
-    this.subscription = this.service
-      .generarInformeComercial(this.informe, this.proveedorId)
-      .subscribe(
-        (result) => {
-          this.spinnerModal.hideIt();
-          if (result.error) {
-            this.mensajeError = result.error;
-          } else {
-            var byteArray = new Uint8Array(result.data);
-            var blob = new Blob([byteArray], {
-              type: "application/pdf",
-            });
-            if (window.navigator.msSaveOrOpenBlob) {
-              // IE11
-              window.navigator.msSaveOrOpenBlob(
-                blob,
-                "Informe comercial" + ".pdf"
-              );
-            } else {
-              var url = window.URL.createObjectURL(blob);
-              var link = document.createElement("a");
-              document.body.appendChild(link);
-              link.href = url;
-              link.download = "Informe comercial" + ".pdf";
-              link.click();
-              setTimeout(function () {
-                window.URL.revokeObjectURL(url);
-              }, 0);
-
-              return false;
-            }
-          }
-        },
-        (error) => {
-          this.spinnerModal.hideIt();
-          this.mensajeError = error.message;
-        }
-      );
   }
 }

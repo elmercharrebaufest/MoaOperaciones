@@ -6,7 +6,6 @@
 </label>
 
 
-
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
   style="background-color: rgba(0, 0, 0, 0.5);">
   <div class="modal-dialog modal-lg" role="document">
@@ -53,17 +52,19 @@
                     style="font-weight: 100 !important;">
 
                   <div>
-                    <div class="col-md-10 ng-autocomplete">
-                      <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
-                        (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
-                        (inputChanged)='onChangeSearchInforme($event)' (inputFocused)='selectEventInforme($event)'
-                        [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'"
-                        [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
-                        [notFoundTemplate]="notFoundTemplate">
-                      </ng-autocomplete>
-                    </div>
-                    <div class="col-md-2">
-                      <span class="requerido">*</span>
+                    <div>
+                      <div class="col-md-10 ng-autocomplete">
+                        <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
+                          (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
+                          (inputChanged)='onChangeSearchInforme($event)' (inputFocused)='selectEventInforme($event)'
+                          [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'"
+                          [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
+                          [notFoundTemplate]="notFoundTemplate">
+                        </ng-autocomplete>
+                      </div>
+                      <div class="col-md-2">
+                        <span class="requerido">*</span>
+                      </div>
                     </div>
                   </div>
 
@@ -201,11 +202,11 @@
                       </div>
                     </td>
                     <td>
-                      <div>
-                        <input [(ngModel)]="field.LocalidadId" type="hidden" id="localidad_{{i}}">
+                      <input [(ngModel)]="field.LocalidadId" type="hidden" id="localidad_{{i}}">
 
+                      <div>
                         <div>
-                          <div class="col-md-10 ng-autocomplete">
+                          <div class="ng-autocomplete col-md-10">
                             <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
                               (selected)='selectEventProduccion($event, i)' [(ngModel)]="field.Localidad"
                               (inputChanged)='onChangeSearchProduccion($event)'

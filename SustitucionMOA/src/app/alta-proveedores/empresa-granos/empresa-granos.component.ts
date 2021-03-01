@@ -20,7 +20,6 @@ import { RelacionConEmpleados } from "../../common/models//RelacionConEmpleados"
 import { RelacionConFuncionarios } from "../../common/models/relacionConFuncionarios";
 import { forEach } from "@angular/router/src/utils/collection";
 import { CartaPresentacion } from "../../common/models/cartaPresentacion";
-import { InformeComercialComponent } from "../informe-comercial/informe-comercial.component";
 
 @Component({
     selector: "app-empresa-granos",
@@ -128,7 +127,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.esCorredor = sessionStorage.getItem("tipoUsuario") === "CORR";
+        this.esCorredor = sessionStorage.getItem("tipoUsuario") != "CORR";
 
         this.esMultiFirma = this.securityService.tienePermiso(
             "CONSULTAR VENDEDOR PENDIENTES"
