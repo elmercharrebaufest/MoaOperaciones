@@ -142,7 +142,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([]);
 
-        this.obtenerCampanias();
+        //this.obtenerCampanias();
         this.obtenerArchivosSubidos();
         this.cargarSolicitudUsuario();
         this.obtenerInfoProveedor();
@@ -300,27 +300,27 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         );
     }
 
-    obtenerCampanias() {
-        this.subscription = this.service.obtenerCampanias().subscribe(
-            (result) => {
-                let obj = result;
-                this.listaCampanias = new Array();
-                obj.forEach((element) => {
-                    let cam = {
-                        CampaniaActual: element.Descripcion,
-                        CampaniaIdActual: element.CampaniaId,
-                    };
-                    this.listaCampanias.push(cam);
-                });
+    // obtenerCampanias() {
+    //     this.subscription = this.service.obtenerCampanias().subscribe(
+    //         (result) => {
+    //             let obj = result;
+    //             this.listaCampanias = new Array();
+    //             obj.forEach((element) => {
+    //                 let cam = {
+    //                     CampaniaActual: element.Descripcion,
+    //                     CampaniaIdActual: element.CampaniaId,
+    //                 };
+    //                 this.listaCampanias.push(cam);
+    //             });
 
-                this.obtenerMateriales();
+    //             this.obtenerMateriales();
 
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-    }
+    //         },
+    //         (error) => {
+    //             this.mensajeComponent.setErrorMsg(error.message);
+    //         }
+    //     );
+    // }
 
     obtenerInfoProveedor() {
         this.subscription = this.service

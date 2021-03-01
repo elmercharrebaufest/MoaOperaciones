@@ -6,7 +6,7 @@
 </label>
 
 
-<button type="button" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal">test</button>
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
   style="background-color: rgba(0, 0, 0, 0.5);">
   <div class="modal-dialog modal-lg" role="document">
@@ -18,7 +18,6 @@
         <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
       </div>
       <div class="modal-body">
-        <spinner-small #spinnerModal></spinner-small>
         <div class="tab-pane container-fluid" id="tab2">
           <div class="formulario col-xs-12 col-md-12">
             <div class="titulo">
@@ -55,10 +54,11 @@
 
                   <div>
                     <div class="col-md-10 ng-autocomplete">
-                      <ng-autocomplete [data]="data" [searchKeyword]="keyword" (selected)='selectEventInforme($event)'
-                        [(ngModel)]="informe.localidad" (inputChanged)='onChangeSearchInforme($event)'
-                        (inputFocused)='selectEventInforme($event)' [itemTemplate]="itemTemplate"
-                        [placeHolder]="'Localidad'" [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
+                      <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
+                        (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
+                        (inputChanged)='onChangeSearchInforme($event)' (inputFocused)='selectEventInforme($event)'
+                        [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'"
+                        [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
                         [notFoundTemplate]="notFoundTemplate">
                       </ng-autocomplete>
                     </div>
@@ -206,7 +206,7 @@
 
                         <div>
                           <div class="col-md-10 ng-autocomplete">
-                            <ng-autocomplete [data]="data" [searchKeyword]="keyword"
+                            <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
                               (selected)='selectEventProduccion($event, i)' [(ngModel)]="field.Localidad"
                               (inputChanged)='onChangeSearchProduccion($event)'
                               (inputFocused)='selectEventProduccion($event)' [itemTemplate]="itemTemplate"
@@ -292,7 +292,7 @@
                         <div>
                           <div>
                             <div class="ng-autocomplete col-md-10">
-                              <ng-autocomplete [data]="data" [searchKeyword]="keyword"
+                              <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
                                 (selected)='selectEventAlmacenamiento($event, i)' [(ngModel)]="acopio.Localidad"
                                 (inputChanged)='onChangeSearchAlmacenamiento($event)'
                                 (inputFocused)='selectEventAlmacenamiento($event)' [itemTemplate]="itemTemplate"
@@ -359,6 +359,8 @@
               <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
             </div>
           </div>
+          <spinner-small #spinnerModal></spinner-small>
+
           <div class="formulario-input">
             <div class="col-md-3">
 

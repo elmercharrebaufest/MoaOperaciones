@@ -54,7 +54,7 @@ namespace SustitucionMOAUtils.Services
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
-                ValidarEstadoSolicitud(proveedor);
+                //ValidarEstadoSolicitud(proveedor);
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
@@ -132,7 +132,7 @@ namespace SustitucionMOAUtils.Services
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
                 cartadePresentacion.vendedorActividad = infoProveedor.ProveedorClasificacion;
 
-                ValidarEstadoSolicitud(proveedor);
+                //ValidarEstadoSolicitud(proveedor);
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();

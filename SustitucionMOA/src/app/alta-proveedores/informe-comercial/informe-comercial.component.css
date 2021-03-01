@@ -216,7 +216,6 @@ p {
 
 #myModal, #modalCartaPresentacion {
     overflow: scroll !important;
-    bottom: -85px !important;
     margin-top: 0;
 }
 
@@ -444,7 +443,7 @@ input::-webkit-inner-spin-button {
   padding-right: 0px!important;
 }
 
-::ng-deep .autocomplete-container {
+.autocomplete-container {
    font-family: "Roboto Condensed", Arial, sans-serif !important;
   border: 1px solid #DDDDDD !important;
   border-radius: 4px !important;
@@ -457,5 +456,7 @@ input::-webkit-inner-spin-button {
 }
 
 .autocomplete-container .input-container input {
+  color: #818A91!important;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: normal;
 }

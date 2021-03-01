@@ -71,7 +71,7 @@ export class AppComponent {
                     if (result.error != undefined && result.error != "") {
                         alert(result.error);
                         window.location.href = window.location.origin + '/SignOut';
-                    } 
+                    }
                     else {
                         this.loginUser(result);
                     }
@@ -103,7 +103,7 @@ export class AppComponent {
 
 
         //this.navService.navegarSeccion("notificaciones/alta");
-        this.navService.navegarSeccion(result.redirectURL);
+        //this.navService.navegarSeccion(result.redirectURL);
 
         //La URL a donde direccionamos ahora la traemos del controller. Esto es para no tener que estan pasando tantas variables que no nos interesan acá
         //if (result.esNuevoUsuario) {
