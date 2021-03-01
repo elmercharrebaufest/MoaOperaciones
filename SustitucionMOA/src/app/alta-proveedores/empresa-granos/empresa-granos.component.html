@@ -7,13 +7,13 @@
 
             <div>
                 <div class="col-xs-12 col-sm-6">
-                    <div class="step-container shadow" name="Step 1" label="Informe comercial" [hidden]="esCorredor">
+                    <div class="step-container shadow" name="Step 1" label="Informe comercial" *ngIf="!esCorredor">
                         <div class="col-xs-12 col-md-12 step-container-header">
                             Informe comercial
                         </div>
                         <div class="container-fluid">
                             <div class="col-xs-12">
-                                <app-informe-comercial [proveedorId]="proveedorId">
+                                <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'link'">
                                 </app-informe-comercial>
                             </div>
                             <div class="col-xs-12">
@@ -49,15 +49,15 @@
                         </div>
                     </div>
 
-                    <div class="step-container shadow" name="Step 1" label="Carta de presentación"
-                        [hidden]="!esCorredor">
+                    <div class="step-container shadow" name="Step 1" label="Carta de presentación" *ngIf="esCorredor">
                         <div class="col-xs-12 col-md-12 step-container-header">
                             Carta de presentación
                         </div>
                         <div class="container-fluid">
                             <div class="col-xs-12">
 
-                                <app-carta-presentacion [proveedorId]="proveedorId"></app-carta-presentacion>
+                                <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'link'">
+                                </app-carta-presentacion>
                             </div>
                             <div class="col-xs-12">
                                 <label class="informe-firmado label" for="cartaDePresentacionFirmada">

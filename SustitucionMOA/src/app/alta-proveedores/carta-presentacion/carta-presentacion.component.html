@@ -1,11 +1,14 @@
-<label>
+<label *ngIf="displayType==='link'">
   <span id="openModalHiddenButtonCartaPresentacion" data-toggle="modal" data-target="#modalCartaPresentacion"
     class="link-adjuntar">
     Completar
   </span>
   la carta de presentación
 </label>
-
+<button *ngIf="displayType==='button'" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
+  data-target="#myModal" class="btn-custom btn-add btn-mediano">
+  Carta de presentación
+</button>
 
 
 <!-- Modal Carta presentacion-->
@@ -348,10 +351,24 @@
             <div class="formulario-input;">
               <spinner-small #spinnerCartaPresentacion></spinner-small>
             </div>
+
             <div class="formulario-input">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <a class="btn btn-primary" id="CartaPresentacionDescargar" (click)="generarCartaPresentacion()">Guardar y
-                Descargar</a>
+              <div class="col-md-3">
+
+              </div>
+              <div class="col-md-2">
+                <button type="button" class="btn-custom btn-cerrar btn-mediano" data-dismiss="modal">Cerrar</button>
+              </div>
+              <div class="col-md-1">
+
+              </div>
+              <div class="col-md-3">
+                <button class="btn-custom btn-guardar btn-grande" id="CartaPresentacionDescargar"
+                  (click)="generarCartaPresentacion()">Guardar y Descargar</button>
+              </div>
+              <div class="col-md-3">
+
+              </div>
             </div>
           </div>
         </div>

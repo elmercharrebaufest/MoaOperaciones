@@ -37,15 +37,9 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
   cartaPresentacion = new CartaPresentacion();
 
-  http: any;
-
   campaniaActual: number;
 
   materialesData: any = null;
-  CBUSISA: string = "";
-  proveedorCUIT: string = "";
-  razonSocial: string = "";
-  proveedorClasificacion: string = "";
 
   searchTerm: FormControl = new FormControl();
   myLocalidades = <any>[];
@@ -53,6 +47,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
   keyword = "Nombre";
   localidades: any = [];
   autocompleteNotFoundText = "No encontrado";
+  proveedorClasificacion: string = "";
 
   private nuevoAtributoCampo: NuevoProduccion = new NuevoProduccion();
   private nuevoAtributoAcompio: NuevoAcopio = new NuevoAcopio();
@@ -62,14 +57,11 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
   private selectUndefinedOptionValue: any;
 
-  esCorredor: boolean = false;
-
-  esMultiFirma: boolean = false;
-
   @ViewChild("spinnerModal")
   protected spinnerModal: SpinnerSmallComponent;
 
   @Input() proveedorId: number;
+  @Input() displayType: string;
 
 
   ngOnInit(): void {
@@ -172,6 +164,20 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
     this.cartaPresentacion.nuevosAcopios[index].LocalidadID =
       item.LocalidadId;
   }
+
+  obtenerInfoProveedor() {
+    this.subscription = this.service
+      .obtenerInfoProveedor(this.proveedorId)
+      .subscribe(
+        (result) => {
+          this.proveedorClasificacion = result.ProveedorClasificacion;
+        },
+        (error) => {
+          this.mensajeError = error.message;
+        }
+      );
+  }
+
 
   generarCartaPresentacion() {
     this.spinnerCartaPresentacion.showIt();

@@ -1,9 +1,13 @@
-<label>
+<label *ngIf="displayType==='link'">
   <span id="openModalHiddenButton" data-toggle="modal" data-target="#myModal" class="link-adjuntar">
     Completar
   </span>
   informe comercial
 </label>
+<button *ngIf="displayType==='button'" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
+  class="btn-custom btn-add btn-mediano">
+  Informe comercial
+</button>
 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"

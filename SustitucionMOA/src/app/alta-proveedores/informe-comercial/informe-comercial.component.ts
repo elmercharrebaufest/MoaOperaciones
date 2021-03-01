@@ -1,8 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { BaseComponent } from '../../common/base-components/base-component';
-import { Archivo } from '../../common/models/archivo';
-import { CartaPresentacion } from '../../common/models/cartaPresentacion';
 import { InformeComercial } from '../../common/models/informeComercial';
 import { Material } from '../../common/models/material';
 import { NuevoAcopio } from '../../common/models/nuevoAcopio';
@@ -13,7 +11,6 @@ import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
-import { AltaEmpresaService } from '../altas/altas.service';
 import { EmpresaGranosService } from '../empresa-granos/empresa-granos.service';
 
 @Component({
@@ -40,33 +37,22 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
   data = [];
   dataLocalidades = [];
 
-  cartaPresentacion = new CartaPresentacion();
-
   http: any;
 
   campaniaActual: number;
 
   materialesData: any = null;
-  CBUSISA: string = "";
-  proveedorCUIT: string = "";
-  razonSocial: string = "";
-  proveedorClasificacion: string = "";
 
   searchTerm: FormControl = new FormControl();
   myLocalidades = <any>[];
-  tryDoctype: string = "";
   keyword = "Nombre";
   localidades: any = [];
   autocompleteNotFoundText = "No encontrado";
 
   private selectUndefinedOptionValue: any;
 
-  esCorredor: boolean = false;
-
-  esMultiFirma: boolean = false;
-
   @Input() proveedorId: number;
-
+  @Input() displayType: string;
 
   ngOnInit(): void {
     this.navService.setSeccionList([]);
@@ -92,7 +78,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
       (result) => {
         let obj = result;
         this.listaCampanias = new Array();
-        obj.forEach((element) => {
+        obj.forEach((element: { Descripcion: any; CampaniaId: any; }) => {
           let cam = {
             CampaniaActual: element.Descripcion,
             CampaniaIdActual: element.CampaniaId,
@@ -109,11 +95,11 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     );
   }
 
-  selectEventProduccion(item, index) {
+  selectEventProduccion(item: { LocalidadId: number; }, index: string | number) {
     this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
   }
 
-  selectEventAlmacenamiento(item, index) {
+  selectEventAlmacenamiento(item: { LocalidadId: number; }, index: string | number) {
     this.informe.NuevosAcopios[index].LocalidadID = item.LocalidadId;
   }
 
@@ -124,7 +110,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
       (result) => {
         let obj = JSON.parse(result);
         // this.listaCampanias = new Array();
-        obj.Datos.forEach((element) => {
+        obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
           let mat = new Material();
           mat.Id = element.MaterialId;
           mat.Descripcion = element.Descripcion;
@@ -184,25 +170,16 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     }
   }
 
-  selectEventInforme(item) {
+  selectEventInforme(item: { LocalidadId: number; }) {
     this.informe.localidadId = item.LocalidadId;
   }
 
-  selectEventCampoCartaPresentacion(item, index) {
-    this.cartaPresentacion.nuevosCampos[index].LocalidadId =
-      item.LocalidadId;
-  }
-
-  selectEventAcopioCartaPresentacion(item, index) {
-    this.cartaPresentacion.nuevosAcopios[index].LocalidadID =
-      item.LocalidadId;
-  }
   addFieldValue() {
     this.informe.NuevosCampos.push(this.newAttribute);
     this.newAttribute = new NuevoProduccion();
   }
 
-  deleteFieldValue(index) {
+  deleteFieldValue(index: number) {
     this.informe.NuevosCampos.splice(index, 1);
   }
 
@@ -211,7 +188,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
     this.newAttributeAlm = new NuevoAcopio();
   }
 
-  deleteFieldValueAlm(index) {
+  deleteFieldValueAlm(index: number) {
     this.informe.NuevosAcopios.splice(index, 1);
   }
 
