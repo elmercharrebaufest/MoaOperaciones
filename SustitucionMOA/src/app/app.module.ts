@@ -54,6 +54,8 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
 import { BlockUIModule } from 'ng-block-ui';
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
 import { ConsultaService } from "./consulta/consulta.service";
+import { InformeComercialComponent } from './alta-proveedores/informe-comercial/informe-comercial.component';
+import { CartaPresentacionComponent } from './alta-proveedores/carta-presentacion/carta-presentacion.component';
 
 @NgModule({
   imports: [
@@ -92,8 +94,9 @@ import { ConsultaService } from "./consulta/consulta.service";
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-    ConsultaBaseComponent
-  ],
+    ConsultaBaseComponent,
+    InformeComercialComponent,
+    CartaPresentacionComponent],
   providers: [
     DatePipe,
     SessionDataService,
@@ -116,4 +119,4 @@ import { ConsultaService } from "./consulta/consulta.service";
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
-export class AppModule {}
+export class AppModule { }
