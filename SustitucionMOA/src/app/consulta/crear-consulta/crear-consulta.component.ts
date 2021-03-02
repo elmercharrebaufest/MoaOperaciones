@@ -15,7 +15,7 @@ import { ModalService } from './../../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { Comentario, Categoria, Subcategoria } from '../consulta';
-
+import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 
 declare var $: any;
 
@@ -54,6 +54,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     nombre: string;
     email: string;
     telefono: string;
+    proveedorId = 24760;
 
     categorias: Categoria[];
     subcategorias: Subcategoria[];

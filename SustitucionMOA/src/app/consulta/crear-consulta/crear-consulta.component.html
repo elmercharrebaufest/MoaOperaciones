@@ -100,6 +100,18 @@
 
                     </div>
 
+                    <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.categoriaCode != 'ACT'">
+                        
+                        <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'link'">
+                            
+                        </app-informe-comercial>
+
+                        <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
+                            Donde esta esto ?
+                        </app-carta-presentacion>
+
+                    </div>
+
 
                     <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
                         <p class="crearConsultaTitulos">

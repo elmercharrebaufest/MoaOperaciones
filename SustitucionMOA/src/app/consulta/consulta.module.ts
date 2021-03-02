@@ -17,6 +17,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SpinnerModule } from 'primeng/spinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { InformeComercialComponent } from '../alta-proveedores/informe-comercial/informe-comercial.component';
 
 @NgModule({
   imports: [
