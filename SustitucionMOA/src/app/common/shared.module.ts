@@ -18,11 +18,20 @@ import { ShortenStringPipe } from "./pipes/shortenString";
 import { BaseComponent } from './base-components/base-component';
 import { ListBaseComponent } from './base-components/list-base-component';
 import { ArchivoPipe } from './pipes/archivos.pipe';
+import { InformeComercialComponent } from '../alta-proveedores/informe-comercial/informe-comercial.component';
+import { CartaPresentacionComponent } from '../alta-proveedores/carta-presentacion/carta-presentacion.component';
+import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
+import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 
 @NgModule({
-    imports: [CommonModule, FormsModule],
-    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
+    imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
+        AutocompleteLibModule,],
+    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
+        InformeComercialComponent,
+        CartaPresentacionComponent],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        CommonModule, FormsModule]
+        CommonModule, FormsModule, InformeComercialComponent,
+        CartaPresentacionComponent, Ng2AutoCompleteModule,
+        AutocompleteLibModule,]
 })
 export class SharedModule { }
