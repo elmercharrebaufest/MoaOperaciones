@@ -14,7 +14,7 @@ import { Seccion } from './../../common/models/Seccion';
 import { ModalService } from './../../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Comentario, Categoria, Subcategoria } from '../consulta';
+import { Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 
 declare var $: any;
@@ -46,6 +46,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
+        
+        this.proveedor = sessionStorage.getItem("proveedor");
+    
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
@@ -56,8 +59,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
     telefono: string;
     proveedorId = 24760;
 
+    consulta: any;
+
     categorias: Categoria[];
     subcategorias: Subcategoria[];
+
+    codigoCorredor: any;
+    codigoProveedor: any;
+    razonSocialProveedor: string;
+    razonSocialCorredor: string;
 
     subcategoria: Subcategoria;
     subcategoriasList: Subcategoria[];
@@ -83,6 +93,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     categoriaSelected: any;
     captchaOk: any = null;
     asunto: string;
+    salidaDePago: any;
 
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
@@ -112,31 +123,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 minView: 2,
                 maxView: 4
             });
-        });
-
-        this.obtenerSubcategoria();
-    }
-
-    obtenerSubcategoria(){
-        $("#categoriaSelect").change(function() {
-            var id = $("#categoriaSelect").children("option:selected").val();
-
-            this.categoriaOptions = this.getCategorias();
-            //this.categoriaSelected = this.categoriaOptions.filter(x => x.Id == id)[0];
-            this.categoriaOptions.forEach(x => {
-                if(x.Id == id){
-                    this.categoriaSelected = x;
-                }
-            });
-
-            if (this.categoriaSelected != null) {
-                if (this.categoriaSelected.camposAdicionales === "A"){
-                    this.camposAdicionales = true;
-                } else {
-                    this.camposAdicionales = false;
-                    this.vaciarCamposAdicionales();
-                }
-            }
         });
     }
 
@@ -202,6 +188,24 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    postConsulta(){
+        if(this.proveedor[0] == 'c'){
+            this.codigoCorredor = this.proveedor;
+            this.codigoProveedor = null;
+            this.razonSocialCorredor = this.nombre;
+            this.razonSocialProveedor = null;
+        }
+        else{
+            this.codigoProveedor = this.proveedor;
+            this.codigoCorredor = null;
+            this.razonSocialCorredor = null;
+            this.razonSocialProveedor = this.nombre;
+        }
+
+        this.consulta = {CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor, 
+            CodigoProveedor: this.codigoProveedor, RazonSocialProveedor: this.razonSocialProveedor}
     }
 
     setSubcategorias(categoria){
