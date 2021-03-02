@@ -3830,7 +3830,7 @@ div.panel-body a.active{
   letter-spacing: 0px;
   color: #F4F4F4;
 }
-.comentarioPropio{
+.comentarioRespuesta{
   background: #FAFAFA 0% 0% no-repeat padding-box;
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 4px;
@@ -3846,7 +3846,7 @@ div.panel-body a.active{
   color: #707070;
   opacity: 1;
 }
-.comentarioRespuesta{
+.comentarioPropio{
   background: #009688 0% 0% no-repeat padding-box;
   box-shadow: 0px 3px 6px #00000029;
   border-radius: 4px;
@@ -3910,10 +3910,18 @@ div.panel-body a.active{
   margin-right: 5px;
   margin-bottom: 5px;
 }
-.widthAutoConsulta{
+.widthAutoConsultaPropio{
   width: auto;
   max-width: 58.33333333%;
   padding-bottom: 7px;
+  float: right; 
+  right: -10px;
+}
+.widthAutoConsultaRespuesta{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  right: 10px;
 }
 .archivosDetallePropio {
   text-align: left;
@@ -4002,5 +4010,7 @@ div.panel-body a.active{
   align-items: center;
   justify-content: center;
 }
-
+p-dropdown>div {
+  width: 100% !important;
+}
  

@@ -13,7 +13,8 @@ import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { BaseComponent } from '../../common/base-components/base-component';
-import { Comentario, Categoria, EstadoConsulta, Subcategoria } from '../consulta';
+import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta } from '../consulta';
+import { SelectItem } from 'primeng/components/common/selectitem';
 
 declare var $: any;
 
@@ -40,6 +41,9 @@ export class DetalleConsultaComponent extends BaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    @ViewChild("detalleConsulta")
+    protected detalleConsulta: ElementRef;
+
     constructor(private route: ActivatedRoute, protected service: ConsultaService, protected navService: NavService,
         protected securityService: SecurityService,
         protected sessionDataService: SessionDataService,
@@ -54,14 +58,15 @@ export class DetalleConsultaComponent extends BaseComponent {
     categorias: Categoria[];
     subcategorias: Subcategoria[];
     
-    categoriasList: any;
-    subcategoriasList: Subcategoria[];
+    subcategoriasList: SelectItem[];
+    estadosList: SelectItem[];
+    categoriasList: SelectItem[];
 
     subcategoriaId: any;
     estadoId: number;
     categoriaId: number;
 
-    consulta: any;
+    consulta: Consulta;
     comentariosList: any;
     estadoConsulta: number;
     consultaId: string;
@@ -70,7 +75,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     hora: any;
     username = sessionStorage.getItem("userName");
     detalle: string = "";
-    hola = true;
+    esInterno = this.isAuthorized('CONSULTA ABM');
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -86,19 +91,16 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.getConsultaId();
         this.getDetalleConsulta();
         this.getCombos();
-        this.obtenerSubcategoria();
     }
 
     ngAfterViewInit(): void {
-        this.obtenerSubcategoria();
-        this.selectSubcategorias();
         this.scrollBottom();
+        this.subcategoriasInicial();
     }
 
     scrollBottom(){
-        var objDiv = document.getElementById("detalleConsulta");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    }
+        this.detalleConsulta.nativeElement.scrollTop = this.detalleConsulta.nativeElement.scrollHeight;
+        }
 
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);
@@ -116,18 +118,16 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
     }
 
+    comentarioPropio(comentario){
+        return ((this.consulta.UsuarioId == comentario.UsuarioId && this.consulta.UsuarioId == this.consulta.UsuarioActualId) ||
+        (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno))
+    }
+
     actualizarCombos() {           
         this.spinnerSmallComponent.showIt();
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        
-        this.categoriaId = $("#categoriaSelect").children("option:selected").val();
-        this.estadoId = $("#estadoSelect").children("option:selected").val();      
-        if($("#subcategoriaSelect").children("option:selected").attr('id') != null)
-            this.subcategoriaId = $("#subcategoriaSelect").children("option:selected").attr('id');
-        else
-            this.subcategoriaId = null;
-
+        debugger;
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId).subscribe(
             result => {
                 this.spinnerComponent.hideIt();
@@ -150,36 +150,30 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     postArchivos(comentarioId: number){
-        this.subscription = this.service.adjuntar(this.file, this.consultaId, comentarioId).subscribe(
-            result => {
-                this.spinnerModal.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                },
-                error => {
+        if(this.file){
+            this.subscription = this.service.adjuntar(this.file, this.consultaId, comentarioId).subscribe(
+                result => {
                     this.spinnerModal.hideIt();
-                }
-            );
-    }
-
-    postComentarioyScroll(){
-        this.postComentario();
-        setTimeout(() => {  this.scrollBottom(); }, 1000);
-        this.file = null;
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        }
+                    },
+                    error => {
+                        this.spinnerModal.hideIt();
+                    }
+                );
+        }
     }
 
     postComentario(){
+        this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
         this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
             result => {
-                this.postArchivos(result.Id);
-                this.getDetalleConsulta();
-                this.spinnerModal.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -187,20 +181,18 @@ export class DetalleConsultaComponent extends BaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     }
-                    else{       
-                        this.mensajeComponent.setSuccessMsg(result.data);
+                    else{      
+                        this.postArchivos(result.Id);
+                        setTimeout(() => {  this.getDetalleConsulta(); }, 300);
+                        this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                        this.detalle = "";
+                        this.file = null;
                     }
                 },
                 error => {
                     this.spinnerModal.hideIt();
                 }
             );
-        this.detalle = "";
-    }
-
-    selectSubcategorias(){
-        var id = $("#categoriaSelect").children("option:selected").val();
-        $("#categoriaSelect").val(id).change();  
     }
 
     descargarArchivo(archivoId: number) {
@@ -255,8 +247,14 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.categorias = result.categorias;
+                        this.categoriasList = [];
+                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id}));
                         this.estados = result.estados;
+                        this.estadosList = [];
+                        this.estados.forEach(x => this.estadosList.push({ label: x.Descripcion, value: x.Id}));
                         this.subcategorias = result.subcategorias;
+                        this.subcategoriasList = [];
+                        this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
                     }
                 },
                 error => {
@@ -275,20 +273,27 @@ export class DetalleConsultaComponent extends BaseComponent {
     getDetalleConsulta(){
         this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
             result => {
-                this.consulta = result;
-                this.consulta.Comentarios.forEach(x => {
-                    x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
-                    x.Fecha = this.convertDate(x.Fecha);
-                });
-                this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
-                this.consulta.FechaCreacion = this.convertDate(this.consulta.FechaCreacion).substring(0, 10);
-                this.spinnerModal.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else {
+                        this.consulta = result;
+                        this.consulta.Comentarios.forEach(x => {
+                            x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
+                        });
+                        this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
+                        this.estadoId = result.EstadoConsultaId;
+                        this.categoriaId = result.CategoriaId;
+                        this.subcategoriaId = result.SubCategoriaId;
+                        try{
+                            setTimeout(() => {  this.scrollBottom(); }, 200);
+                        }
+                        catch{
+                        }
                     }
                 },
                 error => {
@@ -297,15 +302,26 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
-    obtenerSubcategoria(){
-        $("#categoriaSelect").change(function() {
-            if ($(this).data('options') === undefined) {
-              $(this).data('options', $('#subcategoriaSelect option').clone());
+    subcategoriasInicial(){
+        this.subcategoriasList = [];
+        this.subcategorias.forEach(x => {
+            if(x.CategoriaId == this.categoriaId){
+                this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
             }
-            var id = $("#categoriaSelect").children("option:selected").val();
-            var options = $(this).data('options').filter('[value=' + id + ']');
-            $('#subcategoriaSelect').html(options);
         });
+    }
+
+    setSubcategorias(categoriasSeleccionadas){
+        if(this.subcategorias){
+            this.subcategoriasList = [];
+            //this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.map(y=> y.Id).includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+            this.subcategorias.forEach(x => {
+                if(x.CategoriaId == categoriasSeleccionadas){
+                    this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
+                }
+            });
+        }
+        return this.subcategoriasList;
     }
 
     jqueryOnInit(){
@@ -318,7 +334,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         $(".archivosDescarga").click(function(e) {
             e.preventDefault();
         });
-        $("#botonActualizarCombos").click(function(e) {
+        $(".botonActualizarCombos").click(function(e) {
             e.preventDefault();
         });
     }

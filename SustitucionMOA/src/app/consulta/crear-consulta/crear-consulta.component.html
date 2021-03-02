@@ -16,11 +16,18 @@
                             <input type="search" [(ngModel)]="proveedor" class="fourRounded" placeholder="Proveedor*" aria-controls="tableModal">
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="col-xs-12 col-sm-3 col-md-3">
                         <p class="crearConsultaTitulos">Categor&iacute;a</p>
-                        <div class="styled-select perfiles-select">
-                            <dropdown #dropdown_categoria [tipoDropdown]="'selectInput'" (select)="setCategoria($event)" [options]="categoriaOptions"></dropdown>
-                        </div>
+                        <p-dropdown [options]="categorias" optionLabel="Nombre" dataKey="Id" [(ngModel)]="categoria"
+                         [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir Categoria"
+                        (onChange)="setSubcategorias($event.value)">
+                        </p-dropdown>
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-md-3">
+                        <p class="crearConsultaTitulos">SubCategor&iacute;a</p>
+                        <p-dropdown [options]="subcategoriasList" optionLabel="Nombre" dataKey="Id" [(ngModel)]="subcategoria"
+                         [maxSelectedLabels]="1" autoWidth="false" placeholder="Elegir SubCategoria" (onChange)="setCodeSubcategoria($event.value)">
+                        </p-dropdown>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <p class="crearConsultaTitulos">Asunto</p>
@@ -51,6 +58,49 @@
                     <div class="col-xs-12 col-sm-12 col-md-6">
                         <textarea type="search" [(ngModel)]="comentario" class="fourRounded crearConsultaComentario" placeholder="Comentarios" aria-controls="tableModal" rows="8"></textarea>
                     </div>
+
+
+                    <!-- Expanded para Reclamo Impositivo - Retenciones -->
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET'">
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Fecha Pago</p>
+                            <div class="styled-select">
+                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                                    <input type="text" id="noCursor" readonly />
+                                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                </div>
+                                <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;" required/>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Contrato/N° de factura
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Impuesto retenido</p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Importe retención</p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="importe" name="importe" class="fourRounded" placeholder="Importe*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
                     <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
                         <p class="crearConsultaTitulos">
                         Raz&oacute;n Social

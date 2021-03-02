@@ -8,82 +8,58 @@
     </section>
     <mensaje></mensaje>
     <spinner></spinner>
-    <div class="row myRow firstSection" style="overflow: hidden" id="detalleConsulta1">
-        <div class="detalleConsulta shadow col-xs-12 col-sm-6" id="detalleConsulta">
+    <div class="row myRow firstSection" style="overflow: hidden">
+        <div class="detalleConsulta shadow col-xs-12 col-sm-6" #detalleConsulta>
             <div *ngFor="let comentario of consulta.Comentarios, let i = index">
-                <div *ngIf="consulta.UsuarioActualId != comentario.UsuarioId">
-                    <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
+                <div>
+                    <!--<div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
                         <p class="fechaComentarioTexto">
-                            {{(comentario.Fecha).substring(0, 10)}}
+                            {{comentario.Fecha | date:'dd/MM/yyyy'}}
                         </p>
-                    </div>
+                    </div>-->
                     <div class="row myRow">
-                        <div class="comentarioPropio col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
+                        <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
+                        class="col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
                             {{comentario.Detalle}}
                         </div>
                     </div>
-                    <div class="widthAutoConsulta col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0" style="right: 10px;">
+                    <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
+                    class="col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0">
                         <ng-container *ngFor="let Archivo of comentario.Archivos">
                             <a class="archivosDescarga" (click)="descargarArchivo(Archivo.Id)"
                                     style="text-decoration:none!important">
-                                <div class="archivosDetalle">
+                                <div [ngClass]="comentarioPropio(comentario) ? 'archivosDetallePropio' : 'archivosDetalle' ">
                                     <p><i class="fa fa-file" aria-hidden="true"></i>{{Archivo.Nombre}}</p>
                                 </div>
                             </a>
                         </ng-container>
                     </div>
-                    <p class="col-xs-12 col-sm-12 col-md-12">
-                        {{(comentario.Fecha).substring(11, 16)}}
-                    </p>
-                </div>
-
-                <div *ngIf="consulta.UsuarioActualId == comentario.UsuarioId">
-                    <div class="col-xs-12 col-sm-6 col-md-12">
-                        <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
-                            <p class="fechaComentarioTexto">
-                                {{(comentario.Fecha).substring(0, 10)}}
-                            </p>
-                        </div>
-                    </div>
-                    <div class="row myRow">
-                        <div class="comentarioRespuesta col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
-                            {{comentario.Detalle}}
-                        </div>
-                    </div>
-                    <div class="widthAutoConsulta col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0" style="float: right; right: -10px;">
-                        <ng-container *ngFor="let Archivo of comentario.Archivos">
-                            <a class="archivosDescarga" (click)="descargarArchivo(Archivo.Id)"
-                                    style="text-decoration:none!important">
-                                <div class="archivosDetallePropio">
-                                    <p><i class="fa fa-file" aria-hidden="true"></i>{{Archivo.Nombre}}</p>
-                                </div>
-                            </a>
-                        </ng-container>
-                    </div>
-                    <p class="horaComentarioRespuesta col-xs-12 col-sm-12 col-md-12">
-                        {{(comentario.Fecha).substring(11, 16)}}
+                    <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                    class="col-xs-12 col-sm-12 col-md-12">
+                        {{comentario.Fecha | date:'hh:mm'}}
                     </p>
                 </div>
             </div>
+
         </div>
 
         <!--AÑANDIR COMENTARIO-->
         <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6" id="contenedorNuevoComentario">
             <hr>
             <div class="col-xs-12 col-sm-12 col-md-9">
-                <textarea [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))"
+                <textarea [disabled]="((this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno))"
                  type="search" [(ngModel)]="this.detalle" [value]=""
                 class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <input [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))"
+                <input [disabled]="(this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno)"
                  class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
-                <input [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))"
+                <input [disabled]="(this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno)"
                  class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <button [disabled]="(this.consulta.EstadoConsultaId == 1 && !isAuthorized('CONSULTA ABM')) || (this.consulta.EstadoConsultaId == 3 && !isAuthorized('CONSULTA ABM'))" 
-                (click)="postComentarioyScroll()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+                <button [disabled]="((this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno))" 
+                (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
             </div>
@@ -93,46 +69,32 @@
         </div>
         
         <!--MENU LATERAL-->
-        <div *ngIf="isAuthorized('CONSULTA ABM')" class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
+        <div *ngIf="esInterno" class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
             <div>
-                Creado el {{this.consulta.FechaCreacion}}
+                Creado el {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
                 <hr>
                 <div>
                     <p class="bold" style="margin: 7px;">Estado</p>
-                    <div class="styled-select perfiles-select">
-                        <select name="estadoSelect" id="estadoSelect">
-                            <option [attr.selected]="this.consulta.EstadoConsultaId == estadoSelect.Id ? true : null"
-                            *ngFor="let estadoSelect of this.estados" value="{{estadoSelect.Id}}">
-                                {{estadoSelect.Descripcion}}
-                            </option>
-                        </select>
-                    </div>
+                    <p-dropdown [options]="estadosList" [(ngModel)]="this.estadoId" 
+                        name="estadoId" [maxSelectedLabels]="1" autoWidth="false">
+                    </p-dropdown>
                 </div>
                 <div>
                     <p class="bold" style="margin: 7px;">Categoria</p>
-                    <div class="styled-select perfiles-select">
-                        <select name="categoriaSelect" id="categoriaSelect">
-                            <option [attr.selected]="this.consulta.CategoriaId == categoria.Id ? true : null" 
-                            *ngFor="let categoria of this.categorias" value="{{categoria.Id}}">
-                                {{categoria.Nombre}}
-                            </option>
-                        </select>
-                    </div>
+                    <p-dropdown [options]="categoriasList" [(ngModel)]="this.categoriaId" 
+                        name="categoriaId" [maxSelectedLabels]="1" autoWidth="false"
+                        (onChange)="setSubcategorias($event.value)">
+                    </p-dropdown>
                 </div>
                 <div>
                     <p class="bold" style="margin: 7px;">Subcategorias</p>
-                    <div class="styled-select perfiles-select">
-                        <select name="subcategoriaSelect" id="subcategoriaSelect" class="form-control">
-                            <option [attr.selected]="this.consulta.SubCategoriaId == subcategoria.Id ? true : null" 
-                            *ngFor="let subcategoria of this.subcategorias" id="{{subcategoria.Id}}" value="{{subcategoria.CategoriaId}}">
-                                {{subcategoria.Nombre}}
-                            </option>
-                        </select>
-                    </div>
+                    <p-dropdown [options]="subcategoriasList" [(ngModel)]="this.subcategoriaId" 
+                    name="subcategoriaId" [maxSelectedLabels]="1" autoWidth="false">
+                    </p-dropdown>
                 </div>
-                <div style="margin-top: 10px;">
+                <div (click)="actualizarCombos()" class="botonActualizarCombos" style="margin-top: 10px;">
                     <spinner-small></spinner-small>
-                    <a (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" id="botonActualizarCombos" href="#" style="text-decoration:none!important">
+                    <a class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                         <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
                     </a>
                 </div>

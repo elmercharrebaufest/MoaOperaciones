@@ -13,6 +13,8 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { Seccion } from './../../common/models/Seccion';
 import { ModalService } from './../../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
+import { SelectItem } from 'primeng/components/common/selectitem';
+import { Comentario, Categoria, Subcategoria } from '../consulta';
 
 
 declare var $: any;
@@ -52,7 +54,16 @@ export class CrearConsultaComponent extends ListBaseComponent {
     nombre: string;
     email: string;
     telefono: string;
-    categoriaOptions: Array<DropdownOption> = [];
+
+    categorias: Categoria[];
+    subcategorias: Subcategoria[];
+
+    subcategoria: Subcategoria;
+    subcategoriasList: Subcategoria[];
+    categoria: Categoria;
+    categoriaCode: any;
+    subcategoriaCode: any;
+
     comentario: string;
     contrato: string;
     razonSocial: string;
@@ -81,10 +92,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         //this.getData();
+        this.getCombos();
     }
 
     ngAfterViewInit(): void {
-        this.getCategorias();
         $(document).on("mouseover", '.form_datetime', function () {
             $(".form_datetime").datetimepicker({
                 format: 'yyyy-mm-dd',
@@ -101,96 +112,31 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 maxView: 4
             });
         });
+
+        this.obtenerSubcategoria();
     }
 
-    sendContactoMail() {;
-        this.floatMsgService.setMsgsEmpty();
-        this.spinnerSmallComponent.showIt();
+    obtenerSubcategoria(){
+        $("#categoriaSelect").change(function() {
+            var id = $("#categoriaSelect").children("option:selected").val();
 
-        try { this.categoriaSelected.label } catch{
-            this.spinnerSmallComponent.hideIt();
-            this.floatMsgService.setErrorMsg("Debe seleccionar una Categoria");
-            return false;
-        }
-
-        if (this.captchaOk == null) {
-            this.spinnerSmallComponent.hideIt();
-            this.floatMsgService.setErrorMsg("Debe completar el Captcha");
-            return false;
-        }
-
-        try {
-            var fecha = this.fechaPagoDTP.nativeElement.value
-        } catch { }
-
-        this.unsubscribe();
-        try {
-            this.subscription = this.service.sendContactoMail(
-                this.proveedor,
-                this.nombre,
-                this.email,
-                this.telefono,
-                this.categoriaSelected.label,
-                this.categoriaSelected.camposAdicionales,
-                this.comentario,
-                this.contrato,
-                this.razonSocial,
-                this.cuit,
-                this.nombreVendedor,
-                this.comprobante,
-                fecha,
-                this.importe,
-                this.impuesto,
-                this.inscripcion,
-                this.motivo,
-                this.file
-            ).subscribe(
-                result => {
-                    this.spinnerSmallComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.vaciarCampos();
-                        this.captcha.reset();
-                        this.floatMsgService.setSuccessMsg(result.data);
-                    }
-                    return false;
-                },
-                error => {
-                    var errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
-                    if (error._body.indexOf("length exceeded") >= 0) { errormsj = "El tamaño del archivo supera los 3 MBs permitidos"; } 
-                    this.spinnerSmallComponent.hideIt();
-                    this.floatMsgService.setErrorMsg(errormsj);
+            this.categoriaOptions = this.getCategorias();
+            //this.categoriaSelected = this.categoriaOptions.filter(x => x.Id == id)[0];
+            this.categoriaOptions.forEach(x => {
+                if(x.Id == id){
+                    this.categoriaSelected = x;
                 }
+            });
 
-            );
-        } catch (e) {
-            this.spinnerSmallComponent.hideIt();
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false; //<-- Prevent Refresh
-    }
-
-    setCategoria(categoria: any) {
-
-        this.categoriaSelected = this.categoriaOptions.filter(x => x.value == categoria)[0];
-
-
-        if (this.categoriaSelected != null && this.categoriaSelected != undefined) {
-            if (this.categoriaSelected.camposAdicionales === "A"){
-                this.camposAdicionales = true;
-            } else {
-                this.camposAdicionales = false;
-                this.vaciarCamposAdicionales();
+            if (this.categoriaSelected != null) {
+                if (this.categoriaSelected.camposAdicionales === "A"){
+                    this.camposAdicionales = true;
+                } else {
+                    this.camposAdicionales = false;
+                    this.vaciarCamposAdicionales();
+                }
             }
-        }
-        
+        });
     }
 
     cargarArchivo(event: any) {
@@ -226,7 +172,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.fileInput.nativeElement.value = "";
     }
 
-    getCategorias() {
+    getCombos() {
         this.unsubscribe();
         try {
             this.subscription = this.service.getCombos().subscribe(
@@ -238,7 +184,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.categoriaOptions = result.data;
+                        this.categorias = result.categorias;
+                        this.subcategorias = result.subcategorias;
+                        /*
+                        this.categoriasList = [];
+                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id})); */
                     }
                 },
                 error => {
@@ -250,13 +200,27 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
+    }
 
+    setSubcategorias(categoria){
+        this.categoria = categoria;
+        this.categoriaCode = categoria.Code;
+        this.subcategoriasList = [];
+
+        this.subcategorias.forEach(x => {
+            if(x.CategoriaId == categoria.Id){
+                this.subcategoriasList.push(x);
+            }
+        });
     }
 
     handleCorrectCaptcha(event: any) {
         this.captchaOk = event;
+    }
+
+    setCodeSubcategoria(subcategoria){
+        this.subcategoriaCode = subcategoria.Code;
     }
 
 
