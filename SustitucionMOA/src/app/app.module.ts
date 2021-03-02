@@ -54,8 +54,6 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
 import { BlockUIModule } from 'ng-block-ui';
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
 import { ConsultaService } from "./consulta/consulta.service";
-import { InformeComercialComponent } from './alta-proveedores/informe-comercial/informe-comercial.component';
-import { CartaPresentacionComponent } from './alta-proveedores/carta-presentacion/carta-presentacion.component';
 
 @NgModule({
   imports: [
@@ -67,9 +65,8 @@ import { CartaPresentacionComponent } from './alta-proveedores/carta-presentacio
     NgxPaginationModule,
     SelectModule,
     ModalModule,
-    Ng2AutoCompleteModule,
+
     ReCaptchaModule,
-    AutocompleteLibModule,
     SharedModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
@@ -94,9 +91,7 @@ import { CartaPresentacionComponent } from './alta-proveedores/carta-presentacio
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-    ConsultaBaseComponent,
-    InformeComercialComponent,
-    CartaPresentacionComponent],
+    ConsultaBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,
