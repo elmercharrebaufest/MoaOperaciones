@@ -41,11 +41,11 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
 
     grabarContratoAltaMasiva() {
         console.log(this.contrato);
-        if (this.contratoAcuerdo == "") {
+        if (!this.contratoAcuerdo || this.contratoAcuerdo == "") {
             this.mensajeComponent.setErrorMsg("Ingrese el numero de Contrato Acuerdo.");
             return false;
         }
-        if (this.contratoAcuerdo == "") {
+        if (!this.adjunto) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el arhcivo para la carga masiva.");
             return false;
         }

@@ -1,0 +1,244 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAUtils.Export
+{
+    public class ExcelValidator
+    {
+        private List<ExcelValidatorItem> _items;
+
+        public ExcelValidator(List<ExcelValidatorItem> items)
+        {
+            this._items = items;
+        }
+
+        public ExcelValidatorResult Validate(DataTable dt, bool hasHeader = false)
+        {
+            var ret = new ExcelValidatorResult();
+
+            var rows = dt.AsEnumerable().Select(x => x.ItemArray).Skip( hasHeader ? 1 : 0);
+
+            for (int i = 0; i < rows.Count(); i++)
+            {
+                var retRow = ValidateRow(rows.ElementAt(i));
+
+                if (!retRow.IsValid)
+                {
+                    retRow.RowNumber = i;
+                    ret.RowsResult.Add(retRow);
+                }
+            }
+
+            return ret;
+        }
+
+        private ExcelValidatorRowResult ValidateRow(object[] row)
+        {
+            var ret = new ExcelValidatorRowResult();
+
+            foreach (var item in this._items)
+            {
+                var retCell = ValidateCell(row[item.Position], item);
+
+                if (!retCell.IsValid)
+                    ret.ItemsResult.Add(retCell);
+            }
+
+            return ret;
+        }
+
+        private ExcelValidatorItemResult ValidateCell(object cell, ExcelValidatorItem item)
+        {
+            var ret = new ExcelValidatorItemResult();
+            ret.Item = item;
+
+            if (item.Required && item.Type != ExcelValidationColumnType.Bool && (cell == null  || string.IsNullOrEmpty(cell.ToString())))
+            {
+                ret.Errors.Add(string.Format("El campo {0} es obligatorio", item.Name));
+                return ret;
+            }
+
+            switch (item.Type)
+            {
+                case ExcelValidationColumnType.Int:
+                    int n;
+                    if(!int.TryParse(cell.ToString(), out n))
+                    {
+                        ret.Errors.Add(string.Format("El campo {0} es debe ser un número", item.Name));
+                    }
+                    break;
+                case ExcelValidationColumnType.Decimal:
+                    decimal d;
+                    if (!decimal.TryParse(cell.ToString(), out d))
+                    {
+                        ret.Errors.Add(string.Format("El campo {0} es debe ser un número decimal", item.Name));
+                    }
+                    break;
+                case ExcelValidationColumnType.List:
+                    if(item.Options != null && !item.Options.Contains(cell.ToString()))
+                    {
+                        ret.Errors.Add(string.Format("El campo {0} es debe ser uno de los siguientes valores: {1}", item.Name, string.Join(", ",item.Options.ToArray())));
+                    }
+                    break;
+                case ExcelValidationColumnType.Date:
+                    DateTime dt;
+                    if (!DateTime.TryParse(cell.ToString(), out dt))
+                    {
+                        ret.Errors.Add(string.Format("El campo {0} es debe ser una fecha válida", item.Name));
+                    }
+                    break;
+                case ExcelValidationColumnType.Bool:
+                    var b = cell.ToString();
+
+                    if(!string.IsNullOrEmpty(b) && b.ToUpper() != "X")
+                    {
+                        ret.Errors.Add(string.Format("El campo {0} es debe ser estar vacío o ser una X", item.Name));
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return ret;
+        }
+    }
+
+    public class ExcelValidatorItem
+    {
+        public string Name { get; set; }
+        public ExcelValidationColumnType Type { get; set; }
+        public bool Required { get; set; }
+        public int Position { get; set; }
+        public ExcelValidationErrorType ErrorType { get; set; }
+
+        public List<string> Options { get; set; }
+
+        //public Func<object, bool> CustomItemValidationByValue { get; set; }
+        //public Func<object[], bool> CustomItemValidationByRow { get; set; }
+        //public Func<object[][], bool> CustomItemValidationByTable { get; set; }
+
+    }
+
+    public class ExcelValidatorResult
+    {
+        public List<ExcelValidatorRowResult> RowsResult { get; set; }
+        public bool IsValid
+        {
+            get
+            {
+                return this.RowsResult.All(x => x.IsValid) && !this.RowsResult.Any(x => x.ItemsResult.Any(y => y.Item.ErrorType == ExcelValidationErrorType.Fatal));
+            }
+        }
+
+        public List<ExcelValidatorResumeItem> Resume
+        {
+            get
+            {
+                var ret = new List<ExcelValidatorResumeItem>();
+
+                var rowFatal = this.RowsResult.Where(x => x.ItemsResult.Any(y => y.Item.ErrorType == ExcelValidationErrorType.Fatal)).FirstOrDefault();
+                if(rowFatal != null)
+                {
+                    var itemFatal = rowFatal.ItemsResult.FirstOrDefault(y=>y.Item.ErrorType == ExcelValidationErrorType.Fatal);
+
+                    var resumeItem = new ExcelValidatorResumeItem()
+                    {
+                        IsFatal = true,
+                        Row = rowFatal.RowNumber
+                    };
+
+                    resumeItem.Errors.Add(itemFatal.Item.Name, string.Join("\n", itemFatal.Errors));
+                    ret.Add(resumeItem);
+                }
+                else
+                {
+                    foreach (var row in this.RowsResult)
+                    {
+                        var item = new ExcelValidatorResumeItem();
+                        item.Row = row.RowNumber;
+
+                        foreach (var itemResult in row.ItemsResult)
+                        {
+                            item.Errors.Add(itemResult.Item.Name, string.Join("\n", itemResult.Errors));
+                        }
+
+                        ret.Add(item);
+                    }
+                }
+
+                return ret;
+            }
+        }
+
+        public ExcelValidatorResult()
+        {
+            this.RowsResult = new List<ExcelValidatorRowResult>();
+        }
+    }
+
+    public class ExcelValidatorRowResult
+    {
+        public int RowNumber { get; set; }
+        public List<ExcelValidatorItemResult> ItemsResult { get; set; }
+        public bool IsValid
+        {
+            get
+            {
+                return this.ItemsResult.All(x=>x.IsValid);
+            }
+        }
+
+        public ExcelValidatorRowResult()
+        {
+            this.ItemsResult = new List<ExcelValidatorItemResult>();
+        }
+    }
+
+    public class ExcelValidatorItemResult
+    {
+        public ExcelValidatorItem Item { get; set; }
+        public bool IsValid { get
+            {
+                return !this.Errors.Any();
+            }
+        }
+        public List<string> Errors { get; set; }
+
+        public ExcelValidatorItemResult()
+        {
+            this.Errors = new List<string>();
+        }
+    }
+
+    public class ExcelValidatorResumeItem
+    {
+        public int Row { get; set; }
+        public Dictionary<string, string> Errors { get; set; } //field, errors
+        public bool IsFatal { get; set; }
+
+        public ExcelValidatorResumeItem()
+        {
+            this.Errors = new Dictionary<string, string>();
+        }
+    }
+
+    public enum ExcelValidationColumnType
+    {
+        Int,
+        String,
+        Date,
+        Bool,
+        Decimal,
+        List
+    }
+
+    public enum ExcelValidationErrorType
+    {
+        Fatal,
+        Error
+    }
+}

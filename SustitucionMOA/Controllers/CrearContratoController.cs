@@ -734,6 +734,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                //parsear excel
+                //validar tipo de datos
+                //enviar lista
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
@@ -758,7 +761,7 @@ namespace SustitucionMOA.Controllers
 
                 var fileSubido = Request.Files[0];
                 var extension = Path.GetExtension(fileSubido.FileName).ToUpper();
-                if (extension != ".XLSX" || extension != ".XLS")
+                if (extension != ".XLSX" && extension != ".XLS")
                 {
                     errores.Add(string.Concat("Archivo no soportado. Debe subir un Excel en formato xlsx."));
                     return JsonCustom(new { info = errores });
@@ -767,8 +770,20 @@ namespace SustitucionMOA.Controllers
                 {
                     var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
                     var result = "";
+                    var validations = GetValidatorAPrecio();
+                    var validator = new ExcelValidator(validations);
 
+                    var resultValidation = validator.Validate(dsExcel.Tables[0], true);
 
+                    if (!resultValidation.IsValid)
+                    {
+                        return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        //parsear solo filas que tienen el IsValid en true
+
+                    }
 
                     if (dsExcel != null && dsExcel.Tables.Count > 0 && dsExcel.Tables[0].Rows.Count > 0)
                     {
@@ -828,6 +843,45 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        private List<ExcelValidatorItem> GetValidatorAPrecio()
+        {
+            var ret = new List<ExcelValidatorItem>();
+            var pos = 0;
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Contrato Corredor",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Int
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Contrato Vendedor",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = false,
+                Type = ExcelValidationColumnType.Int
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Grano",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Options = new List<string>() { "Soja", "Maiz", "Trigo", "Girasol" },
+                Type = ExcelValidationColumnType.List
+            });
+
+            //configurar el resto de campos
+
+            return ret;
+        }
+
         public static DateTime FromExcelSerialDate(int SerialDate)
         {
             if (SerialDate > 59) SerialDate -= 1; //Excel/Lotus 2/29/1900 bug   

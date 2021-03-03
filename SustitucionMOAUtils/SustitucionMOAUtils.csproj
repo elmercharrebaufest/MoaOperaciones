@@ -94,6 +94,7 @@
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\ExcelImport.cs" />
+    <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
