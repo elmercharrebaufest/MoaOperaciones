@@ -340,14 +340,14 @@ namespace SustitucionMOAUtils.Services
 
             Log.Info("If para validar archivos. Tipo: " + proveedor.TipoProveedor.Nombre);
 
-            if (proveedor.TipoProveedor.Nombre == "Corredor")
+            if (usuario.TipoUsuario.Nombre == "Corredor")
             {
                 if (!ValidarArchivosSubidosCorredor(proveedor, infoProveedor))
                 {
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-            else if (proveedor.TipoProveedor.Nombre == "No Granos")
+            else if (usuario.TipoUsuario.Nombre == "No Granos")
             {
                 if (!ValidarArchivosSubidosNoGranos(proveedor, altaEmpresa))
                 {
