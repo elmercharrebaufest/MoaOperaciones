@@ -448,6 +448,11 @@
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
                             </div>
+                            <div *ngIf="isAuthorized('ALTA EMPRESA NO GRANOS')">
+                                <a (click)="goToSeccion('/alta-empresa-no-granos')" href="#">
+                                    <!--data-toggle="tab">-->Alta Empresa
+                                </a>
+                            </div>
                             <div
                                 *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/estado-solicitud')" href="#">
