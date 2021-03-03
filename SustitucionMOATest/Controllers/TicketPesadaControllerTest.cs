@@ -1,13 +1,16 @@
 ﻿using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -35,19 +38,25 @@ namespace SustitucionMOATest.Controllers
 
             var resultadoByte = new byte[] { 1, 2, 3 };
 
+            List<ArchivoDescargaDto> listado = new List<ArchivoDescargaDto>()
+            {
+                new ArchivoDescargaDto { Nombre = "Ticket Pesada CCPP 12345678910.zip",  Datos = resultadoByte}
+            };
+
             ticketPesadaServiceMock
                     .Setup(s => s.ObtenerTicket(It.IsAny<ConsultaTicketPesada>()))
-                    .Returns(resultadoByte);
+                    .Returns(listado);
 
 
-            var result = target.Obtener(ticketPesadaJson);
+            var resultado = target.Obtener(ticketPesadaJson);
 
-            dynamic resultado = result.Data;
+            var resultJson = JsonConvert.SerializeObject(resultado.Data);
 
-            var expected = resultadoByte;
-            var nombreArchivoEsperado = "Ticket Pesada CCPP 12345678910.zip";
-            Assert.AreEqual(expected, resultado.FileContents);
-            Assert.AreEqual(nombreArchivoEsperado, resultado.FileDownloadName);
+            var expected = new { data = listado };
+
+            var expectedJson = JsonConvert.SerializeObject(expected);
+
+            Assert.AreEqual(expectedJson, resultJson);
         }
 
         [Test()]

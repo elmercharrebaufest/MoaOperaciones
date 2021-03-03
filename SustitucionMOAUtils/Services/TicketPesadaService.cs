@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -9,6 +10,7 @@ using SustitucionMOAWS.ScatoComandosWebService;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -21,7 +23,7 @@ namespace SustitucionMOAUtils.Services
             this.scatoComandosConsumer = scatoComandosConsumer;
         }
 
-        public byte[] ObtenerTicket(ConsultaTicketPesada consultaTicketPesada)
+        public List<ArchivoDescargaDto> ObtenerTicket(ConsultaTicketPesada consultaTicketPesada)
         {
             ResultadoTickets resultado;
             try
@@ -33,12 +35,13 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
             }
 
-            if (resultado.Patente == "" || resultado.Patente != consultaTicketPesada.PatenteCamion)
+            if (resultado.Patente == "" || resultado.Patente.ToLower() != consultaTicketPesada.PatenteCamion.ToLower())
             {
                 throw new ValidationCustomException("La patente del cambio no coincide con la patente del camión.");
             }
 
-            byte[] archivoResultado = GenerarArchivoZip(resultado);
+            var listadoArchivos = GenerarListadoArchivos(resultado);
+            byte[] archivoResultado = listadoArchivos.FirstOrDefault(a => a.Nombre.Contains("zip")).Datos;
 
             if (archivoResultado.Length < 50)
             {
@@ -60,12 +63,14 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            return archivoResultado;
+            return listadoArchivos;
         }
 
-        private static byte[] GenerarArchivoZip(ResultadoTickets resultado)
+        private static List<ArchivoDescargaDto> GenerarListadoArchivos(ResultadoTickets resultado)
         {
             var outputMemStream = new MemoryStream();
+
+            var listado = new List<ArchivoDescargaDto>();
 
             using (var zipStream = new ZipOutputStream(outputMemStream))
             {
@@ -75,7 +80,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.TicketPesada.Length > 0)
                     {
-                        AgregarAStream(resultado.TicketPesada, nombreArchivo:"TicketPesada.pdf", zipStream);
+                        AgregarAStream(resultado.TicketPesada, nombreArchivo: "TicketPesada.pdf", zipStream);
+                        listado.Add(new ArchivoDescargaDto { Nombre = "TicketPesada.pdf", Datos = resultado.TicketPesada });
                     }
                 }
 
@@ -84,6 +90,7 @@ namespace SustitucionMOAUtils.Services
                     if (resultado.TicketReciboMunicipal.Length > 0)
                     {
                         AgregarAStream(resultado.TicketReciboMunicipal, nombreArchivo: "TicketReciboMunicipal.pdf", zipStream);
+                        listado.Add(new ArchivoDescargaDto { Nombre = "TicketReciboMunicipal.pdf", Datos = resultado.TicketReciboMunicipal });
                     }
                 }
 
@@ -95,8 +102,8 @@ namespace SustitucionMOAUtils.Services
                         foreach (FotoDto foto in resultado.FotoCP.Fotos)
                         {
                             Stream fotoMemoryStream = new MemoryStream(foto.Foto);
-
-                            AgregarAStream(foto.Foto, nombreArchivo: $"Foto CCPP { i++}.jpg", zipStream);
+                            AgregarAStream(foto.Foto, nombreArchivo: $"Foto CCPP { i}.jpg", zipStream);
+                            listado.Add(new ArchivoDescargaDto { Nombre = $"Foto CCPP { i++}.jpg", Datos = foto.Foto });
                         }
                     }
                 }
@@ -107,10 +114,18 @@ namespace SustitucionMOAUtils.Services
             outputMemStream.Position = 0;
 
             var archivoResultado = outputMemStream.ToArray();
-            return archivoResultado;
+
+            if (archivoResultado.Length < 50)
+            {
+                throw new ValidationCustomException("No hay documentos para la carta de porte ingresada.");
+            }
+
+            listado.Add(new ArchivoDescargaDto { Nombre = $"Ticket Pesada CCPP {resultado.CP}.zip", Datos = archivoResultado });
+
+            return listado;
         }
 
-        private static void AgregarAStream(byte[] archivo, string nombreArchivo , ZipOutputStream zipStream)
+        private static void AgregarAStream(byte[] archivo, string nombreArchivo, ZipOutputStream zipStream)
         {
             ZipEntry entry = new ZipEntry(nombreArchivo)
             {

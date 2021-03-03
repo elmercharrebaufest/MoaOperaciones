@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
@@ -80,9 +81,7 @@ namespace SustitucionMOATest.Services
         [Test()]
         public void ObtenerTicketCompleto()
         {
-            const string falsoString = "R0lGODlhAQABAIAAAAAAAAAAACH5BAAAAAAALAAAAAABAAEAAAICTAEAOw==";
-
-            byte[] bytes = Convert.FromBase64String(falsoString);
+            byte[] bytes = new byte[] { 1, 2, 3 };
 
             var resultadoTickets = new ResultadoTickets
             {
@@ -111,9 +110,16 @@ namespace SustitucionMOATest.Services
 
             var resultado = target.ObtenerTicket(consulta) ;
 
-            var expected = 768;
+            var expected = new List<ArchivoDescargaDto>
+            {
+                new ArchivoDescargaDto { Nombre = "TicketPesada.pdf", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "TicketReciboMunicipal.pdf", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Foto CCPP 1.jpg", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Foto CCPP 2.jpg", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Ticket Pesada CCPP 1234.zip", Datos = bytes},
+            };
 
-            Assert.AreEqual(expected, resultado.Length);
+            Assert.AreEqual(expected, resultado);
         }
     }
 }

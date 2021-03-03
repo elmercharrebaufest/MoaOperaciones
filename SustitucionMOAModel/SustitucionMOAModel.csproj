@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\EstadoVendedorDto.cs" />
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
