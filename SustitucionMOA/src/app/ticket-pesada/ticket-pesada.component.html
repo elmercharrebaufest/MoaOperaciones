@@ -16,43 +16,64 @@
       </div>
     </div>
 
-    <div class="formulario-campo">
-      <div class="formulario-label">
-        N&uacute;mero de carta de Porte
-      </div>
-      <div class="styled-select">
-        <input [(ngModel)]="TicketPesada.NumeroCartaPorte" type="text" pattern="\d*" maxlength="15">
-
-      </div>
-    </div>
-
-    <div class="formulario-campo">
-      <div class="formulario-label">
-        Patente del cami&oacute;n
-      </div>
-      <div class="styled-select">
-        <input type="text" [(ngModel)]="TicketPesada.PatenteCamion" maxlength="15">
-      </div>
-    </div>
-
-    <div class="formulario-campo">
-      <div>
+    <div [hidden]="hayDatos">
+      <div class="formulario-campo">
         <div class="formulario-label">
-          Mail
+          N&uacute;mero de carta de Porte
         </div>
         <div class="styled-select">
-          <input type="text" [(ngModel)]="TicketPesada.Mail" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}">
+          <input [(ngModel)]="TicketPesada.NumeroCartaPorte" type="text" pattern="\d*" maxlength="15">
+
         </div>
+      </div>
+
+      <div class="formulario-campo">
+        <div class="formulario-label">
+          Patente del cami&oacute;n
+        </div>
+        <div class="styled-select">
+          <input type="text" [(ngModel)]="TicketPesada.PatenteCamion" maxlength="15">
+        </div>
+      </div>
+
+      <div class="formulario-campo">
+        <div>
+          <div class="formulario-label">
+            Mail
+          </div>
+          <div class="styled-select">
+            <input type="text" [(ngModel)]="TicketPesada.Mail" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}">
+          </div>
+        </div>
+      </div>
+
+      <div class="formulario-campo captchaContainer">
+        <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)"
+          site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
       </div>
     </div>
 
-    <div class="formulario-campo captchaContainer">
-      <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)"
-        site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
+    <div [hidden]="!hayDatos">
+      <div class="titulo">
+        <title-caps class="blue">Seleccione el archivo </title-caps>
+      </div>
+      <div *ngFor="let archivo of data" class="documento">
+        <div class="doc-header" (click)="descargarArchivo(archivo)">
+          <p><i class="fa {{archivo.icon}}" aria-hidden="true"></i>{{archivo.Nombre}}</p>
+        </div>
+      </div>
     </div>
 
     <div class="btnContainer">
-      <button class="btn-custom btn-guardar btn-grande" (click)="enviar()">Buscar comprobantes</button>
+      <div [hidden]="hayDatos">
+        <button class="btn-custom btn-guardar btn-grande" (click)="enviar()">Buscar
+          comprobantes</button>
+      </div>
+      <div [hidden]="!hayDatos">
+        <button class="btn-custom btn-add btn-grande" (click)="nuevaConsulta()">Nueva
+          consulta</button>
+      </div>
+
     </div>
   </div>
 </div>
