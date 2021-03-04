@@ -12,11 +12,11 @@
         <div class="detalleConsulta shadow col-xs-12 col-sm-6" #detalleConsulta>
             <div *ngFor="let comentario of consulta.Comentarios, let i = index">
                 <div>
-                    <!--<div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha).substring(0, 10) != (consulta.Comentarios[i-1].Fecha).substring(0, 10))">
+                    <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha | date:'dd/MM/yyyy') != (consulta.Comentarios[i-1].Fecha | date:'dd/MM/yyyy'))">
                         <p class="fechaComentarioTexto">
                             {{comentario.Fecha | date:'dd/MM/yyyy'}}
                         </p>
-                    </div>-->
+                    </div>
                     <div class="row myRow">
                         <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
                         class="col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">

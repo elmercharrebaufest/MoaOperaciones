@@ -46,19 +46,20 @@ export class CrearConsultaComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
-        
-        this.proveedor = sessionStorage.getItem("proveedor");
     
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
     
+
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
-    nombre: string;
+    nombre: string = sessionStorage.getItem("nombre");
     email: string;
     telefono: string;
-    proveedorId = 24760;
 
+    proveedorId: number;
+    
     consulta: any;
 
     categorias: Categoria[];
@@ -90,16 +91,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
     fechaPago: string;
     importe: string;
     impuesto: string;
-    inscripcion: string;
-    motivo: string;
     file: any;
-    camposAdicionales: boolean = false;
+
+    files: FileList;
+
     fechaPagoDP: any;
     visibleButton: boolean = true;
     categoriaSelected: any;
     captchaOk: any = null;
     asunto: string;
-    salidaDePago: any;
     cliente: any;
 
     fechaFactura: string;
@@ -114,6 +114,13 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         //this.getData();
         this.getCombos();
+
+        if(this.esCorredor){
+            this.codigoCorredor = sessionStorage.getItem("proveedor");
+        }
+        else{
+            this.proveedor = sessionStorage.getItem("proveedor");
+        }
     }
 
     ngAfterViewInit(): void {
@@ -138,7 +145,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
         if (fileList.length > 0) {
-            this.file = fileList[0];
+            this.files = fileList;
         }
     }
 
@@ -151,12 +158,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.fechaPago = '';
         this.importe = '';
         this.impuesto = '';
-        this.inscripcion = '';
-        this.motivo = '';
     }
 
     vaciarCampos() {
-        this.camposAdicionales = false;
         this.vaciarCamposAdicionales();
         this.proveedor = "";
         this.nombre = "";
@@ -183,6 +187,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
+                        this.proveedorId = result.proveedorId;
                     }
                 },
                 error => {
@@ -261,15 +266,16 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     }
                     else{      
                         this.postArchivos(result.Id, consultaId);
-                        this.file = null;
+                        this.files = null;
                     }
                 },
             );
     }
 
     postArchivos(comentarioId, consultaId){
-        if(this.file){
-            this.subscription = this.service.adjuntar(this.file, consultaId, comentarioId).subscribe(
+        if(this.files){
+            debugger;
+            this.subscription = this.service.adjuntar(this.files, consultaId, comentarioId).subscribe(
                 result => {
                         if (result.logout == true) {
                             this.sessionDataService.logout();

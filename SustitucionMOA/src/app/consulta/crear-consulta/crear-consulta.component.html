@@ -35,6 +35,14 @@
                             <input type="search" [(ngModel)]="asunto" class="fourRounded" placeholder="Asunto*" aria-controls="tableModal">
                         </div>
                     </div>
+                    <div *ngIf="esCorredor" class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="for myRow">
+                            <p class="crearConsultaTitulos">Corredor</p>
+                            <div class="styled-select ">
+                                <input type="search" [(ngModel)]="codigoCorredor" class="fourRounded" placeholder="Nombre*" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-xs-12 col-sm-6 col-md-6">
                         <div class="for myRow">
                             <p class="crearConsultaTitulos">Nombre</p>
@@ -43,9 +51,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6">
+                    <div [ngClass]="esCorredor ? 'col-md-12' : 'col-md-6' " class="col-xs-12 col-sm-12">
                         <textarea type="search" [(ngModel)]="this.nuevoComentario" [value]="" class="fourRounded crearConsultaComentario" placeholder="Comentarios" aria-controls="tableModal" rows="8"></textarea>
                     </div>
+                    
 
 
                     <!-- Expanded para Reclamo Impositivo - Retenciones -->
@@ -56,7 +65,7 @@
                                 N° Salida de pago
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="salidaDePago" name="salidaDePago" class="fourRounded" placeholder="Salida De Pago*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded" placeholder="Salida De Pago*" aria-controls="tableModal" required>
                             </div>
                         </div>
                         
@@ -181,88 +190,13 @@
 
                     </div>-->
 
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">
-                        Raz&oacute;n Social
-                        </p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="razonSocial" name="razonSocial" class="fourRounded" placeholder="Raz&oacute;n Social*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Nombre Vendedor</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="nombreVendedor" name="nombreVendedor" class="fourRounded" placeholder="Nombre Vendedor*" aria-controls="tableModal">
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Contrato</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">CUIT</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="cuit" name="cuit" class="fourRounded" placeholder="CUIT*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Comprobante</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded" placeholder="Comprobante*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Fecha Pago</p>
-                        <div class="styled-select">
-                            <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
-                                <input type="text" id="noCursor" readonly />
-                                <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
-                            </div>
-                            <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;"/>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Importe</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="importe" name="importe" class="fourRounded" placeholder="Importe*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Impuesto</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Inscripci&oacute;n</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="inscripcion" name="inscripcion" class="fourRounded" placeholder="Inscripci&oacute;n*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
-                        <p class="crearConsultaTitulos">Motivo</p>
-                        <div class="styled-select">
-                            <input type="search" [(ngModel)]="motivo" name="motivo" class="fourRounded" placeholder="Motivo*" aria-controls="tableModal">
-                        </div>
-                    </div>
-
                     <div class="col-xs-12 col-sm-12 col-md-12 row">
                         <div class="styled-select">
-                            <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                            <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo" multiple>
                         </div>
                         <br />
                     </div>
+
                     <!--
                     <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
                         <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)" site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>

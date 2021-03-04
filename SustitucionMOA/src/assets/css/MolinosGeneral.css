@@ -4012,6 +4012,6 @@ div.panel-body a.active{
 p-dropdown>div {
   width: 100% !important;
 }
-input:focus::placeholder {
+input:focus::placeholder, textarea:focus::placeholder {
   color: transparent;
 }
