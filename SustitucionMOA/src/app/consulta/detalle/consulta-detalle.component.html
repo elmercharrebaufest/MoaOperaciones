@@ -47,18 +47,18 @@
         <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6" id="contenedorNuevoComentario">
             <hr>
             <div class="col-xs-12 col-sm-12 col-md-9">
-                <textarea [disabled]="((this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno))"
+                <textarea
                  type="search" [(ngModel)]="this.detalle" [value]=""
                 class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <input [disabled]="(this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno)"
+                <input
                  class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
-                <input [disabled]="(this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno)"
+                <input
                  class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <button [disabled]="((this.consulta.EstadoConsulta.Code != 'GES' && !esInterno) || (this.consulta.EstadoConsultaId != 'DOC' && !esExterno))" 
+                <button 
                 (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
@@ -92,12 +92,14 @@
                     name="subcategoriaId" [maxSelectedLabels]="1" autoWidth="false">
                     </p-dropdown>
                 </div>
-                <div (click)="actualizarCombos()" class="botonActualizarCombos" style="margin-top: 10px;">
+
+                <div class="botonActualizarCombos" style="margin-top: 10px;">
                     <spinner-small></spinner-small>
-                    <a class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+                    <button (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" style="text-decoration:none!important">
                         <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
-                    </a>
+                    </button>
                 </div>
+
             </div>
         </div>
         <spinner></spinner>

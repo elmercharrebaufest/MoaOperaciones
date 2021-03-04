@@ -37,42 +37,19 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6">
                         <div class="for myRow">
-                            <p class="crearConsultaTitulos">Email</p>
-                            <div class="styled-select ">
-                                <input type="search" [(ngModel)]="email" class="fourRounded" placeholder="Email*" aria-controls="tableModal">
-                            </div>
-                        </div>
-                        <div class="for myRow">
                             <p class="crearConsultaTitulos">Nombre</p>
                             <div class="styled-select ">
                                 <input type="search" [(ngModel)]="nombre" class="fourRounded" placeholder="Nombre*" aria-controls="tableModal">
                             </div>
                         </div>
-                        <div class="for myRow">
-                            <p class="crearConsultaTitulos">Tel&eacute;fono</p>
-                            <div class="styled-select">
-                                <input type="search" [(ngModel)]="telefono" class="fourRounded" placeholder="Tel&eacute;fono" aria-controls="tableModal">
-                            </div>
-                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6">
-                        <textarea type="search" [(ngModel)]="comentario" class="fourRounded crearConsultaComentario" placeholder="Comentarios" aria-controls="tableModal" rows="8"></textarea>
+                        <textarea type="search" [(ngModel)]="this.nuevoComentario" [value]="" class="fourRounded crearConsultaComentario" placeholder="Comentarios" aria-controls="tableModal" rows="8"></textarea>
                     </div>
 
 
                     <!-- Expanded para Reclamo Impositivo - Retenciones -->
                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET'">
-                        
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Fecha Pago</p>
-                            <div class="styled-select">
-                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
-                                    <input type="text" id="noCursor" readonly />
-                                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
-                                </div>
-                                <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;" required/>
-                            </div>
-                        </div>
                         
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
@@ -106,20 +83,103 @@
                             </div>
                         </div>
 
-
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Fecha Pago</p>
+                            <div class="styled-select">
+                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                                    <input type="text" id="noCursor" readonly />
+                                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                </div>
+                                <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;" required/>
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'">
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Cliente
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="cliente" name="cliente" class="fourRounded" placeholder="cliente*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                N° de factura
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Impuesto Percibido</p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Fecha factura</p>
+                            <div class="styled-select">
+                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                                    <input type="text" id="noCursor" readonly />
+                                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                </div>
+                                <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;" required/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON'">             
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                N° de contrato
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Impuesto Percibido</p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG'">
+                        
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                N° de contrato
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Impuesto Percibido</p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
                     <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.categoriaCode != 'ACT'">
                         
                         <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'link'">
-                            
                         </app-informe-comercial>
 
                         <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
-                            Donde esta esto ?
                         </app-carta-presentacion>
 
-                    </div>
+                    </div>-->
 
 
                     <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="camposAdicionales">
@@ -209,9 +269,9 @@
                     </div>-->                    
                     <div class="myRow row">
                         <div class="col text-center">
-                            <a class="mx-auto d-block" (click)="sendContactoMail()" href="#" style="text-decoration:none!important">
+                            <button class="mx-auto d-block enviarComentario" (click)="postConsulta()" href="#" style="text-decoration:none!important">
                                 <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar">Enviar</div>
-                            </a>
+                            </button>
                         </div>
                     </div>               
                 </div>

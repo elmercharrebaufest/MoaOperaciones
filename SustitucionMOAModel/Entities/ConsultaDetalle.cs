@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Entities
     {
         [Key, ForeignKey("Consulta")]
         public int Id { get; set; }
-        public int Consulta_Id { get; set; }
+        //public int Consulta_Id { get; set; }
         public DateTime? Fecha { get; set; }
         public string ComprobanteNo { get; set; }
         public string ContratoNo { get; set; }
@@ -22,7 +22,7 @@ namespace SustitucionMOAModel.Entities
         public string BolsaEmisoraOblea { get; set; }
 
         [Required]
-        [ForeignKey("Consulta_Id")]
+        [ForeignKey("Id")]
         public virtual Consulta Consulta { get; set; }
 
         [ForeignKey("CausaConsulta_Id")]

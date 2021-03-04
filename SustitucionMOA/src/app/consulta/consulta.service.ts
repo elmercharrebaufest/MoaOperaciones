@@ -43,6 +43,13 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
+    public AgregarConsulta(consulta: object) {
+        let body = JSON.stringify(consulta);
+        let params: URLSearchParams = new URLSearchParams();
+        return this.http
+            .post('/api/consulta/Consulta', consulta, { search: params, headers: this.headers }).map(this.extractData);
+    }
+
     public getCombos(): Observable<any> {
         return this.http
             .get('/api/consulta/Combos', { headers: this.headers }).pipe(
@@ -77,13 +84,6 @@ export class ConsultaService extends BaseService {
         return this.http
             .get(`/api/Consulta/Detalle`, { search: params, headers: this.headers }).pipe(
             map(this.extractData));
-    }
-
-
-    public setEstadoConsulta(estadoId: number, consultaId: number){
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
-        params.set('estado', estadoId.toString());
     }
 
     public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null): Observable<any>{

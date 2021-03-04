@@ -53,11 +53,14 @@ namespace SustitucionMOAUtils.Services
         {
             consulta.Id = -1;
             consulta.Detalle.Id = -1;
+            consulta.FechaCreacion = DateTime.Now;
+            consulta.FechaUltimaModificacion = DateTime.Now;
+            consulta.EstadoConsulta_Id = 1;
 
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
 
-            return new ConsultaDto(consulta);
+            return ObtenerConsulta(consulta.Id);
         }
 
         private Consulta GetConsulta(int consultaId)
@@ -77,6 +80,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.Categoria);
             includes.Add(x => x.SubCategoria);
             includes.Add(x => x.EstadoConsulta);
+            includes.Add(x => x.Detalle.CausaConsulta);
 
             var c = repositorio.Obtener<Consulta>(includes, y=> y.Id == consultaId);
 
@@ -201,6 +205,27 @@ namespace SustitucionMOAUtils.Services
             {
                 var categorias = repositorio.Listar<Categoria>();
                 return categorias.Select(x => new CategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CausaConsultaDto> ObtenerCausas()
+        {
+            try
+            {
+                var causas = repositorio.Listar<CausaConsulta>();
+                return causas.Select(x => new CausaConsultaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
             {

@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[ConsultaDetalle]
 (
-	[Id] INT IDENTITY(1,1) NOT NULL,
-	[Consulta_Id] INT NOT NULL,
+	[Id] INT NOT NULL,
+	--[Consulta_Id] INT NOT NULL,
 	[Fecha] DATETIME2 NULL, --FechaPago, FechaFactura, FechaOblea
 	[ComprobanteNo] NVARCHAR(max) NULL, --SalidaPagoNo, FacturaNo
 	[ContratoNo] NVARCHAR(max) NULL,
@@ -17,7 +17,7 @@ CONSTRAINT [PK_dbo.ConsultaDetalle] PRIMARY KEY CLUSTERED
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-ALTER TABLE [dbo].[ConsultaDetalle]  WITH CHECK ADD  CONSTRAINT [FK_dbo.ConsultaDetalle_dbo.Consulta_Consulta_Id] FOREIGN KEY([Consulta_Id])
+ALTER TABLE [dbo].[ConsultaDetalle]  WITH CHECK ADD  CONSTRAINT [FK_dbo.ConsultaDetalle_dbo.Consulta_Consulta_Id] FOREIGN KEY([Id])
 REFERENCES [dbo].[Consulta] ([Id])
 ON DELETE CASCADE
 GO

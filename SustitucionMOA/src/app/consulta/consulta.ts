@@ -53,6 +53,11 @@ export interface Subcategoria {
     Cantidad;
 }
 
+export interface Causa {
+    Id;
+    Nombre;
+}
+
 export class Comentario{
     consulta_Id: any; 
     Detalle: any; 

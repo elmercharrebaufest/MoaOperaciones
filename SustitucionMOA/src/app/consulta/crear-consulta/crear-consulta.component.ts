@@ -14,7 +14,7 @@ import { Seccion } from './../../common/models/Seccion';
 import { ModalService } from './../../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 
 declare var $: any;
@@ -52,7 +52,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
-
+    
     proveedor: string;
     nombre: string;
     email: string;
@@ -63,6 +63,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     categorias: Categoria[];
     subcategorias: Subcategoria[];
+    causas: Causa[];
 
     codigoCorredor: any;
     codigoProveedor: any;
@@ -72,8 +73,13 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategoria: Subcategoria;
     subcategoriasList: Subcategoria[];
     categoria: Categoria;
+    causa: Causa;
     categoriaCode: any;
     subcategoriaCode: any;
+
+
+    Detalle: any;
+    nuevoComentario: any;
 
     comentario: string;
     contrato: string;
@@ -94,6 +100,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     captchaOk: any = null;
     asunto: string;
     salidaDePago: any;
+    cliente: any;
+
+    fechaFactura: string;
 
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
@@ -173,9 +182,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
-                        /*
-                        this.categoriasList = [];
-                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id})); */
+                        this.causas = result.causas;
                     }
                 },
                 error => {
@@ -191,6 +198,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     postConsulta(){
+        this.spinnerComponent.showIt();
+
         if(this.proveedor[0] == 'c'){
             this.codigoCorredor = this.proveedor;
             this.codigoProveedor = null;
@@ -204,8 +213,74 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.razonSocialProveedor = this.nombre;
         }
 
+        this.Detalle = {Consulta_Id: null, Fecha: this.fechaPago, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
+            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: null, CausaConsulta_Id: 1
+        }
+
         this.consulta = {CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor, 
-            CodigoProveedor: this.codigoProveedor, RazonSocialProveedor: this.razonSocialProveedor}
+            CodigoProveedor: this.codigoProveedor, RazonSocialProveedor: this.razonSocialProveedor, 
+            Categoria_Id: this.categoria.Id, Detalle: this.Detalle,
+            SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
+        }
+
+        try {
+            this.subscription = this.service.AgregarConsulta(this.consulta).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.postComentario(result.Id, this.nuevoComentario);
+                        this.spinnerComponent.hideIt();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+                );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+    }
+
+    postComentario(consultaId, detalle){
+        let comentario: Comentario = {consulta_Id: consultaId, Detalle: detalle, Fecha: new Date()};
+        this.subscription = this.service.agregarComentario(consultaId, comentario).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{      
+                        this.postArchivos(result.Id, consultaId);
+                        this.file = null;
+                    }
+                },
+            );
+    }
+
+    postArchivos(comentarioId, consultaId){
+        if(this.file){
+            this.subscription = this.service.adjuntar(this.file, consultaId, comentarioId).subscribe(
+                result => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        }
+                    },
+                );
+        }
     }
 
     setSubcategorias(categoria){

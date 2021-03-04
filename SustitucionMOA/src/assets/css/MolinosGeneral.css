@@ -3791,7 +3791,6 @@ div.panel-body a.active{
   font-weight: bold;
 }
 .añadirComentario{
-  width: 600px;
   height: 100px;
 
   background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -4013,4 +4012,6 @@ div.panel-body a.active{
 p-dropdown>div {
   width: 100% !important;
 }
- 
+input:focus::placeholder {
+  color: transparent;
+}
