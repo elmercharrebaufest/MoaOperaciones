@@ -80,7 +80,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.TicketPesada.Length > 0)
                     {
-                        AgregarAStream(resultado.TicketPesada, nombreArchivo: "TicketPesada.pdf", zipStream);
+                        AgregarAStream(resultado.TicketPesada, "TicketPesada.pdf", zipStream);
                         listado.Add(new ArchivoDescargaDto { Nombre = "TicketPesada.pdf", Datos = resultado.TicketPesada });
                     }
                 }
@@ -89,7 +89,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.TicketReciboMunicipal.Length > 0)
                     {
-                        AgregarAStream(resultado.TicketReciboMunicipal, nombreArchivo: "TicketReciboMunicipal.pdf", zipStream);
+                        AgregarAStream(resultado.TicketReciboMunicipal, "TicketReciboMunicipal.pdf", zipStream);
                         listado.Add(new ArchivoDescargaDto { Nombre = "TicketReciboMunicipal.pdf", Datos = resultado.TicketReciboMunicipal });
                     }
                 }
@@ -102,7 +102,7 @@ namespace SustitucionMOAUtils.Services
                         foreach (FotoDto foto in resultado.FotoCP.Fotos)
                         {
                             Stream fotoMemoryStream = new MemoryStream(foto.Foto);
-                            AgregarAStream(foto.Foto, nombreArchivo: $"Foto CCPP { i}.jpg", zipStream);
+                            AgregarAStream(foto.Foto, $"Foto CCPP { i}.jpg", zipStream);
                             listado.Add(new ArchivoDescargaDto { Nombre = $"Foto CCPP { i++}.jpg", Datos = foto.Foto });
                         }
                     }
