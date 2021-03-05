@@ -55,6 +55,10 @@
     <Compile Include="Dto\InfoProveedorNoGranosDto.cs" />
     <Compile Include="Dto\NotificacionDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
+    <Compile Include="Entities\CampoCosecha.cs" />
+    <Compile Include="Entities\CampoProveedor.cs" />
+    <Compile Include="Entities\Cosecha.cs" />
+    <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />

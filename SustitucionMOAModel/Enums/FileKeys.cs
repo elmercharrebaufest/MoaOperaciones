@@ -25,5 +25,6 @@ namespace SustitucionMOAModel.Enums
         public const string ArchivosInternos = "archivosInternos";
         public const string NotaSiniestralidadART = "notaSiniestralidadART";
         public const string ProtocoloSanitarioCovid = "protocoloSanitarioCovid";
+        public const string CampoSustentableKMZ = "campoSustentableKMZ";
     }
 }

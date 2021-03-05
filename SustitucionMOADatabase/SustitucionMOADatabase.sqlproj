@@ -94,6 +94,10 @@
     <Build Include="DBO\Tables\LiquidacionInformada.sql" />
     <None Include="scripts\Update Comerciales.sql" />
     <None Include="scripts\UpdateFechaSolicitud.sql" />
+    <Build Include="DBO\Tables\CampoSustentable.sql" />
+    <Build Include="DBO\Tables\CampoCosecha.sql" />
+    <Build Include="DBO\Tables\Cosecha.sql" />
+    <Build Include="DBO\Tables\CampoProveedor.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
