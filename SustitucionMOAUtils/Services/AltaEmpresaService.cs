@@ -232,7 +232,9 @@ namespace SustitucionMOAUtils.Services
                     switch (proveedor.TipoProveedor.Nombre)
                     {
                         case "Granos":
-                            usuario.RemoverRoles();
+
+                            usuario.RemoverRol("NUEG");
+
                             usuario.AgregarRol(rolUsuarioGranos);
 
                             break;
@@ -256,7 +258,7 @@ namespace SustitucionMOAUtils.Services
                             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
                             if (usuario != null)
                             {
-                                usuario.RemoverRoles();
+                                usuario.RemoverRol("NUENOGRAN");
                                 usuario.AgregarRol(rolUsuarioNoGranos);
                             }
 
