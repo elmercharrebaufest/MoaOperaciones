@@ -46,17 +46,18 @@ export class CrearConsultaComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
-    
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
     
-
+    mensajeError: string;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
     nombre: string = sessionStorage.getItem("nombre");
     email: string;
     telefono: string;
+    categoriaCount = 0;
+    subcategoriaCount = 0;
 
     proveedorId: number;
     
@@ -89,11 +90,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
     nombreVendedor: string;
     comprobante: string;
     fechaPago: string;
+    fecha: Date;
     importe: string;
     impuesto: string;
     file: any;
-
-    files: FileList;
+    bolsaEmisoraOblea: string;
+    files: FileList = null;
 
     fechaPagoDP: any;
     visibleButton: boolean = true;
@@ -187,7 +189,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
-                        this.proveedorId = result.proveedorId;
+                        this.proveedorId = result.proveedorID
                     }
                 },
                 error => {
@@ -202,24 +204,119 @@ export class CrearConsultaComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
+
+    validarConsulta(){
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.codigoProveedor == "" || !this.codigoProveedor) {
+            this.floatMsgService.setErrorMsg("El campo proveedor esta vacio.");
+            return true;
+        }
+        if (this.categoriaCount == 0) {
+            this.floatMsgService.setErrorMsg("Por favor seleccione una categoria.");
+            return true;
+        }
+        if (this.subcategoriaCount == 0) {
+            this.floatMsgService.setErrorMsg("Por favor seleccione una subcategoria.");
+            return true;
+        }
+        if (this.asunto == "" || !this.asunto) {
+            this.floatMsgService.setErrorMsg("El campo Asunto esta vacio.");
+            return true;
+        }
+        if (this.nombre == "" || !this.nombre) {
+            this.floatMsgService.setErrorMsg("El campo Nombre esta vacio.");
+            return true;
+        }
+        if((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)){
+            this.floatMsgService.setErrorMsg("El campo Corredor esta vacio.");
+            return true;
+        }
+        if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET'){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° Salida de pago esta vacio.");
+                return true;
+            }
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo Contrato esta vacio.");
+                return true;
+            }
+            if (this.impuesto == "" || !this.impuesto) {
+                this.floatMsgService.setErrorMsg("El campo Impuesto retenido esta vacio.");
+                return true;
+            }
+            if (this.importe == "" || !this.importe) {
+                this.floatMsgService.setErrorMsg("El campo Importe retención esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'){
+            if (this.cliente == "" || !this.cliente) {
+                this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
+                return true;
+            }
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de factura esta vacio.");
+                return true;
+            }
+            if (this.impuesto == "" || !this.impuesto) {
+                this.floatMsgService.setErrorMsg("El campo Impuesto retenido esta vacio.");
+                return true;
+            }
+        }
+        if((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG')){
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                return true;
+            }
+            if (this.impuesto == "" || !this.impuesto) {
+                this.floatMsgService.setErrorMsg("El campo Impuesto Percibido esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC'){
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                return true;
+            }
+            if (this.bolsaEmisoraOblea == "" || !this.bolsaEmisoraOblea) {
+                this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
+                return true;
+            }
+            if(this.files == null || this.files.length < 2){
+                this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP'){
+            if (this.impuesto == "" || !this.impuesto) {
+                this.floatMsgService.setErrorMsg("El campo Impuesto esta vacio.");
+                return true;
+            }
+            if(this.files == null || this.files.length < 1){
+                this.floatMsgService.setErrorMsg("Falta adjuntar constancia");
+                return true;
+            }
+        }
+    }
+
     postConsulta(){
         this.spinnerComponent.showIt();
 
-        if(this.proveedor[0] == 'c'){
-            this.codigoCorredor = this.proveedor;
-            this.codigoProveedor = null;
-            this.razonSocialCorredor = this.nombre;
-            this.razonSocialProveedor = null;
-        }
-        else{
-            this.codigoProveedor = this.proveedor;
-            this.codigoCorredor = null;
-            this.razonSocialCorredor = null;
-            this.razonSocialProveedor = this.nombre;
-        }
+        if (this.validarConsulta()) {
+            this.spinnerComponent.hideIt();
+            return;
+          }
+        
+          this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+          
+          if(this.fechaPago != '' && this.fechaPago != null){
+            var dateParts = this.fechaPago.split("-");
+            this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+          } 
+        
 
-        this.Detalle = {Consulta_Id: null, Fecha: this.fechaPago, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
-            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: null, CausaConsulta_Id: 1
+        this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
+            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, CausaConsulta_Id: 1
         }
 
         this.consulta = {CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor, 
@@ -264,9 +361,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     }
-                    else{      
-                        this.postArchivos(result.Id, consultaId);
-                        this.files = null;
+                    else{
+                        this.postArchivos(result.Id, consultaId);   
+                        this.file = null;
                     }
                 },
             );
@@ -274,22 +371,24 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     postArchivos(comentarioId, consultaId){
         if(this.files){
-            debugger;
-            this.subscription = this.service.adjuntar(this.files, consultaId, comentarioId).subscribe(
-                result => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        }
-                    },
-                );
+            for (let i = 0; i < this.files.length; i++){
+                this.subscription = this.service.adjuntar(this.files[i], consultaId, comentarioId).subscribe(
+                    result => {
+                            if (result.logout == true) {
+                                this.sessionDataService.logout();
+                            } else if (result.error != undefined && result.error != "") {
+                                this.mensajeComponent.setErrorMsg(result.error);
+                            } else if (result.info != undefined) {
+                                this.mensajeComponent.setInfoMsg(result.info);
+                            }
+                        },
+                    );
+            }
         }
     }
 
     setSubcategorias(categoria){
+        this.categoriaCount = 1;
         this.categoria = categoria;
         this.categoriaCode = categoria.Code;
         this.subcategoriasList = [];
@@ -306,6 +405,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     setCodeSubcategoria(subcategoria){
+        this.subcategoriaCount = 1;
         this.subcategoriaCode = subcategoria.Code;
     }
 

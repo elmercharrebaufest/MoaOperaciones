@@ -100,11 +100,11 @@ export class ConsultaService extends BaseService {
 
     }
 
-    public adjuntar(archivo: FileList, consultaId: string, comentarioId: number): Observable<any> {
+    public adjuntar(archivo: any, consultaId: string, comentarioId: number): Observable<any> {
         var payload = new FormData();
         payload.append('consultaId', consultaId);
         payload.append('comentarioId', comentarioId.toString());
-        payload.append("file", archivo.toString());
+        payload.append("file", archivo);
         return this.http
             .post('/api/consulta/Adjuntos', payload, this.headersPost).pipe(
             map(this.extractData));

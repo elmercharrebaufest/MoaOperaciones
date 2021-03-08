@@ -5,15 +5,17 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10" style="font-weight: bold;">Generar Consulta</div>
         </div>
+        <mensaje></mensaje>
+        <spinner></spinner>
         <!--End Title-->
         <!-- Form-->
         <div class="row myRow firstSection mySearch cargaDeDatos">
             <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="col-xs-12 col-sm-6 col-md-6">
-                        <p class="crearConsultaTitulos">Proveedor</p>
+                        <p class="crearConsultaTitulos">Proveedor*</p>
                         <div class="styled-select ">
-                            <input type="search" [(ngModel)]="proveedor" class="fourRounded" placeholder="Proveedor*" aria-controls="tableModal">
+                            <input type="search" [(ngModel)]="codigoProveedor" class="fourRounded" aria-controls="tableModal">
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3 col-md-3">
@@ -30,24 +32,24 @@
                         </p-dropdown>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
-                        <p class="crearConsultaTitulos">Asunto</p>
+                        <p class="crearConsultaTitulos">Asunto*</p>
                         <div class="styled-select ">
-                            <input type="search" [(ngModel)]="asunto" class="fourRounded" placeholder="Asunto*" aria-controls="tableModal">
+                            <input type="search" [(ngModel)]="asunto" class="fourRounded" aria-controls="tableModal">
                         </div>
                     </div>
                     <div *ngIf="esCorredor" class="col-xs-12 col-sm-6 col-md-6">
                         <div class="for myRow">
-                            <p class="crearConsultaTitulos">Corredor</p>
+                            <p class="crearConsultaTitulos">Corredor*</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="codigoCorredor" class="fourRounded" placeholder="Nombre*" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="codigoCorredor" class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6">
                         <div class="for myRow">
-                            <p class="crearConsultaTitulos">Nombre</p>
+                            <p class="crearConsultaTitulos">Nombre*</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="nombre" class="fourRounded" placeholder="Nombre*" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="nombre" class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -62,41 +64,41 @@
                         
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                N° Salida de pago
+                                N° Salida de pago*
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded" placeholder="Salida De Pago*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
                         
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                Contrato/N° de factura
+                                Contrato/N° de factura*
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Impuesto retenido</p>
+                            <p class="crearConsultaTitulos">Impuesto retenido*</p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Importe retención</p>
+                            <p class="crearConsultaTitulos">Importe retención*</p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="importe" name="importe" class="fourRounded" placeholder="Importe*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="importe" name="importe" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Fecha Pago</p>
+                            <p class="crearConsultaTitulos">Fecha Pago*</p>
                             <div class="styled-select">
                                 <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
-                                    <input type="text" id="noCursor" readonly />
+                                    <input type="text" id="noCursor" fechaInicioInput readonly />
                                     <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                                 </div>
                                 <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;" required/>
@@ -108,34 +110,34 @@
                         
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                Cliente
+                                Cliente*
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="cliente" name="cliente" class="fourRounded" placeholder="cliente*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="cliente" name="cliente" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
                         
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                N° de factura
+                                N° de factura*
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Impuesto Percibido</p>
+                            <p class="crearConsultaTitulos">Impuesto Percibido*</p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Fecha factura</p>
                             <div class="styled-select">
-                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
-                                    <input type="text" id="noCursor" readonly />
+                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="dd/MM/yyyy" data-link-field="dtp_fecha_pago">
+                                    <input type="text" id="noCursor" value="{{fechaPago}}" fechaInicioInput readonly />
                                     <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
                                 </div>
                                 <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}} style="visibility: hidden;" required/>
@@ -143,52 +145,76 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON'">             
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG'))">             
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                N° de contrato
+                                N° de contrato*
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Impuesto Percibido</p>
+                            <p class="crearConsultaTitulos">Impuesto Percibido*</p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG'">
-                        
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC' ">             
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                N° de contrato
+                                N° de contrato*
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" placeholder="Contrato*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Impuesto Percibido</p>
+                            <p class="crearConsultaTitulos">Bolsa Emisora de Oblea*</p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" placeholder="Impuesto*" aria-controls="tableModal" required>
+                                <input type="search" [(ngModel)]="bolsaEmisoraOblea" name="bolsaEmisoraOblea" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Fecha emision de la oblea*</p>
+                            <div class="styled-select">
+                                <div class="input-group date form_datetime" data-provide="datepicker" data-date="" 
+                                data-date-format="dd/MM/yyyy" data-link-field="fechaOblea">
+                                    <input type="text" id="noCursor" value="{{fechaPago}}" fechaInicioInput readonly />
+                                    <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                </div>
+                                <input #fechaOblea id="fechaOblea" class="fechaOblea" value={{fechaPago}} style="visibility: hidden;" required/>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-12"><p>Recuerde Adjuntar liquidación y la oblea emitida por bolsa</p></div>
                     </div>
-                    <!--
+
+                    <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP'">             
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Impuesto*</p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" aria-controls="tableModal" required>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-12"><p>Recuerde Adjuntar Constancia</p></div>
+                    </div>
+
                     <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.categoriaCode != 'ACT'">
                         
-                        <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'link'">
+                        <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'button'">
                         </app-informe-comercial>
 
-                        <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
-                        </app-carta-presentacion>
+                        <!--<app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
+                        </app-carta-presentacion>-->
 
-                    </div>-->
+                    </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 row">
                         <div class="styled-select">

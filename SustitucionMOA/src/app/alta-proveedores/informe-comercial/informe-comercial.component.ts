@@ -55,7 +55,6 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
   @Input() displayType: string;
 
   ngOnInit(): void {
-    this.navService.setSeccionList([]);
     this.obtenerCampanias();
     this.addFieldValue();
     this.addFieldValueAlm();

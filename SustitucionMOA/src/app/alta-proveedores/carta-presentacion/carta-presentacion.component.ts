@@ -65,7 +65,6 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
 
   ngOnInit(): void {
-    this.navService.setSeccionList([]);
     this.obtenerCampanias();
     this.agregarCampoCartaPresentacion();
     this.agregarAcopioCartaPresentacion();
