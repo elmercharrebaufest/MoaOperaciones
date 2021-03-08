@@ -112,6 +112,11 @@
         /* PERMISOS ALTA EMPRESA NO GRANOS*/
         public const string ALTA_EMPRESA_NO_GRANOS = "ALTA EMPRESA NO GRANOS";
 
+        public const string ABM_CAMPOS_SUSTENTABLE = "ABM CAMPOS SUSTENTABLE";
+        public const string VER_TODOS_CAMPOS_SUSTENTABLE = "VER TODOS CAMPOS SUSTENTABLE";
+        public const string EDICION_CAMPOS_CREADOS = "EDICION CAMPOS CREADOS";
+
+
 
     }
 }
