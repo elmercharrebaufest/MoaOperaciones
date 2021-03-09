@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface ICampoSustentableService
     {
-        Resultado Agregar(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz);
+        Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz);
         List<CampoProveedorListadoDto> Listar(string mailUsuario);
         List<Cosecha> ObtenerCosechas();
     }

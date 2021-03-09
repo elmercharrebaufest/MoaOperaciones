@@ -26,7 +26,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(campoSustentableService.Agregar(campoProveedor, archivoKmz));
+                return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
             {

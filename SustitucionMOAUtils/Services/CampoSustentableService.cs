@@ -25,8 +25,12 @@ namespace SustitucionMOAUtils.Services
             this.repositorio = repositorio;
         }
 
-        public Resultado Agregar(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
+
+
+            //ValidarCampo(campoProveedor);
+
             campoProveedor.CampoCosecha.CampoSustentable_Id = ObtenerIdCampoSustentable(campoProveedor);
 
             campoProveedor.CampoCosecha.ToneladasAprobadas = 0;
@@ -40,6 +44,11 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha.CampoSustentable_Id, Mensaje = SuccessMsg.NotificacionAgregada };
         }
 
+
+        private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor)
+        {
+            
+        }
 
         private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
