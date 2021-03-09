@@ -18,7 +18,7 @@ namespace SustitucionMOAModel.Entities
         public string ContratoNo { get; set; }
         public Decimal? Importe { get; set; }
         public Decimal? Impuesto { get; set; }
-        public int CausaConsulta_Id { get; set; }
+        public int? CausaConsulta_Id { get; set; }
         public string BolsaEmisoraOblea { get; set; }
 
         [Required]

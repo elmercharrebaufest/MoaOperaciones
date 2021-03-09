@@ -218,7 +218,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        [HttpPatch]
+        [HttpPost]
         public JsonResult ActualizarEstado(int consultaId, int estadoConsultaId)
         {
             try

@@ -30,7 +30,7 @@ namespace SustitucionMOAUtils.Services
 
         public void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
         {
-            var estado = repositorio.Obtener<Consulta>(c => c.Id == estadoConsultaId);
+            var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
 
             if (estado == null) throw new InfoCustomException("No existe el estado");
 

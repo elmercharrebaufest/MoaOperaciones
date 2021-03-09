@@ -3769,6 +3769,7 @@ div.panel-body a.active{
   opacity: 1;
 }
 .enviarComentario{
+  margin-bottom: 5px;
   border: none;
   outline:none;
   background-color: white;
@@ -3800,6 +3801,8 @@ div.panel-body a.active{
   font: normal normal normal 16px Roboto Regular;
 }
 .btn-enviar-comentario{
+  position: relative;
+  right: 10px;
   width: 85px;
   height: 36px;
   background: #009688 0% 0% no-repeat padding-box !important;
@@ -3923,6 +3926,7 @@ div.panel-body a.active{
   right: 10px;
 }
 .archivosDetallePropio {
+  margin: 2px;
   text-align: left;
   /*font: normal normal normal 16px/18px Roboto Regular;*/
   color: white;
@@ -3959,6 +3963,7 @@ div.panel-body a.active{
   transition: all 0.25s linear;
 }
 .archivosDetalle {
+  margin: 2px;
   text-align: left;
   /*font: normal normal normal 16px/18px Roboto Regular;*/
   color: #707070;
@@ -4014,4 +4019,7 @@ p-dropdown>div {
 }
 input:focus::placeholder, textarea:focus::placeholder {
   color: transparent;
+}
+.solicitudDoc{
+margin: 2px;
 }

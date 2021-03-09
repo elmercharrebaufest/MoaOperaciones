@@ -47,21 +47,25 @@
         <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6" id="contenedorNuevoComentario">
             <hr>
             <div class="col-xs-12 col-sm-12 col-md-9">
-                <textarea
+                <textarea [disabled]="disable()"
                  type="search" [(ngModel)]="this.detalle" [value]=""
                 class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <input
+                <input [disabled]="disable()"
                  class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
-                <input
+                <input [disabled]="disable()"
                  class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
             </div>
             <div class="col-xs-12 col-sm-12 col-md-2">
-                <button 
+                <button [disabled]="disable()"
                 (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
+            </div>
+            <div *ngIf="esInterno" class="col-xs-12 col-sm-12 col-md-3">
+                <input type="checkbox" [(ngModel)]="solicitudDoc">
+                <label class="solicitudDoc">Solicitud de documentos</label>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6">
                 <p *ngIf="this.file != null">{{this.file.name}}</p>

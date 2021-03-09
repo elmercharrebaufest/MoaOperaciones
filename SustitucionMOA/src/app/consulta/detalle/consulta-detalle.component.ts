@@ -66,6 +66,8 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
 
+    solicitudDoc: boolean;
+
     consulta: Consulta;
     comentariosList: any;
     estadoConsulta: number;
@@ -95,7 +97,12 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     ngAfterViewInit(): void {
         this.scrollBottom();
-        this.subcategoriasInicial();
+        setTimeout(() => {
+            this.subcategoriasInicial();
+            if(this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno){
+                this.cambiarEstadoPorCode("GES");
+            }
+        }, 500);
     }
 
     scrollBottom(){
@@ -187,12 +194,50 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
                         this.detalle = "";
                         this.file = null;
+                        if(this.solicitudDoc){
+                            this.cambiarEstadoPorCode("DOC");
+                        }
                     }
                 },
                 error => {
                     this.spinnerModal.hideIt();
                 }
             );
+    }
+
+    cambiarEstadoPorCode(code: string){
+        var estadoIdGestion;
+        this.estados.forEach(x => {
+            if(x.Code == code){
+                estadoIdGestion = x.Id;
+            }
+        });
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.actualizarEstado(estadoIdGestion, this.consultaId).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{      
+                        this.mensajeComponent.setSuccessMsg("El estado de la consulta cambio correctamente");
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );   
+    }
+
+    disable(){
+        if(this.consulta.EstadoConsulta.Code != 'GES' && this.consulta.EstadoConsulta.Code != 'DOC' && !this.esInterno){
+            return true;
+        }
+
+        return false;
     }
 
     descargarArchivo(archivoId: number) {

@@ -317,7 +317,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                 "Nro Contrato": c.ContratoNo || "",
                 "Impuesto retenido / Impuesto percibido / Impuesto": c.Impuesto || "",
                 "Importe retención": c.Importe || "",
-                "Causa":c.CausaConsulta.Nombre || "",
+                "Causa":c.CausaConsulta? c.CausaConsulta.Nombre : '',
                 "Bolsa emisora de oblea": c.BolsaEmisoraOblea || ""
             }
         });

@@ -110,6 +110,15 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
+    public actualizarEstado(estadoId: number, consultaId: string) {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId);
+        payload.append('estadoConsultaId', estadoId.toString());
+        return this.http
+            .post('/api/consulta/ActualizarEstado', payload, this.headersPost).pipe(
+            map(this.extractData));
+    }
+
     DescargarArchivo(archivoId: number): Observable<any> {
         this.headers = new Headers();
         this.headers.append("Content-Type", "application/json");

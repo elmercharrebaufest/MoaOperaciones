@@ -84,15 +84,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
     nuevoComentario: any;
 
     comentario: string;
-    contrato: string;
+    contrato: any;
     razonSocial: string;
     cuit: string;
     nombreVendedor: string;
-    comprobante: string;
+    comprobante: any;
     fechaPago: string;
     fecha: Date;
-    importe: string;
-    impuesto: string;
+    importe: any;
+    impuesto: any;
     file: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
@@ -121,7 +121,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.codigoCorredor = sessionStorage.getItem("proveedor");
         }
         else{
-            this.proveedor = sessionStorage.getItem("proveedor");
+            this.codigoProveedor = sessionStorage.getItem("proveedor");
         }
     }
 
@@ -232,6 +232,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return true;
         }
         if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET'){
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+
             if (this.comprobante == "" || !this.comprobante) {
                 this.floatMsgService.setErrorMsg("El campo N° Salida de pago esta vacio.");
                 return true;
@@ -250,6 +252,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             }
         }
         if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'){
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.cliente == "" || !this.cliente) {
                 this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
@@ -286,6 +289,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
         }
         if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP'){
             if (this.impuesto == "" || !this.impuesto) {
@@ -302,18 +306,19 @@ export class CrearConsultaComponent extends ListBaseComponent {
     postConsulta(){
         this.spinnerComponent.showIt();
 
+        debugger
+
         if (this.validarConsulta()) {
             this.spinnerComponent.hideIt();
             return;
-          }
-        
-          this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-          
-          if(this.fechaPago != '' && this.fechaPago != null){
-            var dateParts = this.fechaPago.split("-");
-            this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
-          } 
-        
+        }
+    
+
+        if(this.fechaPago != '' && this.fechaPago != null){
+        var dateParts = this.fechaPago.split("-");
+        this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+        } 
+    
 
         this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
             Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, CausaConsulta_Id: 1
