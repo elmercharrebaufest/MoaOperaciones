@@ -1,8 +1,14 @@
-﻿namespace SustitucionMOAModel.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SustitucionMOAModel.Entities
 {
     public class CampoProveedor
     {
+        [Key, Column(Order = 0)]
         public int CampoCosecha_Id { get; set; }
+        public virtual CampoCosecha CampoCosecha { get; set; }
+        [Key, Column(Order = 1)]
         public int Proveedor_Id { get; set; }
         public virtual Proveedor Proveedor { get; set; }
 
