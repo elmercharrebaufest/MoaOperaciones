@@ -175,7 +175,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-                
+
                 //Como del front estoy enviando la info en encoding URI tengo que decodificarlo.
                 observacion = Uri.UnescapeDataString(observacion);
                 observacionParaElProveedor = Uri.UnescapeDataString(observacionParaElProveedor);
@@ -232,8 +232,11 @@ namespace SustitucionMOAUtils.Services
                     switch (proveedor.TipoProveedor.Nombre)
                     {
                         case "Granos":
-                            usuario.RemoverRoles();
-                            usuario.AgregarRol(rolUsuarioGranos);
+
+                            usuario.RemoverRol("NUEG");
+
+                            if (!usuario.Roles.Contains(rolUsuarioGranos))
+                                usuario.AgregarRol(rolUsuarioGranos);
 
                             break;
 
@@ -256,8 +259,9 @@ namespace SustitucionMOAUtils.Services
                             proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
                             if (usuario != null)
                             {
-                                usuario.RemoverRoles();
-                                usuario.AgregarRol(rolUsuarioNoGranos);
+                                usuario.RemoverRol("NUENOGRAN");
+                                if (!usuario.Roles.Contains(rolUsuarioNoGranos))
+                                    usuario.AgregarRol(rolUsuarioNoGranos);
                             }
 
                             break;
