@@ -21,6 +21,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Web.Mvc;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -693,6 +694,274 @@ namespace SustitucionMOAUtils.Services
                     var stringContent = task.Result.Content.ReadAsStringAsync();
                     string scapedJson = stringContent.Result.Replace("ñ", "ni");
                     return scapedJson;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<MaterialDto> BuscarMateriales()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Material/Buscar");
+
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, null);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    JObject json = JObject.Parse(scapedJson);
+                    var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<MaterialDto>>();
+
+                    return data;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CentroDto> BuscarCentros()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Centro/Buscar");
+
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, null);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+
+                    JObject json = JObject.Parse(scapedJson);
+                    var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<CentroDto>>();
+
+                    return data;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CampaniaDto> BuscarCampanias()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Campana/Buscar");
+
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, null);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    var data = JsonConvert.DeserializeObject<List<CampaniaDto>>(scapedJson);
+
+                    return data;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string ObteneContratosAcuerdo(int idDataAgro)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/TraerContratosAcuerdoPorCorredor");
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+                var content = JsonConvert.SerializeObject(new { corredorId = idDataAgro });
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+
+                    task.Wait();
+
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+
+                    return scapedJson;
+
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public BasicoContrato TraerContratoCompleto(int id,string tipo)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/CompraNet/TraerContratoCompleto");
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+                var content = JsonConvert.SerializeObject(new { id = id, tipo = tipo });
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+
+                    task.Wait();
+
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+
+                    var data = JsonConvert.DeserializeObject<BasicoContrato>(scapedJson);
+
+                    return data;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos)
+        {
+            try
+            {
+                //var datatest = JsonConvert.DeserializeObject<List<GrabarContratoResult>>("[{\"ContratoId\":1,\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false},{\"ContratoId\":null,\"Errores\":[{\"Item\":0,\"ErrorCode\":0,\"LogId\":0,\"Message\":\"El cuit existe.\",\"Source\":\"Proveedor\",\"LargeDescription\":\"\",\"Translate\":false,\"Format\":\"\",\"Args\":[]}],\"ListaErrores\":[{\"Item\":0,\"ErrorCode\":0,\"LogId\":0,\"Message\":\"El cuit existe.\",\"Source\":\"Proveedor\",\"LargeDescription\":\"\",\"Translate\":false,\"Format\":\"\",\"Args\":[]}],\"HayError\":true,\"HayErrores\":true},{\"ContratoId\":2,\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false},{\"ContratoId\":3,\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false}]");
+                //return datatest;
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarContratoMasivo");
+
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                var content = JsonConvert.SerializeObject(contratos);
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    var data = JsonConvert.DeserializeObject<List<GrabarContratoResult>>(scapedJson);
+
+                    return data;
                 }
             }
             catch (InfoCustomException)
