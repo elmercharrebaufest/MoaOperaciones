@@ -25,11 +25,10 @@ namespace SustitucionMOA.Controllers
             {
                 var consultaTicketPesada = JsonConvert.DeserializeObject<ConsultaTicketPesada>(ticketPesadaJson);
 
-                var archivoArray = ticketPesadaService.ObtenerTicket(consultaTicketPesada);
+                var listadoArchivos = ticketPesadaService.ObtenerTicket(consultaTicketPesada);
 
-                var nombreAchivo = string.Format("Ticket Pesada CCPP {0}.zip", consultaTicketPesada.NumeroCartaPorte);
+                return JsonCustom(new { data = listadoArchivos });
 
-                return JsonCustom(File(archivoArray, "application/zip", nombreAchivo));
             }
             catch (InfoCustomException e)
             {
