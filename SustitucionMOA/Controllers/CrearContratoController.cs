@@ -871,8 +871,7 @@ namespace SustitucionMOA.Controllers
                         List<int> rowsOk = resultValidation.RowsResult.Where(a => a.IsValid).Select(a => a.RowNumber).ToList();
                         if (rowsOk.Count == 0)
                         {
-                            errores.Add(string.Concat("No hay contratos para grabar."));
-                            return JsonCustom(new { info = errores });
+                            return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
                         }
                         var rows = dsExcel.Tables[0].AsEnumerable().Select(x => x.ItemArray).Skip(0);
                         for (int ii = 0; ii < rows.Count(); ii++)
