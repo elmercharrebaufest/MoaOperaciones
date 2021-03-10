@@ -979,15 +979,15 @@ namespace SustitucionMOA.Controllers
                 {
                     excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Cosecha", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La cosecha no concuerda con el del acuerdo seleccionado. " } });
                 }
-                if (item.FechaOperacion != acuerdo.FechaOperacion)
+                if (item.FechaOperacion.Value.Date != acuerdo.FechaOperacion.Value.Date)
                 {
                     excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Fecha Operación", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La Fecha Operación no concuerda con el del acuerdo seleccionado. " } });
                 }
-                if (item.FechaOperacion != acuerdo.FechaOperacion)
+                if (item.FechaOperacion.Value.Date != acuerdo.FechaOperacion.Value.Date)
                 {
                     excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Fecha DesdeEntrega", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La Fecha Desde Entrega no concuerda con el del acuerdo seleccionado. " } });
                 }
-                if (item.FechaOperacion != acuerdo.FechaOperacion)
+                if (item.FechaOperacion.Value.Date != acuerdo.FechaOperacion.Value.Date)
                 {
                     excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Fecha Vto. Entrega", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La Fecha Vto. Entrega no concuerda con el del acuerdo seleccionado. " } });
                 }
