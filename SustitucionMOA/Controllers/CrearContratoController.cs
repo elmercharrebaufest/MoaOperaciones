@@ -734,6 +734,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                List<string> errores = new List<string>();
+
                 //parsear excel
                 //validar tipo de datos
                 //enviar lista
@@ -746,8 +748,19 @@ namespace SustitucionMOA.Controllers
 
                 var contratoAcuerdo = Request.Form.Get("contratoAcuerdo");
 
+                int ncontratoAcuerdo;
+                if (!int.TryParse(contratoAcuerdo, out ncontratoAcuerdo))
+                {
+                    errores.Add(string.Concat("Debe seleccionar el contrato acuerdo."));
+                    return JsonCustom(new { info = errores });
+                }
 
-                List<string> errores = new List<string>();
+                BasicoContrato acuerdo = crearContratoService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
+                if (acuerdo.ContratoId == 0)
+                {
+                    errores.Add(string.Concat("El Acuerdo seleccionado no es valido."));
+                    return JsonCustom(new { info = errores });
+                }
                 if (Request.Files.Count == 0)
                 {
                     errores.Add(string.Concat("Debe seleccionar el archivo."));
@@ -769,11 +782,13 @@ namespace SustitucionMOA.Controllers
                 if (fileSubido.ContentLength > 0)
                 {
                     var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
-                    var result = "";
-                    var validations = GetValidatorAPrecio();
+                    var materiales = crearContratoService.BuscarMateriales();
+                    var centros = crearContratoService.BuscarCentros();
+                    var campanias = crearContratoService.BuscarCampanias();
+                    var validations = GetValidatorContratos(materiales, centros, campanias);
                     var validator = new ExcelValidator(validations);
 
-                    var resultValidation = validator.Validate(dsExcel.Tables[0], true);
+                    var resultValidation = validator.Validate(dsExcel.Tables[0], false);
 
                     if (!resultValidation.IsValid)
                     {
@@ -781,34 +796,70 @@ namespace SustitucionMOA.Controllers
                     }
                     else
                     {
-                        //parsear solo filas que tienen el IsValid en true
-
-                    }
-
-                    if (dsExcel != null && dsExcel.Tables.Count > 0 && dsExcel.Tables[0].Rows.Count > 0)
-                    {
-                        var dtExcel = dsExcel.Tables[0];
-                        List<string> resultado = new List<string>();
-                        List<ContratoAPrecio> fichadas = ValidarExcel(dtExcel, resultado);
-                        if (resultado.Count == 0 && fichadas.Count > 0)
+                        List<BasicoContrato> contratos = new List<BasicoContrato>();
+                        int tiponegocioid = acuerdo.Precio > 0 ? 2 : 1;
+                        List<int> rowsOk = resultValidation.RowsResult.Where(a => a.IsValid).Select(a => a.RowNumber).ToList();
+                        if (rowsOk.Count == 0)
                         {
+                            errores.Add(string.Concat("No hay contratos para grabar."));
+                            return JsonCustom(new { info = errores });
+                        }
+                        var rows = dsExcel.Tables[0].AsEnumerable().Select(x => x.ItemArray).Skip(0);
+                        for (int ii = 0; ii < rows.Count(); ii++)
+                        {
+                            if (!rowsOk.Contains(ii))
+                                continue;
+                            var contrato = new BasicoContrato();
+                            contrato.ContratoAcuerdoId = acuerdo.ContratoId;
+                            contrato.CorredorId = acuerdo.CorredorId;
 
+                            contrato.ContratoCorredor = rows.ElementAt(ii)[0].ToString();
+                            contrato.ContratoVendedor = rows.ElementAt(ii)[1].ToString();
+                            contrato.MaterialId = materiales.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[2].ToString().ToLower()).Single().MaterialId;
+                            contrato.CampanaId = campanias.Where(a => a.Descripcion.Replace("-", "").ToLower() == rows.ElementAt(ii)[3].ToString().ToLower()).Single().CampaniaId;
+                            contrato.FechaOperacion = DateTime.Parse(rows.ElementAt(ii)[4].ToString());
+                            contrato.FechaDesde = DateTime.Parse(rows.ElementAt(ii)[5].ToString());
+                            contrato.FechaHasta = DateTime.Parse(rows.ElementAt(ii)[6].ToString());
+                            contrato.FechaEntrega = DateTime.Parse(rows.ElementAt(ii)[6].ToString());
+                            contrato.Cantidad = int.Parse(rows.ElementAt(ii)[7].ToString()) * 1000;
+                            contrato.Cuit = rows.ElementAt(ii)[8].ToString();
+                            contrato.ClasificacionId = rows.ElementAt(ii)[9].ToString().ToLower() == "productor" ? 1 : rows.ElementAt(ii)[9].ToString().ToLower() == "acopiador" ? 2 : 3;
+                            contrato.PlanCanje = rows.ElementAt(ii)[10].ToString() == "X";
+                            contrato.Consignatario = rows.ElementAt(ii)[11].ToString() == "X";
+                            contrato.DestinoId = centros.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[12].ToString().ToLower()).Single().Id;
+                            contrato.LocalidadId = int.Parse(rows.ElementAt(ii)[13].ToString());
+                            contrato.ProvinciaId = int.Parse(rows.ElementAt(ii)[14].ToString());
+                            contrato.Observacion = ii.ToString();
+
+
+
+                            contratos.Add(contrato);
+
+                        }
+
+                        validacionContratoFatal(contratos, acuerdo, resultValidation);
+                        if (!resultValidation.IsValid)
+                        {
+                            return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
-                            errores.AddRange(resultado);
+                            List<GrabarContratoResult> resultados = crearContratoService.CrearContratoMasivo(contratos);
+
+                            foreach (var item in resultados)
+                            {
+                                if (item.HayError)
+                                {
+                                    //item.ContratoId estoy usando ese campo para devolver el numero de row
+                                    resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = ExcelValidationErrorType.Error, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
+                                }
+                            }
+                            return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
+
                         }
                     }
-                    else
-                    {
-                        errores.Add("El archivo no tiene Contratos para procesar.");
 
-                    }
 
-                    if (!result.Equals(SuccessMsg.ArchivoSubidoOK))
-                    {
-                        errores.Add(string.Concat("Ocurrió un error con el archivo ", fileSubido.FileName, ": ", result));
-                    }
                 }
                 else
                 {
@@ -844,7 +895,47 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        private List<ExcelValidatorItem> GetValidatorAPrecio()
+        private void validacionContratoFatal(List<BasicoContrato> contratos, BasicoContrato acuerdo, ExcelValidatorResult resultValidation)
+        {
+            int i = 0;
+            foreach (var item in contratos)
+            {
+                List<ExcelValidatorItemResult> excelValidatorItemResults = new List<ExcelValidatorItemResult>();
+
+                if (item.MaterialId != acuerdo.MaterialId)
+                {
+                    excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Grano", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "El material no concuerda con el del acuerdo seleccionado. " } });
+                }
+                if (item.CampanaId != acuerdo.CampanaId)
+                {
+                    excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Cosecha", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La cosecha no concuerda con el del acuerdo seleccionado. " } });
+                }
+                //if (item.FechaOperacion != acuerdo.FechaOperacion)
+                //{
+                //    excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Fecha Operación", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La Fecha Operación no concuerda con el del acuerdo seleccionado. " } });
+                //}
+                //if (item.FechaOperacion != acuerdo.FechaOperacion)
+                //{
+                //    excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Fecha DesdeEntrega", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La Fecha Desde Entrega no concuerda con el del acuerdo seleccionado. " } });
+                //}
+                //if (item.FechaOperacion != acuerdo.FechaOperacion)
+                //{
+                //    excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Fecha Vto. Entrega", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "La Fecha Vto. Entrega no concuerda con el del acuerdo seleccionado. " } });
+                //}
+                if (item.DestinoId != acuerdo.DestinoId)
+                {
+                    excelValidatorItemResults.Add(new ExcelValidatorItemResult { Item = new ExcelValidatorItem { Name = "Destino", ErrorType = ExcelValidationErrorType.Fatal }, Errors = new List<string> { "El Destino no concuerda con el del acuerdo seleccionado. " } });
+                }
+                if (excelValidatorItemResults.Count > 0)
+                {
+                    resultValidation.RowsResult[i].ItemsResult.AddRange(excelValidatorItemResults);
+                }
+                //resultValidation.RowsResult[i].ContratoCorredor = item.ContratoCorredor;
+                i++;
+            }
+        }
+
+        private List<ExcelValidatorItem> GetValidatorContratos(List<MaterialDto> materiales, List<CentroDto> centros, List<CampaniaDto> campanias)
         {
             var ret = new List<ExcelValidatorItem>();
             var pos = 0;
@@ -855,7 +946,7 @@ namespace SustitucionMOA.Controllers
                 ErrorType = ExcelValidationErrorType.Error,
                 Position = pos++,
                 Required = true,
-                Type = ExcelValidationColumnType.Int
+                Type = ExcelValidationColumnType.Long
             });
 
             ret.Add(new ExcelValidatorItem()
@@ -864,7 +955,7 @@ namespace SustitucionMOA.Controllers
                 ErrorType = ExcelValidationErrorType.Error,
                 Position = pos++,
                 Required = false,
-                Type = ExcelValidationColumnType.Int
+                Type = ExcelValidationColumnType.Long
             });
 
             ret.Add(new ExcelValidatorItem()
@@ -873,8 +964,118 @@ namespace SustitucionMOA.Controllers
                 ErrorType = ExcelValidationErrorType.Fatal,
                 Position = pos++,
                 Required = true,
-                Options = new List<string>() { "Soja", "Maiz", "Trigo", "Girasol" },
+                Options = materiales.Where(a => a.MaterialId < 5).Select(a => a.Descripcion.ToLower()).ToList(),
                 Type = ExcelValidationColumnType.List
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Cosecha",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Int
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Fecha Operación",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Date
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Fecha DesdeEntrega",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Date
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Fecha Vto.Entrega",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Date
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "TN",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Int
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "CUIT Vendedor",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Long
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Clasificacion",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = true,
+                Options = new List<string>() { "acopiador", "productor", "otros" },
+                Type = ExcelValidationColumnType.List
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Plan Canje",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = false,
+                Type = ExcelValidationColumnType.Bool
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Consignatario",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = false,
+                Type = ExcelValidationColumnType.Bool
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "Destino",
+                ErrorType = ExcelValidationErrorType.Fatal,
+                Position = pos++,
+                Required = true,
+                Options = centros.Where(a => a.Id != 10).Select(a => a.Descripcion.ToLower()).ToList(),
+                Type = ExcelValidationColumnType.List
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "PROCEDENCIA",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Int
+            });
+
+            ret.Add(new ExcelValidatorItem()
+            {
+                Name = "PROVINCIA",
+                ErrorType = ExcelValidationErrorType.Error,
+                Position = pos++,
+                Required = true,
+                Type = ExcelValidationColumnType.Int
             });
 
             //configurar el resto de campos
@@ -887,70 +1088,40 @@ namespace SustitucionMOA.Controllers
             if (SerialDate > 59) SerialDate -= 1; //Excel/Lotus 2/29/1900 bug   
             return new DateTime(1899, 12, 31).AddDays(SerialDate);
         }
-        private List<ContratoAPrecio> ValidarExcel(DataTable dtExcel, List<string> resultado)
+
+        public ActionResult ObteneContratosAcuerdo()
         {
-
-            var fichadas = new List<ContratoAPrecio>();
-            var rows = dtExcel.AsEnumerable().Select(x => x.ItemArray);
-            var i = 3;
-            foreach (var r in rows.AsEnumerable().Skip(1))
+            try
             {
-                i++;
-                string contrato = "";
-                string material = "";
-                string cosecha = "";
-                string fecha = "";
-                string fechaEntregaDesde = "";
-                string fechaEntregaHasta = "";
-                string cantidad = "";
-                string cuit = "";
-                string vendedor = "";
-                string clasificacion = "";
-                string planCanje = "";
-                string consignatario = "";
-                string destino = "";
-                string procedencia = "";
-                string provincia = "";
-                var fechad = new DateTime();
-                var hora = new TimeSpan();
-                var TipoDeDatoInvalido = ". TipoDeDatoInvalido";
-                if (!String.IsNullOrEmpty(r[0].ToString()) && r[0].ToString().GetType().Equals(typeof(System.String)))
-                {
-                    contrato = r[0].ToString();
-                }
-                else
-                {
-                    resultado.Add("Error en la Columna: A Fila: " + i + TipoDeDatoInvalido);
-                }
-                //if (r[3] != null && r[3].GetType().Equals(typeof(double)))
-                //{
-                //    fecha = FromExcelSerialDate(Convert.ToInt32(r[3]));
-                //    if (fecha > DateTime.Now)
-                //    {
-                //        resultado.Errores.Add("Error en la Columna D fila: " + i + " " + Textos.FechaInválida, Textos.FechaInválida);
-                //    }
-                //}
-                //else
-                //{
-                //    resultado.Add("Error en la Columna D fila: " + i, Textos.TipoDeDatoInvalido);
-                //}
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                string codigoProveedor = SessionPersister.Proveedor;
 
-                if (resultado.Count == 0)
-                {
-
-                    fichadas.Add(new ContratoAPrecio
-                    {
-
-                    });
-                }
-
+                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                return JsonCustom(crearContratoService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
             }
-            if (fichadas.Count <= 0)
+            catch (InfoCustomException e)
             {
-                resultado.Add("SinDatos");
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
             }
-            return fichadas;
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 

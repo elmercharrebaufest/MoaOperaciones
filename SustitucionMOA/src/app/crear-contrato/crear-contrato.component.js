@@ -268,7 +268,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
                         new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
                         new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
-                        new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'alta masiva'),
+                        new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Alta Masiva'),
                     ]);
                 }
                 else {

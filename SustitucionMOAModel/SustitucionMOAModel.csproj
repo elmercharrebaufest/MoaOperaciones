@@ -61,6 +61,9 @@
     <Compile Include="Enums\IngresosBrutos.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
+    <Compile Include="Models\DataAgro\GrabarContratoResult.cs" />
+    <Compile Include="Models\DataAgro\MaterialDto.cs" />
+    <Compile Include="Models\DataAgro\CentroDto.cs" />
     <Compile Include="Models\DataAgro\CampaniaDto.cs" />
     <Compile Include="Models\DataAgro\ContratoAFijar.cs" />
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />

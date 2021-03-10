@@ -11,20 +11,20 @@ namespace SustitucionMOAWS.CredentialService
 
         public static string getUserName()
         {
-            //return UserName;
-            return "emartin";
+            UserName= "emartin";
+            return UserName;
         }
 
         public static string getPassword()
         {
-            //return Password;
-            return "eugeniomartin3";
+            Password = "eugeniomartin4";
+            return Password;
         }
 
         public static string getDominio()
         {
-            //return Dominio;
-            return "baunet";
+            Dominio = "baunet";
+            return Dominio;
         }
     }
 }

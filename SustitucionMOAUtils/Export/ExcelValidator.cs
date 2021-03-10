@@ -20,17 +20,17 @@ namespace SustitucionMOAUtils.Export
         {
             var ret = new ExcelValidatorResult();
 
-            var rows = dt.AsEnumerable().Select(x => x.ItemArray).Skip( hasHeader ? 1 : 0);
+            var rows = dt.AsEnumerable().Select(x => x.ItemArray).Skip(hasHeader ? 1 : 0);
 
             for (int i = 0; i < rows.Count(); i++)
             {
                 var retRow = ValidateRow(rows.ElementAt(i));
 
-                if (!retRow.IsValid)
-                {
-                    retRow.RowNumber = i;
-                    ret.RowsResult.Add(retRow);
-                }
+                //if (!retRow.IsValid)
+                //{
+                retRow.RowNumber = i;
+                ret.RowsResult.Add(retRow);
+                //}
             }
 
             return ret;
@@ -39,7 +39,7 @@ namespace SustitucionMOAUtils.Export
         private ExcelValidatorRowResult ValidateRow(object[] row)
         {
             var ret = new ExcelValidatorRowResult();
-
+            ret.ContratoCorredor = row[0].ToString();
             foreach (var item in this._items)
             {
                 var retCell = ValidateCell(row[item.Position], item);
@@ -55,48 +55,58 @@ namespace SustitucionMOAUtils.Export
         {
             var ret = new ExcelValidatorItemResult();
             ret.Item = item;
-
-            if (item.Required && item.Type != ExcelValidationColumnType.Bool && (cell == null  || string.IsNullOrEmpty(cell.ToString())))
+            
+            if (item.Required && item.Type != ExcelValidationColumnType.Bool && (cell == null || string.IsNullOrEmpty(cell.ToString())))
             {
                 ret.Errors.Add(string.Format("El campo {0} es obligatorio", item.Name));
                 return ret;
             }
-
+            if (!item.Required && string.IsNullOrEmpty(cell.ToString()))
+            {
+                return ret;
+            }
             switch (item.Type)
             {
                 case ExcelValidationColumnType.Int:
                     int n;
-                    if(!int.TryParse(cell.ToString(), out n))
+                    if (!int.TryParse(cell.ToString(), out n))
                     {
-                        ret.Errors.Add(string.Format("El campo {0} es debe ser un número", item.Name));
+                        ret.Errors.Add(string.Format("El campo {0} debe ser un número", item.Name));
+                    }
+                    break;
+                case ExcelValidationColumnType.Long:
+                    long l;
+                    if (!long.TryParse(cell.ToString(), out l))
+                    {
+                        ret.Errors.Add(string.Format("El campo {0} debe ser un número", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.Decimal:
                     decimal d;
                     if (!decimal.TryParse(cell.ToString(), out d))
                     {
-                        ret.Errors.Add(string.Format("El campo {0} es debe ser un número decimal", item.Name));
+                        ret.Errors.Add(string.Format("El campo {0} debe ser un número decimal", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.List:
-                    if(item.Options != null && !item.Options.Contains(cell.ToString()))
+                    if (item.Options != null && !item.Options.Contains(cell.ToString().ToLower()))
                     {
-                        ret.Errors.Add(string.Format("El campo {0} es debe ser uno de los siguientes valores: {1}", item.Name, string.Join(", ",item.Options.ToArray())));
+                        ret.Errors.Add(string.Format("El campo {0} debe ser uno de los siguientes valores: {1}", item.Name, string.Join(", ", item.Options.ToArray())));
                     }
                     break;
                 case ExcelValidationColumnType.Date:
                     DateTime dt;
                     if (!DateTime.TryParse(cell.ToString(), out dt))
                     {
-                        ret.Errors.Add(string.Format("El campo {0} es debe ser una fecha válida", item.Name));
+                        ret.Errors.Add(string.Format("El campo {0} debe ser una fecha válida", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.Bool:
                     var b = cell.ToString();
 
-                    if(!string.IsNullOrEmpty(b) && b.ToUpper() != "X")
+                    if (!string.IsNullOrEmpty(b) && b.ToUpper() != "X")
                     {
-                        ret.Errors.Add(string.Format("El campo {0} es debe ser estar vacío o ser una X", item.Name));
+                        ret.Errors.Add(string.Format("El campo {0} debe ser estar vacío o ser una X", item.Name));
                     }
                     break;
                 default:
@@ -130,7 +140,7 @@ namespace SustitucionMOAUtils.Export
         {
             get
             {
-                return this.RowsResult.All(x => x.IsValid) && !this.RowsResult.Any(x => x.ItemsResult.Any(y => y.Item.ErrorType == ExcelValidationErrorType.Fatal));
+                return /*this.RowsResult.All(x => x.IsValid) &&*/ !this.RowsResult.Any(x => x.ItemsResult.Any(y => y.Item.ErrorType == ExcelValidationErrorType.Fatal));
             }
         }
 
@@ -141,17 +151,18 @@ namespace SustitucionMOAUtils.Export
                 var ret = new List<ExcelValidatorResumeItem>();
 
                 var rowFatal = this.RowsResult.Where(x => x.ItemsResult.Any(y => y.Item.ErrorType == ExcelValidationErrorType.Fatal)).FirstOrDefault();
-                if(rowFatal != null)
+                if (rowFatal != null)
                 {
-                    var itemFatal = rowFatal.ItemsResult.FirstOrDefault(y=>y.Item.ErrorType == ExcelValidationErrorType.Fatal);
+                    var itemFatal = rowFatal.ItemsResult.FirstOrDefault(y => y.Item.ErrorType == ExcelValidationErrorType.Fatal);
 
                     var resumeItem = new ExcelValidatorResumeItem()
                     {
                         IsFatal = true,
-                        Row = rowFatal.RowNumber
+                        Row = rowFatal.RowNumber,
+                        ContratoCorredor = rowFatal.ContratoCorredor
                     };
 
-                    resumeItem.Errors.Add(itemFatal.Item.Name, string.Join("\n", itemFatal.Errors));
+                    resumeItem.Errors.Add( string.Join("\n", itemFatal.Errors));
                     ret.Add(resumeItem);
                 }
                 else
@@ -160,10 +171,11 @@ namespace SustitucionMOAUtils.Export
                     {
                         var item = new ExcelValidatorResumeItem();
                         item.Row = row.RowNumber;
+                        item.ContratoCorredor = row.ContratoCorredor;
 
                         foreach (var itemResult in row.ItemsResult)
                         {
-                            item.Errors.Add(itemResult.Item.Name, string.Join("\n", itemResult.Errors));
+                            item.Errors.Add( string.Join("\n", itemResult.Errors));
                         }
 
                         ret.Add(item);
@@ -183,12 +195,13 @@ namespace SustitucionMOAUtils.Export
     public class ExcelValidatorRowResult
     {
         public int RowNumber { get; set; }
+        public string ContratoCorredor { get; set; }
         public List<ExcelValidatorItemResult> ItemsResult { get; set; }
         public bool IsValid
         {
             get
             {
-                return this.ItemsResult.All(x=>x.IsValid);
+                return this.ItemsResult.All(x => x.IsValid);
             }
         }
 
@@ -201,7 +214,9 @@ namespace SustitucionMOAUtils.Export
     public class ExcelValidatorItemResult
     {
         public ExcelValidatorItem Item { get; set; }
-        public bool IsValid { get
+        public bool IsValid
+        {
+            get
             {
                 return !this.Errors.Any();
             }
@@ -217,12 +232,16 @@ namespace SustitucionMOAUtils.Export
     public class ExcelValidatorResumeItem
     {
         public int Row { get; set; }
-        public Dictionary<string, string> Errors { get; set; } //field, errors
+        public string ContratoCorredor { get; set; }
+        public List<string> Errors { get; set; } //field, errors
         public bool IsFatal { get; set; }
-
+        public bool HasError
+        {
+            get { return Errors.Count != 0; }
+        }
         public ExcelValidatorResumeItem()
         {
-            this.Errors = new Dictionary<string, string>();
+            this.Errors = new List<string>();
         }
     }
 
@@ -233,7 +252,8 @@ namespace SustitucionMOAUtils.Export
         Date,
         Bool,
         Decimal,
-        List
+        List,
+        Long
     }
 
     public enum ExcelValidationErrorType

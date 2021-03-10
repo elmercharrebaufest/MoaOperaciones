@@ -24,5 +24,11 @@ namespace SustitucionMOAUtils.Interfaces
         string GetContratos(DataSourceRequest request);
         string ValidarProveedor(string proveedorId);
         string TraerPrecioMoaMateriales(int tipoNegocioId);
+        List<MaterialDto> BuscarMateriales();
+        List<CentroDto> BuscarCentros();
+        List<CampaniaDto> BuscarCampanias();
+        string ObteneContratosAcuerdo(int idDataAgro);
+        BasicoContrato TraerContratoCompleto(int id, string tipo);
+        List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
     }
 }

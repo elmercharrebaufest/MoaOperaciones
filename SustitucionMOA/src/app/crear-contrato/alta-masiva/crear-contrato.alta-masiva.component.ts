@@ -23,12 +23,63 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
 
 
     contrato: ContratoAPrecio = new ContratoAPrecio();
-    contratoAcuerdo: string;
+    contratoAcuerdo: number = 0;
+    contratosAcuerdo: any = new Array();
+    conError: any = new Array();
+    sinError: any = new Array();
     archivoNombre: string;
     adjunto: FileList;
     ngOnInit() {
         //super.ngOnInit();
         //this.negocioHabilitado(this.contrato);
+        this.obtenercontratosAcuerdo()
+    }
+    obtenercontratosAcuerdo() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.blockUI.start('');
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.ObteneContratosAcuerdo()
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.blockUI.stop();
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.blockUI.stop();
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            let contratos = JSON.parse(result);
+                            let lista = new Array();
+                            if (contratos.length == 0) {
+                                lista.push({ Id: 0, Filtro: "No hay contratos acuerdos disponibles." });
+                            } else {
+                                lista.push({ Id: 0, Filtro: "Seleccione un Acuerdo de la lista..." });
+                                for (var i = 0; i < contratos.length; i++) {
+                                    lista.push({ Id: contratos[i].Id, Filtro: contratos[i].Filtro });
+                                }
+                            }
+                            this.contratosAcuerdo = lista;
+
+                            this.mensajeComponent.setMsgsEmpty();
+                            this.blockUI.stop();
+                            this.spinnerComponent.hideIt();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+
+        } catch (e) {
+            this.blockUI.stop();
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
     }
 
     ngAfterViewInit(): void {
@@ -41,8 +92,8 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
 
     grabarContratoAltaMasiva() {
         console.log(this.contrato);
-        if (!this.contratoAcuerdo || this.contratoAcuerdo == "") {
-            this.mensajeComponent.setErrorMsg("Ingrese el numero de Contrato Acuerdo.");
+        if (!this.contratoAcuerdo || this.contratoAcuerdo == null || this.contratoAcuerdo == 0) {
+            this.mensajeComponent.setErrorMsg("Seleccione un Contrato Acuerdo.");
             return false;
         }
         if (!this.adjunto) {
@@ -51,29 +102,38 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
         }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
-        this.blockUI.start('Grabando...');
+        this.blockUI.start('Procesando archivo...');
         try {
+            this.sinError = new Array();
+            this.conError = new Array();
             this.unsubscribe();
             this.subscription = this.service
-                .AltaMasivaAcuerdo(this.adjunto, this.contratoAcuerdo)
+                .AltaMasivaAcuerdo(this.adjunto, this.contratoAcuerdo.toString())
                 .subscribe(
                     (result) => {
-                        this.spinnerSmallComponent.hideIt();
+                        //this.spinnerSmallComponent.hideIt();
                         if (result.logout == true) {
                             this.sessionDataService.logout();
                         } else if (
                             result.error != undefined &&
                             result.error != ""
                         ) {
-                            this.mensajeComponent.setErrorMsg(result.error);
+                            this.mensajeComponent.setErrorMsg(result.error); this.blockUI.stop();
+                            this.spinnerComponent.hideIt();
                         } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
+                            this.mensajeComponent.setInfoMsg(result.info); this.blockUI.stop();
+                            this.spinnerComponent.hideIt();
                         } else {
+                            this.sinError = result.Resume.filter(a => a.HasError == false);
+                            this.conError = result.Resume.filter(a => a.HasError == true);
                             this.mensajeComponent.setMsgsEmpty();
-                            this.mensajeComponent.setSuccessMsg(result.data);
+                            this.blockUI.stop();
+                            this.spinnerComponent.hideIt();
+
                         }
                     },
                     (error) => {
+                        this.blockUI.stop();
                         this.spinnerSmallComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
                     }
@@ -91,6 +151,7 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
         this.adjunto = files;
         console.log(files);
         this.archivoNombre = files[0].name;
+        this.irACargas
     }
 
 }

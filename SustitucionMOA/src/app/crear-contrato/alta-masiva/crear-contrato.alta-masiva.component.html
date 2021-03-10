@@ -97,55 +97,108 @@
             <div class="col-xs-12 col-sm-10 "> <strong>Alta Masiva</strong> </div>
         </div>
         <mensaje></mensaje>
-        <fieldset class="fieldset" *ngIf="!this.retirados">
-            <!--<label class="subtitulo">Condiciones Generales</label>-->
-            <div class="row">
-                <div class="form-group col-md-6 subtitulo">                    
-                    <a href="../../../Documentacion/Carta de certificado de deposito.doc" target="_blank"
-                       style="text-decoration:none!important">
-                        <div class="doc-header no-border">
-                            <p>
-                                <i class="fa fa-file-excel-o" aria-hidden="true"></i>Descargar archivo modelo
-                            </p>
+        <fieldset class="fieldset">
+            <div *ngIf="this.conError.length == 0 && this.sinError.length == 0">
+                <div class="row">
+                    <div class="form-group col-md-6 subtitulo">
+                        <a href="../../../Documentacion/ARGA MASIVA DE CORREDORES.xlsx" target="_blank"
+                           style="text-decoration:none!important">
+                            <div class="doc-header no-border">
+                                <p>
+                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>Descargar archivo modelo
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label for="contratoAcuerdo" class="font-weight-bold">Contrato Acuerdo</label>
+                        <select type="text" class="form-control" name="contratoacuerdoid" numeric decimals="0" [(ngModel)]="contratoAcuerdo" style=" width: auto; display: inline; margin-left: 20px;">
+                            <option *ngFor="let item of contratosAcuerdo" value="{{item.Id}}">{{item.Filtro}}</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="certificadoExclusionGanancias">
+                            <img src="../../../../Content/images/buttons/ChoseFile.svg" />
+                        </label>
+                        <input type="file" class="form-control-file" style="display:none;" id="certificadoExclusionGanancias"
+                               (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+
+
+                        <div class="container-archivos" style="padding-top:7px; display: inline; padding-left: 10px;">
+                            <i class="link-archivo">{{archivoNombre}}</i>
                         </div>
-                    </a>
+                    </div>
+                </div>
+
+                <br />
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <spinner></spinner>
+                        <button type="button" class="btn-custom btn-mediano btn-add animate align-right" (click)="grabarContratoAltaMasiva()" *ngIf="!this.spinnerComponent.visible"
+                                style="margin: 0 10px; align-items: center; display: inline-flex;">
+                            Grabar
+                        </button>
+                        <button type="button" class="btn-custom btn-mediano btn-add animate align-right" (click)="irACargas()"
+                                style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
+                            Volver
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label for="contratoAcuerdo" class="font-weight-bold">Contrato Acuerdo</label>
-                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contratoAcuerdo">
+            <div *ngIf="this.conError.length > 0 || this.sinError.length > 0">
+                <div class="row myRow firstSection mySearch">
+                    <div class="col-xs-12 col-md-12 rounded shadow animate" style="padding-bottom:0; margin-top:0;">
+                        <div class="col-xs-12 col-md-12 search-header" style="margin-bottom:0; border-radius: 10px;">
+                            <title-caps>Resultado de la importación</title-caps>
+                        </div>
 
+                    </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="certificadoExclusionGanancias">
-                        <span class="link-adjuntar">Click aqui para adjuntar archivo</span>
-                    </label>
-                    <input type="file" class="form-control-file" style="display:none;" id="certificadoExclusionGanancias"
-                           (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')"
-                            accept="application/vnd.ms-excel">
+                <table id="conError" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0" role="grid" *ngIf="this.conError.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Linea</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of conError">
+                            <td>{{item.Row+2}}</td>
+                            <td><div *ngIf="item.IsFatal" style='color:red'>Error fatal no se pudo porcesar el archivo.</div><div style="color:lightcoral" *ngFor="let e of item.Errors">{{e}}</div></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
 
-
-                    <div class="container-archivos" style="padding-top:7px;">                        
-                            <i class="link-archivo">{{archivoNombre}}</i>                        
+                <table id="sinError" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0" role="grid" *ngIf="this.sinError.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Linea creadas correctamente</th>
+                            <th>Contrato Corredor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of sinError">
+                            <td>{{item.Row+2}}</td>
+                            <td>{{item.ContratoCorredor}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <button type="button" class="btn-custom btn-mediano btn-add animate align-right" (click)="irACargas()"
+                                style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
+                            Volver
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <br />
-            <div class="row">
-                <div class="form-group col-md-12">
-                    <spinner></spinner>
-                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoAltaMasiva()" *ngIf="!this.spinnerComponent.visible"
-                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;">
-                        Grabar
-                    </button>
-                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="irACargas()"
-                            style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
-                        Volver
-                    </button>
-                </div>
-            </div>
         </fieldset>
 
 
@@ -153,51 +206,4 @@
 
     </section>
     <!--End CONTENT-->
-</div>
-
-<!-- Modal confirmar -->
-<a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal" style="display:none;">    Click    to Open Confirm Modal</a>
-<div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
-     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
-            </div>
-            <div class="modal-body modal-notificacion">
-                <p>
-                    El contrato se genero correctamente.
-                </p>
-
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="irACargas()">Aceptar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal mensaje -->
-<a href="#mensajeModal" class="trigger-btn" id="openModalMensajeModal" data-toggle="modal" style="display:none;">    Click    to Open mensaje Modal</a>
-<div class="modal fade fade-complete" id="mensajeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Mensaje</h4>
-            </div>
-            <div class="modal-body modal-notificacion">
-                <p>
-                    {{mensajeModal}}
-                </p>
-
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-            </div>
-        </div>
-    </div>
 </div>
