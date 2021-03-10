@@ -151,11 +151,16 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     selectEventLocalidad(item) {
+        console.log("selectEventLocalidad");
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
+        if (this.BolsaId != null && this.contrato.BoletoId == 1) {
+            this.contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     onChangeSearchLocalidad(term: string) {

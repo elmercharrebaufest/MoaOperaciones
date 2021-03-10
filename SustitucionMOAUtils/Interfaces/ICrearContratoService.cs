@@ -33,5 +33,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ObteneContratosAcuerdo(int idDataAgro);
         BasicoContrato TraerContratoCompleto(int id, string tipo);
         List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
+        string ConfiguracionBolsaAutomatica();
     }
 }

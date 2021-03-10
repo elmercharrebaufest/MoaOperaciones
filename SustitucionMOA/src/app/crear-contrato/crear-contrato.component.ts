@@ -34,6 +34,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     protected spinnerComponent: SpinnerComponent;
     @ViewChild("spinnerCampana")
     protected spinnerCampana: SpinnerSmallComponent;
+    BolsaId: any;
 
     constructor(
         protected service: CrearContratoService,
@@ -74,6 +75,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     fechafInicio = new Date().toLocaleDateString('en-GB');
     fechafFin = new Date().toLocaleDateString('en-GB');
 
+    bolsasAutomaticas: any = new Array();
     datosContrato: any = new Array();
     materiales: any = new Array();
     monedas: any = new Array();
@@ -224,8 +226,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     this.blockUI.stop();
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj = JSON.parse(result);
-                    this.datosContrato = obj;                   
+                    let obj2 = JSON.parse(result.BolsaAutomatica);
+                    this.bolsasAutomaticas = obj2.Data;
+                    let obj = JSON.parse(result.DatosContrato);
+                    this.datosContrato = obj;
 
                     //obj.Datos.material.forEach(element => {
                     //    let el = {
@@ -445,6 +449,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     this.datosCompraNet = obj;
                     contrato.ClasificacionId = obj.ClasificacionCompraNetId;
                     contrato.BolsaId = obj.BolsaCompraNetId;
+                    this.BolsaId = obj.BolsaCompraNetId;
                     contrato.BoletoId = obj.BoletoCompraNetId;
                     if (obj.BoletoCompraNetId == 1) {
                         this.bolsasSelect = this.bolsasConfirma;
@@ -485,6 +490,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     if (contrato.TipoNegocioId == 3) {
                         this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                     }
+                    this.SeleccionAutomaticaBolsa(contrato);
                 }
 
             },
@@ -922,6 +928,30 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         );
         return false;
     };
+
+    SeleccionAutomaticaBolsa(contrato) {
+        console.log("SeleccionAutomaticaBolsa");
+        if (contrato.BoletoId == 1) {
+            var p = this.bolsasAutomaticas.filter(a => a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId)
+            if (p.length == 1) {
+                if (p[0].BolsaId != contrato.BolsaId) {
+                    contrato.BolsaId = p[0].BolsaId;
+                    this.mensajeModal = 'Se cambio la bolsa a ' + p[0].Bolsa;
+                    document.getElementById("openModalMensajeModal").click();
+                }
+
+            }
+        }
+    }
+
+    changeDestino(contrato) {
+        console.log("changeDestino");
+        console.log(contrato.DestinoId)
+        if (this.BolsaId != null && contrato.BoletoId == 1) {
+            contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(contrato);
+    }
 
     altaMasiva() {
         this.navService.navegarSeccion("/crear-contrato/alta-masiva");
