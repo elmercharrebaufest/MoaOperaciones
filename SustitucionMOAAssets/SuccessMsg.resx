@@ -144,6 +144,15 @@
   <data name="CambioVendedorOK" xml:space="preserve">
     <value>Se ha seleccionado el Proveedor ({0}) correctamente</value>
   </data>
+  <data name="CampoSustentableActualizado" xml:space="preserve">
+    <value>El campo sustentable se ha actualizado correctamente.</value>
+  </data>
+  <data name="CampoSustentableAgregado" xml:space="preserve">
+    <value>El campo sustentable se ha guardado correctamente.</value>
+  </data>
+  <data name="CampoSustentableBorrado" xml:space="preserve">
+    <value>El campo sustentable se ha borrado correctamente.</value>
+  </data>
   <data name="CommodityActualizacionOK" xml:space="preserve">
     <value>El commodity ({0}) se ha actualizado correctamente</value>
   </data>
@@ -155,6 +164,9 @@
   </data>
   <data name="DatosPesadasGuardadosOK" xml:space="preserve">
     <value>Los datos de las Pesadas se han guardado correctamente</value>
+  </data>
+  <data name="DeclaracionCampoSustentableFirmada" xml:space="preserve">
+    <value>La declaración del campo sustentable ha sido firmada correctamente.</value>
   </data>
   <data name="EmpresaCambioEstadoCompras" xml:space="preserve">
     <value>La empresa ({0}) se actualizo correctamente. Solicitud enviada a Datos Maestros.</value>
