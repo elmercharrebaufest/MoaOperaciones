@@ -118,7 +118,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         //    new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
         //    new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Fijacion'),
 
-        ]);
+        //]);
         //this.obteneDatosContrato();
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) {
