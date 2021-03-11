@@ -123,7 +123,7 @@ const appRoutes: Routes = [
         },
 
         {
-          path: "venta-sustentable",
+          path: "sustentable",
           loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
         },
 

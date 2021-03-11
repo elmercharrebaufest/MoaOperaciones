@@ -5,6 +5,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { VentaSustentableService } from './venta-sustentable.service';
 import { VentaSustentableRoutingModule } from './venta-sustentable-routing.Module';
 import { VentaSustentableBaseComponent } from "./venta-sustentable.component";
+import { ListadoCamposComponent } from "./listado-campos/listado-campos.component";
+import { AltaComponent } from "./alta/alta.component";
+import { EdicionComponent } from "./edicion/edicion.component";
+
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
 @NgModule({
@@ -16,7 +20,9 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
     ReCaptchaModule
   ],
     declarations: [
-      VentaSustentableBaseComponent,
+      ListadoCamposComponent,
+      AltaComponent,
+      EdicionComponent,
     ],
     providers: [
         VentaSustentableService,

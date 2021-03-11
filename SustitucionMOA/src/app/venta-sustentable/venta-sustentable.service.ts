@@ -9,4 +9,12 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class VentaSustentableService extends BaseService {
 
+
+
+    getCamposProveedores(){
+        let params: URLSearchParams = new URLSearchParams();
+        return this.http
+             .get('/api/CampoSustentable/CamposProveedores', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
 }

@@ -12,7 +12,7 @@ import { ModalService } from './../common/services/ModalService';
 
 
 @Component({
-    selector: 'venta-sustentable',
+    selector: 'sustentable',
     template: ``,
     providers: [VentaSustentableService]
 })
@@ -27,6 +27,6 @@ export class VentaSustentableBaseComponent extends BaseComponent implements OnIn
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([]);
+        this.navService.setSeccionList([new Seccion('/sustentable/listado-campos', 'sustentable', 'Listado Campos')]);
     }
 }

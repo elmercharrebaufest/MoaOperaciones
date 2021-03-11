@@ -51,11 +51,6 @@ import { ListadoNotificacionesComponent } from './notificaciones/listado-notific
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';;
-import { ListadoCamposComponent } from './venta-sustentable/listado-campos/listado-campos.component'
-;
-import { AltaComponent } from './venta-sustentable/alta/alta.component'
-;
-import { EdicionComponent } from './venta-sustentable/edicion/edicion.component';
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 @NgModule({
   imports: [
@@ -93,11 +88,7 @@ import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustent
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-    VentaSustentableBaseComponent,
-    ListadoCamposComponent
-,
-    AltaComponent ,
-    EdicionComponent ],
+    VentaSustentableBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,
