@@ -13,7 +13,7 @@ import { element } from '@angular/core/src/render3/instructions';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { BaseComponent } from '../../common/base-components/base-component';
-import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta } from '../consulta';
+import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta, Causa } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 
 declare var $: any;
@@ -134,7 +134,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.spinnerSmallComponent.showIt();
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        debugger;
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId).subscribe(
             result => {
                 this.spinnerComponent.hideIt();
@@ -300,6 +299,9 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+                        this.causas = result.causas;
+                        this.causasList = [];
+                        this.causas.forEach(x => this.causasList.push({ label: x.Nombre, value: x.Id}));
                     }
                 },
                 error => {

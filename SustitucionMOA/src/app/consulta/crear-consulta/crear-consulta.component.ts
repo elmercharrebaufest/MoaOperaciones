@@ -79,6 +79,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     categoriaCode: any;
     subcategoriaCode: any;
 
+    proveedorSelected: any;
+
 
     Detalle: any;
     nuevoComentario: any;
@@ -106,6 +108,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     fechaFactura: string;
 
+
+    prueba:any;
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
     }
@@ -250,9 +254,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo Importe retención esta vacio.");
                 return true;
             }
+            if (this.fechaPago == "" || !this.fechaPago) {
+                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                return true;
+            }
         }
         if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'){
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+            if (this.fechaPago == "" || !this.fechaPago) {
+                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                return true;
+            }
             if (this.cliente == "" || !this.cliente) {
                 this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
@@ -289,6 +301,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
+            if (this.fechaPago == "" || !this.fechaPago) {
+                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                return true;
+            }
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
         }
         if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP'){
@@ -301,12 +317,31 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
+        if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF'){
+            if(this.files == null || this.files.length < 1){
+                this.floatMsgService.setErrorMsg("Falta adjuntar Informe Comercial");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP'){
+            if(this.files == null || this.files.length < 1){
+                this.floatMsgService.setErrorMsg("Falta adjuntar Carta presentacón");
+                return true;
+            }
+        }
     }
 
     postConsulta(){
         this.spinnerComponent.showIt();
 
-        debugger
+        if(this.esCorredor){
+            this.codigoProveedor = this.proveedorSelected.idVendedor;
+            this.razonSocialProveedor = this.proveedorSelected.descVendedor;
+            this.razonSocialCorredor = this.nombre;
+        }
+        else{
+            this.razonSocialProveedor = this.nombre;
+        }
 
         if (this.validarConsulta()) {
             this.spinnerComponent.hideIt();
@@ -342,6 +377,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else {
                         this.postComentario(result.Id, this.nuevoComentario);
                         this.spinnerComponent.hideIt();
+                        setTimeout(() => {
+                            this.goToSeccion('/consulta/mis-consultas');
+                        }, 200);
                     }
                 },
                 error => {

@@ -2,7 +2,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
-//import { LiquidacionAprobadaService, LiquidacionObservadaService, LiquidacionPagaService, LiquidacionProformaService, LiquidacionService } from './liquidacion.service';
 import { ConsultaRoutingModule } from './consulta-routing.module';
 import { ConsultaService } from './consulta.service';
 import { CrearConsultaComponent } from './crear-consulta/crear-consulta.component';
@@ -42,11 +41,6 @@ import { InformeComercialComponent } from '../alta-proveedores/informe-comercial
     ],
     providers: [
       ConsultaService
-      /*
-      LiquidacionAprobadaService,
-      LiquidacionObservadaService,
-      LiquidacionPagaService,
-      LiquidacionProformaService, */
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

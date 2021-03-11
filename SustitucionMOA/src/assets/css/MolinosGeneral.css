@@ -4023,3 +4023,6 @@ input:focus::placeholder, textarea:focus::placeholder {
 .solicitudDoc{
 margin: 2px;
 }
+.ui-autocomplete{
+  top: -10px;
+}

@@ -12,8 +12,12 @@
         <div class="row myRow firstSection mySearch cargaDeDatos">
             <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <p class="crearConsultaTitulos">Codigo Proveedor*</p>
+                    <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="esCorredor">
+                        <p class="crearConsultaTitulos">Proveedor</p>
+                        <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event"></app-seleccionar-proveedor>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="!esCorredor">
+                        <p class="crearConsultaTitulos">Codigo Proveedor</p>
                         <div class="styled-select ">
                             <input type="search" [(ngModel)]="codigoProveedor" class="fourRounded" aria-controls="tableModal">
                         </div>
@@ -206,14 +210,14 @@
                         <div class="col-xs-12 col-sm-12 col-md-12"><p>Recuerde Adjuntar Constancia</p></div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.categoriaCode != 'ACT'">
-                        
+                    <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.subcategoriaCode != 'INF'">
                         <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'button'">
                         </app-informe-comercial>
+                    </div>
 
-                        <!--<app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
-                        </app-carta-presentacion>-->
-
+                    <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.subcategoriaCode != 'CAP' ">
+                        <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
+                        </app-carta-presentacion>
                     </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 row">
