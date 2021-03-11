@@ -55,7 +55,8 @@ import { ListadoCamposComponent } from './venta-sustentable/listado-campos/lista
 ;
 import { AltaComponent } from './venta-sustentable/alta/alta.component'
 ;
-import { EdicionComponent } from './venta-sustentable/edicion/edicion.component'
+import { EdicionComponent } from './venta-sustentable/edicion/edicion.component';
+import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 @NgModule({
   imports: [
     BrowserModule,
@@ -92,8 +93,7 @@ import { EdicionComponent } from './venta-sustentable/edicion/edicion.component'
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-
-    
+    VentaSustentableBaseComponent,
     ListadoCamposComponent
 ,
     AltaComponent ,

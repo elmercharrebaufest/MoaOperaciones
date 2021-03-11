@@ -4,7 +4,8 @@ import { ListadoCamposComponent } from "./listado-campos/listado-campos.componen
 import { AltaComponent } from "./alta/alta.component";
 
 const routes: Routes = [
-    { path: '', component: AltaComponent },
+    { path: '', component: ListadoCamposComponent },
+    { path: 'venta-sustentable', component: ListadoCamposComponent },
     { path: "Alta", component: AltaComponent },
     {
       path: "/venta-sustentable/Listado",

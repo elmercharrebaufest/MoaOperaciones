@@ -12,7 +12,7 @@ import { ModalService } from './../common/services/ModalService';
 
 
 @Component({
-    selector: 'app-venta-sustentable',
+    selector: 'venta-sustentable',
     template: ``,
     providers: [VentaSustentableService]
 })

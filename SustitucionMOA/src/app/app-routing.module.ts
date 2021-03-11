@@ -83,10 +83,6 @@ const appRoutes: Routes = [
         path: "liquidacion",
         loadChildren: "./liquidacion/liquidacion.module#LiquidacionModule",
       },
-      {
-        path: "venta-sustentable",
-        loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
-      },
       { path: "no-autorizado", component: NoAutorizadoComponent },
       { path: "pago", loadChildren: "./pago/pago.module#PagoModule" },
       {
@@ -124,6 +120,11 @@ const appRoutes: Routes = [
         {
             path: "crear-contrato",
             loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
+        },
+
+        {
+          path: "venta-sustentable",
+          loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
         },
 
       { path: "notificaciones", component: ListadoNotificacionesComponent},

@@ -16,7 +16,7 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
     ReCaptchaModule
   ],
     declarations: [
-      VentaSustentableBaseComponent
+      VentaSustentableBaseComponent,
     ],
     providers: [
         VentaSustentableService,
