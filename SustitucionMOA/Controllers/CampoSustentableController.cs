@@ -88,6 +88,28 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        public JsonResult CampoProveedor(int proveedorId, int campoCosechaId)
+        {
+            try
+            {
+                return JsonCustom(campoSustentableService.ObtenerCampo(SessionPersister.User.username, proveedorId, campoCosechaId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
         public JsonResult CamposProveedores()
         {
             try
@@ -104,7 +126,8 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                Console.Write(e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -154,11 +177,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public JsonResult FirmarDeclaracion(int proveedorId, int hectareasTotales)
+        public JsonResult FirmarDeclaracion(int proveedorId, double hectareasTotales)
         {
             try
             {
-                return JsonCustom(campoSustentableService.FirmarDeclaracion(proveedorId, hectareasTotales));
+                return JsonCustom(campoSustentableService.FirmarDeclaracion(SessionPersister.User.username, proveedorId, hectareasTotales));
             }
             catch (InfoCustomException e)
             {
