@@ -88,6 +88,9 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
 
+            kernel.Bind<ICampoSustentableService>().To(typeof(CampoSustentableService)).InScope(ctx => OperationContext.Current);
+
+
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
             #endregion

@@ -7,28 +7,26 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
-    public class NotificacionController : BaseController
+    public class CampoSustentableController : BaseController
     {
-        readonly INotificacionService notificacionService;
+        readonly ICampoSustentableService campoSustentableService;
 
-        public NotificacionController(INotificacionService notificacionService)
+        public CampoSustentableController(ICampoSustentableService campoSustentableService)
         {
-            this.notificacionService = notificacionService;
+            this.campoSustentableService = campoSustentableService;
         }
 
-
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
-        public ActionResult Grabar(string notificacionJson)
+        [HttpPost]
+        public JsonResult CampoProveedorAgregar(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
             try
             {
-                var notificacion = JsonConvert.DeserializeObject<Notificacion>(notificacionJson);
-
-                return JsonCustom(new { data = notificacionService.GrabarNotificacion(notificacion) });
+                return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
             {
@@ -40,18 +38,17 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 
-
-        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.c)]
-        public ActionResult GetListado()
+        [HttpPut]
+        public JsonResult CampoProveedorEditar(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
             try
             {
-                return JsonCustom(new { data = notificacionService.Listar() });
+                return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
             {
@@ -63,16 +60,17 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult GetNotificacion(int notificacionId)
+        [HttpDelete]
+        public JsonResult CampoProveedorBorrar(int campoCosechaId, int proveedorId)
         {
             try
             {
-                return JsonCustom(new { data = notificacionService.ObtenerNotificacion(notificacionId) });
+                return JsonCustom(campoSustentableService.Borrar(SessionPersister.User.username, campoCosechaId, proveedorId));
             }
             catch (InfoCustomException e)
             {
@@ -84,18 +82,17 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult GetNotificaciones()
+        [HttpGet]
+        public JsonResult CamposProveedores()
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                return JsonCustom(new { data = notificacionService.ObtenerNotificacionesUsuario(userMail) });
+                return JsonCustom(campoSustentableService.Listar(SessionPersister.User.username));
             }
             catch (InfoCustomException e)
             {
@@ -107,17 +104,17 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
-        public ActionResult Eliminar(int notificacionId)
+        [HttpGet]
+        public JsonResult Cosechas()
         {
             try
             {
-                return JsonCustom(new { data = notificacionService.Eliminar(notificacionId) });
+                return JsonCustom(campoSustentableService.ObtenerCosechas());
             }
             catch (InfoCustomException e)
             {
@@ -129,18 +126,17 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 
-
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
-        public ActionResult Deshabilitar(int notificacionId)
+        [HttpGet]
+        public JsonResult VerificarDeclaracion(int proveedorId)
         {
             try
             {
-                return JsonCustom(new { data = notificacionService.Deshabilitar(notificacionId) });
+                return JsonCustom(campoSustentableService.VerificarDeclaracion(proveedorId));
             }
             catch (InfoCustomException e)
             {
@@ -152,17 +148,17 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
-        public ActionResult Habilitar(int notificacionId)
+        [HttpPost]
+        public JsonResult FirmarDeclaracion(int proveedorId, int hectareasTotales)
         {
             try
             {
-                return JsonCustom(new { data = notificacionService.Habilitar(notificacionId) });
+                return JsonCustom(campoSustentableService.FirmarDeclaracion(proveedorId, hectareasTotales));
             }
             catch (InfoCustomException e)
             {
@@ -174,7 +170,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
