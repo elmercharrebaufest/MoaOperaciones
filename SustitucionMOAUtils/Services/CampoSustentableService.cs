@@ -34,7 +34,10 @@ namespace SustitucionMOAUtils.Services
 
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
+            campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
             repositorio.Agregar(campoProveedor);
+
+            repositorio.GuardarCambios();
 
             GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
@@ -77,11 +80,13 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.Longitud = campoProveedorObj.Longitud;
             campoProveedor.Latitud = campoProveedorObj.Latitud;
 
+            repositorio.GuardarCambios();
+
             GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
             repositorio.GuardarCambios();
 
-            return new Resultado { IdEntidad = campoProveedor.CampoCosecha.CampoSustentable_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
+            return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha.CampoSustentable_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
 
         public string Borrar(string mailUsuario, int campoCosechaId, int proveedorId)
@@ -109,7 +114,8 @@ namespace SustitucionMOAUtils.Services
 
         private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, "-", campoProveedor.Proveedor_Id, Path.GetExtension(archivoKmz.FileName));
+
+            string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, "-", campoProveedor.Proveedor.CUIT, Path.GetExtension(archivoKmz.FileName));
 
             string rutaCarpeta = ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"];
 
@@ -122,9 +128,10 @@ namespace SustitucionMOAUtils.Services
                 File.Delete(rutaArchivo);
             }
 
-            campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = rutaArchivo });
+            campoProveedor.Archivo.Ruta = rutaArchivo;
 
             archivoKmz.SaveAs(rutaArchivo);
+            
         }
 
         private int ObtenerIdCampoSustentable(CampoProveedor campoProveedor)
@@ -149,6 +156,11 @@ namespace SustitucionMOAUtils.Services
 
             var cosechaActual = repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
 
+            if(proveedor.FechaFirmaDeclaracionCampoSustentable == null)
+            {
+                return false;
+            }
+
             if (proveedor.FechaFirmaDeclaracionCampoSustentable > cosechaActual.Inicio)
             {
                 return true;
@@ -157,8 +169,13 @@ namespace SustitucionMOAUtils.Services
             return false;
         }
 
-        public string FirmarDeclaracion(int proveedorId, int hectareasTotales)
+        public string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales)
         {
+
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, proveedorId);
+
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
             proveedor.FechaFirmaDeclaracionCampoSustentable = DateTime.Now;
@@ -196,8 +213,9 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
                 listado = repositorio
-                         .Listar<CampoProveedor>(p => usuario.Proveedores.Contains(p.Proveedor) && !p.Borrado)
+                         .Listar<CampoProveedor>(p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado)
                          .Select(cp => new CampoProveedorListadoDto
                          {
                              NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
