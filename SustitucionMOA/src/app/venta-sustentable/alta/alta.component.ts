@@ -30,6 +30,9 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     this.spinnerComponent = new SpinnerComponent();
  }
 
+  nombreEstablecimiento: string;
+  pais: string;
+
   ngOnInit() {
     this.navService.setSeccionList([new Seccion('sustentable/Alta/', 'Alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'sustentable', 'Listado Campos')]);
   }
