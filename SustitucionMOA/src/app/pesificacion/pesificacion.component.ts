@@ -134,7 +134,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
             return true;
         else
             return false;
-       
+
     }
 
     isVisiblePaginacion(): boolean {
@@ -175,14 +175,14 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
-            result => {               
+            result => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
-                } else {                    
+                } else {
                     this.getListaContratos();
                     this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                 }
@@ -233,8 +233,8 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                     this.getListaContratos();
+                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                 }
             },
             error => {
@@ -260,15 +260,11 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
     };
 
     changeFijacion() {
-        console.log("antes",this.fijacion);
         this.fijacion = this.fijacion.replace(/^0+/, '');
-        console.log("despues",this.fijacion);
     }
 
     changeContrato() {
-        console.log("antes", this.contrato);
         this.contrato = this.contrato.replace(/^0+/, '');
-        console.log("despues", this.contrato);
     }
 
 }
