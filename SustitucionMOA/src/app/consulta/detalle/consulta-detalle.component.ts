@@ -299,9 +299,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
-                        this.causas = result.causas;
-                        this.causasList = [];
-                        this.causas.forEach(x => this.causasList.push({ label: x.Nombre, value: x.Id}));
                     }
                 },
                 error => {
