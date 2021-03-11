@@ -172,6 +172,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     };
     CrearContratoAPrecioComponent.prototype.changePagoDiferido = function (event) {
         this.contrato.DolarizadoTercero = false;

@@ -88,6 +88,7 @@
         position: relative;
         margin-left: 7px;
     }
+
     .material {
         cursor: pointer;
     }
@@ -120,10 +121,10 @@
         <div class="row titleSection" *ngIf="this.precioSeleccionado">
             <div class="col-xs-12 col-sm-10 ">{{crearModificar}} Contrato <strong>A Fijar {{materialSeleccionado}}</strong> </div>
             <!--<div class="col-xs-12 col-sm-2 " *ngIf="isVisibleProveedor()">
-            <a (click)="altaMasiva()" href="#" style="text-decoration:none!important">
-                <div class="btnSection animate align-right">Alta Masiva <img src="Content/images/buttons/upload.png" width="19" height="19" /></div>
-            </a>
-        </div>-->
+                <a (click)="altaMasiva()" href="#" style="text-decoration:none!important">
+                    <div class="btnSection animate align-right">Alta Masiva <img src="Content/images/buttons/upload.png" width="19" height="19" /></div>
+                </a>
+            </div>-->
         </div>
         <mensaje></mensaje>
         <fieldset class="fieldset" *ngIf="this.precioSeleccionado">
@@ -157,7 +158,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="destino">Destino</label>
-                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId"  (change)="changeDestino(contrato)" >
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId" (change)="changeDestino(contrato)">
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -226,15 +227,15 @@
                     </select>
                 </div>
                 <!--<div class="form-group col-md-4">
-            <label for="precio">Precio</label>
-            <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
-        </div>
-        <div class="form-group col-md-2">
-            <label for="moneda">Moneda</label>
-            <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
-                <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
-            </select>
-        </div>-->
+                    <label for="precio">Precio</label>
+                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="moneda">Moneda</label>
+                    <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                        <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>-->
             </div>
             <div class="row" *ngIf="isVisibleProveedor()">
                 <div class="form-group col-md-6">
@@ -473,6 +474,33 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal bolsa -->
+<a href="#bolsaModal" class="trigger-btn" id="openModalbolsaModal" data-toggle="modal" style="display:none;">    Click    to Open bolsa Modal</a>
+<div class="modal fade fade-complete" id="bolsaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    La bolsa recomendada es:  <b>{{mensajeCambioBolsa}}</b>  ¿Quiere asignarla como bolsa?
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cambiarBolsa(contrato)">Aceptar</button>
+            
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
+                    Cancelar
+                </button>
             </div>
         </div>
     </div>

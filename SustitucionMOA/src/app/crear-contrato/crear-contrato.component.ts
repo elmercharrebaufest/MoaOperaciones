@@ -35,6 +35,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     @ViewChild("spinnerCampana")
     protected spinnerCampana: SpinnerSmallComponent;
     BolsaId: any;
+    bolsaRecomendada: any;
 
     constructor(
         protected service: CrearContratoService,
@@ -63,6 +64,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     proveedores = [];
     pendienteFijar: any;
     pendienteFijarContrato: string = "";
+    mensajeCambioBolsa: string = "";
     pendientesFijar = [];
     keyword = 'Nombre';
     keyword2 = "RazonSocial";
@@ -930,18 +932,22 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     };
 
     SeleccionAutomaticaBolsa(contrato) {
-        console.log("SeleccionAutomaticaBolsa");
+        console.log("SeleccionAutomaticaBolsa", this.bolsasAutomaticas);
         if (contrato.BoletoId == 1) {
             var p = this.bolsasAutomaticas.filter(a => a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId)
             if (p.length == 1) {
                 if (p[0].BolsaId != contrato.BolsaId) {
-                    contrato.BolsaId = p[0].BolsaId;
-                    this.mensajeModal = 'Se cambio la bolsa a ' + p[0].Bolsa;
-                    document.getElementById("openModalMensajeModal").click();
+                    this.bolsaRecomendada = p[0].BolsaId;
+                    this.mensajeCambioBolsa =  p[0].Bolsa;
+                    document.getElementById("openModalbolsaModal").click();
                 }
 
             }
         }
+    }
+
+    cambiarBolsa(contrato) {
+        contrato.BolsaId = this.bolsaRecomendada;
     }
 
     changeDestino(contrato) {

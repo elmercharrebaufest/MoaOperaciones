@@ -236,6 +236,7 @@ var CrearContratoAFijarComponent = /** @class */ (function (_super) {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     };
     CrearContratoAFijarComponent.prototype.isVisibleBolsa = function () {
         return this.contrato.BoletoId != 3;

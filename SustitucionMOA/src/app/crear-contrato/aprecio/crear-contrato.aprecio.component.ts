@@ -191,6 +191,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     changePagoDiferido(event) {
