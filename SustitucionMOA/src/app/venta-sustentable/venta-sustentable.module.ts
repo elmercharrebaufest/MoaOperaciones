@@ -4,10 +4,7 @@ import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { VentaSustentableService } from './venta-sustentable.service';
 import { VentaSustentableRoutingModule } from './venta-sustentable-routing.Module';
-/*
-import { LiquidacionInformarComponent } from './informar/liquidacion.informar.component';
-import { LiquidacionInformadaComponent } from './informada/liquidacion.informada.component';
-*/
+import { VentaSustentableBaseComponent } from "./venta-sustentable.component";
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
 @NgModule({
@@ -19,10 +16,7 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
     ReCaptchaModule
   ],
     declarations: [
-        /*
-      LiquidacionInformarComponent,
-      LiquidacionInformadaComponent
-        */
+      VentaSustentableBaseComponent
     ],
     providers: [
         VentaSustentableService,

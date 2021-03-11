@@ -12,11 +12,11 @@ import { ModalService } from './../common/services/ModalService';
 
 
 @Component({
-    selector: 'app-ryd',
+    selector: 'app-venta-sustentable',
     template: ``,
     providers: [VentaSustentableService]
 })
-export class RYDBaseComponent extends BaseComponent implements OnInit {
+export class VentaSustentableBaseComponent extends BaseComponent implements OnInit {
 
     constructor(protected navService: NavService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);

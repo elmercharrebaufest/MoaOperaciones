@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { VentaSustentableService } from './../venta-sustentable.service'
 
 @Component({
   selector: 'app-listado-campos',
   templateUrl: './listado-campos.component.html',
-  styleUrls: ['./listado-campos.component.css']
+  providers: [VentaSustentableService]
 })
 export class ListadoCamposComponent implements OnInit {
 
