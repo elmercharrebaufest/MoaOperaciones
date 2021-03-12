@@ -31,7 +31,8 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IAzureService azureService;
         private readonly string[] formatosDeArchivoValidos = new string[] { ".pdf", ".png", ".jpg" };
-        private const string FECHA_REGEX = @"([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}";
+        private const string FECHA_REGEX = @"([0-2]?[0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}";
+        private const string COE_REGEX = @"C.*O.*E.*:";
 
         public LiquidacionService(IRepositorio repositorio, IAzureService azureService)
         {
@@ -483,7 +484,22 @@ namespace SustitucionMOAUtils.Services
                     Thread.Sleep(2000);
 
                     var resultadosOCR = await azureService.ObtenerResultadoOCRAsync(operacionOCRId);
-                    var coe = resultadosOCR.FirstOrDefault(rocr => rocr.Contains("C.O.E")).Split(':')[1].Trim();
+                    var resultadoCoe = resultadosOCR.FirstOrDefault(rocr => Regex.Match(rocr, COE_REGEX).Success);
+                    //Asumimos por default que no se encontró el COE
+                    var coe = string.Empty;
+                    if (!string.IsNullOrEmpty(resultadoCoe))
+                    {
+                        var inlineCoe = resultadoCoe.Split(':');
+                        if (inlineCoe.Length > 0 && !string.IsNullOrEmpty(inlineCoe[1].Trim()))
+                        {
+                            coe = inlineCoe[1].Trim();
+                        }
+                        //Puede que venga el C.O.E: separado del código. En ese caso tomar el resultado siguiente
+                        else if (string.IsNullOrEmpty(coe))
+                        {
+                            coe = resultadosOCR[resultadosOCR.IndexOf(resultadoCoe) + 1].Trim();
+                        }
+                    }
                     //TODO: validar si el chequeo de coe hace falta y de ser así si deberíamos validar si ya existe ese coe asociado al proveedor o el coe es único globalmente
                     if (!string.IsNullOrEmpty(coe))
                     {
@@ -494,7 +510,7 @@ namespace SustitucionMOAUtils.Services
                             DateTime? fecha = null;
                             if (!string.IsNullOrEmpty(fechaStr))
                             {
-                                fecha = DateTime.ParseExact(fechaStr, "dd/MM/yyyy", CultureInfo.CurrentCulture);
+                                fecha = DateTime.Parse(fechaStr, CultureInfo.CurrentCulture);
                             }
 
                             var liquidacionInformada = new LiquidacionInformada()
