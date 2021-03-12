@@ -171,7 +171,6 @@ namespace SustitucionMOAUtils.Services
 
         public string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales)
         {
-
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             ValidarUsuario(usuario, proveedorId);
