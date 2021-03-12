@@ -4,13 +4,9 @@ import { ListadoCamposComponent } from "./listado-campos/listado-campos.componen
 import { AltaComponent } from "./alta/alta.component";
 
 const routes: Routes = [
-    { path: '', component: ListadoCamposComponent },
-    { path: 'sustentable', component: ListadoCamposComponent },
-    { path: "Alta", component: AltaComponent },
-    {
-      path: "/venta-sustentable/Listado",
-      component: ListadoCamposComponent,
-    },
+    { path: '', component: AltaComponent },
+    { path: "alta", component: AltaComponent },
+    { path: "listado-campos", component: ListadoCamposComponent,},
 ];
 
 @NgModule({

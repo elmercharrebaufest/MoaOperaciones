@@ -8,7 +8,7 @@ import { VentaSustentableBaseComponent } from "./venta-sustentable.component";
 import { ListadoCamposComponent } from "./listado-campos/listado-campos.component";
 import { AltaComponent } from "./alta/alta.component";
 import { EdicionComponent } from "./edicion/edicion.component";
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReCaptchaModule } from 'angular2-recaptcha';
 
 @NgModule({
@@ -17,7 +17,9 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
     VentaSustentableRoutingModule,
     SharedModule,
     NgxPaginationModule,
-    ReCaptchaModule
+    ReCaptchaModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
     declarations: [
       ListadoCamposComponent,

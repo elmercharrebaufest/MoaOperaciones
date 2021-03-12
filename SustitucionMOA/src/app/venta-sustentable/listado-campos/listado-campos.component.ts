@@ -29,8 +29,10 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     this.spinnerComponent = new SpinnerComponent();
 }
 
+    camposSustentables: any[];
+
   ngOnInit() {
-    this.navService.setSeccionList([new Seccion('sustentable/Alta/', 'Alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'sustentable', 'Listado Campos')]);
+    this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
     this.getCamposSustentables();
   }
 
@@ -46,7 +48,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
             } else if (result.info != undefined) {
                 this.floatMsgService.setInfoMsg(result.info);
             } else {
-                console.log("funciono");
+                this.camposSustentables = result;
             }
         },
         error => {

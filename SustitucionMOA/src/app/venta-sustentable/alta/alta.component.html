@@ -11,28 +11,89 @@
         <!-- Form-->
         <div class="row myRow firstSection mySearch cargaDeDatos">
             <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
-                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
-                    
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <p class="crearConsultaTitulos">Nombre del establecimiento*</p>
-                        <div class="styled-select ">
-                            <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded" aria-controls="tableModal">
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <div class="for myRow">
-                            <p class="crearConsultaTitulos">Nombre*</p>
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">      
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Nombre del establecimiento*</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="nombre" class="fourRounded" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
-                    </div>              
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Localidad</p>
+
+                            <div class="styled-select ">
+                                <input type="search" [(ngModel)]="localidadId" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                            
+                            <ng-autocomplete [data]="localidades" [searchKeyword]="localidadId"
+                                            (selected)='selectEventLocalidad($event)' [(ngModel)]="localidad"
+                                            (inputChanged)='onChangeSearchLocalidad($event)'
+                                            (inputFocused)='selectEventLocalidad($event)' [itemTemplate]="itemTemplate"
+                                            [notFoundText]="autocompleteNotFoundText"
+                                            [notFoundTemplate]="notFoundTemplate">
+                            </ng-autocomplete>
+
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item.Nombre"></a>
+                            </ng-template>
+
+                            <ng-template #notFoundTemplate let-notFound>
+                                <div [innerHTML]="notFound"></div>
+                            </ng-template>
+                        </div>
+
+                    </div>
+
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Hectareas Totales*</p>
+                            <div class="styled-select ">
+                                <input min="1" [type]="'number'" [(ngModel)]="hectareasTotales" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Hectareas de Soja*</p>
+                            <div class="styled-select ">
+                                <input type="number" [(ngModel)]="hectareasSoja" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Latitud*</p>
+                            <div class="styled-select ">
+                                <input type="search" [(ngModel)]="latitud" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Longitud*</p>
+                            <div class="styled-select ">
+                                <input type="search" [(ngModel)]="longitud" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <p class="crearConsultaTitulos">Archivo</p>
+                        <div class="styled-select">
+                            <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="col-md-3">
+                        <button class="btn-custom btn-guardar btn-grande" id="CartaPresentacionDescargar"
+                          (click)="campoProveedorAgregar()">Finalizar</button>
+                    </div>
                 </div>
             </div>
             <spinner></spinner>
         </div>
-
-
         <!-- END form-->
     </section>
     <!--End CONTENT-->
