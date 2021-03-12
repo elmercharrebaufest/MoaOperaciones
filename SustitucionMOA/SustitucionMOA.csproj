@@ -317,6 +317,8 @@
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
     <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
+    <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
+    <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
     <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
     <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
     <Content Include="src\app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
@@ -946,6 +948,10 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
