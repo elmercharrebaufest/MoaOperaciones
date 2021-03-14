@@ -132,8 +132,6 @@ namespace SustitucionMOAUtils.Services
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
                 cartadePresentacion.vendedorActividad = infoProveedor.ProveedorClasificacion;
 
-                ValidarEstadoSolicitud(proveedor);
-
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
