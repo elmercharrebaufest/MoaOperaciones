@@ -10,7 +10,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor } from './../sustentable'
-
+import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 
 @Component({
   selector: 'app-alta',
@@ -59,25 +59,6 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     this.setMenuSeccionTab("Alta", "Dar de Alta");
   }
 
-  onChangeSearchLocalidad(term: string) {
-      if (term.length > 2) {
-          this.unsubscribe();
-          this.subscription = this.service.searchLocalidad(term).subscribe(
-              result => {
-                  this.localidades = result;
-              },
-              error => {
-                  this.mensajeComponent.setErrorMsg(error.message);
-              }
-          );
-      }
-  }
-
-  selectEventLocalidad(item) {
-    this.localidadId = item.LocalidadId;
-    this.provinciaId = item.ProvinciaId;
-  }
-
   cargarArchivo(event: any) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -96,7 +77,7 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     console.log(this.sojaParcial, this.sojaTotal);
 
     campoProveedor = {
-      HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja, 
+      HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
       Latitud: this.latitud, Longitud: this.longitud
     }
 

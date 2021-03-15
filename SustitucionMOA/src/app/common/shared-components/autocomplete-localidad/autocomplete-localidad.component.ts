@@ -56,6 +56,5 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
   selectEvent(item: { LocalidadId: number; }) {
     this.localidadIdSeleccionada = item.LocalidadId;
     this.onLocalidadSeleccionada.emit(this.localidadIdSeleccionada)
-    console.log("localidadID:", this.localidadIdSeleccionada)
   }
 }

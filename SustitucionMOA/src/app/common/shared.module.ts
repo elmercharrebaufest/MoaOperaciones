@@ -36,6 +36,6 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent,],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        CommonModule, FormsModule]
+        CommonModule, FormsModule, AutocompleteLocalidadComponent]
 })
 export class SharedModule { }

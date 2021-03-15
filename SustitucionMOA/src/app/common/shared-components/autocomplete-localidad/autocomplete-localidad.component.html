@@ -1,6 +1,5 @@
 <div class="ng-autocomplete">
 
-
   <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword" (selected)='selectEvent($event)'
     [(ngModel)]="localidad" (inputChanged)='onChangeSearch($event)' (inputFocused)='selectEvent($event)'
     [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'" [notFoundText]="autocompleteNotFoundText"
