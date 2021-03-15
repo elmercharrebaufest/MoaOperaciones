@@ -22,7 +22,7 @@ export class VentaSustentableService extends BaseService {
     campoProveedorAgregar(campoProveedor: CampoProveedor, file: File){
         let body = JSON.stringify(campoProveedor);
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorAgregar', body, this.headersPost).pipe(
+            .post('/api/CampoSustentable/CampoProveedorAgregar', {campoProveedor, body}, this.headersPost).pipe(
                 map(this.extractData));
     }
 

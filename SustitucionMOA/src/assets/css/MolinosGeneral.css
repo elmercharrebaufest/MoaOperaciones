@@ -3765,3 +3765,8 @@ div.panel-body a.active{
   border-radius: 2px;
   opacity: 1;
 }
+.robotoRegularNegro{
+  color: black;
+  font-weight: 300;
+  font-family: 'Roboto Regular';
+}

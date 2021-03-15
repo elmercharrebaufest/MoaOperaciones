@@ -40,6 +40,9 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   localidadId: any;
   provinciaId: any;
 
+  sojaParcial: boolean;
+  sojaTotal: boolean;
+
   hectareasTotales: number;
   hectareasSoja: number;
   latitud: string;
@@ -83,11 +86,14 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   }
 
   campoProveedorAgregar(){
+    debugger
     let campoProveedor: CampoProveedor;
 
     if(this.validar()){
       return;
     }
+
+    console.log(this.sojaParcial, this.sojaTotal);
 
     campoProveedor = {
       HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja, 
@@ -147,6 +153,10 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     }
     if(this.hectareasSoja <= 0){
       this.mensajeComponent.setErrorMsg("Hectareas de soja no puede ser 0 o un numero negativo.");
+      return true;
+    }
+    if(this.hectareasSoja > this.hectareasTotales){
+      this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
       return true;
     }
     if(this.latitud == "" || !this.latitud){
