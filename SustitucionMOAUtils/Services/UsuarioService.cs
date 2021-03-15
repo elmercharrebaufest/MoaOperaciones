@@ -469,5 +469,12 @@ namespace SustitucionMOAUtils.Services
         {
             return vendedorService.GetVendedores(usuarioMail);
         }
+
+        public ProveedorDto GetProveedorPorCodigo(string codigo)
+        {
+            var proveedor = repositorio.Obtener<ProveedorDto>(u => u.CodigoProveedor == codigo);
+
+            return proveedor;
+        }
     }
 }
