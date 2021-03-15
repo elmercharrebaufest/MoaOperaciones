@@ -23,8 +23,9 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
+import { SeleccionarProveedorComponent } from './shared-components/seleccionar-proveedor/seleccionar-proveedor.component';
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -34,8 +35,8 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
         SpinnerModule,
         AutoCompleteModule],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        AutocompleteLocalidadComponent,],
+        AutocompleteLocalidadComponent, SeleccionarProveedorComponent],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        CommonModule, FormsModule, AutocompleteLocalidadComponent]
+        CommonModule, FormsModule, AutocompleteLocalidadComponent, SeleccionarProveedorComponent]
 })
 export class SharedModule { }

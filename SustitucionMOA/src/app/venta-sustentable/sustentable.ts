@@ -3,14 +3,13 @@ export interface CampoProveedor {
     HectareasSoja: number;
     Longitud: string;
     Latitud: string;
+    Proveedor_Id: number;
+    CampoCosecha: CampoCosecha
 }
 export interface CampoCosecha {
-    HectareasTotales: number;
-    HectareasSoja: number;
-    Longitud: string;
-    Latitud: string;
+    Campo: CampoSustentable;
 }
 export interface CampoSustentable{
     Nombre: string;
-    Localidad_Id: number
+    Localidad_Id: number;
 }

@@ -9,7 +9,7 @@ import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { CampoProveedor } from './../sustentable'
+import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 
 @Component({
@@ -48,6 +48,8 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   latitud: string;
   longitud: string;
   file: any;
+
+  proveedorSelected: any;
   
 
   ngOnInit() {
@@ -69,16 +71,24 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   campoProveedorAgregar(){
     debugger
     let campoProveedor: CampoProveedor;
+    let campoSustentable: CampoSustentable;
+    let campoCosecha: CampoCosecha;
 
     if(this.validar()){
       return;
     }
 
-    console.log(this.sojaParcial, this.sojaTotal);
+    campoSustentable ={
+      Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+    }
+
+    campoCosecha = {
+      Campo: campoSustentable
+    }
 
     campoProveedor = {
       HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
-      Latitud: this.latitud, Longitud: this.longitud
+      Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: 24760, CampoCosecha: campoCosecha
     }
 
     this.mensajeComponent.setMsgsEmpty();
