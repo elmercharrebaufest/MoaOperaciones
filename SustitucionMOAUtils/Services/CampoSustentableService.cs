@@ -43,7 +43,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            return new Resultado { IdEntidad = campoProveedor.CampoCosecha.CampoSustentable_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
+            return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
         }
 
         private void ValidarUsuario(Usuario usuario, int proveedorId)
@@ -86,7 +86,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha.CampoSustentable_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
+            return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
 
         public string Borrar(string mailUsuario, int campoCosechaId, int proveedorId)
@@ -131,7 +131,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.Archivo.Ruta = rutaArchivo;
 
             archivoKmz.SaveAs(rutaArchivo);
-            
+
         }
 
         private int ObtenerIdCampoSustentable(CampoProveedor campoProveedor)
@@ -146,6 +146,12 @@ namespace SustitucionMOAUtils.Services
             {
                 campoProveedor.CampoCosecha.ToneladasAprobadas = 0;
             }
+            else
+            {
+                var campoCosecha = repositorio.Obtener<CampoCosecha>(cc => cc.CampoSustentable_Id == idCampo && cc.Cosecha_Id == campoProveedor.CampoCosecha_Id);
+
+                campoProveedor.CampoCosecha.ToneladasAprobadas = campoCosecha.ToneladasAprobadas;
+            }
 
             return campoSustentable?.Id ?? 0;
         }
@@ -156,7 +162,7 @@ namespace SustitucionMOAUtils.Services
 
             var cosechaActual = repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
 
-            if(proveedor.FechaFirmaDeclaracionCampoSustentable == null)
+            if (proveedor.FechaFirmaDeclaracionCampoSustentable == null)
             {
                 return false;
             }
@@ -234,17 +240,18 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, proveedorId);
 
-            var campo = repositorio.Obtener<CampoProveedor, CampoProveedorDto>(p => p.Proveedor_Id == proveedorId && p.CampoCosecha_Id == campoCosechaId,
-                            cp => new CampoProveedorDto
-                            {
-                                NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                                HectareasSoja = cp.HectareasSoja,
-                                HectareasTotales = cp.HectareasTotales,
-                                NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
-                            });
+            var campo = repositorio.Obtener<CampoProveedor>(p => p.Proveedor_Id == proveedorId && p.CampoCosecha_Id == campoCosechaId);
 
-            return campo;
+            var campoDto = new CampoProveedorDto
+            {
+                NombreCosecha = campo.CampoCosecha.Cosecha.Nombre,
+                HectareasSoja = campo.HectareasSoja,
+                HectareasTotales = campo.HectareasTotales,
+                NombreCampo = campo.CampoCosecha.Campo.Nombre,
+                ToneladasAprobadas = campo.CampoCosecha.ToneladasAprobadas
+            };
+
+            return campoDto;
         }
     }
 }
