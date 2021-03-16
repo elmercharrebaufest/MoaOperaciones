@@ -27,11 +27,19 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-sm-12 col-md-6">
-                        <p class="crearConsultaTitulos">
-                        <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event">
-                        </app-seleccionar-proveedor>
-                        </p>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Proveedor</p>
+                            <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event">
+                            </app-seleccionar-proveedor>
+                        </div>
+    
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Cosecha</p>
+                            <p-dropdown [options]="cosechas" [(ngModel)]="cosecha" optionLabel="Nombre">
+
+                            </p-dropdown>
+                        </div>
                     </div>
 
                     <div class="row myRow cargaDeDatosFields">

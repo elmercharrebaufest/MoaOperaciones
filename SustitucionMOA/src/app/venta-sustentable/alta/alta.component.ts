@@ -37,6 +37,9 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   myLocalidades = <any>[];
   localidades: any = [];
 
+  cosechas: any[];
+  cosecha: any;
+
   localidadId: any;
   provinciaId: any;
 
@@ -54,7 +57,7 @@ export class AltaComponent  extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
-  
+    this.getCosechas();
   }
 
   setTabs() {
@@ -123,9 +126,41 @@ export class AltaComponent  extends BaseComponent implements OnInit {
 
   }
 
+  getCosechas(){
+    this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.getCosechas().subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                      this.cosechas = result;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+  }
+
   validar(){
     this.mensajeComponent.setMsgsEmpty();
-    debugger
     if(this.nombreEstablecimiento == "" || !this.nombreEstablecimiento){
       this.mensajeComponent.setErrorMsg("Falta completar Nombre del establecimiento.");
       return true;
