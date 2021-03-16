@@ -10,6 +10,7 @@ import { AltaComponent } from "./alta/alta.component";
 import { EdicionComponent } from "./edicion/edicion.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReCaptchaModule } from 'angular2-recaptcha';
+import { DeclaracionConformidadComponent } from './declaracion-conformidad/declaracion-conformidad.component';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { ReCaptchaModule } from 'angular2-recaptcha';
       ListadoCamposComponent,
       AltaComponent,
       EdicionComponent,
+      DeclaracionConformidadComponent,
     ],
     providers: [
         VentaSustentableService,

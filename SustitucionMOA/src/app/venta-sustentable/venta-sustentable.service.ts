@@ -9,20 +9,17 @@ import { CampoProveedor } from './sustentable';
 
 @Injectable()
 export class VentaSustentableService extends BaseService {
-
-
-
-    getCamposProveedores(){
+    getCamposProveedores() {
         let params: URLSearchParams = new URLSearchParams();
         return this.http
-             .get('/api/CampoSustentable/CamposProveedores', { search: params, headers: this.headers }).pipe(
+            .get('/api/CampoSustentable/CamposProveedores', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
 
-    campoProveedorAgregar(campoProveedor: CampoProveedor, file: File){
+    campoProveedorAgregar(campoProveedor: CampoProveedor, file: File) {
         let body = JSON.stringify(campoProveedor);
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorAgregar', {campoProveedor, body}, this.headersPost).pipe(
+            .post('/api/CampoSustentable/CampoProveedorAgregar', { campoProveedor, body }, this.headersPost).pipe(
                 map(this.extractData));
     }
 
@@ -45,4 +42,19 @@ export class VentaSustentableService extends BaseService {
             })
             .pipe(map(this.extractData));
     }
+
+    verificarDeclaracion(proveedorId: number) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("proveedorId", proveedorId.toString());
+        return this.http
+            .get('/api/CampoSustentable/VerificarDeclaracion', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    firmarDeclaracion(proveedorId: number, hectareasTotales: number) {
+        return this.http
+            .post('/api/CampoSustentable/FirmarDeclaracion', { proveedorId: proveedorId, hectareasTotales: hectareasTotales }, this.headersPost).pipe(
+                map(this.extractData));
+    }
+
 }

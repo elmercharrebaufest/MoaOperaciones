@@ -150,23 +150,29 @@ namespace SustitucionMOAUtils.Services
             return campoSustentable?.Id ?? 0;
         }
 
-        public bool VerificarDeclaracion(int proveedorId)
+        public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
             var cosechaActual = repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
 
-            if(proveedor.FechaFirmaDeclaracionCampoSustentable == null)
+            var estado = new EstadoDeclaracionSustentableDto
             {
-                return false;
+                DeclaracionFirmada = false,
+                CosechaActual = cosechaActual.Nombre,
+                CUIT = proveedor.CUIT,
+                RazonSocial = proveedor.RazonSocial
+            };
+
+            if (proveedor.FechaFirmaDeclaracionCampoSustentable != null)
+            {
+                if (proveedor.FechaFirmaDeclaracionCampoSustentable > cosechaActual.Inicio)
+                {
+                    estado.DeclaracionFirmada = true;
+                }
             }
 
-            if (proveedor.FechaFirmaDeclaracionCampoSustentable > cosechaActual.Inicio)
-            {
-                return true;
-            }
-
-            return false;
+            return estado;
         }
 
         public string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales)
@@ -183,6 +189,8 @@ namespace SustitucionMOAUtils.Services
             proveedor.OpcionDeclaracionCampoSustentable = hectareasTotales > 0 ? OpcionesDeclaracionCampoSustentable.Parcial : OpcionesDeclaracionCampoSustentable.Totalidad;
 
             proveedor.HectareasDeclaracionCampoSustentable = hectareasTotales;
+
+            repositorio.GuardarCambios();
 
             return SuccessMsg.DeclaracionCampoSustentableFirmada;
         }
