@@ -71,6 +71,11 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     }
   }
 
+  getProveedor() {
+    debugger
+    console.log("anda");
+  }
+
   campoProveedorAgregar(){
     debugger
     let campoProveedor: CampoProveedor;
@@ -86,7 +91,7 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     }
 
     campoCosecha = {
-      Campo: campoSustentable
+      Campo: campoSustentable, Cosecha_Id: this.cosecha.Id
     }
 
     campoProveedor = {

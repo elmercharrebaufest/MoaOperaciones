@@ -54,8 +54,6 @@ import { CarouselNotificacionesComponent } from './notificaciones/carousel-notif
 import { BlockUIModule } from 'ng-block-ui';
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
 import { ConsultaService } from "./consulta/consulta.service";
-
-import { BlockUIModule } from 'ng-block-ui';;
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 @NgModule({
   imports: [
@@ -93,7 +91,7 @@ import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustent
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     NumericDirective,
-    ConsultaBaseComponent],
+    ConsultaBaseComponent,
     NumericDirective,
     VentaSustentableBaseComponent],
   providers: [

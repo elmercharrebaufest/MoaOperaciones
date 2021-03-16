@@ -26,4 +26,18 @@ export class SeleccionarProveedorService extends BaseService {
             map(this.extractData)
           );
     }
+
+    public getProveedor(codigo: string){
+      let params: URLSearchParams = new URLSearchParams();
+      params.set("codigo", codigo);
+      return this.http.get("/api/Usuario/GetProveedorPorCodigo", {search: params, headers: this.headers,})
+          .pipe(timeoutWith(30000, observableThrowError(
+                new Error(
+                  "Tiempo de respuesta agotado, por favor intentar nuevamente"
+                )
+              )
+            ),
+            map(this.extractData)
+          );
+    }
 }

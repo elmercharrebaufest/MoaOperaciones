@@ -36,7 +36,7 @@
     
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Cosecha</p>
-                            <p-dropdown [options]="cosechas" [(ngModel)]="cosecha" optionLabel="Nombre">
+                            <p-dropdown placeholder="Elegir cosecha" [options]="cosechas" [(ngModel)]="cosecha" optionLabel="Nombre">
 
                             </p-dropdown>
                         </div>
@@ -79,44 +79,6 @@
                             <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
                         </div>
                         <br />
-                    </div>
-
-                    <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-12 robotoRegularNegro">
-                            <input type="radio" name="validacion" value="sojaTotal" [(ngModel)]="sojaTotal">
-                            La totalidad de la soja correspondiente a la cosecha 2019/20 proveniente de mi tierra y entregada a Molinos Agro S.A. ha sido cultivada en campos que ya se encontraban bajo agricultura antes del 1 de enero de 2008, esto es: proviene de “tierras cultivables”
-                        </div>
-                        <br>
-                        <br>
-                        <br>
-                        <div class="col-xs-12 col-sm-12 col-md-12 robotoRegularNegro">
-                            <input type="radio" name="validacion" value="sojaParcial" [(ngModel)]="sojaParcial">
-                            Parte de la soja correspondiente a la cosecha 2019/20 producida en mi tierra y entregada a Molinos Agro S.A., es procedente de ……………… hectáreas que ya se encontraban bajo agricultura antes del 1 de enero de 2008, esto es: proviene de “tierras cultivables”
-                        </div>
-                        <!--
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default documento">
-                                <div class="panel-heading faqCategoria2" role="tab" id="heading2" data-toggle="collapse" data-parent="#accordion" href="#categoria2" aria-expanded="false" aria-controls="categoria2">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed aFaqClickCat">
-                                            Declara que
-                                            <span aria-hidden="true" id="ok" class="glyphicon glyphicon-chevron-down pull-right grisOscuro">
-                                            </span>
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="categoria2" class="panel-collapse collapse preguntasRespuesta2" data-parent="#accordion" role="tabpanel" aria-labelledby="heading2">
-                                    <div class="panel-body">
-                                        <div class="col-xs-12 col-sm-12 col-md-6">
-                                            La totalidad de la soja correspondiente a la cosecha 2019/20 proveniente de mi tierra y entregada a Molinos Agro S.A. ha sido cultivada en campos que ya se encontraban bajo agricultura antes del 1 de enero de 2008, esto es: proviene de “tierras cultivables”
-                                        </div>
-                                        <div class="col-xs-12 col-sm-12 col-md-6">
-                                            Parte de la soja correspondiente a la cosecha 2019/20 producida en mi tierra y entregada a Molinos Agro S.A., es procedente de ……………… hectáreas que ya se encontraban bajo agricultura antes del 1 de enero de 2008, esto es: proviene de “tierras cultivables”
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
 
                     <div class="col-md-3">

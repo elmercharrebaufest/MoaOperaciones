@@ -8,6 +8,7 @@ export interface CampoProveedor {
 }
 export interface CampoCosecha {
     Campo: CampoSustentable;
+    Cosecha_Id: number;
 }
 export interface CampoSustentable{
     Nombre: string;

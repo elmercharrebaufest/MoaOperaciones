@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
 
 namespace SustitucionMOA.Controllers
 {
@@ -589,6 +590,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
         public ActionResult GetProveedorPorCodigo(string codigo)
         {
             try

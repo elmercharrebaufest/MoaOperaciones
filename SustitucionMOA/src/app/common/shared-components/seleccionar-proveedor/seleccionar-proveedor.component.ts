@@ -63,6 +63,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   @Input() corredorId:number;
 
   selectEvent(item) {
+
     this.onLocalidadSeleccionada.emit(item);
   }
 

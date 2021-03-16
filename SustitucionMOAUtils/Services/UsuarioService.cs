@@ -503,11 +503,11 @@ namespace SustitucionMOAUtils.Services
             return vendedorService.GetVendedores(usuarioMail);
         }
 
-        public ProveedorDto GetProveedorPorCodigo(string codigo)
+        public int GetProveedorPorCodigo(string codigo)
         {
-            var proveedor = repositorio.Obtener<ProveedorDto>(u => u.CodigoProveedor == codigo);
+            var proveedor = repositorio.Obtener<Proveedor>(u => u.CodigoProveedor == codigo);
 
-            return proveedor;
+            return proveedor.Id;
         }
     }
 }
