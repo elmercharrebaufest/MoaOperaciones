@@ -129,8 +129,11 @@ const appRoutes: Routes = [
 
       { path: "notificaciones", component: ListadoNotificacionesComponent},
       { path: "notificaciones/alta", component: AltaNotificacionesComponent},
-      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent}
-
+      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent},
+      {
+        path: "consulta",
+        loadChildren: "./consulta/consulta.module#ConsultaModule",
+      },
     ],
   },
   { path: "**", component: HomeComponent },

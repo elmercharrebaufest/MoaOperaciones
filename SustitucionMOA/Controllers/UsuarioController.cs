@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
@@ -211,6 +212,7 @@ namespace SustitucionMOA.Controllers
                     return Json(new { error = String.Format(ErrorMsg.ErrorValorNuloVacio, "Vendedor") }, JsonRequestBehavior.AllowGet);
 
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                Proveedor proveedor;
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
@@ -220,6 +222,11 @@ namespace SustitucionMOA.Controllers
                     {
                         throw new ValidationCustomException("Proveedor incorrecto");
                     }
+                    proveedor = usuario.ObtenerProveedorPorCodigo(vendedor);
+                }
+                else
+                {
+                    proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == vendedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
                 }
 
                 // get context of the authentication manager
@@ -235,6 +242,8 @@ namespace SustitucionMOA.Controllers
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
                 identity.AddClaim(new Claim(Globals.ClaimsNombreType, descripcion));
 
+                identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorId));
+                identity.AddClaim(new Claim(Globals.ClaimsProveedorId, proveedor.Id.ToString()));
 
                 // tell the authentication manager to use this new identity
                 authenticationManager.AuthenticationResponseGrant =

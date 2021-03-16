@@ -60,6 +60,8 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   
   @Output() onLocalidadSeleccionada = new EventEmitter<any>();
 
+  @Input() corredorId:number;
+
   selectEvent(item) {
     this.onLocalidadSeleccionada.emit(item);
   }
@@ -73,6 +75,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
         filtered.push(proveedor);
       }
     }
+
     this.filtroProveedor = filtered;
   }
 
@@ -92,6 +95,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result.data.vendedores;
+                    this.data.sort((a, b) => (a.descVendedor > b.descVendedor) ? 1 : -1)
                     this.selectProveedor = [];
                     this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor}));
                 }
