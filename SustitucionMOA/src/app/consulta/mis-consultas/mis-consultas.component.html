@@ -86,7 +86,7 @@
                                         <span *ngSwitchDefault> {{rowData[col.field]}} </span> 
                                         <div *ngSwitchCase="'custom'">
                                             <h4 *ngIf="col.field == 'EstadoConsulta'; else defaultField"><span class="label label-default" 
-                                            [ngStyle]="{'background-color': rowData.EstadoConsulta.Color}" >{{rowData.EstadoConsulta.Descripcion}}</span></h4>
+                                            [ngStyle]="{'background-color': rowData.EstadoConsulta.Color}">{{rowData.EstadoConsulta.Descripcion}}</span></h4>
                                             
                                             <ng-template #defaultField>{{rowData[col.field].Nombre}}</ng-template>
                                         </div>
