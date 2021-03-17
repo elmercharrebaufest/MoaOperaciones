@@ -9,6 +9,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string FileKey { get; set; }
         public string Nombre { get; set; }
+        public string Ruta { get; set; }
 
         public ArchivoDto()
         {
@@ -20,8 +21,8 @@ namespace SustitucionMOAModel.Dto
             Id = archivo.Id;
             FileKey = archivo.FileKey;
             Nombre = ObtenerNombre(archivo.Ruta);
+            Ruta = archivo.Ruta;
         }
-
         private string ObtenerNombre(string ruta)
         {
             if (Path.GetFileName(ruta) != null)

@@ -7,6 +7,7 @@ import {
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
@@ -51,19 +52,21 @@ import { ListadoNotificacionesComponent } from './notificaciones/listado-notific
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';
-
+import { ConsultaBaseComponent } from "./consulta/consulta.component";
+import { ConsultaService } from "./consulta/consulta.service";
+import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpModule,
     AppRoutingModule,
     FormsModule,
     NgxPaginationModule,
     SelectModule,
     ModalModule,
-    Ng2AutoCompleteModule,
+
     ReCaptchaModule,
-    AutocompleteLibModule,
     SharedModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
@@ -87,8 +90,10 @@ import { BlockUIModule } from 'ng-block-ui';
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
-    NumericDirective
-  ],
+    NumericDirective,
+    ConsultaBaseComponent,
+    NumericDirective,
+    VentaSustentableBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,
@@ -105,9 +110,10 @@ import { BlockUIModule } from 'ng-block-ui';
     SecurityService,
     EmpresaGranosService,
     EstadoSolicitudService,
-    NotificacionesService
+    NotificacionesService,
+    ConsultaService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
-export class AppModule {}
+export class AppModule { }

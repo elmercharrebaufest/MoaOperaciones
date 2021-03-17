@@ -26,6 +26,8 @@ Post-Deployment Script Template
 -- You should have received a copy of the GNU Lesser General Public 
 -- License along with Hangfire. If not, see <http://www.gnu.org/licenses/>.
 
+use MOAOperacionesHangfire
+
 SET NOCOUNT ON
 SET XACT_ABORT ON
 DECLARE @TARGET_SCHEMA_VERSION INT;

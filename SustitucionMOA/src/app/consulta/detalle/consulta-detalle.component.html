@@ -1,0 +1,111 @@
+﻿<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Asunto: {{this.consulta.Asunto}}</strong> </div>
+        </div>
+    </section>
+    <mensaje></mensaje>
+    <spinner></spinner>
+    <div class="row myRow firstSection" style="overflow: hidden">
+        <div class="detalleConsulta shadow col-xs-12 col-sm-6" #detalleConsulta>
+            <div *ngFor="let comentario of consulta.Comentarios, let i = index">
+                <div>
+                    <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha | date:'dd/MM/yyyy') != (consulta.Comentarios[i-1].Fecha | date:'dd/MM/yyyy'))">
+                        <p class="fechaComentarioTexto">
+                            {{comentario.Fecha | date:'dd/MM/yyyy'}}
+                        </p>
+                    </div>
+                    <div class="row myRow">
+                        <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
+                        class="col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
+                            {{comentario.Detalle}}
+                        </div>
+                    </div>
+                    <div [ngClass]="comentarioPropio(comentario) ? 'widthAutoConsultaPropio' : 'widthAutoConsultaRespuesta' "
+                    class="col-xs-12 col-sm-6 col-md-7" *ngIf="comentario.Archivos.length != 0">
+                        <ng-container *ngFor="let Archivo of comentario.Archivos">
+                            <a class="archivosDescarga" (click)="descargarArchivo(Archivo.Id)"
+                                    style="text-decoration:none!important">
+                                <div [ngClass]="comentarioPropio(comentario) ? 'archivosDetallePropio' : 'archivosDetalle' ">
+                                    <p><i class="fa fa-file" aria-hidden="true"></i>{{Archivo.Nombre}}</p>
+                                </div>
+                            </a>
+                        </ng-container>
+                    </div>
+                    <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                    class="col-xs-12 col-sm-12 col-md-12">
+                        {{comentario.Fecha | date:'hh:mm'}}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!--AÑANDIR COMENTARIO-->
+        <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6" id="contenedorNuevoComentario">
+            <hr>
+            <div class="col-xs-12 col-sm-12 col-md-9">
+                <textarea [disabled]="disable()"
+                 type="search" [(ngModel)]="this.detalle" [value]=""
+                class="fourRounded añadirComentario" placeholder="Añadir Comentario" aria-controls="tableModal" rows="8"></textarea>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-2">
+                <input [disabled]="disable()"
+                 class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
+                <input [disabled]="disable()"
+                 class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-2">
+                <button [disabled]="disable()"
+                (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+                    <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
+                </button>
+            </div>
+            <div *ngIf="esInterno" class="col-xs-12 col-sm-12 col-md-3">
+                <input type="checkbox" [(ngModel)]="solicitudDoc">
+                <label class="solicitudDoc">Solicitud de documentos</label>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <p *ngIf="this.file != null">{{this.file.name}}</p>
+            </div>
+        </div>
+        
+        <!--MENU LATERAL-->
+        <div *ngIf="esInterno" class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
+            <div>
+                Creado el {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
+                <hr>
+                <div>
+                    <p class="bold" style="margin: 7px;">Estado</p>
+                    <p-dropdown [options]="estadosList" [(ngModel)]="this.estadoId" 
+                        name="estadoId" [maxSelectedLabels]="1" autoWidth="false">
+                    </p-dropdown>
+                </div>
+                <div>
+                    <p class="bold" style="margin: 7px;">Categoria</p>
+                    <p-dropdown [options]="categoriasList" [(ngModel)]="this.categoriaId" 
+                        name="categoriaId" [maxSelectedLabels]="1" autoWidth="false"
+                        (onChange)="setSubcategorias($event.value)">
+                    </p-dropdown>
+                </div>
+                <div>
+                    <p class="bold" style="margin: 7px;">Subcategorias</p>
+                    <p-dropdown [options]="subcategoriasList" [(ngModel)]="this.subcategoriaId" 
+                    name="subcategoriaId" [maxSelectedLabels]="1" autoWidth="false">
+                    </p-dropdown>
+                </div>
+
+                <div class="botonActualizarCombos" style="margin-top: 10px;">
+                    <spinner-small></spinner-small>
+                    <button (click)="actualizarCombos()" class="mx-auto d-block enviarComentario" style="text-decoration:none!important">
+                        <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Cambiar</div>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <spinner></spinner>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+﻿CREATE TABLE [dbo].[EstadoConsulta]
+(
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Code] [varchar](10) NOT NULL,
+	[Descripcion] [nvarchar](max) NOT NULL,
+	[Color] [nvarchar](max) NOT NULL,
+CONSTRAINT [PK_dbo.EstadoConsulta] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO

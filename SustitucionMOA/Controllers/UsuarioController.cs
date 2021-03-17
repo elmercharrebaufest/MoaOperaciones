@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
@@ -18,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
 
 namespace SustitucionMOA.Controllers
 {
@@ -211,6 +213,7 @@ namespace SustitucionMOA.Controllers
                     return Json(new { error = String.Format(ErrorMsg.ErrorValorNuloVacio, "Vendedor") }, JsonRequestBehavior.AllowGet);
 
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                Proveedor proveedor;
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
@@ -220,6 +223,11 @@ namespace SustitucionMOA.Controllers
                     {
                         throw new ValidationCustomException("Proveedor incorrecto");
                     }
+                    proveedor = usuario.ObtenerProveedorPorCodigo(vendedor);
+                }
+                else
+                {
+                    proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == vendedor && p.EstadoAprobacion == EstadoAprobacion.Aprobado);
                 }
 
                 // get context of the authentication manager
@@ -235,6 +243,8 @@ namespace SustitucionMOA.Controllers
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
                 identity.AddClaim(new Claim(Globals.ClaimsNombreType, descripcion));
 
+                identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorId));
+                identity.AddClaim(new Claim(Globals.ClaimsProveedorId, proveedor.Id.ToString()));
 
                 // tell the authentication manager to use this new identity
                 authenticationManager.AuthenticationResponseGrant =
@@ -564,6 +574,28 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = altaEmpresaNoGranosService.GetRubros() });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetProveedorPorCodigo(string codigo)
+        {
+            try
+            {
+                return JsonCustom(_usuarioService.GetProveedorPorCodigo(codigo));
             }
             catch (InfoCustomException e)
             {

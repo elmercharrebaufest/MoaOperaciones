@@ -17,6 +17,7 @@ import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuari
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
+import { VentaSustentableBaseComponent } from "./venta-sustentable/venta-sustentable.component"
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -121,10 +122,18 @@ const appRoutes: Routes = [
             loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
         },
 
+        {
+          path: "sustentable",
+          loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
+        },
+
       { path: "notificaciones", component: ListadoNotificacionesComponent},
       { path: "notificaciones/alta", component: AltaNotificacionesComponent},
-      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent}
-
+      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent},
+      {
+        path: "consulta",
+        loadChildren: "./consulta/consulta.module#ConsultaModule",
+      },
     ],
   },
   { path: "**", component: HomeComponent },
