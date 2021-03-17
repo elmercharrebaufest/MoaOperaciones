@@ -18,6 +18,6 @@ namespace SustitucionMOAUtils.Interfaces
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
         List<Cosecha> ObtenerCosechas();
         string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales);
-        bool VerificarDeclaracion(int proveedorId);
+        EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId);
     }
 }

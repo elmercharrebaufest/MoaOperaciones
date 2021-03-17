@@ -10,6 +10,7 @@ import { AltaComponent } from "./alta/alta.component";
 import { EdicionComponent } from "./edicion/edicion.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReCaptchaModule } from 'angular2-recaptcha';
+import { DeclaracionConformidadComponent } from './declaracion-conformidad/declaracion-conformidad.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
@@ -30,6 +31,7 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
       ListadoCamposComponent,
       AltaComponent,
       EdicionComponent,
+      DeclaracionConformidadComponent,
     ],
     providers: [
         VentaSustentableService,
