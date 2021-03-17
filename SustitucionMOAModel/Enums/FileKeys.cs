@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Enums
         public const string ConstanciaCUIT = "constanciaCUIT";
         public const string ConstanciaCBU = "constanciaCBU";
         public const string ConstanciaCBUMercaderia = "constanciaCBUMercaderia";
+        public const string Consultas = "consultas";
         public const string InscripcionIIBB = "inscripcionIIBB";
         public const string CertificadoExclusionGanancias = "certificadoExclusionGanancias";
         public const string CertificadoExclusionIIBB = "certificadoExclusionIIBB";

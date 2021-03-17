@@ -122,7 +122,7 @@ a:hover {
   .col-sm-15 {
     width: 20%;
     float: left;
-  }
+  }  
 }
 @media (min-width: 992px) {
   .col-md-15 {
@@ -3441,7 +3441,8 @@ a.link-header[aria-expanded=false] span{
 #operar,
 #documentacion,
 #contacto,
-#usuarios {
+#usuarios,
+#mis-consultas {
     height: 35px;
 }
 
@@ -3743,7 +3744,10 @@ div.panel-body a.active{
 	justify-content: left;
 	align-items: center;
 }
-
+.crearConsultaComentario{
+  height: 228px;
+  margin-top: 40px;
+}
 .crearConsultaTitulos{
   top: 239px !important;
   left: 276px !important;
@@ -3765,9 +3769,261 @@ div.panel-body a.active{
   border-radius: 2px;
   opacity: 1;
 }
-.robotoRegularNegro{
-  color: black;
-  font-weight: 300;
+.enviarComentario{
+  margin-bottom: 5px;
+  border: none;
+  outline:none;
+  background-color: white;
+}
+.margin-left{
+  margin-left: 20px;
+}
+.menuLateralConsulta{
+  text-align: left;
+  font: normal normal normal 16px/28px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  left: 10px;
+  width: 28%;
+  position: relative;
+  top: -353px;
+}
+.bold{
+  font-weight: bold;
+}
+.añadirComentario{
+  height: 100px;
+
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  opacity: 1;
+  font: normal normal normal 16px Roboto Regular;
+}
+.btn-enviar-comentario{
+  position: relative;
+  right: 10px;
+  width: 85px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
+.fechaComentario{
+  padding: 4px;
+  height: 27px;
+  background: white 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+}
+.fechaComentarioTexto{
+  width: 102px;
+  padding: 4px;
+  height: 27px;
+  background: #707070 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+
+  text-align: center;
+  font: normal normal normal 14px/19px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+}
+.comentarioRespuesta{
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 5px;
+  padding: 20px;
+  width: auto;
+  max-width: 58.33333333%;
+
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+.comentarioPropio{
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 5px;
+  padding: 20px;
+  float: right;
+  width: auto;
+  max-width: 58.33333333%;
+  
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+  opacity: 1;
+}
+.horaComentarioRespuesta{
+  text-align: right;
+}
+.detalleConsulta{
+  height: 350px;
+  overflow-y: auto;
+  border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  background: #fff;
+  padding: 10px;
+  transition: 0.5s;
+  width: 70%;
+}
+.contenedorNuevoComentario{
+  border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  background: #fff;
+  padding: 10px;
+  transition: 0.5s;
+  width: 70%;
+}
+.detalleConsulta::-webkit-scrollbar{
+  width: 10px;
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-track{
+  background: white;
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-thumb{
+  background: #707070; 
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-thumb:hover{
+  background: #707070;  
+  border-radius: 10px;
+}
+.ui-table-wrapper{
   font-family: 'Roboto Regular';
-  font-size: 14px;
+}
+.archivosDetalle .fa {
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.widthAutoConsultaPropio{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  float: right; 
+  right: -10px;
+}
+.widthAutoConsultaRespuesta{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  right: 10px;
+}
+.archivosDetallePropio {
+  margin: 2px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetallePropio:hover {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #00645a 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetalle {
+  margin: 2px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetalle:hover {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #cacaca 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetallePropio .fa{
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.filters-text-table {
+  width: 90% !important;
+}
+.filters-calendar-table {
+  width: calc(100% - 2.357em) !important;
+}
+.consulta-table th {
+  text-transform: capitalize !important;
+}
+
+.consulta-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+p-dropdown>div {
+  width: 100% !important;
+}
+input:focus::placeholder, textarea:focus::placeholder {
+  color: transparent;
+}
+.solicitudDoc{
+margin: 2px;
+}
+.ui-autocomplete{
+  top: -10px;
 }

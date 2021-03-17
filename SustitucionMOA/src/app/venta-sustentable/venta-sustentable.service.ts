@@ -16,10 +16,18 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
-    campoProveedorAgregar(campoProveedor: CampoProveedor, file: File) {
+    getCosechas(){
+        let params: URLSearchParams = new URLSearchParams();
+        return this.http
+             .get('/api/CampoSustentable/Cosechas', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File){
+        let params: URLSearchParams = new URLSearchParams();
         let body = JSON.stringify(campoProveedor);
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorAgregar', { campoProveedor, body }, this.headersPost).pipe(
+            .post('/api/CampoSustentable/CampoProveedorAgregar', {campoProveedor, archivoKmz}, this.headersPost).pipe(
                 map(this.extractData));
     }
 

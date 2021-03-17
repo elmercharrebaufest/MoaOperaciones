@@ -9,7 +9,7 @@ import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { CampoProveedor } from './../sustentable'
+import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 
 @Component({
@@ -37,6 +37,9 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   myLocalidades = <any>[];
   localidades: any = [];
 
+  cosechas: any[];
+  cosecha: any;
+
   localidadId: any;
   provinciaId: any;
 
@@ -48,11 +51,13 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   latitud: string;
   longitud: string;
   file: any;
+
+  proveedorSelected: any;
   
 
   ngOnInit() {
     this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
-  
+    this.getCosechas();
   }
 
   setTabs() {
@@ -66,19 +71,32 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     }
   }
 
+  getProveedor() {
+    debugger
+    console.log("anda");
+  }
+
   campoProveedorAgregar(){
     debugger
     let campoProveedor: CampoProveedor;
+    let campoSustentable: CampoSustentable;
+    let campoCosecha: CampoCosecha;
 
     if(this.validar()){
       return;
     }
 
-    console.log(this.sojaParcial, this.sojaTotal);
+    campoSustentable ={
+      Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+    }
+
+    campoCosecha = {
+      Campo: campoSustentable, Cosecha_Id: this.cosecha.Id
+    }
 
     campoProveedor = {
       HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
-      Latitud: this.latitud, Longitud: this.longitud
+      Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: 24760, CampoCosecha: campoCosecha
     }
 
     this.mensajeComponent.setMsgsEmpty();
@@ -113,9 +131,41 @@ export class AltaComponent  extends BaseComponent implements OnInit {
 
   }
 
+  getCosechas(){
+    this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.getCosechas().subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                      this.cosechas = result;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+  }
+
   validar(){
     this.mensajeComponent.setMsgsEmpty();
-    debugger
     if(this.nombreEstablecimiento == "" || !this.nombreEstablecimiento){
       this.mensajeComponent.setErrorMsg("Falta completar Nombre del establecimiento.");
       return true;
