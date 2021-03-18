@@ -469,7 +469,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.VerificarDeclaracion(proveedorId);
 
-            var expected = true;
+            var expected = new EstadoDeclaracionSustentableDto { DeclaracionFirmada = true, CosechaActual = "19-20" };
 
             repositorioMock
                  .Verify(x => x.Obtener(It.IsAny<Expression<Func<Cosecha, bool>>>()), Times.Once);
@@ -505,7 +505,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.VerificarDeclaracion(proveedorId);
 
-            var expected = false;
+            var expected = new EstadoDeclaracionSustentableDto { DeclaracionFirmada = false, CosechaActual = "19-20" };
 
             repositorioMock
                  .Verify(x => x.Obtener(It.IsAny<Expression<Func<Cosecha, bool>>>()), Times.Once);
@@ -540,7 +540,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.VerificarDeclaracion(proveedorId);
 
-            var expected = false;
+            var expected = new EstadoDeclaracionSustentableDto { DeclaracionFirmada = false, CosechaActual = "19-20" };
 
             repositorioMock
                  .Verify(x => x.Obtener(It.IsAny<Expression<Func<Cosecha, bool>>>()), Times.Once);
@@ -670,7 +670,8 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<Expression<Func<Cosecha, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
-                                It.IsAny<DirOrden>()))
+                                It.IsAny<DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<Cosecha, object>>>>()))
                  .Returns(cosechas);
 
 
@@ -681,7 +682,8 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<Expression<Func<Cosecha, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
-                                It.IsAny<DirOrden>()), Times.Once);
+                                It.IsAny<DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<Cosecha, object>>>>()), Times.Once);
 
             Assert.NotNull(result);
             CollectionAssert.AreEquivalent(cosechas, result);
@@ -752,7 +754,8 @@ namespace SustitucionMOATest.Services
                .Setup(x => x.Listar(It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                                     It.IsAny<int>(),
                                     It.IsAny<string>(),
-                                    It.IsAny<DirOrden>()))
+                                    It.IsAny<DirOrden>(),
+                                    It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()))
                .Returns(campoProveedor);
 
             var expected = new List<CampoProveedorListadoDto> {
@@ -781,7 +784,8 @@ namespace SustitucionMOATest.Services
                 .Verify(x => x.Listar(It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                                         It.IsAny<int>(),
                                         It.IsAny<string>(),
-                                        It.IsAny<DirOrden>()), Times.Once);
+                                        It.IsAny<DirOrden>(),
+                                        It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()), Times.Once);
 
 
             CollectionAssert.AreEquivalent(expected, result);
@@ -851,7 +855,8 @@ namespace SustitucionMOATest.Services
                .Setup(x => x.Listar(It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                                     It.IsAny<int>(),
                                     It.IsAny<string>(),
-                                    It.IsAny<DirOrden>()))
+                                    It.IsAny<DirOrden>(),
+                                    It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()))
                .Returns(campoProveedor);
 
             var expected = new List<CampoProveedorListadoDto> {
@@ -880,7 +885,8 @@ namespace SustitucionMOATest.Services
                 .Verify(x => x.Listar(It.IsAny<Expression<Func<CampoProveedor, bool>>>(),
                                         It.IsAny<int>(),
                                         It.IsAny<string>(),
-                                        It.IsAny<DirOrden>()), Times.Once);
+                                        It.IsAny<DirOrden>(),
+                                        It.IsAny<IEnumerable<Expression<Func<CampoProveedor, object>>>>()), Times.Once);
 
 
             CollectionAssert.AreEquivalent(expected, result);
