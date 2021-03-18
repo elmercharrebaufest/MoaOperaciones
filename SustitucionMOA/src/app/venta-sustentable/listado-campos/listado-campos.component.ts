@@ -59,5 +59,31 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     return false;
 }
 
+eliminarCampo(campoCosechaId: number, proveedorId: number){
+    this.floatMsgService.setMsgsEmpty();
+    this.unsubscribe();
+    this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
+        result => {
+            if (result.logout == true) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.floatMsgService.setErrorMsg(result.error);
+            } else if (result.info != undefined) {
+                this.floatMsgService.setInfoMsg(result.info);
+            } else {
+                this.mensajeComponent.setSuccessMsg("se elimino el campo " + campoCosechaId + " correctamente.");
+                setTimeout(() => {
+                    this.getCamposSustentables();
+                }, 200);
+            }
+        },
+        error => {
+            this.floatMsgService.setErrorMsg(error.message);
+        }
+    );
+
+    return false;
+}
+
 
 }

@@ -28,9 +28,9 @@
                     </div>
 
                     <div class="row myRow cargaDeDatosFields">
-                        <div class="col-xs-12 col-sm-12 col-md-6">
+                        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="esCorredor">
                             <p class="crearConsultaTitulos">Proveedor</p>
-                            <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event">
+                            <app-seleccionar-proveedor (onLocalidadSeleccionada)="onselect($event)">
                             </app-seleccionar-proveedor>
                         </div>
     

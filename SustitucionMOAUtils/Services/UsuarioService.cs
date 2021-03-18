@@ -503,11 +503,18 @@ namespace SustitucionMOAUtils.Services
             return vendedorService.GetVendedores(usuarioMail);
         }
 
-        public int GetProveedorPorCodigo(string codigo)
+        public ProveedorDto GetProveedorPorCodigo(string codigo)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(u => u.CodigoProveedor == codigo);
 
-            return proveedor.Id;
+            Entidades.Proveedor proveedor = repositorio.Obtener<Entidades.Proveedor>(x => x.CodigoProveedor == codigo);
+
+            if (proveedor == null)
+            {
+                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+            }
+            var ret = new ProveedorDto(proveedor);
+
+            return ret;
         }
     }
 }

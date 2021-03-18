@@ -8,6 +8,8 @@ namespace SustitucionMOAModel.Dto
 {
     public class CampoProveedorListadoDto
     {
+        public int Id { get; set; }
+
         public string NombreCampo { get; set; }
 
         public string NombreCosecha { get; set; }
@@ -17,5 +19,11 @@ namespace SustitucionMOAModel.Dto
         public double HectareasSoja { get; set; }
 
         public double ToneladasAprobadas { get; set; }
+
+        public double ToneladasPendientes { get; set; }
+
+        public int CampoCosechaId { get; set; }
+
+        public int ProveedorId { get; set; }
     }
 }

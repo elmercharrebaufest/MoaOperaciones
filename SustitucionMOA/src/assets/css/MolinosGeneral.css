@@ -4027,3 +4027,12 @@ margin: 2px;
 .ui-autocomplete{
   top: -10px;
 }
+.estadoAprobado{
+  color:#009688;
+}
+.estadoRechazado{
+  color:#DD441E;
+}
+.estadoEnGestion{
+  color: #F0AD4E;
+}

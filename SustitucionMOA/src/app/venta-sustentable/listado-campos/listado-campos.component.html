@@ -33,36 +33,49 @@
                                 ID
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Nombre')">
-                                Nombre
+                                Cosecha
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
                                 Nombre Campo
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                                Estado
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">                        
+                                Hectares Totales
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Hectareas Soja
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
-                                Hectares Totales
-                            </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Toneladas Aprobadas
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
+                            <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Hectares pendientes
+                            </th>-->
+                            <th tabindex="0" rowspan="1" colspan="2" (click)="orderColumnBy('Tipo')">
+                                Acciones
                             </th>
                         </tr>
                     </thead>
                   
                     <tbody>
-                        <tr *ngFor="let campo of camposSustentable">
+                        <tr *ngFor="let campo of this.camposSustentables">
                             <td>{{campo.Id}}</td>
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
-                            <td>{{campo.HectareasSoja}}</td>
+                            <td class="estadoRechazado" *ngIf="campo.ToneladasAprobadas == 0">Rechazada</td>
+                            <td class="estadoAprobado" *ngIf="campo.ToneladasAprobadas > 0">Aprobado</td>
+                            <td class="estadoEnGestion" *ngIf="campo.ToneladasAprobadas == null">En gesti&oacute;n</td>
                             <td>{{campo.HectareasTotales}}</td>
+                            <td>{{campo.HectareasSoja}}</td>
                             <td>{{campo.ToneladasAprobadas}}</td>
+                            <!--<td>NO VIENE</td>-->
                             <td>
-                                <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">ver detalle</a>
+                                <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">Editar</a>
+                            </td>
+                            <td>
+                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.ProveedorId)" href="#">Eliminar</a>
                             </td>
                         </tr>
                     </tbody>

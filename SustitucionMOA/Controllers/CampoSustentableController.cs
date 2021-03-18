@@ -22,10 +22,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public JsonResult CampoProveedorAgregar(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        public JsonResult CampoProveedorAgregar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
         {
             try
             {
+                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
                 return JsonCustom(campoSustentableService.Agregar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
