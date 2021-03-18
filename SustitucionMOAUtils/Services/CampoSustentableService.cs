@@ -323,7 +323,7 @@ namespace SustitucionMOAUtils.Services
                                    NombreCampo = cp.CampoCosecha.Campo.Nombre,
                                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                    CampoCosechaId = cp.CampoCosecha_Id,
-                                   ProveedorId = cp.Proveedor_Id,
+                                   Proveedor = new ProveedorDto(cp.Proveedor),
                                }).ToList();
             }
             else
@@ -340,7 +340,7 @@ namespace SustitucionMOAUtils.Services
                              NombreCampo = cp.CampoCosecha.Campo.Nombre,
                              ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                              CampoCosechaId = cp.CampoCosecha_Id,
-                             ProveedorId = cp.Proveedor_Id,
+                             Proveedor = new ProveedorDto(cp.Proveedor),
                          }).ToList();
             }
             return listado;
@@ -353,7 +353,17 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, proveedorId);
 
-            var campo = repositorio.Obtener<CampoProveedor>(p => p.Proveedor_Id == proveedorId && p.CampoCosecha_Id == campoCosechaId);
+            var campo = repositorio.Obtener<CampoProveedor, CampoProveedorDto>(p => p.Proveedor_Id == proveedorId && p.CampoCosecha_Id == campoCosechaId,
+                            cp => new CampoProveedorDto
+                            {
+                                NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                                HectareasSoja = cp.HectareasSoja,
+                                HectareasTotales = cp.HectareasTotales,
+                                NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                                Latitud = cp.Latitud,
+                                Longitud = cp.Longitud,
+                            });
 
             var campoDto = new CampoProveedorDto
             {

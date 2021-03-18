@@ -41,6 +41,9 @@
                                 Nombre Campo
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                                Proveedor
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
                                 Estado
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
@@ -66,6 +69,7 @@
                             <td>{{campo.Id}}</td>
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
+                            <td>{{campo.Proveedor.CodigoProveedor}}</td>
                             <td class="estadoRechazado" *ngIf="campo.ToneladasAprobadas == 0">Rechazada</td>
                             <td class="estadoAprobado" *ngIf="campo.ToneladasAprobadas > 0">Aprobado</td>
                             <td class="estadoEnGestion" *ngIf="campo.ToneladasAprobadas == null">En gesti&oacute;n</td>
@@ -73,12 +77,13 @@
                             <td>{{campo.HectareasSoja}}</td>
                             <td>{{campo.ToneladasAprobadas}}</td>
                             <!--<td>NO VIENE</td>-->
-                            <td>
-                                <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">Editar</a>
+                            <td *ngIf="campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == null">
+                                <a class="animate" [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]" href="#">Editar</a>
+                            </td>
+                            <td *ngIf="campo.ToneladasAprobadas > 0">
                             </td>
                             <td>
-                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.ProveedorId)"
-                                    href="#">Eliminar</a>
+                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.Proveedor.Id)" href="#">Eliminar</a>
                             </td>
                             <td>
                                 <app-impresion-declaracion [proveedorId]="campo.ProveedorId">
@@ -86,49 +91,11 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- END tables-->
-        <!-- END form-->
-    </section>
-    <!--End CONTENT-->
-
-
-
-    <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
-        data-target="#modalHabilitarUsuario"></button>
-    <!-- Modal -->
-    <div class="modal fade" id="modalHabilitarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="cerrarModal()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <span *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
-                            <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
-                                [(ngModel)]="rol.checked">
-                            &nbsp;
-                            <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-                        </span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
-                        style="display: inline-flex;">Cancelar</button>
-                    <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
-                        style="display: inline-flex;">
-                        Guardar
-                    </button>
-
-                </div>
-            </div>
-        </div>
-    </div>
+              </table>
+          </div>
+      </div>
+      <!-- END tables-->
+      <!-- END form-->
+  </section>
+  <!--End CONTENT-->
 </div>

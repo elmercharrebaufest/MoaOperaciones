@@ -24,6 +24,7 @@ namespace SustitucionMOAModel.Dto
 
         public int CampoCosechaId { get; set; }
 
+        public ProveedorDto Proveedor { get; set; }
         public int ProveedorId { get; set; }
 
         public override bool Equals(object obj)

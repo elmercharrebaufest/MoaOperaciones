@@ -85,5 +85,4 @@ eliminarCampo(campoCosechaId: number, proveedorId: number){
     return false;
 }
 
-
 }

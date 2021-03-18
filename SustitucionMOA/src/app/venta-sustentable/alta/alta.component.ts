@@ -148,6 +148,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     this.mensajeComponent.setMsgsEmpty();
     this.spinnerComponent.showIt();
     try {
+      this.unsubscribe();
       this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
         result => {
           this.spinnerComponent.hideIt();
@@ -158,10 +159,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
           } else if (result.info != undefined) {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
-            setTimeout(() => {
-              this.blockUI.stop();
-              this.goToSeccion('/sustentable/listado-campos');
-            }, 1000);
+            this.blockUI.stop();
+            this.goToSeccion('/sustentable/listado-campos');
           }
         },
         error => {
@@ -176,7 +175,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
       this.blockUI.stop();
       return false; //<-- Prevent Refresh
     }
-
     this.blockUI.stop();
     return false; //<-- Prevent Refresh
 
