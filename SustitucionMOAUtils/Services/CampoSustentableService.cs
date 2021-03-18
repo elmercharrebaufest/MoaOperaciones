@@ -365,16 +365,7 @@ namespace SustitucionMOAUtils.Services
                                 Longitud = cp.Longitud,
                             });
 
-            var campoDto = new CampoProveedorDto
-            {
-                NombreCosecha = campo.CampoCosecha.Cosecha.Nombre,
-                HectareasSoja = campo.HectareasSoja,
-                HectareasTotales = campo.HectareasTotales,
-                NombreCampo = campo.CampoCosecha.Campo.Nombre,
-                ToneladasAprobadas = campo.CampoCosecha.ToneladasAprobadas
-            };
-
-            return campoDto;
+            return campo;
         }
     }
 }
