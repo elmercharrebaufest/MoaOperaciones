@@ -70,6 +70,15 @@ export class VentaSustentableService extends BaseService {
             map(this.extractData));
     }
 
+    getCampoProveedor(proveedorId: any, campoCosechaId: any) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("proveedorId", proveedorId);
+        params.set("campoCosechaId", campoCosechaId)
+        return this.http
+            .get('/api/CampoSustentable/CampoProveedor', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
     verificarDeclaracion(proveedorId: number) {
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());

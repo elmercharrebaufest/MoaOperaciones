@@ -148,10 +148,8 @@ export class AltaComponent  extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                      setTimeout(() => {
-                        this.blockUI.stop();
-                        this.goToSeccion('/sustentable/listado-campos');
-                      }, 1000);
+                      this.blockUI.stop();
+                      this.goToSeccion('/sustentable/listado-campos');
                     }
                 },
                 error => {
