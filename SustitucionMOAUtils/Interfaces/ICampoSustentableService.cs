@@ -19,5 +19,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<Cosecha> ObtenerCosechas();
         string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales);
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId);
+        byte[] ImprimirDeclaracion(int proveedorId);
     }
 }

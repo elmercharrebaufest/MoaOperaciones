@@ -419,15 +419,18 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void VerificarDeclaracionTest()
         {
-            var debefirmar = true;
+            var firmaDto = new EstadoDeclaracionSustentableDto
+            {
+                DeclaracionFirmada = false,
+            };
 
             int proveedorId = 1;
 
-            campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.Is<int>(i => i == proveedorId))).Returns(debefirmar);
+            campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.Is<int>(i => i == proveedorId))).Returns(firmaDto);
 
             var result = target.VerificarDeclaracion(proveedorId);
 
-            expectedJson = JsonConvert.SerializeObject(debefirmar);
+            expectedJson = JsonConvert.SerializeObject(firmaDto);
             resultJson = JsonConvert.SerializeObject(result.Data);
 
             Assert.NotNull(result);

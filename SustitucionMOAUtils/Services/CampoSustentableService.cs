@@ -1,15 +1,22 @@
-﻿using SustitucionMOAAssets;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.CredentialService;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Web;
 
 namespace SustitucionMOAUtils.Services
@@ -17,9 +24,12 @@ namespace SustitucionMOAUtils.Services
     public class CampoSustentableService : ICampoSustentableService
     {
         private readonly IRepositorio repositorio;
+        private readonly string DataAgroURL;
+
         public CampoSustentableService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
+            this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
@@ -107,6 +117,89 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.CampoSustentableBorrado;
         }
 
+        public byte[] ImprimirDeclaracion(int proveedorId)
+        {
+
+            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
+            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            var cosecha = ObtenerCosechaActual();
+
+            var allCampos = repositorio.Listar<CampoProveedor, CamposSustentableReporte>
+                (c => new CamposSustentableReporte
+                {
+                    HectareasSoja = c.HectareasSoja.ToString(),
+                    HectareasTotales = c.HectareasTotales.ToString(),
+                    Localidad = c.CampoCosecha.Campo.Localidad.Nombre,
+                    Nombre = c.CampoCosecha.Campo.Nombre,
+                    Pais = "Argentina",
+                    Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
+                    Coordenadas = string.Concat(c.Latitud, " ", c.Longitud)
+                },
+                cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
+
+            string userName = DataAgroWSCredential.getUserName();
+            string password = DataAgroWSCredential.getPassword();
+            string dominio = DataAgroWSCredential.getDominio();
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(userName, password, dominio),
+            };
+
+            string downloadKey = "";
+
+            var campos = new List<CamposSustentableReporte>();
+
+            DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
+            {
+                Cosecha = cosecha.Nombre,
+                CUIT = proveedor.CUIT,
+                RazonSocial = proveedor.RazonSocial,
+                Fecha = proveedor.FechaFirmaDeclaracionCampoSustentable?.ToString("dd/MM/yyyy"),
+                CantidadParteSoja = proveedor.HectareasDeclaracionCampoSustentable.Value,
+                Campos = campos
+            };
+
+            var content = JsonConvert.SerializeObject(datos);
+            var buffer = Encoding.UTF8.GetBytes(content);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            using (var client = new HttpClient(httpClientHandler, false))
+            {
+                var task = client.PostAsync(urlReporteCampo, byteContent);
+
+                task.Wait();
+
+                var response = task.Result;
+
+                var stringContent = response.Content.ReadAsStringAsync();
+
+                dynamic jsonResult = JObject.Parse(stringContent.Result);
+
+                if (bool.Parse(jsonResult.HayErrores.ToString()))
+                {
+                    throw new InfoCustomException(jsonResult.Errores[0].Message);
+                }
+
+                downloadKey = jsonResult.DownloadKey;
+
+                byte[] InformeComercialPDF;
+                urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
+                using (WebClient clienteDescarga = new WebClient())
+                {
+                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+
+                    InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                }
+
+                return InformeComercialPDF;
+            }
+        }
+
         private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor)
         {
 
@@ -159,8 +252,7 @@ namespace SustitucionMOAUtils.Services
         public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-
-            var cosechaActual = repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
+            Cosecha cosechaActual = ObtenerCosechaActual();
 
             var estado = new EstadoDeclaracionSustentableDto
             {
@@ -179,6 +271,11 @@ namespace SustitucionMOAUtils.Services
             }
 
             return estado;
+        }
+
+        private Cosecha ObtenerCosechaActual()
+        {
+            return repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
         }
 
         public string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales)

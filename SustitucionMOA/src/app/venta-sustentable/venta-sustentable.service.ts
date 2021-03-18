@@ -16,18 +16,18 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
-    getCosechas(){
+    getCosechas() {
         let params: URLSearchParams = new URLSearchParams();
         return this.http
-             .get('/api/CampoSustentable/Cosechas', { search: params, headers: this.headers }).pipe(
+            .get('/api/CampoSustentable/Cosechas', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
 
-    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File){
+    campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File) {
         let params: URLSearchParams = new URLSearchParams();
         let body = JSON.stringify(campoProveedor);
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorAgregar', {campoProveedor, archivoKmz}, this.headersPost).pipe(
+            .post('/api/CampoSustentable/CampoProveedorAgregar', { campoProveedor, archivoKmz }, this.headersPost).pipe(
                 map(this.extractData));
     }
 
@@ -65,4 +65,12 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
+
+    imprimirDeclaracion(proveedorId: number) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("proveedorId", proveedorId.toString());
+        return this.http
+            .get('/api/CampoSustentable/ImprimirDeclaracion', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
 }

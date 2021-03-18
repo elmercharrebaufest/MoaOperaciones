@@ -15,6 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
 import {AutoCompleteModule} from 'primeng/autocomplete';
+import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion-declaracion.component';
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
       AltaComponent,
       EdicionComponent,
       DeclaracionConformidadComponent,
+      ImpresionDeclaracionComponent,
     ],
     providers: [
         VentaSustentableService,

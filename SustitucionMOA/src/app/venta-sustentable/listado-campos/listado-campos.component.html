@@ -1,32 +1,34 @@
 <div class="content-wraper">
-  <!-- CONTENT-->
+    <!-- CONTENT-->
 
-  <section class="container-fluid clearfix">
-      <!--Title-->
-      <div class="row titleSection">
-          <div class="col-xs-12 col-sm-10 "><strong>Campo Sustentable : Consultas</strong></div>
-      </div>
-      <!--End Title-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Campo Sustentable : Consultas</strong></div>
+        </div>
+        <!--End Title-->
 
-      <div class="row myRow firstSection mySearch">
-          <div class="col-xs-12 col-md-12 rounded shadow animate">
-              <div class="col-xs-12 col-md-12 search-header">
-                  <title-caps>Refinar resultados</title-caps>
-              </div>
-              <div class="col-xs-12 col-sm-12 col-md-6">
-                  Id
-                  <div class="styled-select">
-                      <input type="search" class="" placeholder="" aria-controls="tableModal">
-                  </div>
-              </div>
-          </div>
-      </div>
+        <div class="row myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6">
+                    Id
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <div class="row myRow">
-          <div class="clearfix myTables">
-              <mensaje></mensaje>
-              <spinner></spinner>
-              <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table" cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+        <div class="row myRow">
+            <div class="clearfix myTables">
+                <mensaje></mensaje>
+                <spinner></spinner>
+                <table id="tableModal"
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Id')">
@@ -52,7 +54,7 @@
                             </th>
                         </tr>
                     </thead>
-                  
+
                     <tbody>
                         <tr *ngFor="let campo of camposSustentable">
                             <td>{{campo.Id}}</td>
@@ -66,48 +68,49 @@
                             </td>
                         </tr>
                     </tbody>
-              </table>
-          </div>
-      </div>
-      <!-- END tables-->
-      <!-- END form-->
-  </section>
-  <!--End CONTENT-->
+                </table>
+            </div>
+        </div>
+        <!-- END tables-->
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
 
 
 
-  <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal" data-target="#modalHabilitarUsuario"></button>
-  <!-- Modal -->
-  <div class="modal fade" id="modalHabilitarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-       data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                          onClick="cerrarModal()">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-                  <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
-              </div>
-              <div class="modal-body">
-                  <div class="row">
-                      <span *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
-                          <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}" [(ngModel)]="rol.checked">
-                          &nbsp;
-                          <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-                      </span>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal" style="display: inline-flex;">Cancelar</button>
-                  <button type="button" class="btn-custom btn-add btn-chico"
-                          (click)="guardarRolesUsuario()"
-                          style="display: inline-flex;">
-                      Guardar
-                  </button>
+    <button type="button" style="display:none" id="openModalHiddenButton" data-toggle="modal"
+        data-target="#modalHabilitarUsuario"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="modalHabilitarUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onClick="cerrarModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <span *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
+                            <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                                [(ngModel)]="rol.checked">
+                            &nbsp;
+                            <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
+                        style="display: inline-flex;">Cancelar</button>
+                    <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
+                        style="display: inline-flex;">
+                        Guardar
+                    </button>
 
-              </div>
-          </div>
-      </div>
-  </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

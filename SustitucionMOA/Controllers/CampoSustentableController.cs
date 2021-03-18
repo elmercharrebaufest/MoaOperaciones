@@ -3,6 +3,8 @@ using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -182,6 +184,37 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(campoSustentableService.FirmarDeclaracion(SessionPersister.User.username, proveedorId, hectareasTotales));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult ImprimirDeclaracion(int proveedorId)
+        {
+            try
+            {
+                var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId);
+                PDFResponse result = new PDFResponse
+                {
+                    pdf = new Pdf()
+                    {
+                        data = fileArray
+                    }
+                };
+
+                return JsonCustom(result.pdf);
             }
             catch (InfoCustomException e)
             {

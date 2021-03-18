@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, ViewChild, EventEmitter, Input } from '@angular/core';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
@@ -29,13 +29,15 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   camposSustentables: any[];
-  proveedorId: number = 0;
   cosechaActual: string = "";
   razonSocial: string = ""
   CUIT: string = "";
   fechaActual: string = ""
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
+
+
+  @Input() proveedorId: number = 0;
 
   @Output() proveedorFirmo = new EventEmitter<boolean>();
 
