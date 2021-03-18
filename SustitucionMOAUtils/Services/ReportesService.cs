@@ -3,6 +3,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
+using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,27 @@ namespace SustitucionMOAUtils.Services
         public ReportesService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
+        }
+
+        public void EnviarReporteCamposSustentablesTSA()
+        {
+            var camposAReportar = repositorio.Listar<CampoProveedor>(cp => cp.FechaCreacion.HasValue && cp.FechaCreacion.Value == DateTime.Today)
+                .Select(cp => new {
+                    cp.CampoCosecha.Campo.Id,
+                    cp.Proveedor.RazonSocial,
+                    cp.Proveedor.CUIT,
+                    cp.CampoCosecha.Campo.Nombre,
+                    Provincia = cp.CampoCosecha.Campo.Localidad.Provincia.Nombre,
+                    Departamento = cp.CampoCosecha.Campo.Localidad.Partido.Descripcion,
+                    Localidad = cp.CampoCosecha.Campo.Localidad.Nombre,
+                    cp.Latitud,
+                    cp.Longitud,
+                    cp.HectareasSoja
+                });
+
+            var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
+
+            File.WriteAllText($"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{new Guid()}.xls", excelFile);
         }
 
         public void EnviarReporteLiquidacionesInformadas()
