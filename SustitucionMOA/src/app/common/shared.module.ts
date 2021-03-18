@@ -27,7 +27,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
 import {AutoCompleteModule} from 'primeng/autocomplete';
-import { BlockUIModule } from 'ng-block-ui';
 import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
 
 @NgModule({
@@ -36,8 +35,7 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
         DropdownModule,
         MultiSelectModule,
         SpinnerModule,
-        AutoCompleteModule,
-        BlockUIModule],
+        AutoCompleteModule],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
         CartaPresentacionComponent,],
@@ -45,7 +43,6 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
-        CommonModule, FormsModule, AutocompleteLocalidadComponent, SeleccionarProveedorComponent,
-        BlockUIModule]
+        CommonModule, FormsModule, AutocompleteLocalidadComponent, SeleccionarProveedorComponent]
 })
 export class SharedModule { }
