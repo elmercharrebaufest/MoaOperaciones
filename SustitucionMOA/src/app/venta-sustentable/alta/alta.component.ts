@@ -12,6 +12,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
+import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
 
 @Component({
   selector: 'app-alta',
@@ -25,6 +26,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
+
+  @ViewChild(DeclaracionConformidadComponent)
+  protected declaracionComformidad: DeclaracionConformidadComponent;
 
   @BlockUI() blockUI: NgBlockUI;
 
@@ -99,6 +103,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
           this.proveedorId = result.Id;
+          this.declaracionComformidad.proveedorId = this.proveedorId;
+
+          if (this.proveedorId > 0)
+            this.declaracionComformidad.verificarDeclaracion();
           return result.Id;
         }
       },

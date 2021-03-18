@@ -7,16 +7,18 @@
         </div>
         <mensaje></mensaje>
         <spinner></spinner>
+        <app-declaracion-conformidad [proveedorId]="proveedorId"></app-declaracion-conformidad>
         <!--End Title-->
         <!-- Form-->
         <div class="row myRow firstSection mySearch cargaDeDatos">
             <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
-                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">      
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Nombre del establecimiento*</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded"
+                                    aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -33,10 +35,11 @@
                             <app-seleccionar-proveedor (onLocalidadSeleccionada)="onselect($event)">
                             </app-seleccionar-proveedor>
                         </div>
-    
+
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Cosecha</p>
-                            <p-dropdown placeholder="Elegir cosecha" [options]="cosechas" [(ngModel)]="cosecha" optionLabel="Nombre">
+                            <p-dropdown placeholder="Elegir cosecha" [options]="cosechas" [(ngModel)]="cosecha"
+                                optionLabel="Nombre">
 
                             </p-dropdown>
                         </div>
@@ -46,14 +49,16 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Hectareas Totales*</p>
                             <div class="styled-select ">
-                                <input min="1" [type]="'number'" name="hectareasTotales" [(ngModel)]="hectareasTotales" class="fourRounded" aria-controls="tableModal">
+                                <input min="1" [type]="'number'" name="hectareasTotales" [(ngModel)]="hectareasTotales"
+                                    class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Hectareas de Soja*</p>
                             <div class="styled-select ">
-                                <input type="number" name="hectareasSoja" [(ngModel)]="hectareasSoja" class="fourRounded" aria-controls="tableModal">
+                                <input type="number" name="hectareasSoja" [(ngModel)]="hectareasSoja"
+                                    class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -62,14 +67,16 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Latitud*</p>
                             <div class="styled-select ">
-                                <input type="search" name="latitud" [(ngModel)]="latitud" class="fourRounded" aria-controls="tableModal">
+                                <input type="search" name="latitud" [(ngModel)]="latitud" class="fourRounded"
+                                    aria-controls="tableModal">
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Longitud*</p>
                             <div class="styled-select ">
-                                <input type="search" name="longitud" [(ngModel)]="longitud" class="fourRounded" aria-controls="tableModal">
+                                <input type="search" name="longitud" [(ngModel)]="longitud" class="fourRounded"
+                                    aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -83,7 +90,7 @@
 
                     <div class="col-md-3">
                         <button class="btn-custom btn-guardar btn-grande" id="CartaPresentacionDescargar"
-                          (click)="campoProveedorAgregar()">Finalizar</button>
+                            (click)="campoProveedorAgregar()">Finalizar</button>
                     </div>
                 </div>
             </div>

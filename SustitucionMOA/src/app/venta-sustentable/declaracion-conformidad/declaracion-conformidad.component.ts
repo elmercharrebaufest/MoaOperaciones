@@ -94,10 +94,10 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
         } else {
           this.mensajeComponent.setSuccessMsg(result);
 
-          this.proveedorFirmo.emit(true)
           setTimeout(() => {
             this.cerrarModal();
-          }, 30000);
+            this.proveedorFirmo.emit(true)
+          }, 3000);
         }
       },
       error => {
@@ -111,6 +111,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   cancelar() {
     this.proveedorFirmo.emit(false)
     this.cerrarModal();
+    this.goToSeccion('/sustentable/listado-campos');
   }
 
   abrirModalFirmaDeclaracion() {
