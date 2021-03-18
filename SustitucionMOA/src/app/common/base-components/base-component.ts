@@ -54,6 +54,28 @@ export class BaseComponent implements OnDestroy{
             this.subscriptionDropDowns.unsubscribe();
     }
 
+    public getDateFromAspNetFormat(date: string): number {
+        if (date){
+            const re = /-?\d+/;
+            const m = re.exec(date);
+            return parseInt(m[0], 10);
+        }
+        return null
+    }
+
+    public convertDate(date: any) {
+        var newDate = new Date(date),
+          mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+          day = ("0" + date.getDate()).slice(-2);
+        var hours = ("0" + date.getHours()).slice(-2);
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+        var seconds = ("0" + date.getSeconds()).slice(-2);
+
+        var mySQLDate = [day, mnth, date.getFullYear()].join("/");
+        var mySQLTime = [hours, minutes, seconds].join(":");
+        return [mySQLDate, mySQLTime].join(" ");
+      }
+
     setTabs() { }
 
     isAuthorized(permiso: string) {

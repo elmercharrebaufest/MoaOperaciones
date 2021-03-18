@@ -1,0 +1,385 @@
+﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
+import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { SessionDataService } from './../../common/services/SessionDataService';
+import { SecurityService } from './../../common/services/SecurityService';
+import { DropdownComponent, DropdownOption } from './../../common/view-child/dropdown/dropdown.component';
+import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
+import { NavService } from './../../common/services/NavService';
+import { FloatMsgService } from './../../common/services/FloatMsgService';
+import { ModalService } from './../../common/services/ModalService';
+import { element } from '@angular/core/src/render3/instructions';
+import { Seccion } from '../../common/models/seccion';
+import { ConsultaService } from '../consulta.service';
+import { BaseComponent } from '../../common/base-components/base-component';
+import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta, Causa } from '../consulta';
+import { SelectItem } from 'primeng/components/common/selectitem';
+
+declare var $: any;
+
+@Component({
+    selector: 'consulta-detalle',
+    templateUrl: `consulta-detalle.component.html`,
+    providers: [{ provide: ConsultaService, useClass: ConsultaService }]
+
+})
+export class DetalleConsultaComponent extends BaseComponent {
+
+    @ViewChild('dropdown_categoria')
+    protected categoriaDropdownComponent: DropdownComponent;
+
+    @ViewChild(SpinnerSmallComponent)
+    public spinnerSmallComponent: SpinnerSmallComponent;
+
+    @ViewChild("spinnerModal")
+    protected spinnerModal: SpinnerSmallComponent;
+
+    @ViewChild(MensajeComponent)
+    protected mensajeComponent: MensajeComponent;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
+
+    @ViewChild("detalleConsulta")
+    protected detalleConsulta: ElementRef;
+
+    constructor(private route: ActivatedRoute, protected service: ConsultaService, protected navService: NavService,
+        protected securityService: SecurityService,
+        protected sessionDataService: SessionDataService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService) {
+            super(navService, securityService, floatMsgService, modalService);
+            this.mensajeComponent = new MensajeComponent();
+            this.spinnerComponent = new SpinnerComponent();
+    }
+    categoriaSelected: any;
+    estados: EstadoConsulta[];
+    categorias: Categoria[];
+    subcategorias: Subcategoria[];
+    
+    subcategoriasList: SelectItem[];
+    estadosList: SelectItem[];
+    categoriasList: SelectItem[];
+
+    subcategoriaId: any;
+    estadoId: number;
+    categoriaId: number;
+
+    solicitudDoc: boolean;
+
+    consulta: Consulta;
+    comentariosList: any;
+    estadoConsulta: number;
+    consultaId: string;
+    file: any;
+    fecha: any;
+    hora: any;
+    username = sessionStorage.getItem("userName");
+    detalle: string = "";
+    esInterno = this.isAuthorized('CONSULTA ABM');
+
+    checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
+
+    setTabs() {
+        this.setMenuSeccionTab("consulta", "detalle");
+    }
+
+    ngOnInit(){
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+        this.jqueryOnInit();
+        this.getConsultaId();
+        this.getDetalleConsulta();
+        this.getCombos();
+    }
+
+    ngAfterViewInit(): void {
+        this.scrollBottom();
+        setTimeout(() => {
+            this.subcategoriasInicial();
+            if(this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno){
+                this.cambiarEstadoPorCode("GES");
+            }
+        }, 500);
+    }
+
+    scrollBottom(){
+        this.detalleConsulta.nativeElement.scrollTop = this.detalleConsulta.nativeElement.scrollHeight;
+        }
+
+    isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
+    }
+
+    getConsultaId(){
+        const queryString = window.location.href;
+        this.consultaId = queryString.split('=')[1];
+    }
+    
+    cargarArchivo(event: any) {
+        let fileList: FileList = event.target.files;
+        if (fileList.length > 0) {
+            this.file = fileList[0];
+        }
+    }
+
+    comentarioPropio(comentario){
+        return ((this.consulta.UsuarioId == comentario.UsuarioId && this.consulta.UsuarioId == this.consulta.UsuarioActualId) ||
+        (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno))
+    }
+
+    actualizarCombos() {           
+        this.spinnerSmallComponent.showIt();
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId).subscribe(
+            result => {
+                this.spinnerComponent.hideIt();
+                this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
+    postArchivos(comentarioId: number){
+        if(this.file){
+            this.subscription = this.service.adjuntar(this.file, this.consultaId, comentarioId).subscribe(
+                result => {
+                    this.spinnerModal.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        }
+                    },
+                    error => {
+                        this.spinnerModal.hideIt();
+                    }
+                );
+        }
+    }
+
+    postComentario(){
+        this.mensajeComponent.setMsgsEmpty();
+        let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{      
+                        this.postArchivos(result.Id);
+                        setTimeout(() => {  this.getDetalleConsulta(); }, 300);
+                        this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                        this.detalle = "";
+                        this.file = null;
+                        if(this.solicitudDoc){
+                            this.cambiarEstadoPorCode("DOC");
+                        }
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
+    cambiarEstadoPorCode(code: string){
+        var estadoIdGestion;
+        this.estados.forEach(x => {
+            if(x.Code == code){
+                estadoIdGestion = x.Id;
+            }
+        });
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.actualizarEstado(estadoIdGestion, this.consultaId).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{      
+                        this.mensajeComponent.setSuccessMsg("El estado de la consulta cambio correctamente");
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );   
+    }
+
+    disable(){
+        if(this.consulta.EstadoConsulta.Code != 'GES' && this.consulta.EstadoConsulta.Code != 'DOC' && !this.esInterno){
+            return true;
+        }
+
+        return false;
+    }
+
+    descargarArchivo(archivoId: number) {
+        this.service.DescargarArchivo(archivoId)
+        .subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                this.spinnerSmallComponent.hideIt();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+
+    getCombos() {
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.categorias = result.categorias;
+                        this.categoriasList = [];
+                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id}));
+                        this.estados = result.estados;
+                        this.estadosList = [];
+                        this.estados.forEach(x => this.estadosList.push({ label: x.Descripcion, value: x.Id}));
+                        this.subcategorias = result.subcategorias;
+                        this.subcategoriasList = [];
+                        this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+                );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    getDetalleConsulta(){
+        this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else {
+                        this.consulta = result;
+                        this.consulta.Comentarios.forEach(x => {
+                            x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
+                        });
+                        this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
+                        this.estadoId = result.EstadoConsultaId;
+                        this.categoriaId = result.CategoriaId;
+                        this.subcategoriaId = result.SubCategoriaId;
+                        try{
+                            setTimeout(() => {  this.scrollBottom(); }, 200);
+                        }
+                        catch{
+                        }
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
+    subcategoriasInicial(){
+        this.subcategoriasList = [];
+        this.subcategorias.forEach(x => {
+            if(x.CategoriaId == this.categoriaId){
+                this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
+            }
+        });
+    }
+
+    setSubcategorias(categoriasSeleccionadas){
+        if(this.subcategorias){
+            this.subcategoriasList = [];
+            //this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.map(y=> y.Id).includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+            this.subcategorias.forEach(x => {
+                if(x.CategoriaId == categoriasSeleccionadas){
+                    this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
+                }
+            });
+        }
+        return this.subcategoriasList;
+    }
+
+    jqueryOnInit(){
+        $(".adjuntarArchivo").click(function () {
+            $(".adjuntarArchivo1").click();
+        });
+        $('.enviarComentario').click(function(e){
+            e.preventDefault();
+        });
+        $(".archivosDescarga").click(function(e) {
+            e.preventDefault();
+        });
+        $(".botonActualizarCombos").click(function(e) {
+            e.preventDefault();
+        });
+    }
+}

@@ -226,6 +226,7 @@
   <ItemGroup>
     <Content Include="Content\css\blockui.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\buttons\Adjuntar.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
     <Content Include="Content\images\buttons\Information.svg" />
@@ -325,6 +326,11 @@
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
+    <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
@@ -419,6 +425,11 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
+    <Content Include="src\app\venta-sustentable\alta\alta.component.css" />
+    <Content Include="src\app\venta-sustentable\alta\alta.component.html" />
+    <Content Include="src\app\venta-sustentable\edicion\edicion.component.css" />
+    <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />
     <Content Include="src\assets\css\styles.css" />
@@ -868,6 +879,8 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js.map" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -892,6 +905,7 @@
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
+    <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\CampoSustentableController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
@@ -949,6 +963,15 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.spec.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.spec.ts" />
@@ -989,6 +1012,16 @@
     <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\edicion\edicion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\edicion\edicion.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable-routing.Module.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

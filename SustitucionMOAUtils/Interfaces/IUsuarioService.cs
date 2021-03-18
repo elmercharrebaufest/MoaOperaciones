@@ -12,6 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
         GetPerfilesResponseMOA getPerfiles();
 
         List<UsuarioDto> GetUsuarios();
+        UsuarioDto GetUsuario(string email);
 
         string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva);
         LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia);
@@ -35,6 +36,8 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
 
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
+        List<Rol> GetRolesUsuario(string email);
         void SeccionVisitada(string mailUsuario, string seccion);
+        int GetProveedorPorCodigo(string codigo);
     }
 }

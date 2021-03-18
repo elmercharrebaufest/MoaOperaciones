@@ -46,6 +46,23 @@ namespace SustitucionMOASecurity
             }
         }
 
+        public static int ProveedorId
+        {
+            get
+            {
+                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorId) != null)
+                {
+                    return int.Parse(ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorId).Value);
+                }
+                return 0;
+            }
+            set
+            {
+                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
+                //HttpContext.Current.Session[proveedorSessionvar] = value;
+            }
+        }
+
         public static string Sociedad
         {
             get

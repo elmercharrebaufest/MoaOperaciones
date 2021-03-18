@@ -20,6 +20,9 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Roles")]
         public virtual ICollection<Usuario> Usuarios { get; set; }
 
+        [InverseProperty("Roles")]
+        public virtual ICollection<Categoria> Categorias { get; set; }
+
         [InverseProperty("RolesAsociados")]
         public virtual ICollection<PermisoPorRol> PermisosAsociados { get; set; }
 
