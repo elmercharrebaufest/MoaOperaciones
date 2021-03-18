@@ -47,6 +47,9 @@ export class ImpresionDeclaracionComponent extends BaseComponent {
       .subscribe(
         (result) => {
           if (result.error) {
+            this.descargando = false;
+            this.floatMessage.setErrorMsg(result.error)
+            this.actualizarTextos();
           } else {
             var byteArray = new Uint8Array(result.data);
             var blob = new Blob([byteArray], {

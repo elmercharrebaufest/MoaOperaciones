@@ -43,7 +43,7 @@
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
                                 Estado
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">                        
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Hectares Totales
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
@@ -55,7 +55,7 @@
                             <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Hectares pendientes
                             </th>-->
-                            <th tabindex="0" rowspan="1" colspan="2" (click)="orderColumnBy('Tipo')">
+                            <th tabindex="0" rowspan="1" colspan="3" (click)="orderColumnBy('Tipo')">
                                 Acciones
                             </th>
                         </tr>
@@ -77,7 +77,12 @@
                                 <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">Editar</a>
                             </td>
                             <td>
-                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.ProveedorId)" href="#">Eliminar</a>
+                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.ProveedorId)"
+                                    href="#">Eliminar</a>
+                            </td>
+                            <td>
+                                <app-impresion-declaracion [proveedorId]="campo.ProveedorId">
+                                </app-impresion-declaracion>
                             </td>
                         </tr>
                     </tbody>

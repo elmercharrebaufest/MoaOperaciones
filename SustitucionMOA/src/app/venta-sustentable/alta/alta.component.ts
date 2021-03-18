@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { VentaSustentableService } from './../venta-sustentable.service'
 import { BaseComponent } from './../../common/base-components/base-component';
 import { NavService } from './../../common/services/NavService';
@@ -18,7 +18,7 @@ import { AutocompleteLocalidadComponent } from "./../../common/shared-components
   templateUrl: './alta.component.html',
   providers: [VentaSustentableService]
 })
-export class AltaComponent  extends BaseComponent implements OnInit {
+export class AltaComponent extends BaseComponent implements OnInit {
 
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
@@ -32,7 +32,7 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     super(navService, securityService, floatMsgService, modalService);
     this.mensajeComponent = new MensajeComponent();
     this.spinnerComponent = new SpinnerComponent();
- }
+  }
 
   nombreEstablecimiento: string;
   pais: string;
@@ -57,11 +57,16 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   file: any;
 
   proveedorSelected: any;
-  esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";  
+  esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
   codigoProveedor: string = sessionStorage.getItem("proveedor");
 
   ngOnInit() {
     this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
+
+    if (!this.esCorredor) {
+      this.proveedorId = this.getProveedorId(this.codigoProveedor);
+    }
+
     this.getCosechas();
   }
 
@@ -72,55 +77,52 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   cargarArchivo(event: any) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
-        this.file = fileList[0];
+      this.file = fileList[0];
     }
   }
 
-  onselect($event){
+  onselect($event) {
     this.proveedorSelected = $event;
-    this.proveedorId = this.getProveedorId('0071116016');
-    //this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
+    //this.proveedorId = this.getProveedorId('0071116016');
+    this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
   }
 
-  getProveedorId(codigo: string){
+  getProveedorId(codigo: string) {
     this.subscription = this.service.getProveedor(codigo).subscribe(
       (result) => {
-          this.spinnerComponent.hideIt();
-          if (result.logout == true) {
-              this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-              this.mensajeComponent.setErrorMsg(result.error);
-          } else if (result.info != undefined) {
-              this.mensajeComponent.setInfoMsg(result.info);
-          } else {
-              this.proveedorId = result.Id;
-              return result.Id;
-          }
+        this.spinnerComponent.hideIt();
+        if (result.logout == true) {
+          this.sessionDataService.logout();
+        } else if (result.error != undefined && result.error != "") {
+          this.mensajeComponent.setErrorMsg(result.error);
+        } else if (result.info != undefined) {
+          this.mensajeComponent.setInfoMsg(result.info);
+        } else {
+          this.proveedorId = result.Id;
+          return result.Id;
+        }
       },
       (error) => {
-          this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
+        this.spinnerComponent.hideIt();
+        this.mensajeComponent.setErrorMsg(error.message);
       }
-  );
+    );
   }
 
-  campoProveedorAgregar(){
+  campoProveedorAgregar() {
     this.blockUI.start('Informando campo sustentable.');
 
     let campoProveedor: CampoProveedor;
     let campoSustentable: CampoSustentable;
     let campoCosecha: CampoCosecha;
 
-    if(!this.esCorredor){
-      this.proveedorId = this.getProveedorId(this.codigoProveedor);
-    }  
 
-    if(this.validar()){
+    if (this.validar()) {
       this.blockUI.stop();
       return;
     }
 
-    campoSustentable ={
+    campoSustentable = {
       Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
     }
 
@@ -133,117 +135,116 @@ export class AltaComponent  extends BaseComponent implements OnInit {
       Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha
     }
 
+    console.log("campoProveedor:", campoProveedor)
 
     this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        try {
-            this.unsubscribe();
-            this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                      setTimeout(() => {
-                        this.blockUI.stop();
-                        this.goToSeccion('/sustentable/listado-campos');
-                      }, 1000);
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-
-            );
-        } catch (e) {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(e);
-            this.blockUI.stop();
-            return false; //<-- Prevent Refresh
+    this.spinnerComponent.showIt();
+    try {
+      this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
+        result => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+            setTimeout(() => {
+              this.blockUI.stop();
+              this.goToSeccion('/sustentable/listado-campos');
+            }, 1000);
+          }
+        },
+        error => {
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
         }
 
-        this.blockUI.stop();
-        return false; //<-- Prevent Refresh
+      );
+    } catch (e) {
+      this.spinnerComponent.hideIt();
+      this.mensajeComponent.setErrorMsg(e);
+      this.blockUI.stop();
+      return false; //<-- Prevent Refresh
+    }
+
+    this.blockUI.stop();
+    return false; //<-- Prevent Refresh
 
   }
 
-  getCosechas(){
+  getCosechas() {
     this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        try {
-            this.unsubscribe();
-            this.subscription = this.service.getCosechas().subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                      this.cosechas = result;
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-
-            );
-        } catch (e) {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
+    this.spinnerComponent.showIt();
+    try {
+      this.subscription = this.service.getCosechas().subscribe(
+        result => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+            this.cosechas = result;
+          }
+        },
+        error => {
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
         }
 
-        return false; //<-- Prevent Refresh
+      );
+    } catch (e) {
+      this.spinnerComponent.hideIt();
+      this.mensajeComponent.setErrorMsg(e);
+      return false; //<-- Prevent Refresh
+    }
+
+    return false; //<-- Prevent Refresh
   }
 
-  validar(){
+  validar() {
     this.mensajeComponent.setMsgsEmpty();
-    if(this.nombreEstablecimiento == "" || !this.nombreEstablecimiento){
+    if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
       this.mensajeComponent.setErrorMsg("Falta completar Nombre del establecimiento.");
       return true;
     }
-    if(!this.hectareasTotales){
+    if (!this.hectareasTotales) {
       this.mensajeComponent.setErrorMsg("Falta completar hectareas totales.");
       return true;
     }
-    if(this.hectareasTotales <= 0){
+    if (this.hectareasTotales <= 0) {
       this.mensajeComponent.setErrorMsg("Hectareas totales no puede ser 0 o un numero negativo.");
       return true;
     }
-    if(!this.hectareasSoja){
+    if (!this.hectareasSoja) {
       this.mensajeComponent.setErrorMsg("Falta completar hectareas de soja.");
       return true;
     }
-    if(this.hectareasSoja <= 0){
+    if (this.hectareasSoja <= 0) {
       this.mensajeComponent.setErrorMsg("Hectareas de soja no puede ser 0 o un numero negativo.");
       return true;
     }
-    if(this.hectareasSoja > this.hectareasTotales){
+    if (this.hectareasSoja > this.hectareasTotales) {
       this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
       return true;
     }
-    if(this.latitud == "" || !this.latitud){
+    if (this.latitud == "" || !this.latitud) {
       this.mensajeComponent.setErrorMsg("Falta completar Latitud.");
       return true;
     }
-    if(this.longitud == "" || !this.longitud){
+    if (this.longitud == "" || !this.longitud) {
       this.mensajeComponent.setErrorMsg("Falta completar Longitud.");
       return true;
     }
-    if(this.file.length < 1 || !this.file){
+    if (this.file.length < 1 || !this.file) {
       this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo Kmz.");
       return true;
     }
-    
+
     return false
   }
 }

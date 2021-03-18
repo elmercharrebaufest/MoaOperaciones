@@ -63,11 +63,13 @@ namespace SustitucionMOATest.Controllers
 
             HttpPostedFileBase file = null;
 
+            string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
+
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>())).Returns(expected);
 
-            var result = target.CampoProveedorAgregar(campoProveedor, file);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file);
 
 
             expectedJson = JsonConvert.SerializeObject(expected);
@@ -86,11 +88,13 @@ namespace SustitucionMOATest.Controllers
 
             HttpPostedFileBase file = null;
 
+            string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
+
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.CampoProveedorAgregar(campoProveedor, file);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file);
 
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data.ToString());
@@ -109,11 +113,13 @@ namespace SustitucionMOATest.Controllers
 
             HttpPostedFileBase file = null;
 
+            string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
+
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>())).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.CampoProveedorAgregar(campoProveedor, file);
+            var result = target.CampoProveedorAgregar(campoProveedorJson, file);
 
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data.ToString());
