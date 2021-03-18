@@ -8,6 +8,7 @@ import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.comp
 import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
 import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
@@ -24,6 +25,8 @@ export class AltaComponent  extends BaseComponent implements OnInit {
 
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
+
+  @BlockUI() blockUI: NgBlockUI;
 
   constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
     super(navService, securityService, floatMsgService, modalService);
@@ -46,6 +49,7 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   sojaParcial: boolean;
   sojaTotal: boolean;
 
+  proveedorId: any;
   hectareasTotales: number;
   hectareasSoja: number;
   latitud: string;
@@ -53,7 +57,8 @@ export class AltaComponent  extends BaseComponent implements OnInit {
   file: any;
 
   proveedorSelected: any;
-  
+  esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";  
+  codigoProveedor: string = sessionStorage.getItem("proveedor");
 
   ngOnInit() {
     this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
@@ -71,18 +76,47 @@ export class AltaComponent  extends BaseComponent implements OnInit {
     }
   }
 
-  getProveedor() {
-    debugger
-    console.log("anda");
+  onselect($event){
+    this.proveedorSelected = $event;
+    this.proveedorId = this.getProveedorId('0071116016');
+    //this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
+  }
+
+  getProveedorId(codigo: string){
+    this.subscription = this.service.getProveedor(codigo).subscribe(
+      (result) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+              this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+              this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+              this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+              this.proveedorId = result.Id;
+              return result.Id;
+          }
+      },
+      (error) => {
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
+      }
+  );
   }
 
   campoProveedorAgregar(){
-    debugger
+    this.blockUI.start('Informando campo sustentable.');
+
     let campoProveedor: CampoProveedor;
     let campoSustentable: CampoSustentable;
     let campoCosecha: CampoCosecha;
 
+    if(!this.esCorredor){
+      this.proveedorId = this.getProveedorId(this.codigoProveedor);
+    }  
+
     if(this.validar()){
+      this.blockUI.stop();
       return;
     }
 
@@ -96,8 +130,9 @@ export class AltaComponent  extends BaseComponent implements OnInit {
 
     campoProveedor = {
       HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
-      Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: 24760, CampoCosecha: campoCosecha
+      Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha
     }
+
 
     this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -113,6 +148,10 @@ export class AltaComponent  extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                      setTimeout(() => {
+                        this.blockUI.stop();
+                        this.goToSeccion('/sustentable/listado-campos');
+                      }, 1000);
                     }
                 },
                 error => {
@@ -124,9 +163,11 @@ export class AltaComponent  extends BaseComponent implements OnInit {
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
 
+        this.blockUI.stop();
         return false; //<-- Prevent Refresh
 
   }

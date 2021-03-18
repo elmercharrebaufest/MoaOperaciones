@@ -24,12 +24,22 @@ export class VentaSustentableService extends BaseService {
     }
 
     campoProveedorAgregar(campoProveedor: CampoProveedor, archivoKmz: File){
-        let params: URLSearchParams = new URLSearchParams();
-        let body = JSON.stringify(campoProveedor);
+        var payload = new FormData();
+        let camp = JSON.stringify(campoProveedor);
+        
+        payload.append('archivoKmz', archivoKmz);
+        payload.append('campoProveedorJson', camp)
         return this.http
-            .post('/api/CampoSustentable/CampoProveedorAgregar', {campoProveedor, archivoKmz}, this.headersPost).pipe(
-                map(this.extractData));
+            .post('/api/CampoSustentable/CampoProveedorAgregar', payload, this.headersPost).pipe(
+            map(this.extractData));
     }
+
+    public getProveedor(codigo: string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set("codigo", codigo);
+        return this.http.get("/api/Usuario/GetProveedorPorCodigo", {search: params, headers: this.headers,})
+          .pipe(map(this.extractData));
+      }
 
     searchLocalidad(term): Observable<any> {
         this.headers = new Headers();
@@ -49,6 +59,15 @@ export class VentaSustentableService extends BaseService {
                 headers: this.headers,
             })
             .pipe(map(this.extractData));
+    }
+
+    campoProveedorBorrar(campoCosechaId: number, proveedorId: number){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('campoCosechaId', campoCosechaId.toString());
+        params.set('proveedorId', proveedorId.toString());
+        return this.http
+            .delete('/api/CampoSustentable/CampoProveedorBorrar',{search: params, headers: this.headers,}).pipe(
+            map(this.extractData));
     }
 
     verificarDeclaracion(proveedorId: number) {

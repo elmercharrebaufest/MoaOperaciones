@@ -38,6 +38,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);
         void SeccionVisitada(string mailUsuario, string seccion);
-        int GetProveedorPorCodigo(string codigo);
+        ProveedorDto GetProveedorPorCodigo(string codigo);
     }
 }

@@ -104,6 +104,8 @@ namespace SustitucionMOAUtils.Services
 
             campoProveedor.Borrado = true;
 
+            repositorio.GuardarCambios();
+
             return SuccessMsg.CampoSustentableBorrado;
         }
 
@@ -217,11 +219,14 @@ namespace SustitucionMOAUtils.Services
                                .Listar<CampoProveedor>(p => !p.Borrado)
                                .Select(cp => new CampoProveedorListadoDto
                                {
+                                   Id = cp.CampoCosecha.CampoSustentable_Id,
                                    NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                                    HectareasSoja = cp.HectareasSoja,
                                    HectareasTotales = cp.HectareasTotales,
                                    NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                                   ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                                   ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                                   CampoCosechaId = cp.CampoCosecha_Id,
+                                   ProveedorId = cp.Proveedor_Id,
                                }).ToList();
             }
             else
@@ -231,11 +236,14 @@ namespace SustitucionMOAUtils.Services
                          .Listar<CampoProveedor>(p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado)
                          .Select(cp => new CampoProveedorListadoDto
                          {
+                             Id = cp.CampoCosecha.CampoSustentable_Id,
                              NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                              HectareasSoja = cp.HectareasSoja,
                              HectareasTotales = cp.HectareasTotales,
                              NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                             ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                             ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                             CampoCosechaId = cp.CampoCosecha_Id,
+                             ProveedorId = cp.Proveedor_Id,
                          }).ToList();
             }
             return listado;
