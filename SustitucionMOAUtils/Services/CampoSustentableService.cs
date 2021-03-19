@@ -40,11 +40,13 @@ namespace SustitucionMOAUtils.Services
 
             ValidarCampo(usuario, campoProveedor);
 
-            campoProveedor.CampoCosecha.CampoSustentable_Id = ObtenerIdCampoSustentable(campoProveedor);
+            //campoProveedor.CampoCosecha.CampoSustentable_Id = ObtenerIdCampoSustentable(campoProveedor);
 
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
             campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
+            campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
+
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
@@ -227,27 +229,27 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private int ObtenerIdCampoSustentable(CampoProveedor campoProveedor)
-        {
-            var campoSustentable = repositorio.Obtener<CampoSustentable>(c =>
-                                                                         c.Nombre == campoProveedor.CampoCosecha.Campo.Nombre &&
-                                                                         c.Localidad_Id == campoProveedor.CampoCosecha.Campo.Localidad_Id);
+        //private int ObtenerIdCampoSustentable(CampoProveedor campoProveedor)
+        //{
+        //    var campoSustentable = repositorio.Obtener<CampoSustentable>(c =>
+        //                                                                 c.Nombre == campoProveedor.CampoCosecha.Campo.Nombre &&
+        //                                                                 c.Localidad_Id == campoProveedor.CampoCosecha.Campo.Localidad_Id);
 
-            var idCampo = campoSustentable?.Id ?? 0;
+        //    var idCampo = campoSustentable?.Id ?? 0;
 
-            if (idCampo == 0)
-            {
-                campoProveedor.CampoCosecha.ToneladasAprobadas = 0;
-            }
-            else
-            {
-                var campoCosecha = repositorio.Obtener<CampoCosecha>(cc => cc.CampoSustentable_Id == idCampo && cc.Cosecha_Id == campoProveedor.CampoCosecha_Id);
+        //    if (idCampo == 0)
+        //    {
+        //        campoProveedor.CampoCosecha.ToneladasAprobadas = 0;
+        //    }
+        //    else
+        //    {
+        //        var campoCosecha = repositorio.Obtener<CampoCosecha>(cc => cc.CampoSustentable_Id == idCampo && cc.Cosecha_Id == campoProveedor.CampoCosecha_Id);
 
-                campoProveedor.CampoCosecha.ToneladasAprobadas = campoCosecha.ToneladasAprobadas;
-            }
+        //        campoProveedor.CampoCosecha.ToneladasAprobadas = campoCosecha.ToneladasAprobadas;
+        //    }
 
-            return campoSustentable?.Id ?? 0;
-        }
+        //    return campoSustentable?.Id ?? 0;
+        //}
 
         public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId)
         {

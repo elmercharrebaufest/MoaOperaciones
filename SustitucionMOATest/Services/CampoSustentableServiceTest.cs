@@ -113,113 +113,6 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void AgregarConCampoExistenteTest()
-        {
-            var proveedorId = 1;
-            var usuarioId = 2;
-            var mailUsuario = "mail@mail.com";
-            var campoCosechaId = 3;
-            double toneladasAprobadas = 50;
-            var campoSustentableId = 4;
-
-            var proveedor = new Proveedor
-            {
-                Id = proveedorId,
-                CUIT = "233333333333"
-            };
-
-            var usuario = new Usuario
-            {
-                Id = usuarioId,
-                Mail = mailUsuario,
-                Proveedores = new List<Proveedor> { proveedor },
-                Roles = new List<Rol>{
-                    new Rol
-                    {
-                        Codigo = "TestRol",
-                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Id = 1, Permiso = "VER TODOS CAMPOS SUSTENTABLE" } }
-                    }
-                }
-            };
-
-            repositorioMock
-               .Setup(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))))
-               .Returns(usuario);
-
-            var campoCreado = new CampoProveedor
-            {
-                Proveedor_Id = proveedorId,
-                HectareasSoja = 100,
-                HectareasTotales = 100,
-                Borrado = false,
-                Proveedor = proveedor,
-                CampoCosecha = new CampoCosecha
-                {
-                    Campo = new CampoSustentable { Nombre = "Test" },
-                    Cosecha = new Cosecha { Nombre = "20-21" }
-                }
-            };
-
-
-            var campoSustentable = new CampoSustentable
-            {
-                Id = campoSustentableId,
-                Nombre = "Test",
-                Localidad_Id = 5,
-            };
-
-            var campoCosechaExistente = new CampoCosecha
-            {
-                Id = campoCosechaId,
-                Campo = campoSustentable,
-                Cosecha = new Cosecha { Nombre = "20-21" },
-                ToneladasAprobadas = toneladasAprobadas
-            };
-
-            repositorioMock
-             .Setup(x => x.Obtener(It.IsAny<Expression<Func<CampoCosecha, bool>>>()))
-             .Returns(campoCosechaExistente);
-
-            repositorioMock
-               .Setup(x => x.Obtener(It.IsAny<Expression<Func<CampoSustentable, bool>>>()))
-               .Returns(campoSustentable);
-
-            FileStream fileStream = null;
-            Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
-
-            uploadedFile
-                .Setup(f => f.ContentLength)
-                .Returns(100);
-
-            uploadedFile
-                .Setup(f => f.FileName)
-                .Returns("Example.kmz");
-
-            uploadedFile
-                .Setup(f => f.InputStream)
-                .Returns(fileStream);
-
-            ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = "C:/ArchivosCampoSustentableTest";
-
-            var result = target.Agregar(mailUsuario, campoCreado, uploadedFile.Object);
-
-            repositorioMock
-                 .Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
-
-            repositorioMock
-               .Verify(x => x.GuardarCambios(), Times.Exactly(2));
-
-            repositorioMock
-                 .Verify(x => x.Agregar(It.IsAny<CampoProveedor>()), Times.Once);
-
-            var expected = new Resultado { IdEntidad = 0, Mensaje = SuccessMsg.CampoSustentableAgregado };
-
-            Assert.AreEqual(expected, result);
-            Assert.AreEqual(campoSustentableId, campoCreado.CampoCosecha.CampoSustentable_Id);
-            Assert.AreEqual(toneladasAprobadas, campoCreado.CampoCosecha.ToneladasAprobadas);
-        }
-
-        [Test()]
         public void EditarTest()
         {
             var proveedorId = 1;
@@ -701,7 +594,8 @@ namespace SustitucionMOATest.Services
             var proveedor = new Proveedor
             {
                 Id = proveedorId,
-                CUIT = "233333333333"
+                CUIT = "233333333333",
+                CodigoProveedor = "0033333333"
             };
 
             var usuario = new Usuario
@@ -723,6 +617,7 @@ namespace SustitucionMOATest.Services
                 {
                     CampoCosecha_Id = campoCosechaId,
                     Proveedor_Id = proveedorId,
+                    Proveedor = proveedor,
                     HectareasSoja = 100,
                     HectareasTotales = 100,
                     CampoCosecha = new CampoCosecha
@@ -735,6 +630,7 @@ namespace SustitucionMOATest.Services
                 {
                     CampoCosecha_Id = campoCosechaId + 1,
                     Proveedor_Id = proveedorId,
+                    Proveedor = proveedor,
                     HectareasSoja = 50,
                     HectareasTotales = 50,
                     CampoCosecha = new CampoCosecha
@@ -802,7 +698,9 @@ namespace SustitucionMOATest.Services
             var proveedor = new Proveedor
             {
                 Id = proveedorId,
-                CUIT = "233333333333"
+                CUIT = "233333333333",
+                CodigoProveedor = "0033333333"
+
             };
 
             var usuario = new Usuario
@@ -824,6 +722,7 @@ namespace SustitucionMOATest.Services
                 {
                     CampoCosecha_Id = campoCosechaId,
                     Proveedor_Id = proveedorId,
+                    Proveedor = proveedor,
                     HectareasSoja = 100,
                     HectareasTotales = 100,
                     CampoCosecha = new CampoCosecha
@@ -836,6 +735,7 @@ namespace SustitucionMOATest.Services
                 {
                     CampoCosecha_Id = campoCosechaId + 1,
                     Proveedor_Id = proveedorId,
+                    Proveedor = proveedor,
                     HectareasSoja = 50,
                     HectareasTotales = 50,
                     CampoCosecha = new CampoCosecha
@@ -937,11 +837,12 @@ namespace SustitucionMOATest.Services
                .Setup(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))))
                .Returns(usuario);
 
-            repositorioMock
-               .Setup(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
-               .Returns(campoProveedor);
-
             var expected = new CampoProveedorDto { NombreCampo = "Test", HectareasSoja = 100, HectareasTotales = 100, NombreCosecha = "20-21", ToneladasAprobadas = 0 };
+
+            repositorioMock
+               .Setup(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<Expression<Func<CampoProveedor, CampoProveedorDto>>>()))
+               .Returns(expected);
+
 
             var result = target.ObtenerCampo(mailUsuario, proveedorId, campoCosechaId);
 
@@ -949,7 +850,7 @@ namespace SustitucionMOATest.Services
                  .Verify(x => x.Obtener(It.Is<Expression<Func<Usuario, bool>>>(l => l.Compile().Invoke(usuario))), Times.Once);
 
             repositorioMock
-                .Verify(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()), Times.Once);
+                .Verify(x => x.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>(), It.IsAny<Expression<Func<CampoProveedor, CampoProveedorDto>>>()), Times.Once);
 
 
             Assert.AreEqual(expected, result);
