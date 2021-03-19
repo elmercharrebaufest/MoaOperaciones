@@ -153,8 +153,6 @@ namespace SustitucionMOAUtils.Services
 
             string downloadKey = "";
 
-            var campos = new List<CamposSustentableReporte>();
-
             DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
             {
                 Cosecha = cosecha.Nombre,
@@ -162,7 +160,7 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = proveedor.RazonSocial,
                 Fecha = proveedor.FechaFirmaDeclaracionCampoSustentable?.ToString("dd/MM/yyyy"),
                 CantidadParteSoja = proveedor.HectareasDeclaracionCampoSustentable.Value,
-                Campos = campos
+                Campos = allCampos
             };
 
             var content = JsonConvert.SerializeObject(datos);
