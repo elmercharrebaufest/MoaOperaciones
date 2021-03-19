@@ -78,24 +78,27 @@
                             <td>{{campo.ToneladasAprobadas}}</td>
                             <!--<td>NO VIENE</td>-->
                             <td *ngIf="campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == null">
-                                <a class="animate" [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]" href="#">Editar</a>
+                                <a class="animate"
+                                    [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
+                                    href="#">Editar</a>
                             </td>
                             <td *ngIf="campo.ToneladasAprobadas > 0">
                             </td>
                             <td>
-                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.Proveedor.Id)" href="#">Eliminar</a>
+                                <a class="animate" (click)="eliminarCampo(campo.Id, campo.Proveedor.Id)"
+                                    href="#">Eliminar</a>
                             </td>
                             <td>
-                                <app-impresion-declaracion [proveedorId]="campo.ProveedorId">
+                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id">
                                 </app-impresion-declaracion>
                             </td>
                         </tr>
                     </tbody>
-              </table>
-          </div>
-      </div>
-      <!-- END tables-->
-      <!-- END form-->
-  </section>
-  <!--End CONTENT-->
+                </table>
+            </div>
+        </div>
+        <!-- END tables-->
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
 </div>
