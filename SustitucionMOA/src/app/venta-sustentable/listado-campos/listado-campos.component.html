@@ -77,16 +77,18 @@
                             <td>{{campo.HectareasSoja}}</td>
                             <td>{{campo.ToneladasAprobadas}}</td>
                             <!--<td>NO VIENE</td>-->
-                            <td *ngIf="campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == null">
+                            <td *ngIf="(campo.ToneladasAprobadas == 0 && esInterno) || (campo.ToneladasAprobadas == null && esInterno)">
                                 <a class="animate" [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]" href="#">Editar</a>
                             </td>
-                            <td *ngIf="campo.ToneladasAprobadas > 0">
+                            <td *ngIf="campo.ToneladasAprobadas > 0 && esInterno">
                             </td>
-                            <td>
+                            <td *ngIf="esInterno">
                                 <a class="animate" (click)="eliminarCampo(campo.Id, campo.Proveedor.Id)" href="#">Eliminar</a>
                             </td>
+                            <td *ngIf="!esInterno">
+                            </td>
                             <td>
-                                <app-impresion-declaracion [proveedorId]="campo.ProveedorId">
+                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id">
                                 </app-impresion-declaracion>
                             </td>
                         </tr>

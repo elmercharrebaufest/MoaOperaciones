@@ -30,6 +30,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 }
 
     camposSustentables: any[];
+    esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
 
   ngOnInit() {
     this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
