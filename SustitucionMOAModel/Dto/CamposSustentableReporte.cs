@@ -9,5 +9,6 @@
         public string HectareasTotales { get; set; }
         public string HectareasSoja { get; set; }
         public string Coordenadas { get; set; }
+        public string Departamento { get; set; }
     }
 }

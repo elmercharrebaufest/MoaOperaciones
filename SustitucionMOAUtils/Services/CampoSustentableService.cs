@@ -140,7 +140,8 @@ namespace SustitucionMOAUtils.Services
                     Nombre = c.CampoCosecha.Campo.Nombre,
                     Pais = "Argentina",
                     Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
-                    Coordenadas = string.Concat(c.Latitud, " ", c.Longitud)
+                    Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
+                    Departamento = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
                 cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
 

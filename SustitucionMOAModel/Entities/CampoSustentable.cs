@@ -19,5 +19,6 @@ namespace SustitucionMOAModel.Entities
         public virtual Localidad Localidad { get; set; }
 
         public int Localidad_Id { get; set; }
+
     }
 }
