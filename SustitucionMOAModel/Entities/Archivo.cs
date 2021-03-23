@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,10 @@ namespace SustitucionMOAModel.Entities
                    FileKey == archivo.FileKey &&
                    Ruta == archivo.Ruta;
         }
+
+        [InverseProperty("Archivos")]
+        public virtual ICollection<Comentario> Comentarios { get; set; }
+
 
         public override int GetHashCode()
         {

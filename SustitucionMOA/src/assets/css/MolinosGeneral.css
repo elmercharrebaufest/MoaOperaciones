@@ -122,7 +122,7 @@ a:hover {
   .col-sm-15 {
     width: 20%;
     float: left;
-  }
+  }  
 }
 @media (min-width: 992px) {
   .col-md-15 {
@@ -3442,6 +3442,7 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
 #documentacion,
 #contacto,
 #usuarios,
+#mis-consultas,
 #faq {
     height: 35px;
 }
@@ -3744,86 +3745,286 @@ div.panel-body a.active{
 	justify-content: left;
 	align-items: center;
 }
+.crearConsultaComentario{
+  height: 228px;
+  margin-top: 40px;
+}
+.crearConsultaTitulos{
+  top: 239px !important;
+  left: 276px !important;
+  height: 21px !important;
 
-/* Preguntas frecuentes o Faq */
-
-.faqTexto {
-  padding: 20px;
-  font-family: Roboto Regular;
-  font-size: 16px;
+  text-align: left !important;
+  letter-spacing: 0px !important;
+  color: #373A3C !important;
+  opacity: 1 !important;
+  /*font-size: 18px;*/
+  font: normal normal normal 16px Roboto Regular;
+  font-weight: 600;
+}
+.btn-enviar{
+  width: 120px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
+.enviarComentario{
+  margin-bottom: 5px;
+  border: none;
+  outline:none;
   background-color: white;
 }
-/*
-.categoriaOnDesktop{
-  position: fixed;
-  top: 100px;
-  /*sino position: fixed;
-}*/
-.categoriaOnMobile{
+.margin-left{
+  margin-left: 20px;
+}
+.menuLateralConsulta{
+  text-align: left;
+  font: normal normal normal 16px/28px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  left: 10px;
+  width: 28%;
   position: relative;
+  top: -353px;
 }
-
- .categoriaOnMobile{
-  visibility:visible;
-  display: unset;
-  }
-
-.categoriaMenuFaq{
-  border-color: white;
-  color: #03753e;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: Roboto Regular;
-  cursor: pointer;
-}
-/*
-.posts, .archivepostsMobile {
-list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
-}
-*/
-.posts{
-  margin-bottom: 7px;
-}
-.tituloPregunta{
+.bold{
   font-weight: bold;
 }
-.collapsing {
-  -webkit-transition-delay: 0.2s;
-  transition-delay: 0.5s;
-  transition: height 0.5s ease;
+.añadirComentario{
+  height: 100px;
+
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  opacity: 1;
+  font: normal normal normal 16px Roboto Regular;
 }
-.tituloCategoriaFaq {
-  font-size: 23px !important;
-  font-weight: bold !important;
-  margin-bottom: 0px !important;
-  color: #707070 !important;
-  font-weight: normal !important;
+.btn-enviar-comentario{
+  position: relative;
+  right: 10px;
+  width: 85px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
 }
-.panel-default>.panel-heading{
-  background-color: white;
-  font-size: 23px !important;
-  font-weight: bold !important;
-  margin-bottom: 0px !important;
-  color: #707070 !important;
-  font-family: Roboto Regular;
+.fechaComentario{
+  padding: 4px;
+  height: 27px;
+  background: white 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
 }
-.panel-title{
-  color: #707070 !important;
-  font-size: 21px !important;
-  font-weight: normal !important;
-  font-family: Roboto Regular;
-  text-transform: uppercase;
+.fechaComentarioTexto{
+  width: 102px;
+  padding: 4px;
+  height: 27px;
+  background: #707070 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+
+  text-align: center;
+  font: normal normal normal 14px/19px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
 }
-.aFaqClick, .aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
-  text-decoration:none;
-  color: #03753e !important;
-  font-size: 16px !important;
-  font-weight: bold important;
+.comentarioRespuesta{
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 5px;
+  padding: 20px;
+  width: auto;
+  max-width: 58.33333333%;
+
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+.comentarioPropio{
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 5px;
+  padding: 20px;
+  float: right;
+  width: auto;
+  max-width: 58.33333333%;
+  
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+  opacity: 1;
+}
+.horaComentarioRespuesta{
+  text-align: right;
+}
+.detalleConsulta{
+  height: 350px;
+  overflow-y: auto;
+  border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  background: #fff;
+  padding: 10px;
+  transition: 0.5s;
+  width: 70%;
+}
+.contenedorNuevoComentario{
+  border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  background: #fff;
+  padding: 10px;
+  transition: 0.5s;
+  width: 70%;
+}
+.detalleConsulta::-webkit-scrollbar{
+  width: 10px;
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-track{
+  background: white;
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-thumb{
+  background: #707070; 
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-thumb:hover{
+  background: #707070;  
+  border-radius: 10px;
+}
+.ui-table-wrapper{
+  font-family: 'Roboto Regular';
+}
+.archivosDetalle .fa {
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.widthAutoConsultaPropio{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  float: right; 
+  right: -10px;
+}
+.widthAutoConsultaRespuesta{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  right: 10px;
+}
+.archivosDetallePropio {
+  margin: 2px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
   cursor: pointer;
+  transition: all 0.25s linear;
 }
-.grisOscuro{
-  color: #707070 !important;
+.archivosDetallePropio:hover {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #00645a 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  cursor: pointer;
+  transition: all 0.25s linear;
 }
-.aFaqClickCat, .aFaqClickCat:hover, .aFaqClickCat:active, .aFaqClickCat:visited, .aFaqClickCat:focus{
-  text-decoration: none;
+.archivosDetalle {
+  margin: 2px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetalle:hover {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #cacaca 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetallePropio .fa{
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.filters-text-table {
+  width: 90% !important;
+}
+.filters-calendar-table {
+  width: calc(100% - 2.357em) !important;
+}
+.consulta-table th {
+  text-transform: capitalize !important;
+}
+
+.consulta-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+p-dropdown>div {
+  width: 100% !important;
+}
+input:focus::placeholder, textarea:focus::placeholder {
+  color: transparent;
+}
+.solicitudDoc{
+margin: 2px;
+}
+.ui-autocomplete{
+  top: -10px;
 }

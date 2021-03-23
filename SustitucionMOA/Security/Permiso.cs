@@ -112,6 +112,8 @@
         /* PERMISOS ALTA EMPRESA NO GRANOS*/
         public const string ALTA_EMPRESA_NO_GRANOS = "ALTA EMPRESA NO GRANOS";
 
-
+        /* PERMISOS CONSULTAS */
+        public const string CONSULTA_LISTADO = "LISTADO CONSULTA";
+        public const string CONSULTA_AMB = "CONSULTA ABM";
     }
 }

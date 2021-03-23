@@ -1,0 +1,323 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Web.Mvc;
+using SustitucionMOA.Utils;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
+using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+
+namespace SustitucionMOA.Controllers
+{
+    public class ConsultaController : BaseController
+    {
+        private readonly IConsultaService consultaService;
+        private readonly IUsuarioService usuarioService;
+
+        public ConsultaController(IConsultaService consultaService, IUsuarioService usuarioService)
+        {
+            this.consultaService = consultaService;
+            this.usuarioService = usuarioService;
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        public JsonResult Comentarios(int consultaId, Comentario comentario)
+        {
+            try
+            {
+                if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                comentario.Usuario_Id = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        public JsonResult Consulta(Consulta consulta)
+        {
+            try
+            {
+                consulta.Usuario_Id = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(consultaService.AgregarConsulta(consulta));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        [Route("/{consultaId}/Comentario/{comentarioId}/Adjuntos")]
+        public JsonResult Adjuntos(int consultaId, int comentarioId)
+        {
+            try
+            {
+                if (consultaId <= 0 || comentarioId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+                if (Request.Files.Count <= 0) return Json(new { info = "No se adjuntaron archivos" }, JsonRequestBehavior.AllowGet);
+
+                return JsonCustom(new { data = consultaService.AgregarAdjuntoComentario(consultaId, comentarioId, Request.Files) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        public ActionResult Consultas()
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+                var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
+                var categorias = consultaService.ObtenerCategorias();
+                var estados = consultaService.ObtenerEstados();
+
+                categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
+                estados.ForEach(x => x.Cantidad = consultas.Count(c => c.EstadoConsultaId == x.Id));
+
+                return JsonCustom(new { data = new
+                {
+                    consultas,
+                    categorias,
+                    estados
+                }
+            });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                var error = e.Message + "-" + (e.InnerException != null ? e.InnerException.Message : string.Empty);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, error);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpGet]
+        public JsonResult Detalle(int consultaId)
+        {
+            try
+            {
+                if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                var detalle = consultaService.ObtenerConsulta(consultaId);
+                detalle.UsuarioActualId = ObtenerUsuarioActual().Id;
+
+                return JsonCustom(detalle);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult DescargarArchivo(int archivoId)
+        {
+            try
+            {
+                string rutaArchivoSubido = consultaService.ObtenerRutaArchivo(archivoId);
+
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+                string fileName = Path.GetFileName(rutaArchivoSubido);
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPatch]
+        public JsonResult Recategorizar(int consultaId, int categoriaId, int? subCategoriaId)
+        {
+            try
+            {
+                if (consultaId <= 0 || categoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+
+                consultaService.RecategorizarConsulta(consultaId, categoriaId, subCategoriaId);
+
+                return JsonCustom(new { });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpPost]
+        public JsonResult ActualizarEstado(int consultaId, int estadoConsultaId)
+        {
+            try
+            {
+                if (consultaId <= 0 || estadoConsultaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+
+                consultaService.ActualizarEstadoConsulta(consultaId, estadoConsultaId);
+
+                return JsonCustom(new { });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        public ActionResult Combos()
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+
+                return JsonCustom(new { 
+                    categorias = consultaService.ObtenerCategorias(),
+                    subcategorias = consultaService.ObtenerSubCategorias(),
+                    estados = consultaService.ObtenerEstados(),
+                    causas = consultaService.ObtenerCausas(),
+                    isExternal = !obtenerTodos,
+                    proveedorId = SessionPersister.ProveedorId
+                });;
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpGet]
+        public ActionResult ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId)
+        {
+            try
+            {
+                if (consultaId <= 0 || estadoConsultaId <= 0 || categoriaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+
+                return JsonCustom(new
+                {
+                    data = consultaService.ActualizarCombos(consultaId, estadoConsultaId, categoriaId, subcategoriaId)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private UsuarioDto ObtenerUsuarioActual()
+        {
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            return usuarioService.GetUsuario(userMail);
+        }
+    }
+}

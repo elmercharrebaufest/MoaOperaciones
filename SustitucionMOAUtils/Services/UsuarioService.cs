@@ -57,6 +57,213 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public UsuarioDto GetUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x=> x.Mail == email);
+
+                if (usuario == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
+                }
+                var ret = new UsuarioDto(usuario);
+                ret.Permisos = usuario.ObtenerPermisos();
+
+                return ret;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+
+        [Obsolete]
+        public string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva)
+        {
+            try
+            {
+                if (contraseniaActual == null || contraseniaActual == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Contraseña Actual"));
+                }
+
+                if (contraseniaNueva == null || contraseniaNueva == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Contraseña Nueva"));
+                }
+
+                LoginWSMOAResponse response = new CambioPassConsumerMOA().request(username, contraseniaActual, contraseniaNueva);
+
+                if (response.error != "09")
+                {
+                    throw new ValidationCustomException(response.texto);
+                }
+
+                return SuccessMsg.CambioPassOK;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        [Obsolete]
+        public LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia)
+        {
+            try
+            {
+                if (numeroProveedor == null || numeroProveedor == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Número de Proveedor"));
+                }
+
+                if (claveActivacion == null || claveActivacion == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Clave Activación"));
+                }
+
+                if (username == null || username == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Nombre de Usuario"));
+                }
+
+                if (contrasenia == null || contrasenia == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Contraseña"));
+                }
+
+                LoginWSMOAResponse response = new UsuarioNuevoConsumerMOA().request(username, numeroProveedor, claveActivacion, contrasenia);
+
+                if (response.error == "10")
+                {
+                    throw new ValidationCustomException(response.texto);
+                }
+
+                return response;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        [Obsolete]
+        public string alta(UsuarioAlta usuario)
+        {
+            try
+            {
+
+                UsuarioCrearWSMOAResponse response = new UsuarioCrearConsumerMOA().request(usuario.email, usuario.numeroProveedor, usuario.perfil, usuario.tipo);
+
+                if (response.error == "99")
+                {
+                    throw new ValidationCustomException(response.texto);
+                }
+
+                return SuccessMsg.AltaUsuarioOK;
+
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        [Obsolete]
+        public string recuperarContrasenia(string usename)
+        {
+            try
+            {
+                if (usename == null || usename == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorCompleteCampo, "Usuario"));
+                }
+
+                LoginWSMOAResponse response = new UsuarioOlvidePassConsumerMOA().request(usename);
+
+                if (response.error != "11")
+                {
+                    throw new ValidationCustomException(response.texto);
+                }
+
+                return SuccessMsg.OlvideContraniaOk;
+
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        [Obsolete]
+        public string desbloquear(string usename)
+        {
+            try
+            {
+                if (usename == null || usename == "")
+                {
+                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Nombre de Usuario"));
+                }
+
+                LoginWSMOAResponse response = new UsuarioDesbloquearConsumerMOA().request(usename);
+
+                if (response.error == "10")
+                {
+                    throw new ValidationCustomException(response.texto == null ? String.Format(ErrorMsg.ErrorUsuarioDesbloquear, usename) : response.texto);
+                }
+
+                return String.Format(SuccessMsg.UsuarioDesbloqueadoOK, usename); ;
+
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
         public string HabilitarUsuario(string usuarioMail)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuarioMail);
@@ -201,6 +408,18 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Rol> GetRolesUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == email);
+                return usuario.Roles.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
         {

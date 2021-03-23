@@ -218,6 +218,7 @@
     <Content Include="Content\css\blockui.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\ChoseFile.svg" />
+    <Content Include="Content\images\buttons\Adjuntar.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
     <Content Include="Content\images\buttons\Information.svg" />
@@ -313,6 +314,11 @@
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
+    <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
     <Content Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.html" />
     <Content Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.html" />
@@ -862,6 +868,8 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js.map" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -885,6 +893,7 @@
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
+    <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -942,6 +951,15 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
