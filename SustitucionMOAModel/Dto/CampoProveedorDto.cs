@@ -17,8 +17,20 @@ namespace SustitucionMOAModel.Dto
         public double HectareasSoja { get; set; }
 
         public double ToneladasAprobadas { get; set; }
+
         public string Latitud { get; set; }
+        
         public string Longitud { get; set; }
+
+        public int CampoCosechaId { get; set; }
+
+        public string ProveedorNombre { get; set; }
+
+        public string LocalidadNombre { get; set; }
+
+        public int CampoSustentableId { get; set; }
+
+        public int CosechaId { get; set; }
 
         public override bool Equals(object obj)
         {

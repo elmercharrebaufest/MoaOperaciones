@@ -406,6 +406,9 @@
                     </div>
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
+                            <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
+                                <a (click)="goToSeccion('/sustentable/alta')" href="#"> Campo Sustentable</a>
+                            </div>
                             <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
                                 <a (click)="goToSeccion('/vendedor/status')" href="#">
                                     <!--data-toggle="tab">-->Consulta de Vendedor
@@ -418,7 +421,6 @@
                                 <a (click)="goToSeccion('/crear-contrato/aprecio')" href="#"> Registro de
                                     operaciones</a>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -502,14 +504,6 @@
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
                             href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
-                        </a>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading seccion" role="tab" id="ventaSustentable">
-                        <a class="link-header collapsed" data-toggle="collapse"
-                            (click)="goToSeccion('/sustentable/alta')" href="#" data-parent="#accordionMenu">
-                            <!--data-toggle="tab">-->Venta Sustentable
                         </a>
                     </div>
                 </div>
