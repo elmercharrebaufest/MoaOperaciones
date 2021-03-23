@@ -85,8 +85,8 @@
                                     <td *ngFor="let col of columns" [ngSwitch]="col.filterType" >
                                         <span *ngSwitchDefault> {{rowData[col.field]}} </span> 
                                         <div *ngSwitchCase="'custom'">
-                                            <h4 *ngIf="col.field == 'EstadoConsulta'; else defaultField"><span class="label label-default" 
-                                            [ngStyle]="{'background-color': rowData.EstadoConsulta.Color}">{{rowData.EstadoConsulta.Descripcion}}</span></h4>
+                                            <span *ngIf="col.field == 'EstadoConsulta'; else defaultField" [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
+                                            {{rowData.EstadoConsulta.Descripcion}}</span>
                                             
                                             <ng-template #defaultField>{{rowData[col.field].Nombre}}</ng-template>
                                         </div>
