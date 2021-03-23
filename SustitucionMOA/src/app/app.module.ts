@@ -94,8 +94,7 @@ import { ConsultaService } from "./consulta/consulta.service";
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     FaqComponent,
-    TicketPesadaComponent
-    NumericDirective,
+    TicketPesadaComponent,
     ConsultaBaseComponent],
   providers: [
     DatePipe,
@@ -114,7 +113,7 @@ import { ConsultaService } from "./consulta/consulta.service";
     EmpresaGranosService,
     EstadoSolicitudService,
     NotificacionesService,
-    TicketPesadaService
+    TicketPesadaService,
     ConsultaService
   ],
   bootstrap: [AppComponent],
