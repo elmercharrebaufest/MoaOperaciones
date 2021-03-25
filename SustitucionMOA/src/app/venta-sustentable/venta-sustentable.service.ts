@@ -28,9 +28,20 @@ export class VentaSustentableService extends BaseService {
         let camp = JSON.stringify(campoProveedor);
         
         payload.append('archivoKmz', archivoKmz);
-        payload.append('campoProveedorJson', camp)
+        payload.append('campoProveedorJson', camp);
         return this.http
             .post('/api/CampoSustentable/CampoProveedorAgregar', payload, this.headersPost).pipe(
+            map(this.extractData));
+    }
+
+    campoProveedorEditar(campoProveedor: CampoProveedor, archivoKmz: File){
+        var payload = new FormData();
+        let camp = JSON.stringify(campoProveedor);
+        
+        payload.append('archivoKmz', archivoKmz);
+        payload.append('campoProveedorJson', camp);
+        return this.http
+            .put('/api/CampoSustentable/CampoProveedorEditar', payload, this.headersPost).pipe(
             map(this.extractData));
     }
 

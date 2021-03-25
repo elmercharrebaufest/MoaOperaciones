@@ -91,6 +91,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
             campoProveedor.Latitud = campoProveedorObj.Latitud;
+            campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
 
             repositorio.GuardarCambios();
 
@@ -364,6 +365,12 @@ namespace SustitucionMOAUtils.Services
                                 ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
                                 Longitud = cp.Longitud,
+                                CampoCosechaId = cp.CampoCosecha_Id,
+                                ProveedorNombre = cp.Proveedor.RazonSocial,
+                                LocalidadNombre = cp.CampoCosecha.Campo.Localidad.Nombre,
+                                CampoSustentableId = cp.CampoCosecha.CampoSustentable_Id,
+                                CosechaId = cp.CampoCosecha.Cosecha_Id,
+                                
                             });
 
             return campo;

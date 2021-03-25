@@ -45,6 +45,7 @@ export class EdicionComponent  extends BaseComponent implements OnInit {
 
   cosechas: any[];
   cosecha: any;
+  localidad: any;
 
   localidadId: any;
   provinciaId: any;
@@ -59,7 +60,11 @@ export class EdicionComponent  extends BaseComponent implements OnInit {
   longitud: string;
   file: any;
 
+  proveedorNombre: any;
   campoCosechaId: any;
+  NombreCosecha: any;
+  localidadNombre: string;
+
 
   proveedorSelected: any;
   esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";  
@@ -105,6 +110,9 @@ export class EdicionComponent  extends BaseComponent implements OnInit {
                       this.nombreEstablecimiento = result.NombreCampo;
                       this.latitud = result.Latitud;
                       this.longitud = result.Longitud;
+                      this.NombreCosecha = result.NombreCosecha;
+                      this.proveedorNombre = result.ProveedorNombre;
+                      this.localidadNombre = result.LocalidadNombre;
                     }
                 },
                 error => {
@@ -122,35 +130,41 @@ export class EdicionComponent  extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
   }
 
-  campoProveedorAgregar(){
+
+
+  campoProveedorEditar(){
     let campoProveedor: CampoProveedor;
     let campoSustentable: CampoSustentable;
     let campoCosecha: CampoCosecha;
 
+    debugger
+
+    /*
     if(this.validar()){
       this.blockUI.stop();
       return;
     }
-
+    */
     campoSustentable ={
-      Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+      Nombre: this.nombreEstablecimiento
     }
 
     campoCosecha = {
-      Campo: campoSustentable, Cosecha_Id: this.cosecha.Id
+      Campo: campoSustentable, Cosecha_Id: this.campoProveedor.CosechaId, Campo_Id: this.campoProveedor.CampoSustentableId
     }
 
     campoProveedor = {
-      HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
-      Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha
+      HectareasTotales: this.campoProveedor.HectareasTotales, HectareasSoja: this.campoProveedor.HectareasSoja,
+      Latitud: this.campoProveedor.Latitud, Longitud: this.campoProveedor.Longitud, Proveedor_Id: this.proveedorId, 
+      CampoCosecha: campoCosecha,
+      CampoCosecha_Id: this.campoCosechaId
     }
-
 
     this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         try {
             this.unsubscribe();
-            this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
+            this.subscription = this.service.campoProveedorEditar(campoProveedor, this.file).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -197,6 +211,7 @@ export class EdicionComponent  extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                      debugger
                       this.cosechas = result;
                     }
                 },

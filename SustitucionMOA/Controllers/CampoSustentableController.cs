@@ -47,10 +47,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPut]
-        public JsonResult CampoProveedorEditar(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        public JsonResult CampoProveedorEditar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
         {
             try
             {
+                var campoProveedor = JsonConvert.DeserializeObject<CampoProveedor>(campoProveedorJson);
                 return JsonCustom(campoSustentableService.Editar(SessionPersister.User.username, campoProveedor, archivoKmz));
             }
             catch (InfoCustomException e)
