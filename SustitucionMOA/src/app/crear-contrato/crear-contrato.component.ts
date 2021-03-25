@@ -360,6 +360,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             this.habilitaciones(contrato);
                         }
                     }
+                    this.blockUI.stop();
                 }
             },
             error => {
@@ -647,12 +648,14 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Acopiador.Directo == "NO"))) {
                         this.mensajeModal = "No est\u00E1 habilitado en Ruca";
                         document.getElementById("openModalMensajeModal").click();
+                        this.blockUI.stop();
                         return;
                     }
 
                     if (obj.FechaActualizacion == "NO") {
                         this.mensajeModal = "Falta fecha de actualizaci\u00F3n de legajo";
                         document.getElementById("openModalMensajeModal").click();
+                        this.blockUI.stop();
                         return;
                     }
                     this.blockUI.stop();

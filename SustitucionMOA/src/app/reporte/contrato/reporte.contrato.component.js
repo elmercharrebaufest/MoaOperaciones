@@ -21,6 +21,7 @@ import { Component } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
 import { registerLocaleData } from '@angular/common';
+import { Seccion } from './../../common/models/seccion';
 import es from '@angular/common/locales/es';
 var ReporteContratoComponent = /** @class */ (function (_super) {
     __extends(ReporteContratoComponent, _super);
@@ -55,6 +56,9 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
     };
     ReporteContratoComponent.prototype.ngOnInit = function () {
         registerLocaleData(es);
+        this.navService.setSeccionList([
+            new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
+        ]);
     };
     ReporteContratoComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -283,7 +287,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
-                var obj = JSON.parse(result);
+                var obj = JSON.parse(result.DatosContrato);
                 _this.datosContrato = obj;
                 obj.Datos.Bolsa.forEach(function (element) {
                     var el = {

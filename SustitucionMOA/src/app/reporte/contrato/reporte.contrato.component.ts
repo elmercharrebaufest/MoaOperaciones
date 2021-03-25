@@ -2,6 +2,7 @@
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
 import { registerLocaleData } from '@angular/common';
+import { Seccion } from './../../common/models/seccion';
 
 import es from '@angular/common/locales/es';
 declare var $: any;
@@ -45,6 +46,12 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
 
     ngOnInit() {
         registerLocaleData(es);
+        this.navService.setSeccionList(
+            [
+                new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
+                //new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
+            ]
+        );
     }
 
     ngAfterViewInit(): void {
@@ -288,7 +295,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj = JSON.parse(result);
+                    
+                    let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
 
                     obj.Datos.Bolsa.forEach(element => {

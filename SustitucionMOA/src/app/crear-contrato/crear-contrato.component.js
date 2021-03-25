@@ -342,6 +342,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         _this.habilitaciones(contrato);
                     }
                 }
+                _this.blockUI.stop();
             }
         }, function (error) {
             _this.blockUI.stop();
@@ -612,11 +613,13 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Acopiador.Directo == "NO"))) {
                     _this.mensajeModal = "No est\u00E1 habilitado en Ruca";
                     document.getElementById("openModalMensajeModal").click();
+                    _this.blockUI.stop();
                     return;
                 }
                 if (obj.FechaActualizacion == "NO") {
                     _this.mensajeModal = "Falta fecha de actualizaci\u00F3n de legajo";
                     document.getElementById("openModalMensajeModal").click();
+                    _this.blockUI.stop();
                     return;
                 }
                 _this.blockUI.stop();
