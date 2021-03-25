@@ -130,7 +130,7 @@ export class ContactoMailComponent extends ListBaseComponent {
                 this.nombre,
                 this.email,
                 this.telefono,
-                this.categoriaSelected.label,
+                this.categoriaSelected.value,
                 this.categoriaSelected.camposAdicionales,
                 this.comentario,
                 this.contrato,

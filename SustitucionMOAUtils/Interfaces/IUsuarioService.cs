@@ -11,6 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
 
         List<UsuarioDto> GetUsuarios();
+        UsuarioDto GetUsuario(string email);
 
         string HabilitarUsuario(string usuarioMail);
 
@@ -25,6 +26,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
 
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
+        List<Rol> GetRolesUsuario(string email);
         void SeccionVisitada(string mailUsuario, string seccion);
     }
 }

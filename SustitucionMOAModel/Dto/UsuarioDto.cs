@@ -20,6 +20,7 @@ namespace SustitucionMOAModel.Dto
         public string CUIT { get; set; }
 
         public string Tipo { get; set; }
+        public List<string> Permisos { get; set; }
 
         public UsuarioDto(Usuario usuario)
         {
@@ -47,6 +48,7 @@ namespace SustitucionMOAModel.Dto
             }
 
             CodigoProveedor = FormatearCodigo();
+            Permisos = new List<string>();
         }
 
         private string FormatearCodigo()

@@ -367,6 +367,8 @@ namespace SustitucionMOAUtils.Services
                 nuevoVendedor.Comercial = comercial;
                 nuevoVendedor.IdComercialDataAgro = infoDA.ComercialId;
                 nuevoVendedor.IdDataAgro = infoDA.ProveedorId;
+                nuevoVendedor.TipoProveedor = ObtenerTipoPorNombreCorto("CORR");
+
             }
             else
             {

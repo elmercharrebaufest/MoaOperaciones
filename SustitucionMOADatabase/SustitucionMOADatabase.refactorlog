@@ -105,4 +105,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="FechaComprobante" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="42940a4b-b76d-49ff-b41a-9c62b821887d" ChangeDateTime="02/09/2021 20:50:49">
+    <Property Name="ElementName" Value="[dbo].[RolCategoria].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RolCategoria]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Rol_Id" />
+  </Operation>
 </Operations>

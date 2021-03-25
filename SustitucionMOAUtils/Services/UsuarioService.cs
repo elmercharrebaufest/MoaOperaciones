@@ -57,6 +57,27 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public UsuarioDto GetUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x=> x.Mail == email);
+
+                if (usuario == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
+                }
+                var ret = new UsuarioDto(usuario);
+                ret.Permisos = usuario.ObtenerPermisos();
+
+                return ret;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public string HabilitarUsuario(string usuarioMail)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuarioMail);
@@ -201,6 +222,18 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Rol> GetRolesUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == email);
+                return usuario.Roles.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
         {

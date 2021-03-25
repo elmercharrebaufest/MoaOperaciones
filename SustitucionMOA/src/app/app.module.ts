@@ -7,6 +7,7 @@ import {
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { Ng2AutoCompleteModule } from "ng2-auto-complete";
@@ -53,20 +54,22 @@ import { BlockUIModule } from 'ng-block-ui';
 import { FaqComponent } from './faq/faq.component'
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
+import { ConsultaBaseComponent } from "./consulta/consulta.component";
+import { ConsultaService } from "./consulta/consulta.service";
 
 
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpModule,
     AppRoutingModule,
     FormsModule,
     NgxPaginationModule,
     SelectModule,
     ModalModule,
-    Ng2AutoCompleteModule,
+
     ReCaptchaModule,
-    AutocompleteLibModule,
     SharedModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
@@ -91,8 +94,8 @@ import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
     FaqComponent,
-    TicketPesadaComponent
-  ],
+    TicketPesadaComponent,
+    ConsultaBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,
@@ -110,7 +113,8 @@ import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
     EmpresaGranosService,
     EstadoSolicitudService,
     NotificacionesService,
-    TicketPesadaService
+    TicketPesadaService,
+    ConsultaService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

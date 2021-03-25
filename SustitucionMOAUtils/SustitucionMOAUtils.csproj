@@ -119,6 +119,8 @@
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
+    <Compile Include="Interfaces\IContactoMailService.cs" />
+    <Compile Include="Interfaces\IConsultaService.cs" />
     <Compile Include="Interfaces\IAzureService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
+    <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
