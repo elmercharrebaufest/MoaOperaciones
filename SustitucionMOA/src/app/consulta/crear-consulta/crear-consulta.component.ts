@@ -375,11 +375,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.postComentario(result.Id, this.nuevoComentario);
-                        this.spinnerComponent.hideIt();
                         setTimeout(() => {
-                            this.goToSeccion('/consulta/mis-consultas');
+                        this.postComentario(result.Id, this.nuevoComentario);
                         }, 200);
+                        this.spinnerComponent.hideIt();
+                        this.goToSeccion('/consulta/mis-consultas');
                     }
                 },
                 error => {
