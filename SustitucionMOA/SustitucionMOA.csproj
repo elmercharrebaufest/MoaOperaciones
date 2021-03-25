@@ -388,6 +388,7 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="/node_modules/primeicons/primeicons.css" />
     <Content Include="Content\css\loader.css" />
     <Content Include="Content\css\ng2-select.css" />
     <Content Include="Content\css\normalize.css" />
