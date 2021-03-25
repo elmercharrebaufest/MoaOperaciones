@@ -356,7 +356,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     
 
         this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
-            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, CausaConsulta_Id: 1
+            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
         }
 
         this.consulta = {CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor, 
