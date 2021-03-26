@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AltaEmpresaControllerTest.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosControllerTest.cs" />
+    <Compile Include="Controllers\CampoSustentableControllerTest.cs" />
     <Compile Include="Controllers\CartaPorteControllerTest.cs" />
     <Compile Include="Controllers\ConsultaControllerTest.cs" />
     <Compile Include="Controllers\TicketPesadaControllerTest.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Services\AltaEmpresaGranosServiceTest.cs" />
     <Compile Include="Services\AltaEmpresaServiceTest.cs" />
     <Compile Include="Services\AzureB2CServiceTest.cs" />
+    <Compile Include="Services\CampoSustentableServiceTest.cs" />
     <Compile Include="Services\DataAgroServiceTest.cs" />
     <Compile Include="Services\NotificacionServiceTest.cs" />
     <Compile Include="Services\TicketPesadaServiceTest.cs" />
@@ -110,6 +112,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="TestFiles\Example.kmz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">

@@ -239,5 +239,19 @@ namespace SustitucionMOAUtils.Services
         {
             return vendedorService.GetVendedores(usuarioMail);
         }
+
+        public ProveedorDto GetProveedorPorCodigo(string codigo)
+        {
+
+            Entidades.Proveedor proveedor = repositorio.Obtener<Entidades.Proveedor>(x => x.CodigoProveedor == codigo);
+
+            if (proveedor == null)
+            {
+                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+            }
+            var ret = new ProveedorDto(proveedor);
+
+            return ret;
+        }
     }
 }

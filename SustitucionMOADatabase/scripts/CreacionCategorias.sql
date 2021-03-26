@@ -47,8 +47,8 @@ BEGIN
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('INF', 'Informe comercial', @idCategoria)
 
-	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('CAP', 'Carta Presentacion', @idCategoria)
+	Insert into SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('CAP', 'Carta presentacón', @idCategoria)
 END
 
 COMMIT TRAN

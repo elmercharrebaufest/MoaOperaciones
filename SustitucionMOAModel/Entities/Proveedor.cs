@@ -76,5 +76,11 @@ namespace SustitucionMOAModel.Entities
 
         public bool? SiperObligatorio { get; set; }
 
+        public DateTime? FechaFirmaDeclaracionCampoSustentable { get; set; }
+
+        public OpcionesDeclaracionCampoSustentable? OpcionDeclaracionCampoSustentable { get; set; }
+
+        public double? HectareasDeclaracionCampoSustentable { get; set; }
+
     }
 }

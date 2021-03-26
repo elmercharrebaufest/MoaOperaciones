@@ -53,6 +53,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   selectProveedor: any[];
   filtroProveedor: any[];
   selected: any;
+  proveedorId: any;
 
   ngOnInit() {
     this.getUsuario();
@@ -95,7 +96,6 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.data = result.data.vendedores;
-                    this.data.sort((a, b) => (a.descVendedor > b.descVendedor) ? 1 : -1)
                     this.selectProveedor = [];
                     this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor}));
                 }
@@ -113,4 +113,5 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
 
     return false; //<-- Prevent Refresh
 }
+
 }

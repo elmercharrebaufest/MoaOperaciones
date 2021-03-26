@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
+using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
 
 namespace SustitucionMOA.Controllers
 {
@@ -573,6 +574,28 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = altaEmpresaNoGranosService.GetRubros() });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetProveedorPorCodigo(string codigo)
+        {
+            try
+            {
+                return JsonCustom(_usuarioService.GetProveedorPorCodigo(codigo));
             }
             catch (InfoCustomException e)
             {

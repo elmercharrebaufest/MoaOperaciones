@@ -122,6 +122,7 @@
     <Compile Include="Interfaces\IContactoMailService.cs" />
     <Compile Include="Interfaces\IConsultaService.cs" />
     <Compile Include="Interfaces\IAzureService.cs" />
+    <Compile Include="Interfaces\ICampoSustentableService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Interfaces\IAltaEmpresaGranosService.cs" />
     <Compile Include="Interfaces\IAzureB2CService.cs" />
     <Compile Include="Interfaces\IDataAgroService.cs" />
+    <Compile Include="Interfaces\IHangfireJob.cs" />
     <Compile Include="Interfaces\ILiquidacionService.cs" />
     <Compile Include="Interfaces\INotificacionService.cs" />
     <Compile Include="Interfaces\IReportesService.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
+    <Compile Include="Services\CampoSustentableService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
     <Compile Include="Services\AltaEmpresaService.cs" />

@@ -58,6 +58,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Hangfire.Core, Version=1.7.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Core.1.7.19\lib\net45\Hangfire.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.Ninject, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Ninject.1.2.0\lib\net45\Hangfire.Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.SqlServer, Version=1.7.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.SqlServer.1.7.19\lib\net45\Hangfire.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -308,6 +317,8 @@
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
     <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
+    <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
+    <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
     <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
     <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
     <Content Include="src\app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
@@ -417,6 +428,15 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
+    <Content Include="src\app\venta-sustentable\alta\alta.component.css" />
+    <Content Include="src\app\venta-sustentable\alta\alta.component.html" />
+    <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.css" />
+    <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.html" />
+    <Content Include="src\app\venta-sustentable\edicion\edicion.component.css" />
+    <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
+    <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.css" />
+    <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />
     <Content Include="src\assets\css\styles.css" />
@@ -887,10 +907,12 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
     <Compile Include="Controllers\ConsultaController.cs" />
+    <Compile Include="Controllers\CampoSustentableController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -919,8 +941,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Job\InfoMetJob.cs" />
-    <Compile Include="Job\InfoMetScheduler.cs" />
+    <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
+    <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\CustomPermisoAuthorizeAttribute.cs" />
     <Compile Include="Security\CustomPrincipal.cs" />
@@ -956,6 +978,11 @@
     <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
@@ -999,6 +1026,21 @@
     <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.ts" />
     <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.service.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\edicion\edicion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\edicion\edicion.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\sustentable.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable-routing.Module.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

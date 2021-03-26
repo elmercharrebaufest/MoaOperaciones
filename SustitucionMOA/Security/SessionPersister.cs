@@ -25,7 +25,6 @@ namespace SustitucionMOASecurity
                     username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value,
                     nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value,
                     permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList()
-
                 };
             }
         }

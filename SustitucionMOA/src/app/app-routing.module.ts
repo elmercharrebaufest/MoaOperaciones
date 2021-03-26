@@ -19,6 +19,7 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
+import { VentaSustentableBaseComponent } from "./venta-sustentable/venta-sustentable.component"
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -123,6 +124,11 @@ const appRoutes: Routes = [
         {
             path: "crear-contrato",
             loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
+        },
+
+        {
+          path: "sustentable",
+          loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
         },
 
       { path: "notificaciones", component: ListadoNotificacionesComponent},

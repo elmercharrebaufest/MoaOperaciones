@@ -115,5 +115,12 @@
         /* PERMISOS CONSULTAS */
         public const string CONSULTA_LISTADO = "LISTADO CONSULTA";
         public const string CONSULTA_AMB = "CONSULTA ABM";
+        /* PERMISOS CAMPO SUSTENTABLE */
+        public const string ABM_CAMPOS_SUSTENTABLE = "ABM CAMPOS SUSTENTABLE";
+        public const string VER_TODOS_CAMPOS_SUSTENTABLE = "VER TODOS CAMPOS SUSTENTABLE";
+        public const string EDICION_CAMPOS_CREADOS = "EDICION CAMPOS CREADOS";
+
+
+
     }
 }

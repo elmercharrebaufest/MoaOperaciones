@@ -56,8 +56,7 @@ import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
 import { ConsultaService } from "./consulta/consulta.service";
-
-
+import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 @NgModule({
   imports: [
     BrowserModule,
@@ -95,7 +94,8 @@ import { ConsultaService } from "./consulta/consulta.service";
     CarouselNotificacionesComponent,
     FaqComponent,
     TicketPesadaComponent,
-    ConsultaBaseComponent],
+    ConsultaBaseComponent,
+    VentaSustentableBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,

@@ -28,11 +28,13 @@ namespace SustitucionMOA.Controllers
     public class AltaEmpresaGranosController : BaseController
     {
         protected readonly IRepositorio repositorio;
+        protected readonly IDataAgroService dataAgroService;
         readonly IAltaEmpresaGranosService altaEmpresaService;
 
-        public AltaEmpresaGranosController(IAltaEmpresaGranosService altaEmpresaService, IRepositorio repositorio)
+        public AltaEmpresaGranosController(IAltaEmpresaGranosService altaEmpresaService, IDataAgroService dataAgroService, IRepositorio repositorio)
         {
             this.altaEmpresaService = altaEmpresaService;
+            this.dataAgroService = dataAgroService;
             this.repositorio = repositorio;
         }
 
@@ -54,6 +56,8 @@ namespace SustitucionMOA.Controllers
                 }
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
+                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
                 var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, proveedorId);
 
                 if (infoProveedor.ProveedorClasificacion == "Productor")
@@ -64,11 +68,23 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                informeComercial.ContactoComercial.Email1 = userMail;
-                informeComercial.ProveedorId = (int)proveedor.IdDataAgro;
-                informeComercial.InformeComercialId = 0;
 
-                informeComercial.ComercialID = (int)proveedor.IdComercialDataAgro;
+                informeComercial.ContactoComercial.Email1 = userMail;
+
+                //Para los proveedores que hicieron el alta con los flujos, tenemos el IDDataAgro y IDComercial. Para los migrados no. Por esto, lo vamos a buscar
+                if (proveedor.IdDataAgro == null)
+                {
+                    informeComercial.ProveedorId = (int)proveedor.IdDataAgro;
+                    informeComercial.ComercialID = (int)proveedor.IdComercialDataAgro;
+                }
+                else
+                {
+                    var proveedorDAO = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
+                    informeComercial.ProveedorId = (int)proveedorDAO.ProveedorId;
+                    informeComercial.ComercialID = proveedorDAO.ComercialId;
+                }
+
+                informeComercial.InformeComercialId = 0;
 
                 if (informeComercial.NuevosCampos != null)
                 {
@@ -114,6 +130,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
 
         public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
         {
