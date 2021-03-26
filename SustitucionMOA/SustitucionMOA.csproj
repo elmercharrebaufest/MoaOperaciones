@@ -428,7 +428,6 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
-    <Content Include="src\app\venta-sustentable\alta\alta.component.css" />
     <Content Include="src\app\venta-sustentable\alta\alta.component.html" />
     <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.css" />
     <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.html" />
