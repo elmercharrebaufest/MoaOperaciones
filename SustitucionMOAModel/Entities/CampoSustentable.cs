@@ -12,6 +12,7 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
+        public int IdScato { get; set; }
         public ICollection<CampoCosecha> Cosechas { get; set; }
         public string Nombre { get; set; }
 
