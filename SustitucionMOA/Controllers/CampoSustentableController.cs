@@ -181,11 +181,23 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public JsonResult FirmarDeclaracion(int proveedorId, double hectareasTotales)
+        public JsonResult GenerarDeclaracionProveedor(int proveedorId, double hectareasTotales)
         {
             try
             {
-                return JsonCustom(campoSustentableService.FirmarDeclaracion(SessionPersister.User.username, proveedorId, hectareasTotales));
+                var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, hectareasTotales);
+                PDFResponse result = new PDFResponse
+                {
+                    pdf = new Pdf()
+                    {
+                        data = fileArray
+                    }
+                };
+
+                return JsonCustom(result.pdf);
+
+
+                //return JsonCustom(campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, hectareasTotales));
             }
             catch (InfoCustomException e)
             {
@@ -201,6 +213,29 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //[HttpPost]
+        //public JsonResult FirmarDeclaracion(int proveedorId, double hectareasTotales)
+        //{
+        //    try
+        //    {
+        //        return JsonCustom(campoSustentableService.FirmarDeclaracion(SessionPersister.User.username, proveedorId, hectareasTotales));
+        //    }
+        //    catch (InfoCustomException e)
+        //    {
+        //        return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (ValidationCustomException e)
+        //    {
+        //        return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
+
 
         [HttpGet]
         public JsonResult ImprimirDeclaracion(int proveedorId)

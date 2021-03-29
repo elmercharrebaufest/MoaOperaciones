@@ -122,9 +122,17 @@ var appRoutes = [
                 path: "crear-contrato",
                 loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
             },
+            {
+                path: "sustentable",
+                loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
+            },
             { path: "notificaciones", component: ListadoNotificacionesComponent },
             { path: "notificaciones/alta", component: AltaNotificacionesComponent },
-            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent }
+            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
+            {
+                path: "consulta",
+                loadChildren: "./consulta/consulta.module#ConsultaModule",
+            },
         ],
     },
     { path: "**", component: HomeComponent },

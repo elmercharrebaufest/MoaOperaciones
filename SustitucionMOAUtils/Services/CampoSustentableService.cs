@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using iTextSharp.text.pdf;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -124,12 +125,7 @@ namespace SustitucionMOAUtils.Services
 
         public byte[] ImprimirDeclaracion(int proveedorId)
         {
-
-            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
-            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
-
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-
             var cosecha = ObtenerCosechaActual();
 
             var allCampos = repositorio.Listar<CampoProveedor, CamposSustentableReporte>
@@ -146,17 +142,6 @@ namespace SustitucionMOAUtils.Services
                 },
                 cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
 
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
-
-            string downloadKey = "";
-
             DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
             {
                 Cosecha = cosecha.Nombre,
@@ -167,6 +152,22 @@ namespace SustitucionMOAUtils.Services
                 Campos = allCampos
             };
 
+            return GenerarPDFDeclaracion(datos);
+        }
+
+        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentable datos)
+        {
+            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
+            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+            string userName = DataAgroWSCredential.getUserName();
+            string password = DataAgroWSCredential.getPassword();
+            string dominio = DataAgroWSCredential.getDominio();
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(userName, password, dominio),
+            };
             var content = JsonConvert.SerializeObject(datos);
             var buffer = Encoding.UTF8.GetBytes(content);
             var byteContent = new ByteArrayContent(buffer);
@@ -189,8 +190,7 @@ namespace SustitucionMOAUtils.Services
                     throw new InfoCustomException(jsonResult.Errores[0].Message);
                 }
 
-                downloadKey = jsonResult.DownloadKey;
-
+                string downloadKey = jsonResult.DownloadKey;
                 byte[] InformeComercialPDF;
                 urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
                 using (WebClient clienteDescarga = new WebClient())
@@ -228,30 +228,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.Archivo.Ruta = rutaArchivo;
 
             archivoKmz.SaveAs(rutaArchivo);
-
         }
-
-        //private int ObtenerIdCampoSustentable(CampoProveedor campoProveedor)
-        //{
-        //    var campoSustentable = repositorio.Obtener<CampoSustentable>(c =>
-        //                                                                 c.Nombre == campoProveedor.CampoCosecha.Campo.Nombre &&
-        //                                                                 c.Localidad_Id == campoProveedor.CampoCosecha.Campo.Localidad_Id);
-
-        //    var idCampo = campoSustentable?.Id ?? 0;
-
-        //    if (idCampo == 0)
-        //    {
-        //        campoProveedor.CampoCosecha.ToneladasAprobadas = 0;
-        //    }
-        //    else
-        //    {
-        //        var campoCosecha = repositorio.Obtener<CampoCosecha>(cc => cc.CampoSustentable_Id == idCampo && cc.Cosecha_Id == campoProveedor.CampoCosecha_Id);
-
-        //        campoProveedor.CampoCosecha.ToneladasAprobadas = campoCosecha.ToneladasAprobadas;
-        //    }
-
-        //    return campoSustentable?.Id ?? 0;
-        //}
 
         public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId)
         {
@@ -270,7 +247,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (proveedor.FechaFirmaDeclaracionCampoSustentable > cosechaActual.Inicio)
                 {
-                    estado.DeclaracionFirmada = true;
+                    //estado.DeclaracionFirmada = true;
                 }
             }
 
@@ -300,6 +277,85 @@ namespace SustitucionMOAUtils.Services
 
             return SuccessMsg.DeclaracionCampoSustentableFirmada;
         }
+
+        public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, HttpPostedFileBase fileSubido)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, proveedorId);
+
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            string fileName = Path.GetFileName(fileSubido.FileName);
+
+            var fileKey = FileKeys.DeclaracionCampoSustentable;
+
+            string rutaArchivosProveedores = ConfigurationManager.AppSettings["RutaArchivosProveedores"];
+
+            string rutaCarpeta = string.Concat(rutaArchivosProveedores, "/", proveedor.CUIT, "/", proveedor.Id, "/", fileKey);
+
+            string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
+
+            Directory.CreateDirectory(rutaCarpeta);
+
+            //Si subieron otros archivos anteriormente, los borramos
+            DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
+             
+            foreach (FileInfo file in carpeta.GetFiles())
+            {
+                file.Delete();
+            }
+
+            var archivoRemover = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
+
+            if (archivoRemover != null)
+            {
+                repositorio.Remover(archivoRemover);
+            }
+                
+            proveedor.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
+
+            fileSubido.SaveAs(rutaArchivo);
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.DeclaracionCampoSustentableFirmada;
+        }
+
+        public byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, double hectareasTotales)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            ValidarUsuario(usuario, proveedorId);
+
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            proveedor.FechaFirmaDeclaracionCampoSustentable = DateTime.Now;
+
+            proveedor.OpcionDeclaracionCampoSustentable = hectareasTotales > 0 ? OpcionesDeclaracionCampoSustentable.Parcial : OpcionesDeclaracionCampoSustentable.Totalidad;
+
+            proveedor.HectareasDeclaracionCampoSustentable = hectareasTotales;
+
+            repositorio.GuardarCambios();
+
+            var pdfBytes = ImprimirDeclaracion(proveedorId);
+
+            byte[] archivoResult;
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PdfReader pdfReader = new PdfReader(pdfBytes);
+                pdfReader.SelectPages("1");
+
+                PdfStamper pdfStamper = new PdfStamper(pdfReader, stream);
+                pdfStamper.Close();
+                pdfReader.Close();
+
+                archivoResult = stream.ToArray();
+            }
+
+            return archivoResult;
+        }
+
 
         public List<Cosecha> ObtenerCosechas()
         {
@@ -370,7 +426,6 @@ namespace SustitucionMOAUtils.Services
                                 LocalidadNombre = cp.CampoCosecha.Campo.Localidad.Nombre,
                                 CampoSustentableId = cp.CampoCosecha.CampoSustentable_Id,
                                 CosechaId = cp.CampoCosecha.Cosecha_Id,
-                                
                             });
 
             return campo;
