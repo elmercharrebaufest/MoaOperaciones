@@ -18,4 +18,21 @@ $("document").ready(function () {
     $(".create > p").remove();
     $(".create").prepend(signUpLink);
     $(".create > a").text("nuevo usuario");
+    
+    var ticketPesadaUrl = ""
+
+    var currentURL = window.location.href;
+    if (currentURL.includes("moagro.b2clogin.com"))
+    {
+        ticketPesadaUrl = "https://moaoperaciones.com.ar/web/ticket-pesada"
+    } else if (currentURL.includes("moagroqa.b2clogin.com"))
+    { 
+        ticketPesadaUrl = "http://moaoperacionesqa.com.ar/web/ticket-pesada"
+    }
+    else {
+        ticketPesadaUrl = "http://localhost:4200/ticket-pesada"
+    }
+
+    $(".create").after('<div class="create"><a style="color: white; border-radius: 2px; padding: 5px; width: 145px;  height: 55px; margin: 0px 0; text-decoration: none; text-transform: uppercase;  border: none; font-size: 14px;background: #959595 !important;text-align: center;padding-top: 8px !important;" href="' + ticketPesadaUrl + '">Comprobantes del transporte</a></div>')
+
 });

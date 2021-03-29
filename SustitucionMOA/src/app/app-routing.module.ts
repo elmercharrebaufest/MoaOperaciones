@@ -18,6 +18,7 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
+import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -31,6 +32,8 @@ const appRoutes: Routes = [
   //   component: RecuperarContraseniaComponent,
   //   canActivate: [LoginGuard],
   // },
+      { path: "ticket-pesada", component: TicketPesadaComponent},
+
   {
     path: "",
     component: LayoutComponent,

@@ -204,7 +204,6 @@ namespace SustitucionMOA.Controllers
 
                 using (var zipStream = new ZipOutputStream(outputMemStream))
                 {
-
                     zipStream.SetLevel(3);
 
                     foreach (CartaPorteFoto foto in _cartaPorteService.GetFotos(cartaPorteIdList))

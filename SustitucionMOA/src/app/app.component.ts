@@ -9,6 +9,7 @@ import { SpinnerSmallComponent } from './common/view-child/spinner-small/spinner
 import { map } from 'rxjs/operators';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { environment } from '../environments/environment';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'my-app',
@@ -22,7 +23,7 @@ export class AppComponent {
     @ViewChild(SpinnerSmallComponent)
     private spinnerSmallComponent: SpinnerSmallComponent;
 
-    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: Http) {
+    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: Http, private location: Location) {
         ServiceLocator.injector = this.injector;
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -37,7 +38,13 @@ export class AppComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-        this.validarLoginAzure();
+
+        if (this.location.path() === '/ticket-pesada') {
+            this.navService.navegarSeccion("ticket-pesada");
+        }
+        else {
+            this.validarLoginAzure();
+        }
     }
 
     private extractData(res: Response) {

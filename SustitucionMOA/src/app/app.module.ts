@@ -52,6 +52,8 @@ import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';
 import { FaqComponent } from './faq/faq.component'
+import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
+import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 
 
 @NgModule({
@@ -91,6 +93,8 @@ import { FaqComponent } from './faq/faq.component'
     CarouselNotificacionesComponent,
     NumericDirective,
     FaqComponent
+,
+    TicketPesadaComponent
   ],
   providers: [
     DatePipe,
@@ -108,7 +112,8 @@ import { FaqComponent } from './faq/faq.component'
     SecurityService,
     EmpresaGranosService,
     EstadoSolicitudService,
-    NotificacionesService
+    NotificacionesService,
+    TicketPesadaService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

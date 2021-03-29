@@ -102,11 +102,12 @@ export class ContactoMailComponent extends ListBaseComponent {
         });
     }
 
-    sendContactoMail() {;
+    sendContactoMail() {
+        ;
         this.floatMsgService.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
 
-        try { this.categoriaSelected.label } catch{
+        try { this.categoriaSelected.label } catch {
             this.spinnerSmallComponent.hideIt();
             this.floatMsgService.setErrorMsg("Debe seleccionar una Categoria");
             return false;
@@ -161,7 +162,7 @@ export class ContactoMailComponent extends ListBaseComponent {
                 },
                 error => {
                     var errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
-                    if (error._body.indexOf("length exceeded") >= 0) { errormsj = "El tamaño del archivo supera los 3 MBs permitidos"; } 
+                    if (error._body.indexOf("length exceeded") >= 0) { errormsj = "El tamaño del archivo supera los 3 MBs permitidos"; }
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
                 }
@@ -182,14 +183,14 @@ export class ContactoMailComponent extends ListBaseComponent {
 
 
         if (this.categoriaSelected != null && this.categoriaSelected != undefined) {
-            if (this.categoriaSelected.camposAdicionales === "A"){
+            if (this.categoriaSelected.camposAdicionales === "A") {
                 this.camposAdicionales = true;
             } else {
                 this.camposAdicionales = false;
                 this.vaciarCamposAdicionales();
             }
         }
-        
+
     }
 
     cargarArchivo(event: any) {
@@ -200,7 +201,7 @@ export class ContactoMailComponent extends ListBaseComponent {
     }
 
     vaciarCamposAdicionales() {
-        this.contrato= '';
+        this.contrato = '';
         this.razonSocial = '';
         this.cuit = '';
         this.nombreVendedor = '';
@@ -244,7 +245,7 @@ export class ContactoMailComponent extends ListBaseComponent {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
 
-                );
+            );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
