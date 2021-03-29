@@ -225,6 +225,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\blockui.css" />
+    <Content Include="Content\css\fonts\primeicons.svg" />
+    <Content Include="Content\css\primeicons.css" />
+    <Content Include="Content\css\primeng.min.css" />
+    <Content Include="Content\css\theme.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\buttons\ChoseFile.svg" />
     <Content Include="Content\images\buttons\Adjuntar.svg" />
@@ -841,6 +845,9 @@
     <Content Include="Content\fonts\Roboto-Regular.ttf" />
     <Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
     <Content Include="Documentacion\CARGA MASIVA DE CORREDORES.xlsx" />
+    <Content Include="Content\css\fonts\primeicons.eot" />
+    <Content Include="Content\css\fonts\primeicons.ttf" />
+    <Content Include="Content\css\fonts\primeicons.woff" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
