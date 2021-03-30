@@ -78,7 +78,7 @@
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
                             <!--<td>NO VIENE</td>-->
                             <td>
-                                <a *ngIf="campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1"
+                                <a *ngIf="(campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1) && editarCampos"
                                     class="animate"
                                     [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
                                     href="#">Editar</a>
