@@ -1,4 +1,5 @@
-﻿using iTextSharp.text.pdf;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
@@ -152,7 +153,39 @@ namespace SustitucionMOAUtils.Services
                 Campos = allCampos
             };
 
-            return GenerarPDFDeclaracion(datos);
+            var pdfCampos = GenerarPDFDeclaracion(datos);
+
+            byte[] archivoResult;
+
+            Document document = new Document();
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                PdfCopy pdf = new PdfCopy(document, stream);
+                document.Open();
+
+                PdfReader pdfReaderCampos = new PdfReader(pdfCampos);
+
+                //pdfReaderCampos.SelectPages("2" + pdfReaderCampos.NumberOfPages.ToString());
+                pdfReaderCampos.SelectPages("2");
+
+                var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.DeclaracionCampoSustentable);
+                byte[] fileBytes = File.ReadAllBytes(archivoDeclaracion.Ruta);
+
+                PdfReader pdfReaderDeclaracion = new PdfReader(fileBytes);
+
+                pdf.AddDocument(pdfReaderDeclaracion);
+                pdfReaderDeclaracion.Close();
+
+                pdf.AddDocument(pdfReaderCampos);
+                pdfReaderCampos.Close();
+
+                document.Close();
+
+                archivoResult = stream.ToArray();
+            }
+
+            return archivoResult;
         }
 
         private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentable datos)
@@ -206,7 +239,6 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor)
         {
-
         }
 
         private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
@@ -240,14 +272,18 @@ namespace SustitucionMOAUtils.Services
                 DeclaracionFirmada = false,
                 CosechaActual = cosechaActual.Nombre,
                 CUIT = proveedor.CUIT,
-                RazonSocial = proveedor.RazonSocial
+                RazonSocial = proveedor.RazonSocial,
+                HectareasDeclaracionCampoSustentable = 0,
+                OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad
             };
 
             if (proveedor.FechaFirmaDeclaracionCampoSustentable != null)
             {
                 if (proveedor.FechaFirmaDeclaracionCampoSustentable > cosechaActual.Inicio)
                 {
-                    //estado.DeclaracionFirmada = true;
+                    estado.DeclaracionFirmada = proveedor.Archivos.Any(a => a.FileKey == FileKeys.DeclaracionCampoSustentable);
+                    estado.OpcionDeclaracionCampoSustentable = proveedor.OpcionDeclaracionCampoSustentable;
+                    estado.HectareasDeclaracionCampoSustentable = proveedor.HectareasDeclaracionCampoSustentable;
                 }
             }
 
@@ -280,6 +316,11 @@ namespace SustitucionMOAUtils.Services
 
         public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, HttpPostedFileBase fileSubido)
         {
+            if (Path.GetExtension(fileSubido.FileName).ToLower() != "pdf")
+            {
+                throw new ValidationCustomException("Debe subir el archivo de declaración en formato PDF");
+            }
+
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             ValidarUsuario(usuario, proveedorId);
@@ -295,6 +336,8 @@ namespace SustitucionMOAUtils.Services
             string rutaCarpeta = string.Concat(rutaArchivosProveedores, "/", proveedor.CUIT, "/", proveedor.Id, "/", fileKey);
 
             string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
+
+            proveedor.FechaFirmaDeclaracionCampoSustentable = DateTime.Now;
 
             Directory.CreateDirectory(rutaCarpeta);
 

@@ -35,7 +35,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   fechaActual: string = ""
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
-
+  file: File
 
   @Input() proveedorId: number = 0;
 
@@ -61,6 +61,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
             this.cosechaActual = result.CosechaActual;
             this.CUIT = result.CUIT;
             this.razonSocial = result.RazonSocial;
+            this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
+            this.totalidadCosecha = result.OpcionDeclaracionCampoSustentable == 0 ? 1 : 2;
             this.abrirModalFirmaDeclaracion()
           }
         }
@@ -106,6 +108,14 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     );
 
     return false;
+  }
+
+
+  cargarArchivo(event: any) {
+    let fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
+      this.file = fileList[0];
+    }
   }
 
   imprimir() {
@@ -158,5 +168,31 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   cerrarModal() {
     document.getElementById("hidedeclaracionModal").click();
+  }
+
+  adjuntarDeclaracionFirmada() {
+    this.mensajeComponent.setMsgsEmpty();
+    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.file).subscribe(
+      result => {
+        if (result.logout == true) {
+          this.sessionDataService.logout();
+        } else if (result.error != undefined && result.error != "") {
+          this.mensajeComponent.setErrorMsg(result.error);
+        } else if (result.info != undefined) {
+          this.mensajeComponent.setInfoMsg(result.info);
+        } else {
+          this.mensajeComponent.setSuccessMsg(result);
+
+          setTimeout(() => {
+            this.cerrarModal();
+            this.proveedorFirmo.emit(true)
+          }, 3000);
+        }
+      },
+      error => {
+        this.mensajeComponent.setErrorMsg(error.message);
+      }
+    );
+    return false;
   }
 }

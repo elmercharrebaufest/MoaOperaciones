@@ -21,5 +21,6 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, double hectareasTotales);
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId);
         byte[] ImprimirDeclaracion(int proveedorId);
+        string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, HttpPostedFileBase fileSubido);
     }
 }

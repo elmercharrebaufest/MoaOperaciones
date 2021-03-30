@@ -195,9 +195,28 @@ namespace SustitucionMOA.Controllers
                 };
 
                 return JsonCustom(result.pdf);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-
-                //return JsonCustom(campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, hectareasTotales));
+        [HttpPost]
+        public JsonResult AdjuntarDeclaracionFirmada(int proveedorId, HttpPostedFileBase fileSubido)
+        {
+            try
+            {
+                return JsonCustom(campoSustentableService.AdjuntarDeclaracionFirmada(SessionPersister.User.username, proveedorId, fileSubido));
             }
             catch (InfoCustomException e)
             {

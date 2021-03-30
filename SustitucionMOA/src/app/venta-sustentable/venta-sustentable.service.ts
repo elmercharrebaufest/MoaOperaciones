@@ -52,7 +52,7 @@ export class VentaSustentableService extends BaseService {
             .pipe(map(this.extractData));
     }
 
-    searchLocalidad(term): Observable<any> {
+    searchLocalidad(term: string): Observable<any> {
         this.headers = new Headers();
         this.headers.append("Content-Type", "application/json");
         this.headers.append("Accept", "q=0.8;application/json;q=0.9");
@@ -115,6 +115,16 @@ export class VentaSustentableService extends BaseService {
         params.set("proveedorId", proveedorId.toString());
         return this.http
             .get('/api/CampoSustentable/ImprimirDeclaracion', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    adjuntarDeclaracionFirmada(proveedorId: number, fileSubido: File) {
+        var payload = new FormData();
+
+        payload.append('proveedorId', proveedorId.toString());
+        payload.append('fileSubido', fileSubido);
+        return this.http
+            .post('/api/CampoSustentable/AdjuntarDeclaracionFirmada', payload, this.headersPost).pipe(
                 map(this.extractData));
     }
 }
