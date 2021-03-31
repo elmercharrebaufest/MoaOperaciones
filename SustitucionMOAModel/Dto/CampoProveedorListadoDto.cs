@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class CampoProveedorListadoDto
     {
-        public int Id { get; set; }
+        public int IdScato { get; set; }
 
         public string NombreCampo { get; set; }
 

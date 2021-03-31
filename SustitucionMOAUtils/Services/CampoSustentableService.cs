@@ -343,7 +343,7 @@ namespace SustitucionMOAUtils.Services
 
             //Si subieron otros archivos anteriormente, los borramos
             DirectoryInfo carpeta = new DirectoryInfo(rutaCarpeta);
-             
+
             foreach (FileInfo file in carpeta.GetFiles())
             {
                 file.Delete();
@@ -355,7 +355,7 @@ namespace SustitucionMOAUtils.Services
             {
                 repositorio.Remover(archivoRemover);
             }
-                
+
             proveedor.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
 
             fileSubido.SaveAs(rutaArchivo);
@@ -417,7 +417,7 @@ namespace SustitucionMOAUtils.Services
                                .Listar<CampoProveedor>(p => !p.Borrado)
                                .Select(cp => new CampoProveedorListadoDto
                                {
-                                   Id = cp.CampoCosecha.CampoSustentable_Id,
+                                   IdScato = cp.CampoCosecha.Campo.IdScato,
                                    NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                                    HectareasSoja = cp.HectareasSoja,
                                    HectareasTotales = cp.HectareasTotales,
@@ -434,7 +434,7 @@ namespace SustitucionMOAUtils.Services
                          .Listar<CampoProveedor>(p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado)
                          .Select(cp => new CampoProveedorListadoDto
                          {
-                             Id = cp.CampoCosecha.CampoSustentable_Id,
+                             IdScato = cp.CampoCosecha.Campo.IdScato,
                              NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
                              HectareasSoja = cp.HectareasSoja,
                              HectareasTotales = cp.HectareasTotales,
