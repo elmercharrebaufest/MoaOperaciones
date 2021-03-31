@@ -9,19 +9,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IUsuarioService
     {
-        GetPerfilesResponseMOA getPerfiles();
 
         List<UsuarioDto> GetUsuarios();
         UsuarioDto GetUsuario(string email);
-
-        string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva);
-        LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia);
-
-        string alta(UsuarioAlta usuario);
-
-        string recuperarContrasenia(string usename);
-
-        string desbloquear(string usename);
 
         string HabilitarUsuario(string usuarioMail);
 

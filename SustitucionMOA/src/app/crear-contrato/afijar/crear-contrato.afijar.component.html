@@ -88,6 +88,7 @@
         position: relative;
         margin-left: 7px;
     }
+
     .material {
         cursor: pointer;
     }
@@ -96,28 +97,29 @@
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <div class="row titleSection" style="border-bottom:none;">
+            <div class="col-xs-12 col-sm-10 " style="border-bottom:1px solid #707070;" *ngIf="!this.precioSeleccionado">Seleccione el material para iniciar la carga </div>
             <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
-                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
+                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: auto; padding:10px 0;margin:0;">
                 <tbody>
                     <tr>
                         <th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Maiz</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Trigo</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Soja</th>
-                        <th style="font-size:20px;padding: 5px 10px;">Girasol</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(1,1)" *ngIf="isMaterialSeleccionado('Maiz')">Maiz</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(2,1)" *ngIf="isMaterialSeleccionado('Trigo')">Trigo</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(3,1)" *ngIf="isMaterialSeleccionado('Soja')">Soja</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(4,1)" *ngIf="isMaterialSeleccionado('Girasol')">Girasol</th>
                     </tr>
                     <tr>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,1)">{{precioMaiz == true?"Disponible":precioMaiz == false?"No Disponible":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,1)">{{precioTrigo == true?"Disponible":precioTrigo == false?"No Disponible":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,1)">{{precioSoja == true?"Disponible":precioSoja == false?"No Disponible":""}}</span></td>
-                        <td><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,1)">{{precioGirasol == true?"Disponible":precioGirasol == false?"No Disponible":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Maiz')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,1)">{{precioMaiz == true?"En mercado":precioMaiz == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Trigo')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,1)">{{precioTrigo == true?"En mercado":precioTrigo == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Soja')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,1)">{{precioSoja == true?"En mercado":precioSoja == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Girasol')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,1)">{{precioGirasol == true?"En mercado":precioGirasol == false?"Sin Precio":""}}</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Fijar</strong> </div>
+        <div class="row titleSection" *ngIf="this.precioSeleccionado">
+            <div class="col-xs-12 col-sm-10 ">{{crearModificar}} Contrato <strong>A Fijar {{materialSeleccionado}}</strong> </div>
             <!--<div class="col-xs-12 col-sm-2 " *ngIf="isVisibleProveedor()">
                 <a (click)="altaMasiva()" href="#" style="text-decoration:none!important">
                     <div class="btnSection animate align-right">Alta Masiva <img src="Content/images/buttons/upload.png" width="19" height="19" /></div>
@@ -156,7 +158,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="destino">Destino</label>
-                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId" (change)="changeDestino(contrato)">
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -225,15 +227,28 @@
                     </select>
                 </div>
                 <!--<div class="form-group col-md-4">
-            <label for="precio">Precio</label>
-            <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
-        </div>
-        <div class="form-group col-md-2">
-            <label for="moneda">Moneda</label>
-            <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
-                <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
-            </select>
-        </div>-->
+                    <label for="precio">Precio</label>
+                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="moneda">Moneda</label>
+                    <select class="form-control" name="moneda" [(ngModel)]="contrato.MonedaId" (change)="changeMoneda($event)">
+                        <option *ngFor="let item of monedas" value="{{item.Id}}">{{item.Descripcion}}</option>
+                    </select>
+                </div>-->
+            </div>
+            <div class="row" *ngIf="isVisibleProveedor()">
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Cantidad Camiones</label>
+                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.CantidadCamiones">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Zona </label>
+                    <select class="form-control" name="zona" [(ngModel)]="contrato.ComercialId">
+                        <option value="35">Corredor Rosario</option>
+                        <option value="22">Corredor Bs As</option>
+                    </select>
+                </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-6">
@@ -269,7 +284,7 @@
                     <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
                                      (selected)='selectEventLocalidad($event)' [(ngModel)]="localidad"
                                      (inputChanged)='onChangeSearchLocalidad($event)'
-                                     (inputFocused)='selectEventLocalidad($event)' [itemTemplate]="itemTemplate"
+                                     [itemTemplate]="itemTemplate"
                                      [notFoundText]="autocompleteNotFoundText"
                                      [notFoundTemplate]="notFoundTemplate">
                     </ng-autocomplete>
@@ -459,6 +474,33 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal bolsa -->
+<a href="#bolsaModal" class="trigger-btn" id="openModalbolsaModal" data-toggle="modal" style="display:none;">    Click    to Open bolsa Modal</a>
+<div class="modal fade fade-complete" id="bolsaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    La bolsa recomendada es:  <b>{{mensajeCambioBolsa}}</b>  ¿Quiere asignarla como bolsa?
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cambiarBolsa(contrato)">Aceptar</button>
+            
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
+                    Cancelar
+                </button>
             </div>
         </div>
     </div>

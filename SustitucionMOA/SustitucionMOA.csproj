@@ -225,7 +225,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\blockui.css" />
+    <Content Include="Content\css\fonts\primeicons.svg" />
+    <Content Include="Content\css\primeicons.css" />
+    <Content Include="Content\css\primeng.min.css" />
+    <Content Include="Content\css\theme.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\buttons\ChoseFile.svg" />
     <Content Include="Content\images\buttons\Adjuntar.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
@@ -240,9 +245,6 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
-    <Content Include="dist\assets\css\MolinosForms.css" />
-    <Content Include="dist\assets\css\MolinosGeneral.css" />
-    <Content Include="dist\assets\css\styles.css" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -281,6 +283,7 @@
     <Content Include="dist\index.html" />
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
+    <Content Include="dist\styles.*.css" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -329,10 +332,11 @@
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
     <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
-    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js" />
-    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.html" />
+    <Content Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
+    <Content Include="src\app\faq\faq.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
@@ -386,6 +390,8 @@
     <Content Include="src\app\ryd\carga-pesadas\carga-pesadas.component.html" />
     <Content Include="src\app\ryd\informe\informe.component.html" />
     <Content Include="src\app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="src\app\ticket-pesada\ticket-pesada.component.css" />
+    <Content Include="src\app\ticket-pesada\ticket-pesada.component.html" />
     <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.css" />
     <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
     <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
@@ -397,6 +403,7 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="node_modules\primeicons\primeicons.css" />
     <Content Include="Content\css\loader.css" />
     <Content Include="Content\css\ng2-select.css" />
     <Content Include="Content\css\normalize.css" />
@@ -425,7 +432,6 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
-    <Content Include="src\app\venta-sustentable\alta\alta.component.css" />
     <Content Include="src\app\venta-sustentable\alta\alta.component.html" />
     <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.css" />
     <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.html" />
@@ -838,6 +844,10 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\fonts\Roboto-Regular.ttf" />
     <Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
+    <Content Include="Documentacion\CARGA MASIVA DE CORREDORES.xlsx" />
+    <Content Include="Content\css\fonts\primeicons.eot" />
+    <Content Include="Content\css\fonts\primeicons.ttf" />
+    <Content Include="Content\css\fonts\primeicons.woff" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -883,8 +893,6 @@
     <Content Include="tslint.json" />
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
-    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.js.map" />
-    <Content Include="src\app\consulta\mis-consultas\mis-consultas.service.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -933,6 +941,7 @@
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
+    <Compile Include="Controllers\TicketPesadaController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VendedorController.cs" />
     <Compile Include="Global.asax.cs">
@@ -980,9 +989,13 @@
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.spec.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
@@ -1015,6 +1028,9 @@
     <TypeScriptCompile Include="src\app\liquidacion\liquidacion.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.service.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.spec.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.ts" />
@@ -1187,8 +1203,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="dist\assets\css\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
+    <Folder Include="Views\TicketPesada\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">

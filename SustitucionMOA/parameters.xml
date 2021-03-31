@@ -25,7 +25,7 @@
 						match="/configuration/appSettings/add[@key='SpaUrl']
                            /@value" />
 	</parameter>
-	
+
 	<parameter name="EsLocal Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='EsLocal']
@@ -98,23 +98,23 @@
                            /@value" />
 	</parameter>
 
-  <parameter name="ComputerVisionApiKey Config">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='ComputerVisionApiKey']
+	<parameter name="ComputerVisionApiKey Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='ComputerVisionApiKey']
                            /@value" />
-  </parameter>
+	</parameter>
 
-  <parameter name="ComputerVisionEndpoint Config">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='ComputerVisionEndpoint']
+	<parameter name="ComputerVisionEndpoint Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='ComputerVisionEndpoint']
                            /@value" />
-  </parameter>
+	</parameter>
 
-  <parameter name="BlobStorageEndpoint Config">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='BlobStorageEndpoint']
+	<parameter name="BlobStorageEndpoint Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='BlobStorageEndpoint']
                            /@value" />
-  </parameter>
+	</parameter>
 
 
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
@@ -453,12 +453,26 @@
                            /@address" />
 	</parameter>
 
-  <parameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
+	<parameter name="SI_MPMF_MOAOP_PDF_PROFORMA Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_PDF_PROFORMA']
+                           /@address" />
+	</parameter>
+
+	<parameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
                            /endpoint[@name='BasicHttpBinding_IDataAgroServices']
                            /@address" />
-  </parameter>
-  
+	</parameter>
+
+	<parameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IServicioComandos']
+                           /@address" />
+	</parameter>
+
 </parameters>
 

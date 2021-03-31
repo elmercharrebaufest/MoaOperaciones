@@ -6,7 +6,7 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { SecurityService } from './../../common/services/SecurityService';
-import { Seccion } from './../../common/models/Seccion';
+import { Seccion } from './../../common/models/seccion';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { SessionDataService } from './../../common/services/SessionDataService';

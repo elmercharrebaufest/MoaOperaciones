@@ -1,6 +1,10 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
+import { registerLocaleData } from '@angular/common';
+import { Seccion } from './../../common/models/seccion';
+
+import es from '@angular/common/locales/es';
 declare var $: any;
 
 
@@ -9,7 +13,7 @@ declare var $: any;
     templateUrl: `reporte.contrato.component.html`,
     providers: [{ provide: ReporteService, useClass: ReporteContratoService }]
 })
-export class ReporteContratoComponent extends ReporteBaseComponent {
+export class ReporteContratoComponent extends ReporteBaseComponent implements OnInit{
 
     fechaDesde: any = null;
     fechaHasta: any = null;
@@ -38,6 +42,16 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     negocioParAanular: any;
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
+    }
+
+    ngOnInit() {
+        registerLocaleData(es);
+        this.navService.setSeccionList(
+            [
+                new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
+                //new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
+            ]
+        );
     }
 
     ngAfterViewInit(): void {
@@ -190,12 +204,14 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                                 DestinoDescripcion: x.DestinoDescripcion,
                                 FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),
                                 FechaHasta: new Date(parseInt(x.FechaHasta.substr(6))),
+                                FechaOperacion: new Date(parseInt(x.FechaOperacion.substr(6))),
                                 Material: x.Material,
                                 Campania: x.Campania,
                                 Clasificacion: x.Clasificacion,
                                 Localidad: x.Localidad,
                                 Consignatario: x.Consignatario,
                                 Estado_Contrato: x.Estado_Contrato,
+                                Estado: x.Estado,
                                 PagoDiferidoTercero: x.PagoDiferidoTercero,
                                 DolarizadoTercero: x.DolarizadoTercero,
                                 CalidadTercero: x.CalidadTercero,
@@ -279,7 +295,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj = JSON.parse(result);
+                    
+                    let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
 
                     obj.Datos.Bolsa.forEach(element => {
@@ -432,6 +449,17 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         console.log(negocio);
         this.negocioParAanular = negocio;
         document.getElementById("openModalanularModal").click();
+    }
+    editar(negocio) {
+        if (negocio.TipoNegocioId == 1) {
+            this.navService.navegarSeccion("/crear-contrato/afijar/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 2) {
+            this.navService.navegarSeccion("/crear-contrato/aprecio/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 3) {
+            this.navService.navegarSeccion("/crear-contrato/fijacion/" + negocio.Id);
+        }
     }
 
 }

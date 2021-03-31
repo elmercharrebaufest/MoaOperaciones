@@ -6,7 +6,7 @@ import { ModalService } from './../../../common/services/ModalService';
 import { FloatMsgService } from './../../../common/services/FloatMsgService';
 import { NavService } from './../../../common/services/NavService';
 import { SecurityService } from './../../../common/services/SecurityService';
-import { Seccion } from './../../../common/models/Seccion';
+import { Seccion } from './../../../common/models/seccion';
 
 
 

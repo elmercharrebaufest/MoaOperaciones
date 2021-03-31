@@ -11,10 +11,12 @@ import { CrearContratoBaseComponent } from './crear-contrato.component';
 import { CrearContratoAPrecioComponent } from './aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from './afijar/crear-contrato.afijar.component';
 import { CrearContratoFijacionComponent } from './fijacion/crear-contrato.fijacion.component';
+import { CrearContratoAltaMasivaComponent } from './alta-masiva/crear-contrato.alta-masiva.component';
 import { CrearContratoService } from './crear-contrato.service';
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contrato.cargarnegocio.component';
 var CrearContratoModule = /** @class */ (function () {
     function CrearContratoModule() {
     }
@@ -32,11 +34,13 @@ var CrearContratoModule = /** @class */ (function () {
                 CrearContratoFijacionComponent,
                 CrearContratoAFijarComponent,
                 CrearContratoAPrecioComponent,
+                CrearContratoAltaMasivaComponent,
+                CrearContratoCargarNegocioComponent,
             ],
             providers: [
                 CrearContratoService
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
     ], CrearContratoModule);
     return CrearContratoModule;

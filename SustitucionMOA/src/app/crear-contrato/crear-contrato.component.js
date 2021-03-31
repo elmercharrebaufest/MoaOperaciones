@@ -22,35 +22,35 @@ import { CrearContratoService } from './crear-contrato.service';
 import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
+import { ListBaseComponent } from './../common/base-components/list-base-component';
 import { SessionDataService } from './../common/services/SessionDataService';
 import { SecurityService } from './../common/services/SecurityService';
 import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 import { BlockUI } from 'ng-block-ui';
-import { BaseComponent } from '../common/base-components/base-component';
+import { ActivatedRoute } from "@angular/router";
 var CrearContratoBaseComponent = /** @class */ (function (_super) {
     __extends(CrearContratoBaseComponent, _super);
-    //constructor(protected service: CrearContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-    //    super(service, navService, sessionDataService, securityService, floatMsgService, modalService); 
-    //     this.spinnerComponent = new SpinnerComponent();
-    //this.mensajeComponent = new MensajeComponent();
-    //this.spinnerCampana = new SpinnerSmallComponent();
-    //}
-    function CrearContratoBaseComponent(service, navService, sessionDataService, securytiService, floatMsgService, modalService) {
-        var _this = _super.call(this, navService, securytiService, floatMsgService, modalService) || this;
+    function CrearContratoBaseComponent(service, navService, route, sessionDataService, securityService, floatMsgService, modalService) {
+        var _this = _super.call(this, service, navService, sessionDataService, securityService, floatMsgService, modalService) || this;
         _this.service = service;
         _this.navService = navService;
+        _this.route = route;
         _this.sessionDataService = sessionDataService;
-        _this.securytiService = securytiService;
+        _this.securityService = securityService;
         _this.floatMsgService = floatMsgService;
         _this.modalService = modalService;
+        _this.crearModificar = "Crear";
+        _this.id = 0;
         _this.esCorredorEnDataAgro = false;
         _this.retirados = null;
         _this.cuitProveedorSeleccionado = "";
         _this.localidades = [];
         _this.proveedores = [];
+        _this.pendienteFijarContrato = "";
+        _this.mensajeCambioBolsa = "";
         _this.pendientesFijar = [];
         _this.keyword = 'Nombre';
         _this.keyword2 = "RazonSocial";
@@ -61,6 +61,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.fechaFin = new Date().toLocaleDateString('en-GB');
         _this.fechafInicio = new Date().toLocaleDateString('en-GB');
         _this.fechafFin = new Date().toLocaleDateString('en-GB');
+        _this.bolsasAutomaticas = new Array();
         _this.datosContrato = new Array();
         _this.materiales = new Array();
         _this.monedas = new Array();
@@ -85,11 +86,13 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         _this.precioSoja = null;
         _this.precioGirasol = null;
         _this.precioSeleccionado = false;
+        _this.materialSeleccionado = "";
         _this.ObservacionPagoDiferidoTercero = "";
         _this.ObservacionDolarizadoTercero = "";
         _this.ObservacionCalidadTercero = "";
         _this.ObservacionSustentableTercero = "";
         _this.ObservacionTercero = "";
+        _this.pagosDiferidos = new Array();
         _this.spinnerComponent = new SpinnerComponent();
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerCampana = new SpinnerSmallComponent();
@@ -97,14 +100,23 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     }
     CrearContratoBaseComponent.prototype.checkPermisos = function () { this.securityService.tienePermisoRedirect("CREAR CONTRATOS"); };
     CrearContratoBaseComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([
-            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
-            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
-        ]);
+        //this.navService.setSeccionList([
+        //    new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+        //    new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+        //    new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+        //    new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Fijacion'),
+        //]);
         //this.obteneDatosContrato();
+        this.route.params.forEach(function (params) {
+            if (params["id"] > 0) {
+                _this.id = params["id"];
+                _this.crearModificar = "Modificar";
+            }
+            ;
+        });
     };
     CrearContratoBaseComponent.prototype.negocioHabilitado = function (contrato) {
         var _this = this;
@@ -171,7 +183,7 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         }
                     }
                 }
-                if (_this.retirados == false) {
+                if (_this.retirados == false || contrato.Id > 0) {
                     _this.obteneDatosContrato(contrato);
                 }
                 else {
@@ -194,13 +206,17 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 _this.sessionDataService.logout();
             }
             else if (result.error != undefined && result.error != "") {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
-                var obj = JSON.parse(result);
+                var obj2 = JSON.parse(result.BolsaAutomatica);
+                _this.bolsasAutomaticas = obj2.Data;
+                var obj = JSON.parse(result.DatosContrato);
                 _this.datosContrato = obj;
                 //obj.Datos.material.forEach(element => {
                 //    let el = {
@@ -269,7 +285,6 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 });
                 _this.validarDirecto(contrato);
             }
-            _this.blockUI.stop();
         }, function (error) {
             _this.spinnerComponent.hideIt();
             _this.blockUI.stop();
@@ -285,9 +300,11 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 _this.sessionDataService.logout();
             }
             else if (result.error != undefined && result.error != "") {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
@@ -295,13 +312,37 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 if (obj != null && obj > 0) {
                     contrato.CorredorId = obj;
                     _this.esCorredorEnDataAgro = true;
+                    _this.blockUI.stop();
+                    if (_this.id > 0) {
+                        _this.habilitaciones(contrato);
+                    }
+                    _this.navService.setSeccionList([
+                        new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                        new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                        new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+                        new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Alta Masiva'),
+                    ]);
                 }
                 else {
                     _this.obtenerDatosCompraNet(contrato, "");
                     _this.esCorredorEnDataAgro = false;
+                    _this.navService.setSeccionList([
+                        new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                        new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                        new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+                    ]);
+                    _this.blockUI.stop();
+                    if (_this.id == 0) {
+                        _this.obtenerDatosCompraNet(contrato, "");
+                    }
+                    else {
+                        _this.habilitaciones(contrato);
+                    }
                 }
+                _this.blockUI.stop();
             }
         }, function (error) {
+            _this.blockUI.stop();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -309,17 +350,19 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     };
     CrearContratoBaseComponent.prototype.habilitaciones = function (contrato) {
         var _this = this;
-        this.spinnerCampana = new SpinnerSmallComponent();
-        this.spinnerCampana.showIt();
+        this.blockUI.start('');
         this.unsubscribe();
         this.subscription = this.service.habilitaciones(contrato.MaterialId, contrato.TipoNegocioId).subscribe(function (result) {
             if (result.logout == true) {
+                _this.blockUI.stop();
                 _this.sessionDataService.logout();
             }
             else if (result.error != undefined && result.error != "") {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
@@ -333,14 +376,28 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         };
                         _this.campanias.push(el);
                     });
-                    if (contrato.TipoNegocioId == 3 && _this.esCorredorEnDataAgro == false) {
+                    _this.pagosDiferidos = new Array();
+                    if (obj.TraerPagosDiferido) {
+                        JSON.parse(obj.TraerPagosDiferido).forEach(function (element) {
+                            var el = {
+                                Id: element.Id,
+                                Descripcion: element.CantidadDia + " dias $" + element.Importe,
+                                CantidadDia: element.CantidadDia,
+                                Importe: element.Importe
+                            };
+                            _this.pagosDiferidos.push(el);
+                        });
+                    }
+                    if (contrato.TipoNegocioId == 3) {
                         _this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
+                    }
+                    else {
+                        _this.blockUI.stop();
                     }
                 }
             }
-            _this.spinnerCampana.hideIt();
         }, function (error) {
-            _this.spinnerCampana.hideIt();
+            _this.blockUI.stop();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -348,15 +405,18 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
     };
     CrearContratoBaseComponent.prototype.obtenerDatosCompraNet = function (contrato, idProveedorDataAgro) {
         var _this = this;
+        this.blockUI.start('');
         this.unsubscribe();
         this.subscription = this.service.obtenerDatosCompraNet(idProveedorDataAgro).subscribe(function (result) {
             if (result.logout == true) {
                 _this.sessionDataService.logout();
             }
             else if (result.error != undefined && result.error != "") {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
@@ -364,19 +424,20 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 _this.datosCompraNet = obj;
                 contrato.ClasificacionId = obj.ClasificacionCompraNetId;
                 contrato.BolsaId = obj.BolsaCompraNetId;
-                if (obj.BolsaCompraNetId == 1) {
+                _this.BolsaId = obj.BolsaCompraNetId;
+                contrato.BoletoId = obj.BoletoCompraNetId;
+                if (obj.BoletoCompraNetId == 1) {
                     _this.bolsasSelect = _this.bolsasConfirma;
                 }
-                if (obj.BolsaCompraNetId == 2) {
+                if (obj.BoletoCompraNetId == 2) {
                     _this.bolsasSelect = _this.bolsasFisico;
                 }
-                if (obj.BolsaCompraNetId == 3) {
+                if (obj.BoletoCompraNetId == 3) {
                     _this.bolsasSelect = [];
                 }
-                if (obj.BolsaCompraNetId == 4) {
+                if (obj.BoletoCompraNetId == 4) {
                     _this.bolsasSelect = _this.bolsasCarta;
                 }
-                contrato.BoletoId = obj.BoletoCompraNetId;
                 if (obj.ClasificacionCompraNetId != 1) {
                     contrato.Consignatario = obj.Consignatario;
                     contrato.PlanCanje = obj.PlanCanje;
@@ -395,16 +456,17 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 //contrato.ClasificacionId = this.datosCompraNet.ComisionPorcentaje;
                 contrato.DestinoId = _this.destinos[0].Id;
                 //contrato.MonedaId = this.monedas[0].Id;
-                //contrato.MaterialId = this.materiales[0].Id;
-                //contrato.CampanaId = this.campanias[0].Id;
+                //contrato.MaterialId = this.materiales[0].Id;                   
                 if (contrato.TipoNegocioId == 1 || contrato.TipoNegocioId == 2) {
                     _this.validarProveedor(idProveedorDataAgro, contrato);
                 }
                 if (contrato.TipoNegocioId == 3) {
                     _this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                 }
+                _this.SeleccionAutomaticaBolsa(contrato);
             }
         }, function (error) {
+            _this.blockUI.stop();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -449,9 +511,11 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                 _this.sessionDataService.logout();
             }
             else if (result.error != undefined && result.error != "") {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setErrorMsg(result.error);
             }
             else if (result.info != undefined) {
+                _this.blockUI.stop();
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
@@ -498,9 +562,22 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                             RecibidoSinFijar: con.RecibidoSinFijar,
                         };
                     });
+                    if (_this.contratoEditar != null && _this.contratoEditar.DatosFijacion.ContratoId) {
+                        var afijar = _this.pendientesFijar.filter(function (a) { return a.ContratoId == _this.contratoEditar.DatosFijacion.ContratoId; });
+                        if (afijar.length == 1) {
+                            console.log(afijar[0]);
+                            _this.pendienteFijar = afijar[0];
+                        }
+                        _this.contratoEditar = null;
+                    }
+                    else {
+                        //this.pendienteFijarContrato = "";
+                    }
                 }
+                _this.blockUI.stop();
             }
         }, function (error) {
+            _this.blockUI.stop();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -533,17 +610,19 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
                         (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Acopiador.Directo == "NO"))) {
                     _this.mensajeModal = "No est\u00E1 habilitado en Ruca";
                     document.getElementById("openModalMensajeModal").click();
+                    _this.blockUI.stop();
                     return;
                 }
                 if (obj.FechaActualizacion == "NO") {
                     _this.mensajeModal = "Falta fecha de actualizaci\u00F3n de legajo";
                     document.getElementById("openModalMensajeModal").click();
+                    _this.blockUI.stop();
                     return;
                 }
+                _this.blockUI.stop();
             }
-            _this.spinnerCampana.hideIt();
         }, function (error) {
-            _this.spinnerCampana.hideIt();
+            _this.blockUI.stop();
             _this.spinnerComponent.hideIt();
             _this.mensajeComponent.setErrorMsg(error.message);
         });
@@ -625,11 +704,214 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
         this.materiales.push({ Id: precio.MaterialId, Descripcion: precio.Material });
         contrato.MaterialId = precio.MaterialId;
         this.precioSeleccionado = true;
+        this.materialSeleccionado = precio.Material;
+        if (contrato.Id == 0) {
+            var CampaniaIdActual = this.datosContrato.Datos.material.filter(function (x) { return x.Descripcion == precio.Material; })[0].CampaniaIdActual;
+            contrato.CampanaId = CampaniaIdActual;
+        }
         this.habilitaciones(contrato);
     };
     CrearContratoBaseComponent.prototype.isVisibleGrabar = function () {
         return !this.spinnerComponent.visible;
     };
+    CrearContratoBaseComponent.prototype.isMaterialSeleccionado = function (material) {
+        return this.materialSeleccionado == "" || this.materialSeleccionado == material;
+    };
+    CrearContratoBaseComponent.prototype.traerContratoCompleto = function (contrato) {
+        var _this = this;
+        this.unsubscribe();
+        this.subscription = this.service.traerContratoCompleto(contrato.Id, contrato.TipoNegocioId).subscribe(function (result) {
+            if (result.logout == true) {
+                _this.sessionDataService.logout();
+                _this.blockUI.stop();
+            }
+            else if (result.error != undefined && result.error != "") {
+                _this.mensajeComponent.setErrorMsg(result.error);
+                _this.blockUI.stop();
+            }
+            else if (result.info != undefined) {
+                _this.mensajeComponent.setInfoMsg(result.info);
+                _this.blockUI.stop();
+            }
+            else {
+                _this.pendientesFijar = [];
+                if (result != "") {
+                    var obj = JSON.parse(result);
+                    _this.contratoEditar = obj;
+                    console.log("contratoEditar", obj);
+                    _this.precioSeleccionado = true;
+                    _this.materialSeleccionado = obj.Material;
+                    contrato.TipoNegocioId = obj.TipoNegocioId;
+                    contrato.MaterialId = obj.MaterialId;
+                    contrato.EstadoId = obj.EstadoId;
+                    contrato.ProvinciaId = obj.ProvinciaId;
+                    if (obj.ObservacionTercero != null) {
+                        _this.ObservacionTercero = obj.ObservacionTercero.split("|")[0];
+                        var p = obj.ObservacionTercero.split("|");
+                        if (obj.CalidadTercero == true) {
+                            var f = p.filter(function (e) { return e.includes("Calidad:"); });
+                            if (f) {
+                                _this.ObservacionCalidadTercero = f[0].split(":")[1].trim();
+                            }
+                        }
+                        if (obj.DolarizadoTercero == true) {
+                            var f = p.filter(function (e) { return e.includes("Dolarizado:"); });
+                            if (f) {
+                                _this.ObservacionDolarizadoTercero = f[0].split(":")[1].trim();
+                            }
+                        }
+                        if (obj.SustentableTercero == true) {
+                            var n = "";
+                            var f = p.filter(function (e) { return e.includes("Sustentable:"); });
+                            if (f) {
+                                _this.ObservacionSustentableTercero = f[0].split(":")[1].trim();
+                            }
+                        }
+                        if (obj.PagoDiferidoTercero == true) {
+                            var f = p.filter(function (e) { return e.includes("Pago Diferido:"); });
+                            if (f) {
+                                _this.ObservacionPagoDiferidoTercero = f[0].split(":")[1].trim();
+                            }
+                        }
+                    }
+                    contrato.Proveedorid = obj.Proveedorid;
+                    contrato.DestinoId = obj.DestinoId;
+                    contrato.Cantidad = obj.Cantidad;
+                    contrato.MonedaId = obj.MonedaId;
+                    contrato.Precio = obj.Precio;
+                    contrato.CantidadCamiones = obj.CantidadCamiones;
+                    contrato.ComercialId = obj.ComercialId;
+                    contrato.Pizarra = obj.Pizarra;
+                    contrato.ClasificacionId = obj.ClasificacionId;
+                    contrato.LocalidadId = obj.LocalidadId;
+                    contrato.Consignatario = obj.Consignatario;
+                    contrato.PlanCanje = obj.PlanCanje;
+                    contrato.BoletoId = obj.BoletoId;
+                    contrato.BolsaId = obj.BolsaId;
+                    contrato.EstablecimientoPropio = obj.EstablecimientoPropio;
+                    contrato.ContratoVendedor = obj.ContratoVendedor;
+                    contrato.ContratoCorredor = obj.ContratoCorredor;
+                    contrato.PagoDiferidoTercero = obj.PagoDiferidoTercero;
+                    contrato.PagoDiferidoTerceroId = obj.PagoDiferidoTerceroId;
+                    if (!obj.PagoDiferidoTerceroId && _this.ObservacionPagoDiferidoTercero)
+                        contrato.PagoDiferidoTerceroId = -1;
+                    if (contrato.PagoDiferidoTerceroId > 0)
+                        _this.ObservacionPagoDiferidoTercero = "";
+                    contrato.DolarizadoTercero = obj.DolarizadoTercero;
+                    contrato.CalidadTercero = obj.CalidadTercero;
+                    contrato.SustentableTercero = obj.SustentableTercero;
+                    contrato.CampanaId = obj.CampanaId;
+                    contrato.ProveedorId = obj.ProveedorId;
+                    _this.proveedor = obj.Proveedor;
+                    if (obj.Corredor != null && obj.Corredor != "" && obj.ComercialId != 22) {
+                        contrato.ComercialId = 0;
+                    }
+                    else {
+                        contrato.ComercialId = obj.ComercialId;
+                    }
+                    contrato.Fecha = new Date(parseInt(obj.Fecha.substr(6)));
+                    contrato.FechaOperacion = new Date(parseInt(obj.FechaOperacion.substr(6)));
+                    if (contrato.TipoNegocioId == 2 || contrato.TipoNegocioId == 1 || contrato.TipoNegocioId == 3) {
+                        //entregadesde hasta
+                        contrato.FechaDesde = new Date(parseInt(obj.FechaDesde.substr(6)));
+                        contrato.FechaHasta = new Date(parseInt(obj.FechaHasta.substr(6)));
+                        _this.fechaInicio = contrato.FechaDesde.toLocaleDateString('en-GB');
+                        _this.fechaFin = contrato.FechaHasta.toLocaleDateString('en-GB');
+                        $("#noCursor").val(contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        $("#noCursor2").val(contrato.FechaHasta.toLocaleDateString("en-GB"));
+                    }
+                    if (contrato.TipoNegocioId == 1) {
+                        //fijacion desde hasta
+                        contrato.DesdeFijacion = new Date(parseInt(obj.DesdeFijacion.substr(6)));
+                        contrato.HastaFijacion = new Date(parseInt(obj.HastaFijacion.substr(6)));
+                        _this.fechafInicio = contrato.DesdeFijacion.toLocaleDateString('en-GB');
+                        _this.fechafFin = contrato.HastaFijacion.toLocaleDateString('en-GB');
+                        $("#noCursorf").val(contrato.DesdeFijacion.toLocaleDateString("en-GB"));
+                        $("#noCursor2f").val(contrato.HastaFijacion.toLocaleDateString("en-GB"));
+                    }
+                    _this.localidad = obj.Localidad + " (" + obj.Provincia + ")";
+                    if (contrato.TipoNegocioId == 3) {
+                        contrato.ContratoSAP = obj.DatosFijacion.ContratoId;
+                        contrato.Posicion = obj.Posicion;
+                        contrato.TrigoEspecial = obj.TrigoEspecial;
+                        _this.pendienteFijarContrato = obj.DatosFijacion.ContratoId;
+                    }
+                    if (contrato.MonedaId == "ARP  ") {
+                        _this.monedas.push({ Id: "ARP  ", Descripcion: "ARP" });
+                        contrato.MonedaId = "ARP  ";
+                        if (contrato.TipoNegocioId == 2) {
+                            contrato.DolarizadoTercero = false;
+                        }
+                    }
+                    if (contrato.MonedaId == "USDM ") {
+                        _this.monedas.push({ Id: "USDM ", Descripcion: "USD" });
+                        contrato.MonedaId = "USDM ";
+                        if (contrato.TipoNegocioId == 2) {
+                            contrato.PagoDiferidoTercero = false;
+                        }
+                    }
+                    if (obj.BoletoId == 1) {
+                        _this.bolsasSelect = _this.bolsasConfirma;
+                    }
+                    if (obj.BoletoId == 2) {
+                        _this.bolsasSelect = _this.bolsasFisico;
+                    }
+                    if (obj.BoletoId == 3) {
+                        _this.bolsasSelect = [];
+                    }
+                    if (obj.BoletoId == 4) {
+                        _this.bolsasSelect = _this.bolsasCarta;
+                    }
+                    if (contrato.Pizarra == true) {
+                        _this.datosPizarra = true;
+                    }
+                    else {
+                        _this.datosPizarra = false;
+                    }
+                    _this.materiales = new Array();
+                    _this.materiales.push({ Id: obj.MaterialId, Descripcion: obj.Material });
+                    _this.precioSeleccionado = true;
+                    _this.cuitProveedorSeleccionado = obj.Cuit;
+                    _this.negocioHabilitado(contrato);
+                }
+                //this.blockUI.stop();
+            }
+        }, function (error) {
+            _this.blockUI.stop();
+            _this.spinnerComponent.hideIt();
+            _this.mensajeComponent.setErrorMsg(error.message);
+        });
+        return false;
+    };
+    ;
+    CrearContratoBaseComponent.prototype.SeleccionAutomaticaBolsa = function (contrato) {
+        console.log("SeleccionAutomaticaBolsa", this.bolsasAutomaticas);
+        if (contrato.BoletoId == 1) {
+            var p = this.bolsasAutomaticas.filter(function (a) { return a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId; });
+            if (p.length == 1) {
+                if (p[0].BolsaId != contrato.BolsaId) {
+                    this.bolsaRecomendada = p[0].BolsaId;
+                    this.mensajeCambioBolsa = p[0].Bolsa;
+                    document.getElementById("openModalbolsaModal").click();
+                }
+            }
+        }
+    };
+    CrearContratoBaseComponent.prototype.cambiarBolsa = function (contrato) {
+        contrato.BolsaId = this.bolsaRecomendada;
+    };
+    CrearContratoBaseComponent.prototype.changeDestino = function (contrato) {
+        console.log("changeDestino");
+        console.log(contrato.DestinoId);
+        if (this.BolsaId != null && contrato.BoletoId == 1) {
+            contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(contrato);
+    };
+    CrearContratoBaseComponent.prototype.altaMasiva = function () {
+        this.navService.navegarSeccion("/crear-contrato/alta-masiva");
+    };
+    ;
     __decorate([
         BlockUI(),
         __metadata("design:type", Object)
@@ -652,9 +934,15 @@ var CrearContratoBaseComponent = /** @class */ (function (_super) {
             template: "",
             providers: [CrearContratoService]
         }),
-        __metadata("design:paramtypes", [CrearContratoService, NavService, SessionDataService, SecurityService, FloatMsgService, ModalService])
+        __metadata("design:paramtypes", [CrearContratoService,
+            NavService,
+            ActivatedRoute,
+            SessionDataService,
+            SecurityService,
+            FloatMsgService,
+            ModalService])
     ], CrearContratoBaseComponent);
     return CrearContratoBaseComponent;
-}(BaseComponent));
+}(ListBaseComponent));
 export { CrearContratoBaseComponent };
 //# sourceMappingURL=crear-contrato.component.js.map

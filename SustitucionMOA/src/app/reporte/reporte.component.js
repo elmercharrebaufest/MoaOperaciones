@@ -25,7 +25,7 @@ import { SecurityService } from './../common/services/SecurityService';
 import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 var ReporteBaseComponent = /** @class */ (function (_super) {
     __extends(ReporteBaseComponent, _super);
     function ReporteBaseComponent(service, navService, sessionDataService, securityService, floatMsgService, modalService) {

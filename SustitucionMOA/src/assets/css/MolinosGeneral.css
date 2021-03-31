@@ -2654,7 +2654,7 @@ fa-file-word-o {
 .documentos p {
   font-size: 16px;
   margin-bottom: 0px;
-  color: #959595;
+  color: #707070;
   font-weight: normal;
 }
 .documentos title-caps {
@@ -2717,7 +2717,7 @@ fa-file-word-o {
   margin-bottom: 5px;
 }
 .documento .doc-description{
-  color: #959595;
+  color: #707070;
   font-weight: normal;
   margin: 10px 0px 5px 0px;
 }
@@ -3418,12 +3418,12 @@ i.unselected{
   cursor: pointer;
 }
 
-a.link-header[aria-expanded=true] span{
+a.link-header[aria-expanded=true] span, div.link-header[aria-expanded=true] span{
   transform: rotate(180deg);
   transition: all 0.25s ease-out;
 }
 
-a.link-header[aria-expanded=false] span{
+a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] span{
   transition: all 0.25s ease-out;
 }
 
@@ -3443,7 +3443,8 @@ a.link-header[aria-expanded=false] span{
 #contacto,
 #ventaSustentable,
 #usuarios,
-#mis-consultas {
+#mis-consultas,
+#faq {
     height: 35px;
 }
 
