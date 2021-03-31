@@ -20,6 +20,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { Component } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
+import { registerLocaleData } from '@angular/common';
+import { Seccion } from './../../common/models/seccion';
+import es from '@angular/common/locales/es';
 var ReporteContratoComponent = /** @class */ (function (_super) {
     __extends(ReporteContratoComponent, _super);
     function ReporteContratoComponent() {
@@ -50,6 +53,12 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
     }
     ReporteContratoComponent.prototype.setTabs = function () {
         this.setMenuSeccionTab("reporte", "Contratos");
+    };
+    ReporteContratoComponent.prototype.ngOnInit = function () {
+        registerLocaleData(es);
+        this.navService.setSeccionList([
+            new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
+        ]);
     };
     ReporteContratoComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -189,12 +198,14 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                         DestinoDescripcion: x.DestinoDescripcion,
                         FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),
                         FechaHasta: new Date(parseInt(x.FechaHasta.substr(6))),
+                        FechaOperacion: new Date(parseInt(x.FechaOperacion.substr(6))),
                         Material: x.Material,
                         Campania: x.Campania,
                         Clasificacion: x.Clasificacion,
                         Localidad: x.Localidad,
                         Consignatario: x.Consignatario,
                         Estado_Contrato: x.Estado_Contrato,
+                        Estado: x.Estado,
                         PagoDiferidoTercero: x.PagoDiferidoTercero,
                         DolarizadoTercero: x.DolarizadoTercero,
                         CalidadTercero: x.CalidadTercero,
@@ -276,7 +287,7 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
                 _this.mensajeComponent.setInfoMsg(result.info);
             }
             else {
-                var obj = JSON.parse(result);
+                var obj = JSON.parse(result.DatosContrato);
                 _this.datosContrato = obj;
                 obj.Datos.Bolsa.forEach(function (element) {
                     var el = {
@@ -414,6 +425,17 @@ var ReporteContratoComponent = /** @class */ (function (_super) {
         console.log(negocio);
         this.negocioParAanular = negocio;
         document.getElementById("openModalanularModal").click();
+    };
+    ReporteContratoComponent.prototype.editar = function (negocio) {
+        if (negocio.TipoNegocioId == 1) {
+            this.navService.navegarSeccion("/crear-contrato/afijar/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 2) {
+            this.navService.navegarSeccion("/crear-contrato/aprecio/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 3) {
+            this.navService.navegarSeccion("/crear-contrato/fijacion/" + negocio.Id);
+        }
     };
     ReporteContratoComponent = __decorate([
         Component({

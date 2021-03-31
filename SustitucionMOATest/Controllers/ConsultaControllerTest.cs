@@ -37,11 +37,23 @@ namespace SustitucionMOATest.Controllers
         public void GetConsutaDetalle()
         {
             var mockedId = 1;
+            var mockedCodigoCorredo = "C22002937";
+            var mockedCodigoProveedor = "06422850";
+
             var mockedConsulta = new ConsultaDto(new Consulta()
             {
                 Id = mockedId,
-                Asunto = "Consulta Test"
-            });
+                Asunto = "Consulta Test",
+                CodigoCorredor = mockedCodigoCorredo,
+                RazonSocialCorredor = "pepito",
+                CodigoProveedor = mockedCodigoProveedor,
+                RazonSocialProveedor = "pepito prov",
+                Categoria_Id = 10,
+                EstadoConsulta_Id = 1,
+                FechaCreacion = DateTime.Now,
+                Usuario_Id = 2249,
+                
+        });
 
             consultaServiceMock.Setup(x => x.ObtenerConsulta(It.IsAny<int>())).Returns(mockedConsulta);
 
@@ -405,8 +417,8 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void PostAdjuntoArchivoComentarioConIdConsultaDiferente()
         {
-            var mockedConsultaId = 1;
-            var mockedCategoriaId = 1;
+            var mockedConsultaId = 2;
+            var mockedComentarioId = 1;
             var cantidadArchivosMocked = 1;
 
             consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HttpFileCollectionBase>())).Throws(new InfoCustomException("El comentario no corresponde a la consulta especificada"));
@@ -415,7 +427,7 @@ namespace SustitucionMOATest.Controllers
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { info = "El comentario no corresponde a la consulta especificada" });
 
-            resultado = target.ActualizarEstado(mockedConsultaId, mockedCategoriaId);
+            resultado = target.Adjuntos(mockedConsultaId, mockedComentarioId);
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 
             Assert.NotNull(resultado);
@@ -427,7 +439,7 @@ namespace SustitucionMOATest.Controllers
         public void PostAdjuntoArchivoComentarioSinAdjuntos()
         {
             var mockedConsultaId = 1;
-            var mockedCategoriaId = 1;
+            var mockedComentarioId = 1;
             var cantidadArchivosMocked = 0;
 
             consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HttpFileCollectionBase>())).Throws(new InfoCustomException("No se adjuntaron archivos"));
@@ -436,7 +448,7 @@ namespace SustitucionMOATest.Controllers
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { info = "No se adjuntaron archivos" });
 
-            resultado = target.ActualizarEstado(mockedConsultaId, mockedCategoriaId);
+            resultado = target.Adjuntos(mockedConsultaId, mockedComentarioId);
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 
             Assert.NotNull(resultado);

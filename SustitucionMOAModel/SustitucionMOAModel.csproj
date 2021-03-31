@@ -49,6 +49,7 @@
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
+    <Compile Include="Dto\ArchivoDescargaDto.cs" />
     <Compile Include="Dto\ArchivoDto.cs" />
     <Compile Include="Dto\CampoProveedorDto.cs" />
     <Compile Include="Dto\CampoProveedorListadoDto.cs" />
@@ -87,6 +88,9 @@
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
+    <Compile Include="Models\DataAgro\GrabarContratoResult.cs" />
+    <Compile Include="Models\DataAgro\MaterialDto.cs" />
+    <Compile Include="Models\DataAgro\CentroDto.cs" />
     <Compile Include="Models\DataAgro\CampaniaDto.cs" />
     <Compile Include="Models\DataAgro\ContratoAFijar.cs" />
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
@@ -94,6 +98,7 @@
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
+    <Compile Include="Models\ConsultaTicketPesada.cs" />
     <Compile Include="Models\WSMapMOA\FechaFeriado.cs" />
     <Compile Include="Dto\LocalidadCombo.cs" />
     <Compile Include="Dto\EstadoAprobacionDto.cs" />

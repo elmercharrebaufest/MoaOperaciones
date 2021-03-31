@@ -51,11 +51,13 @@ namespace SustitucionMOAUtils.Services
         }
         public ConsultaDto AgregarConsulta(Consulta consulta)
         {
+            var causaConsulta = repositorio.Obtener<CausaConsulta>(c => c.Nombre == "Sin Exclusión");
             consulta.Id = -1;
             consulta.Detalle.Id = -1;
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
             consulta.EstadoConsulta_Id = 1;
+            consulta.Detalle.CausaConsulta = causaConsulta;
 
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();

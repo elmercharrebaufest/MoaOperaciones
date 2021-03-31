@@ -4,10 +4,10 @@
     <xsd:schema targetNamespace="http://scato.molinos.com.ar/Imports">
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd0" namespace="http://scato.molinos.com.ar" />
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas" />
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Microsoft.ApplicationServer.StoreManagement.Query" />
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/System.Diagnostics" />
@@ -20,6 +20,216 @@
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc?xsd=xsd15" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Filtros" />
     </xsd:schema>
   </wsdl:types>
+  <wsdl:message name="IServicioRepositorio_ImprimeTicketSalida_InputMessage">
+    <wsdl:part name="parameters" element="tns:ImprimeTicketSalida" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ImprimeTicketSalida_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ImprimeTicketSalidaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCampaniaPorCuit_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCampaniaPorCuit" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCampaniaPorCuit_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCampaniaPorCuitResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCallesPorCentro_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCallesPorCentro" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCallesPorCentro_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCallesPorCentroResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstadoDeCalle_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstadoDeCalle" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstadoDeCalle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstadoDeCalleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerSiguienteCalle_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerSiguienteCalle" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerSiguienteCalle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerSiguienteCalleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EsPuestoFullAutomatizado_InputMessage">
+    <wsdl:part name="parameters" element="tns:EsPuestoFullAutomatizado" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EsPuestoFullAutomatizado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EsPuestoFullAutomatizadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerChoferPorNumeroDocumento_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerChoferPorNumeroDocumento" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerChoferPorNumeroDocumento_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerChoferPorNumeroDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerMotivoDemoraRecorrido_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerMotivoDemoraRecorrido" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerMotivoDemoraRecorrido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerMotivoDemoraRecorridoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstadoPuerto_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstadoPuerto" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstadoPuerto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstadoPuertoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosLineUp_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosLineUp" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosLineUp_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosLineUpResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDispositivosMaestroApertura_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDispositivosMaestroApertura" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDispositivosMaestroApertura_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDispositivosMaestroAperturaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDispositivosMaestroCierre_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDispositivosMaestroCierre" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDispositivosMaestroCierre_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDispositivosMaestroCierreResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerTipoComercialPorCodigoSap_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerTipoComercialPorCodigoSap" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerTipoComercialPorCodigoSap_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerTipoComercialPorCodigoSapResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCalleInterna_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCalleInterna" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCalleInterna_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCalleInternaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerAlmacenPorRecorrido_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerAlmacenPorRecorrido" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerAlmacenPorRecorrido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerAlmacenPorRecorridoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRangosDeRedondeo_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRangosDeRedondeo" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRangosDeRedondeo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRangosDeRedondeoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPorPuestoDeTrabajo" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPorPuestoDeTrabajoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoPesadaExportacion_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoPesadaExportacion" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoPesadaExportacion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoPesadaExportacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreApertura_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreApertura" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreApertura_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreAperturaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreCierre_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreCierre" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreCierre_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreCierreResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosReasignacionDeTarjeta" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosReasignacionDeTarjetaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosContingencia_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosContingencia" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosContingencia_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuariosContingenciaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuarioEntregaHexano_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuarioEntregaHexano" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerUsuarioEntregaHexano_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUsuarioEntregaHexanoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ValoresNoCorrespondenAEspecial_InputMessage">
+    <wsdl:part name="parameters" element="tns:ValoresNoCorrespondenAEspecial" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ValoresNoCorrespondenAEspecial_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ValoresNoCorrespondenAEspecialResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorRecorrido_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCupoPorRecorrido" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorRecorrido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCupoPorRecorridoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorId_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCupoPorId" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCupoPorIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPuerto_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPuerto" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPuerto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPuertoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarBalanzasPuerto_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarBalanzasPuerto" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarBalanzasPuerto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarBalanzasPuertoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarBalanzadasFaltantesPorRango_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarBalanzadasFaltantesPorRango" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarBalanzadasFaltantesPorRango_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarBalanzadasFaltantesPorRangoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCarga_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCarga" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerCarga_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerCargaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoCargas_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoCargas" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoCargas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoCargasResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCargasSinPaginado_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCargasSinPaginado" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCargasSinPaginado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCargasSinPaginadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarEmbarquePorBuques_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarEmbarquePorBuques" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarEmbarquePorBuques_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarEmbarquePorBuquesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoBalanzadas_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoBalanzadas" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoBalanzadas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoBalanzadasResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarVapores_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarVapores" />
   </wsdl:message>
@@ -38,6 +248,24 @@
   <wsdl:message name="IServicioRepositorio_ListaMaterialesPuerto_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListaMaterialesPuertoResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListaMaterialesPuertoConDescripcionCorta_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListaMaterialesPuertoConDescripcionCorta" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListaMaterialesPuertoConDescripcionCorta_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListaMaterialesPuertoConDescripcionCortaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarAgenciasMaritimas_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarAgenciasMaritimas" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarAgenciasMaritimas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarAgenciasMaritimasResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCoordinadores_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCoordinadores" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCoordinadores_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCoordinadoresResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarMaterialesPuerto_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarMaterialesPuerto" />
   </wsdl:message>
@@ -49,6 +277,30 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarDestinos_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarDestinosResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarTodosDestinos_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarTodosDestinos" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarTodosDestinos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarTodosDestinosResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarAgenciasControlPrivado_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarAgenciasControlPrivado" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarAgenciasControlPrivado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarAgenciasControlPrivadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarAgentesControlPrivado_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarAgentesControlPrivado" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarAgentesControlPrivado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarAgentesControlPrivadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarEstibas_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarEstibas" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarEstibas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarEstibasResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarExportadores_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarExportadores" />
@@ -350,6 +602,12 @@
   <wsdl:message name="IServicioRepositorio_ObtenerEstadoRecorrido_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerEstadoRecorridoResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerMotivoAutorizarRecorrido_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerMotivoAutorizarRecorrido" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerMotivoAutorizarRecorrido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerMotivoAutorizarRecorridoResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerMayorRegistro_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerMayorRegistro" />
   </wsdl:message>
@@ -379,6 +637,12 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_GuardarArchivoFotoDocumentoExterno_OutputMessage">
     <wsdl:part name="parameters" element="tns:GuardarArchivoFotoDocumentoExternoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EliminarArchivoFotoDocumentoExterno_InputMessage">
+    <wsdl:part name="parameters" element="tns:EliminarArchivoFotoDocumentoExterno" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EliminarArchivoFotoDocumentoExterno_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EliminarArchivoFotoDocumentoExternoResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerAdjunto_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerAdjunto" />
@@ -457,6 +721,12 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarClientes_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarClientesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerFotoCPDeCartaDePortePorrecorrido_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerFotoCPDeCartaDePortePorrecorrido" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerFotoCPDeCartaDePortePorrecorrido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerFotoCPDeCartaDePortePorrecorridoResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerFotoCPDeCartasDePortePorrecorrido_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerFotoCPDeCartasDePortePorrecorrido" />
@@ -554,6 +824,126 @@
   <wsdl:message name="IServicioRepositorio_ObtenerFotosCartaPortePorNumero_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerFotosCartaPortePorNumeroResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDocumentoExterno_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentoExterno" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDocumentoExterno_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDocumentoExternoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerGuidVagones_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerGuidVagones" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerGuidVagones_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerGuidVagonesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_PorcentajeMuestraAuditoria_InputMessage">
+    <wsdl:part name="parameters" element="tns:PorcentajeMuestraAuditoria" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_PorcentajeMuestraAuditoria_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PorcentajeMuestraAuditoriaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoAuditoriaLote_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoAuditoriaLote" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoAuditoriaLote_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoAuditoriaLoteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ExistenMuestraEnvioACamaraAuditoriaPendientes_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExistenMuestraEnvioACamaraAuditoriaPendientes" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ExistenMuestraEnvioACamaraAuditoriaPendientes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExistenMuestraEnvioACamaraAuditoriaPendientesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_TieneAgenteDecompras_InputMessage">
+    <wsdl:part name="parameters" element="tns:TieneAgenteDecompras" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_TieneAgenteDecompras_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TieneAgenteDecomprasResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstadisticasCalado_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstadisticasCalado" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstadisticasCalado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstadisticasCaladoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EsPuestoEnContingencia_InputMessage">
+    <wsdl:part name="parameters" element="tns:EsPuestoEnContingencia" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EsPuestoEnContingencia_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EsPuestoEnContingenciaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_LeerToleranciaRechazo_InputMessage">
+    <wsdl:part name="parameters" element="tns:LeerToleranciaRechazo" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_LeerToleranciaRechazo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LeerToleranciaRechazoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaRomaneo_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerToleranciaRomaneo" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaRomaneo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerToleranciaRomaneoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaOrigen_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerToleranciaOrigen" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaOrigen_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerToleranciaOrigenResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeControlDeBalanza_InputMessage">
+    <wsdl:part name="parameters" element="tns:VerificarCorrespondeControlDeBalanza" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeControlDeBalanza_OutputMessage">
+    <wsdl:part name="parameters" element="tns:VerificarCorrespondeControlDeBalanzaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeDescarga_InputMessage">
+    <wsdl:part name="parameters" element="tns:VerificarCorrespondeDescarga" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeDescarga_OutputMessage">
+    <wsdl:part name="parameters" element="tns:VerificarCorrespondeDescargaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzasPorGuid_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzasPorGuid" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzasPorGuid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzasPorGuidResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoMaterialCentroImpresionFormulario239" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoMaterialCentroImpresionFormulario239Response" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoImpresionReciboMunicipal" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoImpresionReciboMunicipalResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoCartaPorteUrenport" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRecorridoCartaPorteUrenportResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstablecimiento_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstablecimiento" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEstablecimiento_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEstablecimientoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoEstablecimientos_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoEstablecimientos" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoEstablecimientos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoEstablecimientosResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EsProveedorSustentable_InputMessage">
+    <wsdl:part name="parameters" element="tns:EsProveedorSustentable" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_EsProveedorSustentable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EsProveedorSustentableResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerAsignacionDeEstablecimiento_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerAsignacionDeEstablecimiento" />
   </wsdl:message>
@@ -565,6 +955,12 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarDatosDeWorkflows_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarDatosDeWorkflowsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarDatosDeWorkflowsPuerto_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarDatosDeWorkflowsPuerto" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarDatosDeWorkflowsPuerto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarDatosDeWorkflowsPuertoResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerTiempoEntreActividades_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerTiempoEntreActividades" />
@@ -739,6 +1135,24 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarMuestrasPorLoteBiotecnologia_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarMuestrasPorLoteBiotecnologiaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarMuestrasPorLoteAuditoria_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarMuestrasPorLoteAuditoria" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarMuestrasPorLoteAuditoria_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarMuestrasPorLoteAuditoriaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerLoteAuditoriaParaArchivo_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerLoteAuditoriaParaArchivo" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerLoteAuditoriaParaArchivo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerLoteAuditoriaParaArchivoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerLoteAuditoriaParaImpresion_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerLoteAuditoriaParaImpresion" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerLoteAuditoriaParaImpresion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerLoteAuditoriaParaImpresionResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarMuestrasPorArchivoDeMovimientos_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarMuestrasPorArchivoDeMovimientos" />
@@ -1226,101 +1640,47 @@
   <wsdl:message name="IServicioRepositorio_ListarRangosDeRedondeoPorMaterial_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarRangosDeRedondeoPorMaterialResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRangosDeRedondeo_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRangosDeRedondeo" />
+  <wsdl:message name="IServicioRepositorio_ObtenerHojaDeRuta_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerHojaDeRuta" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRangosDeRedondeo_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRangosDeRedondeoResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerHojaDeRuta_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerHojaDeRutaResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPorPuestoDeTrabajo" />
+  <wsdl:message name="IServicioRepositorio_ObtenerRemitoPorInstanceId_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRemitoPorInstanceId" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPorPuestoDeTrabajoResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerRemitoPorInstanceId_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerRemitoPorInstanceIdResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoPesadaExportacion_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoPesadaExportacion" />
+  <wsdl:message name="IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUltimaDescargaUnidadPorGuid" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoPesadaExportacion_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoPesadaExportacionResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerUltimaDescargaUnidadPorGuidResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreApertura_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreApertura" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorNroPedido" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreApertura_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreAperturaResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorNroPedidoResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreCierre_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreCierre" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadProveedor_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadProveedor" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosQuiebreCierre_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUsuariosQuiebreCierreResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadProveedor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadProveedorResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUsuariosReasignacionDeTarjeta" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorGuid_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorGuid" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUsuariosReasignacionDeTarjetaResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorGuid_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorGuidResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ValoresNoCorrespondenAEspecial_InputMessage">
-    <wsdl:part name="parameters" element="tns:ValoresNoCorrespondenAEspecial" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidad_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidad" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ValoresNoCorrespondenAEspecial_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ValoresNoCorrespondenAEspecialResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorRecorrido_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCupoPorRecorrido" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorRecorrido_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCupoPorRecorridoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorId_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCupoPorId" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerCupoPorId_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCupoPorIdResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPuerto_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPuerto" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPuerto_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPuertoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarBalanzasPuerto_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarBalanzasPuerto" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarBalanzasPuerto_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarBalanzasPuertoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarBalanzadasFaltantesPorRango_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarBalanzadasFaltantesPorRango" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarBalanzadasFaltantesPorRango_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarBalanzadasFaltantesPorRangoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerCarga_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCarga" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerCarga_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerCargaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoCargas_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoCargas" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoCargas_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoCargasResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarCargasSinPaginado_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarCargasSinPaginado" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarCargasSinPaginado_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarCargasSinPaginadoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoBalanzadas_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoBalanzadas" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoBalanzadas_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoBalanzadasResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidad_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ValidacionCtgEsAutomatica_InputMessage">
     <wsdl:part name="parameters" element="tns:ValidacionCtgEsAutomatica" />
@@ -1453,6 +1813,18 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_RedireccionarAListaAutomatizada_OutputMessage">
     <wsdl:part name="parameters" element="tns:RedireccionarAListaAutomatizadaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_RedireccionarABalanzaAutomatizada_InputMessage">
+    <wsdl:part name="parameters" element="tns:RedireccionarABalanzaAutomatizada" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_RedireccionarABalanzaAutomatizada_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RedireccionarABalanzaAutomatizadaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarVagonesEnPesada_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarVagonesEnPesada" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarVagonesEnPesada_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarVagonesEnPesadaResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerPuestoDeTrabajoPorDispositivo_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerPuestoDeTrabajoPorDispositivo" />
@@ -1610,6 +1982,12 @@
   <wsdl:message name="IServicioRepositorio_ListarPuestosDeTrabajoPorNombrePc_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarPuestosDeTrabajoPorNombrePcResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCamarasPorNombrePc_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCamarasPorNombrePc" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarCamarasPorNombrePc_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarCamarasPorNombrePcResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerAsignacionDePuestoComando_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerAsignacionDePuestoComando" />
   </wsdl:message>
@@ -1729,6 +2107,18 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerDatosRecorridoActivo_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerDatosRecorridoActivoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDatosRecorridoActivoSinTarjeta_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosRecorridoActivoSinTarjeta" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDatosRecorridoActivoSinTarjeta_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosRecorridoActivoSinTarjetaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDatosRecorridoActivoPorWorkflow_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosRecorridoActivoPorWorkflow" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerDatosRecorridoActivoPorWorkflow_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerDatosRecorridoActivoPorWorkflowResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ValidarProximaActividadPorPuesto_InputMessage">
     <wsdl:part name="parameters" element="tns:ValidarProximaActividadPorPuesto" />
@@ -2018,77 +2408,41 @@
   <wsdl:message name="IServicioRepositorio_LeerPesoMaximo_OutputMessage">
     <wsdl:part name="parameters" element="tns:LeerPesoMaximoResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_LeerToleranciaRechazo_InputMessage">
-    <wsdl:part name="parameters" element="tns:LeerToleranciaRechazo" />
+  <wsdl:message name="IServicioRepositorio_ObtenerSuplencia_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerSuplencia" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_LeerToleranciaRechazo_OutputMessage">
-    <wsdl:part name="parameters" element="tns:LeerToleranciaRechazoResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerSuplencia_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerSuplenciaResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaRomaneo_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerToleranciaRomaneo" />
+  <wsdl:message name="IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarRecorridosEnPlayaExternaPorCentro" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaRomaneo_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerToleranciaRomaneoResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarRecorridosEnPlayaExternaPorCentroResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaOrigen_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerToleranciaOrigen" />
+  <wsdl:message name="IServicioRepositorio_ListarRecorridosRechazados_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarRecorridosRechazados" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerToleranciaOrigen_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerToleranciaOrigenResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarRecorridosRechazados_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarRecorridosRechazadosResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeControlDeBalanza_InputMessage">
-    <wsdl:part name="parameters" element="tns:VerificarCorrespondeControlDeBalanza" />
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoSuplencias_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoSuplencias" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeControlDeBalanza_OutputMessage">
-    <wsdl:part name="parameters" element="tns:VerificarCorrespondeControlDeBalanzaResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarPaginadoSuplencias_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPaginadoSuplenciasResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeDescarga_InputMessage">
-    <wsdl:part name="parameters" element="tns:VerificarCorrespondeDescarga" />
+  <wsdl:message name="IServicioRepositorio_ListarDescuentos_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarDescuentos" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_VerificarCorrespondeDescarga_OutputMessage">
-    <wsdl:part name="parameters" element="tns:VerificarCorrespondeDescargaResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarDescuentos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarDescuentosResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerBalanzasPorGuid_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerBalanzasPorGuid" />
+  <wsdl:message name="IServicioRepositorio_ListarEntregadores_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarEntregadores" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerBalanzasPorGuid_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerBalanzasPorGuidResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoMaterialCentroImpresionFormulario239" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoMaterialCentroImpresionFormulario239Response" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoImpresionReciboMunicipal" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoImpresionReciboMunicipalResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoCartaPorteUrenport" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRecorridoCartaPorteUrenportResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerEstablecimiento_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerEstablecimiento" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerEstablecimiento_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerEstablecimientoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoEstablecimientos_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoEstablecimientos" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoEstablecimientos_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoEstablecimientosResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_EsProveedorSustentable_InputMessage">
-    <wsdl:part name="parameters" element="tns:EsProveedorSustentable" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_EsProveedorSustentable_OutputMessage">
-    <wsdl:part name="parameters" element="tns:EsProveedorSustentableResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarEntregadores_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarEntregadoresResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_BuscarEntregadores_InputMessage">
     <wsdl:part name="parameters" element="tns:BuscarEntregadores" />
@@ -2215,6 +2569,12 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerNumeroLoteBiotecnologia_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerNumeroLoteBiotecnologiaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerNumeroLoteAuditoria_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerNumeroLoteAuditoria" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerNumeroLoteAuditoria_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerNumeroLoteAuditoriaResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerArchivoDeMovimientos_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerArchivoDeMovimientos" />
@@ -2816,47 +3176,29 @@
   <wsdl:message name="IServicioRepositorio_ObtenerOrdenEntrePlantasPorInstanceId_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerOrdenEntrePlantasPorInstanceIdResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerHojaDeRuta_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerHojaDeRuta" />
+  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamiones_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamiones" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerHojaDeRuta_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerHojaDeRutaResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamiones_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamionesResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRemitoPorInstanceId_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRemitoPorInstanceId" />
+  <wsdl:message name="IServicioRepositorio_ObtenerInhabilitacionCamion_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerInhabilitacionCamion" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerRemitoPorInstanceId_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerRemitoPorInstanceIdResponse" />
+  <wsdl:message name="IServicioRepositorio_ObtenerInhabilitacionCamion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerInhabilitacionCamionResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUltimaDescargaUnidadPorGuid" />
+  <wsdl:message name="IServicioRepositorio_CamionInhabilitado_InputMessage">
+    <wsdl:part name="parameters" element="tns:CamionInhabilitado" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerUltimaDescargaUnidadPorGuidResponse" />
+  <wsdl:message name="IServicioRepositorio_CamionInhabilitado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CamionInhabilitadoResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorNroPedido" />
+  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamion_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamion" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorNroPedidoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadProveedor_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadProveedor" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadProveedor_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadProveedorResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorGuid_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorGuid" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidadPorGuid_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadPorGuidResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidad_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidad" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerDescargaUnidad_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerDescargaUnidadResponse" />
+  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamionResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamionPaginada_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamionPaginada" />
@@ -2977,6 +3319,12 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerOrdenCargaInterna_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerOrdenCargaInternaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEmbarque_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEmbarque" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerEmbarque_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerEmbarqueResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerOrdenCargaInternaFason_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerOrdenCargaInternaFason" />
@@ -3530,6 +3878,12 @@
   <wsdl:message name="IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroDeOrdenYCliente_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerOrdenDeDescargaFasonPorNumeroDeOrdenYClienteResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroRemito_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerOrdenDeDescargaFasonPorNumeroRemito" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroRemito_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerOrdenDeDescargaFasonPorNumeroRemitoResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerHojaDeRutaPorNumero_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerHojaDeRutaPorNumero" />
   </wsdl:message>
@@ -3589,42 +3943,6 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerTicketAccesoAfip_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerTicketAccesoAfipResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerSuplencia_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerSuplencia" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerSuplencia_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerSuplenciaResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarRecorridosEnPlayaExternaPorCentro" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarRecorridosEnPlayaExternaPorCentroResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarRecorridosRechazados_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarRecorridosRechazados" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarRecorridosRechazados_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarRecorridosRechazadosResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoSuplencias_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoSuplencias" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarPaginadoSuplencias_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarPaginadoSuplenciasResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarDescuentos_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarDescuentos" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarDescuentos_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarDescuentosResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarEntregadores_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarEntregadores" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarEntregadores_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarEntregadoresResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ObtenerTipoDocumentoIdentidad_InputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerTipoDocumentoIdentidad" />
@@ -3794,6 +4112,12 @@
   <wsdl:message name="IServicioRepositorio_ObtenerBalanzaNombre_OutputMessage">
     <wsdl:part name="parameters" element="tns:ObtenerBalanzaNombreResponse" />
   </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarTodasLasBalanzas_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarTodasLasBalanzas" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarTodasLasBalanzas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarTodasLasBalanzasResponse" />
+  </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarBalanzas_InputMessage">
     <wsdl:part name="parameters" element="tns:ListarBalanzas" />
   </wsdl:message>
@@ -3805,6 +4129,24 @@
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_ListarBalanzasPorNombrePc_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarBalanzasPorNombrePcResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPuestosAutomaticosporCentro_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPuestosAutomaticosporCentro" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarPuestosAutomaticosporCentro_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarPuestosAutomaticosporCentroResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajoAutomatico_InputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPorPuestoDeTrabajoAutomatico" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajoAutomatico_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ObtenerBalanzaPorPuestoDeTrabajoAutomaticoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarErrorBalanzas_InputMessage">
+    <wsdl:part name="parameters" element="tns:ListarErrorBalanzas" />
+  </wsdl:message>
+  <wsdl:message name="IServicioRepositorio_ListarErrorBalanzas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ListarErrorBalanzasResponse" />
   </wsdl:message>
   <wsdl:message name="IServicioRepositorio_BuscarCentros_InputMessage">
     <wsdl:part name="parameters" element="tns:BuscarCentros" />
@@ -4370,31 +4712,147 @@
   <wsdl:message name="IServicioRepositorio_ListarTiposComercialesPorWf_OutputMessage">
     <wsdl:part name="parameters" element="tns:ListarTiposComercialesPorWfResponse" />
   </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamiones_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamiones" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamiones_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamionesResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerInhabilitacionCamion_InputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerInhabilitacionCamion" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ObtenerInhabilitacionCamion_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ObtenerInhabilitacionCamionResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_CamionInhabilitado_InputMessage">
-    <wsdl:part name="parameters" element="tns:CamionInhabilitado" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_CamionInhabilitado_OutputMessage">
-    <wsdl:part name="parameters" element="tns:CamionInhabilitadoResponse" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamion_InputMessage">
-    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamion" />
-  </wsdl:message>
-  <wsdl:message name="IServicioRepositorio_ListarInhabilitacionCamion_OutputMessage">
-    <wsdl:part name="parameters" element="tns:ListarInhabilitacionCamionResponse" />
-  </wsdl:message>
   <wsdl:portType name="IServicioRepositorio">
+    <wsdl:operation name="ImprimeTicketSalida">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ImprimeTicketSalida" message="tns:IServicioRepositorio_ImprimeTicketSalida_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ImprimeTicketSalidaResponse" message="tns:IServicioRepositorio_ImprimeTicketSalida_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarCampaniaPorCuit">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCampaniaPorCuit" message="tns:IServicioRepositorio_ListarCampaniaPorCuit_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCampaniaPorCuitResponse" message="tns:IServicioRepositorio_ListarCampaniaPorCuit_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCallesPorCentro">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCallesPorCentro" message="tns:IServicioRepositorio_ObtenerCallesPorCentro_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCallesPorCentroResponse" message="tns:IServicioRepositorio_ObtenerCallesPorCentro_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerEstadoDeCalle">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadoDeCalle" message="tns:IServicioRepositorio_ObtenerEstadoDeCalle_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadoDeCalleResponse" message="tns:IServicioRepositorio_ObtenerEstadoDeCalle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerSiguienteCalle">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerSiguienteCalle" message="tns:IServicioRepositorio_ObtenerSiguienteCalle_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerSiguienteCalleResponse" message="tns:IServicioRepositorio_ObtenerSiguienteCalle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EsPuestoFullAutomatizado">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsPuestoFullAutomatizado" message="tns:IServicioRepositorio_EsPuestoFullAutomatizado_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsPuestoFullAutomatizadoResponse" message="tns:IServicioRepositorio_EsPuestoFullAutomatizado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerChoferPorNumeroDocumento">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerChoferPorNumeroDocumento" message="tns:IServicioRepositorio_ObtenerChoferPorNumeroDocumento_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerChoferPorNumeroDocumentoResponse" message="tns:IServicioRepositorio_ObtenerChoferPorNumeroDocumento_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerMotivoDemoraRecorrido">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMotivoDemoraRecorrido" message="tns:IServicioRepositorio_ObtenerMotivoDemoraRecorrido_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMotivoDemoraRecorridoResponse" message="tns:IServicioRepositorio_ObtenerMotivoDemoraRecorrido_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerEstadoPuerto">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadoPuerto" message="tns:IServicioRepositorio_ObtenerEstadoPuerto_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadoPuertoResponse" message="tns:IServicioRepositorio_ObtenerEstadoPuerto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUsuariosLineUp">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosLineUp" message="tns:IServicioRepositorio_ObtenerUsuariosLineUp_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosLineUpResponse" message="tns:IServicioRepositorio_ObtenerUsuariosLineUp_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDispositivosMaestroApertura">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDispositivosMaestroApertura" message="tns:IServicioRepositorio_ObtenerDispositivosMaestroApertura_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDispositivosMaestroAperturaResponse" message="tns:IServicioRepositorio_ObtenerDispositivosMaestroApertura_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDispositivosMaestroCierre">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDispositivosMaestroCierre" message="tns:IServicioRepositorio_ObtenerDispositivosMaestroCierre_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDispositivosMaestroCierreResponse" message="tns:IServicioRepositorio_ObtenerDispositivosMaestroCierre_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerTipoComercialPorCodigoSap">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTipoComercialPorCodigoSap" message="tns:IServicioRepositorio_ObtenerTipoComercialPorCodigoSap_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTipoComercialPorCodigoSapResponse" message="tns:IServicioRepositorio_ObtenerTipoComercialPorCodigoSap_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCalleInterna">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCalleInterna" message="tns:IServicioRepositorio_ObtenerCalleInterna_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCalleInternaResponse" message="tns:IServicioRepositorio_ObtenerCalleInterna_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerAlmacenPorRecorrido">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAlmacenPorRecorrido" message="tns:IServicioRepositorio_ObtenerAlmacenPorRecorrido_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAlmacenPorRecorridoResponse" message="tns:IServicioRepositorio_ObtenerAlmacenPorRecorrido_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRangosDeRedondeo">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRangosDeRedondeo" message="tns:IServicioRepositorio_ObtenerRangosDeRedondeo_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRangosDeRedondeoResponse" message="tns:IServicioRepositorio_ObtenerRangosDeRedondeo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerBalanzaPorPuestoDeTrabajo">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPorPuestoDeTrabajo" message="tns:IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPorPuestoDeTrabajoResponse" message="tns:IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo" message="tns:IServicioRepositorio_ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajoResponse" message="tns:IServicioRepositorio_ObtenerIdBalanzaAutomaticaPorPuestoDeTrabajo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRecorridoPesadaExportacion">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoPesadaExportacion" message="tns:IServicioRepositorio_ObtenerRecorridoPesadaExportacion_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoPesadaExportacionResponse" message="tns:IServicioRepositorio_ObtenerRecorridoPesadaExportacion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUsuariosQuiebreApertura">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreApertura" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreApertura_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreAperturaResponse" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreApertura_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUsuariosQuiebreCierre">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreCierre" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreCierre_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreCierreResponse" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreCierre_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUsuariosReasignacionDeTarjeta">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosReasignacionDeTarjeta" message="tns:IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosReasignacionDeTarjetaResponse" message="tns:IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUsuariosContingencia">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosContingencia" message="tns:IServicioRepositorio_ObtenerUsuariosContingencia_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosContingenciaResponse" message="tns:IServicioRepositorio_ObtenerUsuariosContingencia_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerUsuarioEntregaHexano">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuarioEntregaHexano" message="tns:IServicioRepositorio_ObtenerUsuarioEntregaHexano_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuarioEntregaHexanoResponse" message="tns:IServicioRepositorio_ObtenerUsuarioEntregaHexano_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ValoresNoCorrespondenAEspecial">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ValoresNoCorrespondenAEspecial" message="tns:IServicioRepositorio_ValoresNoCorrespondenAEspecial_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ValoresNoCorrespondenAEspecialResponse" message="tns:IServicioRepositorio_ValoresNoCorrespondenAEspecial_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCupoPorRecorrido">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorRecorrido" message="tns:IServicioRepositorio_ObtenerCupoPorRecorrido_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorRecorridoResponse" message="tns:IServicioRepositorio_ObtenerCupoPorRecorrido_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCupoPorId">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorId" message="tns:IServicioRepositorio_ObtenerCupoPorId_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorIdResponse" message="tns:IServicioRepositorio_ObtenerCupoPorId_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerBalanzaPuerto">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPuerto" message="tns:IServicioRepositorio_ObtenerBalanzaPuerto_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPuertoResponse" message="tns:IServicioRepositorio_ObtenerBalanzaPuerto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarBalanzasPuerto">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasPuerto" message="tns:IServicioRepositorio_ListarBalanzasPuerto_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasPuertoResponse" message="tns:IServicioRepositorio_ListarBalanzasPuerto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarBalanzadasFaltantesPorRango">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzadasFaltantesPorRango" message="tns:IServicioRepositorio_ListarBalanzadasFaltantesPorRango_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzadasFaltantesPorRangoResponse" message="tns:IServicioRepositorio_ListarBalanzadasFaltantesPorRango_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerCarga">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCarga" message="tns:IServicioRepositorio_ObtenerCarga_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCargaResponse" message="tns:IServicioRepositorio_ObtenerCarga_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarPaginadoCargas">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoCargas" message="tns:IServicioRepositorio_ListarPaginadoCargas_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoCargasResponse" message="tns:IServicioRepositorio_ListarPaginadoCargas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarCargasSinPaginado">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCargasSinPaginado" message="tns:IServicioRepositorio_ListarCargasSinPaginado_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCargasSinPaginadoResponse" message="tns:IServicioRepositorio_ListarCargasSinPaginado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarEmbarquePorBuques">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEmbarquePorBuques" message="tns:IServicioRepositorio_ListarEmbarquePorBuques_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEmbarquePorBuquesResponse" message="tns:IServicioRepositorio_ListarEmbarquePorBuques_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarPaginadoBalanzadas">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoBalanzadas" message="tns:IServicioRepositorio_ListarPaginadoBalanzadas_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoBalanzadasResponse" message="tns:IServicioRepositorio_ListarPaginadoBalanzadas_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ListarVapores">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarVapores" message="tns:IServicioRepositorio_ListarVapores_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarVaporesResponse" message="tns:IServicioRepositorio_ListarVapores_OutputMessage" />
@@ -4407,6 +4865,18 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListaMaterialesPuerto" message="tns:IServicioRepositorio_ListaMaterialesPuerto_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListaMaterialesPuertoResponse" message="tns:IServicioRepositorio_ListaMaterialesPuerto_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ListaMaterialesPuertoConDescripcionCorta">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListaMaterialesPuertoConDescripcionCorta" message="tns:IServicioRepositorio_ListaMaterialesPuertoConDescripcionCorta_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListaMaterialesPuertoConDescripcionCortaResponse" message="tns:IServicioRepositorio_ListaMaterialesPuertoConDescripcionCorta_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarAgenciasMaritimas">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAgenciasMaritimas" message="tns:IServicioRepositorio_ListarAgenciasMaritimas_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAgenciasMaritimasResponse" message="tns:IServicioRepositorio_ListarAgenciasMaritimas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarCoordinadores">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCoordinadores" message="tns:IServicioRepositorio_ListarCoordinadores_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCoordinadoresResponse" message="tns:IServicioRepositorio_ListarCoordinadores_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ListarMaterialesPuerto">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMaterialesPuerto" message="tns:IServicioRepositorio_ListarMaterialesPuerto_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMaterialesPuertoResponse" message="tns:IServicioRepositorio_ListarMaterialesPuerto_OutputMessage" />
@@ -4414,6 +4884,22 @@
     <wsdl:operation name="ListarDestinos">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDestinos" message="tns:IServicioRepositorio_ListarDestinos_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDestinosResponse" message="tns:IServicioRepositorio_ListarDestinos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarTodosDestinos">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarTodosDestinos" message="tns:IServicioRepositorio_ListarTodosDestinos_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarTodosDestinosResponse" message="tns:IServicioRepositorio_ListarTodosDestinos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarAgenciasControlPrivado">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAgenciasControlPrivado" message="tns:IServicioRepositorio_ListarAgenciasControlPrivado_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAgenciasControlPrivadoResponse" message="tns:IServicioRepositorio_ListarAgenciasControlPrivado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarAgentesControlPrivado">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAgentesControlPrivado" message="tns:IServicioRepositorio_ListarAgentesControlPrivado_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAgentesControlPrivadoResponse" message="tns:IServicioRepositorio_ListarAgentesControlPrivado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarEstibas">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEstibas" message="tns:IServicioRepositorio_ListarEstibas_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEstibasResponse" message="tns:IServicioRepositorio_ListarEstibas_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ListarExportadores">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarExportadores" message="tns:IServicioRepositorio_ListarExportadores_InputMessage" />
@@ -4615,6 +5101,10 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadoRecorrido" message="tns:IServicioRepositorio_ObtenerEstadoRecorrido_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadoRecorridoResponse" message="tns:IServicioRepositorio_ObtenerEstadoRecorrido_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ObtenerMotivoAutorizarRecorrido">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMotivoAutorizarRecorrido" message="tns:IServicioRepositorio_ObtenerMotivoAutorizarRecorrido_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMotivoAutorizarRecorridoResponse" message="tns:IServicioRepositorio_ObtenerMotivoAutorizarRecorrido_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ObtenerMayorRegistro">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMayorRegistro" message="tns:IServicioRepositorio_ObtenerMayorRegistro_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMayorRegistroResponse" message="tns:IServicioRepositorio_ObtenerMayorRegistro_OutputMessage" />
@@ -4634,6 +5124,10 @@
     <wsdl:operation name="GuardarArchivoFotoDocumentoExterno">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/GuardarArchivoFotoDocumentoExterno" message="tns:IServicioRepositorio_GuardarArchivoFotoDocumentoExterno_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/GuardarArchivoFotoDocumentoExternoResponse" message="tns:IServicioRepositorio_GuardarArchivoFotoDocumentoExterno_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EliminarArchivoFotoDocumentoExterno">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EliminarArchivoFotoDocumentoExterno" message="tns:IServicioRepositorio_EliminarArchivoFotoDocumentoExterno_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EliminarArchivoFotoDocumentoExternoResponse" message="tns:IServicioRepositorio_EliminarArchivoFotoDocumentoExterno_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerAdjunto">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAdjunto" message="tns:IServicioRepositorio_ObtenerAdjunto_InputMessage" />
@@ -4686,6 +5180,10 @@
     <wsdl:operation name="ListarClientes">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarClientes" message="tns:IServicioRepositorio_ListarClientes_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarClientesResponse" message="tns:IServicioRepositorio_ListarClientes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerFotoCPDeCartaDePortePorrecorrido">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotoCPDeCartaDePortePorrecorrido" message="tns:IServicioRepositorio_ObtenerFotoCPDeCartaDePortePorrecorrido_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotoCPDeCartaDePortePorrecorridoResponse" message="tns:IServicioRepositorio_ObtenerFotoCPDeCartaDePortePorrecorrido_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerFotoCPDeCartasDePortePorrecorrido">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotoCPDeCartasDePortePorrecorrido" message="tns:IServicioRepositorio_ObtenerFotoCPDeCartasDePortePorrecorrido_InputMessage" />
@@ -4751,6 +5249,86 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumero" message="tns:IServicioRepositorio_ObtenerFotosCartaPortePorNumero_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerFotosCartaPortePorNumeroResponse" message="tns:IServicioRepositorio_ObtenerFotosCartaPortePorNumero_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ObtenerDocumentoExterno">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDocumentoExterno" message="tns:IServicioRepositorio_ObtenerDocumentoExterno_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDocumentoExternoResponse" message="tns:IServicioRepositorio_ObtenerDocumentoExterno_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerGuidVagones">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGuidVagones" message="tns:IServicioRepositorio_ObtenerGuidVagones_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerGuidVagonesResponse" message="tns:IServicioRepositorio_ObtenerGuidVagones_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PorcentajeMuestraAuditoria">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/PorcentajeMuestraAuditoria" message="tns:IServicioRepositorio_PorcentajeMuestraAuditoria_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/PorcentajeMuestraAuditoriaResponse" message="tns:IServicioRepositorio_PorcentajeMuestraAuditoria_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarPaginadoAuditoriaLote">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoAuditoriaLote" message="tns:IServicioRepositorio_ListarPaginadoAuditoriaLote_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoAuditoriaLoteResponse" message="tns:IServicioRepositorio_ListarPaginadoAuditoriaLote_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExistenMuestraEnvioACamaraAuditoriaPendientes">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ExistenMuestraEnvioACamaraAuditoriaPendientes" message="tns:IServicioRepositorio_ExistenMuestraEnvioACamaraAuditoriaPendientes_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ExistenMuestraEnvioACamaraAuditoriaPendientesResponse" message="tns:IServicioRepositorio_ExistenMuestraEnvioACamaraAuditoriaPendientes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="TieneAgenteDecompras">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneAgenteDecompras" message="tns:IServicioRepositorio_TieneAgenteDecompras_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/TieneAgenteDecomprasResponse" message="tns:IServicioRepositorio_TieneAgenteDecompras_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerEstadisticasCalado">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadisticasCalado" message="tns:IServicioRepositorio_ObtenerEstadisticasCalado_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstadisticasCaladoResponse" message="tns:IServicioRepositorio_ObtenerEstadisticasCalado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EsPuestoEnContingencia">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsPuestoEnContingencia" message="tns:IServicioRepositorio_EsPuestoEnContingencia_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsPuestoEnContingenciaResponse" message="tns:IServicioRepositorio_EsPuestoEnContingencia_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="LeerToleranciaRechazo">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/LeerToleranciaRechazo" message="tns:IServicioRepositorio_LeerToleranciaRechazo_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/LeerToleranciaRechazoResponse" message="tns:IServicioRepositorio_LeerToleranciaRechazo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerToleranciaRomaneo">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaRomaneo" message="tns:IServicioRepositorio_ObtenerToleranciaRomaneo_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaRomaneoResponse" message="tns:IServicioRepositorio_ObtenerToleranciaRomaneo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerToleranciaOrigen">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaOrigen" message="tns:IServicioRepositorio_ObtenerToleranciaOrigen_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaOrigenResponse" message="tns:IServicioRepositorio_ObtenerToleranciaOrigen_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="VerificarCorrespondeControlDeBalanza">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeControlDeBalanza" message="tns:IServicioRepositorio_VerificarCorrespondeControlDeBalanza_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeControlDeBalanzaResponse" message="tns:IServicioRepositorio_VerificarCorrespondeControlDeBalanza_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="VerificarCorrespondeDescarga">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeDescarga" message="tns:IServicioRepositorio_VerificarCorrespondeDescarga_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeDescargaResponse" message="tns:IServicioRepositorio_VerificarCorrespondeDescarga_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerBalanzasPorGuid">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzasPorGuid" message="tns:IServicioRepositorio_ObtenerBalanzasPorGuid_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzasPorGuidResponse" message="tns:IServicioRepositorio_ObtenerBalanzasPorGuid_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRecorridoMaterialCentroImpresionFormulario239">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoMaterialCentroImpresionFormulario239" message="tns:IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoMaterialCentroImpresionFormulario239Response" message="tns:IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRecorridoImpresionReciboMunicipal">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoImpresionReciboMunicipal" message="tns:IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoImpresionReciboMunicipalResponse" message="tns:IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerRecorridoCartaPorteUrenport">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoCartaPorteUrenport" message="tns:IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoCartaPorteUrenportResponse" message="tns:IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerEstablecimiento">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstablecimiento" message="tns:IServicioRepositorio_ObtenerEstablecimiento_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstablecimientoResponse" message="tns:IServicioRepositorio_ObtenerEstablecimiento_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarPaginadoEstablecimientos">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoEstablecimientos" message="tns:IServicioRepositorio_ListarPaginadoEstablecimientos_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoEstablecimientosResponse" message="tns:IServicioRepositorio_ListarPaginadoEstablecimientos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="EsProveedorSustentable">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsProveedorSustentable" message="tns:IServicioRepositorio_EsProveedorSustentable_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsProveedorSustentableResponse" message="tns:IServicioRepositorio_EsProveedorSustentable_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ObtenerAsignacionDeEstablecimiento">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDeEstablecimiento" message="tns:IServicioRepositorio_ObtenerAsignacionDeEstablecimiento_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDeEstablecimientoResponse" message="tns:IServicioRepositorio_ObtenerAsignacionDeEstablecimiento_OutputMessage" />
@@ -4758,6 +5336,10 @@
     <wsdl:operation name="ListarDatosDeWorkflows">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDatosDeWorkflows" message="tns:IServicioRepositorio_ListarDatosDeWorkflows_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDatosDeWorkflowsResponse" message="tns:IServicioRepositorio_ListarDatosDeWorkflows_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarDatosDeWorkflowsPuerto">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDatosDeWorkflowsPuerto" message="tns:IServicioRepositorio_ListarDatosDeWorkflowsPuerto_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDatosDeWorkflowsPuertoResponse" message="tns:IServicioRepositorio_ListarDatosDeWorkflowsPuerto_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerTiempoEntreActividades">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTiempoEntreActividades" message="tns:IServicioRepositorio_ObtenerTiempoEntreActividades_InputMessage" />
@@ -4874,6 +5456,18 @@
     <wsdl:operation name="ListarMuestrasPorLoteBiotecnologia">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMuestrasPorLoteBiotecnologia" message="tns:IServicioRepositorio_ListarMuestrasPorLoteBiotecnologia_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMuestrasPorLoteBiotecnologiaResponse" message="tns:IServicioRepositorio_ListarMuestrasPorLoteBiotecnologia_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarMuestrasPorLoteAuditoria">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMuestrasPorLoteAuditoria" message="tns:IServicioRepositorio_ListarMuestrasPorLoteAuditoria_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMuestrasPorLoteAuditoriaResponse" message="tns:IServicioRepositorio_ListarMuestrasPorLoteAuditoria_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerLoteAuditoriaParaArchivo">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerLoteAuditoriaParaArchivo" message="tns:IServicioRepositorio_ObtenerLoteAuditoriaParaArchivo_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerLoteAuditoriaParaArchivoResponse" message="tns:IServicioRepositorio_ObtenerLoteAuditoriaParaArchivo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerLoteAuditoriaParaImpresion">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerLoteAuditoriaParaImpresion" message="tns:IServicioRepositorio_ObtenerLoteAuditoriaParaImpresion_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerLoteAuditoriaParaImpresionResponse" message="tns:IServicioRepositorio_ObtenerLoteAuditoriaParaImpresion_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ListarMuestrasPorArchivoDeMovimientos">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarMuestrasPorArchivoDeMovimientos" message="tns:IServicioRepositorio_ListarMuestrasPorArchivoDeMovimientos_InputMessage" />
@@ -5199,69 +5793,33 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRangosDeRedondeoPorMaterial" message="tns:IServicioRepositorio_ListarRangosDeRedondeoPorMaterial_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRangosDeRedondeoPorMaterialResponse" message="tns:IServicioRepositorio_ListarRangosDeRedondeoPorMaterial_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerRangosDeRedondeo">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRangosDeRedondeo" message="tns:IServicioRepositorio_ObtenerRangosDeRedondeo_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRangosDeRedondeoResponse" message="tns:IServicioRepositorio_ObtenerRangosDeRedondeo_OutputMessage" />
+    <wsdl:operation name="ObtenerHojaDeRuta">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRuta" message="tns:IServicioRepositorio_ObtenerHojaDeRuta_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaResponse" message="tns:IServicioRepositorio_ObtenerHojaDeRuta_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerBalanzaPorPuestoDeTrabajo">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPorPuestoDeTrabajo" message="tns:IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPorPuestoDeTrabajoResponse" message="tns:IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajo_OutputMessage" />
+    <wsdl:operation name="ObtenerRemitoPorInstanceId">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRemitoPorInstanceId" message="tns:IServicioRepositorio_ObtenerRemitoPorInstanceId_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRemitoPorInstanceIdResponse" message="tns:IServicioRepositorio_ObtenerRemitoPorInstanceId_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerRecorridoPesadaExportacion">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoPesadaExportacion" message="tns:IServicioRepositorio_ObtenerRecorridoPesadaExportacion_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoPesadaExportacionResponse" message="tns:IServicioRepositorio_ObtenerRecorridoPesadaExportacion_OutputMessage" />
+    <wsdl:operation name="ObtenerUltimaDescargaUnidadPorGuid">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaDescargaUnidadPorGuid" message="tns:IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaDescargaUnidadPorGuidResponse" message="tns:IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerUsuariosQuiebreApertura">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreApertura" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreApertura_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreAperturaResponse" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreApertura_OutputMessage" />
+    <wsdl:operation name="ObtenerDescargaUnidadPorNroPedido">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorNroPedido" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorNroPedidoResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerUsuariosQuiebreCierre">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreCierre" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreCierre_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosQuiebreCierreResponse" message="tns:IServicioRepositorio_ObtenerUsuariosQuiebreCierre_OutputMessage" />
+    <wsdl:operation name="ObtenerDescargaUnidadProveedor">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadProveedor" message="tns:IServicioRepositorio_ObtenerDescargaUnidadProveedor_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadProveedorResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidadProveedor_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerUsuariosReasignacionDeTarjeta">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosReasignacionDeTarjeta" message="tns:IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUsuariosReasignacionDeTarjetaResponse" message="tns:IServicioRepositorio_ObtenerUsuariosReasignacionDeTarjeta_OutputMessage" />
+    <wsdl:operation name="ObtenerDescargaUnidadPorGuid">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorGuid" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorGuid_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorGuidResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorGuid_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ValoresNoCorrespondenAEspecial">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ValoresNoCorrespondenAEspecial" message="tns:IServicioRepositorio_ValoresNoCorrespondenAEspecial_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ValoresNoCorrespondenAEspecialResponse" message="tns:IServicioRepositorio_ValoresNoCorrespondenAEspecial_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerCupoPorRecorrido">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorRecorrido" message="tns:IServicioRepositorio_ObtenerCupoPorRecorrido_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorRecorridoResponse" message="tns:IServicioRepositorio_ObtenerCupoPorRecorrido_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerCupoPorId">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorId" message="tns:IServicioRepositorio_ObtenerCupoPorId_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCupoPorIdResponse" message="tns:IServicioRepositorio_ObtenerCupoPorId_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerBalanzaPuerto">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPuerto" message="tns:IServicioRepositorio_ObtenerBalanzaPuerto_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPuertoResponse" message="tns:IServicioRepositorio_ObtenerBalanzaPuerto_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarBalanzasPuerto">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasPuerto" message="tns:IServicioRepositorio_ListarBalanzasPuerto_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasPuertoResponse" message="tns:IServicioRepositorio_ListarBalanzasPuerto_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarBalanzadasFaltantesPorRango">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzadasFaltantesPorRango" message="tns:IServicioRepositorio_ListarBalanzadasFaltantesPorRango_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzadasFaltantesPorRangoResponse" message="tns:IServicioRepositorio_ListarBalanzadasFaltantesPorRango_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerCarga">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCarga" message="tns:IServicioRepositorio_ObtenerCarga_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerCargaResponse" message="tns:IServicioRepositorio_ObtenerCarga_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarPaginadoCargas">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoCargas" message="tns:IServicioRepositorio_ListarPaginadoCargas_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoCargasResponse" message="tns:IServicioRepositorio_ListarPaginadoCargas_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarCargasSinPaginado">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCargasSinPaginado" message="tns:IServicioRepositorio_ListarCargasSinPaginado_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCargasSinPaginadoResponse" message="tns:IServicioRepositorio_ListarCargasSinPaginado_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarPaginadoBalanzadas">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoBalanzadas" message="tns:IServicioRepositorio_ListarPaginadoBalanzadas_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoBalanzadasResponse" message="tns:IServicioRepositorio_ListarPaginadoBalanzadas_OutputMessage" />
+    <wsdl:operation name="ObtenerDescargaUnidad">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidad" message="tns:IServicioRepositorio_ObtenerDescargaUnidad_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidad_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ValidacionCtgEsAutomatica">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidacionCtgEsAutomatica" message="tns:IServicioRepositorio_ValidacionCtgEsAutomatica_InputMessage" />
@@ -5350,6 +5908,14 @@
     <wsdl:operation name="RedireccionarAListaAutomatizada">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/RedireccionarAListaAutomatizada" message="tns:IServicioRepositorio_RedireccionarAListaAutomatizada_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/RedireccionarAListaAutomatizadaResponse" message="tns:IServicioRepositorio_RedireccionarAListaAutomatizada_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RedireccionarABalanzaAutomatizada">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/RedireccionarABalanzaAutomatizada" message="tns:IServicioRepositorio_RedireccionarABalanzaAutomatizada_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/RedireccionarABalanzaAutomatizadaResponse" message="tns:IServicioRepositorio_RedireccionarABalanzaAutomatizada_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarVagonesEnPesada">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarVagonesEnPesada" message="tns:IServicioRepositorio_ListarVagonesEnPesada_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarVagonesEnPesadaResponse" message="tns:IServicioRepositorio_ListarVagonesEnPesada_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerPuestoDeTrabajoPorDispositivo">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPuestoDeTrabajoPorDispositivo" message="tns:IServicioRepositorio_ObtenerPuestoDeTrabajoPorDispositivo_InputMessage" />
@@ -5455,6 +6021,10 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPuestosDeTrabajoPorNombrePc" message="tns:IServicioRepositorio_ListarPuestosDeTrabajoPorNombrePc_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPuestosDeTrabajoPorNombrePcResponse" message="tns:IServicioRepositorio_ListarPuestosDeTrabajoPorNombrePc_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ListarCamarasPorNombrePc">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCamarasPorNombrePc" message="tns:IServicioRepositorio_ListarCamarasPorNombrePc_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarCamarasPorNombrePcResponse" message="tns:IServicioRepositorio_ListarCamarasPorNombrePc_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ObtenerAsignacionDePuestoComando">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDePuestoComando" message="tns:IServicioRepositorio_ObtenerAsignacionDePuestoComando_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerAsignacionDePuestoComandoResponse" message="tns:IServicioRepositorio_ObtenerAsignacionDePuestoComando_OutputMessage" />
@@ -5534,6 +6104,14 @@
     <wsdl:operation name="ObtenerDatosRecorridoActivo">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosRecorridoActivo" message="tns:IServicioRepositorio_ObtenerDatosRecorridoActivo_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosRecorridoActivoResponse" message="tns:IServicioRepositorio_ObtenerDatosRecorridoActivo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosRecorridoActivoSinTarjeta">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosRecorridoActivoSinTarjeta" message="tns:IServicioRepositorio_ObtenerDatosRecorridoActivoSinTarjeta_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosRecorridoActivoSinTarjetaResponse" message="tns:IServicioRepositorio_ObtenerDatosRecorridoActivoSinTarjeta_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerDatosRecorridoActivoPorWorkflow">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosRecorridoActivoPorWorkflow" message="tns:IServicioRepositorio_ObtenerDatosRecorridoActivoPorWorkflow_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDatosRecorridoActivoPorWorkflowResponse" message="tns:IServicioRepositorio_ObtenerDatosRecorridoActivoPorWorkflow_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ValidarProximaActividadPorPuesto">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarProximaActividadPorPuesto" message="tns:IServicioRepositorio_ValidarProximaActividadPorPuesto_InputMessage" />
@@ -5727,53 +6305,29 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/LeerPesoMaximo" message="tns:IServicioRepositorio_LeerPesoMaximo_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/LeerPesoMaximoResponse" message="tns:IServicioRepositorio_LeerPesoMaximo_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="LeerToleranciaRechazo">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/LeerToleranciaRechazo" message="tns:IServicioRepositorio_LeerToleranciaRechazo_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/LeerToleranciaRechazoResponse" message="tns:IServicioRepositorio_LeerToleranciaRechazo_OutputMessage" />
+    <wsdl:operation name="ObtenerSuplencia">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerSuplencia" message="tns:IServicioRepositorio_ObtenerSuplencia_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerSuplenciaResponse" message="tns:IServicioRepositorio_ObtenerSuplencia_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerToleranciaRomaneo">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaRomaneo" message="tns:IServicioRepositorio_ObtenerToleranciaRomaneo_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaRomaneoResponse" message="tns:IServicioRepositorio_ObtenerToleranciaRomaneo_OutputMessage" />
+    <wsdl:operation name="ListarRecorridosEnPlayaExternaPorCentro">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosEnPlayaExternaPorCentro" message="tns:IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosEnPlayaExternaPorCentroResponse" message="tns:IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerToleranciaOrigen">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaOrigen" message="tns:IServicioRepositorio_ObtenerToleranciaOrigen_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerToleranciaOrigenResponse" message="tns:IServicioRepositorio_ObtenerToleranciaOrigen_OutputMessage" />
+    <wsdl:operation name="ListarRecorridosRechazados">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosRechazados" message="tns:IServicioRepositorio_ListarRecorridosRechazados_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosRechazadosResponse" message="tns:IServicioRepositorio_ListarRecorridosRechazados_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="VerificarCorrespondeControlDeBalanza">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeControlDeBalanza" message="tns:IServicioRepositorio_VerificarCorrespondeControlDeBalanza_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeControlDeBalanzaResponse" message="tns:IServicioRepositorio_VerificarCorrespondeControlDeBalanza_OutputMessage" />
+    <wsdl:operation name="ListarPaginadoSuplencias">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoSuplencias" message="tns:IServicioRepositorio_ListarPaginadoSuplencias_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoSuplenciasResponse" message="tns:IServicioRepositorio_ListarPaginadoSuplencias_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="VerificarCorrespondeDescarga">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeDescarga" message="tns:IServicioRepositorio_VerificarCorrespondeDescarga_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/VerificarCorrespondeDescargaResponse" message="tns:IServicioRepositorio_VerificarCorrespondeDescarga_OutputMessage" />
+    <wsdl:operation name="ListarDescuentos">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDescuentos" message="tns:IServicioRepositorio_ListarDescuentos_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDescuentosResponse" message="tns:IServicioRepositorio_ListarDescuentos_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerBalanzasPorGuid">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzasPorGuid" message="tns:IServicioRepositorio_ObtenerBalanzasPorGuid_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzasPorGuidResponse" message="tns:IServicioRepositorio_ObtenerBalanzasPorGuid_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerRecorridoMaterialCentroImpresionFormulario239">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoMaterialCentroImpresionFormulario239" message="tns:IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoMaterialCentroImpresionFormulario239Response" message="tns:IServicioRepositorio_ObtenerRecorridoMaterialCentroImpresionFormulario239_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerRecorridoImpresionReciboMunicipal">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoImpresionReciboMunicipal" message="tns:IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoImpresionReciboMunicipalResponse" message="tns:IServicioRepositorio_ObtenerRecorridoImpresionReciboMunicipal_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerRecorridoCartaPorteUrenport">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoCartaPorteUrenport" message="tns:IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoCartaPorteUrenportResponse" message="tns:IServicioRepositorio_ObtenerRecorridoCartaPorteUrenport_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerEstablecimiento">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstablecimiento" message="tns:IServicioRepositorio_ObtenerEstablecimiento_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEstablecimientoResponse" message="tns:IServicioRepositorio_ObtenerEstablecimiento_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarPaginadoEstablecimientos">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoEstablecimientos" message="tns:IServicioRepositorio_ListarPaginadoEstablecimientos_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoEstablecimientosResponse" message="tns:IServicioRepositorio_ListarPaginadoEstablecimientos_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="EsProveedorSustentable">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsProveedorSustentable" message="tns:IServicioRepositorio_EsProveedorSustentable_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/EsProveedorSustentableResponse" message="tns:IServicioRepositorio_EsProveedorSustentable_OutputMessage" />
+    <wsdl:operation name="ListarEntregadores">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEntregadores" message="tns:IServicioRepositorio_ListarEntregadores_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEntregadoresResponse" message="tns:IServicioRepositorio_ListarEntregadores_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="BuscarEntregadores">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/BuscarEntregadores" message="tns:IServicioRepositorio_BuscarEntregadores_InputMessage" />
@@ -5858,6 +6412,10 @@
     <wsdl:operation name="ObtenerNumeroLoteBiotecnologia">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumeroLoteBiotecnologia" message="tns:IServicioRepositorio_ObtenerNumeroLoteBiotecnologia_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumeroLoteBiotecnologiaResponse" message="tns:IServicioRepositorio_ObtenerNumeroLoteBiotecnologia_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNumeroLoteAuditoria">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumeroLoteAuditoria" message="tns:IServicioRepositorio_ObtenerNumeroLoteAuditoria_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNumeroLoteAuditoriaResponse" message="tns:IServicioRepositorio_ObtenerNumeroLoteAuditoria_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerArchivoDeMovimientos">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerArchivoDeMovimientos" message="tns:IServicioRepositorio_ObtenerArchivoDeMovimientos_InputMessage" />
@@ -6259,33 +6817,21 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenEntrePlantasPorInstanceId" message="tns:IServicioRepositorio_ObtenerOrdenEntrePlantasPorInstanceId_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenEntrePlantasPorInstanceIdResponse" message="tns:IServicioRepositorio_ObtenerOrdenEntrePlantasPorInstanceId_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerHojaDeRuta">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRuta" message="tns:IServicioRepositorio_ObtenerHojaDeRuta_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaResponse" message="tns:IServicioRepositorio_ObtenerHojaDeRuta_OutputMessage" />
+    <wsdl:operation name="ListarInhabilitacionCamiones">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamiones" message="tns:IServicioRepositorio_ListarInhabilitacionCamiones_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamionesResponse" message="tns:IServicioRepositorio_ListarInhabilitacionCamiones_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerRemitoPorInstanceId">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRemitoPorInstanceId" message="tns:IServicioRepositorio_ObtenerRemitoPorInstanceId_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRemitoPorInstanceIdResponse" message="tns:IServicioRepositorio_ObtenerRemitoPorInstanceId_OutputMessage" />
+    <wsdl:operation name="ObtenerInhabilitacionCamion">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerInhabilitacionCamion" message="tns:IServicioRepositorio_ObtenerInhabilitacionCamion_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerInhabilitacionCamionResponse" message="tns:IServicioRepositorio_ObtenerInhabilitacionCamion_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerUltimaDescargaUnidadPorGuid">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaDescargaUnidadPorGuid" message="tns:IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerUltimaDescargaUnidadPorGuidResponse" message="tns:IServicioRepositorio_ObtenerUltimaDescargaUnidadPorGuid_OutputMessage" />
+    <wsdl:operation name="CamionInhabilitado">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/CamionInhabilitado" message="tns:IServicioRepositorio_CamionInhabilitado_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/CamionInhabilitadoResponse" message="tns:IServicioRepositorio_CamionInhabilitado_OutputMessage" />
     </wsdl:operation>
-    <wsdl:operation name="ObtenerDescargaUnidadPorNroPedido">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorNroPedido" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorNroPedidoResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorNroPedido_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerDescargaUnidadProveedor">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadProveedor" message="tns:IServicioRepositorio_ObtenerDescargaUnidadProveedor_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadProveedorResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidadProveedor_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerDescargaUnidadPorGuid">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorGuid" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorGuid_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadPorGuidResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidadPorGuid_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerDescargaUnidad">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidad" message="tns:IServicioRepositorio_ObtenerDescargaUnidad_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerDescargaUnidadResponse" message="tns:IServicioRepositorio_ObtenerDescargaUnidad_OutputMessage" />
+    <wsdl:operation name="ListarInhabilitacionCamion">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamion" message="tns:IServicioRepositorio_ListarInhabilitacionCamion_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamionResponse" message="tns:IServicioRepositorio_ListarInhabilitacionCamion_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ListarInhabilitacionCamionPaginada">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamionPaginada" message="tns:IServicioRepositorio_ListarInhabilitacionCamionPaginada_InputMessage" />
@@ -6366,6 +6912,10 @@
     <wsdl:operation name="ObtenerOrdenCargaInterna">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenCargaInterna" message="tns:IServicioRepositorio_ObtenerOrdenCargaInterna_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenCargaInternaResponse" message="tns:IServicioRepositorio_ObtenerOrdenCargaInterna_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerEmbarque">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEmbarque" message="tns:IServicioRepositorio_ObtenerEmbarque_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerEmbarqueResponse" message="tns:IServicioRepositorio_ObtenerEmbarque_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerOrdenCargaInternaFason">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenCargaInternaFason" message="tns:IServicioRepositorio_ObtenerOrdenCargaInternaFason_InputMessage" />
@@ -6735,6 +7285,10 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenDeDescargaFasonPorNumeroDeOrdenYCliente" message="tns:IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroDeOrdenYCliente_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenDeDescargaFasonPorNumeroDeOrdenYClienteResponse" message="tns:IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroDeOrdenYCliente_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ObtenerOrdenDeDescargaFasonPorNumeroRemito">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenDeDescargaFasonPorNumeroRemito" message="tns:IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroRemito_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerOrdenDeDescargaFasonPorNumeroRemitoResponse" message="tns:IServicioRepositorio_ObtenerOrdenDeDescargaFasonPorNumeroRemito_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ObtenerHojaDeRutaPorNumero">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaPorNumero" message="tns:IServicioRepositorio_ObtenerHojaDeRutaPorNumero_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHojaDeRutaPorNumeroResponse" message="tns:IServicioRepositorio_ObtenerHojaDeRutaPorNumero_OutputMessage" />
@@ -6774,30 +7328,6 @@
     <wsdl:operation name="ObtenerTicketAccesoAfip">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTicketAccesoAfip" message="tns:IServicioRepositorio_ObtenerTicketAccesoAfip_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTicketAccesoAfipResponse" message="tns:IServicioRepositorio_ObtenerTicketAccesoAfip_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerSuplencia">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerSuplencia" message="tns:IServicioRepositorio_ObtenerSuplencia_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerSuplenciaResponse" message="tns:IServicioRepositorio_ObtenerSuplencia_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarRecorridosEnPlayaExternaPorCentro">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosEnPlayaExternaPorCentro" message="tns:IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosEnPlayaExternaPorCentroResponse" message="tns:IServicioRepositorio_ListarRecorridosEnPlayaExternaPorCentro_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarRecorridosRechazados">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosRechazados" message="tns:IServicioRepositorio_ListarRecorridosRechazados_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarRecorridosRechazadosResponse" message="tns:IServicioRepositorio_ListarRecorridosRechazados_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarPaginadoSuplencias">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoSuplencias" message="tns:IServicioRepositorio_ListarPaginadoSuplencias_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPaginadoSuplenciasResponse" message="tns:IServicioRepositorio_ListarPaginadoSuplencias_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarDescuentos">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDescuentos" message="tns:IServicioRepositorio_ListarDescuentos_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDescuentosResponse" message="tns:IServicioRepositorio_ListarDescuentos_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarEntregadores">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEntregadores" message="tns:IServicioRepositorio_ListarEntregadores_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarEntregadoresResponse" message="tns:IServicioRepositorio_ListarEntregadores_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="ObtenerTipoDocumentoIdentidad">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerTipoDocumentoIdentidad" message="tns:IServicioRepositorio_ObtenerTipoDocumentoIdentidad_InputMessage" />
@@ -6911,6 +7441,10 @@
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaNombre" message="tns:IServicioRepositorio_ObtenerBalanzaNombre_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaNombreResponse" message="tns:IServicioRepositorio_ObtenerBalanzaNombre_OutputMessage" />
     </wsdl:operation>
+    <wsdl:operation name="ListarTodasLasBalanzas">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarTodasLasBalanzas" message="tns:IServicioRepositorio_ListarTodasLasBalanzas_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarTodasLasBalanzasResponse" message="tns:IServicioRepositorio_ListarTodasLasBalanzas_OutputMessage" />
+    </wsdl:operation>
     <wsdl:operation name="ListarBalanzas">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzas" message="tns:IServicioRepositorio_ListarBalanzas_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasResponse" message="tns:IServicioRepositorio_ListarBalanzas_OutputMessage" />
@@ -6918,6 +7452,18 @@
     <wsdl:operation name="ListarBalanzasPorNombrePc">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasPorNombrePc" message="tns:IServicioRepositorio_ListarBalanzasPorNombrePc_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarBalanzasPorNombrePcResponse" message="tns:IServicioRepositorio_ListarBalanzasPorNombrePc_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarPuestosAutomaticosporCentro">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPuestosAutomaticosporCentro" message="tns:IServicioRepositorio_ListarPuestosAutomaticosporCentro_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarPuestosAutomaticosporCentroResponse" message="tns:IServicioRepositorio_ListarPuestosAutomaticosporCentro_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerBalanzaPorPuestoDeTrabajoAutomatico">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPorPuestoDeTrabajoAutomatico" message="tns:IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajoAutomatico_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerBalanzaPorPuestoDeTrabajoAutomaticoResponse" message="tns:IServicioRepositorio_ObtenerBalanzaPorPuestoDeTrabajoAutomatico_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarErrorBalanzas">
+      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarErrorBalanzas" message="tns:IServicioRepositorio_ListarErrorBalanzas_InputMessage" />
+      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarErrorBalanzasResponse" message="tns:IServicioRepositorio_ListarErrorBalanzas_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation name="BuscarCentros">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/BuscarCentros" message="tns:IServicioRepositorio_BuscarCentros_InputMessage" />
@@ -7294,22 +7840,6 @@
     <wsdl:operation name="ListarTiposComercialesPorWf">
       <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarTiposComercialesPorWf" message="tns:IServicioRepositorio_ListarTiposComercialesPorWf_InputMessage" />
       <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarTiposComercialesPorWfResponse" message="tns:IServicioRepositorio_ListarTiposComercialesPorWf_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarInhabilitacionCamiones">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamiones" message="tns:IServicioRepositorio_ListarInhabilitacionCamiones_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamionesResponse" message="tns:IServicioRepositorio_ListarInhabilitacionCamiones_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ObtenerInhabilitacionCamion">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerInhabilitacionCamion" message="tns:IServicioRepositorio_ObtenerInhabilitacionCamion_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerInhabilitacionCamionResponse" message="tns:IServicioRepositorio_ObtenerInhabilitacionCamion_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="CamionInhabilitado">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/CamionInhabilitado" message="tns:IServicioRepositorio_CamionInhabilitado_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/CamionInhabilitadoResponse" message="tns:IServicioRepositorio_CamionInhabilitado_OutputMessage" />
-    </wsdl:operation>
-    <wsdl:operation name="ListarInhabilitacionCamion">
-      <wsdl:input wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamion" message="tns:IServicioRepositorio_ListarInhabilitacionCamion_InputMessage" />
-      <wsdl:output wsaw:Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarInhabilitacionCamionResponse" message="tns:IServicioRepositorio_ListarInhabilitacionCamion_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>

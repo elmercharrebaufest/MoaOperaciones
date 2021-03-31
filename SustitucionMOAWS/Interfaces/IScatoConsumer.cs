@@ -1,0 +1,15 @@
+﻿using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAWS.Interfaces
+{
+    public interface IScatoConsumer
+    {
+        List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId);
+        List<CartaPorteFoto> ObtenerFotoCartasPorte(List<string> cartaPorteIds);
+    }
+}

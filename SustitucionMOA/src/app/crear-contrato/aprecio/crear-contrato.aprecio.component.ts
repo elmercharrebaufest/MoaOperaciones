@@ -27,7 +27,13 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     ngOnInit() {
         super.ngOnInit();
         this.contrato.TipoNegocioId = 2;
-        this.negocioHabilitado(this.contrato);
+        this.contrato.Id = this.id;
+        console.log("id", this.id);
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        } else {
+            this.negocioHabilitado(this.contrato);
+        }
     }
 
     ngAfterViewInit(): void {
@@ -145,11 +151,16 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     selectEventLocalidad(item) {
+        console.log("selectEventLocalidad");
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
+        if (this.BolsaId != null && this.contrato.BoletoId == 1) {
+            this.contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     onChangeSearchLocalidad(term: string) {
@@ -180,6 +191,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     changePagoDiferido(event) {
@@ -206,7 +218,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     grabarContratoAPrecio() {
-        
+
         if (!this.validarContrato()) {
             return false;
         }
@@ -217,13 +229,15 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         dateParts = $("#noCursor2").val().split("/");
         this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
         this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
 
-        this.contrato.Id = 0;
+
+        //this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
 
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 2;
 
         if (this.contrato.MaterialId == 1) {
@@ -233,7 +247,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 4;
+            this.contrato.StandardDeCalidadId = 3;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -246,6 +260,10 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
+            if(this.contrato.PagoDiferidoTerceroId != -1){
+                this.ObservacionPagoDiferidoTercero = this.pagosDiferidos.find(x => x.Id == this.contrato.PagoDiferidoTerceroId).Descripcion;
+            }
+
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
         }
         if (this.contrato.CalidadTercero == true) {
@@ -312,9 +330,25 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
-        console.log(this.datosPizarra);
-        console.log(this.datosPrecioMoa);
-
+        if (this.contrato.CantidadCamiones > 0) {
+            var cantidadCamionesNecesarios = Math.ceil(this.contrato.Cantidad / 30000);
+            if (this.contrato.CantidadCamiones > cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es mayor a la necesaria");
+                return;
+            }
+            if (this.contrato.CantidadCamiones < cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es menor a la necesaria");
+                return;
+            }
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ContratoCorredor == null || this.contrato.ContratoCorredor == "")) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar el Contrato Corredor.");
+            return false;
+        }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
@@ -323,7 +357,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+        if (this.contrato.PagoDiferidoTerceroId == undefined && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar una opcion de Pago Diferido.");
+            return false;
+        }
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true && this.contrato.PagoDiferidoTerceroId == -1) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
             return false;
         }
@@ -475,4 +513,6 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     isSoja(): boolean {
         return this.contrato.MaterialId == 3;
     }
+
+   
 }

@@ -31,7 +31,14 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
     CrearContratoAPrecioComponent.prototype.ngOnInit = function () {
         _super.prototype.ngOnInit.call(this);
         this.contrato.TipoNegocioId = 2;
-        this.negocioHabilitado(this.contrato);
+        this.contrato.Id = this.id;
+        console.log("id", this.id);
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        }
+        else {
+            this.negocioHabilitado(this.contrato);
+        }
     };
     CrearContratoAPrecioComponent.prototype.ngAfterViewInit = function () {
         var hoy = new Date();
@@ -129,11 +136,16 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoAPrecioComponent.prototype.selectEventLocalidad = function (item) {
+        console.log("selectEventLocalidad");
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
+        if (this.BolsaId != null && this.contrato.BoletoId == 1) {
+            this.contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     };
     CrearContratoAPrecioComponent.prototype.onChangeSearchLocalidad = function (term) {
         var _this = this;
@@ -160,6 +172,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     };
     CrearContratoAPrecioComponent.prototype.changePagoDiferido = function (event) {
         this.contrato.DolarizadoTercero = false;
@@ -191,11 +204,12 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         dateParts = $("#noCursor2").val().split("/");
         this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
         this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
-        this.contrato.Id = 0;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
+        //this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 2;
         if (this.contrato.MaterialId == 1) {
             this.contrato.StandardDeCalidadId = 2;
@@ -204,7 +218,7 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 4;
+            this.contrato.StandardDeCalidadId = 3;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -217,6 +231,9 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
+            if (this.contrato.PagoDiferidoTerceroId != -1) {
+                this.ObservacionPagoDiferidoTercero = this.pagosDiferidos.find(function (x) { return x.Id == _this.contrato.PagoDiferidoTerceroId; }).Descripcion;
+            }
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
         }
         if (this.contrato.CalidadTercero == true) {
@@ -278,8 +295,25 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
         }
     };
     CrearContratoAPrecioComponent.prototype.validarContrato = function () {
-        console.log(this.datosPizarra);
-        console.log(this.datosPrecioMoa);
+        if (this.contrato.CantidadCamiones > 0) {
+            var cantidadCamionesNecesarios = Math.ceil(this.contrato.Cantidad / 30000);
+            if (this.contrato.CantidadCamiones > cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es mayor a la necesaria");
+                return;
+            }
+            if (this.contrato.CantidadCamiones < cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es menor a la necesaria");
+                return;
+            }
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ContratoCorredor == null || this.contrato.ContratoCorredor == "")) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar el Contrato Corredor.");
+            return false;
+        }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
@@ -288,7 +322,11 @@ var CrearContratoAPrecioComponent = /** @class */ (function (_super) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+        if (this.contrato.PagoDiferidoTerceroId == undefined && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar una opcion de Pago Diferido.");
+            return false;
+        }
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true && this.contrato.PagoDiferidoTerceroId == -1) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
             return false;
         }

@@ -6,12 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
+using SustitucionMOAWS.Interfaces;
+using SustitucionMOAModel.Models;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class ScatoConsumer
+    public class ScatoConsumer : IScatoConsumer
     {
-        private ServicioRepositorioClient service = new ServicioRepositorioClient();
+        private readonly ServicioRepositorioClient service = new ServicioRepositorioClient();
 
         public List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId)
         {
@@ -46,7 +48,6 @@ namespace SustitucionMOAWS.WSConsumers
             try
             {
                 FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
-
                 foreach (FotoDto foto in fotos.Fotos)
                 {
                     cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica));
@@ -58,4 +59,5 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
     }
+
 }

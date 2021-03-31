@@ -15,6 +15,9 @@ import { ContratoFijacion } from '../common/models/contratoFijacion';
 
 @Injectable()
 export class CrearContratoService extends BaseService {
+    //grabarContratoAltaMasiva(contratoAcuerdo: string, adjunto: FileList) {
+    //    throw new Error("Method not implemented.");
+    //}
 
     obteneDatosContrato(tiponegocio: number): Observable<any> {
         this.headers = new Headers();
@@ -189,7 +192,55 @@ export class CrearContratoService extends BaseService {
         return this.http.get('/api/CrearContrato/TraerPrecioMoaMateriales', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
+    ObteneContratosAcuerdo(): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
 
+        return this.http
+            .get('/api/CrearContrato/ObteneContratosAcuerdo', { headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
+    AltaMasivaAcuerdo(
+        files: FileList,
+        contratoAcuerdo: string
+    ): Observable<any> {
+        let formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            let fileToUpload = files.item(i);
+            formData.append("file", fileToUpload, fileToUpload.name);
+        }
+
+        formData.append("contratoAcuerdo", contratoAcuerdo.toString());
+
+        return this.http
+            .post("/api/CrearContrato/AltaMasivaAcuerdo", formData)
+            .pipe(timeoutWith(120000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    traerContratoCompleto(negocioId, tipoNegocioId): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
+
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('negocioId', negocioId);
+        params.set('tipoNegocioId', tipoNegocioId);
+
+        return this.http.get('/api/CrearContrato/TraerContratoCompleto', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
 }
 
 @Injectable()
@@ -204,14 +255,20 @@ export class CrearContratoAPrecioService extends CrearContratoService {
 
 @Injectable()
 export class CrearContratoAFijarService extends CrearContratoService {
-
     
 }
 
 @Injectable()
 export class CrearContratoFijacionService extends CrearContratoService {
-
-    
+ 
+}
+@Injectable()
+export class CrearContratoCargarNegocioService extends CrearContratoService {
 
 }
 
+@Injectable()
+export class CrearContratoAltaMasivaService extends CrearContratoService {
+
+   
+}

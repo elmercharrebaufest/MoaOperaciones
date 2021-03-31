@@ -550,4 +550,44 @@ export class AltasComponent extends BaseComponent implements OnInit {
     completarAlta(empresa: Empresa) {
        this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
     }
+
+    descargarFormularioNG(empresaId: number) {
+        this.service.descargarFormularioNG(empresaId)
+            .subscribe(
+                (result) => {
+                    this.spinnerModal.hideIt();
+                    if (result.error) {
+                        this.mensajeError = result.error;
+                    } else {
+                        var byteArray = new Uint8Array(result.data);
+                        var blob = new Blob([byteArray], {
+                            type: "application/pdf",
+                        });
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                "Formulario de Solicitud de alta" + ".pdf"
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = "Formulario de Solicitud de alta" + ".pdf";
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+
+                            return false;
+                        }
+                    }
+                },
+                (error) => {
+                    this.spinnerModal.hideIt();
+                    this.mensajeError = error.message;
+                }
+            );
+    }
 }

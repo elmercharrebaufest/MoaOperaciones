@@ -27,6 +27,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
 import {AutoCompleteModule} from 'primeng/autocomplete';
+import { NumericDirective } from './directive/numeric.directive';
 import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
 
 @NgModule({
@@ -38,11 +39,11 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
         AutoCompleteModule],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
-        CartaPresentacionComponent,],
+        CartaPresentacionComponent, NumericDirective],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
-        CommonModule, FormsModule, AutocompleteLocalidadComponent, SeleccionarProveedorComponent]
+        CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective]
 })
 export class SharedModule { }
