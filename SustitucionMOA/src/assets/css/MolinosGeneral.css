@@ -3747,11 +3747,15 @@ div.panel-body a.active{
 
 /* Preguntas frecuentes o Faq */
 
-.faqTexto {
+.documentacion .panel-body div {
   padding: 20px;
   font-family: Roboto Regular;
   font-size: 16px;
   background-color: white;
+  text-transform: none;
+  color: #000;
+  font-weight: 300;
+  margin-left: 15px;
 }
 /*
 .categoriaOnDesktop{
@@ -3783,18 +3787,20 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
 }
 .tituloPregunta{
   font-weight: bold;
+  text-align: left;
+  margin-left: 30px;
+  font-size: 16px;
+  color: #707070;
+  margin-top: 15px;
+}
+.tituloPregunta:hover{
+  color: #067935;
+  text-decoration: none;
 }
 .collapsing {
   -webkit-transition-delay: 0.2s;
   transition-delay: 0.5s;
   transition: height 0.5s ease;
-}
-.tituloCategoriaFaq {
-  font-size: 23px !important;
-  font-weight: bold !important;
-  margin-bottom: 0px !important;
-  color: #707070 !important;
-  font-weight: normal !important;
 }
 .panel-default>.panel-heading{
   background-color: white;
@@ -3812,19 +3818,48 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
   text-transform: uppercase;
 }
 .aFaqClick{
-  text-decoration:none;
-  color: #707070 !important;
-  font-size: 13px !important;
-  font-weight: bold important;
-  cursor: pointer;
+  width: 194px;
+  height: 36px;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
 }
-
-.aFaqClick:hover, .aFaqClick:active, .aFaqClick:visited, .aFaqClick:focus {
-  text-decoration:none;
-  color: #000000 !important;
-  font-size: 13px !important;
-  font-weight: bold important;
-  cursor: pointer;
+.aFaqClick:hover{
+  width: 194px;
+  height: 36px;
+  background: var(--unnamed-color-959595) 0% 0% no-repeat padding-box !important;
+  background: #959595 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: white;
+  opacity: 1;
+}
+.aFaqClick:focus{
+  width: 194px;
+  height: 36px;
+  background: var(--unnamed-color-959595) 0% 0% no-repeat padding-box !important;
+  background: #067935 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: white;
+  opacity: 1;
 }
 .grisOscuro{
   color: #707070 !important;
@@ -3839,4 +3874,9 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
   font-size: 16px;
   color: #3f4845;
   box-shadow: 0px 3px 6px #00000029;
+}
+.containerMenuFaq{
+  width: 226px;
+  height: 56px;
+  opacity: 1;
 }

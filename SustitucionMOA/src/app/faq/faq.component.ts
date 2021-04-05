@@ -94,6 +94,15 @@ export class FaqComponent extends ListBaseComponent {
             return true;
     }
 
+    goToSeccion(path: string) {
+        $("#mySidenav").css({ 'right': '-270px' });
+        $("#myMenuClose").css({ 'display': 'none' });
+        $("#myMenuOpen").css({ 'display': 'block' });
+        $("#coverAll").fadeOut();
+        this.navService.navegarSeccion(path);
+        return false;
+    }
+
     isNoGranos() {
         this.isGranosSelected = sessionStorage.getItem("granosSelected");
         this.granosFlag = sessionStorage.getItem("granosFlag");
@@ -103,12 +112,11 @@ export class FaqComponent extends ListBaseComponent {
 
 
     displayListaPreguntas() {
-        return;
-        $('.panel-collapse').on('shown.bs.collapse', function (e) {
+        $('.preguntasRespuesta').on('shown.bs.collapse', function (e) {
             var $panel = $(this).closest('.panel');
             $('html,body').animate({
                 scrollTop: $panel.offset().top - 200
-            }, 100); 
+            }, 700); 
         }); 
     }
 }
