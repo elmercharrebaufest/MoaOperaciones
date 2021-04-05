@@ -28,6 +28,7 @@ namespace SustitucionMOAUtils.Services
         {
             var camposAReportar = repositorio.Listar<CampoProveedor>(cp => cp.FechaCreacion.HasValue && cp.FechaCreacion.Value == DateTime.Today)
                 .Select(cp => new {
+                    cp.CampoCosecha.Campo.IdScato,
                     cp.CampoCosecha.Campo.Id,
                     cp.Proveedor.RazonSocial,
                     cp.Proveedor.CUIT,
@@ -40,9 +41,11 @@ namespace SustitucionMOAUtils.Services
                     cp.HectareasSoja
                 });
 
-            var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
+            var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Codigo Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
 
             File.WriteAllText($"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{new Guid()}.xls", excelFile);
+
+            //TODO: Cambiar el writealltext a la llamada que realmente envía el mail. Por ahora el reporte solo tiene el excel pero deberíamos poder manejar una lista de adjuntos
         }
 
         public void EnviarReporteLiquidacionesInformadas()

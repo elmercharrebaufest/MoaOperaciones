@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,16 +10,17 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Reporte
 {
     public class ReporteCamposSustentables : ReporteBase
     {
-        public
+        public string Excel { get; set; }
+        public IList<CampoProveedor> Campos { get; set; }
 
         public override string GetBody()
         {
-            throw new NotImplementedException();
+            return $"<p>Campos dados de alta a la fecha {GetFecha()}: {Campos.Count}</p>";
         }
 
         public override string GetFecha()
         {
-            throw new NotImplementedException();
+            return DateTime.Now.ToString("dd-MM-yyyy");
         }
     }
 }
