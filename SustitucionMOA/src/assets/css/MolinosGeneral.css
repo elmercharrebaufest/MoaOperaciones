@@ -4038,3 +4038,140 @@ margin: 2px;
 .estadoEnGestion{
   color: #F0AD4E;
 }
+
+
+/* Preguntas frecuentes o Faq */
+
+.documentacion .panel-body div {
+  padding: 20px;
+  font-family: Roboto Regular;
+  font-size: 16px;
+  background-color: white;
+  text-transform: none;
+  color: #000;
+  font-weight: 300;
+  margin-left: 15px;
+}
+/*
+.categoriaOnDesktop{
+  position: fixed;
+  top: 100px;
+  /*sino position: fixed;
+}*/
+.categoriaOnMobile{
+  position: relative;
+}
+
+ .categoriaOnMobile{
+  visibility:visible;
+  display: unset;
+  }
+
+.categoriaMenuFaq{
+  border-color: white;
+  font-size: 16px;
+  font-family: Roboto Regular;
+}
+/*
+.posts, .archivepostsMobile {
+list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
+}
+*/
+.posts{
+  margin-bottom: 7px;
+}
+.tituloPregunta{
+  font-weight: bold;
+  text-align: left;
+  margin-left: 30px;
+  font-size: 16px;
+  color: #707070;
+  margin-top: 15px;
+}
+.tituloPregunta:hover{
+  color: #067935;
+  text-decoration: none;
+}
+.collapsing {
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.5s;
+  transition: height 0.5s ease;
+}
+.panel-default>.panel-heading{
+  background-color: white;
+  font-size: 23px !important;
+  font-weight: bold !important;
+  margin-bottom: 0px !important;
+  color: #707070 !important;
+  font-family: Roboto Regular;
+}
+.panel-title{
+  color: #707070 !important;
+  font-size: 21px !important;
+  font-weight: normal !important;
+  font-family: Roboto Regular;
+  text-transform: uppercase;
+}
+.aFaqClick{
+  width: 194px;
+  height: 36px;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+.aFaqClick:hover{
+  width: 194px;
+  height: 36px;
+  background: var(--unnamed-color-959595) 0% 0% no-repeat padding-box !important;
+  background: #959595 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: white;
+  opacity: 1;
+}
+.aFaqClick:focus{
+  width: 194px;
+  height: 36px;
+  background: var(--unnamed-color-959595) 0% 0% no-repeat padding-box !important;
+  background: #067935 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: white;
+  opacity: 1;
+}
+.grisOscuro{
+  color: #707070 !important;
+}
+.aFaqClickCat, .aFaqClickCat:hover, .aFaqClickCat:active, .aFaqClickCat:visited, .aFaqClickCat:focus{
+  text-decoration: none;
+}
+.datosFaq {
+  border-radius: 11px;
+  background: white;
+  padding: 0px;
+  font-size: 16px;
+  color: #3f4845;
+  box-shadow: 0px 3px 6px #00000029;
+}
+.containerMenuFaq{
+  width: 226px;
+  height: 56px;
+  opacity: 1;
+}
