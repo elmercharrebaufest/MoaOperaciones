@@ -212,15 +212,21 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                                 Consignatario: x.Consignatario,
                                 Estado_Contrato: x.Estado_Contrato,
                                 Estado: x.Estado,
-                                PagoDiferidoTercero: x.PagoDiferidoTercero,
+                                PagoDiferidoTercero: x.PagoDiferidoTercero != true ? "No" : "Si",
                                 DolarizadoTercero: x.DolarizadoTercero,
                                 CalidadTercero: x.CalidadTercero,
                                 SustentableTercero: x.SustentableTercero,
                                 TipoNegocioId: x.TipoNegocioId,
                                 Id: x.Id,
+                                ObservacionTercero: x.ObservacionTercero,
                             };
                             return item;
                         });
+                        for (var i = 0; i < this.data.length; i++) {
+                            if (this.data[i].PagoDiferidoTercero == "Si") {
+                                this.data[i].PagoDiferidoTercero = this.obtenerPagoDiferido(this.data[i].ObservacionTercero);
+                            }
+                        }
                         console.log(this.data);
                     },
                     error => {
@@ -231,6 +237,15 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
         }
     }
 
+    obtenerPagoDiferido(observacion) {
+        var p = observacion.split("|");
+        var n = "Si";
+        var f = p.filter(function (e) { return e.includes("Pago Diferido:") });
+        if (f) {
+            n = f[0].split(":")[1].trim();
+        }
+        return n;
+    }
     validar() {
         var dateParts = $("#noCursor_fechaDesde").val().split("/");
         var fechaDesde = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
