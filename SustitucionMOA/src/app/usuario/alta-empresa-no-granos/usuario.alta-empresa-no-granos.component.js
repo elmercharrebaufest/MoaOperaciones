@@ -1,10 +1,7 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -62,9 +59,13 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         _this.readonlyEmail = false;
         _this.ingresoAPlanta = false;
         _this.altaInterna = false;
-        _this.tipoCambiario = 0;
+        _this.tipoCambiario = 1;
         _this.nosisObligatorio = false;
         _this.readonlyRazonSocial = false;
+        _this.siperObligatorio = false;
+        _this.observacionInterna = "";
+        _this.mensajeSuccess = "";
+        _this.IdProveedorResultado = 0;
         _this.observacionesParaElProveedor = "";
         _this.mensajeComponent = new MensajeComponent();
         _this.spinnerComponent = new SpinnerComponent();
@@ -142,6 +143,8 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
     UsuarioAltaEmpresaNoGranosComponent.prototype.obtenerRazonSocial = function () {
         var _this = this;
         try {
+            //Lo comento hasta que podamos usar otro servicio que funcione en QA
+            return true;
             this.subscriptionDropDowns = this.service.getRazonSocial(this.CUIT).subscribe(function (result) {
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -173,12 +176,11 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         var _this = this;
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        console.log(this.facturacionAnual);
         if (this.facturacionAnual == null) {
             this.facturacionAnual = 0;
         }
         try {
-            this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago, this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId, this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna).subscribe(function (result) {
+            this.service.grabarNuevoProveedorNoGranos(this.RazonSocial, this.CUIT, this.Email, this.Telefono, this.RealizarAnalisisNOSIS, this.IdRubro, this.condicionDePago, this.servicioPrestado, this.organizacionDeCompra, this.razonDeEleccion, this.facturacionAnual, this.solicitanteInterno, this.proveedorId, this.observacionesParaElProveedor, this.RequiereVerificacionCompras, this.ingresoAPlanta, this.altaInterna, this.siperObligatorio, this.observacionInterna).subscribe(function (result) {
                 _this.spinnerComponent.hideIt();
                 if (result.logout == true) {
                     _this.sessionDataService.logout();
@@ -190,8 +192,12 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
                     _this.mensajeComponent.setInfoMsg(result.info);
                 }
                 else {
-                    _this.mensajeComponent.setSuccessMsg(result.data);
-                    _this.limpiarCampos();
+                    //this.mensajeComponent.setSuccessMsg(result.data.Mensaje);
+                    _this.mensajeSuccess = result.data.Mensaje;
+                    _this.IdProveedorResultado = result.data.IdEntidad;
+                    document
+                        .getElementById("openModalNotificacion")
+                        .click();
                 }
             }, function (error) {
                 _this.mensajeComponent.setErrorMsg(error.message);
@@ -240,6 +246,8 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         return false; //<-- Prevent Refresh
     };
     UsuarioAltaEmpresaNoGranosComponent.prototype.calcularFacturacion = function () {
+        if (this.tipoCambiario <= 0)
+            this.tipoCambiario = 1;
         var facturacionDolares = this.facturacionAnual / this.tipoCambiario;
         if (facturacionDolares > 15000) {
             this.nosisObligatorio = true;
@@ -262,7 +270,6 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         this.organizacionDeCompra = "";
         this.razonDeEleccion = "";
         this.facturacionAnual = null;
-        this.solicitanteInterno = "";
         this.observacionesParaElProveedor = "";
         this.proveedorId = null;
         this.readonlyCUIT = false;
@@ -270,6 +277,24 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         this.altaInterna = false;
         this.ingresoAPlanta = false;
         this.nosisObligatorio = false;
+        this.siperObligatorio = false;
+        this.observacionInterna = "";
+        this.IdProveedorResultado = 0;
+    };
+    UsuarioAltaEmpresaNoGranosComponent.prototype.verificarIngresoAPlanta = function () {
+        if (this.ingresoAPlanta)
+            this.RequiereVerificacionCompras = true;
+    };
+    UsuarioAltaEmpresaNoGranosComponent.prototype.redirigir = function () {
+        document
+            .getElementById("openModalNotificacion")
+            .click();
+        if (this.altaInterna) {
+            this.goToSeccionParam('/alta-empresa-no-granos', this.IdProveedorResultado.toString());
+        }
+        else {
+            this.limpiarCampos();
+        }
     };
     __decorate([
         ViewChild(MensajeComponent),
@@ -287,6 +312,9 @@ var UsuarioAltaEmpresaNoGranosComponent = /** @class */ (function (_super) {
         Component({
             selector: 'app-usuario-alta-empresa-no-granos',
             templateUrl: "usuario.alta-empresa-no-granos.component.html",
+            styleUrls: [
+                './usuario.alta-empresa-no-granos.component.css',
+            ],
             providers: [UsuarioService]
         }),
         __metadata("design:paramtypes", [UsuarioService, NavService, SecurityService, SessionDataService, FloatMsgService, ModalService, ActivatedRoute])

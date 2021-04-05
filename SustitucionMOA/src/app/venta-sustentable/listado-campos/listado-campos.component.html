@@ -31,7 +31,7 @@
                     cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Id')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('IdScato')">
                                 ID
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Nombre')">
@@ -66,7 +66,7 @@
 
                     <tbody>
                         <tr *ngFor="let campo of this.camposSustentables">
-                            <td>{{campo.Id}}</td>
+                            <td>{{campo.IdScato}}</td>
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
                             <td>{{campo.Proveedor.CodigoProveedor}}</td>
@@ -78,7 +78,7 @@
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
                             <!--<td>NO VIENE</td>-->
                             <td>
-                                <a *ngIf="campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1"
+                                <a *ngIf="(campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1) && editarCampos"
                                     class="animate"
                                     [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
                                     href="#">Editar</a>
