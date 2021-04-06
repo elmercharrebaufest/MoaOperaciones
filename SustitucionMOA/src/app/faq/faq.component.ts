@@ -44,12 +44,18 @@ export class FaqComponent extends ListBaseComponent {
 
     constructor(protected service: FaqService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.isGranosSelected = sessionStorage.getItem("granosSelected");
+        sessionDataService.granosSelected$.subscribe(
+        granosSelected => {
+            this.isGranosSelected = granosSelected;
+        });
         this.categoriaDropdownComponent = new DropdownComponent();
         this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
+    isGranosSelected: string;
     x = true;
     proveedor: string;
     nombre: string;
@@ -64,6 +70,7 @@ export class FaqComponent extends ListBaseComponent {
     visibleButton: boolean = true;
     categoriaSelected: any;
     captchaOk: any = null;
+    granosFlag: string;
 
     setTabs() {
         this.setMenuSeccionTab("Faq", "Faq");
@@ -76,72 +83,40 @@ export class FaqComponent extends ListBaseComponent {
         this.displayListaPreguntas();
     }
 
+    isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
+    }
+
+    isGranos() {
+        this.isGranosSelected = sessionStorage.getItem("granosSelected");
+        this.granosFlag = sessionStorage.getItem("granosFlag");
+        if (this.granosFlag == "A" || this.isGranosSelected == "G" )
+            return true;
+    }
+
+    goToSeccion(path: string) {
+        $("#mySidenav").css({ 'right': '-270px' });
+        $("#myMenuClose").css({ 'display': 'none' });
+        $("#myMenuOpen").css({ 'display': 'block' });
+        $("#coverAll").fadeOut();
+        this.navService.navegarSeccion(path);
+        return false;
+    }
+
+    isNoGranos() {
+        this.isGranosSelected = sessionStorage.getItem("granosSelected");
+        this.granosFlag = sessionStorage.getItem("granosFlag");
+        if (this.isGranosSelected == "N" || this.granosFlag == "A")
+            return true;
+    }
+
+
     displayListaPreguntas() {
-        $('#1heading').on('click', async function(){
-            await $("#heading1").click();
-        });
-        $('.faqCategoria1').on('click', async function(){
-            await $("#1collapse").collapse("toggle");
-        });
-        $('#2heading').on('click', async function(){
-            await $(".preguntasRespuesta2").collapse("toggle");
-        });
-        $('.faqCategoria2').on('click', async function(){
-            await $(".preguntasMenu2").collapse("toggle");
-        }); 
-        $('#3heading').on('click', async function(){
-            await $(".faqCategoria3").click();         
-        });
-        $('.faqCategoria3').on('click', async function(){
-            await $("#3collapse").collapse("toggle");
-        }); 
-        $('#4heading').on('click', async function(){
-            await $("#heading4").click();         
-        });
-        $('#heading4').on('click', async function(){
-            await $("#4collapse").collapse("toggle");
-        }); 
-        $('#5heading').on('click', async function(){
-            await $("#heading5").click();         
-        });
-        $('#heading5').on('click', async function(){
-            await $("#5collapse").collapse("toggle");
-        }); 
-        $('#6heading').on('click', async function(){
-            await $("#heading6").click();         
-        });
-        $('#heading6').on('click', async function(){
-            await $("#6collapse").collapse("toggle");
-        }); 
-        $('#7heading').on('click', async function(){
-            await $("#heading7").click();         
-        });
-        $('#heading7').on('click', async function(){
-            await $("#7collapse").collapse("toggle");
-        }); 
-        $('#8heading').on('click', async function(){
-            await $("#heading8").click();         
-        });
-        $('#heading8').on('click', async function(){
-            await $("#8collapse").collapse("toggle");
-        }); 
-        $('#9heading').on('click', async function(){
-            await $("#heading9").click();         
-        });
-        $('#heading9').on('click', async function(){
-            await $("#9collapse").collapse("toggle");
-        }); 
-        $('#10heading').on('click', async function(){
-            await $("#heading10").click();         
-        });
-        $('#heading10').on('click', async function(){
-            await $("#10collapse").collapse("toggle");
-        }); 
-        $('#11heading').on('click', async function(){
-            await $("#heading11").click();         
-        });
-        $('#heading11').on('click', async function(){
-            await $("#11collapse").collapse("toggle");
+        $('.preguntasRespuesta').on('shown.bs.collapse', function (e) {
+            var $panel = $(this).closest('.panel');
+            $('html,body').animate({
+                scrollTop: $panel.offset().top - 200
+            }, 700); 
         }); 
     }
 }
