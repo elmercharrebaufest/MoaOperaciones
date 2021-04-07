@@ -65,7 +65,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   codigoProveedor: string = sessionStorage.getItem("proveedor");
 
   ngOnInit() {
-    this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
+    this.navService.setSeccionList([]);
 
     if (!this.esCorredor) {
       this.proveedorId = this.getProveedorId(this.codigoProveedor);
@@ -158,7 +158,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.blockUI.stop();
-            this.goToSeccion('/sustentable/listado-campos');
+
+            this.mensajeComponent.setSuccessMsg(result.Mensaje);
+            setTimeout(() => {
+              this.redirigirAListado();
+            }, 3000);
           }
         },
         error => {
@@ -250,5 +254,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     return false
+  }
+
+  redirigirAListado() {
+    this.goToSeccion('/sustentable/listado-campos');
+
   }
 }

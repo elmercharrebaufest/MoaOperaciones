@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { VentaSustentableService } from './../venta-sustentable.service'
 import { BaseComponent } from './../../common/base-components/base-component';
 import { NavService } from './../../common/services/NavService';
@@ -9,11 +9,12 @@ import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 
 @Component({
-  selector: 'app-listado-campos',
-  templateUrl: './listado-campos.component.html',
-  providers: [VentaSustentableService]
+    selector: 'app-listado-campos',
+    templateUrl: './listado-campos.component.html',
+    providers: [VentaSustentableService]
 })
 export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
@@ -23,67 +24,90 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-  constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-    super(navService, securityService, floatMsgService, modalService);
-    this.mensajeComponent = new MensajeComponent();
-    this.spinnerComponent = new SpinnerComponent();
-}
+    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+        super(navService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
+    }
 
-    camposSustentables: any[];
+    data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
+    editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    opcionesProveedores: any;
 
-  ngOnInit() {
-    this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
-    this.getCamposSustentables();
-  }
+    filtroId: string = "";
+    filtroNombreCampo: string = "";
+    filtroProveedor: string = "";
 
-  getCamposSustentables() {
-    this.floatMsgService.setMsgsEmpty();
-    this.unsubscribe();
-    this.subscription = this.service.getCamposProveedores().subscribe(
-        result => {
-            if (result.logout == true) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.floatMsgService.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-                this.floatMsgService.setInfoMsg(result.info);
-            } else {
-                this.camposSustentables = result;
+    orderedByColumn: string = "Nombre";
+    orderDirection: number = 1;
+    itemsPerPage = 20;
+
+    ngOnInit() {
+        this.navService.setSeccionList([]);
+        this.getCamposSustentables();
+    }
+
+    getCamposSustentables() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.getCamposProveedores().subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                } else {
+                    this.data = result;
+
+                    if (result.length > 0) {
+                        let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
+                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
+                        this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+                    }
+                    else {
+                        this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
+                    }
+                }
+            },
+            error => {
+                this.mensajeComponent.setErrorMsg(error.message);
             }
-        },
-        error => {
-            this.floatMsgService.setErrorMsg(error.message);
-        }
-    );
+        );
 
-    return false;
-}
+        return false;
+    }
 
-eliminarCampo(campoCosechaId: number, proveedorId: number){
-    this.floatMsgService.setMsgsEmpty();
-    this.unsubscribe();
-    this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
-        result => {
-            if (result.logout == true) {
-                this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-                this.floatMsgService.setErrorMsg(result.error);
-            } else if (result.info != undefined) {
-                this.floatMsgService.setInfoMsg(result.info);
-            } else {
-                this.mensajeComponent.setSuccessMsg("se elimino el campo " + campoCosechaId + " correctamente.");
-                setTimeout(() => {
-                    this.getCamposSustentables();
-                }, 200);
+    eliminarCampo(campoCosechaId: number, proveedorId: number) {
+        this.floatMsgService.setMsgsEmpty();
+        this.unsubscribe();
+        this.subscription = this.service.campoProveedorBorrar(campoCosechaId, proveedorId).subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    this.mensajeComponent.setSuccessMsg("se elimino el campo " + campoCosechaId + " correctamente.");
+                    setTimeout(() => {
+                        this.getCamposSustentables();
+                    }, 200);
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
             }
-        },
-        error => {
-            this.floatMsgService.setErrorMsg(error.message);
-        }
-    );
+        );
 
-    return false;
-}
+        return false;
+    }
 
+    proveedorSeleccionado(event: string) {
+        this.filtroProveedor = event;
+    }
 }

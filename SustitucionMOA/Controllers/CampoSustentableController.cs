@@ -23,6 +23,8 @@ namespace SustitucionMOA.Controllers
             this.campoSustentableService = campoSustentableService;
         }
 
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
         public JsonResult CampoProveedorAgregar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
         {
@@ -46,6 +48,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.EDICION_CAMPOS_CREADOS)]
         [HttpPut]
         public JsonResult CampoProveedorEditar(string campoProveedorJson, HttpPostedFileBase archivoKmz)
         {
@@ -69,28 +72,30 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpDelete]
-        public JsonResult CampoProveedorBorrar(int campoCosechaId, int proveedorId)
-        {
-            try
-            {
-                return JsonCustom(campoSustentableService.Borrar(SessionPersister.User.username, campoCosechaId, proveedorId));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        //[CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CONTRATO)]
+        //[HttpDelete]
+        //public JsonResult CampoProveedorBorrar(int campoCosechaId, int proveedorId)
+        //{
+        //    try
+        //    {
+        //        return JsonCustom(campoSustentableService.Borrar(SessionPersister.User.username, campoCosechaId, proveedorId));
+        //    }
+        //    catch (InfoCustomException e)
+        //    {
+        //        return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (ValidationCustomException e)
+        //    {
+        //        return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
         public JsonResult CampoProveedor(int proveedorId, int campoCosechaId)
         {
@@ -113,6 +118,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
         public JsonResult CamposProveedores()
         {
@@ -180,12 +186,22 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public JsonResult FirmarDeclaracion(int proveedorId, double hectareasTotales)
+        public JsonResult GenerarDeclaracionProveedor(int proveedorId, double hectareasTotales)
         {
             try
             {
-                return JsonCustom(campoSustentableService.FirmarDeclaracion(SessionPersister.User.username, proveedorId, hectareasTotales));
+                var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, hectareasTotales);
+                PDFResponse result = new PDFResponse
+                {
+                    pdf = new Pdf()
+                    {
+                        data = fileArray
+                    }
+                };
+
+                return JsonCustom(result.pdf);
             }
             catch (InfoCustomException e)
             {
@@ -202,6 +218,30 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpPost]
+        public JsonResult AdjuntarDeclaracionFirmada(int proveedorId, HttpPostedFileBase fileSubido)
+        {
+            try
+            {
+                return JsonCustom(campoSustentableService.AdjuntarDeclaracionFirmada(SessionPersister.User.username, proveedorId, fileSubido));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
         public JsonResult ImprimirDeclaracion(int proveedorId)
         {

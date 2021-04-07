@@ -2,8 +2,8 @@
 
   <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword" (selected)='selectEvent($event)'
     [(ngModel)]="localidad" (inputChanged)='onChangeSearch($event)' (inputFocused)='selectEvent($event)'
-    [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'" [notFoundText]="autocompleteNotFoundText"
-    autocomplete="chrome-off" [notFoundTemplate]="notFoundTemplate">
+    [itemTemplate]="itemTemplate" [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
+    [notFoundTemplate]="notFoundTemplate">
   </ng-autocomplete>
 
   <ng-template #itemTemplate let-item>

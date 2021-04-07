@@ -113,6 +113,38 @@
                 relacionada
                 con los criterios de sostenibilidad descriptos más arriba.
               </div>
+
+              <div class="row" style="color: red;">
+                Deberá imprimir la declaración y subirla firmada en formato PDF para continuar con el alta de campos
+                sustentables
+                <span class="requerido">*</span>
+              </div>
+            </div>
+          </div>
+          <div class="row btnSections" style="justify-content: center;margin-bottom: 20px;">
+            <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="imprimir()">
+              Imprimir declaracion
+            </button>
+          </div>
+
+          <hr>
+          <div>
+            <div class="row">
+              <h3>
+                Enviar declaración firmada
+              </h3>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <div class="styled-select">
+                <input #fileInput type="file" (change)="cargarArchivo($event)" accept=".pdf"
+                  placeholder="Cargar Archivo">
+              </div>
+              <br />
+            </div>
+            <div class="row btnSections" style="justify-content: center;margin-bottom: 20px;">
+              <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="adjuntarDeclaracionFirmada()">
+                Adjuntar declaracion
+              </button>
             </div>
           </div>
         </div>
@@ -125,9 +157,6 @@
         <div class="row btnSections" style="justify-content: center;">
           <button type="button" class="btn-custom btn-mediano btn-remove" (click)="cancelar()">
             Cancelar
-          </button>
-          <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="firmarDeclaracion()">
-            Firmar
           </button>
         </div>
       </div>
