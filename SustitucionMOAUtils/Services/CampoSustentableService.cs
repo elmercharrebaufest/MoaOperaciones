@@ -244,9 +244,9 @@ namespace SustitucionMOAUtils.Services
         private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
 
-            string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, "-", campoProveedor.Proveedor.CUIT, Path.GetExtension(archivoKmz.FileName));
+            string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
 
-            string rutaCarpeta = ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"];
+            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.Proveedor.CUIT);
 
             string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
@@ -316,7 +316,7 @@ namespace SustitucionMOAUtils.Services
 
         public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, HttpPostedFileBase fileSubido)
         {
-            if (Path.GetExtension(fileSubido.FileName).ToLower() != "pdf")
+            if (Path.GetExtension(fileSubido.FileName).ToLower() != ".pdf")
             {
                 throw new ValidationCustomException("Debe subir el archivo de declaración en formato PDF");
             }
@@ -425,6 +425,7 @@ namespace SustitucionMOAUtils.Services
                                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                    CampoCosechaId = cp.CampoCosecha_Id,
                                    Proveedor = new ProveedorDto(cp.Proveedor),
+                                   CodigoProveedor = cp.Proveedor.CodigoProveedor
                                }).ToList();
             }
             else
@@ -442,6 +443,7 @@ namespace SustitucionMOAUtils.Services
                              ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                              CampoCosechaId = cp.CampoCosecha_Id,
                              Proveedor = new ProveedorDto(cp.Proveedor),
+                             CodigoProveedor = cp.Proveedor.CodigoProveedor
                          }).ToList();
             }
             return listado;

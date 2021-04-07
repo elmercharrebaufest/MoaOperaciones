@@ -11,11 +11,11 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Reporte
     public class ReporteCamposSustentables : ReporteBase
     {
         public string Excel { get; set; }
-        public IList<CampoProveedor> Campos { get; set; }
+        public int CantidadCampos { get; set; }
 
         public override string GetBody()
         {
-            return $"<p>Campos dados de alta a la fecha {GetFecha()}: {Campos.Count}</p>";
+            return $"<p>Campos dados de alta a la fecha {GetFecha()}: {CantidadCampos}</p>";
         }
 
         public override string GetFecha()

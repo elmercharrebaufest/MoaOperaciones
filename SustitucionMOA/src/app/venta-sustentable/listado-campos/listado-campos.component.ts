@@ -9,6 +9,7 @@ import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
+import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
 
 @Component({
     selector: 'app-listado-campos',
@@ -32,6 +33,12 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     camposSustentables: any[];
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
     editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    opcionesProveedores: any;
+
+    filtroId: string = "";
+    filtroNombreCampo: string = "";
+    filtroProveedor: string = "";
 
     ngOnInit() {
         this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
@@ -51,6 +58,11 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
                     this.camposSustentables = result;
+                    let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
+
+                    this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
+                    this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+
                 }
             },
             error => {
@@ -87,4 +99,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         return false;
     }
 
+    proveedorSeleccionado(event: string) {
+        this.filtroProveedor = event;
+    }
 }

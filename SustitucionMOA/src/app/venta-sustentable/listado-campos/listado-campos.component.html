@@ -16,7 +16,25 @@
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Id
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
+                            aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6">
+                    Nombre
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" aria-controls="tableModal"
+                            [(ngModel)]="filtroNombreCampo">
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="esCorredor || esInterno">
+
+                    Por Vendedor
+                    <div class="styled-select">
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
+                            (select)="proveedorSeleccionado($event)">
+                        </dropdown>
                     </div>
                 </div>
             </div>
@@ -65,11 +83,16 @@
                     </thead>
 
                     <tbody>
-                        <tr *ngFor="let campo of this.camposSustentables">
+                        <tr *ngFor="let campo of this.camposSustentables
+                                | customNumericFilter : 'IdScato' : filtroId : ''
+                                | customFilter : 'NombreCampo' : filtroNombreCampo
+                                | customFilter : 'CodigoProveedor' : filtroProveedor
+                        
+                        ">
                             <td>{{campo.IdScato}}</td>
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
-                            <td>{{campo.Proveedor.CodigoProveedor}}</td>
+                            <td>{{campo.CodigoProveedor}}</td>
                             <td class="estadoRechazado" *ngIf="campo.ToneladasAprobadas == 0">Rechazada</td>
                             <td class="estadoAprobado" *ngIf="campo.ToneladasAprobadas > 0">Aprobado</td>
                             <td class="estadoEnGestion" *ngIf="campo.ToneladasAprobadas == -1">En gesti&oacute;n</td>
