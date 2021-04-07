@@ -83,7 +83,7 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   }
 
   getUsuario() {
-    this.mensajeComponent.setMsgsEmpty();
+    this.floatMsgService.setMsgsEmpty();
     this.spinnerComponent.showIt();
     this.unsubscribe();
     try {
@@ -93,9 +93,9 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
-            this.mensajeComponent.setErrorMsg(result.error);
+            this.floatMsgService.setErrorMsg(result.error);
           } else if (result.info != undefined) {
-            this.mensajeComponent.setInfoMsg(result.info);
+            this.floatMsgService.setInfoMsg(result.info);
           } else {
             this.data = result.data.vendedores;
             this.selectProveedor = [];
@@ -104,12 +104,12 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
         },
         (error) => {
           this.spinnerComponent.hideIt();
-          this.mensajeComponent.setErrorMsg(error.message);
+          this.floatMsgService.setErrorMsg(error.message);
         }
       );
     } catch (e) {
       this.spinnerComponent.hideIt();
-      this.mensajeComponent.setErrorMsg(e);
+      this.floatMsgService.setErrorMsg(e);
       return false; //<-- Prevent Refresh
     }
 

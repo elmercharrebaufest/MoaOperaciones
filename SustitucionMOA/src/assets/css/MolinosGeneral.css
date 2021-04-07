@@ -4038,3 +4038,8 @@ margin: 2px;
 .estadoEnGestion{
   color: #F0AD4E;
 }
+
+.requerido {
+  color: red;
+  font-weight: bold;
+}

@@ -40,9 +40,7 @@ namespace SustitucionMOAUtils.Services
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
 
-            ValidarCampo(usuario, campoProveedor);
-
-            //campoProveedor.CampoCosecha.CampoSustentable_Id = ObtenerIdCampoSustentable(campoProveedor);
+            ValidarCampo(usuario, campoProveedor, archivoKmz);
 
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
@@ -87,7 +85,7 @@ namespace SustitucionMOAUtils.Services
 
             campoProveedor.FechaModificacion = DateTime.Now;
 
-            ValidarCampo(usuario, campoProveedor);
+            ValidarCampo(usuario, campoProveedor, archivoKmz);
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
@@ -166,7 +164,6 @@ namespace SustitucionMOAUtils.Services
 
                 PdfReader pdfReaderCampos = new PdfReader(pdfCampos);
 
-                //pdfReaderCampos.SelectPages("2" + pdfReaderCampos.NumberOfPages.ToString());
                 pdfReaderCampos.SelectPages("2");
 
                 var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.DeclaracionCampoSustentable);
@@ -237,8 +234,17 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor)
+        private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
+            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id).DeclaracionFirmada)
+            {
+                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
+            }
+
+            if (Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
+            {
+                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
+            }
         }
 
         private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
@@ -398,7 +404,6 @@ namespace SustitucionMOAUtils.Services
 
             return archivoResult;
         }
-
 
         public List<Cosecha> ObtenerCosechas()
         {

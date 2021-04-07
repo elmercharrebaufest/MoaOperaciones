@@ -30,7 +30,7 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
         this.spinnerComponent = new SpinnerComponent();
     }
 
-    camposSustentables: any[];
+    data: any;
     esInterno: boolean = this.isAuthorized('VER TODOS CAMPOS SUSTENTABLE');
     editarCampos: boolean = this.isAuthorized('EDICION CAMPOS CREADOS')
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
@@ -40,33 +40,41 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     filtroNombreCampo: string = "";
     filtroProveedor: string = "";
 
+    orderedByColumn: string = "Nombre";
+    orderDirection: number = 1;
+    itemsPerPage = 20;
+
     ngOnInit() {
-        this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
+        this.navService.setSeccionList([]);
         this.getCamposSustentables();
     }
 
     getCamposSustentables() {
-        this.floatMsgService.setMsgsEmpty();
+        this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
         this.subscription = this.service.getCamposProveedores().subscribe(
             result => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
-                    this.floatMsgService.setErrorMsg(result.error);
+                    this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
-                    this.floatMsgService.setInfoMsg(result.info);
+                    this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.camposSustentables = result;
-                    let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
+                    this.data = result;
 
-                    this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
-                    this.opcionesProveedores.unshift({ value: "", label: "Todos" })
-
+                    if (result.length > 0) {
+                        let allProveedores = result.map(cp => { return { value: cp.Proveedor.CodigoProveedor, label: cp.Proveedor.RazonSocial } });
+                        this.opcionesProveedores = [...new Map(allProveedores.map(item => [item.value, item])).values()]
+                        this.opcionesProveedores.unshift({ value: "", label: "Todos" })
+                    }
+                    else {
+                        this.mensajeComponent.setInfoMsg("No hay campos sustentables cargados.");
+                    }
                 }
             },
             error => {
-                this.floatMsgService.setErrorMsg(error.message);
+                this.mensajeComponent.setErrorMsg(error.message);
             }
         );
 
