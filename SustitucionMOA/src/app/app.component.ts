@@ -35,6 +35,8 @@ export class AppComponent {
         });
     }
 
+    disabledAgreement: boolean = true;
+
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
@@ -145,5 +147,26 @@ export class AppComponent {
         //        }
         //    }
         //}
+        if (result.aceptoTyC != true) {
+            document.getElementById("openModalaceptoTyCModal").click();
+
+        }
+    }
+    aceptarTyC() {
+        let observable = this.http
+            .get('/api/Home/AceptarTyC', {})
+            .pipe(map(this.extractData));
+
+        observable.subscribe(result => {
+            if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else {
+                document.getElementById("openModalaceptoTyCModal").click();
+            }
+        })
+    }
+
+    checkTyCChecked(event) {
+        this.disabledAgreement = !event.target.checked;
     }
 }
