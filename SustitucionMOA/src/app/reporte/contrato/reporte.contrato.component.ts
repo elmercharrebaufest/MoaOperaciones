@@ -219,6 +219,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                                 TipoNegocioId: x.TipoNegocioId,
                                 Id: x.Id,
                                 ObservacionTercero: x.ObservacionTercero,
+                                Acuerdo: x.Acuerdo
                             };
                             return item;
                         });

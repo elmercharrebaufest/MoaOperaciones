@@ -154,4 +154,43 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
         this.irACargas
     }
 
+    descargarExcelModeloAltaMasiva() {
+        this.subscription = this.service
+            .excelModeloAltaMasiva()
+            .subscribe(
+                (result) => {
+                    if (result.error) {
+
+                    } else {
+                        var byteArray = new Uint8Array(result.data);
+                        var blob = new Blob([byteArray], {
+                            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        });
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                "AltaMasiva.xlsx"
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = "AltaMasiva.xlsx";
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+
+                            return false;
+                        }
+                    }
+                },
+                () => {
+
+                }
+            );
+    }
+
 }

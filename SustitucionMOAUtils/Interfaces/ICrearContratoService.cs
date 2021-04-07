@@ -34,5 +34,6 @@ namespace SustitucionMOAUtils.Interfaces
         BasicoContrato TraerContratoCompleto(int id, string tipo);
         List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
         string ConfiguracionBolsaAutomatica();
+        byte[] ExcelModeloAltaMasiva();
     }
 }

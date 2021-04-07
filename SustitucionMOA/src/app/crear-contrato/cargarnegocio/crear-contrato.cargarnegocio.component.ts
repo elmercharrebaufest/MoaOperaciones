@@ -19,7 +19,8 @@ declare var $: any;
     providers: [{ provide: CrearContratoService, useClass: CrearContratoCargarNegocioService }]
 })
 export class CrearContratoCargarNegocioComponent extends CrearContratoBaseComponent {
-        
+
+    acuerdosPendientes: string = null;
     ngOnInit() {
         this.setMenuSeccionTab("crear-contrato", "Carga de Negocios");
         //this.navService.setSeccionList([
@@ -57,6 +58,7 @@ export class CrearContratoCargarNegocioComponent extends CrearContratoBaseCompon
                             new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
                             new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Alta Masiva')
                         ]);
+                        this.obtenercontratosAcuerdo();
                     } else {
                         this.esCorredorEnDataAgro = false;
                         this.navService.setSeccionList([
@@ -79,5 +81,31 @@ export class CrearContratoCargarNegocioComponent extends CrearContratoBaseCompon
         return false;
     }
 
+    obtenercontratosAcuerdo() {
+        try {
+            this.unsubscribe();
+            this.subscription = this.service.ObteneContratosAcuerdo()
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                        } else if (result.info != undefined) {
+                        } else {
+                            let contratos = JSON.parse(result);
+                            if (contratos.length == 0) {
+                                this.acuerdosPendientes = null;
+                            } else {
+                                this.acuerdosPendientes = "Tiene contratos acuerdos disponibles para cargar.";
+                            }                           
+                        }
+                    },
+                    (error) => {
+                    }
+                );
+
+        } catch (e) {
+        }
+    }
 
 }

@@ -241,6 +241,13 @@ export class CrearContratoService extends BaseService {
         return this.http.get('/api/CrearContrato/TraerContratoCompleto', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
+
+    excelModeloAltaMasiva() {
+        let params: URLSearchParams = new URLSearchParams();
+        return this.http
+            .get('/api/CrearContrato/ExcelModeloAltaMasiva', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));
+    }
 }
 
 @Injectable()

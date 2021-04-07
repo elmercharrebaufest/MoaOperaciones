@@ -101,8 +101,20 @@
             <div *ngIf="this.conError.length == 0 && this.sinError.length == 0">
                 <div class="row">
                     <div class="form-group col-md-6 subtitulo">
-                        <a href="../../../Documentacion/ARGA MASIVA DE CORREDORES.xlsx" target="_blank"
+                        <a href="https://www.afip.gob.ar/genericos/guiavirtual/archivos/localidades.pdf" target="_blank"
                            style="text-decoration:none!important">
+                            <div class="doc-header no-border">
+                                <p>
+                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>Descargar Localidades ONCCA
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6 subtitulo">
+                        <a (click)="descargarExcelModeloAltaMasiva()"
+                           style="text-decoration:none!important; cursor:pointer;">
                             <div class="doc-header no-border">
                                 <p>
                                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>Descargar archivo modelo

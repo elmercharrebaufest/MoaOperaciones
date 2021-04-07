@@ -1130,5 +1130,21 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
         }
+
+        public byte[] ExcelModeloAltaMasiva() {
+            byte[] reporte;
+            var url = string.Concat(DataAgroURL, "/ReporteCompraNet/ExcelModeloAltaMasiva");
+            string userName = DataAgroWSCredential.getUserName();
+            string password = DataAgroWSCredential.getPassword();
+            string dominio = DataAgroWSCredential.getDominio();
+            using (WebClient clienteDescarga = new WebClient())
+            {
+                clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+
+                reporte = clienteDescarga.DownloadData(url);
+            }
+
+            return reporte;
+        }
     }
 }

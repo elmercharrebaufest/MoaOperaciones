@@ -475,9 +475,11 @@
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
                                 <td class="{{contratoInfo.Estado_Contrato}}">
                                     {{contratoInfo.Estado_Contrato}}
+                                    <br />
                                     <span *ngIf="contratoInfo.Estado == 9">
-                                        <br />
                                         <a title="Anular" href="javascript:void(0);" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;
+                                    </span>
+                                    <span *ngIf="contratoInfo.Estado == 9 && contratoInfo.Acuerdo == null">
                                         <a title="Editar" href="javascript:void(0);" (click)="editar(contratoInfo)"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp;
                                     </span>
                                 </td>
