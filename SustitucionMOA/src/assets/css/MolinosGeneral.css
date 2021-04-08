@@ -4043,3 +4043,7 @@ margin: 2px;
   color: red;
   font-weight: bold;
 }
+
+.ng-autocomplete, .ui-autocomplete {
+  width: 100%!important;
+}

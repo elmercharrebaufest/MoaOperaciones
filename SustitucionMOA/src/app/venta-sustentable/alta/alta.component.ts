@@ -87,8 +87,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   onselect($event) {
     this.proveedorSelected = $event;
-    this.proveedorId = this.getProveedorId('0071116016');
-    //this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
+    //this.proveedorId = this.getProveedorId('0071116016');
+    this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
   }
 
   getProveedorId(codigo: string) {
@@ -197,6 +197,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.cosechas = result;
+
+            this.cosecha = this.cosechas[0];
           }
         },
         error => {
