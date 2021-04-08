@@ -439,9 +439,64 @@ namespace SustitucionMOAUtils.Services
             return null;
         }
 
-        public List<RolDropdownDto> GetRoles()
+        public Dictionary<string, List<RolDropdownDto>> GetRoles()
         {
-            return repositorio.Listar<Rol>().Where(r => r.EsEditable).Select(x => new RolDropdownDto(x)).ToList();
+            Dictionary<string, List<RolDropdownDto>> rolesOrdenados = new Dictionary<string, List<RolDropdownDto>>();
+            List<RolDropdownDto> listaInterno = new List<RolDropdownDto>();
+            List<RolDropdownDto> listaContacto = new List<RolDropdownDto>();
+            List<RolDropdownDto> listaExterno = new List<RolDropdownDto>();
+
+            var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable).Select(x => new RolDropdownDto(x)).ToList();
+
+            List<string> interno = new List<string>
+            {
+                "ADM",
+                "OPE",
+                "APRO",
+                "COMPRAS",
+                "ADMINCCSS"
+            };
+
+            List<string> contacto = new List<string>
+            {
+                "BOL",
+                "DATMAE",
+                "PAR",
+                "FIN",
+                "CAL",
+                "COM",
+                "COMP",
+                "APP",
+                "PES",
+                "PAG",
+                "FWEB",
+                "MATBA",
+                "PROVGC",
+                "FLECONSULTA",
+                "OTRO"
+            };
+
+            foreach (RolDropdownDto rol in roles)
+            {
+                if (interno.Contains(rol.Code))
+                {
+                    listaInterno.Add(rol);
+                }
+                else if (contacto.Contains(rol.Code))
+                {
+                    listaContacto.Add(rol);
+                }
+                else
+                {
+                    listaExterno.Add(rol);
+                }
+            }
+
+            rolesOrdenados.Add("Interno", listaInterno);
+            rolesOrdenados.Add("Contacto", listaContacto);
+            rolesOrdenados.Add("Externo", listaExterno);
+
+            return rolesOrdenados;
         }
 
         public string GuardarRoles(List<int> idRoles, int idUsuario)

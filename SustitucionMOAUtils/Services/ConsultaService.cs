@@ -56,6 +56,9 @@ namespace SustitucionMOAUtils.Services
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
             consulta.EstadoConsulta_Id = 1;
+            CausaConsulta cc = repositorio.Obtener<CausaConsulta>(c => c.Nombre == "Sin Exclusión");
+            consulta.Detalle.CausaConsulta = cc;
+            consulta.Detalle.CausaConsulta_Id = cc.Id;
 
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
@@ -111,7 +114,8 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
             
-            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes).Select(x => new ConsultaDto(x)).ToList();
+            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes)
+                .Select(x => new ConsultaDto(x)).ToList();
 
             return ret;
         }

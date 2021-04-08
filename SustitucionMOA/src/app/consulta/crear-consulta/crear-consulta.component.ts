@@ -60,6 +60,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategoriaCount = 0;
 
     proveedorId: number;
+    tieneSubcategorias: boolean = true;
     
     consulta: any;
 
@@ -72,7 +73,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     razonSocialProveedor: string;
     razonSocialCorredor: string;
 
-    subcategoria: Subcategoria;
+    subcategoria: Subcategoria = {
+        Id: null
+    };
     subcategoriasList: Subcategoria[];
     categoria: Categoria;
     causa: Causa;
@@ -84,7 +87,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     Detalle: any;
     nuevoComentario: any;
+    comprobanteExtra: any;
 
+    caratula: any;
+    material: string;
     comentario: string;
     contrato: any;
     razonSocial: string;
@@ -219,7 +225,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg("Por favor seleccione una categoria.");
             return true;
         }
-        if (this.subcategoriaCount == 0) {
+        if (this.tieneSubcategorias && this.subcategoriaCount == 0) {
             this.floatMsgService.setErrorMsg("Por favor seleccione una subcategoria.");
             return true;
         }
@@ -265,7 +271,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
-            if (this.cliente == "" || !this.cliente) {
+            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
                 this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
             }
@@ -329,6 +335,68 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
+        if((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)){
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                return true;
+            }
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° COE esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'CAL'){
+            if ((this.contrato == "" || !this.contrato) && (this.comprobante == "" || !this.comprobante)) {
+                this.floatMsgService.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'COM'){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'APP'){
+            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
+                this.floatMsgService.setErrorMsg("El campo Material esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'PES'){
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                return true;
+            }
+        }
+        if((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL'){
+            if ((this.comprobante == "" || !this.comprobante) && (this.comprobanteExtra == "" || !this.comprobanteExtra)) {
+                this.floatMsgService.setErrorMsg("Debe completar Campo carátula o CCPP.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF'){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP'){
+            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
+                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                return true;
+            }
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo CCPP esta vacio.");
+                return true;
+            }
+        }
     }
 
     postConsulta(){
@@ -355,8 +423,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
 
-        this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
-            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, CausaConsulta_Id: 1
+        this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
         }
 
         this.consulta = {CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor, 
@@ -432,6 +500,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     setSubcategorias(categoria){
         this.categoriaCount = 1;
+        this.subcategoriaCode = null;
         this.categoria = categoria;
         this.categoriaCode = categoria.Code;
         this.subcategoriasList = [];
@@ -441,6 +510,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.subcategoriasList.push(x);
             }
         });
+
+        if(this.subcategoriasList.length == 0){
+            this.tieneSubcategorias = false;
+        }
     }
 
     handleCorrectCaptcha(event: any) {

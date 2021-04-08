@@ -83,11 +83,11 @@
                                         </a>
                                     </td>
                                     <td *ngFor="let col of columns" [ngSwitch]="col.filterType" >
-                                        <span *ngSwitchDefault> {{rowData[col.field]}} </span> 
+                                        <span *ngSwitchDefault> {{rowData[col.field]}} </span>
                                         <div *ngSwitchCase="'custom'">
                                             <span *ngIf="col.field == 'EstadoConsulta'; else defaultField" [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
                                             {{rowData.EstadoConsulta.Descripcion}}</span>
-                                            
+
                                             <ng-template #defaultField>{{rowData[col.field].Nombre}}</ng-template>
                                         </div>
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
