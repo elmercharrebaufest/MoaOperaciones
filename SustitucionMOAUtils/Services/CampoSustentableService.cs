@@ -84,20 +84,20 @@ namespace SustitucionMOAUtils.Services
             }
 
             campoProveedor.FechaModificacion = DateTime.Now;
-
+            /*
             ValidarCampo(usuario, campoProveedor, archivoKmz);
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
-            campoProveedor.Latitud = campoProveedorObj.Latitud;
+            campoProveedor.Latitud = campoProveedorObj.Latitud;*/
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
 
             repositorio.GuardarCambios();
 
-            GuardarArchivoKMZ(campoProveedor, archivoKmz);
+            //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
-            repositorio.GuardarCambios();
+            //repositorio.GuardarCambios();
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
