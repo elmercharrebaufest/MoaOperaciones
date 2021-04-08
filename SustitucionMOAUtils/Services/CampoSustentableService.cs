@@ -84,20 +84,20 @@ namespace SustitucionMOAUtils.Services
             }
 
             campoProveedor.FechaModificacion = DateTime.Now;
-
+            /*
             ValidarCampo(usuario, campoProveedor, archivoKmz);
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
-            campoProveedor.Latitud = campoProveedorObj.Latitud;
+            campoProveedor.Latitud = campoProveedorObj.Latitud;*/
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
 
             repositorio.GuardarCambios();
 
-            GuardarArchivoKMZ(campoProveedor, archivoKmz);
+            //GuardarArchivoKMZ(campoProveedor, archivoKmz);
 
-            repositorio.GuardarCambios();
+            //repositorio.GuardarCambios();
 
             return new Resultado { IdEntidad = campoProveedorObj.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableActualizado };
         }
@@ -243,7 +243,7 @@ namespace SustitucionMOAUtils.Services
 
             if (Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
             {
-                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
+                throw new ValidationCustomException("El archivo debe tener formato KMZ.");
             }
         }
 
@@ -387,7 +387,19 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            var pdfBytes = ImprimirDeclaracion(proveedorId);
+            var cosecha = ObtenerCosechaActual();
+
+            DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
+            {
+                Cosecha = cosecha.Nombre,
+                CUIT = proveedor.CUIT,
+                RazonSocial = proveedor.RazonSocial,
+                Fecha = proveedor.FechaFirmaDeclaracionCampoSustentable?.ToString("dd/MM/yyyy"),
+                CantidadParteSoja = proveedor.HectareasDeclaracionCampoSustentable.Value,
+                Campos = null
+            };
+
+            var pdfBytes = GenerarPDFDeclaracion(datos);
 
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
