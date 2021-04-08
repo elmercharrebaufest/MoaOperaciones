@@ -1,23 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CrearContratoService } from './crear-contrato.service';
-import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
-import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
-import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
-import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
+import { ActivatedRoute, Params } from "@angular/router";
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { precioMoaCompraNet } from '../common/models/precioMoaCompraNet';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
-import { SessionDataService } from './../common/services/SessionDataService';
-import { SecurityService } from './../common/services/SecurityService';
-import { NavService } from './../common/services/NavService';
+import { Seccion } from './../common/models/seccion';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
-import { Seccion } from './../common/models/seccion';
-import { ContratoAPrecio } from '../common/models/contratoAPrecio';
-import { habilitacionPizarra } from '../common/models/habilitacionPizarra';
-import { precioMoaCompraNet } from '../common/models/precioMoaCompraNet';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { BaseComponent } from '../common/base-components/base-component';
-import { Router, ActivatedRoute, Params } from "@angular/router";
+import { NavService } from './../common/services/NavService';
+import { SecurityService } from './../common/services/SecurityService';
+import { SessionDataService } from './../common/services/SessionDataService';
+import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
+import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
+import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
+import { CrearContratoService } from './crear-contrato.service';
 
 declare var $: any;
 
@@ -352,7 +347,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
 
                         ]);
-                        
+
                         this.blockUI.stop();
                         if (this.id == 0) {
                             this.obtenerDatosCompraNet(contrato, "");
@@ -399,9 +394,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             }
                             this.campanias.push(el);
                         });
-                        
+
                         this.pagosDiferidos = new Array();
-                        if(obj.TraerPagosDiferido){
+                        if (obj.TraerPagosDiferido) {
                             JSON.parse(obj.TraerPagosDiferido).forEach(element => {
                                 let el = {
                                     Id: element.Id,
@@ -411,9 +406,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                                 }
                                 this.pagosDiferidos.push(el);
                             });
-                        }   
+                        }
 
-                        if (contrato.TipoNegocioId == 3 ) {
+                        if (contrato.TipoNegocioId == 3) {
                             this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                         } else {
                             this.blockUI.stop();
@@ -839,11 +834,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         contrato.ContratoCorredor = obj.ContratoCorredor;
                         contrato.PagoDiferidoTercero = obj.PagoDiferidoTercero;
                         contrato.PagoDiferidoTerceroId = obj.PagoDiferidoTerceroId;
-                        if(!obj.PagoDiferidoTerceroId && this.ObservacionPagoDiferidoTercero)
+                        if (!obj.PagoDiferidoTerceroId && this.ObservacionPagoDiferidoTercero)
                             contrato.PagoDiferidoTerceroId = -1;
-                        if(contrato.PagoDiferidoTerceroId > 0)
-                        this.ObservacionPagoDiferidoTercero = "";
-                        
+                        if (contrato.PagoDiferidoTerceroId > 0)
+                            this.ObservacionPagoDiferidoTercero = "";
+
                         contrato.DolarizadoTercero = obj.DolarizadoTercero;
                         contrato.CalidadTercero = obj.CalidadTercero;
                         contrato.SustentableTercero = obj.SustentableTercero;
@@ -941,7 +936,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
             if (p.length == 1) {
                 if (p[0].BolsaId != contrato.BolsaId) {
                     this.bolsaRecomendada = p[0].BolsaId;
-                    this.mensajeCambioBolsa =  p[0].Bolsa;
+                    this.mensajeCambioBolsa = p[0].Bolsa;
                     document.getElementById("openModalbolsaModal").click();
                 }
 
@@ -965,5 +960,5 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     altaMasiva() {
         this.navService.navegarSeccion("/crear-contrato/alta-masiva");
     };
-    
+
 }

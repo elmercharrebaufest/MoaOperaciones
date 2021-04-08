@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
 import { registerLocaleData } from '@angular/common';
@@ -13,7 +13,7 @@ declare var $: any;
     templateUrl: `reporte.contrato.component.html`,
     providers: [{ provide: ReporteService, useClass: ReporteContratoService }]
 })
-export class ReporteContratoComponent extends ReporteBaseComponent implements OnInit{
+export class ReporteContratoComponent extends ReporteBaseComponent implements OnInit {
 
     fechaDesde: any = null;
     fechaHasta: any = null;
@@ -295,7 +295,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    
+
                     let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
 

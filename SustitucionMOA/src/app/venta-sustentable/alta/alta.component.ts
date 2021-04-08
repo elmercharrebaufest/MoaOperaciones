@@ -5,13 +5,11 @@ import { NavService } from './../../common/services/NavService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
-import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
 
 @Component({
