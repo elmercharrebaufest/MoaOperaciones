@@ -133,13 +133,14 @@ namespace SustitucionMOA.Controllers
                 string seccionesVisitadas = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSeccionesVisitadas).Value;
 
                 bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
-
+                bool aceptoTyC = false;
                 List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
                 Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
+                aceptoTyC = usuario.AceptoTyC;
 
                 seccionesVisitadas = usuario.SeccionesVisitadas;
 
@@ -246,6 +247,7 @@ namespace SustitucionMOA.Controllers
                     esNuevoUsuario,
                     redirectURL,
                     seccionesVisitadas,
+                    aceptoTyC,
                 }, JsonRequestBehavior.AllowGet);
 
             }
@@ -308,6 +310,28 @@ namespace SustitucionMOA.Controllers
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult AceptarTyC()
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Mail == SessionPersister.User.username);
+                usuario.AceptoTyC = true;
+                usuario.AceptoTyCFecha = DateTime.Now;
+                repositorio.GuardarCambios();
+                return JsonCustom(new { data = true });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
