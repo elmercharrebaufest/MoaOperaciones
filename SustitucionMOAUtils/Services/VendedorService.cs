@@ -80,8 +80,15 @@ namespace SustitucionMOAUtils.Services
             }
 
             List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+            VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
+            try
+            {
+                 response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+            }
+            catch
+            {
 
-            VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+            }
 
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == usuariomail);
 
