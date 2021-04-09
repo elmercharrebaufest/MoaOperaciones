@@ -88,6 +88,7 @@
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
+    <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />
     <Compile Include="Models\DataAgro\GrabarContratoResult.cs" />
     <Compile Include="Models\DataAgro\MaterialDto.cs" />
     <Compile Include="Models\DataAgro\CentroDto.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="Models\WSMapMOA\Vincula\Detalle\VinculaDetalleWSMOAResponse.cs" />
     <Compile Include="Consulta\Paginacion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\Retry.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">

@@ -108,7 +108,7 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
-
+            kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }
