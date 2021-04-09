@@ -257,6 +257,7 @@
     <Compile Include="Models\WSMapMOA\Proforma\Salida.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ClaveReporte.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteBase.cs" />
+    <Compile Include="Models\WSMapMOA\Reporte\ReporteCamposSustentables.cs" />
     <Compile Include="Models\WSMapMOA\Reporte\ReporteLiquidacionesInformadas.cs" />
     <Compile Include="Models\WSMapMOA\Usuario\Perfil\DropdownPerfilElement.cs" />
     <Compile Include="Models\WSMapMOA\Usuario\Perfil\DropdownTipoElement.cs" />

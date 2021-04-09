@@ -1,29 +1,31 @@
 <div class="content-wraper">
-  <!-- CONTENT-->
-  <section class="container-fluid clearfix">
-      <!--Title-->
-      <div class="row titleSection">
-          <div class="col-xs-12 col-sm-10" style="font-weight: bold;">Campos sustentables: Editar</div>
-      </div>
-      <mensaje></mensaje>
-      <spinner></spinner>
-      <!--End Title-->
-      <!-- Form-->
-      <div class="row myRow firstSection mySearch cargaDeDatos">
-          <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
-              <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">      
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10" style="font-weight: bold;">Campos sustentables: Editar</div>
+        </div>
+        <mensaje></mensaje>
+        <spinner></spinner>
+        <!--End Title-->
+        <!-- Form-->
+        <div class="row myRow firstSection mySearch cargaDeDatos">
+            <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Nombre del establecimiento*</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded"
+                                    aria-controls="tableModal">
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Localidad</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="localidadNombre" class="fourRounded" aria-controls="tableModal" disabled>
+                                <input type="search" [(ngModel)]="localidadNombre" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
                             </div>
                         </div>
                     </div>
@@ -32,66 +34,86 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Proveedor*</p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="proveedorNombre" class="fourRounded" aria-controls="tableModal" disabled>
+                                <input type="search" [(ngModel)]="proveedorNombre" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Cosecha*</p>
                             <div class="styled-select ">
-                            <input type="search" [(ngModel)]="NombreCosecha" class="fourRounded" aria-controls="tableModal" disabled>
-                        </div>
+                                <input type="search" [(ngModel)]="NombreCosecha" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
+                            </div>
                         </div>
                     </div>
 
-                  <div class="row myRow cargaDeDatosFields">
-                      <div class="col-xs-12 col-sm-12 col-md-6">
-                          <p class="crearConsultaTitulos">Hectareas Totales*</p>
-                          <div class="styled-select ">
-                              <input min="1" [type]="'number'" name="hectareasTotales" [(ngModel)]="hectareasTotales" class="fourRounded" aria-controls="tableModal" disabled>
-                          </div>
-                      </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Hectareas Totales*</p>
+                            <div class="styled-select ">
+                                <input min="1" [type]="'number'" name="hectareasTotales" [(ngModel)]="hectareasTotales"
+                                    class="fourRounded" aria-controls="tableModal" disabled>
+                            </div>
+                        </div>
 
-                      <div class="col-xs-12 col-sm-12 col-md-6">
-                          <p class="crearConsultaTitulos">Hectareas de Soja*</p>
-                          <div class="styled-select ">
-                              <input type="number" name="hectareasSoja" [(ngModel)]="hectareasSoja" class="fourRounded" aria-controls="tableModal" disabled>
-                          </div>
-                      </div>
-                  </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Hectareas de Soja*</p>
+                            <div class="styled-select ">
+                                <input type="number" name="hectareasSoja" [(ngModel)]="hectareasSoja"
+                                    class="fourRounded" aria-controls="tableModal" disabled>
+                            </div>
+                        </div>
+                    </div>
 
-                  <div class="row myRow cargaDeDatosFields">
-                      <div class="col-xs-12 col-sm-12 col-md-6">
-                          <p class="crearConsultaTitulos">Latitud*</p>
-                          <div class="styled-select ">
-                              <input type="search" [(ngModel)]="latitud" class="fourRounded" aria-controls="tableModal" disabled>
-                          </div>
-                      </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Latitud*</p>
+                            <div class="styled-select ">
+                                <input type="search" [(ngModel)]="latitud" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
+                            </div>
+                        </div>
 
-                      <div class="col-xs-12 col-sm-12 col-md-6">
-                          <p class="crearConsultaTitulos">Longitud*</p>
-                          <div class="styled-select ">
-                              <input type="search" [(ngModel)]="longitud" class="fourRounded" aria-controls="tableModal" disabled>
-                          </div>
-                      </div>
-                  </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">Longitud*</p>
+                            <div class="styled-select ">
+                                <input type="search" [(ngModel)]="longitud" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
+                            </div>
+                        </div>
+                    </div>
 
-                  <div class="col-xs-12 col-sm-12 col-md-12">
-                      <div class="styled-select">
-                          <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
-                      </div>
-                      <br />
-                  </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="styled-select">
+                            <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                        </div>
+                        <br />
+                    </div>
 
-                  <div class="col-md-3">
-                      <button class="btn-custom btn-guardar btn-grande" id="CartaPresentacionDescargar"
-                        (click)="campoProveedorEditar()">Editar</button>
-                  </div>
-              </div>
-          </div>
-          <spinner></spinner>
-      </div>
-      <!-- END form-->
-  </section>
-  <!--End CONTENT-->
+
+
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-0 col-md-3">
+
+                            <button type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano">
+                                Volver
+                            </button>
+                        </div>
+                        <div class="col-xs-0 col-md-4">
+                        </div>
+
+                        <div class="col-xs-0 col-md-3">
+                            <button class="btn-custom btn-guardar btn-grande"
+                                (click)="campoProveedorEditar()">Guardar</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <spinner></spinner>
+        </div>
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
 </div>

@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Dto
 {
     public class CampoProveedorListadoDto
     {
-        public int Id { get; set; }
+        public int IdScato { get; set; }
 
         public string NombreCampo { get; set; }
 
@@ -26,6 +26,7 @@ namespace SustitucionMOAModel.Dto
 
         public ProveedorDto Proveedor { get; set; }
         public int ProveedorId { get; set; }
+        public string CodigoProveedor { get; set; }
 
         public override bool Equals(object obj)
         {

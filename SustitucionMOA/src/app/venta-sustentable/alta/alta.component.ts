@@ -45,7 +45,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   localidades: any = [];
 
   cosechas: any[];
-  cosecha: any;
+  cosechaId: any;
 
   localidadId: any;
   provinciaId: any;
@@ -65,7 +65,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   codigoProveedor: string = sessionStorage.getItem("proveedor");
 
   ngOnInit() {
-    this.navService.setSeccionList([new Seccion('/sustentable/alta', 'alta', 'Dar de Alta'), new Seccion('/sustentable/listado-campos', 'listado-campos', 'Listado Campos')]);
+    this.navService.setSeccionList([]);
 
     if (!this.esCorredor) {
       this.proveedorId = this.getProveedorId(this.codigoProveedor);
@@ -87,8 +87,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   onselect($event) {
     this.proveedorSelected = $event;
-    this.proveedorId = this.getProveedorId('0071116016');
-    //this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
+    //this.proveedorId = this.getProveedorId('0071116016');
+    this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
   }
 
   getProveedorId(codigo: string) {
@@ -135,7 +135,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     campoCosecha = {
-      Campo: campoSustentable, Cosecha_Id: this.cosecha.Id
+      Campo: campoSustentable, Cosecha_Id: this.cosechaId
     }
 
     campoProveedor = {
@@ -158,7 +158,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.blockUI.stop();
-            this.goToSeccion('/sustentable/listado-campos');
+
+            this.mensajeComponent.setSuccessMsg(result.Mensaje);
+            setTimeout(() => {
+              this.redirigirAListado();
+            }, 3000);
           }
         },
         error => {
@@ -193,6 +197,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.cosechas = result;
+            this.cosechaId = this.cosechas[0].Id;
           }
         },
         error => {
@@ -213,9 +218,20 @@ export class AltaComponent extends BaseComponent implements OnInit {
   validar() {
     this.mensajeComponent.setMsgsEmpty();
     if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
-      this.mensajeComponent.setErrorMsg("Falta completar Nombre del establecimiento.");
+      this.mensajeComponent.setErrorMsg("Falta completar nombre del establecimiento.");
       return true;
     }
+
+    if (!this.localidadId || this.localidadId <= 0) {
+      this.mensajeComponent.setErrorMsg("Falta seleccionar la localidad.");
+      return true;
+    }
+
+    if (!this.cosechaId || this.cosechaId <= 0) {
+      this.mensajeComponent.setErrorMsg("Falta seleccionar la cosecha.");
+      return true;
+    }
+
     if (!this.hectareasTotales) {
       this.mensajeComponent.setErrorMsg("Falta completar hectareas totales.");
       return true;
@@ -236,19 +252,24 @@ export class AltaComponent extends BaseComponent implements OnInit {
       this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
       return true;
     }
-    if (this.latitud == "" || !this.latitud) {
+    if (!this.latitud || this.latitud == "") {
       this.mensajeComponent.setErrorMsg("Falta completar Latitud.");
       return true;
     }
-    if (this.longitud == "" || !this.longitud) {
+    if (!this.longitud || this.longitud == "") {
       this.mensajeComponent.setErrorMsg("Falta completar Longitud.");
       return true;
     }
-    if (this.file.length < 1 || !this.file) {
+    if (!this.file || this.file.length < 1) {
       this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo Kmz.");
       return true;
     }
 
     return false
+  }
+
+  redirigirAListado() {
+    this.goToSeccion('/sustentable/listado-campos');
+
   }
 }

@@ -45,7 +45,6 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
         CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
-
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }

@@ -4,19 +4,44 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Campo Sustentable : Consultas</strong></div>
+            <div class="col-xs-12 col-sm-10 "><strong>Campos sustentables</strong> </div>
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+                    (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+                    Nuevo campo
+                </button>
+
+            </div>
         </div>
         <!--End Title-->
-
-        <div class="row myRow firstSection mySearch">
+        <div class="row myRow mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Refinar resultados</title-caps>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
+                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esInterno">
                     Id
                     <div class="styled-select">
-                        <input type="search" class="" placeholder="" aria-controls="tableModal">
+                        <input type="search" class="" placeholder="" [(ngModel)]="filtroId" type="number"
+                            aria-controls="tableModal">
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                    Nombre
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="" aria-controls="tableModal"
+                            [(ngModel)]="filtroNombreCampo">
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4" *ngIf="esCorredor || esInterno">
+
+                    Por Vendedor
+                    <div class="styled-select">
+                        <dropdown [tipoDropdown]="'filtroVariable'" [options]="opcionesProveedores"
+                            (select)="proveedorSeleccionado($event)">
+                        </dropdown>
                     </div>
                 </div>
             </div>
@@ -26,12 +51,13 @@
             <div class="clearfix myTables">
                 <mensaje></mensaje>
                 <spinner></spinner>
-                <table id="tableModal"
+                <table id="tableModal" *ngIf="data && data.length > 0"
                     class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
                     cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Id')">
+                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('IdScato')"
+                                *ngIf="esInterno">
                                 ID
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Nombre')">
@@ -65,11 +91,18 @@
                     </thead>
 
                     <tbody>
-                        <tr *ngFor="let campo of this.camposSustentables">
-                            <td>{{campo.Id}}</td>
+                        <tr *ngFor="let campo of data
+                                | customNumericFilter : 'IdScato' : filtroId : ''
+                                | customFilter : 'NombreCampo' : filtroNombreCampo
+                                | customFilter : 'CodigoProveedor' : filtroProveedor
+                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
+                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
+                        
+                        ">
+                            <td *ngIf="esInterno">{{campo.IdScato || 'Pendiente'}}</td>
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
-                            <td>{{campo.Proveedor.CodigoProveedor}}</td>
+                            <td>{{campo.CodigoProveedor}}</td>
                             <td class="estadoRechazado" *ngIf="campo.ToneladasAprobadas == 0">Rechazada</td>
                             <td class="estadoAprobado" *ngIf="campo.ToneladasAprobadas > 0">Aprobado</td>
                             <td class="estadoEnGestion" *ngIf="campo.ToneladasAprobadas == -1">En gesti&oacute;n</td>
@@ -78,7 +111,7 @@
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
                             <!--<td>NO VIENE</td>-->
                             <td>
-                                <a *ngIf="campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1"
+                                <a *ngIf="(campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1) && editarCampos"
                                     class="animate"
                                     [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
                                     href="#">Editar</a>
@@ -90,6 +123,22 @@
                         </tr>
                     </tbody>
                 </table>
+                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
+                    <div class="dataTables_paginate paging_simple_numbers">
+                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                            <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                                *ngIf="pT.getCurrent() !== page.value">{{
+                                page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                                }}</a>
+                        </span>
+                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
+                            [class.disabled]="pT.isLastPage()">
+                            Siguiente </a>
+                    </div>
+                </pagination-template>
             </div>
         </div>
         <!-- END tables-->
