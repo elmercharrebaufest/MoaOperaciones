@@ -514,6 +514,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
         if(this.subcategoriasList.length == 0){
             this.tieneSubcategorias = false;
         }
+        else {
+            this.tieneSubcategorias = true;
+        }
     }
 
     handleCorrectCaptcha(event: any) {

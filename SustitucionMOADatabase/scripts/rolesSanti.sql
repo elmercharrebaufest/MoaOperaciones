@@ -3,8 +3,10 @@
 	SELECT * from SubCategoria
 	select * from ConsultaDetalle
 
-	insert into Rol values ('PAR', 'PARCIAL', 1)
-	insert into Rol values ('FIN', 'FINAL', 1)
+	insert into Rol values ('PARDIR', 'PARCIAL DIRECTO', 1)
+	insert into Rol values ('PARCOR', 'PARCIAL CORREDOR', 1)
+	insert into Rol values ('FINDIR', 'FINAL DIRECTO', 1)
+	insert into Rol values ('FINCOR', 'FINAL CORREDOR', 1)
 	insert into Rol values ('CAL', 'CALIDADES', 1)
 	insert into Rol values ('COM', 'COMISIONES', 1)
 	insert into Rol values ('COMP', 'COMPROBANTES', 1)
@@ -17,8 +19,10 @@
 	insert into Rol values ('FLECONSULTA', 'FLETES CONSULTA', 1)
 	insert into Rol values ('OTRO', 'OTROS', 1)
 
-	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PAR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
-	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FIN'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PARDIR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PARCOR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FINDIR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FINCOR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'CAL'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'COM'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'COMP'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
@@ -32,9 +36,13 @@
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'OTRO'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
 	
 
-	insert into CategoriaRol values ((select Id from Rol where Codigo = 'PAR'), (select Id from Categoria where Code = 'REI'))
-	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FIN'), (select Id from Categoria where Code = 'ACT'))
-	insert into CategoriaRol values ((select Id from Rol where Codigo = 'CAL'), (select Id from Categoria where Code = 'BOL'))
+	select * from CategoriaRol
+
+	insert into CategoriaRol values ((select Id from Rol where Codigo = 'PARDIR'), (select Id from Categoria where Code = 'PARDIR'))
+	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FINDIR'), (select Id from Categoria where Code = 'FINDIR'))
+	insert into CategoriaRol values ((select Id from Rol where Codigo = 'PARCOR'), (select Id from Categoria where Code = 'PARCOR'))
+	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FINCOR'), (select Id from Categoria where Code = 'FINCOR'))
+	insert into CategoriaRol values ((select Id from Rol where Codigo = 'CAL'), (select Id from Categoria where Code = 'CAL'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'COM'), (select Id from Categoria where Code = 'COM'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'COMP'), (select Id from Categoria where Code = 'COMP'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'APP'), (select Id from Categoria where Code = 'APP'))

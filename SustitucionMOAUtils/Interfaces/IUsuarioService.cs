@@ -29,7 +29,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         Rol ObtenerRolPorCodigo(string codigo);
 
-        Dictionary<string, List<RolDropdownDto>> GetRoles();
+        List<RolDropdownDto> GetRoles();
 
         byte[] getDocumento(string nombre);
         string GuardarRoles(List<int> idRol, int idUsuario);

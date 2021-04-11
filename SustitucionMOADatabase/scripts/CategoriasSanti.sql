@@ -1,8 +1,6 @@
 ﻿SET NOCOUNT ON
 BEGIN TRAN
 
-
-select * from CausaConsulta
 DECLARE @idCategoria INT
 
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'PAR')
@@ -15,6 +13,29 @@ BEGIN
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('NROR', 'No registradas, Observadas y Rechazadas', @idCategoria)
 END
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'PARDIR')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('PARDIR', 'Parcial Directo')
+
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('NROR', 'No registradas, Observadas y Rechazadas', @idCategoria)
+END
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'PARCOR')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('PARCOR', 'Parcial Corredor')
+
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('NROR', 'No registradas, Observadas y Rechazadas', @idCategoria)
+END
+
 
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FIN')
 BEGIN
@@ -39,7 +60,51 @@ BEGIN
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
 END
 
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FINDIR')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('FINDIR', 'final Directo')
 
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('NROR', 'No registradas, Observadas y Rechazadas', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('PROF', 'Proforma', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('SERV', 'Servicios', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('BON', 'Bonificaciones', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
+END
+
+IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FINCOR')
+BEGIN
+	INSERT INTO Categoria(Code, Nombre)
+	VALUES ('FINCOR', 'final Corredor')
+
+	SET @idCategoria = SCOPE_IDENTITY()
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('NROR', 'No registradas, Observadas y Rechazadas', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('PROF', 'Proforma', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('SERV', 'Servicios', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('BON', 'Bonificaciones', @idCategoria)
+
+	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
+	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
+END
 
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'CAL')
 BEGIN
@@ -142,6 +207,3 @@ BEGIN
 END
 
 commit TRAN
-
-select * from Categoria	
-select * from SubCategoria

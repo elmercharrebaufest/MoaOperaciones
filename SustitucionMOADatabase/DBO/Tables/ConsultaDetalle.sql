@@ -7,7 +7,7 @@
 	[ContratoNo] NVARCHAR(max) NULL,
 	[Impuesto] DECIMAL(18, 3) NULL, --ImpuestoRetenido, ImpuestoPercibido, Impuesto
 	[Importe] DECIMAL(18, 3) NULL, --ImporteRetencion
-	[CausaConsulta_Id] INT NOT NULL,
+	[CausaConsulta_Id] INT NULL,
 	[BolsaEmisoraOblea] NVARCHAR(max) NULL,
 	
 [OtroComprobanteNo] NVARCHAR(MAX) NULL, 

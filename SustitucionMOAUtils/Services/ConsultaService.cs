@@ -56,9 +56,32 @@ namespace SustitucionMOAUtils.Services
             consulta.FechaCreacion = DateTime.Now;
             consulta.FechaUltimaModificacion = DateTime.Now;
             consulta.EstadoConsulta_Id = 1;
-            CausaConsulta cc = repositorio.Obtener<CausaConsulta>(c => c.Nombre == "Sin Exclusión");
-            consulta.Detalle.CausaConsulta = cc;
-            consulta.Detalle.CausaConsulta_Id = cc.Id;
+
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+
+            if(categoria.Code == "FIN")
+            {
+                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                }
+            }
+
+            if (categoria.Code == "PAR")
+            {
+                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                }
+            }
 
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
@@ -207,8 +230,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var categorias = repositorio.Listar<Categoria>();
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                List<string> exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
+                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code));
+                return categorias.Select(x =>new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
             {
