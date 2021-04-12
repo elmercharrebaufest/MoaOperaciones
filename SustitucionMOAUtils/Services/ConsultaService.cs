@@ -59,6 +59,34 @@ namespace SustitucionMOAUtils.Services
             consulta.EstadoConsulta_Id = 1;
             consulta.Detalle.CausaConsulta = causaConsulta;
 
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+
+            if (categoria.Code == "FIN")
+            {
+                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                }
+            }
+
+            if (categoria.Code == "PAR")
+            {
+                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                }
+            }
+
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
+
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
 
@@ -113,7 +141,55 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
             
-            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes).Select(x => new ConsultaDto(x)).ToList();
+            ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes)
+                .Select(x => new ConsultaDto 
+                {
+                    Id = x.Id,
+                    Asunto = x.Asunto,
+                    CodigoCorredor = x.CodigoCorredor,
+                    RazonSocialCorredor = x.RazonSocialCorredor,
+                    CodigoProveedor = x.CodigoProveedor,
+                    RazonSocialProveedor = x.RazonSocialProveedor,
+                    CategoriaId = x.Categoria_Id,
+                    Categoria = new CategoriaDto 
+                        { 
+                            Id = x.Categoria.Id,
+                            Code = x.Categoria.Code,
+                            Nombre = x.Categoria.Nombre
+                        },
+                    SubCategoriaId = x.SubCategoria_Id != null? x.SubCategoria_Id : 0,
+                    SubCategoria = x.SubCategoria != null? new SubCategoriaDto 
+                        {
+                            Id = x.SubCategoria.Id,
+                            Code = x.SubCategoria.Code,
+                            Nombre = x.SubCategoria.Nombre,
+                            CategoriaId = x.SubCategoria.Categoria_Id
+                        } : new SubCategoriaDto { Nombre = "" },
+                    EstadoConsultaId = x.EstadoConsulta_Id,
+                    EstadoConsulta = new EstadoConsultaDto 
+                        {
+                            Id = x.EstadoConsulta.Id,
+                            Descripcion = x.EstadoConsulta.Descripcion,
+                            Color = x.EstadoConsulta.Color,
+                            Code = x.EstadoConsulta.Code
+                        },
+                    FechaCreacion = x.FechaCreacion,
+                    FechaUltimaModificacion = x.FechaUltimaModificacion,
+                    UsuarioId = x.Usuario_Id,
+                    Fecha = x.Detalle != null? x.Detalle.Fecha : null,
+                    ComprobanteNo = x.Detalle != null? x.Detalle.ComprobanteNo : "",
+                    OtroComprobanteNo = x.Detalle != null? x.Detalle.OtroComprobanteNo : "",
+                    ContratoNo = x.Detalle != null? x.Detalle.ContratoNo : "",
+                    Importe = x.Detalle != null? x.Detalle.Importe : null,
+                    Impuesto = x.Detalle != null? x.Detalle.Impuesto : null,
+                    BolsaEmisoraOblea = x.Detalle != null? x.Detalle.BolsaEmisoraOblea : "",
+                    CausaConsultaId = x.Detalle.CausaConsulta != null? x.Detalle.CausaConsulta_Id : null,
+                    CausaConsulta = x.Detalle.CausaConsulta != null? new CausaConsultaDto
+                        {
+                            Id = x.Detalle.CausaConsulta.Id,
+                            Nombre = x.Detalle.CausaConsulta.Nombre
+                        } : null
+                }).ToList();
 
             return ret;
         }
@@ -138,12 +214,12 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId)
+        public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId)
         {
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
 
-            if (subcategoriaId.HasValue)
+            if (subcategoriaId.HasValue && subcategoriaId != 0)
             {
                 var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subcategoriaId);
                 if (subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
@@ -156,7 +232,17 @@ namespace SustitucionMOAUtils.Services
 
             consulta.Categoria_Id = categoriaId;
             consulta.EstadoConsulta_Id = estadoConsultaId;
-            consulta.SubCategoria_Id = subcategoriaId;
+            if(subcategoriaId != 0) 
+            {
+                consulta.SubCategoria_Id = subcategoriaId;
+            }
+
+            if (causaConsultaId.HasValue && causaConsultaId != 0) 
+            {
+                var causaConsulta = repositorio.Obtener<CausaConsulta>(cc => cc.Id == causaConsultaId);
+                if(causaConsulta == null) throw new InfoCustomException("No existe la causa de consulta");
+                consulta.Detalle.CausaConsulta_Id = causaConsultaId;
+            }
 
             repositorio.GuardarCambios();
 
@@ -205,8 +291,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var categorias = repositorio.Listar<Categoria>();
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                List<string> exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
+                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code));
+                return categorias.Select(x =>new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
             {

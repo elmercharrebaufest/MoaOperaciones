@@ -15,6 +15,7 @@ namespace SustitucionMOAModel.Entities
         //public int Consulta_Id { get; set; }
         public DateTime? Fecha { get; set; }
         public string ComprobanteNo { get; set; }
+        public string OtroComprobanteNo { get; set; }
         public string ContratoNo { get; set; }
         public Decimal? Importe { get; set; }
         public Decimal? Impuesto { get; set; }

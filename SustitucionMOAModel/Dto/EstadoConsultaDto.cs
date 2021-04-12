@@ -15,6 +15,11 @@ namespace SustitucionMOAModel.Dto
         public string Code { get; set; }
         public int Cantidad { get; set; }
 
+        public EstadoConsultaDto()
+        {
+
+        }
+
         public EstadoConsultaDto(EstadoConsulta estadoConsulta)
         {
             Id = estadoConsulta.Id;

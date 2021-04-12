@@ -13,7 +13,10 @@ namespace SustitucionMOAModel.Dto
         public string Detalle { get; set; }
         public DateTime Fecha { get; set; }
         public int UsuarioId { get; set; }
+        public UsuarioDto Usuario { get; set; }
         public IList<ArchivoDto> Archivos { get; set; }
+
+        public ComentarioDto() { }
 
         public ComentarioDto(Comentario comentario)
         {

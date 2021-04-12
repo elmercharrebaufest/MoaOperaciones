@@ -5,7 +5,7 @@ export interface Consulta {
     CodigoProveedor;
     RazonSocialProveedor;
     CategoriaId;
-    SubCategoriaId;
+    SubCategoriaId?;
     Asunto;
     EstadoConsultaId;
     FechaCreacion;
@@ -15,13 +15,14 @@ export interface Consulta {
 
     Fecha;
     ComprobanteNo;
+    OtroComprobanteNo;
     ContratoNo;
     Importe;
     Impuesto;
     BolsaEmisoraOblea;
 
     Categoria;
-    SubCategoria;
+    SubCategoria?;
     EstadoConsulta;
     CausaConsulta;
     Comentarios;
@@ -47,10 +48,10 @@ export interface Categoria {
 
 export interface Subcategoria {
     Id;
-    Code;
-    Nombre;
-    CategoriaId;
-    Cantidad;
+    Code?;
+    Nombre?;
+    CategoriaId?;
+    Cantidad?;
 }
 
 export interface Causa {

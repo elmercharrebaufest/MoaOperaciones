@@ -50,10 +50,19 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void GetRolesTest()
         {
-            List<RolDropdownDto> listaRoles = new List<RolDropdownDto>() {
+
+
+            List<RolDropdownDto> listaRoles2 = new List<RolDropdownDto>() {
                                                 new RolDropdownDto { Id = 1, Nombre = "Rol 1" },
                                                 new RolDropdownDto { Id = 2, Nombre = "Rol 2" },
                                                 new RolDropdownDto { Id = 3, Nombre = "Rol 3" }};
+
+            Dictionary<string, List<RolDropdownDto>> listaRoles = new Dictionary<string, List<RolDropdownDto>>()
+            {
+                {
+                    "Interno", listaRoles2
+                }
+            };
 
             usuarioServiceMock.Setup(s => s.GetRoles()).Returns(listaRoles);
 

@@ -147,7 +147,28 @@ namespace SustitucionMOAUtils.Services
 
         public List<RolDropdownDto> GetRoles()
         {
-            return repositorio.Listar<Rol>().Where(r => r.EsEditable).Select(x => new RolDropdownDto(x)).ToList();
+            List<string> interno = new List<string>
+            {
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL"
+            };
+
+            List<string> contacto = new List<string>
+            {
+                "BOL", "DATMAE", "PAR", "FIN", "CAL", "COM",
+                "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "FINDIR", "FINCOR", "FLE"
+            };
+
+            var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
+                .Select(x => new RolDropdownDto
+                {
+                    Id = x.Id,
+                    Nombre = x.Nombre,
+                    Code = interno.Contains(x.Codigo)? "Interno" : contacto.Contains(x.Codigo)? "Contacto" : "Externo"
+                }).ToList();
+
+            return roles;
         }
 
         public string GuardarRoles(List<int> idRoles, int idUsuario)
