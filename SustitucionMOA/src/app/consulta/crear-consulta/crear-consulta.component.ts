@@ -291,6 +291,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             }
         }
         if (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC') {
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.contrato == "" || !this.contrato) {
                 this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
@@ -307,7 +308,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
-            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP') {
             if (this.impuesto == "" || !this.impuesto) {

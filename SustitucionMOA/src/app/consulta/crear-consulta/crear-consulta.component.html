@@ -12,9 +12,12 @@
         <div class="row myRow firstSection mySearch cargaDeDatos">
             <div class="rounded shadow col-xs-12 col-sm-6 col-md-8">
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
+                    
                     <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="esCorredor">
                         <p class="crearConsultaTitulos">Proveedor</p>
-                        <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event"></app-seleccionar-proveedor>
+                        <div class="styled-select" style="overflow: initial;">
+                            <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event"></app-seleccionar-proveedor>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="!esCorredor">
                         <p class="crearConsultaTitulos">Codigo Proveedor</p>
