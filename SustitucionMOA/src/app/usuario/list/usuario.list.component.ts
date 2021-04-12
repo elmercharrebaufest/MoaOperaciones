@@ -45,12 +45,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     rolOptions: Array<Rol> = [];
     rolOptionsAll: Array<Rol> = [];
+
     rolesUsuarioSeleccionado: Array<Rol> = [];
 
-    rolOpciones: {[id: string]: Array<Rol>};
-    arrayRolSeleccionado: Array<Array<Rol>>;
-
     usuarioSeleccionado: any = null;
+    titulos: Array<string> = ["Externo", "Interno", "Contacto"]
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -77,8 +76,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.rolOptionsAll = result.data.roles;
-                        this.rolOpciones = result.data.roles;
-                        console.log("opciones", this.rolOpciones);
                     }
                 },
                 error => {
@@ -250,16 +247,13 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     abrirModalEditarRoles(usuario: any) {
-        debugger
         this.usuarioSeleccionado = usuario;
         this.rolesUsuarioSeleccionado = new Array<Rol>();
-        this.arrayRolSeleccionado = new Array<Array<Rol>>().concat(this.rolOpciones.Contacto, this.rolOpciones.Interno, this.rolOpciones.Externo);
-
-        this.rolOpciones.Contacto.forEach(element => this.rolesUsuarioSeleccionado.push(Object.assign({}, element)));
-        this.rolOpciones.Interno.forEach(element => this.rolesUsuarioSeleccionado.push(Object.assign({}, element)));
-        this.rolOpciones.Externo.forEach(element => this.rolesUsuarioSeleccionado.push(Object.assign({}, element)));
 
         this.rolOptions = [];
+        this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
+
+        console.log(this.rolesUsuarioSeleccionado)
 
         for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
             this.rolesUsuarioSeleccionado[i].checked = false;

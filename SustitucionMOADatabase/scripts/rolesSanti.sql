@@ -1,7 +1,4 @@
 ﻿BEGIN TRANSACTION;
-	
-	SELECT * from SubCategoria
-	select * from ConsultaDetalle
 
 	insert into Rol values ('PARDIR', 'PARCIAL DIRECTO', 1)
 	insert into Rol values ('PARCOR', 'PARCIAL CORREDOR', 1)
@@ -34,9 +31,6 @@
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PROVGC'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FLECONSULTA'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'OTRO'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
-	
-
-	select * from CategoriaRol
 
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'PARDIR'), (select Id from Categoria where Code = 'PARDIR'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FINDIR'), (select Id from Categoria where Code = 'FINDIR'))
@@ -55,7 +49,3 @@
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'OTRO'), (select Id from Categoria where Code = 'OTRO'))
 
 COMMIT TRANSACTION;
-
-select * from Rol
-select * from CategoriaRol
-select * from Categoria

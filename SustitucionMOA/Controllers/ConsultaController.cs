@@ -283,7 +283,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpGet]
-        public ActionResult ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId)
+        public ActionResult ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId)
         {
             try
             {
@@ -291,7 +291,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = consultaService.ActualizarCombos(consultaId, estadoConsultaId, categoriaId, subcategoriaId)
+                    data = consultaService.ActualizarCombos(consultaId, estadoConsultaId, categoriaId, subcategoriaId, causaConsultaId)
                 });
             }
             catch (InfoCustomException e)

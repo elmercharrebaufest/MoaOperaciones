@@ -90,10 +90,17 @@
                         (onChange)="setSubcategorias($event.value)">
                     </p-dropdown>
                 </div>
-                <div>
+                <div *ngIf="tieneSubcategorias">
                     <p class="bold" style="margin: 7px;">Subcategorias</p>
                     <p-dropdown [options]="subcategoriasList" [(ngModel)]="this.subcategoriaId" 
                     name="subcategoriaId" [maxSelectedLabels]="1" autoWidth="false">
+                    </p-dropdown>
+                </div>
+                <div *ngIf="this.consulta.Categoria.Code == 'REI'">
+                    <p class="bold" style="margin: 7px;">Causa Consulta</p>
+                    <p-dropdown [options]="causasConsulta" optionLabel="Nombre" dataKey="Id" [(ngModel)]="this.causaConsulta" 
+                    name="this.causaConsulta" [maxSelectedLabels]="1" autoWidth="false" [maxSelectedLabels]="1" 
+                    placeholder="Elegir Causa">
                     </p-dropdown>
                 </div>
 

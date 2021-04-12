@@ -441,21 +441,17 @@ namespace SustitucionMOAUtils.Services
 
         public List<RolDropdownDto> GetRoles()
         {
-            Dictionary<string, List<RolDropdownDto>> rolesOrdenados = new Dictionary<string, List<RolDropdownDto>>();
-            List<RolDropdownDto> listaInterno = new List<RolDropdownDto>();
-            List<RolDropdownDto> listaContacto = new List<RolDropdownDto>();
-            List<RolDropdownDto> listaExterno = new List<RolDropdownDto>();
-
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL"
             };
 
             List<string> contacto = new List<string>
             {
                 "BOL", "DATMAE", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
-                "PROVGC", "FLECONSULTA", "OTRO"
+                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "FINDIR", "FINCOR", "FLE"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)

@@ -50,6 +50,8 @@ namespace SustitucionMOAModel.Dto
             } 
         }
 
+        public ConsultaDto() { }
+
         public ConsultaDto(Consulta consulta)
         {
             this.Id = consulta.Id;

@@ -275,7 +275,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
             }
-            if (this.contrato == "" || !this.contrato) {
+            if (this.comprobante == "" || !this.comprobante) {
                 this.floatMsgService.setErrorMsg("El campo N° de factura esta vacio.");
                 return true;
             }
@@ -505,6 +505,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.categoriaCode = categoria.Code;
         this.subcategoriasList = [];
 
+        this.Avisos(this.categoriaCode);
+
         this.subcategorias.forEach(x => {
             if(x.CategoriaId == categoria.Id){
                 this.subcategoriasList.push(x);
@@ -519,6 +521,23 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
+    Avisos(categoriaCode){
+        this.mensajeComponent.setMsgsEmpty();
+        if (categoriaCode == "PROVG") {
+            this.mensajeComponent.setInfoMsg("CAMBIAR MENSAJE A LO QUE SE ESPERA.");
+            return true;
+        }
+        if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
+            this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
+            return true;
+        }
+        if(categoriaCode == "ACT" && this.subcategoriaCode == "IMP"){
+            this.mensajeComponent.setInfoMsg("Recuerde Adjuntar Constancia");
+            return true;
+        }
+        this.mensajeComponent.setMsgsEmpty();
+    }
+
     handleCorrectCaptcha(event: any) {
         this.captchaOk = event;
     }
@@ -526,6 +545,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     setCodeSubcategoria(subcategoria){
         this.subcategoriaCount = 1;
         this.subcategoriaCode = subcategoria.Code;
+        this.Avisos(this.categoriaCode)
     }
 
 

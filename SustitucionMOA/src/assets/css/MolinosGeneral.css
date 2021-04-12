@@ -4026,3 +4026,11 @@ margin: 2px;
 .ui-autocomplete{
   top: -10px;
 }
+.tituloCategoriaListaUsuarios{
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Roboto Regular';
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
