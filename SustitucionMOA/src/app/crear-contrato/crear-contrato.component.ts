@@ -294,11 +294,14 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.monedasTodas.push(el);
                     });
                     obj.Datos.Condicion.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
+                        if (element.Id == 2 || element.Id == 5 || element.Id == 7) {
+                            let el = {
+                                Id: element.Id,
+                                Descripcion: element.Descripcion
+                            }
+                            this.condicionFijacion.push(el);
                         }
-                        this.condicionFijacion.push(el);
+
                     });
                     this.validarDirecto(contrato);
                 }
@@ -352,7 +355,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
 
                         ]);
-                        
+
                         this.blockUI.stop();
                         if (this.id == 0) {
                             this.obtenerDatosCompraNet(contrato, "");
@@ -399,9 +402,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             }
                             this.campanias.push(el);
                         });
-                        
+
                         this.pagosDiferidos = new Array();
-                        if(obj.TraerPagosDiferido){
+                        if (obj.TraerPagosDiferido) {
                             JSON.parse(obj.TraerPagosDiferido).forEach(element => {
                                 let el = {
                                     Id: element.Id,
@@ -411,9 +414,9 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                                 }
                                 this.pagosDiferidos.push(el);
                             });
-                        }   
+                        }
 
-                        if (contrato.TipoNegocioId == 3 ) {
+                        if (contrato.TipoNegocioId == 3) {
                             this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                         } else {
                             this.blockUI.stop();
@@ -839,11 +842,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         contrato.ContratoCorredor = obj.ContratoCorredor;
                         contrato.PagoDiferidoTercero = obj.PagoDiferidoTercero;
                         contrato.PagoDiferidoTerceroId = obj.PagoDiferidoTerceroId;
-                        if(!obj.PagoDiferidoTerceroId && this.ObservacionPagoDiferidoTercero)
+                        if (!obj.PagoDiferidoTerceroId && this.ObservacionPagoDiferidoTercero)
                             contrato.PagoDiferidoTerceroId = -1;
-                        if(contrato.PagoDiferidoTerceroId > 0)
-                        this.ObservacionPagoDiferidoTercero = "";
-                        
+                        if (contrato.PagoDiferidoTerceroId > 0)
+                            this.ObservacionPagoDiferidoTercero = "";
+
                         contrato.DolarizadoTercero = obj.DolarizadoTercero;
                         contrato.CalidadTercero = obj.CalidadTercero;
                         contrato.SustentableTercero = obj.SustentableTercero;
@@ -941,7 +944,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
             if (p.length == 1) {
                 if (p[0].BolsaId != contrato.BolsaId) {
                     this.bolsaRecomendada = p[0].BolsaId;
-                    this.mensajeCambioBolsa =  p[0].Bolsa;
+                    this.mensajeCambioBolsa = p[0].Bolsa;
                     document.getElementById("openModalbolsaModal").click();
                 }
 
@@ -965,5 +968,5 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     altaMasiva() {
         this.navService.navegarSeccion("/crear-contrato/alta-masiva");
     };
-    
+
 }

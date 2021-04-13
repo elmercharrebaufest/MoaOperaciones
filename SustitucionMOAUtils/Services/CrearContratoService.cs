@@ -435,9 +435,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/Campana/Buscar");
-
-                JObject json = JObject.Parse(ConsultarDataAaro(url, ""));
-                var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<CampaniaDto>>();
+                string stringResult = ConsultarDataAaro(url, "");
+                var data = JsonConvert.DeserializeObject<List<CampaniaDto>>(stringResult);
 
                 return data;
                 
