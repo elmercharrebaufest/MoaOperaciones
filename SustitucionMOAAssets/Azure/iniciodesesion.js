@@ -33,6 +33,6 @@ $("document").ready(function () {
         ticketPesadaUrl = "http://localhost:4200/ticket-pesada"
     }
 
-    $(".create").after('<div class="create"><a style="color: white; border-radius: 2px; padding: 5px; width: 145px;  height: 55px; margin: 0px 0; text-decoration: none; text-transform: uppercase;  border: none; font-size: 14px;background: #959595 !important;text-align: center;padding-top: 8px !important;" href="' + ticketPesadaUrl + '">Consultar Comprobantes</a></div>')
+    $(".create").after('<div class="create"><a style="color: white; border-radius: 2px; padding: 5px; width: 145px;  height: 55px; margin: 0px 0; text-decoration: none; text-transform: uppercase;  border: none; font-size: 14px;background: #959595 !important;text-align: center;padding-top: 8px !important;" href="' + ticketPesadaUrl + '">Comprobantes del transporte</a></div>')
 
 });

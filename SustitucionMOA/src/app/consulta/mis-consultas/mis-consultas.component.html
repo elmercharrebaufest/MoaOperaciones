@@ -83,11 +83,11 @@
                                         </a>
                                     </td>
                                     <td *ngFor="let col of columns" [ngSwitch]="col.filterType" >
-                                        <span *ngSwitchDefault> {{rowData[col.field]}} </span> 
+                                        <span *ngSwitchDefault> {{rowData[col.field]}} </span>
                                         <div *ngSwitchCase="'custom'">
                                             <span *ngIf="col.field == 'EstadoConsulta'; else defaultField" [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
                                             {{rowData.EstadoConsulta.Descripcion}}</span>
-                                            
+
                                             <ng-template #defaultField>{{rowData[col.field].Nombre}}</ng-template>
                                         </div>
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
@@ -180,6 +180,82 @@
                                                                          rowData.SubCategoria.Code == 'CAR'">
                                                     <div class="ui-g-6">
                                                         <b>Carta presentación:</b> {{rowData.Impuesto}} <!-- poner link al pdf -->
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PARDIR' || 
+                                                rowData.Categoria.Code == 'PARCOR' || rowData.Categoria.Code == 'FINDIR' ||
+                                                rowData.Categoria.Code == 'FINCOR'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato / Fijaci&oacute;n:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>N° COE:</b> {{rowData.ComprobanteNo}} <!-- poner link al pdf -->
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'CAL'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}} <!-- poner link al pdf -->
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'COM'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° de factura</b> {{rowData.ComprobanteNo}}
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'APP'">
+                                                    <div class="ui-g-6">
+                                                        <b>Material:</b> {{rowData.OtroComprobanteNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PES'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'PAG'">
+                                                    <div class="ui-g-6">
+                                                        <b>Fecha:</b> {{rowData.Fecha}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>N° contrato:</b> {{rowData.ContratoNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>Liquidaci&oacute;n :</b> {{rowData.ComprobanteNo}}
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'MATBA' && 
+                                                                        rowData.SubCategoria.Code == 'CAL'">
+                                                    <div class="ui-g-6">
+                                                        <b>Car&aacute;tula:</b> {{rowData.OtroComprobanteNo}}
+                                                    </div>
+                                                    <div class="ui-g-6">
+                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}}
+                                                    </div>
+                                                </div>
+                                                <div class="ui-g" *ngIf="(rowData.Categoria.Code == 'PROVG' && 
+                                                                        rowData.SubCategoria.Code == 'POTR') || 
+                                                                        (rowData.Categoria.Code == 'PROVG' && 
+                                                                        rowData.SubCategoria.Code == 'VENC')">
+                                                    <div class="ui-g-6">
+                                                        <b>N° de factura:</b> {{rowData.ComprobanteNo}}
+                                                    </div>
+                                                </div>
+
+                                                <div class="ui-g" *ngIf="rowData.Categoria.Code == 'FLET'">
+                                                    <div class="ui-g-6">
+                                                        <b>N° de Proforma:</b> {{rowData.OtroComprobanteNo}}
+                                                    </div>
+                                                    <div class="ui-g-6" *ngIf="rowData.SubCategoria.Code == 'CCP'">
+                                                        <b>CCPP :</b> {{rowData.ComprobanteNo}}
                                                     </div>
                                                 </div>
                                             </div>

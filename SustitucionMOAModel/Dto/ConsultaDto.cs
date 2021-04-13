@@ -17,6 +17,7 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocialProveedor { get; set; }
         public int CategoriaId { get; set; }
         public int? SubCategoriaId { get; set; }
+        public int? CausaConsultaId { get; set; }
         public string Asunto { get; set; }
         public int EstadoConsultaId { get; set; }
         public DateTime FechaCreacion { get; set; }
@@ -27,6 +28,7 @@ namespace SustitucionMOAModel.Dto
         //detalle
         public DateTime? Fecha { get; set; }
         public string ComprobanteNo { get; set; }
+        public string OtroComprobanteNo { get; set; }
         public string ContratoNo { get; set; }
         public Decimal? Importe { get; set; }
         public Decimal? Impuesto { get; set; }
@@ -48,6 +50,8 @@ namespace SustitucionMOAModel.Dto
             } 
         }
 
+        public ConsultaDto() { }
+
         public ConsultaDto(Consulta consulta)
         {
             this.Id = consulta.Id;
@@ -63,6 +67,11 @@ namespace SustitucionMOAModel.Dto
                 this.SubCategoriaId = consulta.SubCategoria_Id;
                 this.SubCategoria = new SubCategoriaDto(consulta.SubCategoria);
             }
+            else
+            {
+                this.SubCategoriaId = 0;
+                this.SubCategoria = new SubCategoriaDto { Nombre = "" };
+            }
             this.EstadoConsultaId = consulta.EstadoConsulta_Id;
             this.EstadoConsulta = new EstadoConsultaDto(consulta.EstadoConsulta);
             this.FechaCreacion = consulta.FechaCreacion;
@@ -72,11 +81,17 @@ namespace SustitucionMOAModel.Dto
             if (consulta.Detalle != null) {
                 this.Fecha = consulta.Detalle.Fecha;
                 this.ComprobanteNo = consulta.Detalle.ComprobanteNo;
+                this.OtroComprobanteNo = consulta.Detalle.OtroComprobanteNo;
                 this.ContratoNo = consulta.Detalle.ContratoNo;
                 this.Importe = consulta.Detalle.Importe;
                 this.Impuesto = consulta.Detalle.Impuesto;
                 this.BolsaEmisoraOblea = consulta.Detalle.BolsaEmisoraOblea;
-                this.CausaConsulta = new CausaConsultaDto(consulta.Detalle.CausaConsulta);
+                if(consulta.Detalle.CausaConsulta != null)
+                {
+                    this.CausaConsultaId = consulta.Id;
+                    this.CausaConsulta = new CausaConsultaDto(consulta.Detalle.CausaConsulta);
+                }
+       
             }
         }
     }

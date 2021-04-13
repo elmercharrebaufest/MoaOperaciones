@@ -57,7 +57,11 @@ export class DetalleConsultaComponent extends BaseComponent {
     estados: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
+    causasConsulta: any;
     
+    causaConsulta: any
+    causaConsultaId: number = 0;
+
     subcategoriasList: SelectItem[];
     estadosList: SelectItem[];
     categoriasList: SelectItem[];
@@ -68,6 +72,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     solicitudDoc: boolean;
 
+    tieneSubcategorias: boolean = false;
     consulta: Consulta;
     comentariosList: any;
     estadoConsulta: number;
@@ -130,11 +135,17 @@ export class DetalleConsultaComponent extends BaseComponent {
         (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno))
     }
 
-    actualizarCombos() {           
+    actualizarCombos() {  
         this.spinnerSmallComponent.showIt();
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId).subscribe(
+
+        if(this.causaConsulta != undefined){
+            this.causaConsultaId = this.causaConsulta.Id;
+        }
+
+        this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
+            , this.causaConsultaId).subscribe(
             result => {
                 this.spinnerComponent.hideIt();
                 this.spinnerSmallComponent.hideIt();
@@ -223,6 +234,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     }
                     else{      
                         this.mensajeComponent.setSuccessMsg("El estado de la consulta cambio correctamente");
+                        this.getDetalleConsulta();
                     }
                 },
                 error => {
@@ -299,6 +311,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
                         this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+                        /*
+                        if(this.subcategoriasList.length > 0){
+                            this.tieneSubcategorias = true;
+                        }*/
+                        this.causasConsulta = result.causas;
                     }
                 },
                 error => {
@@ -353,6 +370,13 @@ export class DetalleConsultaComponent extends BaseComponent {
                 this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
             }
         });
+
+        if(this.subcategoriasList.length > 0){
+            this.tieneSubcategorias = true;
+        }
+        else{
+            this.tieneSubcategorias = false;
+        }
     }
 
     setSubcategorias(categoriasSeleccionadas){
@@ -364,6 +388,13 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
                 }
             });
+        }
+
+        if(this.subcategoriasList.length > 0){
+            this.tieneSubcategorias = true;
+        }
+        else{
+            this.tieneSubcategorias = false;
         }
         return this.subcategoriasList;
     }

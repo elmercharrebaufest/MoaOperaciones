@@ -29,7 +29,7 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public List<ProveedorAltaDto> GetEmpresas(int IdTipoProveedor)
+        public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
-                                && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id))
+                                && IdTiposProveedor.Contains(x.TipoProveedor.Id))
                         .Select(proveedor => new ProveedorAltaDto
                                 {
                                     CodigoProveedor = proveedor.CodigoProveedor ?? "",
@@ -424,7 +424,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (estado == EstadoAprobacion.Aprobado)
                 {
-                    EnviarMailAprobado(proveedor, copia);
+                    EnviarMailAprobado(proveedor, observacionParaElProveedor, copia);
                 }
                 else if (estado == EstadoAprobacion.Rechazado)
                 {
@@ -537,10 +537,10 @@ namespace SustitucionMOAUtils.Services
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 
-        private void EnviarMailAprobado(Proveedor proveedor, List<string> copia)
+        private void EnviarMailAprobado(Proveedor proveedor, string observacionParaElProveedor, List<string> copia)
         {
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-            var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "aprobada", "-");
+            var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "aprobada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
             string asunto = "Molinos Agro - Alta Exitosa";
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }

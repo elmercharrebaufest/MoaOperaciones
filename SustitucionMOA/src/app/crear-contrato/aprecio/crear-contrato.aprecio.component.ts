@@ -1,17 +1,8 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
 import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
-import { NavService } from '../../common/services/NavService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { SecurityService } from '../../common/services/SecurityService';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { ModalService } from '../../common/services/ModalService';
-import { Seccion } from '../../common/models/seccion';
-import { forEach } from '@angular/router/src/utils/collection';
-import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
+
 declare var $: any;
 
 @Component({
@@ -260,7 +251,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
-            if(this.contrato.PagoDiferidoTerceroId != -1){
+            if (this.contrato.PagoDiferidoTerceroId != -1) {
                 this.ObservacionPagoDiferidoTercero = this.pagosDiferidos.find(x => x.Id == this.contrato.PagoDiferidoTerceroId).Descripcion;
             }
 
@@ -514,5 +505,5 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         return this.contrato.MaterialId == 3;
     }
 
-   
+
 }

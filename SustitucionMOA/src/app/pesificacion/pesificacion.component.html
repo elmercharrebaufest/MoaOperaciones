@@ -10,17 +10,17 @@
         <mensaje></mensaje>
         <spinner></spinner>
 
-        <div *ngIf="isVisible()" class="row myRow firstSection mySearch cargaDeDatos">
+        <div [hidden]="!(this.fecha && this.fecha != null)" class="row myRow firstSection mySearch cargaDeDatos">
             <div style="padding-top: 15px;" class="rounded shadow col-xs-12">
                 <!-- Nav tabs -->
                 <div class="col-xs-12">
                     <ul class="nav nav-pills" role="tablist">
                         <li role="presentation" class="active"><a href="#individual" aria-controls="individual"
-                                role="tab" data-toggle="tab">Carga Individual</a></li>
+                                *ngIf="permitirCarga" role="tab" data-toggle="tab">Carga Individual</a></li>
                         <li role="presentation"><a href="#masiva" aria-controls="profile" role="tab"
-                                data-toggle="tab">Carga Masiva</a></li>
+                                *ngIf="permitirCarga" data-toggle="tab">Carga Masiva</a></li>
                         <li role="presentation"><a href="#pendiente" aria-controls="profile" role="tab"
-                                data-toggle="tab">Pendiente</a></li>
+                                id="linkPendiente" data-toggle="tab">Pendiente</a></li>
                     </ul>
                 </div>
                 <!-- Tab panes -->
@@ -30,15 +30,17 @@
                             <div class="col-xs-12">
                                 Contrato: *
                                 <div class="styled-select ">
-                                    <input type="search" class="fourRounded" placeholder="1234567" aria-controls="tableModal" 
-                                        [(ngModel)]="contrato" numeric decimals="0" (ngModelChange)="changeContrato($event)">
+                                    <input type="search" class="fourRounded" placeholder="1234567"
+                                        aria-controls="tableModal" [(ngModel)]="contrato" numeric decimals="0"
+                                        (ngModelChange)="changeContrato($event)">
                                 </div>
                             </div>
                             <div class="col-xs-12">
                                 Fijacion:
                                 <div class="styled-select ">
-                                    <input type="search" class="fourRounded" placeholder="123456789" aria-controls="tableModal" 
-                                        [(ngModel)]="fijacion" numeric decimals="0" (ngModelChange)="changeFijacion($event)" >
+                                    <input type="search" class="fourRounded" placeholder="123456789"
+                                        aria-controls="tableModal" [(ngModel)]="fijacion" numeric decimals="0"
+                                        (ngModelChange)="changeFijacion($event)">
                                 </div>
                             </div>
                             <div class="col-xs-12">
@@ -133,8 +135,8 @@
                                             [class.current]="pT.getCurrent() === page.value">
                                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
                                                 *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                                            <a class="paginate_button current"
-                                                *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+                                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{
+                                                page.label }}</a>
                                         </span>
                                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
                                             [class.disabled]="pT.isLastPage()"> Siguiente </a>

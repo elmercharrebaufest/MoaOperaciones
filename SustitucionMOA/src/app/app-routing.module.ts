@@ -19,7 +19,6 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
-import { VentaSustentableBaseComponent } from "./venta-sustentable/venta-sustentable.component"
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -33,7 +32,7 @@ const appRoutes: Routes = [
   //   component: RecuperarContraseniaComponent,
   //   canActivate: [LoginGuard],
   // },
-      { path: "ticket-pesada", component: TicketPesadaComponent},
+  { path: "ticket-pesada", component: TicketPesadaComponent },
 
   {
     path: "",
@@ -68,7 +67,7 @@ const appRoutes: Routes = [
       },
       {
         path: "reporte",
-          loadChildren: "./reporte/reporte.module#ReporteModule",
+        loadChildren: "./reporte/reporte.module#ReporteModule",
       },
       { path: "contacto", component: ContactoMailComponent },
       {
@@ -121,22 +120,24 @@ const appRoutes: Routes = [
       { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
       { path: "alta-empresa-no-granos/:id", component: EmpresaNoGranosComponent },
       { path: "altas", component: AltasComponent },
-        {
-            path: "crear-contrato",
-            loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
-        },
+      {
+        path: "crear-contrato",
+        loadChildren: "./crear-contrato/crear-contrato.module#CrearContratoModule",
+      },
 
-        {
-          path: "sustentable",
-          loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
-        },
+      {
+        path: "sustentable",
+        loadChildren: "./venta-sustentable/venta-sustentable.module#VentaSustentableModule",
+      },
 
-      { path: "notificaciones", component: ListadoNotificacionesComponent},
-      { path: "notificaciones/alta", component: AltaNotificacionesComponent},
-      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent},
+      { path: "notificaciones", component: ListadoNotificacionesComponent },
+      { path: "notificaciones/alta", component: AltaNotificacionesComponent },
+      { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
 
-      {path: "faq",
-      component: FaqComponent},
+      {
+        path: "faq",
+        component: FaqComponent
+      },
 
       {
         path: "consulta",
@@ -151,4 +152,4 @@ const appRoutes: Routes = [
   imports: [RouterModule.forRoot(appRoutes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

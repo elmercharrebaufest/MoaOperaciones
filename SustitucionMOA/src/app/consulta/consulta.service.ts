@@ -86,11 +86,12 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null): Observable<any>{
+    public actualizarCombos(consultaId: string, estadoId: number, categoriaId: number, subcategoriaId: number = null, causaConsultaId: number = null): Observable<any>{
         let params: URLSearchParams = new URLSearchParams();
         params.set('consultaId', consultaId.toString());
         params.set('estadoConsultaId', estadoId.toString());
         params.set('categoriaId', categoriaId.toString());
+        params.set('causaConsultaId', causaConsultaId.toString())
         if(subcategoriaId != null){
             params.set('subcategoriaId', subcategoriaId.toString());
         }

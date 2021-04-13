@@ -14,6 +14,8 @@ namespace SustitucionMOAModel.Dto
         public string Nombre { get; set; }
         public int CategoriaId { get; set; }
 
+        public SubCategoriaDto() { }
+
         public SubCategoriaDto(SubCategoria subcategoria)
         {
             Id = subcategoria.Id;

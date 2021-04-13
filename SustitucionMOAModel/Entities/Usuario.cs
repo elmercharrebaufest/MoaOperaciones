@@ -168,5 +168,13 @@ namespace SustitucionMOAModel.Entities
             return Roles.Where(r => r.Codigo == "ADM").Any()
                     || Roles.Where(r => r.Codigo == "TODOS").Any();
         }
+
+
+        public bool TienePermiso(string permiso)
+        {
+            var permisosUsuario = ObtenerPermisos();
+
+            return permisosUsuario.Contains(permiso);
+        }
     }
 }

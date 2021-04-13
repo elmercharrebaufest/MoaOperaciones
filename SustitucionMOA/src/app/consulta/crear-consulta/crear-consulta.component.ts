@@ -1,21 +1,17 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { ConsultaService } from '../consulta.service';
-import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
-import { ListBaseComponent } from './../../common/base-components/list-base-component'
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { SessionDataService } from './../../common/services/SessionDataService';
-import { SecurityService } from './../../common/services/SecurityService';
-import { DropdownComponent, DropdownOption } from './../../common/view-child/dropdown/dropdown.component';
-import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
-import { NavService } from './../../common/services/NavService';
-import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { Seccion } from './../../common/models/Seccion';
-import { ModalService } from './../../common/services/ModalService';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
-import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
+import { Categoria, Causa, Comentario, Subcategoria } from '../consulta';
+import { ConsultaService } from '../consulta.service';
+import { ListBaseComponent } from './../../common/base-components/list-base-component';
+import { Seccion } from './../../common/models/seccion';
+import { FloatMsgService } from './../../common/services/FloatMsgService';
+import { ModalService } from './../../common/services/ModalService';
+import { NavService } from './../../common/services/NavService';
+import { SecurityService } from './../../common/services/SecurityService';
+import { SessionDataService } from './../../common/services/SessionDataService';
+import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.component';
+import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 
 declare var $: any;
 
@@ -49,7 +45,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
-    
+
     mensajeError: string;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
@@ -60,6 +56,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategoriaCount = 0;
 
     proveedorId: number;
+    tieneSubcategorias: boolean = true;
     
     consulta: any;
 
@@ -72,7 +69,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     razonSocialProveedor: string;
     razonSocialCorredor: string;
 
-    subcategoria: Subcategoria;
+    subcategoria: Subcategoria = {
+        Id: null
+    };
     subcategoriasList: Subcategoria[];
     categoria: Categoria;
     causa: Causa;
@@ -84,7 +83,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     Detalle: any;
     nuevoComentario: any;
+    comprobanteExtra: any;
 
+    caratula: any;
+    material: string;
     comentario: string;
     contrato: any;
     razonSocial: string;
@@ -109,22 +111,22 @@ export class CrearConsultaComponent extends ListBaseComponent {
     fechaFactura: string;
 
 
-    prueba:any;
+    prueba: any;
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
     }
 
-    ngOnInit() {      
+    ngOnInit() {
         this.setTabs();
         this.checkPermisos();
         this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         //this.getData();
         this.getCombos();
 
-        if(this.esCorredor){
+        if (this.esCorredor) {
             this.codigoCorredor = sessionStorage.getItem("proveedor");
         }
-        else{
+        else {
             this.codigoProveedor = sessionStorage.getItem("proveedor");
         }
     }
@@ -156,7 +158,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     vaciarCamposAdicionales() {
-        this.contrato= '';
+        this.contrato = '';
         this.razonSocial = '';
         this.cuit = '';
         this.nombreVendedor = '';
@@ -200,7 +202,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
 
-                );
+            );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
@@ -209,7 +211,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
 
-    validarConsulta(){
+    validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
             this.floatMsgService.setErrorMsg("El campo proveedor esta vacio.");
@@ -219,7 +221,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg("Por favor seleccione una categoria.");
             return true;
         }
-        if (this.subcategoriaCount == 0) {
+        if (this.tieneSubcategorias && this.subcategoriaCount == 0) {
             this.floatMsgService.setErrorMsg("Por favor seleccione una subcategoria.");
             return true;
         }
@@ -231,11 +233,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
-        if((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)){
+        if ((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)) {
             this.floatMsgService.setErrorMsg("El campo Corredor esta vacio.");
             return true;
         }
-        if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET'){
+        if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
 
             if (this.comprobante == "" || !this.comprobante) {
@@ -259,17 +261,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if(this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'){
+        if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.fechaPago == "" || !this.fechaPago) {
                 this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
-            if (this.cliente == "" || !this.cliente) {
+            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
                 this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
             }
-            if (this.contrato == "" || !this.contrato) {
+            if (this.comprobante == "" || !this.comprobante) {
                 this.floatMsgService.setErrorMsg("El campo N° de factura esta vacio.");
                 return true;
             }
@@ -278,7 +280,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG')){
+        if ((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG')) {
             if (this.contrato == "" || !this.contrato) {
                 this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
@@ -288,7 +290,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if(this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC'){
+        if (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC') {
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.contrato == "" || !this.contrato) {
                 this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
@@ -297,7 +300,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
-            if(this.files == null || this.files.length < 2){
+            if (this.files == null || this.files.length < 2) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
@@ -305,41 +308,102 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
-            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
         }
-        if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP'){
+        if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP') {
             if (this.impuesto == "" || !this.impuesto) {
                 this.floatMsgService.setErrorMsg("El campo Impuesto esta vacio.");
                 return true;
             }
-            if(this.files == null || this.files.length < 1){
+            if (this.files == null || this.files.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar constancia");
                 return true;
             }
         }
-        if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF'){
-            if(this.files == null || this.files.length < 1){
+        if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF') {
+            if (this.files == null || this.files.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar Informe Comercial");
                 return true;
             }
         }
-        if(this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP'){
-            if(this.files == null || this.files.length < 1){
+        if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP') {
+            if (this.files == null || this.files.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar Carta presentacón");
+                return true;
+            }
+        }
+        if((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)){
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                return true;
+            }
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° COE esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'CAL'){
+            if ((this.contrato == "" || !this.contrato) && (this.comprobante == "" || !this.comprobante)) {
+                this.floatMsgService.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'COM'){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'APP'){
+            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
+                this.floatMsgService.setErrorMsg("El campo Material esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'PES'){
+            if (this.contrato == "" || !this.contrato) {
+                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                return true;
+            }
+        }
+        if((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL'){
+            if ((this.comprobante == "" || !this.comprobante) && (this.comprobanteExtra == "" || !this.comprobanteExtra)) {
+                this.floatMsgService.setErrorMsg("Debe completar Campo carátula o CCPP.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF'){
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                return true;
+            }
+        }
+        if(this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP'){
+            if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
+                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                return true;
+            }
+            if (this.comprobante == "" || !this.comprobante) {
+                this.floatMsgService.setErrorMsg("El campo CCPP esta vacio.");
                 return true;
             }
         }
     }
 
-    postConsulta(){
+    postConsulta() {
         this.spinnerComponent.showIt();
 
-        if(this.esCorredor){
+        if (this.esCorredor) {
             this.codigoProveedor = this.proveedorSelected.idVendedor;
             this.razonSocialProveedor = this.proveedorSelected.descVendedor;
             this.razonSocialCorredor = this.nombre;
         }
-        else{
+        else {
             this.razonSocialProveedor = this.nombre;
         }
 
@@ -347,20 +411,21 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.spinnerComponent.hideIt();
             return;
         }
-    
 
-        if(this.fechaPago != '' && this.fechaPago != null){
-        var dateParts = this.fechaPago.split("-");
-        this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
-        } 
-    
 
-        this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, ContratoNo: this.contrato,
-            Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
+        if (this.fechaPago != '' && this.fechaPago != null) {
+            var dateParts = this.fechaPago.split("-");
+            this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
         }
 
-        this.consulta = {CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor, 
-            CodigoProveedor: this.codigoProveedor, RazonSocialProveedor: this.razonSocialProveedor, 
+
+        this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
+        }
+
+        this.consulta = {
+            CodigoCorredor: this.codigoCorredor, RazonSocialCorredor: this.razonSocialCorredor,
+            CodigoProveedor: this.codigoProveedor, RazonSocialProveedor: this.razonSocialProveedor,
             Categoria_Id: this.categoria.Id, Detalle: this.Detalle,
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
@@ -376,7 +441,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         setTimeout(() => {
-                        this.postComentario(result.Id, this.nuevoComentario);
+                            this.postComentario(result.Id, this.nuevoComentario);
                         }, 200);
                         this.spinnerComponent.hideIt();
                         this.goToSeccion('/consulta/mis-consultas');
@@ -386,70 +451,98 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
 
-                );
+            );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
     }
 
-    postComentario(consultaId, detalle){
-        let comentario: Comentario = {consulta_Id: consultaId, Detalle: detalle, Fecha: new Date()};
+    postComentario(consultaId, detalle) {
+        let comentario: Comentario = { consulta_Id: consultaId, Detalle: detalle, Fecha: new Date() };
         this.subscription = this.service.agregarComentario(consultaId, comentario).subscribe(
             result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                    else{
-                        this.postArchivos(result.Id, consultaId);   
-                        this.file = null;
-                    }
-                },
-            );
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                }
+                else {
+                    this.postArchivos(result.Id, consultaId);
+                    this.file = null;
+                }
+            },
+        );
     }
 
-    postArchivos(comentarioId, consultaId){
-        if(this.files){
-            for (let i = 0; i < this.files.length; i++){
+    postArchivos(comentarioId, consultaId) {
+        if (this.files) {
+            for (let i = 0; i < this.files.length; i++) {
                 this.subscription = this.service.adjuntar(this.files[i], consultaId, comentarioId).subscribe(
                     result => {
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            }
-                        },
-                    );
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        }
+                    },
+                );
             }
         }
     }
 
-    setSubcategorias(categoria){
+    setSubcategorias(categoria) {
         this.categoriaCount = 1;
+        this.subcategoriaCode = null;
         this.categoria = categoria;
         this.categoriaCode = categoria.Code;
         this.subcategoriasList = [];
 
+        this.Avisos(this.categoriaCode);
+
         this.subcategorias.forEach(x => {
-            if(x.CategoriaId == categoria.Id){
+            if (x.CategoriaId == categoria.Id) {
                 this.subcategoriasList.push(x);
             }
         });
+
+        if(this.subcategoriasList.length == 0){
+            this.tieneSubcategorias = false;
+        }
+        else {
+            this.tieneSubcategorias = true;
+        }
+    }
+
+    Avisos(categoriaCode){
+        this.mensajeComponent.setMsgsEmpty();
+        if (categoriaCode == "PROVG") {
+            this.mensajeComponent.setInfoMsg("CAMBIAR MENSAJE A LO QUE SE ESPERA.");
+            return true;
+        }
+        if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
+            this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
+            return true;
+        }
+        if(categoriaCode == "ACT" && this.subcategoriaCode == "IMP"){
+            this.mensajeComponent.setInfoMsg("Recuerde Adjuntar Constancia");
+            return true;
+        }
+        this.mensajeComponent.setMsgsEmpty();
     }
 
     handleCorrectCaptcha(event: any) {
         this.captchaOk = event;
     }
 
-    setCodeSubcategoria(subcategoria){
+    setCodeSubcategoria(subcategoria) {
         this.subcategoriaCount = 1;
         this.subcategoriaCode = subcategoria.Code;
+        this.Avisos(this.categoriaCode)
     }
 
 
