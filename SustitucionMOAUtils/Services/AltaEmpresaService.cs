@@ -29,7 +29,7 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public List<ProveedorAltaDto> GetEmpresas(int IdTipoProveedor)
+        public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
-                                && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id))
+                                && IdTiposProveedor.Contains(x.TipoProveedor.Id))
                         .Select(proveedor => new ProveedorAltaDto
                                 {
                                     CodigoProveedor = proveedor.CodigoProveedor ?? "",

@@ -3,13 +3,11 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAWS.DataAgroServices;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -250,9 +248,8 @@ namespace SustitucionMOAUtils.Services
 
             var listadoProveedores = new List<ProveedorDto>();
 
-            if (usuario.EsAdmin())
+            if (usuario.EsAdmin() || usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
             {
-
                 listadoProveedores.AddRange(
                     repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
