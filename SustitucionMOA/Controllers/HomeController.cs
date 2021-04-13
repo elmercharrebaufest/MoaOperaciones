@@ -212,23 +212,30 @@ namespace SustitucionMOA.Controllers
                 }
                 else
                 {
-                    if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
+                    if ((string.IsNullOrEmpty(proveedor) || proveedor == "-") && usuario.Roles.Any(r => r.Codigo == "COMERCIAL"))
                     {
-                        redirectURL = "/aduana/pesada-online";
-                    }
-                    else if (tipoUsuario == "CLIE")
-                    {
-                        redirectURL = "/cuenta-corriente/simple";
+                        redirectURL = "/usuario/cambio-vendedor";
                     }
                     else
                     {
-                        if (granosFlag == "A" || granosFlag == "G")
+                        if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
                         {
-                            redirectURL = "/home";
+                            redirectURL = "/aduana/pesada-online";
+                        }
+                        else if (tipoUsuario == "CLIE")
+                        {
+                            redirectURL = "/cuenta-corriente/simple";
                         }
                         else
                         {
-                            redirectURL = "/home-ngs";
+                            if (granosFlag == "A" || granosFlag == "G")
+                            {
+                                redirectURL = "/home";
+                            }
+                            else
+                            {
+                                redirectURL = "/home-ngs";
+                            }
                         }
                     }
                 }

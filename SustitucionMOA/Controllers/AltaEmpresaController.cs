@@ -34,10 +34,32 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (!SessionPersister.User.permisos.Contains("VER ALTAS GRANOS"))
-                    IdTipoProveedor = 3;
+                List<int> idTiposProveedor = new List<int>();
 
-                var empresas = altaEmpresaService.GetEmpresas(IdTipoProveedor);
+                if (IdTipoProveedor > 0)
+                {
+                    idTiposProveedor.Add(IdTipoProveedor);
+                }
+                else
+                {
+                    if (SessionPersister.User.permisos.Contains("VER ALTAS GRANOS"))
+                    {
+                        //Ambos
+                        idTiposProveedor.Add(1);
+                        //Directo Granos
+                        idTiposProveedor.Add(2);
+                        //Corredor
+                        idTiposProveedor.Add(4);
+                    }
+
+                    if (SessionPersister.User.permisos.Contains("VER ALTAS NO GRANOS"))
+                    {
+                        //No Granos
+                        idTiposProveedor.Add(3);
+                    }
+                }
+
+                var empresas = altaEmpresaService.GetEmpresas(idTiposProveedor);
                 //MP: Comento esta parte, ya que esto ahora lo formateamos en el service. Ademas, esto generaba que se rompan algunos filtros
                 //foreach (var item in empresas)
                 //{
@@ -86,7 +108,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         public ActionResult GetEstados()
         {
             try
@@ -109,7 +131,7 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.Aprobado.ToFriendlyString(), EstadoAprobacion.Aprobado.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.Rechazado.ToFriendlyString(), EstadoAprobacion.Rechazado.ToFriendlyString())
                 };
-                
+
                 return JsonCustom(new { intermedios = estadosIntermedios, finales = estadosFinales });
             }
             catch (InfoCustomException e)
@@ -212,7 +234,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult SolicitarInformacion (int empresaId)
+        public ActionResult SolicitarInformacion(int empresaId)
         {
             try
             {

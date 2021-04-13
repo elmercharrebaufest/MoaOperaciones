@@ -398,7 +398,8 @@
                                     <!--data-toggle="tab">-->Consulta de Vendedor
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
+                            <div
+                                *ngIf="(isAuthorized('PESIFICACION') || isAuthorized('VER PESIFICACIONES')) && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected() && false">

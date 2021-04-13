@@ -195,7 +195,7 @@ namespace SustitucionMOA.Controllers
                 _usuarioService.SeccionVisitada(SessionPersister.getUsername(), seccion);
                 return new HttpStatusCodeResult(HttpStatusCode.OK);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
@@ -214,7 +214,7 @@ namespace SustitucionMOA.Controllers
 
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-                if (!usuario.EsAdmin())
+                if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
                 {
                     if (!usuario.TieneProveedor(vendedor))
                     {
@@ -458,14 +458,14 @@ namespace SustitucionMOA.Controllers
         //}
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ALTA_EMPRESA_NO_GRANOS)]
-        public ActionResult GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, 
-            string condicionDePago, string servicioPrestado, string organizacionDeCompra, string razonDeEleccion, int facturacionAnual, string solicitanteInterno, 
+        public ActionResult GrabarNuevoProveedorNoGranos(string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro,
+            string condicionDePago, string servicioPrestado, string organizacionDeCompra, string razonDeEleccion, int facturacionAnual, string solicitanteInterno,
             int? idProveedor, string observacionesParaElProveedor, bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio,
             string observacionInterna)
         {
             try
             {
-               
+
                 if (string.IsNullOrWhiteSpace(cuit))
                 {
                     throw new ValidationCustomException("Debe completar CUIT.");
@@ -528,7 +528,7 @@ namespace SustitucionMOA.Controllers
                 return JsonCustom(new
                 {
                     data = altaEmpresaNoGranosService.GrabarNuevoProveedorNoGranos(razonSocial, cuit, email, telefono, realizarAnalisisNOSIS, IdRubro, condicionDePago,
-                    servicioPrestado, organizacionDeCompra, razonDeEleccion, facturacionAnual, solicitanteInterno, ClaimsPrincipalExtension.GetClaimValue("emails"), 
+                    servicioPrestado, organizacionDeCompra, razonDeEleccion, facturacionAnual, solicitanteInterno, ClaimsPrincipalExtension.GetClaimValue("emails"),
                     idProveedor, observacionesParaElProveedor, requiereVerificacionCompras, ingresoAPlanta, altaInterna, siperObligatorio, observacionInterna)
                 });
             }

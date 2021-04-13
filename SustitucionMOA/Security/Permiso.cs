@@ -65,6 +65,7 @@
         public const string ABM_USUARIOS = "ABM USUARIOS";
         public const string CAMBIAR_CONTRASENIA = "CAMBIAR CONTRASENIA";
         public const string SELECCIONAR_VENDEDOR = "SELECCIONAR VENDEDOR";
+        public const string ELEGIR_TODOS_VENDEDORES = "ELEGIR TODOS VENDEDORES";
 
         /* PERMISOS VENDEDOR */
         public const string CONSULTAR_DOCUMENTACION = "CONSULTAR DOCUMENTACION";
@@ -88,6 +89,7 @@
 
         /*PESIFICACION*/
         public const string PESIFICACION = "PESIFICACION";
+        public const string VER_PESIFICACION = "VER PESIFICACION";
 
         /*DATA AGRO*/
         public const string DATAAGROLOGIN = "DATAAGROLOGIN";

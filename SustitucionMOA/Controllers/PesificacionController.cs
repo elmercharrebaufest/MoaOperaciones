@@ -16,7 +16,6 @@ namespace SustitucionMOA.Controllers
     {
         PesificacionService _pesificacionService = new PesificacionService();
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult GetFechaPesificacion()
         {            
             try
@@ -87,7 +86,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.PESIFICACION)]
         public ActionResult GetContratos()
         {
             try
