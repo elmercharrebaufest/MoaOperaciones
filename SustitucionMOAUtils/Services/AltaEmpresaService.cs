@@ -424,7 +424,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (estado == EstadoAprobacion.Aprobado)
                 {
-                    EnviarMailAprobado(proveedor, copia);
+                    EnviarMailAprobado(proveedor, observacionParaElProveedor, copia);
                 }
                 else if (estado == EstadoAprobacion.Rechazado)
                 {
