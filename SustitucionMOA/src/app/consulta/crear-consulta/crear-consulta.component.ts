@@ -1,7 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReCaptchaComponent } from 'angular2-recaptcha';
-import { Categoria, Causa, Comentario, Subcategoria } from '../consulta';
 import { ConsultaService } from '../consulta.service';
 import { ListBaseComponent } from './../../common/base-components/list-base-component';
 import { Seccion } from './../../common/models/seccion';
