@@ -12,6 +12,11 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
+import { ReCaptchaComponent } from 'angular2-recaptcha';
+import { SelectItem } from 'primeng/components/common/selectitem';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
+import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 declare var $: any;
 
@@ -22,6 +27,8 @@ declare var $: any;
 
 })
 export class CrearConsultaComponent extends ListBaseComponent {
+
+    @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild('dropdown_categoria')
     protected categoriaDropdownComponent: DropdownComponent;
@@ -233,7 +240,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.floatMsgService.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
-        if ((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)) {
+        if(this.nuevoComentario == "" || !this.nuevoComentario){
+            this.floatMsgService.setErrorMsg("El campo Comentario esta vacio.");
+            return true;
+        }
+        if((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)){
             this.floatMsgService.setErrorMsg("El campo Corredor esta vacio.");
             return true;
         }
@@ -285,12 +296,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
-            if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto Percibido esta vacio.");
-                return true;
-            }
         }
-        if (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC') {
+        if(this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC'){
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.contrato == "" || !this.contrato) {
                 this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
@@ -395,7 +402,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
-    postConsulta() {
+    postConsulta(){
+        this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
         if (this.esCorredor) {
@@ -409,6 +417,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         if (this.validarConsulta()) {
             this.spinnerComponent.hideIt();
+            this.blockUI.stop();
             return;
         }
 
@@ -435,16 +444,22 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
+                        this.blockUI.stop();
                     } else if (result.error != undefined && result.error != "") {
                         this.floatMsgService.setErrorMsg(result.error);
+                        this.blockUI.stop();
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
+                        this.blockUI.stop();
                     } else {
                         setTimeout(() => {
                             this.postComentario(result.Id, this.nuevoComentario);
                         }, 200);
                         this.spinnerComponent.hideIt();
-                        this.goToSeccion('/consulta/mis-consultas');
+                        setTimeout(() => {
+                            this.blockUI.stop();
+                            this.goToSeccion('/consulta/mis-consultas');
+                        }, 1000);
                     }
                 },
                 error => {
@@ -521,7 +536,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     Avisos(categoriaCode){
         this.mensajeComponent.setMsgsEmpty();
         if (categoriaCode == "PROVG") {
-            this.mensajeComponent.setInfoMsg("CAMBIAR MENSAJE A LO QUE SE ESPERA.");
+            this.mensajeComponent.setInfoMsg("Texto a definir");
             return true;
         }
         if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {

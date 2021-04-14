@@ -316,7 +316,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            string userMail = SessionPersister.getUsername();
             return usuarioService.GetUsuario(userMail);
         }
     }
