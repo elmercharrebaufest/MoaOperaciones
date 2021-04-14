@@ -14,7 +14,7 @@
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="esCorredor">
                         <p class="crearConsultaTitulos">Proveedor</p>
-                        <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event"></app-seleccionar-proveedor>
+                            <app-seleccionar-proveedor (onLocalidadSeleccionada)="proveedorSelected = $event"></app-seleccionar-proveedor>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6" *ngIf="!esCorredor">
                         <p class="crearConsultaTitulos">Codigo Proveedor</p>
@@ -156,13 +156,6 @@
                             </p>
                             <div class="styled-select">
                                 <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded" aria-controls="tableModal" required>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Impuesto Percibido*</p>
-                            <div class="styled-select">
-                                <input type="number" [(ngModel)]="impuesto" name="impuesto" class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
                     </div>
