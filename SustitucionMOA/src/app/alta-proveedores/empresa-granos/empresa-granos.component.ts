@@ -77,7 +77,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     localidades: any = [];
     autocompleteNotFoundText = "No encontrado";
 
-    private selectUndefinedOptionValue:any;
+    private selectUndefinedOptionValue: any;
     proveedorId: number = 0;
 
     estadoSISA: string = "";
@@ -155,12 +155,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
         setTimeout(() => {
             var autocompletesLocalidad = document.querySelectorAll('[placeholder="Localidad"]');
-            for (let i = 0; i < autocompletesLocalidad.length; i++)
-            {
+            for (let i = 0; i < autocompletesLocalidad.length; i++) {
                 autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
             }
         }, 1000);
-            
+
     }
 
     get email() {
@@ -171,7 +170,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     }
 
 
-    
+
     selectEventProduccion(item, index) {
         this.informe.NuevosCampos[index].LocalidadId = item.LocalidadId;
     }
@@ -267,7 +266,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.subscription = this.service.obtenerMateriales().subscribe(
             (result) => {
                 let obj = JSON.parse(result);
-               // this.listaCampanias = new Array();
+                // this.listaCampanias = new Array();
                 obj.Datos.forEach((element) => {
                     let mat = new Material();
                     mat.Id = element.MaterialId;
@@ -275,11 +274,11 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     mat.CampaniaActual = element.CampaniaActual;
                     mat.CampaniaIdActual = element.CampaniaIdActual;
                     this.listaMateriales.push(mat);
-                   /* let cam = {
-                        CampaniaActual: element.CampaniaActual,
-                        CampaniaIdActual: element.CampaniaIdActual,
-                    };
-                    this.listaCampanias.push(cam);*/
+                    /* let cam = {
+                         CampaniaActual: element.CampaniaActual,
+                         CampaniaIdActual: element.CampaniaIdActual,
+                     };
+                     this.listaCampanias.push(cam);*/
                 });
                 /*const listaCampanias2 = [];
                 const map = new Map();
@@ -311,7 +310,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         CampaniaIdActual: element.CampaniaId,
                     };
                     this.listaCampanias.push(cam);
-                });                
+                });
 
                 this.obtenerMateriales();
 
@@ -661,23 +660,21 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 return true;
             }
 
-            if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e"))
-            {
+            if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e")) {
                 this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
-        
+
             if (item.Toneladas == null || item.Toneladas == 0) {
                 this.mensajeError = `Debe completar las toneladas en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
 
-            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) 
-            {
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) {
                 this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
-        
+
             if (item.ArrendaPropia == null) {
                 this.mensajeError = `Debe completar la condicion en la fila ${filaError} de capacidad productiva.`;
                 return true;
@@ -695,14 +692,13 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
-            
+
             if (item.Toneladas == null || item.Toneladas == 0) {
                 this.mensajeError = `Debe completar las Toneladas en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
 
-            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e"))
-            {
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) {
                 this.mensajeError = `Las toneladas deben ser un número entero en ${filaError} de capacidad productiva.`;
                 return true;
             }
@@ -988,8 +984,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         });
 
         this.cartaPresentacion.campaniaID = this.campaniaActual;
+        this.cartaPresentacion.vendedorCosecha = this.listaCampanias.find(x => x.CampaniaIdActual == this.campaniaActual).CampaniaActual;
         this.cartaPresentacion.vendedorActividad = this.proveedorClasificacion;
-        
 
         if (this.validarCartaPresentacion()) {
             this.spinnerCartaPresentacion.hideIt();
@@ -1056,7 +1052,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         }
 
         //Vendedor
-          if (
+        if (
             this.cartaPresentacion.vendedorActividad == "" ||
             !this.cartaPresentacion.vendedorActividad
         ) {
@@ -1071,7 +1067,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             this.mensajeError = "No completo el domicilio fiscal.";
             return true;
         }
-      
+
         if (
             this.cartaPresentacion.vendedorMailContacto == "" ||
             !this.cartaPresentacion.vendedorMailContacto
@@ -1108,10 +1104,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
-            
 
-            if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e"))
-            {
+
+            if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e")) {
                 this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
@@ -1121,8 +1116,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 return true;
             }
 
-            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e"))
-            {
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) {
                 this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
                 return true;
             }
@@ -1134,7 +1128,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
         filaError = 0;
         this.cartaPresentacion.nuevosAcopios = this.cartaPresentacion.nuevosAcopios.filter(item => (
-            (item.LocalidadID == null || item.LocalidadID == 0)  && (item.Toneladas == null || item.Toneladas == 0)) == false);
+            (item.LocalidadID == null || item.LocalidadID == 0) && (item.Toneladas == null || item.Toneladas == 0)) == false);
 
         for (const item of this.cartaPresentacion.nuevosAcopios) {
             if (item.LocalidadID == null || item.LocalidadID == 0) {
@@ -1146,8 +1140,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 return true;
             }
 
-            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e"))
-            {
+            if (item.Toneladas.toString().includes(".") || item.Toneladas.toString().includes(",") || item.Toneladas.toString().includes("e")) {
                 this.mensajeError = `Las toneladas deben ser un número entero en la fila ${filaError} de capacidad planta.`;
                 return true;
             }
