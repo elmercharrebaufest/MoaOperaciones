@@ -352,6 +352,15 @@
                                         </span>
                                     </div>
                                 </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('PrecioNeto')">
+                                    Precio Neto
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PrecioNeto' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PrecioNeto' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Moneda')">
                                     Moneda
                                     <div>
@@ -491,6 +500,7 @@
                                 <td>{{contratoInfo.TipoNegocio}}</td>
                                 <td>{{contratoInfo.Cantidad | number:'':'es'}}</td>
                                 <td>{{contratoInfo.Precio | number:'1.2-2':'es'}}</td>
+                                <td>{{contratoInfo.PrecioNeto | number:'1.2-2':'es'}}</td>
                                 <td>{{contratoInfo.Moneda}}</td>
                                 <td>{{contratoInfo.DestinoDescripcion}}</td>
                                 <td>{{contratoInfo.FechaDesde | date: 'dd/MM/yyyy'}}</td>

@@ -12,7 +12,6 @@
     public PorcentajeDePago: number;
     public ComercialCreadorId: number;
     public PagoDiferidoTercero: boolean;
-    public PagoDiferidoTerceroId: number;
     public DolarizadoTercero: boolean;
     public EstadoId: number;
     public ClasificacionId: number;
@@ -44,6 +43,7 @@
     public ContratoCorredor: string;
     public ContratoVendedor: string;
     public CantidadCamiones: number;
+    public DiasPesificado: number;
 
     constructor() {
         this.TipoNegocioId = 2;

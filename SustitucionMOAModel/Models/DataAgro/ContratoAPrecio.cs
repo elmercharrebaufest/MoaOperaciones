@@ -53,7 +53,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public string ObservacionTercero { get; set; }
         public bool? CalidadTercero { get; set; }
         public bool? PagoDiferidoTercero { get; set; }
-        public int? PagoDiferidoTerceroId { get; set; }
+        public int? DiasPesificado { get; set; }
         
         public bool? DolarizadoTercero { get; set; }
         public bool? SustentableTercero { get; set; }

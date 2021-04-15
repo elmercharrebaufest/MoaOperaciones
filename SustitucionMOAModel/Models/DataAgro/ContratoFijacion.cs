@@ -29,7 +29,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int? BolsaId { get; set; }
         public int ProveedorId { get; set; }
         public int? CorredorId { get; set; }
-        public int? PagoDiferidoTerceroId { get; set; }
+        public int? DiasPesificado { get; set; }
         //public int LocalidadId { get; set; }
         //public int ProvinciaId { get; set; }
         public DateTime FechaOperacion { get; set; }
