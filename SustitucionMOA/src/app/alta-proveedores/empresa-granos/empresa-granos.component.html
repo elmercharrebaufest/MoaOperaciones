@@ -677,6 +677,8 @@
                     </div>
                 </div>
                 <div class="step-actions enviar">
+
+                    <!--  MISMO BOTON QUE EL DE LA LINEA 720 -->
                     <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
                         data-target="#modalNotificación" class="btn-custom btn-azul"></button>
                     <input type="submit" (click)="onSubmit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
@@ -715,9 +717,10 @@
         </div>
     </div>
 
-    <!-- modal notificacion -->
+    <!-- modal notificacion
     <button type="button" style="display:none" id="openModalNotificacion" data-toggle="modal"
-        data-target="#modalNotificación"></button>
+        data-target="#modalNotificación"></button> -->
+
     <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
@@ -731,11 +734,13 @@
                 </div>
                 <div class="modal-body modal-notificacion">
                     <label>¡Su solicitud fue enviada con éxito!</label><br />
-                    <label>Un asesor le informará el estado de su registro.</label><br />
+                    <label style="color: red;">ENVIAR ESTA DOCUMENTACION EN ORIGINAL PARA QUE SU ALTA SEA DEFINITIVA</label><br />
+                    <label>(Datos Maestros, Molinos Agro, Uruguay 4075 (1644) Victoria, Bs As)</label><br />
+                    <br>
                     <label>¡Muchas gracias!</label><br />
                 </div>
                 <div class="modal-footer">
-                    <button (click)="redirigirAEstado()" class="btn-custom btn-guardar btn-grande">Aceptar</button>
+                    <button (click)="redirigirAEstado()" class="btn-custom btn-guardar btn-grande centerbtn">Aceptar</button>
                 </div>
             </div>
         </div>
