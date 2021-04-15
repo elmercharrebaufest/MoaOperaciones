@@ -414,15 +414,18 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
                     {
-                        copia.Add(ConfigurationManager.AppSettings["EmailToDocumentacion"]);
                         copia.Add(resultadoValidarProveedorComercial.ComercialMail);
                     }
                 }
 
                 if (!string.IsNullOrWhiteSpace(proveedor.SolicitanteInterno))
                 {
-                    copia.Add(ConfigurationManager.AppSettings["EmailToDocumentacion"]);
                     copia.Add(proveedor.SolicitanteInterno);
+                }
+
+                if (!string.IsNullOrWhiteSpace(ConfigurationManager.AppSettings["EmailToDocumentacion"]))
+                {
+                    copia.Add(ConfigurationManager.AppSettings["EmailToDocumentacion"]);
                 }
 
                 if (estado == EstadoAprobacion.Aprobado)
