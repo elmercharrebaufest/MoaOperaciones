@@ -200,6 +200,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                                 TipoNegocio: x.TipoNegocio,
                                 Cantidad: x.Cantidad,
                                 Precio: x.Precio,
+                                PrecioNeto: x.PrecioNeto,
                                 Moneda: x.Moneda,
                                 DestinoDescripcion: x.DestinoDescripcion,
                                 FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),

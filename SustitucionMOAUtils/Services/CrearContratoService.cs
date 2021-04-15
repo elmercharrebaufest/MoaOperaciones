@@ -205,7 +205,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/TraerPagosDiferido");
                 var content = JsonConvert.SerializeObject(new { tipoNegocio = tiponegocio, material = material });
-                return ConsultarDataAaro(url, content);
+                return ConsultarDataAaro(url, "");
 
             }
             catch (InfoCustomException)

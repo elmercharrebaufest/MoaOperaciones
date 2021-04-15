@@ -105,6 +105,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     ObservacionSustentableTercero: string = "";
     ObservacionTercero: string = "";
     pagosDiferidos: any = new Array();
+    maximoDiasDiferimiento: number = 0;
+    costoFinanciero: string ;
 
     ngOnInit() {
 
@@ -372,6 +374,19 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         return false;
     }
 
+    comparePagosDiferidos(a, b) {
+        const bandA = a.CantidadDia;
+        const bandB = b.CantidadDia;
+
+        let comparison = 0;
+        if (bandA > bandB) {
+            comparison = 1;
+        } else if (bandA < bandB) {
+            comparison = -1;
+        }
+        return comparison;
+    }
+
     habilitaciones(contrato) {
         this.blockUI.start('');
         this.unsubscribe();
@@ -405,10 +420,15 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                                     Id: element.Id,
                                     Descripcion: `${element.CantidadDia} dias $${element.Importe}`,
                                     CantidadDia: element.CantidadDia,
-                                    Importe: element.Importe
+                                    Tasa: element.Tasa
                                 }
                                 this.pagosDiferidos.push(el);
+                                if (this.maximoDiasDiferimiento < element.CantidadDia) {
+                                    this.maximoDiasDiferimiento = element.CantidadDia;
+                                }
                             });
+                            this.pagosDiferidos.sort(this.comparePagosDiferidos);
+                            console.log(this.pagosDiferidos)
                         }
 
                         if (contrato.TipoNegocioId == 3) {

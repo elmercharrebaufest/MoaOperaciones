@@ -228,11 +228,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
-            if(this.contrato.PagoDiferidoTerceroId != -1){
-                this.ObservacionPagoDiferidoTercero = this.pagosDiferidos.find(x => x.Id == this.contrato.PagoDiferidoTerceroId).Descripcion;
-            }
-
-            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.contrato.DiasPesificado + "días.";
         }
 
         this.mensajeComponent.setMsgsEmpty();
@@ -333,12 +329,12 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if (this.contrato.PagoDiferidoTerceroId == undefined && this.contrato.PagoDiferidoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe seleccionar una opcion de Pago Diferido.");
+        if (this.contrato.DiasPesificado <= 0 && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la cantidad de días de Pago Diferido.");
             return false;
         }
-        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true && this.contrato.PagoDiferidoTerceroId == -1) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
+        if (this.costoFinanciero == "La cantidad de días ingresados supera el maximo permitido.") {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de diferimiento ingresados supera el maximo permitido.");
             return false;
         }
         return true;
@@ -456,5 +452,31 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         var result = !(this.pendienteFijar == null || this.pendienteFijar == "" || this.pendienteFijar == undefined);
         return result;
     }      
-    
+
+    changeDiasDiferido(event) {
+        setTimeout(() => {
+            this.costoFinanciero = null;
+
+            if (this.contrato.Precio > 0 && this.contrato.PagoDiferidoTercero == true) {
+                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado == 0)) {
+                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor a 0.";
+                    return;
+                }
+                let tasa = 0;
+                this.pagosDiferidos.forEach(element => {
+                    if (this.contrato.DiasPesificado <= element.CantidadDia && tasa == 0) {
+                        tasa = element.Tasa;
+                    }
+                });
+                if (tasa == 0) {
+                    this.costoFinanciero = "La cantidad de días ingresados supera el maximo permitido.";
+                } else {
+                    let precio = Number(this.contrato.Precio.toString().replace(',', '.'));
+                    this.costoFinanciero = (precio + (tasa * precio / 100)).toFixed(2);
+                    console.log("tasa " + tasa + " costo " + this.costoFinanciero);
+                }
+            }
+
+        }, 0);
+    }
 }

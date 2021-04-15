@@ -211,7 +211,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="precio">Precio</label>
-                    <input type="text" class="form-control" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
+                    <input type="text" class="form-control" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()" (keypress)="changeDiasDiferido($event)">
                 </div>
             </div>
             <div class="row" *ngIf="isVisibleProveedor()">
@@ -332,13 +332,11 @@
                     </label><label class="labelSwitch"> Pago diferido</label>
                 </div>
                 <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true">
-                    <select class="form-control" name="PagoDiferido" [(ngModel)]="contrato.PagoDiferidoTerceroId">
-                        <option *ngFor="let item of pagosDiferidos" value="{{item.Id}}">{{item.Descripcion}}</option>
-                        <option value="-1">Otro</option>
-                    </select>
+                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.DiasPesificado" (keypress)="changeDiasDiferido($event)">
+                    <label>La cantidad maxima de días de diferimiento es: {{maximoDiasDiferimiento}}</label>
                 </div>
-                <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true && contrato.PagoDiferidoTerceroId == -1">
-                    <input type="text" [(ngModel)]="ObservacionPagoDiferidoTercero" class="form-control" />
+                <div class="form-group col-md-4" *ngIf="costoFinanciero != null">
+                    <label style="padding-top: 8px;">{{costoFinanciero}}</label>
                 </div>
             </div>
             <div class="row">
@@ -510,9 +508,11 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cambiarBolsa(contrato)">Aceptar</button>
-            
-                <button type="button" class="btn btn-default" data-dismiss="modal" 
-                        style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;" >Cancelar</button>
+
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;">
+                    Cancelar
+                </button>
             </div>
         </div>
     </div>
