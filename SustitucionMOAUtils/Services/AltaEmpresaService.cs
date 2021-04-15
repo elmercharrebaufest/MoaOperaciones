@@ -10,6 +10,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 
@@ -413,12 +414,14 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (!string.IsNullOrWhiteSpace(resultadoValidarProveedorComercial.ComercialMail))
                     {
+                        copia.Add(ConfigurationManager.AppSettings["EmailToDocumentacion"]);
                         copia.Add(resultadoValidarProveedorComercial.ComercialMail);
                     }
                 }
 
                 if (!string.IsNullOrWhiteSpace(proveedor.SolicitanteInterno))
                 {
+                    copia.Add(ConfigurationManager.AppSettings["EmailToDocumentacion"]);
                     copia.Add(proveedor.SolicitanteInterno);
                 }
 
@@ -541,7 +544,7 @@ namespace SustitucionMOAUtils.Services
         {
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
             var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "aprobada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
-            string asunto = "Molinos Agro - Alta Exitosa";
+            string asunto = "Molinos Agro – Alta generada pendiente de envío documentación original.";
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 
