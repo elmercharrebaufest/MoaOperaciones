@@ -189,6 +189,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
     });
 
     this.cartaPresentacion.campaniaID = this.campaniaActual;
+    this.cartaPresentacion.vendedorCosecha = this.listaCampanias.find(x => x.CampaniaIdActual == this.campaniaActual).CampaniaActual;
     this.cartaPresentacion.vendedorActividad = this.proveedorClasificacion;
 
 

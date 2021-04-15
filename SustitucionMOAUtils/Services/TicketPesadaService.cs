@@ -5,6 +5,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoComandosWebService;
 using System;
@@ -30,8 +31,9 @@ namespace SustitucionMOAUtils.Services
             {
                 resultado = scatoComandosConsumer.ObtenerTicketPesada(consultaTicketPesada.NumeroCartaPorte);
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
             }
 
@@ -80,8 +82,19 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.TicketPesada.Length > 0)
                     {
-                        AgregarAStream(resultado.TicketPesada, "TicketPesada.pdf", zipStream);
-                        listado.Add(new ArchivoDescargaDto { Nombre = "TicketPesada.pdf", Datos = resultado.TicketPesada });
+                        string nombreArchivo = $"Ticket Pesada {resultado.CP}.pdf";
+                        AgregarAStream(resultado.TicketPesada, nombreArchivo, zipStream);
+                        listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.TicketPesada });
+                    }
+                }
+
+                if (resultado.CertificadoCP != null)
+                {
+                    if (resultado.CertificadoCP.Length > 0)
+                    {
+                        string nombreArchivo = $"Certificado CP {resultado.CP}.pdf";
+                        AgregarAStream(resultado.CertificadoCP, nombreArchivo, zipStream);
+                        listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.CertificadoCP });
                     }
                 }
 
@@ -89,8 +102,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (resultado.TicketReciboMunicipal.Length > 0)
                     {
-                        AgregarAStream(resultado.TicketReciboMunicipal, "TicketReciboMunicipal.pdf", zipStream);
-                        listado.Add(new ArchivoDescargaDto { Nombre = "TicketReciboMunicipal.pdf", Datos = resultado.TicketReciboMunicipal });
+                        string nombreArchivo = $"Ticket Recibo Municipal {resultado.CP}.pdf";
+                        AgregarAStream(resultado.TicketReciboMunicipal, nombreArchivo, zipStream);
+                        listado.Add(new ArchivoDescargaDto { Nombre = nombreArchivo, Datos = resultado.TicketReciboMunicipal });
                     }
                 }
 
@@ -102,8 +116,8 @@ namespace SustitucionMOAUtils.Services
                         foreach (FotoDto foto in resultado.FotoCP.Fotos)
                         {
                             Stream fotoMemoryStream = new MemoryStream(foto.Foto);
-                            AgregarAStream(foto.Foto, $"Foto CCPP { i}.jpg", zipStream);
-                            listado.Add(new ArchivoDescargaDto { Nombre = $"Foto CCPP { i++}.jpg", Datos = foto.Foto });
+                            AgregarAStream(foto.Foto, $"Foto CCPP {resultado.CP} - {i}.jpg", zipStream);
+                            listado.Add(new ArchivoDescargaDto { Nombre = $"Foto CCPP {resultado.CP} - { i++}.jpg", Datos = foto.Foto });
                         }
                     }
                 }
@@ -120,7 +134,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("No hay documentos para la carta de porte ingresada.");
             }
 
-            listado.Add(new ArchivoDescargaDto { Nombre = $"Ticket Pesada CCPP {resultado.CP}.zip", Datos = archivoResultado });
+            listado.Add(new ArchivoDescargaDto { Nombre = $"Documentación CCPP {resultado.CP}.zip", Datos = archivoResultado });
 
             return listado;
         }

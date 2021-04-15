@@ -15,6 +15,7 @@ import { ConsultaService } from '../consulta.service';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { Comentario, Categoria, EstadoConsulta, Subcategoria, Consulta, Causa } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 declare var $: any;
 
@@ -25,6 +26,7 @@ declare var $: any;
 
 })
 export class DetalleConsultaComponent extends BaseComponent {
+    @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild('dropdown_categoria')
     protected categoriaDropdownComponent: DropdownComponent;
@@ -187,21 +189,30 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     postComentario(){
+        this.blockUI.start('Enviando comentario');
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
         this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
             result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
+                        this.blockUI.stop();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
+                        this.blockUI.stop();
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
+                        this.blockUI.stop();
                     }
                     else{      
                         this.postArchivos(result.Id);
-                        setTimeout(() => {  this.getDetalleConsulta(); }, 300);
-                        this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                        
+                        setTimeout(() => {
+                            this.getDetalleConsulta();
+                            this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                            this.blockUI.stop();
+                        }, 800);
+                        
                         this.detalle = "";
                         this.file = null;
                         if(this.solicitudDoc){

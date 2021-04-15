@@ -2,15 +2,21 @@
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -25,12 +31,54 @@ namespace SustitucionMOATest.Controllers
         private string expectedJson;
         private string resultJson;
         private JsonResult resultado;
+        private Mock<IRepositorio> repositorioMock;
 
         [SetUp]
         public void SetUp()
         {
             consultaServiceMock = new Mock<IConsultaService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
+
+            repositorioMock = new Mock<IRepositorio>();
+
+            var fakeIdentity = new GenericIdentity("User");
+
+            var claims = (ClaimsIdentity)fakeIdentity;
+
+            claims.AddClaim(new Claim(Globals.ClaimsUserNameType, "mail@mail.com"));
+            claims.AddClaim(new Claim(Globals.ClaimsNombreType, "mail"));
+
+            var principal = new GenericPrincipal(fakeIdentity, null);
+
+            var proveedor = new Proveedor
+            {
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Deshabilitado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = "mail@mail.com"
+            };
+
+            var usuario = new Usuario
+            {
+                Id = 0,
+                Mail = "mail@mail.com",
+                Proveedores = new List<Proveedor> { proveedor },
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } },
+                TipoUsuario = new TipoUsuario { Id = 1, Nombre = "Corredor", NombreCorto = "A"},
+                Habilitado = true,
+                CUITRegistro = "3030303030",
+            };
+
+            var usuarioDto = new UsuarioDto(usuario);
+
+            usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuarioDto);
+
+            repositorioMock
+             .Setup(y => y.Obtener<UsuarioDto>(It.IsAny<string>()))
+             .Returns(usuarioDto);
+
+            Thread.CurrentPrincipal = principal;
         }
 
         [Test]
@@ -40,25 +88,76 @@ namespace SustitucionMOATest.Controllers
             var mockedCodigoCorredo = "C22002937";
             var mockedCodigoProveedor = "06422850";
 
-            var mockedConsulta = new ConsultaDto(new Consulta()
+            var proveedor = new Proveedor
             {
-                Id = mockedId,
-                Asunto = "Consulta Test",
-                CodigoCorredor = mockedCodigoCorredo,
-                RazonSocialCorredor = "pepito",
-                CodigoProveedor = mockedCodigoProveedor,
-                RazonSocialProveedor = "pepito prov",
-                Categoria_Id = 10,
-                EstadoConsulta_Id = 1,
-                FechaCreacion = DateTime.Now,
-                Usuario_Id = 2249,
-                
-        });
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Deshabilitado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = "mail@mail.com"
+            };
 
-            consultaServiceMock.Setup(x => x.ObtenerConsulta(It.IsAny<int>())).Returns(mockedConsulta);
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = "mail@mail.com",
+                Proveedores = new List<Proveedor> { proveedor },
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
+            };
+
+            var categoria = new Categoria
+            {
+                Id = 1,
+                Code = "NOS",
+                Nombre = "Nose",
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
+            };
+
+            var subcategoria = new SubCategoria
+            {
+                Id = 1,
+                Code = "NOS",
+                Nombre = "Nose",
+                Categoria_Id = 1,
+                Categoria = categoria
+            };
+
+            var estadoConsulta = new EstadoConsulta
+            {
+                Id = 1,
+                Code = "NOS",
+                Color = "#707070",
+                Descripcion = "NOSE"
+            };
+
+            var consultaMock = new Consulta()
+            {
+                Id = 1,
+                CodigoCorredor = "2020",
+                RazonSocialCorredor = "TEST",
+                CodigoProveedor = "2020",
+                RazonSocialProveedor = "TEST",
+                Usuario_Id = 1,
+                Usuario = usuario,
+                Asunto = "TEST",
+                Categoria_Id = 1,
+                Categoria = categoria,
+                SubCategoria_Id = 1,
+                SubCategoria = subcategoria,
+                FechaCreacion = DateTime.Now,
+                FechaUltimaModificacion = DateTime.Now,
+                EstadoConsulta_Id = 1,
+                EstadoConsulta = estadoConsulta,
+                Detalle = null,
+                Comentarios = null,
+            };
+
+            var consultaDto = new ConsultaDto(consultaMock);
+
+            consultaServiceMock.Setup(x => x.ObtenerConsulta(It.IsAny<int>())).Returns(consultaDto);
 
             target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            expectedJson = JsonConvert.SerializeObject(mockedConsulta);
+            expectedJson = JsonConvert.SerializeObject(consultaDto);
 
             resultado = target.Detalle(mockedId);
             resultJson = JsonConvert.SerializeObject(resultado.Data);
@@ -85,37 +184,94 @@ namespace SustitucionMOATest.Controllers
         }
 
         [Test]
-        public void GetConsutaDetalleConIdInexistente()
-        {
-            var mockedId = 1;
-
-            consultaServiceMock.Setup(x => x.ObtenerConsulta(It.IsAny<int>())).Returns((ConsultaDto)null);
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-
-            resultado = target.Detalle(mockedId);
-
-            Assert.NotNull(resultado);
-            Assert.IsNull(resultado.Data);
-        }
-
-        [Test]
         public void PostComentario()
         {
             var mockedConsultaId = 1;
-            var mockedComentario = new Comentario()
+
+            var proveedor = new Proveedor
             {
-                Consulta_Id = mockedConsultaId,
-                Detalle = "Comentario Test",
-                Fecha = DateTime.Now
+                Id = 1,
+                EstadoAprobacion = EstadoAprobacion.Deshabilitado,
+                Observaciones = "Test",
+                RazonSocial = "RS",
+                Mail = "mail@mail.com"
             };
 
-            consultaServiceMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<Comentario>())).Verifiable();
+            var usuario = new Usuario
+            {
+                Id = 1,
+                Mail = "mail@mail.com",
+                Proveedores = new List<Proveedor> { proveedor },
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
+            };
+
+            var categoria = new Categoria
+            {
+                Id = 1,
+                Code = "NOS",
+                Nombre = "Nose",
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
+            };
+
+            var subcategoria = new SubCategoria
+            {
+                Id = 1,
+                Code = "NOS",
+                Nombre = "Nose",
+                Categoria_Id = 1,
+                Categoria = categoria
+            };
+
+            var estadoConsulta = new EstadoConsulta
+            {
+                Id = 1,
+                Code = "NOS",
+                Color = "#707070",
+                Descripcion = "NOSE"
+            };
+
+            var consultaMock = new Consulta()
+            {
+                Id = 1,
+                CodigoCorredor = "2020",
+                RazonSocialCorredor = "TEST",
+                CodigoProveedor = "2020",
+                RazonSocialProveedor = "TEST",
+                Usuario_Id = 1,
+                Usuario = usuario,
+                Asunto = "TEST",
+                Categoria_Id = 1,
+                Categoria = categoria,
+                SubCategoria_Id = 1,
+                SubCategoria = subcategoria,
+                FechaCreacion = DateTime.Now,
+                FechaUltimaModificacion = DateTime.Now,
+                EstadoConsulta_Id = 1,
+                EstadoConsulta = estadoConsulta,
+                Detalle = null,
+                Comentarios = null,
+            };
+
+            Comentario comentario = new Comentario()
+            {
+                Id = 1,
+                Detalle = "Comentario Test",
+                Fecha = DateTime.Now,
+                Usuario_Id = 1,
+                Consulta_Id = 1,
+                Consulta = consultaMock,
+                Archivos = null,
+                Usuario = usuario,
+            };
+
+            var comentarioDto = new ComentarioDto(comentario);
+
+            consultaServiceMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<Comentario>())).Returns(comentarioDto);
 
             target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            expectedJson = JsonConvert.SerializeObject(new { });
+            expectedJson = JsonConvert.SerializeObject(comentarioDto);
 
-            resultado = target.Comentarios(mockedConsultaId, mockedComentario);
+            resultado = target.Comentarios(mockedConsultaId, comentario);
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 
             Assert.NotNull(resultado);
@@ -399,8 +555,9 @@ namespace SustitucionMOATest.Controllers
             var mockedConsultaId = 1;
             var mockedComentarioId = 1;
             var cantidadArchivosMocked = 1;
+            HttpFileCollectionBase files;
 
-            consultaServiceMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Throws(new InfoCustomException("No existe el comentario"));
+            consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HttpFileCollectionBase>())).Throws(new InfoCustomException("No existe el comentario"));
 
             target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
             cargarFiles(cantidadArchivosMocked);

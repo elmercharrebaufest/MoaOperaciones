@@ -147,6 +147,7 @@ namespace SustitucionMOA.Controllers
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
+                cartaPresentacionJson = cartaPresentacionJson.Replace("nia", "ña");
                 var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
 
                 cartaPresentacion.corredorCuit = corredor.CUIT;

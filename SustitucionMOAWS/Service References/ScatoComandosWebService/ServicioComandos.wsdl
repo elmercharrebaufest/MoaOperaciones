@@ -5,12 +5,12 @@
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd0" namespace="http://scato.molinos.com.ar" />
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/System.Web" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" />
-      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd5" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Seguridad" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/System.Web" />
+      <xsd:import schemaLocation="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Entidades" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IServicioComandos_Ejecutar_InputMessage">

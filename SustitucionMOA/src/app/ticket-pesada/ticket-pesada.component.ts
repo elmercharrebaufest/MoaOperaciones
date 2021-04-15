@@ -33,6 +33,7 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
 
     captchaOk: any = null;
     data: Array<ArchivoDescarga> = [];
+    archivoZip: ArchivoDescarga = null;
     hayDatos: boolean = false;
 
 
@@ -123,7 +124,11 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
                         result.data.forEach(file => {
                             let archivo = new ArchivoDescarga(file.Nombre, file.Datos)
 
-                            this.data.push(archivo);
+                            if (file.Nombre.includes(".zip")) {
+                                this.archivoZip = archivo;
+                            } else {
+                                this.data.push(archivo);
+                            }
                         });
                         this.hayDatos = true;
 

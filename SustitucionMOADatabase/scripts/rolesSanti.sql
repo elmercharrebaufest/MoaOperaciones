@@ -45,7 +45,7 @@
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FWEB'), (select Id from Categoria where Code = 'FWEB'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'MATBA'), (select Id from Categoria where Code = 'MATBA'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'PROVGC'), (select Id from Categoria where Code = 'PROVG'))
-	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FLE'), (select Id from Categoria where Code = 'FLET'))
+	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FLECONSULTA'), (select Id from Categoria where Code = 'FLET'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'OTRO'), (select Id from Categoria where Code = 'OTRO'))
 
 COMMIT TRANSACTION;

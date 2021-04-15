@@ -13,14 +13,14 @@
                 <ul class="nav nav-pills">
                     <li role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#collapse1" aria-expanded="false" aria-controls="collapse1"><a class="aFaqClick" href="#">Registraci&oacute;n y login</a></li>
                     <li role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria2" aria-expanded="false" aria-controls="categoria2"><a class="aFaqClick" href="#">Alta para operar con MOA</a></li>
-                    <li role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria3" aria-expanded="false" aria-controls="categoria3"><a class="aFaqClick" href="#">Generales</a></li>
+                    <li *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria3" aria-expanded="false" aria-controls="categoria3"><a class="aFaqClick" href="#">Generales</a></li>
                     <li *ngIf="isAuthorized('CONSULTAR CARTAS PORTE') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria4" aria-expanded="false" aria-controls="categoria4"><a class="aFaqClick" href="#">Cartas de Porte</a></li>
                     <li *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria5" aria-expanded="false" aria-controls="categoria5"><a class="aFaqClick" href="#">Contratos</a></li>
                     <li *ngIf="isAuthorized('CONSULTAR LIQUIDACIONES') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria6" aria-expanded="false" aria-controls="categoria6"><a class="aFaqClick" href="#">Liquidaciones</a></li>
                     <li *ngIf="isAuthorized('PESIFICACION') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria7" aria-expanded="false" aria-controls="categoria7"><a class="aFaqClick" href="#">Pesificaciones</a></li>
-                    <li *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria8" aria-expanded="false" aria-controls="categoria8"><a class="aFaqClick" href="#">Registro de operaciones</a></li>
-                    <li *ngIf="isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria9" aria-expanded="false" aria-controls="categoria9"><a class="aFaqClick" href="#">Alta y documentaci&oacute;n</a></li>
-                    <li role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria10" aria-expanded="false" aria-controls="categoria10"><a class="aFaqClick" href="#">Funcionalidades de la web</a></li>
+                    <li *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria8" aria-expanded="false" aria-controls="categoria8"><a class="aFaqClick" href="#">Carga de Negocios</a></li>
+                    <li *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria9" aria-expanded="false" aria-controls="categoria9"><a class="aFaqClick" href="#">Alta y documentaci&oacute;n</a></li>
+                    <li *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria10" aria-expanded="false" aria-controls="categoria10"><a class="aFaqClick" href="#">Funcionalidades de la web</a></li>
                     <li *ngIf="isAuthorized('CONSULTAR COMPROBANTES') && isNoGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria11" aria-expanded="false" aria-controls="categoria11"><a class="aFaqClick" href="#">Comprobantes</a></li>
                     <li *ngIf="isAuthorized('CONSULTAR FLETE') && isNoGranos()" role="presentation" class="containerMenuFaq" data-toggle="collapse" href="#categoria12" aria-expanded="false" aria-controls="categoria12"><a class="aFaqClick" href="#">Fletes</a></li>
                 </ul>
@@ -193,7 +193,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading faqCategoria3" role="tab" id="heading3" data-toggle="collapse" data-parent="#accordion" href="#categoria3" aria-expanded="false" aria-controls="categoria3">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -421,7 +421,7 @@
                                         <div id="4-5collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="4.5heading">
                                             <div class="panel-body">
                                                 <div>
-                                                    La aplicación de la mercadería se realiza al día hábil siguiente de la entrega. Si pasado ese tiempo, la mercadería no se encuentra aplicada tendrás que <a href="web/contacto">comunicarte con nosotros.</a>
+                                                    La aplicación de la mercadería se realiza al día hábil siguiente de la entrega. Si pasado ese tiempo, la mercadería no se encuentra aplicada tendrás que <a href="#" (click)="goToSeccion('/consulta')">comunicarte con nosotros.</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -598,7 +598,7 @@
                                         <div id="6-2collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="6.2heading">
                                             <div class="panel-body">
                                                 <div>
-                                                    Depende de la fecha de emisión de la liquidación. Si se trata de un comprobante emitido en el día o el día anterior puede ser que todavía no figure en el portal. Dentro de las 24 horas hábiles de la emisión, el comprobante tendría que figurar en la Web, en primera instancia dentro de la solapa “Observadas” con la observación de “En proceso de contabilización”. Pasadas las 24 horas mencionadas, la liquidación tendría que figurar como aprobada u observada con su correspondiente observación en sus respectivas solapas. Caso contrario, tendrán que comunicarse con nosotros a través de <a (click)="goToSeccion('/contacto')" href="#">nuestros datos de contacto.</a>
+                                                    Depende de la fecha de emisión de la liquidación. Si se trata de un comprobante emitido en el día o el día anterior puede ser que todavía no figure en el portal. Dentro de las 24 horas hábiles de la emisión, el comprobante tendría que figurar en la Web, en primera instancia dentro de la solapa “Observadas” con la observación de “En proceso de contabilización”. Pasadas las 24 horas mencionadas, la liquidación tendría que figurar como aprobada u observada con su correspondiente observación en sus respectivas solapas. Caso contrario, tendrán que comunicarse con nosotros a través de <a (click)="goToSeccion('/consulta')" href="#">nuestros datos de contacto.</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -634,7 +634,7 @@
                                         <div id="6-4collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="6.4heading">
                                             <div class="panel-body">
                                                 <div>
-                                                    Tendrás que comunicarte con nuestro sector de atención para conocer más sobre el estado de tu liquidación. <a (click)="goToSeccion('/contacto')" href="#">Ver datos de contacto.</a>
+                                                    Tendrás que comunicarte con nuestro sector de atención para conocer más sobre el estado de tu liquidación. <a (click)="goToSeccion('/consulta')" href="#">Ver datos de contacto.</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -652,7 +652,7 @@
                                         <div id="6-5collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="6.5heading">
                                             <div class="panel-body">
                                                 <div>
-                                                    En primer lugar, verificar si la liquidación no fue observada por algún motivo. Si no figura dentro de “Observadas” tendrás que comunicarte con nosotros. <a (click)="goToSeccion('/contacto')" href="#">Ver datos de contacto.</a>
+                                                    En primer lugar, verificar si la liquidación no fue observada por algún motivo. Si no figura dentro de “Observadas” tendrás que comunicarte con nosotros. <a (click)="goToSeccion('/consulta') " href="#">Ver datos de contacto.</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -935,7 +935,7 @@
                             <div class="panel-heading" role="tab" id="heading8" data-toggle="collapse" data-parent="#accordion" href="#categoria8" aria-expanded="false" aria-controls="categoria8">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
-                                        Registro de operaciones
+                                        Carga de Negocios
                                         <span aria-hidden="true" id="ok" class="glyphicon glyphicon-chevron-down pull-right grisOscuro">
                                         </span>
                                     </a>
@@ -1001,7 +1001,7 @@
                             </div>
                         </div>
 
-                        <div *ngIf="isGranos()" class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading9" data-toggle="collapse" data-parent="#accordion" href="#categoria9" aria-expanded="false" aria-controls="categoria9">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">
@@ -1073,7 +1073,7 @@
                             </div>
                         </div>
 
-                        <div class="panel panel-default documento">
+                        <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranos()" class="panel panel-default documento">
                             <div class="panel-heading" role="tab" id="heading10" data-toggle="collapse" data-parent="#accordion" href="#categoria10" aria-expanded="false" aria-controls="categoria10">
                                 <h4 class="panel-title">
                                     <a class="collapsed aFaqClickCat">

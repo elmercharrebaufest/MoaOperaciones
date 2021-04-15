@@ -41,5 +41,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ConsultaDetalle Detalle { get; set; }
 
         public virtual ICollection<Comentario> Comentarios { get; set; }
+
+        public Consulta() { }
     }
 }
