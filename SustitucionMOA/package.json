@@ -11,7 +11,8 @@
     "test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
     "test-once": "tsc && karma start karma.conf.js --single-run",
     "tsc": "tsc",
-    "tsc:w": "tsc -w"
+    "tsc:w": "tsc -w",
+    "build": "ng build --prod --base-href /web --deploy-url /web/"
   },
   "keywords": [],
   "author": "",

@@ -9,6 +9,7 @@ import { SpinnerSmallComponent } from './common/view-child/spinner-small/spinner
 import { map } from 'rxjs/operators';
 import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { environment } from '../environments/environment';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'my-app',
@@ -22,7 +23,7 @@ export class AppComponent {
     @ViewChild(SpinnerSmallComponent)
     private spinnerSmallComponent: SpinnerSmallComponent;
 
-    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: Http) {
+    constructor(protected sessionDataService: SessionDataService, protected navService: NavService, private injector: Injector, public router: Router, private http: Http, private location: Location) {
         ServiceLocator.injector = this.injector;
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
@@ -34,10 +35,18 @@ export class AppComponent {
         });
     }
 
+    disabledAgreement: boolean = true;
+
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-        this.validarLoginAzure();
+
+        if (this.location.path() === '/ticket-pesada') {
+            this.navService.navegarSeccion("ticket-pesada");
+        }
+        else {
+            this.validarLoginAzure();
+        }
     }
 
     private extractData(res: Response) {
@@ -98,7 +107,7 @@ export class AppComponent {
         this.sessionDataService.setGranosFlag(result.granosFlag);
         this.sessionDataService.setSeccionesVisitadas(result.seccionesVisitadas);
 
-        sessionStorage.setItem("granosSelected", result.granosFlag);
+        sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
 
 
@@ -138,5 +147,26 @@ export class AppComponent {
         //        }
         //    }
         //}
+        if (result.aceptoTyC != true) {
+            document.getElementById("openModalaceptoTyCModal").click();
+
+        }
+    }
+    aceptarTyC() {
+        let observable = this.http
+            .get('/api/Home/AceptarTyC', {})
+            .pipe(map(this.extractData));
+
+        observable.subscribe(result => {
+            if (result.error != undefined && result.error != "") {
+                this.mensajeComponent.setErrorMsg(result.error);
+            } else {
+                document.getElementById("openModalaceptoTyCModal").click();
+            }
+        })
+    }
+
+    checkTyCChecked(event) {
+        this.disabledAgreement = !event.target.checked;
     }
 }

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
 import { PesificacionService } from './pesificacion.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -19,7 +19,7 @@ declare var $: any;
     providers: [PesificacionService]
 })
 
-export class PesificacionComponent extends ListBaseComponent implements OnInit {
+export class PesificacionComponent extends ListBaseComponent implements OnInit, AfterViewInit {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -46,6 +46,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
     visibleEnviar: boolean = true;
     itemsPerPage = "10";
     orderedByColumn: string = "NroContrato";
+    permitirCarga: boolean = false;
 
     ngOnInit() {
         this.setTabs();
@@ -59,7 +60,10 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
     }
 
     checkPermisos() {
-        this.securityService.tienePermisoRedirect("PESIFICACION");
+        //La diferencia entre VER PESIFICACION es que es read only, mientras que PESIFICACION te permite cargar pesificaciones masivas e individuales
+        if (!this.securityService.tienePermiso("VER PESIFICACIONES")) {
+            this.securityService.tienePermisoRedirect("PESIFICACION");
+        }
     }
 
     getListaContratos() {
@@ -96,11 +100,21 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    ngAfterViewInit() {
+        if (this.securityService.tienePermiso("PESIFICACION")) {
+            this.permitirCarga = true;
+        }
+        else {
+            document.getElementById("linkPendiente").click();
+        }
+    }
+
     initForm() {
         this.fecha = null;
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
+
         this.subscription = this.service.getData().subscribe(
             result => {
                 this.fecha = null;
@@ -134,7 +148,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
             return true;
         else
             return false;
-       
+
     }
 
     isVisiblePaginacion(): boolean {
@@ -175,14 +189,14 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
 
         this.unsubscribe();
         this.subscription = this.service.setData(this.contrato, this.fijacion, this.cantidad).subscribe(
-            result => {               
+            result => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
                     this.mensajeComponent.setErrorMsg(result.error);
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
-                } else {                    
+                } else {
                     this.getListaContratos();
                     this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                 }
@@ -233,8 +247,8 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                     this.getListaContratos();
+                    this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                 }
             },
             error => {
@@ -260,15 +274,11 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit {
     };
 
     changeFijacion() {
-        console.log("antes",this.fijacion);
         this.fijacion = this.fijacion.replace(/^0+/, '');
-        console.log("despues",this.fijacion);
     }
 
     changeContrato() {
-        console.log("antes", this.contrato);
         this.contrato = this.contrato.replace(/^0+/, '');
-        console.log("despues", this.contrato);
     }
 
 }

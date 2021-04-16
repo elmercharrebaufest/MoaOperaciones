@@ -1,17 +1,8 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
 import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
-import { NavService } from '../../common/services/NavService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { SecurityService } from '../../common/services/SecurityService';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { ModalService } from '../../common/services/ModalService';
-import { Seccion } from '../../common/models/seccion';
-import { forEach } from '@angular/router/src/utils/collection';
-import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
+
 declare var $: any;
 
 @Component({
@@ -26,7 +17,14 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
     ngOnInit() {
         super.ngOnInit();
-        this.negocioHabilitado(this.contrato);
+        this.contrato.TipoNegocioId = 2;
+        this.contrato.Id = this.id;
+        console.log("id", this.id);
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        } else {
+            this.negocioHabilitado(this.contrato);
+        }
     }
 
     ngAfterViewInit(): void {
@@ -144,11 +142,16 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     selectEventLocalidad(item) {
+        console.log("selectEventLocalidad");
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
+        if (this.BolsaId != null && this.contrato.BoletoId == 1) {
+            this.contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     onChangeSearchLocalidad(term: string) {
@@ -179,6 +182,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     changePagoDiferido(event) {
@@ -205,7 +209,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     grabarContratoAPrecio() {
-        console.log(this.contrato);
+
         if (!this.validarContrato()) {
             return false;
         }
@@ -216,13 +220,15 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         dateParts = $("#noCursor2").val().split("/");
         this.contrato.FechaHasta = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
         this.contrato.FechaEntrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
 
-        this.contrato.Id = 0;
+
+        //this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
 
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 2;
 
         if (this.contrato.MaterialId == 1) {
@@ -232,13 +238,30 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 4;
+            this.contrato.StandardDeCalidadId = 3;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
         }
         if (this.contrato.MaterialId == 5) {
             this.contrato.StandardDeCalidadId = 5;
+        }
+        this.contrato.ObservacionTercero = this.ObservacionTercero;
+        if (this.contrato.DolarizadoTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
+        }
+        if (this.contrato.PagoDiferidoTercero == true) {
+            if (this.contrato.PagoDiferidoTerceroId != -1) {
+                this.ObservacionPagoDiferidoTercero = this.pagosDiferidos.find(x => x.Id == this.contrato.PagoDiferidoTerceroId).Descripcion;
+            }
+
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+        }
+        if (this.contrato.CalidadTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Calidad: " + this.ObservacionCalidadTercero;
+        }
+        if (this.contrato.SustentableTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Sustentable: " + this.ObservacionSustentableTercero;
         }
 
         this.mensajeComponent.setMsgsEmpty();
@@ -298,26 +321,46 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
-        console.log(this.datosPizarra);
-        console.log(this.datosPrecioMoa);
-
+        if (this.contrato.CantidadCamiones > 0) {
+            var cantidadCamionesNecesarios = Math.ceil(this.contrato.Cantidad / 30000);
+            if (this.contrato.CantidadCamiones > cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es mayor a la necesaria");
+                return;
+            }
+            if (this.contrato.CantidadCamiones < cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es menor a la necesaria");
+                return;
+            }
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ContratoCorredor == null || this.contrato.ContratoCorredor == "")) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar el Contrato Corredor.");
+            return false;
+        }
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
+        if ((this.ObservacionDolarizadoTercero == "" || this.ObservacionDolarizadoTercero == undefined) && this.contrato.DolarizadoTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
+        if (this.contrato.PagoDiferidoTerceroId == undefined && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("Debe seleccionar una opcion de Pago Diferido.");
+            return false;
+        }
+        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true && this.contrato.PagoDiferidoTerceroId == -1) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
+        if ((this.ObservacionCalidadTercero == "" || this.ObservacionCalidadTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+        if ((this.ObservacionSustentableTercero == "" || this.ObservacionSustentableTercero == undefined) && this.contrato.SustentableTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la Tarifa Sustentable.");
             return false;
         }
@@ -397,25 +440,25 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
         }
     }
-    changePizarra() {
-        this.contrato.Precio = 0;
-        this.contrato.MonedaId = null;
-        if (this.contrato.Pizarra == true) {
-            this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
-            this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
-            this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
-            this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
-            var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
+    //changePizarra() {
+    //    this.contrato.Precio = 0;
+    //    this.contrato.MonedaId = null;
+    //    if (this.contrato.Pizarra == true) {
+    //        this.contrato.FechaDesde = new Date(parseInt(this.datosPizarra.DesdeEntrega.substr(6)));
+    //        this.contrato.FechaHasta = this.ObtenerFechaHasta(this.contrato.FechaDesde);
+    //        this.fechaInicio = this.contrato.FechaDesde.toLocaleDateString('en-GB');
+    //        this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
+    //        var entregaHasta = new Date(parseInt(this.datosPizarra.HastaEntrega.substr(6)));
 
-            $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-            $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+    //        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+    //        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
 
-            $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-            $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
-        } else {
+    //        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+    //        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+    //    } else {
 
-        }
-    }
+    //    }
+    //}
 
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;
@@ -442,11 +485,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                         this.fechaFin = this.contrato.FechaHasta.toLocaleDateString('en-GB');
                         var entregaHasta = new Date(parseInt(item.HastaEntrega.substr(6)));
 
-                        $('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-                        $('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Inicio').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Inicio').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
 
-                        $('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
-                        $('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Fin').datetimepicker('setStartDate', this.contrato.FechaDesde.toLocaleDateString("en-GB"));
+                        //$('.form_datetime_Fin').datetimepicker('setEndDate', entregaHasta.toLocaleDateString("en-GB"));
                     }
 
                 }
@@ -461,4 +504,6 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     isSoja(): boolean {
         return this.contrato.MaterialId == 3;
     }
+
+
 }

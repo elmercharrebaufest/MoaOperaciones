@@ -28,10 +28,14 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
 
     ngOnInit() {
         super.ngOnInit();
-
-        this.negocioHabilitado(this.contrato);
-        this.contrato.CondicionFijacionId = 7;
-
+        this.contrato.TipoNegocioId = 1;
+        this.contrato.Id = this.id;
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        } else {
+            this.negocioHabilitado(this.contrato);
+        }
+        this.contrato.CondicionFijacionId = 7;        
     }
 
     ngAfterViewInit(): void {
@@ -218,6 +222,10 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
+        if (this.BolsaId != null && this.contrato.BoletoId == 1) {
+            this.contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     onChangeSearchLocalidad(term: string) {
@@ -248,6 +256,7 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     isVisibleBolsa(): boolean {
@@ -277,13 +286,13 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         this.contrato.MonedaId = "ARP  ";
         this.contrato.Precio = 0;
         this.contrato.PrecioNeto = 0;
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
 
-        this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
 
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 1;
 
         if (this.contrato.MaterialId == 1) {
@@ -293,13 +302,21 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 4;
+            this.contrato.StandardDeCalidadId = 3;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
         }
         if (this.contrato.MaterialId == 5) {
             this.contrato.StandardDeCalidadId = 5;
+        }
+        this.contrato.ObservacionTercero = this.ObservacionTercero;
+
+        if (this.contrato.CalidadTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Calidad: " + this.ObservacionCalidadTercero;
+        }
+        if (this.contrato.SustentableTercero == true) {
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Sustentable: " + this.ObservacionSustentableTercero;
         }
 
         this.mensajeComponent.setMsgsEmpty();
@@ -357,21 +374,34 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
-        //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
-        //  this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");        //    return false;
-        //}
-        //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
-        //    return false;
-        //}
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.CalidadTercero == true) {
+        if (this.contrato.CantidadCamiones > 0) {
+            var cantidadCamionesNecesarios = Math.ceil(this.contrato.Cantidad / 30000);
+            if (this.contrato.CantidadCamiones > cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es mayor a la necesaria");
+                return;
+            }
+            if (this.contrato.CantidadCamiones < cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es menor a la necesaria");
+                return;
+            }
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ContratoCorredor == null || this.contrato.ContratoCorredor == "")) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar el Contrato Corredor.");
+            return false;
+        }
+        if ((this.ObservacionCalidadTercero == "" || this.ObservacionCalidadTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;
         }
-        if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.SustentableTercero == true) {
+        if ((this.ObservacionSustentableTercero == "" || this.ObservacionSustentableTercero == undefined) && this.contrato.SustentableTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la Tarifa Sustentable.");
             return false;
         }
+
         if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ProveedorId == null || this.contrato.ProveedorId == undefined)) {
             this.mensajeComponent.setErrorMsg("Debe seleccionar el Proveedor.");
             return false;
@@ -450,4 +480,5 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     isSoja(): boolean {
         return this.contrato.MaterialId == 3;
     }
+      
 }

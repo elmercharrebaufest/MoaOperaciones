@@ -45,16 +45,18 @@ import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
-import { NumericDirective } from './common/directive/numeric.directive';
 import { NgxMaskModule } from "ngx-mask";
 import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
 import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
 import { BlockUIModule } from 'ng-block-ui';
+import { FaqComponent } from './faq/faq.component'
+import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
+import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
 import { ConsultaService } from "./consulta/consulta.service";
-
+import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 @NgModule({
   imports: [
     BrowserModule,
@@ -90,8 +92,10 @@ import { ConsultaService } from "./consulta/consulta.service";
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
-    NumericDirective,
-    ConsultaBaseComponent],
+    FaqComponent,
+    TicketPesadaComponent,
+    ConsultaBaseComponent,
+    VentaSustentableBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,
@@ -109,9 +113,10 @@ import { ConsultaService } from "./consulta/consulta.service";
     EmpresaGranosService,
     EstadoSolicitudService,
     NotificacionesService,
+    TicketPesadaService,
     ConsultaService
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AppModule { }

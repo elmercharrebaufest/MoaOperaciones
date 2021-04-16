@@ -80,6 +80,8 @@ namespace SustitucionMOAUtils.Services
             proveedor.AltaInterna = altaInterna;
             proveedor.TipoProveedor = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
             proveedor.SiperObligatorio = siperObligatorio;
+            proveedor.FechaSolicitud = DateTime.Now;
+
 
             int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
@@ -237,6 +239,73 @@ namespace SustitucionMOAUtils.Services
         private string FormatearCodigoProveedor(string CUIT)
         {
             return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
+        public byte[] DescargarFormularioNG(ProveedorAltaDto proveedorDto)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/FormularioAltaNoGranos/Generar");
+                var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                string downloadKey = "";
+
+                var content = JsonConvert.SerializeObject(proveedorDto); //myDetails is my class object.
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+
+                    task.Wait();
+
+                    var response = task.Result;
+
+                    var stringContent = response.Content.ReadAsStringAsync();
+
+                    dynamic jsonResult = JObject.Parse(stringContent.Result);
+
+                    if (bool.Parse(jsonResult.HayErrores.ToString()))
+                    {
+                        throw new InfoCustomException(jsonResult.Errores[0].Message);
+                    }
+
+                    downloadKey = jsonResult.DownloadKey;
+
+
+                    urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
+                    WebClient clienteDescarga = new WebClient();
+                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+
+                    byte[] formularioAltaNoGranos = clienteDescarga.DownloadData(urlReporte);
+
+                    return formularioAltaNoGranos;
+
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
         }
     }
 }

@@ -89,18 +89,37 @@
         margin-left: 7px;
     }
 
+    .material {
+        cursor: pointer;
+    }
 </style>
 <div class="content-wraper">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection" style="border-bottom:none;">
-            <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table" 
-                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 650px; padding:10px 0;margin:0;">
+            <div class="col-xs-12 col-sm-10 " style="border-bottom:1px solid #707070;" *ngIf="!this.precioSeleccionado">Seleccione el material para iniciar la carga </div>
+            <table id="tabla-precio-moa" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-fijacion-table"
+                   cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: auto; padding:10px 0;margin:0;">
+                <tbody>
+                    <tr>
+                        <th rowspan="2" style="font-size:20px;padding: 5px 10px;">PRECIO MOA</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(1,2)" *ngIf="isMaterialSeleccionado('Maiz')">Maiz</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(2,2)" *ngIf="isMaterialSeleccionado('Trigo')">Trigo</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(3,2)" *ngIf="isMaterialSeleccionado('Soja')">Soja</th>
+                        <th style="font-size:20px;padding: 5px 10px;cursor:pointer;" (click)="preciosDisponibles(4,2)" *ngIf="isMaterialSeleccionado('Girasol')">Girasol</th>
+                    </tr>
+                    <tr>
+                        <td *ngIf="isMaterialSeleccionado('Maiz')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioMaiz" (click)="preciosDisponibles(1,2)">{{precioMaiz == true?"En mercado":precioMaiz == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Trigo')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioTrigo" (click)="preciosDisponibles(2,2)">{{precioTrigo == true?"En mercado":precioTrigo == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Soja')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioSoja" (click)="preciosDisponibles(3,2)">{{precioSoja == true?"En mercado":precioSoja == false?"Sin Precio":""}}</span></td>
+                        <td *ngIf="isMaterialSeleccionado('Girasol')"><span style="font-size:small;font-weight:bold;cursor:pointer;" id="precioGirasol" (click)="preciosDisponibles(4,2)">{{precioGirasol == true?"En mercado":precioGirasol == false?"Sin Precio":""}}</span></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 ">Crear Contrato <strong>A Precio</strong> </div>
+        <div class="row titleSection" *ngIf="this.precioSeleccionado">
+            <div class="col-xs-12 col-sm-10 ">{{crearModificar}} Contrato <strong>A Precio {{materialSeleccionado}}</strong> </div>
             <!--<div class="col-xs-12 col-sm-2 " *ngIf="isVisibleProveedor()">
                 <a (click)="altaMasiva()" href="#" style="text-decoration:none!important">
                     <div class="btnSection animate align-right">Alta Masiva <img src="Content/images/buttons/upload.png" width="19" height="19" /></div>
@@ -108,7 +127,7 @@
             </div>-->
         </div>
         <mensaje></mensaje>
-        <fieldset class="fieldset" *ngIf="!this.retirados">
+        <fieldset class="fieldset" *ngIf="this.precioSeleccionado">
             <label class="subtitulo">Condiciones Generales</label>
             <div class="form-group col-md-12" *ngIf="isVisibleProveedor()">
                 <label for="Proveedorid" class="font-weight-bold">Proveedor</label>
@@ -139,7 +158,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label for="destino">Destino</label>
-                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId">
+                    <select class="form-control" name="destino" [(ngModel)]="contrato.DestinoId" (change)="changeDestino(contrato)">
                         <option *ngFor="let item of destinos" value="{{item.Id}}">{{item.Descripcion}}</option>
                     </select>
                 </div>
@@ -181,7 +200,7 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="cantidad">Cantidad (Kg.)</label>
-                    <input type="text" class="form-control" name="cantidad" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
+                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.Cantidad">
                 </div>
 
                 <div class="form-group col-md-2">
@@ -192,11 +211,24 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="precio">Precio</label>
-                    <input type="text" class="form-control" name="precio" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
+                    <input type="text" class="form-control" numeric decimals="2" [(ngModel)]="contrato.Precio" [disabled]="disablePrecio()">
+                </div>
+            </div>
+            <div class="row" *ngIf="isVisibleProveedor()">
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Cantidad Camiones</label>
+                    <input type="number" class="form-control" numeric decimals="0" [(ngModel)]="contrato.CantidadCamiones">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="cantidad">Zona </label>
+                    <select class="form-control" name="zona" [(ngModel)]="contrato.ComercialId">
+                        <option value="35">Corredor Rosario</option>
+                        <option value="22">Corredor Bs As</option>
+                    </select>
                 </div>
             </div>
             <div class="row" *ngIf="isVisiblePizarra()">
-                <div class="form-group col-md-offset-6 col-md-3" style="padding-left: 18px;">
+                <div class="form-group col-md-offset-6 col-md-3" style="padding-left: 18px;pointer-events: none;" *ngIf="isVisiblePizarra()">
                     <label class="switch">
                         <input type="checkbox" [(ngModel)]="contrato.Pizarra" (change)="changePizarra($event)">
                         <span class="slider round"></span>
@@ -218,7 +250,7 @@
                     <ng-autocomplete [data]="localidades" [searchKeyword]="keyword"
                                      (selected)='selectEventLocalidad($event)' [(ngModel)]="localidad"
                                      (inputChanged)='onChangeSearchLocalidad($event)'
-                                     (inputFocused)='selectEventLocalidad($event)' [itemTemplate]="itemTemplate"
+                                     [itemTemplate]="itemTemplate"
                                      [notFoundText]="autocompleteNotFoundText"
                                      [notFoundTemplate]="notFoundTemplate">
                     </ng-autocomplete>
@@ -277,7 +309,7 @@
                     <label for="EstablecimientoAlquilado"> Alquilado</label>
                 </div>
                 <div class="form-group col-md-6">
-                   
+
                 </div>
             </div>
             <div class="row">
@@ -292,47 +324,70 @@
             </div>
             <label class="subtitulo">Condiciones De Pago</label>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group col-md-12" *ngIf="isVisiblePagoDiferido()">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.PagoDiferidoTercero" (change)="changePagoDiferido($event)">
-                            <span class="slider round"></span>
+                <div class="form-group col-md-4" *ngIf="isVisiblePagoDiferido()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.PagoDiferidoTercero" (change)="changePagoDiferido($event)">
+                        <span class="slider round"></span>
 
-                        </label><label class="labelSwitch"> Pago diferido</label>
-                    </div>
-                    <div class="form-group col-md-12" *ngIf="isVisibleDolarizado()">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.DolarizadoTercero" (change)="changeDolarizado($event)">
-                            <span class="slider round"></span>
-
-                        </label><label class="labelSwitch"> Dolarizado</label>
-                    </div>
-                    <div class="form-group col-md-12" *ngIf="isSoja()">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
-                            <span class="slider round"></span>
-
-                        </label><label class="labelSwitch"> Calidad</label>
-                    </div>
-                    <div class="form-group col-md-12" *ngIf="isSoja()">
-                        <label class="switch">
-                            <input type="checkbox" [(ngModel)]="contrato.SustentableTercero">
-                            <span class="slider round"></span>
-
-                        </label><label class="labelSwitch"> Sustentable</label>
-                    </div>
+                    </label><label class="labelSwitch"> Pago diferido</label>
                 </div>
-                <div class="col-md-6">
+                <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true">
+                    <select class="form-control" name="PagoDiferido" [(ngModel)]="contrato.PagoDiferidoTerceroId">
+                        <option *ngFor="let item of pagosDiferidos" value="{{item.Id}}">{{item.Descripcion}}</option>
+                        <option value="-1">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true && contrato.PagoDiferidoTerceroId == -1">
+                    <input type="text" [(ngModel)]="ObservacionPagoDiferidoTercero" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4" *ngIf="isVisibleDolarizado()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.DolarizadoTercero" (change)="changeDolarizado($event)">
+                        <span class="slider round"></span>
+
+                    </label><label class="labelSwitch"> Dolarizado</label>
+                </div>
+                <div class="form-group col-md-8" *ngIf="contrato.DolarizadoTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionDolarizadoTercero" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4" *ngIf="isSoja()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.CalidadTercero">
+                        <span class="slider round"></span>
+
+                    </label><label class="labelSwitch"> Calidad</label>
+                </div>
+                <div class="form-group col-md-8" *ngIf="contrato.CalidadTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionCalidadTercero" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4" *ngIf="isSoja()">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="contrato.SustentableTercero">
+                        <span class="slider round"></span>
+                    </label><label class="labelSwitch"> Sustentable</label>
+                </div>
+                <div class="form-group col-md-8" *ngIf="contrato.SustentableTercero == true">
+                    <input type="text" [(ngModel)]="ObservacionSustentableTercero" class="form-control" />
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
                     <label for="ObservacionTercero">Observaciones</label>
-                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="contrato.ObservacionTercero"></textarea>
+                    <textarea class="form-control" name="ObservacionTercero" [(ngModel)]="ObservacionTercero"></textarea>
                 </div>
-
             </div>
             <br />
             <div class="row">
                 <div class="form-group col-md-12">
                     <spinner></spinner>
-                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoAPrecio()" *ngIf="!this.spinnerComponent.visible"
+                    <button type="button" class="btn-custom btn-mediano btn-add animate " (click)="grabarContratoAPrecio()" angIf="!this.spinnerComponent.visible"
                             style="margin: 0 10px; height: 30px; align-items: center; display: inline-flex;">
                         Grabar
                     </button>
@@ -393,6 +448,71 @@
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal precios -->
+<a href="#PreciosModal" class="trigger-btn" id="openModalPreciosModal" data-toggle="modal" style="display:none;">    Click    to Open Precios Modal</a>
+<div class="modal fade fade-complete" id="PreciosModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Seleccione el precio disponible</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-ampliacion-table" id="preciosMateriales">
+                    <thead>
+                        <tr role="row">
+                            <td><b>Material</b></td>
+                            <td><b>Moneda</b></td>
+                            <td><b>Precio</b></td>
+                            <td><b>Entrega Desde</b></td>
+                            <td><b>Entrega Hasta</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of precioPorNegocioSeleccionado" role="row" class="material" (click)="seleccionarPrecio(item,contrato)" data-dismiss="modal">
+                            <td>{{item.Material}}</td>
+                            <td>{{item.MonedaId}}</td>
+                            <td>{{item.Precio}}</td>
+                            <td>{{item.DesdeEntrega | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{item.HastaEntrega | date: 'dd/MM/yyyy'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal bolsa -->
+<a href="#bolsaModal" class="trigger-btn" id="openModalbolsaModal" data-toggle="modal" style="display:none;">    Click    to Open bolsa Modal</a>
+<div class="modal fade fade-complete" id="bolsaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false"
+     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+            </div>
+            <div class="modal-body modal-notificacion">
+                <p>
+                    La bolsa recomendada es:  <b>{{mensajeCambioBolsa}}</b>  ¿Quiere asignarla como bolsa?
+                </p>
+
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="cambiarBolsa(contrato)">Aceptar</button>
+            
+                <button type="button" class="btn btn-default" data-dismiss="modal" 
+                        style="margin: 0 10px; align-items: center; display: inline-flex;background-color:#eee;color:black !important;" >Cancelar</button>
             </div>
         </div>
     </div>

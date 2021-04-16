@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BaseComponent } from '../../common/base-components/base-component';
 import { CartaPresentacion } from '../../common/models/cartaPresentacion';
@@ -65,7 +65,6 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
 
   ngOnInit(): void {
-    this.obtenerCampanias();
     this.agregarCampoCartaPresentacion();
     this.agregarAcopioCartaPresentacion();
 
@@ -76,6 +75,17 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
         autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
       }
     }, 1000);
+  }
+
+
+  iniciarForm() {
+    if (this.proveedorId > 0) {
+      document.getElementById("openModalHiddenButtonCartaPresentacion").click();
+      this.obtenerCampanias();
+    }
+    else {
+      this.floatMsgService.setInfoMsg("No hay un proveedor seleccionado para completar la carta de presentación.")
+    }
   }
 
   obtenerCampanias() {
@@ -189,6 +199,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
     });
 
     this.cartaPresentacion.campaniaID = this.campaniaActual;
+    this.cartaPresentacion.vendedorCosecha = this.listaCampanias.find(x => x.CampaniaIdActual == this.campaniaActual).CampaniaActual;
     this.cartaPresentacion.vendedorActividad = this.proveedorClasificacion;
 
 
@@ -239,6 +250,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
   }
 
   validarCartaPresentacion() {
+
     //Corredor
     if (
       this.cartaPresentacion.corredorBolsa == "" ||

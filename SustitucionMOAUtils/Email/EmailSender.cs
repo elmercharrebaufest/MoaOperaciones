@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
 namespace SustitucionMOAUtils.Email
 {
@@ -17,14 +18,14 @@ namespace SustitucionMOAUtils.Email
                 return;
             }
 
-            SmtpClient client = getSmtpClient();
+            SmtpClient client = GetSmtpClient();
             var to = EmailConfig.getEmailAddTo();
 
             if (new string[] { "RETENCIONES", "ACTUALIZACIONES" }.Any(c => c.Equals(contactoContenido.categoria, StringComparison.OrdinalIgnoreCase))) to = EmailConfig.getEmailAddToDocumentacion();
 
             MailMessage mail = new MailMessage(EmailConfig.getEmailAddFrom(), to);
             mail.Subject = contactoContenido.categoria;
-            mail.Body = bodyBuilder(contactoContenido);
+            mail.Body = BodyBuilder(contactoContenido);
             mail.ReplyToList.Add(contactoContenido.email);
 
             if (file.Length != 0)
@@ -50,10 +51,10 @@ namespace SustitucionMOAUtils.Email
                 return;
             }
 
-            SmtpClient client = getSmtpClient();
+            SmtpClient client = GetSmtpClient();
             MailMessage mail = new MailMessage(EmailConfig.getEmailAddFrom(), EmailConfig.getEmailAddToFletes());
             mail.Subject = nroProveedor + "-" + nroFactura + "-" + nroProforma;
-            mail.Body = bodyBuilderFletes(nroProveedor, nroFactura, nroProforma, importe);
+            mail.Body = BodyBuilderFletes(nroProveedor, nroFactura, nroProforma, importe);
 
             if (file.Length != 0)
             {
@@ -71,16 +72,52 @@ namespace SustitucionMOAUtils.Email
 
         }
 
-        private static SmtpClient getSmtpClient() {
-            SmtpClient client = new SmtpClient();
-            client.Port = EmailConfig.getEmailPort();
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
-            client.Host = EmailConfig.getEmailHost();
+        public static void SendReporte(ReporteBase reporte)
+        {
+            SmtpClient client = GetSmtpClient();
+            var template = File.ReadAllText(reporte.Template);
+            var cuerpo = string.Format(template, reporte.GetFecha(), reporte.GetBody());
+            MailMessage mail = new MailMessage
+            {
+                From = new MailAddress(EmailConfig.getEmailAddFrom()),
+                Subject = reporte.Asunto,
+                Body = cuerpo,
+                IsBodyHtml = true
+            };
+
+            foreach (Attachment attachment in reporte.Adjuntos)
+            {
+                mail.Attachments.Add(attachment);
+            }
+
+            //Mas de un destinatario
+            if (reporte.Destinatario.Contains(",")){
+                foreach (var destinatario in reporte.Destinatario.Split(','))
+                {
+                    mail.To.Add(destinatario);
+                }
+            }
+            //Solo un destinatario
+            else
+            {
+                mail.To.Add(reporte.Destinatario);
+            }
+
+            client.Send(mail);
+        }
+
+        private static SmtpClient GetSmtpClient() {
+            SmtpClient client = new SmtpClient
+            {
+                Port = EmailConfig.getEmailPort(),
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Host = EmailConfig.getEmailHost()
+            };
             return client;
         }
 
-        private static string bodyBuilder(ContactoContenido contactoContenido) {
+        private static string BodyBuilder(ContactoContenido contactoContenido) {
 
             if (contactoContenido.camposAdicionales == "A")
             {
@@ -110,7 +147,7 @@ namespace SustitucionMOAUtils.Email
 
         }
 
-        private static string bodyBuilderFletes(string nroProveedor, string nroFactura, string nroProforma, string importe)
+        private static string BodyBuilderFletes(string nroProveedor, string nroFactura, string nroProforma, string importe)
         {
             return "Nro. de Proveedor: " + nroProveedor + "\n\n"
                     + "Nro. de Factura: " + nroFactura + "\n\n"
@@ -160,7 +197,7 @@ namespace SustitucionMOAUtils.Email
                     Attachment data = new Attachment(new MemoryStream(archivo), nombreArchivo);
                     oMensaje.Attachments.Add(data);
                 }
-                SmtpClient oCliente = getSmtpClient();
+                SmtpClient oCliente = GetSmtpClient();
                 oCliente.Send(oMensaje);
             }
             catch (Exception ex)

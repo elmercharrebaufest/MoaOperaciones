@@ -2,7 +2,7 @@
 {
     public enum EstadoAprobacion
     {
-        Aprobado,
+        Aprobado = 0,
         DocumentacionPendiente,
         AprobacionPendiente,
         DeshabilitadoEnDataAgro,
@@ -17,7 +17,8 @@
         AnularObservacion,
         PendienteAprobacionCompras,
         RechazadoPorCompras,
-        AltaIncompleta
+        AltaIncompleta,
+        AnularAprobacion
     }
 
     public static class EstadoDeAprobacionExtensions

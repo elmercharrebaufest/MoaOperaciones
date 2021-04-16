@@ -8,7 +8,7 @@ import { DropdownComponent, DropdownOption } from './../common/view-child/dropdo
 import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
 
 
@@ -40,7 +40,13 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'), new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'), new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas')]);
+        this.navService.setSeccionList([
+            new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
+            new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
+            new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
+            new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
+            new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
+        ]);
         this.getData();
     }
 

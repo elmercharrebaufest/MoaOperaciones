@@ -65,6 +65,7 @@
         public const string ABM_USUARIOS = "ABM USUARIOS";
         public const string CAMBIAR_CONTRASENIA = "CAMBIAR CONTRASENIA";
         public const string SELECCIONAR_VENDEDOR = "SELECCIONAR VENDEDOR";
+        public const string ELEGIR_TODOS_VENDEDORES = "ELEGIR TODOS VENDEDORES";
 
         /* PERMISOS VENDEDOR */
         public const string CONSULTAR_DOCUMENTACION = "CONSULTAR DOCUMENTACION";
@@ -88,6 +89,7 @@
 
         /*PESIFICACION*/
         public const string PESIFICACION = "PESIFICACION";
+        public const string VER_PESIFICACION = "VER PESIFICACION";
 
         /*DATA AGRO*/
         public const string DATAAGROLOGIN = "DATAAGROLOGIN";
@@ -115,5 +117,12 @@
         /* PERMISOS CONSULTAS */
         public const string CONSULTA_LISTADO = "LISTADO CONSULTA";
         public const string CONSULTA_AMB = "CONSULTA ABM";
+        /* PERMISOS CAMPO SUSTENTABLE */
+        public const string ABM_CAMPOS_SUSTENTABLE = "ABM CAMPOS SUSTENTABLE";
+        public const string VER_TODOS_CAMPOS_SUSTENTABLE = "VER TODOS CAMPOS SUSTENTABLE";
+        public const string EDICION_CAMPOS_CREADOS = "EDICION CAMPOS CREADOS";
+
+
+
     }
 }

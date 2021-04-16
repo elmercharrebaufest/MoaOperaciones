@@ -1,6 +1,10 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
+import { registerLocaleData } from '@angular/common';
+import { Seccion } from './../../common/models/seccion';
+
+import es from '@angular/common/locales/es';
 declare var $: any;
 
 
@@ -9,14 +13,14 @@ declare var $: any;
     templateUrl: `reporte.contrato.component.html`,
     providers: [{ provide: ReporteService, useClass: ReporteContratoService }]
 })
-export class ReporteContratoComponent extends ReporteBaseComponent {
+export class ReporteContratoComponent extends ReporteBaseComponent implements OnInit {
 
     fechaDesde: any = null;
     fechaHasta: any = null;
     entregaDesde: any = null;
     entregaHasta: any = null;
     fijacionHasta: any = null;
-    
+
     proveedor: any = null;
     boletoId: string = "";
     clasificacionId: string = "";
@@ -34,9 +38,20 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     proveedores = [];
     keyword2 = "RazonSocial";
     proveedorid: any = null;
-
+    motivoAnulacion: string = "";
+    negocioParAanular: any;
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
+    }
+
+    ngOnInit() {
+        registerLocaleData(es);
+        this.navService.setSeccionList(
+            [
+                new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
+                //new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
+            ]
+        );
     }
 
     ngAfterViewInit(): void {
@@ -163,7 +178,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         });
 
         this.getDatosCombos();
-    }   
+    }
 
     obteneContratos() {
         this.mensajeComponent.setMsgsEmpty();
@@ -189,19 +204,30 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                                 DestinoDescripcion: x.DestinoDescripcion,
                                 FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),
                                 FechaHasta: new Date(parseInt(x.FechaHasta.substr(6))),
+                                FechaOperacion: new Date(parseInt(x.FechaOperacion.substr(6))),
                                 Material: x.Material,
                                 Campania: x.Campania,
                                 Clasificacion: x.Clasificacion,
                                 Localidad: x.Localidad,
                                 Consignatario: x.Consignatario,
                                 Estado_Contrato: x.Estado_Contrato,
-                                PagoDiferidoTercero: x.PagoDiferidoTercero,
+                                Estado: x.Estado,
+                                PagoDiferidoTercero: x.PagoDiferidoTercero != true ? "No" : "Si",
                                 DolarizadoTercero: x.DolarizadoTercero,
                                 CalidadTercero: x.CalidadTercero,
-                                SustentableTercero: x.SustentableTercero
+                                SustentableTercero: x.SustentableTercero,
+                                TipoNegocioId: x.TipoNegocioId,
+                                Id: x.Id,
+                                ObservacionTercero: x.ObservacionTercero,
+                                Acuerdo: x.Acuerdo
                             };
                             return item;
                         });
+                        for (var i = 0; i < this.data.length; i++) {
+                            if (this.data[i].PagoDiferidoTercero == "Si") {
+                                this.data[i].PagoDiferidoTercero = this.obtenerPagoDiferido(this.data[i].ObservacionTercero);
+                            }
+                        }
                         console.log(this.data);
                     },
                     error => {
@@ -212,6 +238,15 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         }
     }
 
+    obtenerPagoDiferido(observacion) {
+        var p = observacion.split("|");
+        var n = "Si";
+        var f = p.filter(function (e) { return e.includes("Pago Diferido:") });
+        if (f) {
+            n = f[0].split(":")[1].trim();
+        }
+        return n;
+    }
     validar() {
         var dateParts = $("#noCursor_fechaDesde").val().split("/");
         var fechaDesde = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
@@ -232,36 +267,36 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         this.unsubscribe();
         this.subscription = this.service.exportContratos(this.fechaDesde, this.fechaHasta, this.entregaDesde, this.entregaHasta, this.fijacionHasta, this.corredorId,
             this.proveedorId, this.boletoId, this.clasificacionId, this.destinoId, this.estadoId, this.materialId, this.campaniaId, this.tipoNegocioId, this.pagoDiferidoTercero, this.calidadTercero, this.dolarizadoTercero, this.sustentableTercero, this.contratoCorredor).subscribe(
-            result => {
-                this.spinnerSmallComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    var blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // IE11
-                        window.navigator.msSaveOrOpenBlob(blob, "Contratos.xls");
+                result => {
+                    this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
-                        document.body.appendChild(link);
-                        link.href = url;
-                        link.download = "Contratos.xls";
-                        link.click();
-                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
-                        return false;
+                        var blob = new Blob([result], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(blob, "Contratos.xls");
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = "Contratos.xls";
+                            link.click();
+                            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                            return false;
+                        }
                     }
+                },
+                error => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            error => {
-                this.spinnerSmallComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
+            );
         return false;  // <- Prevent href del a
     }
 
@@ -276,7 +311,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj = JSON.parse(result);
+
+                    let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
 
                     obj.Datos.Bolsa.forEach(element => {
@@ -399,5 +435,47 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         );
     }
 
+    anularNegocio() {
+        if (this.motivoAnulacion == null || this.motivoAnulacion == "") {
+            this.mensajeComponent.setErrorMsg("Ingrese el motivo de anulacion.");
+            document.getElementById("openModalanularModal").click();
+            return;
+        }
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.anularNegocio(this.negocioParAanular.Id, this.negocioParAanular.TipoNegocioId, this.motivoAnulacion).subscribe(
+            (result) => {
+                this.obteneContratos();
+                let obj = JSON.parse(result);
+                if (obj.HayError) {
+                    this.mensajeComponent.setErrorMsg(obj.Errores[0].Message);
+                } else {
+                    this.mensajeComponent.setSuccessMsg("El contrato se anulo correctamente.");
+                }
+                document.getElementById("openModalanularModal").click();
+                this.motivoAnulacion = "";
+                this.negocioParAanular = null;
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+
+    anular(negocio) {
+        console.log(negocio);
+        this.negocioParAanular = negocio;
+        document.getElementById("openModalanularModal").click();
+    }
+    editar(negocio) {
+        if (negocio.TipoNegocioId == 1) {
+            this.navService.navegarSeccion("/crear-contrato/afijar/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 2) {
+            this.navService.navegarSeccion("/crear-contrato/aprecio/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 3) {
+            this.navService.navegarSeccion("/crear-contrato/fijacion/" + negocio.Id);
+        }
+    }
 
 }

@@ -8,12 +8,14 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -28,10 +30,12 @@ namespace SustitucionMOAUtils.Services
     {
 
         protected readonly IRepositorio repositorio;
+        protected readonly ICache cache;
         private readonly string DataAgroURL;
-        public CrearContratoService(IRepositorio repositorio)
+        public CrearContratoService(IRepositorio repositorio, ICache cache)
         {
             this.repositorio = repositorio;
+            this.cache = cache;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
         }
 
@@ -40,31 +44,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarContratoAPrecio");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(contratoAPrecio);
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -86,32 +67,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/Compranet/InicializarContrato");
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
                 var content = JsonConvert.SerializeObject(new { tipoNegocioId = tiponegocio });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-
-                    task.Wait();
-
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-
-                    return scapedJson;
-
-                }
+                return ConsultarDataAaro(url, content);                
             }
             catch (InfoCustomException)
             {
@@ -132,31 +89,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNet/ObtenerDatosCompraNet");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { id = proveedorId });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -177,31 +112,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarContratoAFijar");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(contratoAPrecio);
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -217,38 +129,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
         public string ValidarDirecto(string cuit)
         {
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/ValidarDirecto");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { cuit = cuit });
+                return ConsultarDataAaro(url, content);
 
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
             }
             catch (InfoCustomException)
             {
@@ -270,31 +158,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/Proveedor/BuscarProveedoresConCorredor");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { filtroProveedor = filtro, filtro = cuitCorredor });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -315,30 +181,32 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/HabilitarPizarra");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { material = material, tiponegocio = tiponegocio });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return ConsultarDataAaro(url, content);
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    return scapedJson;
-                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string TraerPagosDiferido(int material, int tiponegocio)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/TraerPagosDiferido");
+                var content = JsonConvert.SerializeObject(new { tipoNegocio = tiponegocio, material = material });
+                return ConsultarDataAaro(url, content);
+
             }
             catch (InfoCustomException)
             {
@@ -359,30 +227,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/HabilitarCampaña");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { material = material });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return ConsultarDataAaro(url, content);
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    return scapedJson;
-                }
             }
             catch (InfoCustomException)
             {
@@ -403,30 +250,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/TraerPrecioMoa");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { material = material, tiponegocio = tiponegocio });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    return scapedJson;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -447,30 +272,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNet/ObtenerFijacionesAutomaticas");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { cuitProveedor, cuitCorredor, materialId, filtro, fijacionId });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    return scapedJson;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -491,31 +294,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarFijacion");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(contratoFijacion);
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -536,31 +316,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/Contrato/BuscaDatosTabla");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(request);
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -576,36 +334,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string ValidarProveedor(string proveedorId )
+        public string ValidarProveedor(string proveedorId)
         {
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNet/ValidarProveedor");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { proveedorId = proveedorId });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    var result = stringContent.Result;
-                    return result;
-                }
+                return ConsultarDataAaro(url, content);
             }
             catch (InfoCustomException)
             {
@@ -626,30 +362,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var url = string.Concat(DataAgroURL, "/CompraNet/TraerPrecioMoa");
-
-
-                string userName = DataAgroWSCredential.getUserName();
-                string password = DataAgroWSCredential.getPassword();
-                string dominio = DataAgroWSCredential.getDominio();
-
-                var httpClientHandler = new HttpClientHandler()
-                {
-                    Credentials = new NetworkCredential(userName, password, dominio),
-                };
-
                 var content = JsonConvert.SerializeObject(new { tipoNegocioId = tipoNegocioId });
-                var buffer = Encoding.UTF8.GetBytes(content);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return ConsultarDataAaro(url, content);
 
-                using (var client = new HttpClient(httpClientHandler, false))
-                {
-                    var task = client.PostAsync(url, byteContent);
-                    task.Wait();
-                    var stringContent = task.Result.Content.ReadAsStringAsync();
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
-                    return scapedJson;
-                }
             }
             catch (InfoCustomException)
             {
@@ -663,6 +378,357 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public List<MaterialDto> BuscarMateriales()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Material/Buscar");
+                JObject json = JObject.Parse(ConsultarDataAaro(url, ""));
+                var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<MaterialDto>>();
+
+                return data;                
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CentroDto> BuscarCentros()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Centro/Buscar");
+
+                JObject json = JObject.Parse(ConsultarDataAaro(url, ""));
+                var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<CentroDto>>();
+
+                return data;
+                
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<CampaniaDto> BuscarCampanias()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/Campana/Buscar");
+                string stringResult = ConsultarDataAaro(url, "");
+                var data = JsonConvert.DeserializeObject<List<CampaniaDto>>(stringResult);
+
+                return data;
+                
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string ObteneContratosAcuerdo(int idDataAgro)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/TraerContratosAcuerdoPorCorredor");
+                var content = JsonConvert.SerializeObject(new { corredorId = idDataAgro });
+                return ConsultarDataAaro(url, content);
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        private string ConsultarDataAaro(string url, string content)
+        {
+            CookiesDataAgro cookiesDataAgro = new CookiesDataAgro();
+            if (cache.Existe("CookiesDataAgro"))
+            {
+                cookiesDataAgro = cache.Obtener<CookiesDataAgro>("CookiesDataAgro");
+                if (!cookiesDataAgro.esValida)
+                {
+                    cache.Remover("CookiesDataAgro");
+                    cookiesDataAgro = Retry.Do(generarCookies, TimeSpan.FromSeconds(1), 4);
+                    cache.Agregar("CookiesDataAgro", cookiesDataAgro, DateTime.Now.AddHours(7));
+                }
+            }
+            else
+            {
+                cookiesDataAgro = Retry.Do(generarCookies, TimeSpan.FromSeconds(1), 4);
+                cache.Agregar("CookiesDataAgro", cookiesDataAgro, DateTime.Now.AddHours(7));
+            }
+            var responseCookies = new List<KeyValuePair<string, string>>();
+
+            foreach (var item in cookiesDataAgro.Cookies)
+            {
+                responseCookies.Add(new KeyValuePair<string, string>(item.Key, item.Value));
+            }
+            var baseAddress = new Uri(url);
+            var cookieContainer = new CookieContainer();
+            using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
+            using (var client2 = new HttpClient(handler) { BaseAddress = baseAddress })
+            {
+                foreach (var cookie in responseCookies)
+                {
+                    cookieContainer.Add(baseAddress, new Cookie(cookie.Key, cookie.Value));
+                }
+                var buffer2 = Encoding.UTF8.GetBytes(content);
+                var byteContent2 = new ByteArrayContent(buffer2);
+                byteContent2.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var task2 = client2.PostAsync(url, byteContent2);
+                task2.Wait();
+                var stringContent2 = task2.Result.Content.ReadAsStringAsync();
+                string scapedJson2 = stringContent2.Result.Replace("ñ", "ni");
+                return scapedJson2;
+            }
+        }
+
+        private CookiesDataAgro generarCookies()
+        {
+            try
+            {
+                CookiesDataAgro cookiesDataAgro = new CookiesDataAgro();
+
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+                var url = string.Concat(DataAgroURL, "/Material/Buscar");
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    UseDefaultCredentials = false,
+                    PreAuthenticate = true,
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                CookieContainer cookies = new CookieContainer();
+                httpClientHandler.CookieContainer = cookies;
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, null);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    JObject json = JObject.Parse(scapedJson);
+                    var data = ((Newtonsoft.Json.Linq.JArray)((Newtonsoft.Json.Linq.JContainer)json.First).First).ToObject<List<MaterialDto>>();
+                }
+                Uri uri = new Uri(url);
+                IEnumerable<Cookie> responseCookies = cookies.GetCookies(uri).Cast<Cookie>();
+                foreach (var item in responseCookies)
+                {
+                    cookiesDataAgro.Cookies.Add(new KeyValuePair<string, string>(item.Name, item.Value));
+                }
+                cookiesDataAgro.Fecha = DateTime.Now;
+                return cookiesDataAgro;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        public BasicoContrato TraerContratoCompleto(int id, string tipo)
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/CompraNet/TraerContratoCompleto");
+                var content = JsonConvert.SerializeObject(new { id = id, tipo = tipo });
+                var scapedJson = ConsultarDataAaro(url, content);
+                var data = JsonConvert.DeserializeObject<BasicoContrato>(scapedJson);
+
+                return data;
+
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos)
+        {
+            try
+            {
+                //var datatest = JsonConvert.DeserializeObject<List<GrabarContratoResult>>("[{\"ContratoId\":1,\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false},{\"ContratoId\":null,\"Errores\":[{\"Item\":0,\"ErrorCode\":0,\"LogId\":0,\"Message\":\"El cuit existe.\",\"Source\":\"Proveedor\",\"LargeDescription\":\"\",\"Translate\":false,\"Format\":\"\",\"Args\":[]}],\"ListaErrores\":[{\"Item\":0,\"ErrorCode\":0,\"LogId\":0,\"Message\":\"El cuit existe.\",\"Source\":\"Proveedor\",\"LargeDescription\":\"\",\"Translate\":false,\"Format\":\"\",\"Args\":[]}],\"HayError\":true,\"HayErrores\":true},{\"ContratoId\":2,\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false},{\"ContratoId\":3,\"Errores\":[],\"ListaErrores\":[],\"HayError\":false,\"HayErrores\":false}]");
+                //return datatest;
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/GrabarContratoMasivo");
+                var content = JsonConvert.SerializeObject(contratos);
+                var scapedJson = ConsultarDataAaro(url, content);
+                var data = JsonConvert.DeserializeObject<List<GrabarContratoResult>>(scapedJson);
+
+                return data;
+                
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
+        {
+            try
+            {
+                var url = "";
+                if (tipoNegocioId == 1 || tipoNegocioId == 2)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularContrato");
+                }
+                else if (tipoNegocioId == 3)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularFijacion");
+                }
+                else
+                {
+                    throw new ValidationCustomException("No se puede anular este tipo de negocios.");
+                }
+                var content = JsonConvert.SerializeObject(new { negocioId = negocioId, MotivoRechazo = motivo });
+                return ConsultarDataAaro(url, content);
+
+                
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string TraerContratoCompleto(int negocioId, int tipoNegocioId)
+        {
+            try
+            {
+                var url = "";
+                if (tipoNegocioId == 1 || tipoNegocioId == 2)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNet/TraerContratoCompleto");
+                }
+                else if (tipoNegocioId == 3)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNet/TraerFijacionCompleto");
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+                var content = JsonConvert.SerializeObject(new { id = negocioId });
+
+                return ConsultarDataAaro(url, content);
+
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string ConfiguracionBolsaAutomatica()
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/ConfiguracionBolsa/DatosConfiguracion");
+                var content = JsonConvert.SerializeObject(new { Page = 1, PageSize = 1000, Take = 1000, Skip = 0 });
+
+                return ConsultarDataAaro(url, content);
+
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public byte[] ExcelModeloAltaMasiva()
+        {
+            byte[] reporte;
+            var url = string.Concat(DataAgroURL, "/ReporteCompraNet/ExcelModeloAltaMasiva");
+            string userName = DataAgroWSCredential.getUserName();
+            string password = DataAgroWSCredential.getPassword();
+            string dominio = DataAgroWSCredential.getDominio();
+            using (WebClient clienteDescarga = new WebClient())
+            {
+                clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+                reporte = clienteDescarga.DownloadData(url);
+            }
+
+            return reporte;
         }
     }
 }

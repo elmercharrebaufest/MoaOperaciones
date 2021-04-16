@@ -39,13 +39,13 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   constructor(protected service: SeleccionarProveedorService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-    
-      super(navService, securytiService, floatMsgService, modalService);
-      this.mensajeComponent = new MensajeComponent();
-      this.spinnerComponent = new SpinnerComponent();
-      this.mensajeModalComponent = new MensajeComponent();
-      this.spinnerModalComponent = new SpinnerComponent();
-}
+
+    super(navService, securytiService, floatMsgService, modalService);
+    this.mensajeComponent = new MensajeComponent();
+    this.spinnerComponent = new SpinnerComponent();
+    this.mensajeModalComponent = new MensajeComponent();
+    this.spinnerModalComponent = new SpinnerComponent();
+  }
 
   data: any;
   vendedorId: any;
@@ -53,17 +53,53 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   selectProveedor: any[];
   filtroProveedor: any[];
   selected: any;
+  proveedorId: any;
 
   ngOnInit() {
     this.getUsuario();
   }
-  
-  @Output() onLocalidadSeleccionada = new EventEmitter<any>();
 
-  @Input() corredorId:number;
+  @Output() onLocalidadSeleccionada = new EventEmitter<any>();
+  @Output() onProveedorSeleccionado = new EventEmitter<any>();
+
+  @Input() corredorId: number;
 
   selectEvent(item) {
-    this.onLocalidadSeleccionada.emit(item);
+
+
+    try {
+      this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
+        (result) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.floatMsgService.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.floatMsgService.setInfoMsg(result.info);
+          } else {
+            console.log(item);
+
+            item = { ...item, proveedorId: result.Id }
+
+            console.log(item);
+
+            this.onLocalidadSeleccionada.emit(item);
+            this.onProveedorSeleccionado.emit(item);
+
+          }
+        },
+        (error) => {
+          this.spinnerComponent.hideIt();
+          this.floatMsgService.setErrorMsg(error.message);
+        }
+      );
+    } catch (e) {
+      this.spinnerComponent.hideIt();
+      this.floatMsgService.setErrorMsg(e);
+      return false; //<-- Prevent Refresh
+    }
+
   }
 
   filterProveedor(event) {
@@ -80,37 +116,37 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   }
 
   getUsuario() {
-    this.mensajeComponent.setMsgsEmpty();
+    this.floatMsgService.setMsgsEmpty();
     this.spinnerComponent.showIt();
     this.unsubscribe();
     try {
-        this.subscription = this.service.getVendedores("", "").subscribe(
-            (result) => {
-                this.spinnerComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    this.data = result.data.vendedores;
-                    this.data.sort((a, b) => (a.descVendedor > b.descVendedor) ? 1 : -1)
-                    this.selectProveedor = [];
-                    this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor}));
-                }
-            },
-            (error) => {
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
+      this.subscription = this.service.getVendedores("", "").subscribe(
+        (result) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.floatMsgService.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.floatMsgService.setInfoMsg(result.info);
+          } else {
+            this.data = result.data.vendedores;
+            this.selectProveedor = [];
+            this.data.forEach(x => this.selectProveedor.push({ label: x.descVendedor, value: x.idVendedor }));
+          }
+        },
+        (error) => {
+          this.spinnerComponent.hideIt();
+          this.floatMsgService.setErrorMsg(error.message);
+        }
+      );
     } catch (e) {
-        this.spinnerComponent.hideIt();
-        this.mensajeComponent.setErrorMsg(e);
-        return false; //<-- Prevent Refresh
+      this.spinnerComponent.hideIt();
+      this.floatMsgService.setErrorMsg(e);
+      return false; //<-- Prevent Refresh
     }
 
     return false; //<-- Prevent Refresh
-}
+  }
+
 }

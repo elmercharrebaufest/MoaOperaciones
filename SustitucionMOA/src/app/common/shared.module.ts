@@ -1,5 +1,5 @@
 ﻿import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { FiltroFechaComponent } from "./view-child/filtro-fecha/filtro-fecha.component";
@@ -26,7 +26,9 @@ import { SeleccionarProveedorComponent } from './shared-components/seleccionar-p
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
-import {AutoCompleteModule} from 'primeng/autocomplete';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { NumericDirective } from './directive/numeric.directive';
+import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -36,12 +38,13 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
         SpinnerModule,
         AutoCompleteModule],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
-        InformeComercialComponent,
-        CartaPresentacionComponent,
-        SeleccionarProveedorComponent,],
+        AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
+        CartaPresentacionComponent, NumericDirective],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
-        AutocompleteLibModule,]
+        AutocompleteLibModule,
+        CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }
