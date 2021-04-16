@@ -1,12 +1,15 @@
 <label *ngIf="displayType==='link'">
-  <span id="openModalHiddenButton" data-toggle="modal" data-target="#myModal" class="link-adjuntar">
+  <span class="link-adjuntar" (click)="iniciarForm()">
     Completar
   </span>
   informe comercial
 </label>
-<button *ngIf="displayType==='button'" id="openModalHiddenButton" data-toggle="modal" data-target="#myModal"
-  class="btn-custom btn-add btn-mediano">
+<button *ngIf="displayType==='button'" (click)="iniciarForm()" class="btn-custom btn-add btn-mediano">
   Informe comercial
+</button>
+
+<button data-target="#myModal" id="openModalHiddenButton" data-toggle="modal" style="display: none">
+
 </button>
 
 
