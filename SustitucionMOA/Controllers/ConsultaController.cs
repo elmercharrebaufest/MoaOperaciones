@@ -52,13 +52,14 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
-        public JsonResult Consulta(Consulta consulta)
+        public JsonResult Consulta(Consulta consulta, Comentario comentario)
         {
             try
             {
                 consulta.Usuario_Id = ObtenerUsuarioActual().Id;
+                //if (Request.Files.Count <= 0) return Json(new { info = "No se adjuntaron archivos" }, JsonRequestBehavior.AllowGet);
 
-                return JsonCustom(consultaService.AgregarConsulta(consulta));
+                return JsonCustom(consultaService.AgregarConsulta(consulta, comentario, Request.Files));
             }
             catch (InfoCustomException e)
             {

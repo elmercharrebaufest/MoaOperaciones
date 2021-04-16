@@ -439,8 +439,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
 
+        let comentario: Comentario = {consulta_Id: null, Detalle: this.nuevoComentario, Fecha: new Date()};
+
         try {
-            this.subscription = this.service.AgregarConsulta(this.consulta).subscribe(
+            this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.files).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -452,12 +454,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
-                        this.postComentario(result.Id, this.nuevoComentario);
                         this.spinnerComponent.hideIt();
-                        setTimeout(() => {
-                            this.blockUI.stop();
-                            this.goToSeccion('/consulta/mis-consultas');
-                        }, 1000);
+                        this.blockUI.stop();
+                        this.goToSeccion('/consulta/mis-consultas');
                     }
                 },
                 error => {

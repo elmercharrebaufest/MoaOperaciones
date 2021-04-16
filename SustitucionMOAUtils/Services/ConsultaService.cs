@@ -49,7 +49,7 @@ namespace SustitucionMOAUtils.Services
 
             return new ComentarioDto(comentario);
         }
-        public ConsultaDto AgregarConsulta(Consulta consulta)
+        public ConsultaDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
         {
             consulta.Id = -1;
             consulta.Detalle.Id = -1;
@@ -85,8 +85,20 @@ namespace SustitucionMOAUtils.Services
 
             Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
 
+            comentario.Usuario_Id = consulta.Usuario_Id;
+
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
+
+            comentario.Usuario_Id = consulta.Usuario_Id;
+            comentario.Id = -1;
+            comentario.Consulta_Id = consulta.Id;
+
+            repositorio.Agregar(comentario);
+            repositorio.GuardarCambios();
+
+            AgregarAdjuntoComentario(consulta.Id, comentario.Id, files);
+
 
             return ObtenerConsulta(consulta.Id);
         }

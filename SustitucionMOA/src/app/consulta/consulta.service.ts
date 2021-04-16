@@ -43,11 +43,17 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public AgregarConsulta(consulta: object) {
+    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any) {
         let body = JSON.stringify(consulta);
+        let coment = JSON.stringify(comentario);
+        let arch = JSON.stringify(archivo);
+        var payload = new FormData();
+        payload.append('consulta', body);
+        payload.append('comentario', coment);
+        payload.append("file", arch);
         let params: URLSearchParams = new URLSearchParams();
         return this.http
-            .post('/api/consulta/Consulta', consulta, { search: params, headers: this.headers }).map(this.extractData);
+            .post('/api/consulta/Consulta', payload ,{ search: params, headers: this.headers }).map(this.extractData);
     }
 
     public getCombos(): Observable<any> {
