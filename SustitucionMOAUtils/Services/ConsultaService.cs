@@ -40,12 +40,33 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario)
+        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario, Boolean esInterno, HttpFileCollectionBase files)
         {
             var consulta = GetConsulta(consultaId);
 
+            if(esInterno && consulta.EstadoConsulta.Code == "GES")
+            {
+                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+                ActualizarEstadoConsulta(consultaId, estado.Id);
+            }
+            if (!esInterno && consulta.EstadoConsulta.Code == "DOC")
+            {
+                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GES");
+                ActualizarEstadoConsulta(consultaId, estado.Id);
+            }
+
+            if(string.IsNullOrWhiteSpace(comentario.Detalle))
+            {
+                comentario.Detalle = "";
+            }
+
             consulta.Comentarios.Add(comentario);
             repositorio.GuardarCambios();
+
+            if (files.Count > 0)
+            {
+                AgregarAdjuntoComentario(consulta.Id, comentario.Id, files);
+            }
 
             return new ComentarioDto(comentario);
         }
@@ -87,18 +108,21 @@ namespace SustitucionMOAUtils.Services
 
             comentario.Usuario_Id = consulta.Usuario_Id;
 
+            if (consulta.Comentarios == null)
+            {
+                consulta.Comentarios = new List<Comentario>();
+            }
+
+            consulta.Comentarios.Add(comentario);
+
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
 
-            comentario.Usuario_Id = consulta.Usuario_Id;
-            comentario.Id = -1;
-            comentario.Consulta_Id = consulta.Id;
-
-            repositorio.Agregar(comentario);
-            repositorio.GuardarCambios();
-
-            AgregarAdjuntoComentario(consulta.Id, comentario.Id, files);
-
+            if(files.Count > 0) 
+            {
+                Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
+                AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
+            }
 
             return ObtenerConsulta(consulta.Id);
         }
@@ -284,10 +308,15 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(ruta);
 
+                if(comentario.Archivos == null)
+                {
+                    comentario.Archivos = new List<Archivo>();
+                }
+
                 comentario.Archivos.Add(new Archivo
                 {
                     FileKey = FileKeys.Consultas,
-                    Ruta = rutaArchivo
+                    Ruta = rutaArchivo,
                 });
 
                 file.SaveAs(rutaArchivo);

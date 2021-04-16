@@ -421,15 +421,13 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.blockUI.stop();
             return;
         }
-    
 
         if(this.fechaPago != '' && this.fechaPago != null){
         var dateParts = this.fechaPago.split("-");
         this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
         } 
     
-
-        this.Detalle = {Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
+        this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
             ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
         }
 
@@ -439,7 +437,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
 
-        let comentario: Comentario = {consulta_Id: null, Detalle: this.nuevoComentario, Fecha: new Date()};
+        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date()};
 
         try {
             this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.files).subscribe(
@@ -467,43 +465,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
-        }
-    }
-
-    postComentario(consultaId, detalle){
-        let comentario: Comentario = {consulta_Id: consultaId, Detalle: detalle, Fecha: new Date()};
-        this.subscription = this.service.agregarComentario(consultaId, comentario).subscribe(
-            result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                    else{
-                        this.postArchivos(result.Id, consultaId);   
-                        this.file = null;
-                    }
-                },
-            );
-    }
-
-    postArchivos(comentarioId, consultaId){
-        if(this.files){
-            for (let i = 0; i < this.files.length; i++){
-                this.subscription = this.service.adjuntar(this.files[i], consultaId, comentarioId).subscribe(
-                    result => {
-                            if (result.logout == true) {
-                                this.sessionDataService.logout();
-                            } else if (result.error != undefined && result.error != "") {
-                                this.mensajeComponent.setErrorMsg(result.error);
-                            } else if (result.info != undefined) {
-                                this.mensajeComponent.setInfoMsg(result.info);
-                            }
-                        },
-                    );
-            }
         }
     }
 

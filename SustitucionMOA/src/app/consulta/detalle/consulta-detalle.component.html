@@ -17,7 +17,7 @@
                             {{comentario.Fecha | date:'dd/MM/yyyy'}}
                         </p>
                     </div>
-                    <div class="row myRow">
+                    <div class="row myRow" *ngIf="comentario.Detalle != '' ">
                         <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
                         class="col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
                             {{comentario.Detalle}}
@@ -62,10 +62,6 @@
                 (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
-            </div>
-            <div *ngIf="esInterno" class="col-xs-12 col-sm-12 col-md-3">
-                <input type="checkbox" [(ngModel)]="solicitudDoc">
-                <label class="solicitudDoc">Solicitud de documentos</label>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6">
                 <p *ngIf="this.file != null">{{this.file.name}}</p>

@@ -43,17 +43,26 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any) {
-        let body = JSON.stringify(consulta);
-        let coment = JSON.stringify(comentario);
-        let arch = JSON.stringify(archivo);
+    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any  = null) {
+        let consultaJson = JSON.stringify(consulta);
+        let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
-        payload.append('consulta', body);
-        payload.append('comentario', coment);
-        payload.append("file", arch);
-        let params: URLSearchParams = new URLSearchParams();
+
+        if(archivo != null)
+        {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo.item(i);
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append('consultaJson', consultaJson);
+        payload.append('comentarioJson', comentarioJson);
+        payload.append("file", archivo);
+        
         return this.http
-            .post('/api/consulta/Consulta', payload ,{ search: params, headers: this.headers }).map(this.extractData);
+            .post('/api/consulta/Consulta',  payload , this.headers).pipe(
+                map(this.extractData));
     }
 
     public getCombos(): Observable<any> {
@@ -76,12 +85,25 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public agregarComentario(consultaId: string, comentario: Comentario): Observable<any>{
-        let body = JSON.stringify(comentario);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
+    public agregarComentario(consultaId: string, comentario: Comentario, esInterno: boolean, archivo: any = null): Observable<any>{
+        let comentarioJson = JSON.stringify(comentario);
+        var payload = new FormData();
+
+        if(archivo != null)
+        {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo.item(i);
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append('comentarioJson', comentarioJson);
+        payload.append('consultaId', consultaId.toString());
+        payload.append('esInterno', esInterno.toString());
+        payload.append("file", archivo);
+
         return this.http
-            .post('/api/consulta/Comentarios', comentario, { search: params, headers: this.headers }).map(this.extractData);
+            .post('/api/consulta/Comentarios', payload, this.headers).map(this.extractData);
     }
 
     public getDetalleConsulta(consultaId: string){

@@ -72,8 +72,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
 
-    solicitudDoc: boolean;
-
     tieneSubcategorias: boolean = false;
     consulta: Consulta;
     comentariosList: any;
@@ -188,11 +186,27 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
     }
 
+    validar()
+    {
+        this.mensajeComponent.setMsgsEmpty();
+        if((this.detalle == undefined || this.detalle == "") && this.file == null){
+            this.floatMsgService.setErrorMsg("Debe adjuntar un archivo o hacer un comentario.");
+            return true;
+        }
+    }
+
     postComentario(){
         this.blockUI.start('Enviando comentario');
+
+        if(this.validar())
+        {
+            this.blockUI.stop();
+            return;
+        }
+
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
-        this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.esInterno, this.file).subscribe(
             result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -204,20 +218,13 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     }
-                    else{      
-                        this.postArchivos(result.Id);
-                        
-                        setTimeout(() => {
-                            this.getDetalleConsulta();
-                            this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
-                            this.blockUI.stop();
-                        }, 800);
+                    else{
+                        this.getDetalleConsulta();
+                        this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                        this.blockUI.stop();
                         
                         this.detalle = "";
                         this.file = null;
-                        if(this.solicitudDoc){
-                            this.cambiarEstadoPorCode("DOC");
-                        }
                     }
                 },
                 error => {

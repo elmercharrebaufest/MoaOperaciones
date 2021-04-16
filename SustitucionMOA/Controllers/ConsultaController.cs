@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -26,14 +28,15 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
-        public JsonResult Comentarios(int consultaId, Comentario comentario)
+        public JsonResult Comentarios(int consultaId, string comentarioJson, Boolean esInterno)
         {
             try
             {
                 if (consultaId <= 0) return Json(new { info = "Id de consulta inválido" }, JsonRequestBehavior.AllowGet);
+                var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
                 comentario.Usuario_Id = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario));
+                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario, esInterno, Request.Files));
             }
             catch (InfoCustomException e)
             {
@@ -52,12 +55,13 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
-        public JsonResult Consulta(Consulta consulta, Comentario comentario)
+        public JsonResult Consulta(string consultaJson, string comentarioJson)
         {
             try
             {
+                var consulta = JsonConvert.DeserializeObject<Consulta>(consultaJson);
+                var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
                 consulta.Usuario_Id = ObtenerUsuarioActual().Id;
-                //if (Request.Files.Count <= 0) return Json(new { info = "No se adjuntaron archivos" }, JsonRequestBehavior.AllowGet);
 
                 return JsonCustom(consultaService.AgregarConsulta(consulta, comentario, Request.Files));
             }
