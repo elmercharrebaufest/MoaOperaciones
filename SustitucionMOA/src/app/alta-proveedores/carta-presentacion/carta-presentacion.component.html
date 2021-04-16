@@ -1,15 +1,17 @@
 <div>
 
   <label *ngIf="displayType==='link'">
-    <span id="openModalHiddenButtonCartaPresentacion" data-toggle="modal" data-target="#modalCartaPresentacion"
-      class="link-adjuntar">
+    <span (click)="iniciarForm()" class="link-adjuntar">
       Completar
     </span>
     la carta de presentación
   </label>
-  <button *ngIf="displayType==='button'" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
-    data-target="#modalCartaPresentacion" class="btn-custom btn-add btn-mediano">
+  <button *ngIf="displayType==='button'" (click)="iniciarForm()" class="btn-custom btn-add btn-mediano">
     Carta de presentación
+  </button>
+  <button data-target="#modalCartaPresentacion" id="openModalHiddenButtonCartaPresentacion" data-toggle="modal"
+    style="display: none">
+
   </button>
 
 

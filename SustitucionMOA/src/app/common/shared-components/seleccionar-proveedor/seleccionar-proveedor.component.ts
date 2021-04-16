@@ -65,8 +65,41 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   @Input() corredorId: number;
 
   selectEvent(item) {
-    this.onLocalidadSeleccionada.emit(item);
-    this.onProveedorSeleccionado.emit(item);
+
+
+    try {
+      this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
+        (result) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.floatMsgService.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.floatMsgService.setInfoMsg(result.info);
+          } else {
+            console.log(item);
+
+            item = { ...item, proveedorId: result.Id }
+
+            console.log(item);
+
+            this.onLocalidadSeleccionada.emit(item);
+            this.onProveedorSeleccionado.emit(item);
+
+          }
+        },
+        (error) => {
+          this.spinnerComponent.hideIt();
+          this.floatMsgService.setErrorMsg(error.message);
+        }
+      );
+    } catch (e) {
+      this.spinnerComponent.hideIt();
+      this.floatMsgService.setErrorMsg(e);
+      return false; //<-- Prevent Refresh
+    }
+
   }
 
   filterProveedor(event) {
