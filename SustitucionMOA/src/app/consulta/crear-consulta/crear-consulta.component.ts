@@ -479,7 +479,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
         this.subcategorias.forEach(x => {
             if(x.CategoriaId == categoria.Id){
-                this.subcategoriasList.push(x);
+                if(x.Code == "INF" && this.esCorredor){
+                }
+                else if(x.Code == "CAP" && !this.esCorredor){
+                }
+                else
+                {
+                    this.subcategoriasList.push(x);
+                }
             }
         });
 

@@ -79,32 +79,48 @@ namespace SustitucionMOAUtils.Services
             consulta.EstadoConsulta_Id = 1;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+            SubCategoria subcatecategoria = repositorio.Obtener<SubCategoria>(s => s.Id == consulta.SubCategoria_Id);
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
+
+
+            if(usuario.TipoUsuario.NombreCorto != "CORR")
+            {
+                if(categoria.Code == "ACT" && subcatecategoria.Code == "CAP")
+                {
+                    throw new InfoCustomException("Tiene que ser corredor para consultar sobre Carta de Presentacion.");
+                }
+            }
+            else
+            {
+                if (categoria.Code == "ACT" && subcatecategoria.Code == "INF")
+                {
+                    throw new InfoCustomException("Tiene que ser proveedor directo para consultar sobre Informe Comercial.");
+                }
+            }
 
             if (categoria.Code == "FIN")
             {
-                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
                 }
                 else
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id; ;
                 }
             }
 
             if (categoria.Code == "PAR")
             {
-                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
-                {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
-                }
-                else
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
                 }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                }
             }
-
-            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
 
             comentario.Usuario_Id = consulta.Usuario_Id;
 
