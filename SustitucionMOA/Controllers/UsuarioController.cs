@@ -243,7 +243,11 @@ namespace SustitucionMOA.Controllers
                 identity.RemoveClaim(identity.FindFirst(Globals.ClaimsNombreType));
                 identity.AddClaim(new Claim(Globals.ClaimsNombreType, descripcion));
 
-                identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorId));
+                if (identity.FindFirst(Globals.ClaimsProveedorId) != null)
+                {
+                    identity.RemoveClaim(identity.FindFirst(Globals.ClaimsProveedorId));
+                }
+
                 identity.AddClaim(new Claim(Globals.ClaimsProveedorId, proveedor.Id.ToString()));
 
                 // tell the authentication manager to use this new identity

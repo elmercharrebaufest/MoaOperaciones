@@ -55,11 +55,8 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
   @Input() displayType: string;
 
   ngOnInit(): void {
-    this.obtenerCampanias();
     this.addFieldValue();
     this.addFieldValueAlm();
-
-
     //Agarramos los input que son de autocomplete de localidad (que usan un componente aparte) y les ponemos en off el autocomplete de chrome, para que no rellene formularios
     setTimeout(() => {
       var autocompletesLocalidad = document.querySelectorAll('[placeholder="Localidad"]');
@@ -68,6 +65,17 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
       }
     }, 1000);
   }
+
+  iniciarForm() {
+    if (this.proveedorId > 0) {
+      document.getElementById("openModalHiddenButtonCartaPresentacion").click();
+      this.obtenerCampanias();
+    }
+    else {
+      this.floatMsgService.setInfoMsg("No hay un proveedor seleccionado para completar el informe comercial.")
+    }
+  }
+
 
   @ViewChild("spinnerModal")
   protected spinnerModal: SpinnerSmallComponent;
