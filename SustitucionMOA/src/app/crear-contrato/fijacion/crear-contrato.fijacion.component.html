@@ -302,7 +302,7 @@
                     </label><label class="labelSwitch"> Pago diferido</label>
                 </div>
                 <div class="form-group col-md-4" *ngIf="contrato.PagoDiferidoTercero == true">
-                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.DiasPesificado" (keypress)="changeDiasDiferido($event)">
+                    <input type="text" class="form-control" numeric decimals="0" [(ngModel)]="contrato.DiasPesificado" (input)="changeDiasDiferido($event)">
                     <label>La cantidad maxima de días de diferimiento es: {{maximoDiasDiferimiento}}</label>
                 </div>
                 <div class="form-group col-md-4" *ngIf="costoFinanciero != null">
@@ -318,7 +318,7 @@
                     </label><label class="labelSwitch"> Dolarizado</label>
                 </div>
                 <div class="form-group col-md-8" *ngIf="contrato.DolarizadoTercero == true">
-                    <input type="text" [(ngModel)]="ObservacionDolarizadoTercero" class="form-control" />
+                    <input type="text" [(ngModel)]="ObservacionDolarizadoTercero" class="form-control" placeholder="{{placeholderDolarizado}} (la fecha del día más 60 días)" />
                 </div>
             </div>
             <div class="row">

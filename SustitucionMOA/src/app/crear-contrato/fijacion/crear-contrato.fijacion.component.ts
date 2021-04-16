@@ -33,6 +33,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         } else {
             this.negocioHabilitado(this.contrato);
         }
+       
     }
 
     ngAfterViewInit(): void {
@@ -151,28 +152,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         }
     }
 
-    //selectEventLocalidad(item) {
-    //    this.contrato.LocalidadId = item.LocalidadId;
-    //    this.contrato.ProvinciaId = item.ProvinciaId;
-    //    if (item.ProvinciaId != 1) {
-    //        this.contrato.EstablecimientoPropio = null;
-    //    }
-    //}
-
-    //onChangeSearchLocalidad(term: string) {
-    //    if (term.length > 2) {
-    //        this.unsubscribe();
-    //        this.subscription = this.service.searchLocalidad(term).subscribe(
-    //            result => {
-    //                this.localidades = result;
-    //            },
-    //            error => {
-    //                this.mensajeComponent.setErrorMsg(error.message);
-    //            }
-    //        );
-    //    }
-    //}
-
     onBoletoSelected() {
         this.contrato.BolsaId = 0;
         if (this.contrato.BoletoId == 1) {
@@ -198,10 +177,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     isVisibleBolsa(): boolean {
         return this.contrato.BoletoId != 3;
     }
-
-    //isVisibleEstablecimiento(): boolean {
-    //    return this.contrato.ProvinciaId == 1;
-    //}
 
     grabarContratoFijacion() {
         console.log(this.contrato);
@@ -311,12 +286,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             return false;
         }
 
-
-        //if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
-        //    return false;
-        //}
-
         if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
             return false;
@@ -329,8 +298,8 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if (this.contrato.DiasPesificado <= 0 && this.contrato.PagoDiferidoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe ingresar la cantidad de días de Pago Diferido.");
+        if (this.contrato.DiasPesificado < 7 && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de Pago Diferido debe ser mayor o igual a 7.");
             return false;
         }
         if (this.costoFinanciero == "La cantidad de días ingresados supera el maximo permitido.") {
@@ -348,21 +317,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.PlanCanje = false;
     }
 
-    //changeClasificacion(event) {
-    //    if (this.contrato.ClasificacionId == 1) {
-    //        this.contrato.PlanCanje = false;
-    //        this.contrato.Consignatario = false;
-    //    }
-    //}
-    //isNotProductor(event) {
-    //    if (this.contrato.ClasificacionId == 1) {
-    //        return false;
-    //    } else {
-    //        return true;
-    //    }
-    //}
-
-
     onChangeMaterial() {
         if (this.contrato.MaterialId != null) {
             this.pendientesFijar = [];
@@ -374,10 +328,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.Pizarra = false;
         }
     }
-    //changePizarra() {
-    //    this.contrato.Precio = 0;
-    //    this.contrato.MonedaId = null;
-    //}
 
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;
@@ -458,8 +408,8 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.costoFinanciero = null;
 
             if (this.contrato.Precio > 0 && this.contrato.PagoDiferidoTercero == true) {
-                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado == 0)) {
-                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor a 0.";
+                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado < 7)) {
+                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor o igual a 7.";
                     return;
                 }
                 let tasa = 0;
@@ -472,8 +422,8 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
                     this.costoFinanciero = "La cantidad de días ingresados supera el maximo permitido.";
                 } else {
                     let precio = Number(this.contrato.Precio.toString().replace(',', '.'));
-                    this.costoFinanciero = (precio + (tasa * precio / 100)).toFixed(2);
-                    console.log("tasa " + tasa + " costo " + this.costoFinanciero);
+                    let costo = Math.round(precio * (tasa / 100) * (this.contrato.DiasPesificado - 3) / 365 * 2) / 2;
+                    this.costoFinanciero = "Precio Neto: " + (precio + costo).toFixed(2);
                 }
             }
 
