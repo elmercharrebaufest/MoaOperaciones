@@ -110,6 +110,7 @@ export class VendedoresListComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.data = result.data.vendedores;
+                        console.table(this.data)
                     }
                 },
                 (error) => {

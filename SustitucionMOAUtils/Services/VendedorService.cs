@@ -80,8 +80,15 @@ namespace SustitucionMOAUtils.Services
             }
 
             List<Models.FechaWS> fechas = CommonService.toDateList(fechaInicio, fechaFin);
+            VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
+            try
+            {
+                response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+            }
+            catch
+            {
 
-            VendedoresWSMOAResponse response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+            }
 
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == usuariomail);
 
@@ -95,7 +102,8 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C")).Select(v => new Vendedor() { descVendedor = v.RazonSocial, estado = v.EstadoAprobacionDescripcion, idVendedor = v.CodigoProveedor });
+            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C"))
+                .Select(v => new Vendedor() { descVendedor = v.RazonSocial, estado = "", estadoMoa = v.EstadoAprobacionDescripcion, idVendedor = v.CodigoProveedor });
 
             response.vendedores.AddRange(vendedoresAprobados);
 
