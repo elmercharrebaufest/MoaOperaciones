@@ -72,6 +72,8 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
 
+    listaArchivos: Array<File> = new Array<File>();
+
     tieneSubcategorias: boolean = false;
     consulta: Consulta;
     comentariosList: any;
@@ -125,8 +127,14 @@ export class DetalleConsultaComponent extends BaseComponent {
     
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
+        let file;
+
         if (fileList.length > 0) {
-            this.file = fileList[0];
+            this.file = fileList;
+            for (let i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                this.listaArchivos.push(file);
+            }
         }
     }
 
@@ -166,26 +174,6 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
-    postArchivos(comentarioId: number){
-        if(this.file){
-            this.subscription = this.service.adjuntar(this.file, this.consultaId, comentarioId).subscribe(
-                result => {
-                    this.spinnerModal.hideIt();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        }
-                    },
-                    error => {
-                        this.spinnerModal.hideIt();
-                    }
-                );
-        }
-    }
-
     validar()
     {
         this.mensajeComponent.setMsgsEmpty();
@@ -206,7 +194,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
-        this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.esInterno, this.file).subscribe(
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.esInterno, this.listaArchivos).subscribe(
             result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -225,6 +213,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                         
                         this.detalle = "";
                         this.file = null;
+                        this.listaArchivos = [];
                     }
                 },
                 error => {
@@ -430,5 +419,10 @@ export class DetalleConsultaComponent extends BaseComponent {
         $(".botonActualizarCombos").click(function(e) {
             e.preventDefault();
         });
+    }
+
+    borrarArchivo(i: number)
+    {
+        this.listaArchivos.splice(i, 1);
     }
 }

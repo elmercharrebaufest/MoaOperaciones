@@ -51,7 +51,7 @@ export class ConsultaService extends BaseService {
         if(archivo != null)
         {
             for (let i = 0; i < archivo.length; i++) {
-                let fileToUpload = archivo.item(i);
+                let fileToUpload = archivo[i];
                 payload.append("file", fileToUpload, fileToUpload.name);
             }
         }
@@ -88,11 +88,11 @@ export class ConsultaService extends BaseService {
     public agregarComentario(consultaId: string, comentario: Comentario, esInterno: boolean, archivo: any = null): Observable<any>{
         let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
-
+        
         if(archivo != null)
         {
             for (let i = 0; i < archivo.length; i++) {
-                let fileToUpload = archivo.item(i);
+                let fileToUpload = archivo[i];
                 payload.append("file", fileToUpload, fileToUpload.name);
             }
         }

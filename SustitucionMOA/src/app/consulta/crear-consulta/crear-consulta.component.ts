@@ -71,7 +71,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     codigoCorredor: any;
     codigoProveedor: any;
-    razonSocialProveedor: string;
+    razonSocialProveedor: string = "";
     razonSocialCorredor: string;
 
     subcategoria: Subcategoria = {
@@ -84,7 +84,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategoriaCode: any;
 
     proveedorSelected: any;
-
+    listaArchivos: Array<File> = new Array<File>();
 
     Detalle: any;
     nuevoComentario: any;
@@ -102,7 +102,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     fecha: Date;
     importe: any;
     impuesto: any;
-    file: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
 
@@ -134,6 +133,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
         else {
             this.codigoProveedor = sessionStorage.getItem("proveedor");
         }
+        $(".adjuntarArchivo").click(function () {
+            $(".adjuntarArchivo1").click();
+        });
     }
 
     ngAfterViewInit(): void {
@@ -157,8 +159,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
+        let file;
+
         if (fileList.length > 0) {
             this.files = fileList;
+            for (let i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                this.listaArchivos.push(file);
+            }
         }
     }
 
@@ -181,7 +189,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.telefono = "";
         this.categoriaDropdownComponent.setSelectItem("");
         this.comentario = "";
-        this.file = null;
         this.fileInput.nativeElement.value = "";
     }
 
@@ -443,7 +450,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date()};
 
         try {
-            this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.files).subscribe(
+            this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -499,6 +506,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
         else {
             this.tieneSubcategorias = true;
         }
+    }
+
+    borrarArchivo(i: number)
+    {
+        this.listaArchivos.splice(i, 1);
     }
 
     Avisos(categoriaCode) {

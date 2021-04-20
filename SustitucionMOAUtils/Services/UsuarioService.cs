@@ -154,7 +154,7 @@ namespace SustitucionMOAUtils.Services
 
             List<string> contacto = new List<string>
             {
-                "BOL", "DATMAE", "PAR", "FIN", "CAL", "COM",
+                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                 "FINDIR", "FINCOR", "FLE"
