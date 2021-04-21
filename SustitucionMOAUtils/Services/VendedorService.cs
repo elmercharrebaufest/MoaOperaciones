@@ -104,8 +104,10 @@ namespace SustitucionMOAUtils.Services
                 .Select(v => new Vendedor() 
                 { 
                     descVendedor = v.RazonSocial, 
-                    estado = "", 
-                    estadoMoa = GetVendedorStatus(v.CUIT, codigoProveedor).status, 
+                    estado = "",
+                    estadoMoa = v.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis || v.EstadoAprobacion == EstadoAprobacion.EtapaFinal 
+                                || v.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente || v.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras 
+                                ? "Alta en Gestión" : v.EstadoAprobacion == EstadoAprobacion.EdicionRequerida ? "Solicitud de información" : v.EstadoAprobacion.ToFriendlyString(),
                     idVendedor = v.CodigoProveedor });
 
             response.vendedores.AddRange(vendedoresAprobados);
