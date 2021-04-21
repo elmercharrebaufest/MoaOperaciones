@@ -3435,6 +3435,7 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
   color: #067935;
 }
 
+/* TODO: Cambiar por una sola clase */
 #misReportes,
 #misOperaciones,
 #infoFinanciera,
@@ -3442,6 +3443,7 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
 #documentacion,
 #contacto,
 #usuarios,
+#compras,
 #faq {
     height: 35px;
 }

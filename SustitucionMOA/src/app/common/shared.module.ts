@@ -2,6 +2,8 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { StepsModule } from 'primeng/steps';
+
 import { FiltroFechaComponent } from "./view-child/filtro-fecha/filtro-fecha.component";
 import { DropdownComponent } from "./view-child/dropdown/dropdown.component";
 import { MensajeComponent } from "./view-child/mensaje/mensaje.component";
@@ -18,11 +20,12 @@ import { ShortenStringPipe } from "./pipes/shortenString";
 import { BaseComponent } from './base-components/base-component';
 import { ListBaseComponent } from './base-components/list-base-component';
 import { ArchivoPipe } from './pipes/archivos.pipe';
+import { StepperComponent } from './view-child/stepper/stepper.component';
 
 @NgModule({
-    imports: [CommonModule, FormsModule],
-    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
-    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
+    imports: [CommonModule, FormsModule, StepsModule],
+    declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, StepperComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe],
+    exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, StepperComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule]
 })
 export class SharedModule { }

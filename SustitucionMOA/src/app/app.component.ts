@@ -105,12 +105,12 @@ export class AppComponent {
         this.sessionDataService.setGranosFlag(result.granosFlag);
         this.sessionDataService.setSeccionesVisitadas(result.seccionesVisitadas);
 
-        sessionStorage.setItem("granosSelected", result.granosFlag);
+        sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
 
 
         //this.navService.navegarSeccion("notificaciones/alta");
-        this.navService.navegarSeccion(result.redirectURL);
+        // this.navService.navegarSeccion(result.redirectURL);
 
         //La URL a donde direccionamos ahora la traemos del controller. Esto es para no tener que estan pasando tantas variables que no nos interesan acá
         //if (result.esNuevoUsuario) {
