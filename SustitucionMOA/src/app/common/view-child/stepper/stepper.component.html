@@ -19,6 +19,7 @@
   color: white;
   position: relative;
   box-shadow: 0px 3px 6px #00000029;
+  cursor: pointer;
 }
 
 .stepper li::after{
@@ -29,6 +30,7 @@
   width: 6em;
   height: .5em;
   background: #F3F3F3;
+  cursor: default;
 }
 
 .stepper li:last-child::after {
@@ -42,6 +44,7 @@
   text-align: center;
   width: 5em;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .stepper .stepper-item-number {
@@ -102,15 +105,8 @@
 
 <div class="stepper">
     <ul role="tablist">
-        <li *ngFor="let item of items; let i = index" [class]="getItemClass(i)">
-                <!-- 'ui-state-default':(i !== activeIndex),
-                'ui-state-complete':(i < activeIndex),
-                'ui-state-disabled ui-steps-incomplete':item.disabled||(i !== activeIndex && readonly)}"> -->
-            <!-- <a *ngIf="!item.routerLink" [href]="item.url||'#'" class="ui-menuitem-link" (click)="itemClick($event, item, i)" [attr.target]="item.target" [attr.id]="item.id">
-                <span class="ui-steps-number">{{i + 1}}</span>
-                <span class="ui-steps-title">{{item.label}}</span>
-            </a> -->
-            <a [href]="item.url||'#'" class="stepper-item" (click)="itemClick($event, item, i)" [attr.target]="item.target" [attr.id]="item.id">
+        <li *ngFor="let item of items; let i = index" [class]="getItemClass(i)" (click)="itemClick($event, item, i)">
+            <a class="stepper-item">
               <span class="stepper-item-number">Paso {{i + 1}}</span>
               <span class="stepper-item-title">{{item.label}}</span>
           </a>

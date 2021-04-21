@@ -4,7 +4,7 @@ export class Paso {
     public Activo: boolean;
     public Completo: boolean;
     public Iniciado: boolean;
-
+    public Numero: Number;
     //activo Azul
     //iniciado completo verde
     //iniciado incompleto naranja
