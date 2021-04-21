@@ -65,7 +65,7 @@
     <Compile Include="Dto\InfoProveedorDataAgroDto.cs" />
     <Compile Include="Dto\InfoProveedorNoGranosDto.cs" />
     <Compile Include="Dto\NotificacionDto.cs" />
-    <Compile Include="Dto\DeclaracionCampoSustentable.cs" />
+    <Compile Include="Dto\DeclaracionCampoSustentableDto.cs" />
     <Compile Include="Dto\Resultado.cs" />
     <Compile Include="Entities\Categoria.cs" />
     <Compile Include="Entities\CausaConsulta.cs" />
@@ -77,6 +77,7 @@
     <Compile Include="Entities\CampoProveedor.cs" />
     <Compile Include="Entities\Cosecha.cs" />
     <Compile Include="Entities\CampoSustentable.cs" />
+    <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />

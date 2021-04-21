@@ -141,7 +141,7 @@ namespace SustitucionMOAUtils.Services
                 },
                 cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
 
-            DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
+            DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
                 CUIT = proveedor.CUIT,
@@ -185,7 +185,7 @@ namespace SustitucionMOAUtils.Services
             return archivoResult;
         }
 
-        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentable datos)
+        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
         {
             var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
             var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
@@ -389,7 +389,7 @@ namespace SustitucionMOAUtils.Services
 
             var cosecha = ObtenerCosechaActual();
 
-            DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
+            DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
                 CUIT = proveedor.CUIT,
