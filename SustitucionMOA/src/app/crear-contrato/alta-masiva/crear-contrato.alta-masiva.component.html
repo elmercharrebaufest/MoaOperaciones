@@ -180,7 +180,7 @@
                     <tbody>
                         <tr *ngFor="let item of conError">
                             <td>{{item.Row+2}}</td>
-                            <td><div *ngIf="item.IsFatal" style='color:red'>Error fatal no se pudo porcesar el archivo.</div><div style="color:lightcoral" *ngFor="let e of item.Errors">{{e}}</div></td>
+                            <td><div *ngIf="item.IsFatal" style='color:red'>No se pudo procesar el archivo.</div><div style="color:lightcoral" *ngFor="let e of item.Errors">{{e}}</div></td>
                         </tr>
                     </tbody>
                 </table>
