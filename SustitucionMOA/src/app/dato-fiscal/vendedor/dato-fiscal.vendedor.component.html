@@ -72,13 +72,24 @@
                                 </div>
                             </th>
                             <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('estado')">
-                                Estado
+                                Estado Sap
                                 <div>
                                     <span>
                                         <i
                                             [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'estado' && orderDirection > 0 }"></i>
                                         <i
                                             [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'estado' && orderDirection < 0 }"></i>
+                                    </span>
+                                </div>
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('estadoMoa')">
+                                Estado Moa
+                                <div>
+                                    <span>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'estadoMoa' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'estadoMoa' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -95,6 +106,7 @@
                             </td>
                             <td>{{vendedor.idVendedor}}</td>
                             <td>{{vendedor.estado}}</td>
+                            <td>{{vendedor.estadoMoa}}</td>
                         </tr>
                     </tbody>
                 </table>
