@@ -28,7 +28,7 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
-        public JsonResult Comentarios(int consultaId, string comentarioJson, Boolean esInterno)
+        public JsonResult Comentarios(int consultaId, string comentarioJson)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace SustitucionMOA.Controllers
                 var comentario = JsonConvert.DeserializeObject<Comentario>(comentarioJson);
                 comentario.Usuario_Id = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario, esInterno, Request.Files));
+                return JsonCustom(consultaService.AgregarComentario(consultaId, comentario, Request.Files));
             }
             catch (InfoCustomException e)
             {

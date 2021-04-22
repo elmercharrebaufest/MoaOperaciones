@@ -31,7 +31,7 @@ namespace SustitucionMOAModel.Dto
         public string OtroComprobanteNo { get; set; }
         public string ContratoNo { get; set; }
         public Decimal? Importe { get; set; }
-        public Decimal? Impuesto { get; set; }
+        public string Impuesto { get; set; }
         public string BolsaEmisoraOblea { get; set; }
 
 

@@ -194,7 +194,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
-        this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.esInterno, this.listaArchivos).subscribe(
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
             result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

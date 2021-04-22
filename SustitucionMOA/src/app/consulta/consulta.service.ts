@@ -85,7 +85,7 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public agregarComentario(consultaId: string, comentario: Comentario, esInterno: boolean, archivo: any = null): Observable<any>{
+    public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any>{
         let comentarioJson = JSON.stringify(comentario);
         var payload = new FormData();
         
@@ -99,7 +99,6 @@ export class ConsultaService extends BaseService {
 
         payload.append('comentarioJson', comentarioJson);
         payload.append('consultaId', consultaId.toString());
-        payload.append('esInterno', esInterno.toString());
         payload.append("file", archivo);
 
         return this.http

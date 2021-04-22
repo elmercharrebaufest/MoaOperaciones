@@ -2,6 +2,8 @@ SET NOCOUNT ON
 BEGIN TRAN
 
 BEGIN
+	--UPDATE EstadoConsulta set Color = '#9e9604', Descripcion = 'Solicitud de información' where Code = 'DOC'
+
 	INSERT INTO EstadoConsulta(Code, Descripcion, Color)
 	VALUES ('INI', 'Iniciado', '#d63838')
 

@@ -5,7 +5,7 @@
 	[Fecha] DATETIME2 NULL, --FechaPago, FechaFactura, FechaOblea
 	[ComprobanteNo] NVARCHAR(max) NULL, --SalidaPagoNo, FacturaNo
 	[ContratoNo] NVARCHAR(max) NULL,
-	[Impuesto] DECIMAL(18, 3) NULL, --ImpuestoRetenido, ImpuestoPercibido, Impuesto
+	[Impuesto] NVARCHAR(MAX) NULL, --ImpuestoRetenido, ImpuestoPercibido, Impuesto
 	[Importe] DECIMAL(18, 3) NULL, --ImporteRetencion
 	[CausaConsulta_Id] INT NULL,
 	[BolsaEmisoraOblea] NVARCHAR(max) NULL,

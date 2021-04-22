@@ -40,11 +40,13 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario, Boolean esInterno, HttpFileCollectionBase files)
+        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario, HttpFileCollectionBase files)
         {
             var consulta = GetConsulta(consultaId);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
+            var esInterno = usuario.TienePermiso("CONSULTA ABM");
 
-            if(esInterno && consulta.EstadoConsulta.Code == "GES")
+            if (esInterno && consulta.EstadoConsulta.Code == "GES")
             {
                 EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
                 ActualizarEstadoConsulta(consultaId, estado.Id);

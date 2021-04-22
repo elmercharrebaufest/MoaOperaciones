@@ -168,6 +168,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.listaArchivos.push(file);
             }
         }
+
+        let $formInput = $('input[type=file]');
+        $formInput.val(null);
     }
 
     vaciarCamposAdicionales() {
