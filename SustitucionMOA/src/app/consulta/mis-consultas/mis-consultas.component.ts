@@ -262,7 +262,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                     } else {
                         this.consultas = result.data.consultas;
                         this.consultas.forEach(x=> {
-                            x.Fecha = new Date(this.getDateFromAspNetFormat(x.Fecha));
+                            x.Fecha = x.Fecha == undefined ? null : new Date(this.getDateFromAspNetFormat(x.Fecha));
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });

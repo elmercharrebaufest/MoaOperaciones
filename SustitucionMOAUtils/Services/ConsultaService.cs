@@ -40,16 +40,39 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario)
+        public ComentarioDto AgregarComentario(int consultaId, Comentario comentario, HttpFileCollectionBase files)
         {
             var consulta = GetConsulta(consultaId);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
+            var esInterno = usuario.TienePermiso("CONSULTA ABM");
+
+            if (esInterno && consulta.EstadoConsulta.Code == "GES")
+            {
+                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+                ActualizarEstadoConsulta(consultaId, estado.Id);
+            }
+            if (!esInterno && consulta.EstadoConsulta.Code == "DOC")
+            {
+                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GES");
+                ActualizarEstadoConsulta(consultaId, estado.Id);
+            }
+
+            if(string.IsNullOrWhiteSpace(comentario.Detalle))
+            {
+                comentario.Detalle = "";
+            }
 
             consulta.Comentarios.Add(comentario);
             repositorio.GuardarCambios();
 
+            if (files.Count > 0)
+            {
+                AgregarAdjuntoComentario(consulta.Id, comentario.Id, files);
+            }
+
             return new ComentarioDto(comentario);
         }
-        public ConsultaDto AgregarConsulta(Consulta consulta)
+        public ConsultaDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
         {
             consulta.Id = -1;
             consulta.Detalle.Id = -1;
@@ -58,35 +81,66 @@ namespace SustitucionMOAUtils.Services
             consulta.EstadoConsulta_Id = 1;
 
             Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+            SubCategoria subcatecategoria = repositorio.Obtener<SubCategoria>(s => s.Id == consulta.SubCategoria_Id);
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
+
+
+            if(usuario.TipoUsuario.NombreCorto != "CORR")
+            {
+                if(categoria.Code == "ACT" && subcatecategoria.Code == "CAP")
+                {
+                    throw new InfoCustomException("Tiene que ser corredor para consultar sobre Carta de Presentacion.");
+                }
+            }
+            else
+            {
+                if (categoria.Code == "ACT" && subcatecategoria.Code == "INF")
+                {
+                    throw new InfoCustomException("Tiene que ser proveedor directo para consultar sobre Informe Comercial.");
+                }
+            }
 
             if (categoria.Code == "FIN")
             {
-                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
                 }
                 else
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id; ;
                 }
             }
 
             if (categoria.Code == "PAR")
             {
-                if (consulta.CodigoCorredor == null || consulta.CodigoCorredor == "")
-                {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
-                }
-                else
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
                 }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                }
             }
 
-            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
+            comentario.Usuario_Id = consulta.Usuario_Id;
+
+            if (consulta.Comentarios == null)
+            {
+                consulta.Comentarios = new List<Comentario>();
+            }
+
+            consulta.Comentarios.Add(comentario);
 
             repositorio.Agregar(consulta);
             repositorio.GuardarCambios();
+
+            if(files.Count > 0) 
+            {
+                Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
+                AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
+            }
 
             return ObtenerConsulta(consulta.Id);
         }
@@ -272,10 +326,15 @@ namespace SustitucionMOAUtils.Services
 
                 Directory.CreateDirectory(ruta);
 
+                if(comentario.Archivos == null)
+                {
+                    comentario.Archivos = new List<Archivo>();
+                }
+
                 comentario.Archivos.Add(new Archivo
                 {
                     FileKey = FileKeys.Consultas,
-                    Ruta = rutaArchivo
+                    Ruta = rutaArchivo,
                 });
 
                 file.SaveAs(rutaArchivo);

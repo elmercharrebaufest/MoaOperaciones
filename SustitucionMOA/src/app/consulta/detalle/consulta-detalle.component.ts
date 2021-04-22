@@ -72,7 +72,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
 
-    solicitudDoc: boolean;
+    listaArchivos: Array<File> = new Array<File>();
 
     tieneSubcategorias: boolean = false;
     consulta: Consulta;
@@ -127,8 +127,14 @@ export class DetalleConsultaComponent extends BaseComponent {
     
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
+        let file;
+
         if (fileList.length > 0) {
-            this.file = fileList[0];
+            this.file = fileList;
+            for (let i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                this.listaArchivos.push(file);
+            }
         }
     }
 
@@ -168,31 +174,27 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
-    postArchivos(comentarioId: number){
-        if(this.file){
-            this.subscription = this.service.adjuntar(this.file, this.consultaId, comentarioId).subscribe(
-                result => {
-                    this.spinnerModal.hideIt();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        }
-                    },
-                    error => {
-                        this.spinnerModal.hideIt();
-                    }
-                );
+    validar()
+    {
+        this.mensajeComponent.setMsgsEmpty();
+        if((this.detalle == undefined || this.detalle == "") && this.file == null){
+            this.floatMsgService.setErrorMsg("Debe adjuntar un archivo o hacer un comentario.");
+            return true;
         }
     }
 
     postComentario(){
         this.blockUI.start('Enviando comentario');
+
+        if(this.validar())
+        {
+            this.blockUI.stop();
+            return;
+        }
+
         this.mensajeComponent.setMsgsEmpty();
         let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
-        this.subscription = this.service.agregarComentario(this.consultaId, comentario).subscribe(
+        this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
             result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -204,20 +206,14 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     }
-                    else{      
-                        this.postArchivos(result.Id);
-                        
-                        setTimeout(() => {
-                            this.getDetalleConsulta();
-                            this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
-                            this.blockUI.stop();
-                        }, 800);
+                    else{
+                        this.getDetalleConsulta();
+                        this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                        this.blockUI.stop();
                         
                         this.detalle = "";
                         this.file = null;
-                        if(this.solicitudDoc){
-                            this.cambiarEstadoPorCode("DOC");
-                        }
+                        this.listaArchivos = [];
                     }
                 },
                 error => {
@@ -423,5 +419,10 @@ export class DetalleConsultaComponent extends BaseComponent {
         $(".botonActualizarCombos").click(function(e) {
             e.preventDefault();
         });
+    }
+
+    borrarArchivo(i: number)
+    {
+        this.listaArchivos.splice(i, 1);
     }
 }
