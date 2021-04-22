@@ -17,10 +17,10 @@ namespace SustitucionMOAUtils.Interfaces
         List<CampoProveedorListadoDto> Listar(string mailUsuario);
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
         List<Cosecha> ObtenerCosechas();
-        string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales);
-        byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, double hectareasTotales);
-        EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId);
-        byte[] ImprimirDeclaracion(int proveedorId);
-        string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, HttpPostedFileBase fileSubido);
+        string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales, int cosechaId);
+        byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales);
+        EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId);
+        byte[] ImprimirDeclaracion(int proveedorId, int cosechaId);
+        string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, HttpPostedFileBase fileSubido);
     }
 }

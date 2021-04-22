@@ -29,7 +29,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   camposSustentables: any[];
-  cosechaActual: string = "";
   razonSocial: string = ""
   CUIT: string = "";
   fechaActual: string = ""
@@ -38,16 +37,21 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   file: File
 
   @Input() proveedorId: number = 0;
+  @Input() nombreCosecha: string = "";
+  @Input() cosechaId: number = 0;
 
-  @Output() proveedorFirmo = new EventEmitter<boolean>();
+  @Output() resultadoDeclaracion = new EventEmitter<boolean>();
 
 
   ngOnInit() {
   }
 
   verificarDeclaracion() {
+    console.log("--proveedorId", this.proveedorId)
+    console.log("--nombreCosecha", this.nombreCosecha)
+    console.log("--cosechaId", this.cosechaId)
     this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.verificarDeclaracion(this.proveedorId).subscribe(
+    this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId).subscribe(
       result => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -58,7 +62,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
         } else {
 
           if (!result.DeclaracionFirmada) {
-            this.cosechaActual = result.CosechaActual;
             this.CUIT = result.CUIT;
             this.razonSocial = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
@@ -98,7 +101,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
           setTimeout(() => {
             this.cerrarModal();
-            this.proveedorFirmo.emit(true)
+            this.resultadoDeclaracion.emit(true)
           }, 3000);
         }
       },
@@ -120,7 +123,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   imprimir() {
     this.subscription = this.service
-      .generarDeclaracionProveedor(this.proveedorId, this.hectareasTotales)
+      .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
       .subscribe(
         (result) => {
           if (result.error) {
@@ -157,9 +160,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   cancelar() {
-    this.proveedorFirmo.emit(false)
+    this.resultadoDeclaracion.emit(false)
     this.cerrarModal();
-    this.goToSeccion('/sustentable/listado-campos');
   }
 
   abrirModalFirmaDeclaracion() {
@@ -172,7 +174,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   adjuntarDeclaracionFirmada() {
     this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.file).subscribe(
+    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.file).subscribe(
       result => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -185,7 +187,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
           setTimeout(() => {
             this.cerrarModal();
-            this.proveedorFirmo.emit(true)
+            this.resultadoDeclaracion.emit(true)
           }, 3000);
         }
       },

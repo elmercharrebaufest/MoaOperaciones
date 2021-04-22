@@ -25,6 +25,7 @@ export class ImpresionDeclaracionComponent extends BaseComponent {
   }
 
   @Input() proveedorId: number = 0;
+  @Input() cosechaId: number = 0;
 
   descargando: boolean = false;
   texto: string = "Imprimir declaración";
@@ -43,7 +44,7 @@ export class ImpresionDeclaracionComponent extends BaseComponent {
     this.descargando = true;
     this.actualizarTextos();
     this.subscription = this.service
-      .imprimirDeclaracion(this.proveedorId)
+      .imprimirDeclaracion(this.proveedorId, this.cosechaId)
       .subscribe(
         (result) => {
           if (result.error) {

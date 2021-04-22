@@ -7,7 +7,9 @@
         </div>
         <mensaje></mensaje>
         <spinner></spinner>
-        <app-declaracion-conformidad [proveedorId]="proveedorId"></app-declaracion-conformidad>
+        <app-declaracion-conformidad [proveedorId]="proveedorId" [cosechaId]="cosechaId"
+            (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
+        </app-declaracion-conformidad>
         <!--End Title-->
         <!-- Form-->
         <div class="row myRow mySearch cargaDeDatos">
@@ -46,7 +48,7 @@
                                     optionLabel="Nombre">
                                 </p-dropdown> -->
 
-                                <select [(ngModel)]="cosechaId">
+                                <select [(ngModel)]="cosechaId" (change)="onChangeCosecha()">
                                     <option *ngFor="let x of cosechas" value="{{x.Id}}">{{x.Nombre}}</option>
                                 </select>
                             </div>

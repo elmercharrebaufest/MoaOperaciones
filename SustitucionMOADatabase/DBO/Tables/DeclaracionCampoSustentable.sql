@@ -2,9 +2,9 @@
 (
 	[Cosecha_Id] INT NOT NULL,
 	[Proveedor_Id] INT NOT NULL,
-	 [FechaFirmaDeclaracionCampoSustentable] DATETIME NULL, 
-    [OpcionDeclaracionCampoSustentable] INT NULL, 
-    [HectareasDeclaracionCampoSustentable] FLOAT NULL, 
+	 [FechaFirma] DATETIME NULL, 
+    [OpcionDeclarada] INT NULL, 
+    [HectareasDeclaradas] FLOAT NULL, 
 
   CONSTRAINT [PK_dbo.DeclaracionCampoSustentable] PRIMARY KEY CLUSTERED 
 (
@@ -12,4 +12,4 @@
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY], 
     CONSTRAINT [FK_DeclaracionCampoSustentable_Cosecha] FOREIGN KEY (Cosecha_Id) REFERENCES [Cosecha]([Id]),
     CONSTRAINT [FK_DeclaracionCampoSustentable_Proveedor] FOREIGN KEY (Proveedor_Id) REFERENCES [Proveedor]([Id])
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+) ON [PRIMARY]

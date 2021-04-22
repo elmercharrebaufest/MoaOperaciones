@@ -109,6 +109,7 @@
     <Build Include="DBO\Tables\CampoCosecha.sql" />
     <Build Include="DBO\Tables\Cosecha.sql" />
     <Build Include="DBO\Tables\CampoProveedor.sql" />
+    <Build Include="DBO\Tables\DeclaracionCampoSustentable.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

@@ -90,9 +90,10 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
-    verificarDeclaracion(proveedorId: number) {
+    verificarDeclaracion(proveedorId: number, cosechaId: number) {
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());
+        params.set("cosechaId", cosechaId.toString());
         return this.http
             .get('/api/CampoSustentable/VerificarDeclaracion', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
@@ -104,24 +105,26 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
-    generarDeclaracionProveedor(proveedorId: number, hectareasTotales: number) {
+    generarDeclaracionProveedor(proveedorId: number, cosechaId: number, hectareasTotales: number) {
         return this.http
-            .post('/api/CampoSustentable/GenerarDeclaracionProveedor', { proveedorId: proveedorId, hectareasTotales: hectareasTotales }, this.headersPost).pipe(
+            .post('/api/CampoSustentable/GenerarDeclaracionProveedor', { proveedorId: proveedorId, cosechaId: cosechaId, hectareasTotales: hectareasTotales }, this.headersPost).pipe(
                 map(this.extractData));
     }
 
-    imprimirDeclaracion(proveedorId: number) {
+    imprimirDeclaracion(proveedorId: number, cosechaId: number) {
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());
+        params.set("cosechaId", cosechaId.toString());
         return this.http
             .get('/api/CampoSustentable/ImprimirDeclaracion', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
 
-    adjuntarDeclaracionFirmada(proveedorId: number, fileSubido: File) {
+    adjuntarDeclaracionFirmada(proveedorId: number, cosechaId: number, fileSubido: File) {
         var payload = new FormData();
 
         payload.append('proveedorId', proveedorId.toString());
+        payload.append('cosechaId', cosechaId.toString());
         payload.append('fileSubido', fileSubido);
         return this.http
             .post('/api/CampoSustentable/AdjuntarDeclaracionFirmada', payload, this.headersPost).pipe(

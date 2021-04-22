@@ -28,6 +28,8 @@ namespace SustitucionMOAModel.Dto
         public int ProveedorId { get; set; }
         public string CodigoProveedor { get; set; }
 
+        public int CosechaId { get; set; }
+
         public override bool Equals(object obj)
         {
             return obj is CampoProveedorListadoDto dto &&
