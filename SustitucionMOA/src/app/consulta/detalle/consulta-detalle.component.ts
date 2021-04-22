@@ -136,6 +136,9 @@ export class DetalleConsultaComponent extends BaseComponent {
                 this.listaArchivos.push(file);
             }
         }
+
+        let $formInput = $('input[type=file]');
+        $formInput.val(null);
     }
 
     comentarioPropio(comentario){
