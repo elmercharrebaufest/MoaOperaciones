@@ -8,6 +8,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { VentaSustentableService } from '../venta-sustentable.service';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
   selector: 'app-declaracion-conformidad',
@@ -21,6 +22,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
+
+  @BlockUI() blockUI: NgBlockUI;
 
   constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMessage: FloatMsgService, protected modalService: ModalService) {
     super(navService, securityService, floatMessage, modalService);
@@ -119,7 +122,10 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   imprimir() {
-    this.subscription = this.service
+    this.blockUI.start('Generando declaración');
+
+    try{
+      this.subscription = this.service
       .generarDeclaracionProveedor(this.proveedorId, this.hectareasTotales)
       .subscribe(
         (result) => {
@@ -154,6 +160,13 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
         () => {
         }
       );
+    }
+    catch(e){
+      this.floatMsgService.setErrorMsg(e);
+    }
+    finally {
+      this.blockUI.stop();
+    }
   }
 
   cancelar() {
