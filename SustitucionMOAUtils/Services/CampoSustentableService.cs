@@ -506,7 +506,8 @@ namespace SustitucionMOAUtils.Services
                                    CampoCosechaId = cp.CampoCosecha_Id,
                                    Proveedor = new ProveedorDto(cp.Proveedor),
                                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                                   CosechaId = cp.CampoCosecha.Cosecha_Id
+                                   CosechaId = cp.CampoCosecha.Cosecha_Id,
+                                   MotivoRechazo = cp.CampoCosecha.MotivoRechazo
                                }).ToList();
             }
             else
@@ -525,7 +526,8 @@ namespace SustitucionMOAUtils.Services
                              CampoCosechaId = cp.CampoCosecha_Id,
                              Proveedor = new ProveedorDto(cp.Proveedor),
                              CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                             CosechaId = cp.CampoCosecha.Cosecha_Id
+                             CosechaId = cp.CampoCosecha.Cosecha_Id,
+                             MotivoRechazo = cp.CampoCosecha.MotivoRechazo
                          }).ToList();
             }
             return listado;

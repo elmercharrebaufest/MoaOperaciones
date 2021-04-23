@@ -126,43 +126,45 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   imprimir() {
     this.blockUI.start('Generando declaración');
-    this.subscription = this.service
-      .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
-      .subscribe(
-        (result) => {
-          if (result.error) {
-            this.floatMessage.setErrorMsg(result.error)
-          } else {
-            var byteArray = new Uint8Array(result.data);
-            var blob = new Blob([byteArray], {
-              type: "application/pdf",
-            });
-            if (window.navigator.msSaveOrOpenBlob) {
-              // IE11
-              window.navigator.msSaveOrOpenBlob(
-                blob,
-                "Declaracion.pdf"
-              );
-            } else {
-              var url = window.URL.createObjectURL(blob);
-              var link = document.createElement("a");
-              document.body.appendChild(link);
-              link.href = url;
-              link.download = "Declaracion.pdf";
-              link.click();
-              setTimeout(function () {
-                window.URL.revokeObjectURL(url);
-              }, 0);
 
-              return false;
+    try {
+      this.subscription = this.service
+        .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
+        .subscribe(
+          (result) => {
+            if (result.error) {
+              this.floatMessage.setErrorMsg(result.error)
+            } else {
+              var byteArray = new Uint8Array(result.data);
+              var blob = new Blob([byteArray], {
+                type: "application/pdf",
+              });
+              if (window.navigator.msSaveOrOpenBlob) {
+                // IE11
+                window.navigator.msSaveOrOpenBlob(
+                  blob,
+                  "Declaracion.pdf"
+                );
+              } else {
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.href = url;
+                link.download = "Declaracion.pdf";
+                link.click();
+                setTimeout(function () {
+                  window.URL.revokeObjectURL(url);
+                }, 0);
+
+                return false;
+              }
             }
+          },
+          () => {
           }
-        },
-        () => {
-        }
-      );
+        );
     }
-    catch(e){
+    catch (e) {
       this.floatMsgService.setErrorMsg(e);
     }
     finally {

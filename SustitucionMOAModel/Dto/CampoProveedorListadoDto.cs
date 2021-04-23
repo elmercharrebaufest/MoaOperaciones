@@ -29,6 +29,7 @@ namespace SustitucionMOAModel.Dto
         public string CodigoProveedor { get; set; }
 
         public int CosechaId { get; set; }
+        public string MotivoRechazo { get; set; }
 
         public override bool Equals(object obj)
         {

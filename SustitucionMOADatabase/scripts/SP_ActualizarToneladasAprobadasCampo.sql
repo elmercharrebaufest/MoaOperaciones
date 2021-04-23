@@ -1,6 +1,6 @@
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[ActualizarToneladasAprobadasCampo]') AND type in (N'P', N'PC'))
-DROP PROCEDURE ActualizarToneladasAprobadasCampo
-GO
+--IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[ActualizarToneladasAprobadasCampo]') AND type in (N'P', N'PC'))
+--DROP PROCEDURE ActualizarToneladasAprobadasCampo
+--GO
 
 CREATE PROCEDURE ActualizarToneladasAprobadasCampo @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT
 AS
