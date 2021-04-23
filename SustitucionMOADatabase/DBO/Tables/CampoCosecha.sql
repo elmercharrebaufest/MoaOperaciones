@@ -5,7 +5,7 @@
     [CampoSustentable_Id] INT NOT NULL,
     [Cosecha_Id] INT NOT NULL, 
     [MotivoRechazo] NVARCHAR(500) NULL, 
-    [StockUtilizado] FLOAT NULL, 
+    [StockDisponible] FLOAT NULL, 
     CONSTRAINT [FK_CampoCosecha_ToCampoSustentable] FOREIGN KEY ([CampoSustentable_Id]) REFERENCES [CampoSustentable](Id),
     CONSTRAINT [FK_CampoCosecha_ToCosecha] FOREIGN KEY ([Cosecha_Id]) REFERENCES [Cosecha](Id)
 )

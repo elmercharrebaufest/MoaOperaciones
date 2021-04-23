@@ -2,7 +2,7 @@
 --DROP PROCEDURE ActualizarToneladasAprobadasCampo
 --GO
 
-CREATE PROCEDURE ActualizarToneladasAprobadasCampo @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT
+CREATE PROCEDURE ActualizarToneladasAprobadasCampo @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500)
 AS
 BEGIN
 BEGIN TRY
@@ -80,18 +80,77 @@ BEGIN TRY
 		RETURN -1
 	END
 
-	UPDATE dbo.CampoCosecha
-	SET ToneladasAprobadas = ISNULL(ToneladasAprobadas,0) + @ToneladasAprobadas
-	WHERE Id = @CampoCosechaId
+    DECLARE @ToneladasAprobadasActuales INT = 0, @StockDisponible DECIMAL
 
-	IF @@ROWCOUNT != 1
-	BEGIN
-		ROLLBACK TRAN
-		RETURN -2
+    SELECT 
+        @ToneladasAprobadasActuales = ToneladasAprobadas,
+        @StockDisponible = StockDisponible
+    FROM 
+        dbo.CampoCosecha
+    WHERE 
+        Id = @CampoCosechaId
+
+
+    DECLARE @Actualizar BIT = 1
+
+    IF @ToneladasAprobadasActuales > 0 AND @ToneladasAprobadas > 0 AND @ToneladasAprobadas <> @ToneladasAprobadasActuales
+    BEGIN 
+        If @StockDisponible > @ToneladasAprobadas
+        BEGIN 
+            IF NOT EXISTS( SELECT TOP 1 1 FROM dbo.ConflictoCampoSustentable WHERE IdCampo = @IdCampo AND IdTSA = @IdTSA AND CUIT = @CUIT AND ToneladasInformadas = @ToneladasAprobadas)
+            BEGIN
+                Set @Actualizar = 0
+                INSERT INTO dbo.ConflictoCampoSustentable
+                (
+                    [IdCampo] 
+                    ,[IdTSA]
+                    ,[IdCampoSutentable] 
+                    ,[ToneladasActuales]
+                    ,[ToneladasInformadas] 
+                    ,[StockDisponible]
+                    ,[CUIT]
+                    ,[MotivoRechazo]
+                    ,[FechaConflicto]
+                    ,[Notificado]
+                )
+                VALUES 
+                (
+                    @IdCampo,
+                    @IdTSA,
+                    @CampoSustentableId,
+                    @ToneladasAprobadasActuales,
+                    @ToneladasAprobadas,
+                    @StockDisponible,
+                    @Cuit,
+                    @MotivoRechazo,
+                    GETDATE(),
+                    0
+                )
+
+            END
+        END
+    END
+
+    IF @Actualizar = 1 
+    BEGIN 
+        UPDATE 
+            dbo.CampoCosecha
+        SET 
+            ToneladasAprobadas = ISNULL(@ToneladasAprobadas,0),
+            MotivoRechazo = ISNULL(@MotivoRechazo, '')
+        WHERE 
+            Id = @CampoCosechaId
+
+        IF @@ROWCOUNT <> 1
+        BEGIN
+            ROLLBACK TRAN
+            RETURN -2
+        END
 	END
 
-COMMIT TRAN
-RETURN 1
+    COMMIT TRAN
+    RETURN 1
+    
 END TRY
 BEGIN CATCH
 	ROLLBACK TRAN
