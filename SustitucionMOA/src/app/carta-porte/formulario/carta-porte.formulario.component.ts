@@ -13,11 +13,8 @@ import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/s
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { Formulario } from './carta-porte.formulario';
-import { Seccion } from './../../common/models/Seccion';
+import { Seccion } from './../../common/models/seccion';
 import { ModalService } from './../../common/services/ModalService';
-
-
-
 
 declare var $: any;
 

@@ -189,7 +189,22 @@ export class CrearContratoService extends BaseService {
         return this.http.get('/api/CrearContrato/TraerPrecioMoaMateriales', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
+    traerContratoCompleto(negocioId, tipoNegocioId): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append('Content-Type', 'application/json');
+        this.headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        this.headers.append('Cache-control', 'no-cache');
+        this.headers.append('Cache-control', 'no-store');
+        this.headers.append('Expires', '0');
+        this.headers.append('Pragma', 'no-cache');
 
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('negocioId', negocioId);
+        params.set('tipoNegocioId', tipoNegocioId);
+
+        return this.http.get('/api/CrearContrato/TraerContratoCompleto', { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
 }
 
 @Injectable()
@@ -204,14 +219,15 @@ export class CrearContratoAPrecioService extends CrearContratoService {
 
 @Injectable()
 export class CrearContratoAFijarService extends CrearContratoService {
-
     
 }
 
 @Injectable()
 export class CrearContratoFijacionService extends CrearContratoService {
-
-    
+ 
+}
+@Injectable()
+export class CrearContratoCargarNegocioService extends CrearContratoService {
 
 }
 

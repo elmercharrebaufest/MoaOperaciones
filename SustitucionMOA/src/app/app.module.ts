@@ -56,6 +56,8 @@ import { FaqComponent } from './faq/faq.component'
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { SolpComponent } from "./compras/solp.component";
+import { DashboardComponent } from './compras/dashboard/dashboard.component';
+import { SolpService } from "./compras/solp.service";
 
 
 @NgModule({
@@ -74,6 +76,7 @@ import { SolpComponent } from "./compras/solp.component";
     SharedModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
+
   ],
   declarations: [
     AppComponent,
@@ -97,7 +100,8 @@ import { SolpComponent } from "./compras/solp.component";
     NumericDirective,
     FaqComponent,
     TicketPesadaComponent,
-    SolpComponent
+    SolpComponent,
+    DashboardComponent
   ],
   providers: [
     DatePipe,
@@ -116,7 +120,8 @@ import { SolpComponent } from "./compras/solp.component";
     EmpresaGranosService,
     EstadoSolicitudService,
     NotificacionesService,
-    TicketPesadaService
+    TicketPesadaService,
+    SolpService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

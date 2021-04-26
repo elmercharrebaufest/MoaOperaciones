@@ -230,6 +230,8 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="Content\images\PesificacionIndividual1.jpg" />
+    <Content Include="Content\images\PesificacionIndividual2.jpg" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -269,6 +271,8 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="PesificacionIndividual1.jpg" />
+    <Content Include="PesificacionIndividual2.jpg" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -313,6 +317,7 @@
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\faq\faq.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
@@ -939,6 +944,7 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />

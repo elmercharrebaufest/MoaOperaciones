@@ -20,6 +20,8 @@ import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 import { SolpComponent } from "./compras/solp.component";
+import { DashboardComponent } from './compras/dashboard/dashboard.component' 
+
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -132,7 +134,10 @@ const appRoutes: Routes = [
 
       {path: "faq",
       component: FaqComponent},
+
       { path: "compras/solp", component: SolpComponent },
+
+      { path: "compras/dashboard", component: DashboardComponent }
 
     ],
   },

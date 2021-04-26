@@ -12,7 +12,7 @@
     public PorcentajeDePago: number;
     public ComercialCreadorId: number;
     public EstadoId: number;
-    public ClasificacionId: number;
+    //public ClasificacionId: number;
     public Observacion: string;
     public CondicionFijacionId: number;
     public DestinoId: number;
@@ -20,8 +20,8 @@
     public BolsaId: number;
     public ProveedorId: number;
     public CorredorId: number;
-    public LocalidadId: number;
-    public ProvinciaId: number;
+    //public LocalidadId: number;
+    //public ProvinciaId: number;
     public StandardDeCalidadId: number;
     public FechaOperacion: Date;
     public DesdeFijacion: Date;
@@ -44,5 +44,6 @@
 
     constructor() {
         this.TipoNegocioId = 3;
+        this.Id = 0;
     }
 }

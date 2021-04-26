@@ -11,6 +11,7 @@ import { SpinnerComponent } from '../common/view-child/spinner/spinner.component
 import { SharedModule } from '../common/shared.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
+import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contrato.cargarnegocio.component';
 
 @NgModule({
     imports: [
@@ -25,6 +26,7 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
         CrearContratoFijacionComponent,
         CrearContratoAFijarComponent,
         CrearContratoAPrecioComponent,
+        CrearContratoCargarNegocioComponent,
     ],
     providers: [
         CrearContratoService

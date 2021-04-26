@@ -576,7 +576,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string ValidarProveedor(string proveedorId )
+        public string ValidarProveedor(string proveedorId)
         {
             try
             {
@@ -604,7 +604,7 @@ namespace SustitucionMOAUtils.Services
                     var stringContent = task.Result.Content.ReadAsStringAsync();
                     string scapedJson = stringContent.Result.Replace("ñ", "ni");
                     var result = stringContent.Result;
-                    return result;
+                    return scapedJson;
                 }
             }
             catch (InfoCustomException)
@@ -676,13 +676,13 @@ namespace SustitucionMOAUtils.Services
                 }
                 else if (tipoNegocioId == 3)
                 {
-                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularFijacionCarga");
+                    url = string.Concat(DataAgroURL, "/CompraNetTercero/AnularFijacion");
                 }
                 else
                 {
                     throw new ValidationCustomException("No se puede anular este tipo de negocios.");
                 }
-              
+
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
@@ -693,7 +693,61 @@ namespace SustitucionMOAUtils.Services
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
 
-                var content = JsonConvert.SerializeObject(new { negocioId = negocioId, MotivoRechazo= motivo });
+                var content = JsonConvert.SerializeObject(new { negocioId = negocioId, MotivoRechazo = motivo });
+                var buffer = Encoding.UTF8.GetBytes(content);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+                using (var client = new HttpClient(httpClientHandler, false))
+                {
+                    var task = client.PostAsync(url, byteContent);
+                    task.Wait();
+                    var stringContent = task.Result.Content.ReadAsStringAsync();
+                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
+                    return scapedJson;
+                }
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public string TraerContratoCompleto(int negocioId, int tipoNegocioId)
+        {
+            try
+            {
+                var url = "";
+                if (tipoNegocioId == 1 || tipoNegocioId == 2)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNet/TraerContratoCompleto");
+                }
+                else if (tipoNegocioId == 3)
+                {
+                    url = string.Concat(DataAgroURL, "/CompraNet/TraerFijacionCompleto");
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+                string userName = DataAgroWSCredential.getUserName();
+                string password = DataAgroWSCredential.getPassword();
+                string dominio = DataAgroWSCredential.getDominio();
+
+                var httpClientHandler = new HttpClientHandler()
+                {
+                    Credentials = new NetworkCredential(userName, password, dominio),
+                };
+
+                var content = JsonConvert.SerializeObject(new { id = negocioId });
                 var buffer = Encoding.UTF8.GetBytes(content);
                 var byteContent = new ByteArrayContent(buffer);
                 byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");

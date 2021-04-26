@@ -29,9 +29,13 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     ngOnInit() {
         super.ngOnInit();
         this.contrato.TipoNegocioId = 1;
-        this.negocioHabilitado(this.contrato);
-        this.contrato.CondicionFijacionId = 7;
-
+        this.contrato.Id = this.id;
+        if (this.id > 0) {
+            this.traerContratoCompleto(this.contrato);
+        } else {
+            this.negocioHabilitado(this.contrato);
+        }
+        this.contrato.CondicionFijacionId = 7;        
     }
 
     ngAfterViewInit(): void {
@@ -277,13 +281,13 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
         this.contrato.MonedaId = "ARP  ";
         this.contrato.Precio = 0;
         this.contrato.PrecioNeto = 0;
-        this.contrato.FechaOperacion = hoysinhora;
-        this.contrato.Fecha = hoy;
+        if (this.contrato.Id == 0) {
+            this.contrato.FechaOperacion = hoysinhora;
+            this.contrato.Fecha = hoy;
+        }
 
-        this.contrato.Id = 0;
         this.contrato.EstadoId = 9;
 
-        this.contrato.ProvinciaId;
         this.contrato.TipoNegocioId = 1;
 
         if (this.contrato.MaterialId == 1) {
@@ -293,7 +297,7 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
             this.contrato.StandardDeCalidadId = 7;
         }
         if (this.contrato.MaterialId == 3) {
-            this.contrato.StandardDeCalidadId = 4;
+            this.contrato.StandardDeCalidadId = 3;
         }
         if (this.contrato.MaterialId == 4) {
             this.contrato.StandardDeCalidadId = 5;
@@ -365,14 +369,25 @@ export class CrearContratoAFijarComponent extends CrearContratoBaseComponent {
     }
 
     validarContrato() {
-        //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.DolarizadoTercero == true) {
-        //  this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");        //    return false;
-        //}
-        //if ((this.contrato.ObservacionTercero == "" || this.contrato.ObservacionTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
-        //    return false;
-        //}
-        
+        if (this.contrato.CantidadCamiones > 0) {
+            var cantidadCamionesNecesarios = Math.ceil(this.contrato.Cantidad / 30000);
+            if (this.contrato.CantidadCamiones > cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es mayor a la necesaria");
+                return;
+            }
+            if (this.contrato.CantidadCamiones < cantidadCamionesNecesarios) {
+                this.mensajeComponent.setErrorMsg("La cantidad de camiones ingresados es menor a la necesaria");
+                return;
+            }
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ComercialId == null)) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar la Zona.");
+            return false;
+        }
+        if ((this.contrato.CorredorId != null || this.contrato.CorredorId > 0) && (this.contrato.ContratoCorredor == null || this.contrato.ContratoCorredor == "")) {
+            this.mensajeComponent.setErrorMsg("Debe ingresar el Contrato Corredor.");
+            return false;
+        }
         if ((this.ObservacionCalidadTercero == "" || this.ObservacionCalidadTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;

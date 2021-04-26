@@ -190,12 +190,14 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                                 DestinoDescripcion: x.DestinoDescripcion,
                                 FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),
                                 FechaHasta: new Date(parseInt(x.FechaHasta.substr(6))),
+                                FechaOperacion: new Date(parseInt(x.FechaOperacion.substr(6))),
                                 Material: x.Material,
                                 Campania: x.Campania,
                                 Clasificacion: x.Clasificacion,
                                 Localidad: x.Localidad,
                                 Consignatario: x.Consignatario,
                                 Estado_Contrato: x.Estado_Contrato,
+                                Estado: x.Estado,
                                 PagoDiferidoTercero: x.PagoDiferidoTercero,
                                 DolarizadoTercero: x.DolarizadoTercero,
                                 CalidadTercero: x.CalidadTercero,
@@ -432,6 +434,17 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         console.log(negocio);
         this.negocioParAanular = negocio;
         document.getElementById("openModalanularModal").click();
+    }
+    editar(negocio) {
+        if (negocio.TipoNegocioId == 1) {
+            this.navService.navegarSeccion("/crear-contrato/afijar/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 2) {
+            this.navService.navegarSeccion("/crear-contrato/aprecio/" + negocio.Id);
+        }
+        if (negocio.TipoNegocioId == 3) {
+            this.navService.navegarSeccion("/crear-contrato/fijacion/" + negocio.Id);
+        }
     }
 
 }
