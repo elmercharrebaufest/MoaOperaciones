@@ -86,12 +86,15 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.FechaModificacion = DateTime.Now;
             /*
             ValidarCampo(usuario, campoProveedor, archivoKmz);
+            */
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
-            campoProveedor.Latitud = campoProveedorObj.Latitud;*/
+            campoProveedor.Latitud = campoProveedorObj.Latitud;
+            campoProveedor.CampoCosecha.ToneladasAprobadas = campoProveedorObj.CampoCosecha.ToneladasAprobadas;
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
+            campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
 
             repositorio.GuardarCambios();
 
@@ -545,6 +548,7 @@ namespace SustitucionMOAUtils.Services
                                 HectareasSoja = cp.HectareasSoja,
                                 HectareasTotales = cp.HectareasTotales,
                                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                                Localidad_Id = cp.CampoCosecha.Campo.Localidad_Id,
                                 ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
                                 Longitud = cp.Longitud,

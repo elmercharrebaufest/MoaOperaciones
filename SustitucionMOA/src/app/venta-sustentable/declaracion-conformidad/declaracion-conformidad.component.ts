@@ -126,7 +126,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   imprimir() {
     this.blockUI.start('Generando declaración');
-    this.subscription = this.service
+    try 
+    {
+      this.subscription = this.service
       .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
       .subscribe(
         (result) => {
@@ -157,8 +159,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
               return false;
             }
           }
-        },
-        () => {
         }
       );
     }

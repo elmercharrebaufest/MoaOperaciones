@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BaseComponent } from '../../base-components/base-component';
 import { FloatMsgService } from '../../services/FloatMsgService';
 import { ModalService } from '../../services/ModalService';
@@ -13,6 +13,8 @@ import { AutocompleteLocalidadService } from './autocomplete-localidad.service';
   styleUrls: ['./autocomplete-localidad.component.css'],
   providers: [AutocompleteLocalidadService],
 })
+
+
 export class AutocompleteLocalidadComponent extends BaseComponent implements OnInit {
 
   constructor(protected service: AutocompleteLocalidadService, protected navService: NavService,
@@ -36,8 +38,16 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
         autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
       }
     }, 1000);
+
+    if(this.localidad_Id != undefined && this.localidad_Id != null)
+    {
+      this.getLocalidadById();
+    }
   }
 
+  @Input() localidad_Id: number;
+  @Input() localidadNombre: string;
+  
   onChangeSearch(query: string) {
     console.log("query:", query)
     if (query.length > 2) {
@@ -52,6 +62,18 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
       );
     }
   }
+
+  getLocalidadById(){
+    this.unsubscribe();
+      this.subscription = this.service.getLocalidadById(this.localidad_Id).subscribe(
+        (result) => {
+          this.localidad = result.Nombre + " (" + result.Provincia.Nombre + ")";
+        },
+        (error) => {
+        }
+      );
+  }
+
 
   selectEvent(item: { LocalidadId: number; }) {
     this.localidadIdSeleccionada = item.LocalidadId;
