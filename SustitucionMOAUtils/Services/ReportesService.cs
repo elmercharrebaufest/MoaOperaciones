@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Data.Entity;
+using SustitucionMOAModel.Dto;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -32,38 +33,44 @@ namespace SustitucionMOAUtils.Services
             var dateToCompare = DateTime.Today;
 
 
-            var camposAReportar = repositorio.Listar<CampoProveedor>(cp => cp.FechaCreacion.HasValue 
-            && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
-            )
-                .Select(cp => new
+            var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDTO>(
+                cp => cp.CampoCosecha.Cosecha.Nombre,
+                cp => new CampoReporteDTO
                 {
-                    cp.CampoCosecha.Campo.IdScato,
-                    cp.CampoCosecha.Campo.Id,
-                    cp.Proveedor.RazonSocial,
-                    cp.Proveedor.CUIT,
-                    cp.CampoCosecha.Campo.Nombre,
+                    IdScato = cp.CampoCosecha.Campo.IdScato,
+                    Id = cp.CampoCosecha.Campo.Id,
+                    RazonSocial = cp.Proveedor.RazonSocial,
+                    CUIT = cp.Proveedor.CUIT,
+                    Nombre = cp.CampoCosecha.Campo.Nombre,
                     Provincia = cp.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Departamento = cp.CampoCosecha.Campo.Localidad.Partido.Descripcion,
                     Localidad = cp.CampoCosecha.Campo.Localidad.Nombre,
-                    cp.Latitud,
-                    cp.Longitud,
-                    cp.HectareasSoja
-                });
+                    Latitud = cp.Latitud,
+                    Longitud = cp.Longitud,
+                    HectareasSoja = cp.HectareasSoja
+                }
+                , cp => cp.FechaCreacion.HasValue
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
+            );
 
-            if (camposAReportar.Any())
+            if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
+            {
+                throw new InfoCustomException("No se encontraron campos sustentables a reportar");
+            }
+
+            foreach (var camposAReportar in camposAReportarPorCosecha)
             {
                 var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Codigo Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
 
                 Attachment archivoZip;
-                var nombreArchivoXls = $"Listado campos.xls";
-                var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd}.zip";
+                var nombreArchivoXls = $"Listado campos {DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].Nombre}.xls";
+                var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].Nombre}.zip";
 
                 var outputMemStream = new MemoryStream();
 
                 using (var zipStream = new ZipOutputStream(outputMemStream))
                 {
                     zipStream.SetLevel(3);
-
 
                     foreach (var campo in camposAReportar)
                     {
@@ -104,26 +111,21 @@ namespace SustitucionMOAUtils.Services
                     {
                         sw.Dispose();
                     }
-                   
+
                 }
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {
-                    Asunto = "Reporte de Liquidaciones Informadas - Resumen Diario",
+                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                     CantidadCampos = camposAReportar.Count(),
                     Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
-                    {
-                       archivoZip,
-                       archivoExcel
-                    }
+                {
+                    archivoZip,
+                    archivoExcel
+                }
                 });
-
-            }
-            else
-            {
-                throw new InfoCustomException("No se encontraron campos sustentables a reportar");
             }
         }
 
@@ -137,7 +139,7 @@ namespace SustitucionMOAUtils.Services
             {
                 EmailSender.SendReporte(new ReporteLiquidacionesInformadas()
                 {
-                    Asunto = "Reporte de Liquidaciones Informadas - Resumen Diario",
+                    Asunto = $"Reporte de Liquidaciones Informadas - Resumen Diario",
                     Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
                     Liquidaciones = liquidacionesAReportar,
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteLiquidacionesInformadas.html")
