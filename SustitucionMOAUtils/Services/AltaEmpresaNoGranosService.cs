@@ -188,6 +188,25 @@ namespace SustitucionMOAUtils.Services
             return info;
         }
 
+        public string EditarAltaEmpresaNoGranos(int proveedorId)
+        {
+            if (proveedorId <= 0)
+            {
+                throw new InfoCustomException("Id invalido.");
+            }
+
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+
+            if (proveedor == null)
+            {
+                throw new InfoCustomException("No se encontro proveedor con este Id.");
+            }
+
+            repositorio.GuardarCambios();
+
+            return "Editado correctamente";
+        }
+
         public string GetRazonSocial(string CUIT)
         {
             try
