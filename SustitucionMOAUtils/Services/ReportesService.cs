@@ -149,6 +149,30 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+
+        public void EnviarReporteConflictosCamposSustentables()
+        {
+            var fechaAReportar = DateTime.Today.AddDays(-1);
+            //Vamos a reportar las liquidaciones informadas del día de ayer
+            var campoSustentablesAReportar = repositorio.Listar<ConflictoCampoSustentable>(cc => !cc.Notificado);
+
+            if (campoSustentablesAReportar.Any())
+            {
+                EmailSender.SendReporte(new ReporteConflictoCampoSustentable()
+                {
+                    Asunto = "Conflictos en reporte de campos sustentables",
+                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
+                    Campos = campoSustentablesAReportar,
+                    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteConflictosCamposSustentables.html")
+                });
+            }
+
+            campoSustentablesAReportar.ForEach(x => x.Notificado = true);
+
+            repositorio.GuardarCambios();
+
+        }
+
         private string MakeValidFileName(string name)
         {
             string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));

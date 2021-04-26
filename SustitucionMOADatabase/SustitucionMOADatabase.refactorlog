@@ -126,4 +126,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="StockDisponible" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c4844c93-ab19-441b-a8c2-bdd45b357125" ChangeDateTime="04/26/2021 17:56:42">
+    <Property Name="ElementName" Value="[dbo].[ConflictoCampoSustentable].[IdCampoSutentable]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ConflictoCampoSustentable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IdCampoSustentable" />
+  </Operation>
 </Operations>
