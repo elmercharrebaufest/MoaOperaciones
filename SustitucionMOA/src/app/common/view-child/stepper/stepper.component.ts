@@ -1,4 +1,4 @@
-﻿import { Component, Input } from '@angular/core';
+﻿import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Paso } from '../../models/paso';
 
@@ -10,6 +10,8 @@ import { Paso } from '../../models/paso';
 export class StepperComponent {
 
     @Input() pasos:Paso[];
+    @Output() change = new EventEmitter<Paso>();
+
     items: MenuItem[];
     activeIndex: number = 3;
     readonly: boolean = false;
@@ -25,10 +27,7 @@ export class StepperComponent {
         if(this.pasos){
             this.pasos.forEach((p,i) => {
                 var item = {
-                    label: p.Nombre,
-                    command: (event: any) => {
-                        this.activeIndex = event.index;
-                    }
+                    label: p.Nombre
                 }
     
                 this.items.push(item);
@@ -56,5 +55,12 @@ export class StepperComponent {
             return "incomplete";
 
         return "";
+    }
+
+    itemClick(event, item, index){
+        var step = this.pasos[index];
+        this.activeIndex = index;
+        
+        this.change.emit(step)
     }
 }

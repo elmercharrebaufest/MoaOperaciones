@@ -9,13 +9,21 @@
         <!-- Form-->
         <div  class="row myRow firstSection">
             <div class="rounded shadow">
-                <stepper [(pasos)]="pasos"></stepper>
+                <stepper [(pasos)]="pasos" (change)="cambioPaso($event)"></stepper>
             </div>
         </div>
 
-        <div>
-            <!-- contenido-->
-            <!-- ngif pasoActual == Paso1 (codigo) mostrar component del paso1, etc -->
+        <div class="row myRow firstSection mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>{{"Paso " + pasoActual.Numero + ": " + pasoActual.Nombre}}</title-caps>
+                </div>
+                <!-- contenido -->
+                <div class="col-xs-12 col-md-12">
+                    <div *ngIf="pasoActual.Codigo == 'PliegoGeneracion1'" >Aca va el cuerpo del paso 1</div>
+                </div>
+            </div>
+            
             <!-- footer dinamico con botones de guardado-->
         </div>
 
