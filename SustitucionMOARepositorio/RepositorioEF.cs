@@ -88,6 +88,17 @@ namespace SustitucionMOARepositorio
             return resultadoFinal.ToList();
         }
 
+        public IEnumerable<List<TProyeccion>> ListarAgrupado<TEntidad, TKey, TProyeccion>(Expression<Func<TEntidad, TKey>> agrupamiento, Expression<Func<TEntidad, TProyeccion>> proyeccion, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class
+        {
+            IQueryable<TEntidad> resultado = Set<TEntidad>();
+            if (filtro != null)
+            {
+                resultado = resultado.Where(filtro);
+            }
+
+            return resultado.GroupBy(agrupamiento, proyeccion).Select(g => g.ToList());
+        }
+
         private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
         {
 
