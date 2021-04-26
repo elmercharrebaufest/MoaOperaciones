@@ -11,6 +11,7 @@ export interface CampoCosecha {
     Campo: CampoSustentable;
     Campo_Id?: number;
     Cosecha_Id: number;
+    ToneladasAprobadas?: number;
 }
 export interface CampoSustentable{
     Nombre: string;
