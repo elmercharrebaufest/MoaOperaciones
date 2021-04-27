@@ -81,6 +81,8 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                         this.contratos = new Array();
                     } else if (result.info != undefined) {
                         this.contratos = new Array();
+                        this.verificarPermiso();
+
                     } else {
                         this.contratos = result;
                         this.verificarPermiso();
@@ -107,7 +109,8 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
         }
         else {
             this.permitirCarga = false;
-            document.getElementById("linkPendiente").click();
+            if (document.getElementById("linkPendiente") != null)
+                document.getElementById("linkPendiente").click();
         }
     }
 
@@ -133,6 +136,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                     this.contrato = "";
                     this.fijacion = "";
                     this.cantidad = 0;
+                    this.verificarPermiso();
                     this.getListaContratos();
                 }
             },
@@ -140,7 +144,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                 this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
                 return false;
-            }
+            },
 
         );
         return false;
