@@ -22,5 +22,6 @@ namespace SustitucionMOAUtils.Interfaces
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId);
         byte[] ImprimirDeclaracion(int proveedorId, int cosechaId);
         string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, HttpPostedFileBase fileSubido);
+        string ExportarCamposProveedores(string mailUsuario);
     }
 }

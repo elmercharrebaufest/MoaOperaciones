@@ -8,6 +8,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
 using System;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -492,50 +494,21 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            List<CampoProveedorListadoDto> listado;
-
-            if (usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE"))
+            return Listar(usuario, cp => new CampoProveedorListadoDto
             {
-                listado = repositorio
-                               .Listar<CampoProveedor>(p => !p.Borrado)
-                               .Select(cp => new CampoProveedorListadoDto
-                               {
-                                   IdScato = cp.CampoCosecha.Campo.IdScato,
-                                   NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                                   HectareasSoja = cp.HectareasSoja,
-                                   HectareasTotales = cp.HectareasTotales,
-                                   NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                                   ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                                   CampoCosechaId = cp.CampoCosecha_Id,
-                                   Proveedor = new ProveedorDto(cp.Proveedor),
-                                   CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                                   CosechaId = cp.CampoCosecha.Cosecha_Id,
-                                   MotivoRechazo = cp.CampoCosecha.MotivoRechazo
-                               }).ToList();
-            }
-            else
-            {
-                var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
-                listado = repositorio
-                         .Listar<CampoProveedor>(p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado)
-                         .Select(cp => new CampoProveedorListadoDto
-                         {
-                             IdScato = cp.CampoCosecha.Campo.IdScato,
-                             NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                             HectareasSoja = cp.HectareasSoja,
-                             HectareasTotales = cp.HectareasTotales,
-                             NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                             ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                             CampoCosechaId = cp.CampoCosecha_Id,
-                             Proveedor = new ProveedorDto(cp.Proveedor),
-                             CodigoProveedor = cp.Proveedor.CodigoProveedor,
-                             CosechaId = cp.CampoCosecha.Cosecha_Id,
-                             MotivoRechazo = cp.CampoCosecha.MotivoRechazo
-                         }).ToList();
-            }
-            return listado;
+                IdScato = cp.CampoCosecha.Campo.IdScato,
+                NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                HectareasSoja = cp.HectareasSoja,
+                HectareasTotales = cp.HectareasTotales,
+                NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                CampoCosechaId = cp.CampoCosecha_Id,
+                Proveedor = new ProveedorDto(cp.Proveedor),
+                CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                CosechaId = cp.CampoCosecha.Cosecha_Id,
+                MotivoRechazo = cp.CampoCosecha.MotivoRechazo
+            });
         }
-
 
         public CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId)
         {
@@ -562,6 +535,28 @@ namespace SustitucionMOAUtils.Services
                             });
 
             return campo;
+        }
+
+        public string ExportarCamposProveedores(string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            //var listado = Listar(usuario, )
+
+            return ExcelExport.ToExcel(Listar(mailUsuario), new[] { "Id Scato", "Cosecha", "Hectáreas de Soja", "Hectáreas Totales", "Campo", "Toneladas Aprobadas",  }, "Reporte Campos Sustentables");
+        }
+
+        private List<TProyeccion> Listar<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
+        {
+            if (usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE"))
+            {
+                return repositorio.Listar(proyeccion, p => !p.Borrado).ToList();
+            }
+            else
+            {
+                var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
+                return repositorio
+                         .Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado).ToList();
+            }
         }
     }
 }
