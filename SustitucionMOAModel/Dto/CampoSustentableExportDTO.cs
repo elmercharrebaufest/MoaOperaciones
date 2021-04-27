@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
-    public class CampoSustentableExportDTO
+    public class CampoSustentableExportDTO : CampoSustentableExportBaseDTO
     {
-        //public string 
+        public int IdScato { get; set; }
     }
 }

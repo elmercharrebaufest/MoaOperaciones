@@ -4,14 +4,23 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Campos sustentables</strong> </div>
-            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                    (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
-                    Nuevo campo
-                </button>
-
+            <div class="col-xs-12 col-sm-6 "><strong>Campos sustentables</strong> </div>
+            <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                        <spinner-small></spinner-small>
+                        <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                            <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                        </a>
+                    </div>
+                    <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+                        (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+                        Nuevo campo
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <!--End Title-->
@@ -106,10 +115,9 @@
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
                             <td>{{campo.CodigoProveedor}}</td>
-                            <td class="estadoRechazado" *ngIf="campo.ToneladasAprobadas == 0">Desaprobado</td>
-
-                            <td class="estadoAprobado" *ngIf="campo.ToneladasAprobadas > 0">Aprobado</td>
-                            <td class="estadoEnGestion" *ngIf="campo.ToneladasAprobadas == -1">En gesti&oacute;n</td>
+                            <td [ngClass]="{'estadoRechazado': campo.ToneladasAprobadas === 0,
+                                            'estadoAprobado': campo.ToneladasAprobadas > 0,
+                                            'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}</td>
                             <td>{{campo.MotivoRechazo || ''}}</td>
                             <td>{{campo.HectareasTotales}}</td>
                             <td>{{campo.HectareasSoja}}</td>

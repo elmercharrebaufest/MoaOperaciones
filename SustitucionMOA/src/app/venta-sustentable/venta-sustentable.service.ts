@@ -130,4 +130,11 @@ export class VentaSustentableService extends BaseService {
             .post('/api/CampoSustentable/AdjuntarDeclaracionFirmada', payload, this.headersPost).pipe(
                 map(this.extractData));
     }
+
+    exportExcel() {
+        return this.http
+            .get('/api/CampoSustentable/ExportarCamposProveedores').pipe(
+                map(this.extractData)
+            );
+    }
 }

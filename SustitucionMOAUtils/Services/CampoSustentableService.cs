@@ -494,7 +494,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            return Listar(usuario, cp => new CampoProveedorListadoDto
+            return Listar(usuario, cp => new CampoProveedorListadoDto ()
             {
                 IdScato = cp.CampoCosecha.Campo.IdScato,
                 NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
@@ -503,10 +503,15 @@ namespace SustitucionMOAUtils.Services
                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
                 ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                 CampoCosechaId = cp.CampoCosecha_Id,
-                Proveedor = new ProveedorDto(cp.Proveedor),
+                Proveedor = new ProveedorDto()
+                {
+                    Id = cp.Proveedor.Id,
+                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    RazonSocial = cp.Proveedor.RazonSocial
+                },
                 CodigoProveedor = cp.Proveedor.CodigoProveedor,
                 CosechaId = cp.CampoCosecha.Cosecha_Id,
-                MotivoRechazo = cp.CampoCosecha.MotivoRechazo
+                MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
             });
         }
 
@@ -540,22 +545,55 @@ namespace SustitucionMOAUtils.Services
         public string ExportarCamposProveedores(string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            //var listado = Listar(usuario, )
+            var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
+            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas" };
+            dynamic listado;
 
-            return ExcelExport.ToExcel(Listar(mailUsuario), new[] { "Id Scato", "Cosecha", "Hectáreas de Soja", "Hectáreas Totales", "Campo", "Toneladas Aprobadas",  }, "Reporte Campos Sustentables");
+            if (esAdminCampos)
+            {
+                headersBase.Insert(0, "Id Scato");
+                listado = Listar(usuario, cp => new CampoSustentableExportDTO()
+                {
+                    Campo = cp.CampoCosecha.Campo.Nombre,
+                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                    HectareasSoja = cp.HectareasSoja,
+                    HectareasTotales = cp.HectareasTotales,
+                    IdScato = cp.CampoCosecha.Campo.IdScato,
+                    Motivo = cp.CampoCosecha.MotivoRechazo,
+                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                });
+
+                
+            }
+            else
+            {
+                listado = Listar(usuario, cp => new CampoSustentableExportBaseDTO()
+                {
+                    Campo = cp.CampoCosecha.Campo.Nombre,
+                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                    HectareasSoja = cp.HectareasSoja,
+                    HectareasTotales = cp.HectareasTotales,
+                    Motivo = cp.CampoCosecha.MotivoRechazo,
+                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                });
+
+            }
+
+            return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
         }
 
         private List<TProyeccion> Listar<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
         {
-            if (usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE"))
+            if (usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE"))
             {
-                return repositorio.Listar(proyeccion, p => !p.Borrado).ToList();
+                return repositorio.Listar(proyeccion, p => !p.Borrado);
             }
             else
             {
                 var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
-                return repositorio
-                         .Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado).ToList();
+                return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado);
             }
         }
     }
