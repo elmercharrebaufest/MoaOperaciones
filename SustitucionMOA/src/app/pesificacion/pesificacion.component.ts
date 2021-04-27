@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
 import { PesificacionService } from './pesificacion.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -19,7 +19,7 @@ declare var $: any;
     providers: [PesificacionService]
 })
 
-export class PesificacionComponent extends ListBaseComponent implements OnInit, AfterViewInit {
+export class PesificacionComponent extends ListBaseComponent implements OnInit, OnDestroy {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -83,6 +83,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                         this.contratos = new Array();
                     } else {
                         this.contratos = result;
+                        this.verificarPermiso();
                     }
                 },
                 error => {
@@ -100,11 +101,12 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
         return false; //<-- Prevent Refresh
     }
 
-    ngAfterViewInit() {
+    verificarPermiso() {
         if (this.securityService.tienePermiso("PESIFICACION")) {
             this.permitirCarga = true;
         }
         else {
+            this.permitirCarga = false;
             document.getElementById("linkPendiente").click();
         }
     }
@@ -127,6 +129,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.fecha = result;
+
                     this.contrato = "";
                     this.fijacion = "";
                     this.cantidad = 0;

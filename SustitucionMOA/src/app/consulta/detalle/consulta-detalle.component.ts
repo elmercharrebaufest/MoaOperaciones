@@ -51,16 +51,16 @@ export class DetalleConsultaComponent extends BaseComponent {
         protected sessionDataService: SessionDataService,
         protected floatMsgService: FloatMsgService,
         protected modalService: ModalService) {
-            super(navService, securityService, floatMsgService, modalService);
-            this.mensajeComponent = new MensajeComponent();
-            this.spinnerComponent = new SpinnerComponent();
+        super(navService, securityService, floatMsgService, modalService);
+        this.mensajeComponent = new MensajeComponent();
+        this.spinnerComponent = new SpinnerComponent();
     }
     categoriaSelected: any;
     estados: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
     causasConsulta: any;
-    
+
     causaConsulta: any
     causaConsultaId: number = 0;
 
@@ -92,10 +92,17 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.setMenuSeccionTab("consulta", "detalle");
     }
 
-    ngOnInit(){
+    ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+
+        if (this.securityService.tienePermiso("CARGAR CONSULTA")) {
+            this.navService.setSeccionList([new Seccion('/consulta/crear-consulta', 'crear-consulta', 'Nueva Consulta'), new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+        }
+        else {
+            this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
+        }
+
         this.jqueryOnInit();
         this.getConsultaId();
         this.getDetalleConsulta();
@@ -106,25 +113,25 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.scrollBottom();
         setTimeout(() => {
             this.subcategoriasInicial();
-            if(this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno){
+            if (this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno) {
                 this.cambiarEstadoPorCode("GES");
             }
         }, 500);
     }
 
-    scrollBottom(){
+    scrollBottom() {
         this.detalleConsulta.nativeElement.scrollTop = this.detalleConsulta.nativeElement.scrollHeight;
-        }
+    }
 
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);
     }
 
-    getConsultaId(){
+    getConsultaId() {
         const queryString = window.location.href;
         this.consultaId = queryString.split('=')[1];
     }
-    
+
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
         let file;
@@ -141,25 +148,25 @@ export class DetalleConsultaComponent extends BaseComponent {
         $formInput.val(null);
     }
 
-    comentarioPropio(comentario){
+    comentarioPropio(comentario) {
         return ((this.consulta.UsuarioId == comentario.UsuarioId && this.consulta.UsuarioId == this.consulta.UsuarioActualId) ||
-        (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno))
+            (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno))
     }
 
-    actualizarCombos() {  
+    actualizarCombos() {
         this.spinnerSmallComponent.showIt();
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
 
-        if(this.causaConsulta != undefined){
+        if (this.causaConsulta != undefined) {
             this.causaConsultaId = this.causaConsulta.Id;
         }
 
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
-            result => {
-                this.spinnerComponent.hideIt();
-                this.spinnerSmallComponent.hideIt();
+                result => {
+                    this.spinnerComponent.hideIt();
+                    this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -167,7 +174,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     }
-                    else{
+                    else {
                         this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },
@@ -177,84 +184,82 @@ export class DetalleConsultaComponent extends BaseComponent {
             );
     }
 
-    validar()
-    {
+    validar() {
         this.mensajeComponent.setMsgsEmpty();
-        if((this.detalle == undefined || this.detalle == "") && this.file == null){
+        if ((this.detalle == undefined || this.detalle == "") && this.file == null) {
             this.floatMsgService.setErrorMsg("Debe adjuntar un archivo o hacer un comentario.");
             return true;
         }
     }
 
-    postComentario(){
+    postComentario() {
         this.blockUI.start('Enviando comentario');
 
-        if(this.validar())
-        {
+        if (this.validar()) {
             this.blockUI.stop();
             return;
         }
 
         this.mensajeComponent.setMsgsEmpty();
-        let comentario: Comentario = {consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date()};
+        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date() };
         this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
             result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                        this.blockUI.stop();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                        this.blockUI.stop();
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                        this.blockUI.stop();
-                    }
-                    else{
-                        this.getDetalleConsulta();
-                        this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
-                        this.blockUI.stop();
-                        
-                        this.detalle = "";
-                        this.file = null;
-                        this.listaArchivos = [];
-                    }
-                },
-                error => {
-                    this.spinnerModal.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                    this.blockUI.stop();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                    this.blockUI.stop();
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                    this.blockUI.stop();
                 }
-            );
+                else {
+                    this.getDetalleConsulta();
+                    this.mensajeComponent.setSuccessMsg("Comentario enviado correctamente");
+                    this.blockUI.stop();
+
+                    this.detalle = "";
+                    this.file = null;
+                    this.listaArchivos = [];
+                }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+            }
+        );
     }
 
-    cambiarEstadoPorCode(code: string){
+    cambiarEstadoPorCode(code: string) {
         var estadoIdGestion;
         this.estados.forEach(x => {
-            if(x.Code == code){
+            if (x.Code == code) {
                 estadoIdGestion = x.Id;
             }
         });
         this.mensajeComponent.setMsgsEmpty();
         this.subscription = this.service.actualizarEstado(estadoIdGestion, this.consultaId).subscribe(
             result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                    else{      
-                        this.mensajeComponent.setSuccessMsg("El estado de la consulta cambio correctamente");
-                        this.getDetalleConsulta();
-                    }
-                },
-                error => {
-                    this.spinnerModal.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
                 }
-            );   
+                else {
+                    this.mensajeComponent.setSuccessMsg("El estado de la consulta cambio correctamente");
+                    this.getDetalleConsulta();
+                }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+            }
+        );
     }
 
-    disable(){
-        if(this.consulta.EstadoConsulta.Code != 'GES' && this.consulta.EstadoConsulta.Code != 'DOC' && !this.esInterno){
+    disable() {
+        if (this.consulta.EstadoConsulta.Code != 'GES' && this.consulta.EstadoConsulta.Code != 'DOC' && !this.esInterno) {
             return true;
         }
 
@@ -263,42 +268,42 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     descargarArchivo(archivoId: number) {
         this.service.DescargarArchivo(archivoId)
-        .subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {
-                    var byteArray = new Uint8Array(result.FileContents);
-                    var blob = new Blob([byteArray], {
-                        type: "application/octet-stream",
-                    });
-
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // IE11
-                        window.navigator.msSaveOrOpenBlob(
-                            blob,
-                            result.FileDownloadName
-                        );
-                    } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
-                        document.body.appendChild(link);
-                        link.href = url;
-                        link.download = result.FileDownloadName;
-                        link.click();
-                        setTimeout(function () {
-                            window.URL.revokeObjectURL(url);
-                        }, 0);
-                        return false;
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
                     }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            return false;
+                        }
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.spinnerSmallComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        )
+            )
     }
 
     getCombos() {
@@ -314,13 +319,13 @@ export class DetalleConsultaComponent extends BaseComponent {
                     } else {
                         this.categorias = result.categorias;
                         this.categoriasList = [];
-                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id}));
+                        this.categorias.forEach(x => this.categoriasList.push({ label: x.Nombre, value: x.Id }));
                         this.estados = result.estados;
                         this.estadosList = [];
-                        this.estados.forEach(x => this.estadosList.push({ label: x.Descripcion, value: x.Id}));
+                        this.estados.forEach(x => this.estadosList.push({ label: x.Descripcion, value: x.Id }));
                         this.subcategorias = result.subcategorias;
                         this.subcategoriasList = [];
-                        this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
+                        this.subcategorias.forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id }));
                         /*
                         if(this.subcategoriasList.length > 0){
                             this.tieneSubcategorias = true;
@@ -332,7 +337,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
 
-                );
+            );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
@@ -341,91 +346,90 @@ export class DetalleConsultaComponent extends BaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    getDetalleConsulta(){
+    getDetalleConsulta() {
         this.subscription = this.service.getDetalleConsulta(this.consultaId).subscribe(
             result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    }
-                    else {
-                        this.consulta = result;
-                        this.consulta.Comentarios.forEach(x => {
-                            x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
-                        });
-                        this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
-                        this.estadoId = result.EstadoConsultaId;
-                        this.categoriaId = result.CategoriaId;
-                        this.subcategoriaId = result.SubCategoriaId;
-                        try{
-                            setTimeout(() => {  this.scrollBottom(); }, 200);
-                        }
-                        catch{
-                        }
-                    }
-                },
-                error => {
-                    this.spinnerModal.hideIt();
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
                 }
-            );
+                else {
+                    this.consulta = result;
+                    this.consulta.Comentarios.forEach(x => {
+                        x.Fecha = new Date(this.getDateFromAspNetFormat(x.Fecha));
+                    });
+                    this.consulta.FechaCreacion = new Date(this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
+                    this.estadoId = result.EstadoConsultaId;
+                    this.categoriaId = result.CategoriaId;
+                    this.subcategoriaId = result.SubCategoriaId;
+                    try {
+                        setTimeout(() => { this.scrollBottom(); }, 200);
+                    }
+                    catch {
+                    }
+                }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+            }
+        );
     }
 
-    subcategoriasInicial(){
+    subcategoriasInicial() {
         this.subcategoriasList = [];
         this.subcategorias.forEach(x => {
-            if(x.CategoriaId == this.categoriaId){
-                this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
+            if (x.CategoriaId == this.categoriaId) {
+                this.subcategoriasList.push({ label: x.Nombre, value: x.Id });
             }
         });
 
-        if(this.subcategoriasList.length > 0){
+        if (this.subcategoriasList.length > 0) {
             this.tieneSubcategorias = true;
         }
-        else{
+        else {
             this.tieneSubcategorias = false;
         }
     }
 
-    setSubcategorias(categoriasSeleccionadas){
-        if(this.subcategorias){
+    setSubcategorias(categoriasSeleccionadas) {
+        if (this.subcategorias) {
             this.subcategoriasList = [];
             //this.subcategorias.filter(x=> categoriasSeleccionadas.length == 0 || categoriasSeleccionadas.map(y=> y.Id).includes(x.CategoriaId)).forEach(x => this.subcategoriasList.push({ label: x.Nombre, value: x.Id}));
             this.subcategorias.forEach(x => {
-                if(x.CategoriaId == categoriasSeleccionadas){
-                    this.subcategoriasList.push({ label: x.Nombre, value: x.Id});
+                if (x.CategoriaId == categoriasSeleccionadas) {
+                    this.subcategoriasList.push({ label: x.Nombre, value: x.Id });
                 }
             });
         }
 
-        if(this.subcategoriasList.length > 0){
+        if (this.subcategoriasList.length > 0) {
             this.tieneSubcategorias = true;
         }
-        else{
+        else {
             this.tieneSubcategorias = false;
         }
         return this.subcategoriasList;
     }
 
-    jqueryOnInit(){
+    jqueryOnInit() {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
-        $('.enviarComentario').click(function(e){
+        $('.enviarComentario').click(function (e) {
             e.preventDefault();
         });
-        $(".archivosDescarga").click(function(e) {
+        $(".archivosDescarga").click(function (e) {
             e.preventDefault();
         });
-        $(".botonActualizarCombos").click(function(e) {
+        $(".botonActualizarCombos").click(function (e) {
             e.preventDefault();
         });
     }
 
-    borrarArchivo(i: number)
-    {
+    borrarArchivo(i: number) {
         this.listaArchivos.splice(i, 1);
     }
 }
