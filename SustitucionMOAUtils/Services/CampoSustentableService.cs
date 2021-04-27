@@ -494,7 +494,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            return Listar(usuario, cp => new CampoProveedorListadoDto ()
+            return ListarCampos(usuario, cp => new CampoProveedorListadoDto ()
             {
                 IdScato = cp.CampoCosecha.Campo.IdScato,
                 NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
@@ -548,11 +548,11 @@ namespace SustitucionMOAUtils.Services
             var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
             var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas" };
             dynamic listado;
-
+            
             if (esAdminCampos)
             {
                 headersBase.Insert(0, "Id Scato");
-                listado = Listar(usuario, cp => new CampoSustentableExportDTO()
+                listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
                     CodigoProveedor = cp.Proveedor.CodigoProveedor,
@@ -563,12 +563,10 @@ namespace SustitucionMOAUtils.Services
                     Motivo = cp.CampoCosecha.MotivoRechazo,
                     ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
                 });
-
-                
             }
             else
             {
-                listado = Listar(usuario, cp => new CampoSustentableExportBaseDTO()
+                listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
                     CodigoProveedor = cp.Proveedor.CodigoProveedor,
@@ -584,7 +582,7 @@ namespace SustitucionMOAUtils.Services
             return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
         }
 
-        private List<TProyeccion> Listar<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
+        private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
         {
             if (usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE"))
             {
