@@ -247,7 +247,7 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha.Id).DeclaracionFirmada)
+            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id).DeclaracionFirmada)
             {
                 throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
             }
@@ -358,6 +358,11 @@ namespace SustitucionMOAUtils.Services
 
         public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, HttpPostedFileBase fileSubido)
         {
+            if (fileSubido == null)
+            {
+                throw new ValidationCustomException("Debe subir el archivo de declaración en formato PDF");
+            }
+
             if (Path.GetExtension(fileSubido.FileName).ToLower() != ".pdf")
             {
                 throw new ValidationCustomException("Debe subir el archivo de declaración en formato PDF");
@@ -487,14 +492,14 @@ namespace SustitucionMOAUtils.Services
 
         public List<Cosecha> ObtenerCosechas()
         {
-            return repositorio.Listar<Cosecha>();
+            return repositorio.Listar<Cosecha>(c => DateTime.Now >= c.Inicio && DateTime.Now <= c.Fin);
         }
 
         public List<CampoProveedorListadoDto> Listar(string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            return ListarCampos(usuario, cp => new CampoProveedorListadoDto ()
+            return ListarCampos(usuario, cp => new CampoProveedorListadoDto()
             {
                 IdScato = cp.CampoCosecha.Campo.IdScato,
                 NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
@@ -548,7 +553,7 @@ namespace SustitucionMOAUtils.Services
             var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
             var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas" };
             dynamic listado;
-            
+
             if (esAdminCampos)
             {
                 headersBase.Insert(0, "Id Scato");

@@ -140,7 +140,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     }
 
     campoCosecha = {
-      Campo: campoSustentable, Cosecha_Id: this.campoProveedor.CosechaId, Campo_Id: this.campoProveedor.CampoSustentableId, 
+      Campo: campoSustentable, Cosecha_Id: this.campoProveedor.CosechaId, Campo_Id: this.campoProveedor.CampoSustentableId,
       ToneladasAprobadas: this.campoProveedor.ToneladasAprobadas
     }
 
@@ -272,5 +272,5 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     return false
   }
 
-  
+
 }
