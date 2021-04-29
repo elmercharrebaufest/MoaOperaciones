@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -199,6 +200,57 @@ namespace SustitucionMOATest.Services
             var result = target.ObtenerInfoProveedor(mailUsuario, proveedorId);
 
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetLocalidadTest()
+        {
+            var localidad = new Localidad
+            {
+                LocalidadId = 1,
+                CodLocalidad = 1,
+                Nombre = "TEST",
+                Provincia = new Provincia() { Nombre = "BSAS", Orden = 1, ProvinciaId = 1 },
+                ProvinciaId = 1,
+                Partido = new Partido() { Id = 1, ProvinciaID = 1, Descripcion = "PartidoTest" },
+                PartidoId = 1
+            };
+
+            repositorioMock
+              .Setup(x => x.Obtener(It.IsAny<Expression<Func<Localidad, bool>>>()))
+                .Returns(localidad);
+
+            target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
+
+            var result = target.GetLocalidad(localidad.LocalidadId);
+
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Localidad, bool>>>()), Times.Once);
+
+            Assert.AreEqual(localidad, result);
+        }
+
+        [Test]
+        public void GerLocalidadConIdInvalido()
+        {
+            var id = 0;
+
+            var ex = Assert.Throws<InfoCustomException>(() => target.GetLocalidad(id));
+
+            var expected = "Id de localidad invalido";
+
+            Assert.AreEqual(expected, ex.Message);
+        }
+
+        [Test]
+        public void GerLocalidadConLocalidadNoExistente()
+        {
+            var id = 2;
+
+            var ex = Assert.Throws<InfoCustomException>(() => target.GetLocalidad(id));
+
+            var expected = "No existe la localidad";
+
+            Assert.AreEqual(expected, ex.Message);
         }
 
         [Test]

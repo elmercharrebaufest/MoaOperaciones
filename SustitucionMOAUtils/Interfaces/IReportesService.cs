@@ -10,5 +10,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         void EnviarReporteLiquidacionesInformadas();
         void EnviarReporteCamposSustentablesTSA();
+        void EnviarReporteConflictosCamposSustentables();
     }
 }

@@ -10,6 +10,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
 import { DropdownOption } from '../../common/view-child/dropdown/dropdown.component';
+import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 
 @Component({
     selector: 'app-listado-campos',
@@ -24,10 +25,14 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    @ViewChild(SpinnerSmallComponent)
+    public spinnerSmallComponent: SpinnerSmallComponent;
+
     constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
+        this.spinnerSmallComponent = new SpinnerSmallComponent();
     }
 
     data: any;
@@ -43,6 +48,8 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
     orderedByColumn: string = "Nombre";
     orderDirection: number = 1;
     itemsPerPage = 20;
+
+    tituloArchivo: string = "Reporte de Campos Sustentables.xls";
 
     ngOnInit() {
         this.navService.setSeccionList([]);
@@ -109,5 +116,50 @@ export class ListadoCamposComponent extends BaseComponent implements OnInit {
 
     proveedorSeleccionado(event: string) {
         this.filtroProveedor = event;
+    }
+
+    exportExcel() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+
+        this.subscription = this.service.exportExcel().subscribe(
+            result => {
+                if (result.logout == true) {
+                    this.spinnerSmallComponent.hideIt();
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.spinnerSmallComponent.hideIt();
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.spinnerSmallComponent.hideIt();
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    var blob = new Blob([result], { type: 'application/octet-stream' });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        //IE11
+                        window.navigator.msSaveOrOpenBlob(blob, this.tituloArchivo);
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = this.tituloArchivo;
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        //return false;
+                    }
+
+                    this.spinnerSmallComponent.hideIt();
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+                this.spinnerSmallComponent.hideIt();
+            }
+        );
+
+        return false;
     }
 }

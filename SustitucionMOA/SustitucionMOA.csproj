@@ -848,6 +848,9 @@
     <Content Include="Template\ReporteCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\ReporteConflictosCamposSustentables.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Template\ReporteLiquidacionesInformadas.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -936,6 +939,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
+    <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\CustomPermisoAuthorizeAttribute.cs" />

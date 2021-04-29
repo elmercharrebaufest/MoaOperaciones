@@ -22,5 +22,6 @@ namespace SustitucionMOAModel.Entities
 
         public ICollection<CampoProveedor> Proveedores { get; set; }
         public double ToneladasAprobadas { get; set; }
+        public string MotivoRechazo { get; set; }
     }
 }

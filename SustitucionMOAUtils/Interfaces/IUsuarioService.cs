@@ -29,5 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<Rol> GetRolesUsuario(string email);
         void SeccionVisitada(string mailUsuario, string seccion);
         ProveedorDto GetProveedorPorCodigo(string codigo);
+        ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor);
     }
 }

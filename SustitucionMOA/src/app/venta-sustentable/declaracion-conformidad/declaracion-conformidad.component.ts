@@ -8,6 +8,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { VentaSustentableService } from '../venta-sustentable.service';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
   selector: 'app-declaracion-conformidad',
@@ -22,6 +23,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
 
+  @BlockUI() blockUI: NgBlockUI;
+
   constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMessage: FloatMsgService, protected modalService: ModalService) {
     super(navService, securityService, floatMessage, modalService);
     this.mensajeComponent = new MensajeComponent();
@@ -29,7 +32,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   camposSustentables: any[];
-  cosechaActual: string = "";
   razonSocial: string = ""
   CUIT: string = "";
   fechaActual: string = ""
@@ -38,8 +40,10 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   file: File
 
   @Input() proveedorId: number = 0;
+  @Input() nombreCosecha: string = "";
+  @Input() cosechaId: number = 0;
 
-  @Output() proveedorFirmo = new EventEmitter<boolean>();
+  @Output() resultadoDeclaracion = new EventEmitter<boolean>();
 
 
   ngOnInit() {
@@ -47,7 +51,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.verificarDeclaracion(this.proveedorId).subscribe(
+    this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId).subscribe(
       result => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -58,7 +62,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
         } else {
 
           if (!result.DeclaracionFirmada) {
-            this.cosechaActual = result.CosechaActual;
             this.CUIT = result.CUIT;
             this.razonSocial = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
@@ -98,7 +101,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
           setTimeout(() => {
             this.cerrarModal();
-            this.proveedorFirmo.emit(true)
+            this.resultadoDeclaracion.emit(true)
           }, 3000);
         }
       },
@@ -119,47 +122,55 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   imprimir() {
-    this.subscription = this.service
-      .generarDeclaracionProveedor(this.proveedorId, this.hectareasTotales)
-      .subscribe(
-        (result) => {
-          if (result.error) {
-            this.floatMessage.setErrorMsg(result.error)
-          } else {
-            var byteArray = new Uint8Array(result.data);
-            var blob = new Blob([byteArray], {
-              type: "application/pdf",
-            });
-            if (window.navigator.msSaveOrOpenBlob) {
-              // IE11
-              window.navigator.msSaveOrOpenBlob(
-                blob,
-                "Declaracion.pdf"
-              );
+    this.blockUI.start('Generando declaración');
+    try {
+      this.subscription = this.service
+        .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
+        .subscribe(
+          (result) => {
+            if (result.error) {
+              this.floatMessage.setErrorMsg(result.error)
             } else {
-              var url = window.URL.createObjectURL(blob);
-              var link = document.createElement("a");
-              document.body.appendChild(link);
-              link.href = url;
-              link.download = "Declaracion.pdf";
-              link.click();
-              setTimeout(function () {
-                window.URL.revokeObjectURL(url);
-              }, 0);
+              var byteArray = new Uint8Array(result.data);
+              var blob = new Blob([byteArray], {
+                type: "application/pdf",
+              });
+              if (window.navigator.msSaveOrOpenBlob) {
+                // IE11
+                window.navigator.msSaveOrOpenBlob(
+                  blob,
+                  "Declaracion.pdf"
+                );
+              } else {
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.href = url;
+                link.download = "Declaracion.pdf";
+                link.click();
+                setTimeout(function () {
+                  window.URL.revokeObjectURL(url);
+                }, 0);
 
-              return false;
+                return false;
+              }
             }
+          },
+          () => {
           }
-        },
-        () => {
-        }
-      );
+        );
+    }
+    catch (e) {
+      this.floatMsgService.setErrorMsg(e);
+    }
+    finally {
+      this.blockUI.stop();
+    }
   }
 
   cancelar() {
-    this.proveedorFirmo.emit(false)
+    this.resultadoDeclaracion.emit(false)
     this.cerrarModal();
-    this.goToSeccion('/sustentable/listado-campos');
   }
 
   abrirModalFirmaDeclaracion() {
@@ -171,8 +182,15 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   adjuntarDeclaracionFirmada() {
+
+    if (!this.file || this.file.size < 1) {
+      this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo de la declaracion.");
+      return true;
+    }
+
+
     this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.file).subscribe(
+    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.file).subscribe(
       result => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -185,7 +203,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
           setTimeout(() => {
             this.cerrarModal();
-            this.proveedorFirmo.emit(true)
+            this.resultadoDeclaracion.emit(true)
           }, 3000);
         }
       },

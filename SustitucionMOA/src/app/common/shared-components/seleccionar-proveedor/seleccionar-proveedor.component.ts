@@ -65,8 +65,6 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
   @Input() corredorId: number;
 
   selectEvent(item) {
-
-
     try {
       this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
         (result) => {
@@ -78,11 +76,8 @@ export class SeleccionarProveedorComponent extends BaseComponent implements OnIn
           } else if (result.info != undefined) {
             this.floatMsgService.setInfoMsg(result.info);
           } else {
-            console.log(item);
 
             item = { ...item, proveedorId: result.Id }
-
-            console.log(item);
 
             this.onLocalidadSeleccionada.emit(item);
             this.onProveedorSeleccionado.emit(item);

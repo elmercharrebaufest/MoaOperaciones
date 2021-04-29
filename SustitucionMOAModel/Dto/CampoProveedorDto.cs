@@ -28,6 +28,8 @@ namespace SustitucionMOAModel.Dto
 
         public string LocalidadNombre { get; set; }
 
+        public int Localidad_Id { get; set; }
+
         public int CampoSustentableId { get; set; }
 
         public int CosechaId { get; set; }
@@ -45,13 +47,14 @@ namespace SustitucionMOAModel.Dto
                    CampoCosechaId == dto.CampoCosechaId &&
                    ProveedorNombre == dto.ProveedorNombre &&
                    LocalidadNombre == dto.LocalidadNombre &&
+                   Localidad_Id == dto.Localidad_Id &&
                    CampoSustentableId == dto.CampoSustentableId &&
                    CosechaId == dto.CosechaId;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = -1557278676;
+            int hashCode = 1599569244;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreCampo);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreCosecha);
             hashCode = hashCode * -1521134295 + HectareasTotales.GetHashCode();
@@ -62,6 +65,7 @@ namespace SustitucionMOAModel.Dto
             hashCode = hashCode * -1521134295 + CampoCosechaId.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ProveedorNombre);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LocalidadNombre);
+            hashCode = hashCode * -1521134295 + Localidad_Id.GetHashCode();
             hashCode = hashCode * -1521134295 + CampoSustentableId.GetHashCode();
             hashCode = hashCode * -1521134295 + CosechaId.GetHashCode();
             return hashCode;
