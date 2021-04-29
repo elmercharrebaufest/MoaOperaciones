@@ -56,7 +56,7 @@ namespace SustitucionMOA.Controllers
             {
                 try
                 {
-                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, ExpiresUtc = DateTime.Now.AddMinutes(1) });
 
                 }
                 //Ignoramos esta excepción porque la da cuando carga recursos
@@ -121,7 +121,10 @@ namespace SustitucionMOA.Controllers
             {
                 if (!Request.IsAuthenticated)
                 {
-                    return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+
+                    return null;
+                    //return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
                 }
 
                 return Json(new { tieneSesion = true }, JsonRequestBehavior.AllowGet);

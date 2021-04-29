@@ -20,7 +20,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         return this.checkIfNeedLogIn();
     }
 
-    public async getEstado(): any {
+    public async getEstado(): Promise<any> {
         let params: URLSearchParams = new URLSearchParams();
 
         let headers = new Headers();
@@ -37,7 +37,8 @@ export class LoginGuard implements CanActivate, CanActivateChild {
                 console.log("Estado sesión:", result)
                 if (!result.tieneSesion) {
                     this.sessionDataService.logout();
-                    this.router.navigate(['login']);
+                    //this.router.navigate(['login']);
+                    window.location.href = window.location.origin + '/SignOut';
                     return false;
                 }
             }

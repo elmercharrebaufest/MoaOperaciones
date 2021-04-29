@@ -20,12 +20,19 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                return new Usuario
+                if (ClaimsPrincipal.Current.Claims.Any())
                 {
-                    username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value,
-                    nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value,
-                    permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList()
-                };
+                    return new Usuario
+                    {
+                        username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value,
+                        nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value,
+                        permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList()
+                    };
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
