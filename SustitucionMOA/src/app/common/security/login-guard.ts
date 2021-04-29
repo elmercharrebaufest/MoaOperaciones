@@ -1,11 +1,16 @@
 ﻿import { CanActivate, CanActivateChild } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { Http, Response, Headers, RequestOptions, URLSearchParams } from '@angular/http';
+import { SessionDataService } from "../services/SessionDataService";
 
 @Injectable()
 export class LoginGuard implements CanActivate, CanActivateChild {
 
-    constructor(private router: Router) { }
+
+    constructor(private router: Router, private http: Http, private sessionDataService: SessionDataService) {
+
+    }
 
     canActivate() {
         return this.checkIfLoggedIn();
@@ -15,9 +20,35 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         return this.checkIfNeedLogIn();
     }
 
+    public async getEstado(): any {
+        let params: URLSearchParams = new URLSearchParams();
+
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Accept', 'q=0.8;application/json;q=0.9')
+        headers.append('Cache-control', 'no-cache');
+        headers.append('Cache-control', 'no-store');
+        headers.append('Expires', '0');
+        headers.append('Pragma', 'no-cache');
+
+        await this.http.get('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
+            res => {
+                let result = res.json()
+                console.log("Estado sesión:", result)
+                if (!result.tieneSesion) {
+                    this.sessionDataService.logout();
+                    this.router.navigate(['login']);
+                    return false;
+                }
+            }
+        )
+    }
     private checkIfNeedLogIn(): boolean {
 
         let loggedIn: boolean = (sessionStorage.getItem("proveedor") != undefined && sessionStorage.getItem("proveedor") != "");
+
+        console.log("Desde checkIfNeedLogIn")
+        this.getEstado();
 
         if (!loggedIn) {
             this.router.navigate(['login']);
@@ -30,6 +61,8 @@ export class LoginGuard implements CanActivate, CanActivateChild {
     private checkIfLoggedIn(): boolean {
 
         let loggedIn: boolean = (sessionStorage.getItem("proveedor") != undefined && sessionStorage.getItem("proveedor") != "");
+        console.log("Desde checkIfLoggedIn")
+        this.getEstado();
 
         if (loggedIn) {
             if (sessionStorage.getItem("granosFlag") == "N") {
