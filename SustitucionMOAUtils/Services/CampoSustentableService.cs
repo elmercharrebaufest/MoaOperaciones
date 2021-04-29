@@ -144,7 +144,7 @@ namespace SustitucionMOAUtils.Services
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
+                cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.ToneladasAprobadas > 0);
 
             proveedor.DeclaracionesCamposSustentables = proveedor.DeclaracionesCamposSustentables ?? new List<DeclaracionCampoSustentable>();
 

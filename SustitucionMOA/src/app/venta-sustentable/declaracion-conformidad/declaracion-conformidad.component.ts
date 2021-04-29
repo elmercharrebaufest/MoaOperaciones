@@ -50,9 +50,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   verificarDeclaracion() {
-    console.log("--proveedorId", this.proveedorId)
-    console.log("--nombreCosecha", this.nombreCosecha)
-    console.log("--cosechaId", this.cosechaId)
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId).subscribe(
       result => {
@@ -126,7 +123,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
   imprimir() {
     this.blockUI.start('Generando declaración');
-
     try {
       this.subscription = this.service
         .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
@@ -186,6 +182,13 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   adjuntarDeclaracionFirmada() {
+
+    if (!this.file || this.file.size < 1) {
+      this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo de la declaracion.");
+      return true;
+    }
+
+
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.file).subscribe(
       result => {

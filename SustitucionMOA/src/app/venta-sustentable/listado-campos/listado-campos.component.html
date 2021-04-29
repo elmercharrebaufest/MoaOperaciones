@@ -9,15 +9,17 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
                         <spinner-small></spinner-small>
-                        <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
-                            <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                        <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+                            *ngIf="!this.spinnerSmallComponent.visible">
+                            <div class="btnSection animate align-right">Exportar <img
+                                    src="Content/images/buttons/EXPORT.svg" /></div>
                         </a>
                     </div>
                     <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                        (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
-                        Nuevo campo
+                            (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+                            Nuevo campo
                         </button>
                     </div>
                 </div>
@@ -96,7 +98,7 @@
                             <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Hectares pendientes
                             </th>-->
-                            <th tabindex="0" rowspan="1" colspan="3" (click)="orderColumnBy('Tipo')">
+                            <th tabindex="0" rowspan="1" colspan="2" style="text-align: center">
                                 Acciones
                             </th>
                         </tr>
@@ -130,8 +132,8 @@
                                     href="#">Editar</a>
                             </td>
                             <td>
-                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                    [cosechaId]="campo.CosechaId">
+                                <app-impresion-declaracion *ngIf="campo.ToneladasAprobadas > 0"
+                                    [proveedorId]="campo.Proveedor.Id" [cosechaId]="campo.CosechaId">
                                 </app-impresion-declaracion>
                             </td>
                         </tr>
