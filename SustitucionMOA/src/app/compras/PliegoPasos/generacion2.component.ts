@@ -23,7 +23,8 @@ declare var $: any;
 })
 export class Generacion2Component extends ListBaseComponent {
 
-    @Input() model:Solp;
+    @Input("model") 
+    protected model:Solp;
 
 
     @ViewChild(SpinnerSmallComponent)

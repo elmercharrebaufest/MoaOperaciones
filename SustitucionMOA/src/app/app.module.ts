@@ -55,11 +55,7 @@ import { BlockUIModule } from 'ng-block-ui';
 import { FaqComponent } from './faq/faq.component'
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
-import { SolpComponent } from "./compras/solp.component";
-import { DashboardComponent } from './compras/dashboard/dashboard.component';
-import { SolpService } from "./compras/solp.service";
-import { Generacion1Component } from './../app/compras/PliegoPasos/generacion1.component';
-import { Generacion2Component} from './../app/compras/PliegoPasos/generacion2.component';
+import { ComprasModule } from "./compras/compras.module";
 
 
 @NgModule({
@@ -67,6 +63,7 @@ import { Generacion2Component} from './../app/compras/PliegoPasos/generacion2.co
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
+    ComprasModule,
     AppRoutingModule,
     FormsModule,
     NgxPaginationModule,
@@ -78,7 +75,6 @@ import { Generacion2Component} from './../app/compras/PliegoPasos/generacion2.co
     SharedModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
-
   ],
   declarations: [
     AppComponent,
@@ -102,10 +98,6 @@ import { Generacion2Component} from './../app/compras/PliegoPasos/generacion2.co
     NumericDirective,
     FaqComponent,
     TicketPesadaComponent,
-    SolpComponent,
-    DashboardComponent,
-    Generacion1Component,
-    Generacion2Component
   ],
   providers: [
     DatePipe,
@@ -125,7 +117,6 @@ import { Generacion2Component} from './../app/compras/PliegoPasos/generacion2.co
     EstadoSolicitudService,
     NotificacionesService,
     TicketPesadaService,
-    SolpService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
