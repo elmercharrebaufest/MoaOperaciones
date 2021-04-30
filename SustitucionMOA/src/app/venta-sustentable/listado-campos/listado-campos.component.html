@@ -132,8 +132,8 @@
                                     href="#">Editar</a>
                             </td>
                             <td>
-                                <app-impresion-declaracion *ngIf="campo.ToneladasAprobadas > 0"
-                                    [proveedorId]="campo.Proveedor.Id" [cosechaId]="campo.CosechaId">
+                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
+                                    [cosechaId]="campo.CosechaId">
                                 </app-impresion-declaracion>
                             </td>
                         </tr>

@@ -150,6 +150,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
                 link.click();
                 setTimeout(function () {
                   window.URL.revokeObjectURL(url);
+
                 }, 0);
 
                 return false;
@@ -164,7 +165,10 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
       this.floatMsgService.setErrorMsg(e);
     }
     finally {
-      this.blockUI.stop();
+      setTimeout(function () {
+        this.blockUI.stop();
+      }, 500);
+
     }
   }
 
