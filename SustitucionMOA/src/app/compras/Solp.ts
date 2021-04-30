@@ -1,10 +1,10 @@
 import { Time } from "@angular/common";
 
 export class Solp {
-    public nombreDeObra: String;
-    public fiscalContrato: String;
-    public telefono: String;
-    public mail: String;
+    public nombreDeObra: string;
+    public fiscalContrato: string;
+    public telefono: string;
+    public mail: string;
     public fechaDeEntregaDeOfertasFecha: Date;
     public fechaDeEntregaDeOfertasHora: Time;
     public horaEntrega: any;

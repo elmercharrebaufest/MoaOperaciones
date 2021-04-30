@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { FloatMsgService } from '../common/services/FloatMsgService';
@@ -11,6 +12,7 @@ import { SpinnerComponent } from '../common/view-child/spinner/spinner.component
 import { StepperComponent } from '../common/view-child/stepper/stepper.component';
 import { Generacion1Component } from '../compras/PliegoPasos/generacion1.component'
 import { Solp } from './Solp';
+import { SolpService } from './solp.service';
 
 @Component({
     selector: 'app-solp',
@@ -24,6 +26,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
     
+
+    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+        super(navService, securityService, floatMsgService, modalService);
+        this.solpActual = new Solp();
+    }
+    
+
+
     solpActual: Solp;
     
     pasoActual: Paso;
@@ -82,7 +92,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[0].Iniciado = true;
 
             this.pasoActual = this.pasos[0];
-            this.solpActual = new Solp();
         }
     }
 
