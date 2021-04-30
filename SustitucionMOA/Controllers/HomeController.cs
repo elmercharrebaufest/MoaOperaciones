@@ -56,7 +56,7 @@ namespace SustitucionMOA.Controllers
             {
                 try
                 {
-                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, ExpiresUtc = DateTime.Now.AddMinutes(1) });
 
                 }
                 //Ignoramos esta excepción porque la da cuando carga recursos
@@ -113,6 +113,43 @@ namespace SustitucionMOA.Controllers
 
             }
             return null;
+        }
+
+        public ActionResult VerificarEstadoSesion()
+        {
+            try
+            {
+                if (!Request.IsAuthenticated)
+                {
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+
+                    return null;
+                    //return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { tieneSesion = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public ActionResult ValidarLoginAzure()
