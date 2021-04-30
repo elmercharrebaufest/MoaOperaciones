@@ -50,7 +50,7 @@ namespace SustitucionMOAUtils.Services
                     HectareasSoja = cp.HectareasSoja
                 }
                 , cp => cp.FechaCreacion.HasValue
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
+                    //&& DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
@@ -68,50 +68,45 @@ namespace SustitucionMOAUtils.Services
 
                 var outputMemStream = new MemoryStream();
 
-                using (var zipStream = new ZipOutputStream(outputMemStream))
+                var zipStream = new ZipOutputStream(outputMemStream);
+                zipStream.SetLevel(3);
+
+                foreach (var campo in camposAReportar)
                 {
-                    zipStream.SetLevel(3);
+                    string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
 
-                    foreach (var campo in camposAReportar)
+                    var kmzFileName = MakeValidFileName(string.Concat(string.Concat(campo.Id, "-", campo.Nombre, ".kmz")));
+
+                    ZipEntry entry = new ZipEntry(kmzFileName)
                     {
-                        string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
+                        DateTime = DateTime.Now,
+                    };
 
-                        var kmzFileName = MakeValidFileName(string.Concat(string.Concat(campo.Id, "-", campo.Nombre, ".kmz")));
-
-                        ZipEntry entry = new ZipEntry(kmzFileName)
-                        {
-                            DateTime = DateTime.Now,
-                        };
-
-                        Stream stream = new MemoryStream(File.ReadAllBytes(rutaArchivoKmz));
-                        zipStream.PutNextEntry(entry);
-                        StreamUtils.Copy(stream, zipStream, new byte[4096]);
-                        zipStream.CloseEntry();
-                    }
-                    zipStream.IsStreamOwner = false;
+                    Stream stream = new MemoryStream(File.ReadAllBytes(rutaArchivoKmz));
+                    zipStream.PutNextEntry(entry);
+                    StreamUtils.Copy(stream, zipStream, new byte[4096]);
+                    zipStream.CloseEntry();
                 }
+                zipStream.IsStreamOwner = false;
 
                 outputMemStream.Position = 0;
 
                 archivoZip = new Attachment(outputMemStream, nombreArchivoZip);
 
                 Attachment archivoExcel;
-                using (MemoryStream streamExcel = new MemoryStream())
+                MemoryStream streamExcel = new MemoryStream();
+                var sw = new StreamWriter(streamExcel);
+                try
                 {
-                    var sw = new StreamWriter(streamExcel);
-                    try
-                    {
-                        sw.Write(excelFile);
-                        sw.Flush();
-                        streamExcel.Seek(0, SeekOrigin.Begin);
+                    sw.Write(excelFile);
+                    sw.Flush();
+                    streamExcel.Seek(0, SeekOrigin.Begin);
 
-                        archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-                    }
-                    finally
-                    {
-                        sw.Dispose();
-                    }
-
+                    archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
+                }
+                finally
+                {
+                    sw.Dispose();
                 }
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
@@ -126,6 +121,10 @@ namespace SustitucionMOAUtils.Services
                     archivoExcel
                 }
                 });
+
+                outputMemStream.Dispose();
+                zipStream.Dispose();
+                streamExcel.Dispose();
             }
         }
 
