@@ -14,7 +14,7 @@ import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { element } from '@angular/core/src/render3/instructions';
 import { e } from '@angular/core/src/render3';
 import { SolpService } from './../solp.service';
-import { Card } from './../Solp';
+import { Card } from './../../common/models/card'
 
 
 declare var $: any;

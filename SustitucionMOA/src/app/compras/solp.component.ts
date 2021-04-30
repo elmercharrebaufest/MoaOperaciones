@@ -9,6 +9,8 @@ import { SessionDataService } from '../common/services/SessionDataService';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { StepperComponent } from '../common/view-child/stepper/stepper.component';
+import { Generacion1Component } from '../compras/PliegoPasos/generacion1.component'
+import { Solp } from './Solp';
 
 @Component({
     selector: 'app-solp',
@@ -21,6 +23,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    
+    solpActual: Solp;
     
     pasoActual: Paso;
     pasos:Paso[] = [{
@@ -78,6 +82,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[0].Iniciado = true;
 
             this.pasoActual = this.pasos[0];
+            this.solpActual = new Solp();
         }
     }
 

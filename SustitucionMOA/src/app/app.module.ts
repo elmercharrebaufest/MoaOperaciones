@@ -58,6 +58,8 @@ import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { SolpComponent } from "./compras/solp.component";
 import { DashboardComponent } from './compras/dashboard/dashboard.component';
 import { SolpService } from "./compras/solp.service";
+import { Generacion1Component } from './../app/compras/PliegoPasos/generacion1.component';
+import { Generacion2Component} from './../app/compras/PliegoPasos/generacion2.component';
 
 
 @NgModule({
@@ -101,7 +103,9 @@ import { SolpService } from "./compras/solp.service";
     FaqComponent,
     TicketPesadaComponent,
     SolpComponent,
-    DashboardComponent
+    DashboardComponent,
+    Generacion1Component,
+    Generacion2Component
   ],
   providers: [
     DatePipe,

@@ -9,6 +9,7 @@ export class Paso {
     //iniciado completo verde
     //iniciado incompleto naranja
     //No iniciado gris
+    // public Model: any;
 
     constructor() {}
 }

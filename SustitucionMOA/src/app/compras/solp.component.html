@@ -15,12 +15,22 @@
 
         <div class="row myRow firstSection mySearch">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <div class="col-xs-12 col-md-12 search-header">
-                    <title-caps>{{"Paso " + pasoActual.Numero + ": " + pasoActual.Nombre}}</title-caps>
+                <div class="col-xs-12 col-md-12 headerCompras">
+                    <strong>Paso {{pasoActual.Numero}}:</strong> {{pasoActual.Nombre}}
                 </div>
+                <hr>
                 <!-- contenido -->
+                <!--Paso 1-->
                 <div class="col-xs-12 col-md-12">
-                    <div *ngIf="pasoActual.Codigo == 'PliegoGeneracion1'" >Aca va el cuerpo del paso 1</div>
+                    <div *ngIf="pasoActual.Codigo == 'PliegoGeneracion1'" >
+                        <generacion1 [(model)]="solpActual"></generacion1>
+                    </div>
+                </div>
+                <!--Paso 2-->
+                <div class="col-xs-12 col-md-12">
+                    <div *ngIf="pasoActual.Codigo == 'PliegoGeneracion2'" >
+                        <generacion2 [(model)]="solpActual"></generacion2>
+                    </div>
                 </div>
             </div>
             
