@@ -22,6 +22,7 @@ declare var $: any;
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
+    styleUrls: ['../compras.component.css'],
     providers: [SolpService]
 
 })

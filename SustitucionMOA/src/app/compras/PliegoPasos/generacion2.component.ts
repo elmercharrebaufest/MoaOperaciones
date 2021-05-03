@@ -20,6 +20,7 @@ declare var $: any;
 @Component({
     selector: 'generacion2',
     templateUrl: `generacion2.component.html`,
+    styleUrls: ['../compras.component.css'],
 })
 export class Generacion2Component extends ListBaseComponent {
 
