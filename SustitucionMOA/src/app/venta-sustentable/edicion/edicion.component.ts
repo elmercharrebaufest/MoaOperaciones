@@ -107,12 +107,8 @@ export class EdicionComponent extends BaseComponent implements OnInit {
             this.campoProveedor = result;
             this.hectareasSoja = result.HectareasSoja;
             this.hectareasTotales = result.HectareasTotales;
-            this.nombreEstablecimiento = result.NombreCampo;
-            this.latitud = result.Latitud;
-            this.longitud = result.Longitud;
             this.NombreCosecha = result.NombreCosecha;
             this.proveedorNombre = result.ProveedorNombre;
-            this.localidadNombre = result.LocalidadNombre;
           }
         },
         error => {
@@ -130,8 +126,6 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     return false; //<-- Prevent Refresh
   }
 
-
-
   campoProveedorEditar() {
     let campoProveedor: CampoProveedor;
     let campoSustentable: CampoSustentable;
@@ -142,11 +136,12 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     }
 
     campoSustentable = {
-      Nombre: this.nombreEstablecimiento
+      Nombre: this.campoProveedor.NombreCampo, Localidad_Id: this.campoProveedor.Localidad_Id
     }
 
     campoCosecha = {
-      Campo: campoSustentable, Cosecha_Id: this.campoProveedor.CosechaId, Campo_Id: this.campoProveedor.CampoSustentableId
+      Campo: campoSustentable, Cosecha_Id: this.campoProveedor.CosechaId, Campo_Id: this.campoProveedor.CampoSustentableId,
+      ToneladasAprobadas: this.campoProveedor.ToneladasAprobadas
     }
 
     campoProveedor = {
@@ -229,45 +224,53 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     return false; //<-- Prevent Refresh
   }
 
+  goToSeccion(path: string) {
+    this.navService.navegarSeccion(path);
+    return false;
+  }
+
   validar() {
     this.mensajeComponent.setMsgsEmpty();
-    if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
+    if (this.campoProveedor.NombreCampo == "" || !this.campoProveedor.NombreCampo) {
       this.mensajeComponent.setErrorMsg("Falta completar Nombre del establecimiento.");
       return true;
     }
-    if (!this.hectareasTotales) {
+    if (!this.campoProveedor.HectareasTotales) {
       this.mensajeComponent.setErrorMsg("Falta completar hectareas totales.");
       return true;
     }
-    if (this.hectareasTotales <= 0) {
+    if (this.campoProveedor.HectareasTotales <= 0) {
       this.mensajeComponent.setErrorMsg("Hectareas totales no puede ser 0 o un numero negativo.");
       return true;
     }
-    if (!this.hectareasSoja) {
+    if (!this.campoProveedor.HectareasSoja) {
       this.mensajeComponent.setErrorMsg("Falta completar hectareas de soja.");
       return true;
     }
-    if (this.hectareasSoja <= 0) {
+    if (this.campoProveedor.HectareasSoja <= 0) {
       this.mensajeComponent.setErrorMsg("Hectareas de soja no puede ser 0 o un numero negativo.");
       return true;
     }
-    if (this.hectareasSoja > this.hectareasTotales) {
+    if (this.campoProveedor.HectareasSoja > this.campoProveedor.HectareasTotales) {
       this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
       return true;
     }
-    if (this.latitud == "" || !this.latitud) {
+    if (this.campoProveedor.Latitud == "" || !this.campoProveedor.Latitud) {
       this.mensajeComponent.setErrorMsg("Falta completar Latitud.");
       return true;
     }
-    if (this.longitud == "" || !this.longitud) {
+    if (this.campoProveedor.Longitud == "" || !this.campoProveedor.Longitud) {
       this.mensajeComponent.setErrorMsg("Falta completar Longitud.");
       return true;
     }
+    /*
     if (this.file.length < 1 || !this.file) {
       this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo Kmz.");
       return true;
     }
-
+    */
     return false
   }
+
+
 }

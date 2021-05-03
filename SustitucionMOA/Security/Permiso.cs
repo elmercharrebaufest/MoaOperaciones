@@ -40,6 +40,8 @@
         public const string DESCARGAR_LIQUIDACIONES = "DESCARGAR LIQUIDACIONES";
         public const string CONSULTAR_LIQUIDACIONES_NG = "CONSULTAR LIQUIDACIONES NG";
         public const string DESCARGAR_LIQUIDACIONES_NG = "DESCARGAR LIQUIDACIONES NG";
+        public const string INFORMAR_LIQUIDACION = "INFORMAR LIQUIDACION";
+
 
         /* PERMISOS PAGO */
         public const string CONSULTAR_PAGOS = "CONSULTAR PAGOS";
@@ -86,6 +88,7 @@
 
         /*CONTACTO MAIL*/
         public const string CONTACTO_MAIL = "CONTACTO MAIL";
+        public const string CARGAR_CONSULTA = "CARGAR CONSULTA";
 
         /*PESIFICACION*/
         public const string PESIFICACION = "PESIFICACION";

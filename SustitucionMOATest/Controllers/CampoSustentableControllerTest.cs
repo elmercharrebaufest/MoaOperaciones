@@ -428,59 +428,59 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
         }
 
-        [Test()]
-        public void VerificarDeclaracionTest()
-        {
-            var firmaDto = new EstadoDeclaracionSustentableDto
-            {
-                DeclaracionFirmada = false,
-            };
+        //[Test()]
+        //public void VerificarDeclaracionTest()
+        //{
+        //    var firmaDto = new EstadoDeclaracionSustentableDto
+        //    {
+        //        DeclaracionFirmada = false,
+        //    };
 
-            int proveedorId = 1;
+        //    int proveedorId = 1;
 
-            campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.Is<int>(i => i == proveedorId))).Returns(firmaDto);
+        //    campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.Is<int>(i => i == proveedorId))).Returns(firmaDto);
 
-            var result = target.VerificarDeclaracion(proveedorId);
+        //    var result = target.VerificarDeclaracion(proveedorId);
 
-            expectedJson = JsonConvert.SerializeObject(firmaDto);
-            resultJson = JsonConvert.SerializeObject(result.Data);
+        //    expectedJson = JsonConvert.SerializeObject(firmaDto);
+        //    resultJson = JsonConvert.SerializeObject(result.Data);
 
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
+        //    Assert.NotNull(result);
+        //    Assert.AreEqual(expectedJson, resultJson);
+        //}
 
-        [Test()]
-        public void VerificarDeclaracionValidationCustomExceptionTest()
-        {
-            var expected = @"{ error = Mensaje de error }";
+        //[Test()]
+        //public void VerificarDeclaracionValidationCustomExceptionTest()
+        //{
+        //    var expected = @"{ error = Mensaje de error }";
 
-            campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.IsAny<int>())).Throws(new ValidationCustomException("Mensaje de error"));
+        //    campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.IsAny<int>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.VerificarDeclaracion(1);
+        //    var result = target.VerificarDeclaracion(1);
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
+        //    expectedJson = JsonConvert.SerializeObject(expected);
+        //    resultJson = JsonConvert.SerializeObject(result.Data.ToString());
 
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
+        //    Assert.NotNull(result);
+        //    Assert.AreEqual(expectedJson, resultJson);
+        //}
 
 
-        [Test()]
-        public void VerificarDeclaracionInfoCustomExceptionTest()
-        {
-            var expected = @"{ info = Mensaje de info }";
+        //[Test()]
+        //public void VerificarDeclaracionInfoCustomExceptionTest()
+        //{
+        //    var expected = @"{ info = Mensaje de info }";
 
-            campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.IsAny<int>())).Throws(new InfoCustomException("Mensaje de info"));
+        //    campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.IsAny<int>())).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.VerificarDeclaracion(1);
+        //    var result = target.VerificarDeclaracion(1);
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
+        //    expectedJson = JsonConvert.SerializeObject(expected);
+        //    resultJson = JsonConvert.SerializeObject(result.Data.ToString());
 
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
+        //    Assert.NotNull(result);
+        //    Assert.AreEqual(expectedJson, resultJson);
+        //}
 
         //[Test()]
         //public void FirmarDeclaracionTest()

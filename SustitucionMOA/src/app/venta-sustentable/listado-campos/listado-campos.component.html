@@ -4,14 +4,25 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Campos sustentables</strong> </div>
-            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                    (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
-                    Nuevo campo
-                </button>
-
+            <div class="col-xs-12 col-sm-6 "><strong>Campos sustentables</strong> </div>
+            <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                        <spinner-small></spinner-small>
+                        <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
+                            *ngIf="!this.spinnerSmallComponent.visible">
+                            <div class="btnSection animate align-right">Exportar <img
+                                    src="Content/images/buttons/EXPORT.svg" /></div>
+                        </a>
+                    </div>
+                    <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+                            (click)="goToSeccion('/sustentable/alta')" id="modalToggleButton">
+                            Nuevo campo
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <!--End Title-->
@@ -60,31 +71,34 @@
                                 *ngIf="esInterno">
                                 ID
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Nombre')">
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Cosecha
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Nombre Campo
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Proveedor
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Estado
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
+                            <th tabindex="0" rowspan="1" colspan="1">
+                                Motivo
+                            </th>
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Hectares Totales
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Hectareas Soja
                             </th>
-                            <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
+                            <th tabindex="0" rowspan="1" colspan="1">
                                 Toneladas Aprobadas
                             </th>
                             <!--<th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Tipo')">
                                 Hectares pendientes
                             </th>-->
-                            <th tabindex="0" rowspan="1" colspan="3" (click)="orderColumnBy('Tipo')">
+                            <th tabindex="0" rowspan="1" colspan="2" style="text-align: center">
                                 Acciones
                             </th>
                         </tr>
@@ -103,9 +117,10 @@
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
                             <td>{{campo.CodigoProveedor}}</td>
-                            <td class="estadoRechazado" *ngIf="campo.ToneladasAprobadas == 0">Rechazada</td>
-                            <td class="estadoAprobado" *ngIf="campo.ToneladasAprobadas > 0">Aprobado</td>
-                            <td class="estadoEnGestion" *ngIf="campo.ToneladasAprobadas == -1">En gesti&oacute;n</td>
+                            <td [ngClass]="{'estadoRechazado': campo.ToneladasAprobadas === 0,
+                                            'estadoAprobado': campo.ToneladasAprobadas > 0,
+                                            'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}</td>
+                            <td>{{campo.MotivoRechazo || ''}}</td>
                             <td>{{campo.HectareasTotales}}</td>
                             <td>{{campo.HectareasSoja}}</td>
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>
@@ -117,7 +132,8 @@
                                     href="#">Editar</a>
                             </td>
                             <td>
-                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id">
+                                <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
+                                    [cosechaId]="campo.CosechaId">
                                 </app-impresion-declaracion>
                             </td>
                         </tr>

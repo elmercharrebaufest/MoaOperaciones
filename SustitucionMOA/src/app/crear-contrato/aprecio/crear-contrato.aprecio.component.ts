@@ -208,10 +208,16 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                     this.costoFinanciero = "La cantidad de días ingresados supera el maximo permitido.";
                 } else {
                     let precio = Number(this.contrato.Precio.toString().replace(',', '.'));
-                    let dias = Number(this.contrato.DiasPesificado);
                     tasa = Number(tasa);
                     let costo = Math.round(precio * (tasa / 100) * (this.contrato.DiasPesificado - 3) / 365 * 2) / 2;
-                    this.costoFinanciero = "Precio Neto: " + (precio + costo).toFixed(2);
+                    let d10 = costo / 10.00;
+                    costo = Math.round(d10 * 2) / 2;
+                    costo = costo * 10;
+
+                    let precioNeto = precio + costo;
+
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
+
                 }
             }
 

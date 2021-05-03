@@ -4192,6 +4192,24 @@ list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
   margin-top: 20px;
   margin-bottom: 20px;
 }
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.archivosBox {
+  margin: 15px;
+  padding-top: 15px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 1px 1px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
 .centerbtn {
     margin-left: 180px !important;
 }

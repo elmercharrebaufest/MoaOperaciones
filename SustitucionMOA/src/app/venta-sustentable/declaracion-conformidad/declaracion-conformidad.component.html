@@ -27,7 +27,7 @@
               Directiva 2015/1513)
             </h3>
             <h3>
-              Cosecha {{cosechaActual}}
+              Cosecha {{nombreCosecha}}
               <br>
             </h3>
           </div>
@@ -38,7 +38,7 @@
           <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
               <input type="radio" name="totalidadCosecha" [value]="1" [(ngModel)]="totalidadCosecha">
-              La totalidad de la soja correspondiente a la cosecha {{cosechaActual}} proveniente de mi tierra y
+              La totalidad de la soja correspondiente a la cosecha {{nombreCosecha}} proveniente de mi tierra y
               entregada a
               Molinos Agro
               S.A. ha sido cultivada en campos que ya se encontraban bajo agricultura antes del 1 de enero de 2008,
@@ -51,7 +51,7 @@
           <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 ">
               <input type="radio" name="totalidadCosecha" [value]="2" [(ngModel)]="totalidadCosecha">
-              Parte de la soja correspondiente a la cosecha {{cosechaActual}} producida en mi tierra y entregada a
+              Parte de la soja correspondiente a la cosecha {{nombreCosecha}} producida en mi tierra y entregada a
               Molinos
               Agro
               S.A., es

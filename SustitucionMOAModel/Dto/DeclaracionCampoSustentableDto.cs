@@ -2,7 +2,7 @@
 
 namespace SustitucionMOAModel.Dto
 {
-    public class DeclaracionCampoSustentable
+    public class DeclaracionCampoSustentableDto
     {
         public string RazonSocial { get; set; }
         public string CUIT { get; set; }

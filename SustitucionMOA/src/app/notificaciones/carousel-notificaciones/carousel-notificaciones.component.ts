@@ -86,7 +86,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
 
     this.mostrarBotonAnterior = this.indiceNotificacion != 0;
 
-    this.mostrarVerMas = (this.notificacionActual.LinkAdjunto || '') != '';
+    this.mostrarVerMas = this.notificacionActual ? ((this.notificacionActual.LinkAdjunto || '') != '') : false;
 
   }
 }

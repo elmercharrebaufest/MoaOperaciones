@@ -485,7 +485,20 @@
                         </a>
                     </div>
                 </div>-->
-                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+
+
+                <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
+                <div class="panel panel-default"
+                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA')">
+                    <div class="panel-heading seccion" role="tab" id="contacto">
+                        <a class="link-header collapsed" data-toggle="collapse"
+                            (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
+                            <!--data-toggle="tab">-->Contacto
+                        </a>
+                    </div>
+                </div>
+                <div class="panel panel-default"
+                    *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
                             href="#" data-parent="#accordionMenu">

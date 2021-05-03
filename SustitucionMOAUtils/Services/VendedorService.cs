@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Services
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
             try
             {
-                 response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
+                response = new VendedoresConsumerMOA().request(codigoProveedor, fechas);
             }
             catch
             {
@@ -100,14 +100,19 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C")).Select(v => new Vendedor() { descVendedor = v.RazonSocial, estado = v.EstadoAprobacionDescripcion, idVendedor = v.CodigoProveedor });
-
-            response.vendedores.AddRange(vendedoresAprobados);
+            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C"))
+                .Select(v => new Vendedor() 
+                { 
+                    descVendedor = v.RazonSocial, 
+                    estado = "Alta interna Pendiente.",
+                    estadoMoa = v.EstadoAprobacionDescripcion,
+                    idVendedor = v.CodigoProveedor 
+                });
 
             response.vendedores = response.vendedores.Distinct().ToList();
             return response;
         }
-
+     
         public VendedorHabilitadoWSMOAResponse GetVendedorStatus(string cuit, string user)
         {
             try

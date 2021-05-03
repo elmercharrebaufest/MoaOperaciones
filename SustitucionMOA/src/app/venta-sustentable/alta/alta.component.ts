@@ -47,7 +47,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   localidadId: any;
   provinciaId: any;
-
+  nombreCosecha: string;
   sojaParcial: boolean;
   sojaTotal: boolean;
 
@@ -101,10 +101,14 @@ export class AltaComponent extends BaseComponent implements OnInit {
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
           this.proveedorId = result.Id;
-          this.declaracionComformidad.proveedorId = this.proveedorId;
 
-          if (this.proveedorId > 0)
+          if (this.proveedorId > 0 && this.cosechaId > 0) {
+            this.declaracionComformidad.proveedorId = this.proveedorId;
+            this.declaracionComformidad.cosechaId = this.cosechaId;
+            this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
             this.declaracionComformidad.verificarDeclaracion();
+          }
+
           return result.Id;
         }
       },
@@ -115,6 +119,16 @@ export class AltaComponent extends BaseComponent implements OnInit {
     );
   }
 
+  onChangeCosecha() {
+
+    if (this.proveedorId > 0 && this.cosechaId > 0) {
+      this.declaracionComformidad.proveedorId = this.proveedorId;
+      this.declaracionComformidad.cosechaId = this.cosechaId;
+      this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
+      this.declaracionComformidad.verificarDeclaracion();
+    }
+
+  }
   campoProveedorAgregar() {
     this.blockUI.start('Informando campo sustentable.');
 
@@ -195,7 +209,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.cosechas = result;
-            this.cosechaId = this.cosechas[0].Id;
+            this.cosechas = [{ Id: 0, Nombre: "Seleccione" }, ...this.cosechas];
+
+            this.cosechaId = 0;
+            this.onChangeCosecha();
           }
         },
         error => {
@@ -269,5 +286,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
   redirigirAListado() {
     this.goToSeccion('/sustentable/listado-campos');
 
+  }
+
+  onResultadoDeclaracion(result: boolean) {
+    if (!result)
+      this.cosechaId = 0;
   }
 }
