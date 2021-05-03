@@ -50,7 +50,7 @@ namespace SustitucionMOAUtils.Services
                     HectareasSoja = cp.HectareasSoja
                 }
                 , cp => cp.FechaCreacion.HasValue
-                    //&& DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
