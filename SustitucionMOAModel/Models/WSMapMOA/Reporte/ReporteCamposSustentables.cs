@@ -15,7 +15,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Reporte
 
         public override string GetBody()
         {
-            return $"<p>Campos dados de alta a la fecha {GetFecha()}: {CantidadCampos}</p>";
+            return $"{CantidadCampos}";
         }
 
         public override string GetFecha()
