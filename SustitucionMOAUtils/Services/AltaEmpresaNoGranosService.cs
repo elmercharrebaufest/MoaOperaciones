@@ -188,7 +188,10 @@ namespace SustitucionMOAUtils.Services
             return info;
         }
 
-        public string EditarAltaEmpresaNoGranos(int proveedorId)
+        public string EditarAltaEmpresaNoGranos(int proveedorId, string razonSocial, string cuit, string email, string telefono, 
+            bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago, string ServicioPrestado, 
+            string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, 
+            bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio)
         {
             if (proveedorId <= 0)
             {
@@ -202,9 +205,49 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se encontro proveedor con este Id.");
             }
 
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+
+            if(usuario == null)
+            {
+                proveedor.Mail = email;
+                proveedor.RazonSocial = razonSocial;
+                proveedor.CUIT = cuit;
+                proveedor.Telefono = telefono;
+                proveedor.RealizarAnalisisNOSIS = realizarAnalisisNOSIS;
+                proveedor.IdRubro = IdRubro;
+                proveedor.CondicionDePago = CondicionDePago;
+                proveedor.ServicioPrestado = ServicioPrestado;
+                proveedor.OrganizacionDeCompra = OrganizacionDeCompra;
+                proveedor.RazonDeEleccion = RazonDeEleccion;
+                proveedor.FacturacionAnual = FacturacionAnual;
+                proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
+                proveedor.IngresoAPlanta = ingresoAPlanta;
+                proveedor.AltaInterna = altaInterna;
+                proveedor.SiperObligatorio = siperObligatorio;
+
+                repositorio.GuardarCambios();
+
+                return "Editado correctamente";
+            }
+
+            proveedor.RazonSocial = razonSocial;
+            proveedor.CUIT = cuit;
+            proveedor.Telefono = telefono;
+            proveedor.RealizarAnalisisNOSIS = realizarAnalisisNOSIS;
+            proveedor.IdRubro = IdRubro;
+            proveedor.CondicionDePago = CondicionDePago;
+            proveedor.ServicioPrestado = ServicioPrestado;
+            proveedor.OrganizacionDeCompra = OrganizacionDeCompra;
+            proveedor.RazonDeEleccion = RazonDeEleccion;
+            proveedor.FacturacionAnual = FacturacionAnual;
+            proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
+            proveedor.IngresoAPlanta = ingresoAPlanta;
+            proveedor.AltaInterna = altaInterna;
+            proveedor.SiperObligatorio = siperObligatorio;
+
             repositorio.GuardarCambios();
 
-            return "Editado correctamente";
+            return "No se puede modificar el Mail porque ya existe un Usuario vinculado.";
         }
 
         public string GetRazonSocial(string CUIT)

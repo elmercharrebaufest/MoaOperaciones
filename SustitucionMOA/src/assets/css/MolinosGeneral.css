@@ -3812,3 +3812,8 @@ display: none;
 .centerbtn{
   margin-left: 180px !important;
 }
+.center{
+  justify-items: center;
+  display: flex;
+  justify-content: center;
+}
