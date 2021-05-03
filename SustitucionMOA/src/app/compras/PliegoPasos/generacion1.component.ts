@@ -43,7 +43,9 @@ export class Generacion1Component extends ListBaseComponent {
 
     solpPaso1Result: any;
     fechaEntrega: any;
-    horaEntrega: any;
+    horaEntrega: any = "10:00";
+
+    
     
 
     // postSolp1() {
@@ -107,23 +109,5 @@ export class Generacion1Component extends ListBaseComponent {
         //this.getData();
     }
 
-    ngAfterViewInit(): void {
-        $(document).on("mouseover", '.form_datetime', function () {
-        $(".form_datetime").datetimepicker({
-        format: 'yyyy-mm-dd',
-        language: 'es',
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        showMeridian: 1,
-        pickTime: false,
-        minView: 2,
-        maxView: 4
-        });
-        });
-        }
 
 }

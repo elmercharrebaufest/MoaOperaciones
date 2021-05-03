@@ -23,8 +23,7 @@ declare var $: any;
 })
 export class Generacion2Component extends ListBaseComponent {
 
-    @Input("model") 
-    protected model:Solp;
+    @Input() model:Solp;
 
 
     @ViewChild(SpinnerSmallComponent)
@@ -33,9 +32,6 @@ export class Generacion2Component extends ListBaseComponent {
     
     @ViewChild('dropdown_categoria')
     protected categoriaDropdownComponent: DropdownComponent;
-
-    @ViewChild('dtp_fecha_pago')
-    protected fechaPagoDTP: ElementRef;
 
   
 
@@ -108,7 +104,12 @@ export class Generacion2Component extends ListBaseComponent {
 
     }
 
-
+    nuevaVisitaDeObra: any = [
+        {
+            fechaEntrega: "",
+            horaEntrega: ""
+        }
+    ];
     
 
     setTabs() {
@@ -122,23 +123,6 @@ export class Generacion2Component extends ListBaseComponent {
         //this.getData();
     }
 
-    ngAfterViewInit(): void {
-        $(document).on("mouseover", '.form_datetime', function () {
-        $(".form_datetime").datetimepicker({
-        format: 'yyyy-mm-dd',
-        language: 'es',
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        forceParse: 0,
-        showMeridian: 1,
-        pickTime: false,
-        minView: 2,
-        maxView: 4
-        });
-        });
-        }
+
 
 }

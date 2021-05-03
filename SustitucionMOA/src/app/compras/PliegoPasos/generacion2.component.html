@@ -14,7 +14,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-6">
                         Supervisor sector *
                         <div class="styled-select">
-                            <input type="text" class="" placeholder=""  maxlength="100">
+                            <input type="text" class="" placeholder="" [(ngModel)]="supervisorSector" maxlength="100">
                         </div>
                     </div>
                 </div>    
@@ -27,23 +27,27 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-4">
                         <div class="styled-select">
-                            <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                            <p-calendar [(ngModel)]="model.visitaDeObraFecha" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>                          
+                            <!-- <div class="input-group date form_datetime" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
                                 <input type="text" id="noCursor" fechaInicioInput readonly />
                                 <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                             </div>
-                            <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaEntrega}} style="visibility: hidden; display: none"  required />
+                            <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaEntrega}} style="visibility: hidden; display: none"  required /> -->
                         </div>
                     </div>
 
                     <div class="col-xs-12 col-md-2">
                         <div class="formulario-label">
                             <div class="styled-select input-group">
-                                <select [(ngModel)]="model.horaEntrega">
+
+                                <!-- <p-calendar [(ngModel)]="value" showTime="true" hourFormat="24"></p-calendar> -->
+                                <p-calendar [(ngModel)]="model.visitaDeObraHora" [timeOnly]="true"></p-calendar>
+                                <!-- <select [(ngModel)]="model.horaEntrega">
                                     <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
                                     00
                                     </option>
                                 </select>
-                                <span class="input-group-addon"><span class="fa fa-clock-o "></span></span>
+                                <span class="input-group-addon"><span class="fa fa-clock-o "></span></span> -->
                             </div>
                         </div>
                     </div>
@@ -58,29 +62,29 @@
 
                 <div class="row myRow">
                     <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                        <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder=""
-                            [disabled]="visitaDeObra" [(ngModel)]="model.visitaDeObra">
-                        <label for="visitaDeObra">Obradores</label>
+                        <input type="checkbox" style="margin-right: 5px;" id="obradores" placeholder="" 
+                        [checked]="model.obradores" (change)="model.obradores = !model.obradores">
+                        <label for="obradores">Obradores</label>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                        <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder=""
-                            [disabled]="visitaDeObra" [(ngModel)]="model.visitaDeObra">
-                        <label for="visitaDeObra">Descripcion tecnica del trabajo</label>
+                        <input type="checkbox" style="margin-right: 5px;" id="descripcionTecnica" placeholder="" 
+                        [checked]="model.descripcionTecnica" (change)="model.descripcionTecnica = !model.descripcionTecnica">
+                        <label for="descripcionTecnica">Descripcion tecnica del trabajo</label>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                        <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder=""
-                            [disabled]="visitaDeObra" [(ngModel)]="model.visitaDeObra">
-                        <label for="visitaDeObra">Modo de elevacion o andamios</label>
+                        <input type="checkbox" style="margin-right: 5px;" id="modoElevacion" placeholder="" 
+                        [checked]="model.modoElevacion" (change)="model.modoElevacion = !model.modoElevacion">
+                        <label for="modoElevacion">Modo de elevacion o andamios</label>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                        <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder=""
-                            [disabled]="visitaDeObra" [(ngModel)]="model.visitaDeObra">
-                        <label for="visitaDeObra">Entrega de documentacion tecnica</label>
+                        <input type="checkbox" style="margin-right: 5px;" id="entregaDocumentacion" placeholder="" 
+                        [checked]="model.entregaDocumentacion" (change)="model.entregaDocumentacion = !model.entregaDocumentacion">
+                        <label for="entregaDocumentacion">Entrega de documentacion tecnica</label>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                        <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder=""
-                            [disabled]="visitaDeObra" [(ngModel)]="model.visitaDeObra">
-                        <label for="visitaDeObra">Tecnico de seguridad</label>
+                        <input type="checkbox" style="margin-right: 5px;" id="tecnicoSeguridad" placeholder="" 
+                        [checked]="model.tecnicoSeguridad" (change)="model.tecnicoSeguridad = !model.tecnicoSeguridad">
+                        <label for="tecnicoSeguridad">Tecnico de seguridad</label>
                     </div>
                     
                 </div>
@@ -92,25 +96,26 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-4">
                         <div class="styled-select">
-                            <div class="input-group date form_datetime" [(ngModel)]="model.fechaEntrega" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                            <p-calendar [(ngModel)]="model.fechaLimiteFecha" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                            <!-- <div class="input-group date form_datetime" [(ngModel)]="model.fechaEntrega" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
                                 <input type="text" id="noCursor" fechaInicioInput readonly />
                                 <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                             </div>
-                            <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago"  value={{fechaEntrega}} style="visibility: hidden; display: none"  required />
+                            <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago"  value={{fechaEntrega}} style="visibility: hidden; display: none"  required /> -->
                         </div>
                     </div>
 
                     <div class="col-xs-12 col-md-2">
-                        <div class="formulario-label">
-                            <div class="styled-select input-group">
-                                <select [(ngModel)]="model.horaEntrega">
-                                    <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
-                                    00
-                                    </option>
-                                </select>
-                                <span class="input-group-addon"><span class="fa fa-clock-o "></span></span>
-                            </div>
-                        </div>
+                        
+                        <!-- <select [(ngModel)]="model.fechaLimiteHora">
+                            <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
+                            00
+                            </option>
+                        </select>
+                        <span class="input-group-addon"><span class="fa fa-clock-o "></span></span> -->
+
+                        <p-calendar class="styled-select" [(ngModel)]="model.fechaLimiteHora" [timeOnly]="true"></p-calendar>
+                          
                     </div>
                 </div>
             </div>

@@ -25,7 +25,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    solpActual: Solp;
+    solpActual: Solp = new Solp;
     
     pasoActual: Paso;
     pasos:Paso[] = [{
