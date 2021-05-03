@@ -1,3 +1,13 @@
+<style>
+    .btn-secondary {
+        background-color: #fff; 
+        border: 1px solid #5B5B5B;
+    }
+    .btn-secondary:hover {
+        background-color: #5B5B5B; 
+        color: #fff;
+    }
+</style>
 <div class="content-wraper">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
@@ -7,7 +17,7 @@
         </div>
         <!--End Title-->
         <!-- Form-->
-        <div  class="row myRow firstSection">
+        <div class="row myRow firstSection">
             <div class="rounded shadow">
                 <stepper [(pasos)]="pasos" (change)="cambioPaso($event)"></stepper>
             </div>
@@ -32,11 +42,21 @@
                         <generacion2 [(model)]="solpActual"></generacion2>
                     </div>
                 </div>
+                
             </div>
-            
-            <!-- footer dinamico con botones de guardado-->
         </div>
-
+        <div class="row myRow" >
+            <div class="col-xs-4">
+                <button class="btn btn-danger" >CANCELAR</button>
+            </div>
+            <div class="col-xs-6">
+                <button class="btn btn-defaut btn-secondary" >{{pasoAnterior().descripcion}}</button>&nbsp;
+                <button class="btn btn-primary" >GUARDAR</button>&nbsp;
+                <button class="btn btn-primary" >PREVIEW</button>&nbsp;
+                <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" >{{pasoSiguiente().descripcion}}</button>
+                <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" >{{pasoSiguiente().descripcion}}</button>
+            </div>
+        </div>
         <!-- END form-->
     </section>
     <!--End CONTENT-->

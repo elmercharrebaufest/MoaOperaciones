@@ -1,19 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
-import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
-import { DropdownComponent, DropdownOption } from './../../common/view-child/dropdown/dropdown.component';
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
-import { Seccion } from './../../common/models/seccion';
 import { ModalService } from './../../common/services/ModalService';
 import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
-
 
 declare var $: any;
 
@@ -23,33 +18,23 @@ declare var $: any;
 })
 export class Generacion1Component extends ListBaseComponent {
 
-    @Input() model:Solp;
-
+    @Input('model') 
+    protected model:Solp;
 
     @ViewChild(SpinnerSmallComponent)
     public spinnerSmallComponent: SpinnerSmallComponent;
 
-    
-    @ViewChild('dropdown_categoria')
-    protected categoriaDropdownComponent: DropdownComponent;
-
     @ViewChild('dtp_fecha_pago')
     protected fechaPagoDTP: ElementRef;
-
-  
 
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.spinnerSmallComponent = new SpinnerSmallComponent();
-        this.categoriaDropdownComponent = new DropdownComponent();
     }
-
-
-    
 
     // checkPermisos() { this.securityService.tienePermisoRedirect("GENERACION 1"); }
 
-    // nombreDeObra: string = "";
+    nombreDeObra: string = "";
     // fiscalContrato: string = "";
     // telefono: string = "";
     // mail: String = sessionStorage.getItem("username");
@@ -116,7 +101,8 @@ export class Generacion1Component extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-        this.model.mail = sessionStorage.getItem("username");
+        if(!this.model.mail)
+            this.model.mail = sessionStorage.getItem("username");
         // this.checkPermisos();
         //this.getData();
     }

@@ -134,10 +134,7 @@ const appRoutes: Routes = [
 
       {path: "faq",
       component: FaqComponent},
-
-      { path: "compras/solp", component: SolpComponent },
-
-      { path: "compras/dashboard", component: DashboardComponent }
+      { path: "compras", loadChildren:"./compras/compras.module#ComprasModule" },
 
     ],
   },

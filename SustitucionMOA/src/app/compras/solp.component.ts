@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { FloatMsgService } from '../common/services/FloatMsgService';
@@ -25,14 +24,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
-    
-
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
-        super(navService, securityService, floatMsgService, modalService);
-        this.solpActual = new Solp();
-    }
-    
-
 
     solpActual: Solp;
     
@@ -108,5 +99,25 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
 
         this.pasoActual = paso;
+    }
+
+    pasoAnterior(){
+        if(this.pasoActual.Numero == 1){
+            return {paso: null, descripcion: 'VOLVER'};   
+        } else {
+            var prev = this.pasos.find(x=>x.Numero == this.pasoActual.Numero - 1);
+            
+            return {paso: prev, descripcion: 'PASO ' + prev.Numero}
+        }
+    }
+
+    pasoSiguiente(){
+        if(this.pasoActual.Numero == this.pasos[this.pasos.length - 1].Numero){
+            return {paso: null, descripcion: 'FINALIZAR'};   
+        } else {
+            var next = this.pasos.find(x=>x.Numero == this.pasoActual.Numero + 1);
+            
+            return {paso: next, descripcion: 'PASO ' + next.Numero}
+        }
     }
 }

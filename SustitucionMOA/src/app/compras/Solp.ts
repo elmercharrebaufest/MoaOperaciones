@@ -1,6 +1,7 @@
 import { Time } from "@angular/common";
 
 export class Solp {
+    //paso 1
     public nombreDeObra: string;
     public fiscalContrato: string;
     public telefono: string;
@@ -9,5 +10,8 @@ export class Solp {
     public fechaDeEntregaDeOfertasHora: Time;
     public horaEntrega: any;
     public fechaEntrega: any;
+
+    //paso 2
+    public visitaDeObra: boolean;
 }
 

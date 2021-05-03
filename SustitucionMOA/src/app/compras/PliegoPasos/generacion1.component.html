@@ -13,7 +13,7 @@
             <div class="row myRow margenInput" style="padding-top: 2px;">
                 <div class="col-xs-12 col-sm-6 col-md-5">
                     <div class="styled-select">
-                        <input type="search" [(ngModel)]="model.nombreDeObra" class="fourRounded" placeholder="" aria-controls="tableModal">
+                        <input type="text" [(ngModel)]="model.nombreDeObra" class="fourRounded" placeholder="" aria-controls="tableModal">
                     </div>
                 </div>
 
@@ -29,11 +29,12 @@
                 
                 <div class="col-xs-12 col-sm-12 col-md-4">
                     <div class="styled-select">
-                        <div class="input-group date form_datetime" [(ngModel)]="model.fechaEntrega" data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
-                            <input type="text" id="noCursor" fechaInicioInput readonly />
+                        <p-calendar [(ngModel)]="model.fechaEntrega" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                        <!-- <div class="input-group date form_datetime"  data-provide="datepicker" data-date="" data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                            <input type="text" readonly id="noCursor" fechaInicioInput />
                             <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
                         </div>
-                        <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaEntrega}} style="visibility: hidden; display: none"  required />
+                        <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" (change)="console.log($event.target.value)" [value]="model.fechaEntrega" style="visibility: hidden; display: none"  required /> -->
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-2">
