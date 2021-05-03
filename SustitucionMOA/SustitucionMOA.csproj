@@ -916,6 +916,7 @@
     <Compile Include="Controllers\ContratoController.cs" />
     <Compile Include="Controllers\CuentaCorrienteController.cs" />
     <Compile Include="Controllers\DataAgroController.cs" />
+    <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
     <Compile Include="Controllers\FleteController.cs" />
@@ -1192,8 +1193,10 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
+    <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
+    <Folder Include="Views\LogPesificacion\" />
     <Folder Include="Views\TicketPesada\" />
   </ItemGroup>
   <ItemGroup>

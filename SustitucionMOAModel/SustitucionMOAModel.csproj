@@ -56,6 +56,9 @@
     <Compile Include="Dto\CamposSustentableReporte.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
+    <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
+    <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
+    <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
     <Compile Include="Dto\ComentarioDto.cs" />
@@ -78,6 +81,7 @@
     <Compile Include="Entities\Cosecha.cs" />
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
+    <Compile Include="Entities\LogPesificacion.cs" />
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />

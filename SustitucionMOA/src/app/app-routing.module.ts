@@ -143,6 +143,7 @@ const appRoutes: Routes = [
         path: "consulta",
         loadChildren: "./consulta/consulta.module#ConsultaModule",
       },
+      { path: "logPesificacion",  loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" }
     ],
   },
   { path: "**", component: HomeComponent },

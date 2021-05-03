@@ -531,6 +531,11 @@
                                     Alta Empresa No Granos
                                 </a>
                             </div>
+                            <div *ngIf="isAuthorized('GUARDADO Y CONSULTA DE LOG PESIFICACIONES')">
+                                <a (click)="goToSeccion('/logPesificacion')" href="#">
+                                    Administración de pesificaciones
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
