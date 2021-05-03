@@ -104,35 +104,17 @@ namespace SustitucionMOAUtils.Services
                 archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
 
 
-                try
-                {
-                    EmailSender.SendReporte(new ReporteCamposSustentables()
-                    {
-                        Asunto = $"Reporte1 de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
-                        CantidadCampos = camposAReportar.Count(),
-                        Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
-                        Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
-                        Adjuntos = new List<Attachment>
-                {
-                    archivoZip
-                }
-                    });
-
-                }
-                catch
-                {
-
-                }
-
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {
-                    Asunto = $"Reporte2 de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
+                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                     CantidadCampos = camposAReportar.Count(),
                     Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
+                    archivoZip,
                     archivoExcel
+
                 }
                 });
 
