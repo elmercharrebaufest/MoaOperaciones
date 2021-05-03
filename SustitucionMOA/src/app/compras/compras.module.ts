@@ -13,10 +13,10 @@ import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     imports: [
-        FormsModule,
         CommonModule,
-        SharedModule,
         ComprasRoutingModule,
+        FormsModule,
+        SharedModule,
         InputTextModule,
         CalendarModule
     ],

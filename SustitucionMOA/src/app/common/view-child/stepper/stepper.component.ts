@@ -13,12 +13,25 @@ export class StepperComponent {
     @Output() change = new EventEmitter<Paso>();
 
     items: MenuItem[];
-    activeIndex: number = 3;
+    activeIndex: number = 0;
     readonly: boolean = false;
+    activeStep: Paso;
 
     constructor() {
         this.items = new Array;
     }
+
+    @Input() 
+    set paso(value: Paso) {
+    
+        this.activeStep = value;
+        this.activeIndex = value.Numero - 1;
+        this.change.emit(value)
+     }
+     
+     get paso(): Paso {
+         return this.activeStep;
+     }
 
     ngOnInit(){
     }
@@ -60,7 +73,8 @@ export class StepperComponent {
     itemClick(event, item, index){
         var step = this.pasos[index];
         this.activeIndex = index;
-        
+        this.paso = step;
+
         this.change.emit(step)
     }
 }

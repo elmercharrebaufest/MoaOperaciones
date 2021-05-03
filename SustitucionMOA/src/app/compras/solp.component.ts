@@ -1,20 +1,34 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
-import { FloatMsgService } from '../common/services/FloatMsgService';
-import { ModalService } from '../common/services/ModalService';
-import { NavService } from '../common/services/NavService';
-import { SecurityService } from '../common/services/SecurityService';
-import { SessionDataService } from '../common/services/SessionDataService';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
-import { StepperComponent } from '../common/view-child/stepper/stepper.component';
-import { Generacion1Component } from '../compras/PliegoPasos/generacion1.component'
 import { Solp } from './Solp';
 
 @Component({
     selector: 'app-solp',
     templateUrl: './solp.component.html',
+    animations: [
+        trigger('fadeInOut', [
+            transition(
+              ':enter', 
+              [
+                style({ opacity: 0 }),
+                animate('1s ease-out', 
+                        style({ opacity: 1 }))
+              ]
+            ),
+            transition(
+              ':leave', 
+              [
+                style({ opacity: 1 }),
+                animate('0s ease-in', 
+                        style({ opacity: 0 }))
+              ]
+            )
+          ]),
+    ]
 })
 export class SolpComponent extends BaseComponent implements OnInit {
 
@@ -119,5 +133,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
             
             return {paso: next, descripcion: 'PASO ' + next.Numero}
         }
+    }
+
+    navegar(paso){
+        if(paso.paso){
+            this.pasoActual = paso.paso
+        } else if (paso.descripcion == 'VOLVER'){
+            this.navService.navegarSeccion('/compras');
+        } else if (paso.descripcion == 'FINALIZAR'){
+            //guardar - finalizar
+        }
+    }
+
+    salir(){
+        this.navService.navegarSeccion('/compras');
     }
 }
