@@ -96,32 +96,47 @@ namespace SustitucionMOAUtils.Services
                 Attachment archivoExcel;
                 MemoryStream streamExcel = new MemoryStream();
                 var sw = new StreamWriter(streamExcel);
+
+                sw.Write(excelFile);
+                sw.Flush();
+                streamExcel.Seek(0, SeekOrigin.Begin);
+
+                archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
+
+
                 try
                 {
-                    sw.Write(excelFile);
-                    sw.Flush();
-                    streamExcel.Seek(0, SeekOrigin.Begin);
-
-                    archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-                }
-                finally
+                    EmailSender.SendReporte(new ReporteCamposSustentables()
+                    {
+                        Asunto = $"Reporte1 de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
+                        CantidadCampos = camposAReportar.Count(),
+                        Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
+                        Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
+                        Adjuntos = new List<Attachment>
                 {
-                    sw.Dispose();
+                    archivoZip
+                }
+                    });
+
+                }
+                catch
+                {
+
                 }
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {
-                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
+                    Asunto = $"Reporte2 de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                     CantidadCampos = camposAReportar.Count(),
                     Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
-                    archivoZip,
                     archivoExcel
                 }
                 });
 
+                sw.Dispose();
                 outputMemStream.Dispose();
                 zipStream.Dispose();
                 streamExcel.Dispose();
