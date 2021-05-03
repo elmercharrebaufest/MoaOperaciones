@@ -110,7 +110,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Asunto = $"Reporte1 de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                         CantidadCampos = camposAReportar.Count(),
-                        Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
+                        Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
                         Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                         Adjuntos = new List<Attachment>
                 {
@@ -128,7 +128,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Asunto = $"Reporte2 de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                     CantidadCampos = camposAReportar.Count(),
-                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
+                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
@@ -138,8 +138,6 @@ namespace SustitucionMOAUtils.Services
 
                 sw.Dispose();
                 outputMemStream.Dispose();
-                zipStream.Dispose();
-                streamExcel.Dispose();
             }
         }
 
