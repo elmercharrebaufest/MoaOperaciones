@@ -63,7 +63,6 @@ import { ComprasModule } from "./compras/compras.module";
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
-    ComprasModule,
     AppRoutingModule,
     FormsModule,
     NgxPaginationModule,
@@ -75,6 +74,7 @@ import { ComprasModule } from "./compras/compras.module";
     SharedModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
+    ComprasModule,
   ],
   declarations: [
     AppComponent,

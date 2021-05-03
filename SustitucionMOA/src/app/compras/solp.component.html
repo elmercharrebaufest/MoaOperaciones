@@ -19,7 +19,7 @@
         <!-- Form-->
         <div class="row myRow firstSection">
             <div class="rounded shadow">
-                <stepper [(pasos)]="pasos" (change)="cambioPaso($event)"></stepper>
+                <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
             </div>
         </div>
 
@@ -30,30 +30,28 @@
                 </div>
                 <hr>
                 <!-- contenido -->
-                <!--Paso 1-->
-                <div class="col-xs-12 col-md-12">
-                    <div *ngIf="pasoActual.Codigo == 'PliegoGeneracion1'" >
+                <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
+                    <div *ngSwitchCase="'PliegoGeneracion1'" [@fadeInOut] >
                         <generacion1 [(model)]="solpActual"></generacion1>
                     </div>
-                </div>
-                <!--Paso 2-->
-                <div class="col-xs-12 col-md-12">
-                    <div *ngIf="pasoActual.Codigo == 'PliegoGeneracion2'" >
+                    <div  *ngSwitchCase="'PliegoGeneracion2'" [@fadeInOut] >
                         <generacion2 [(model)]="solpActual"></generacion2>
                     </div>
-                </div>
-                
+                    <div *ngSwitchDefault [@fadeInOut] >
+                        Paso en construccion
+                    </div>
+                </div>                
             </div>
         </div>
         <div class="row myRow" >
             <div class="col-xs-4">
-                <button class="btn btn-danger" >CANCELAR</button>
+                <button class="btn btn-danger" (click)="salir()">CANCELAR</button>
             </div>
             <div class="col-xs-6">
-                <button class="btn btn-defaut btn-secondary" >{{pasoAnterior().descripcion}}</button>&nbsp;
+                <button class="btn btn-defaut btn-secondary" (click)="navegar(pasoAnterior())">{{pasoAnterior().descripcion}}</button>&nbsp;
                 <button class="btn btn-primary" >GUARDAR</button>&nbsp;
                 <button class="btn btn-primary" >PREVIEW</button>&nbsp;
-                <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" >{{pasoSiguiente().descripcion}}</button>
+                <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())" >{{pasoSiguiente().descripcion}}</button>
                 <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" >{{pasoSiguiente().descripcion}}</button>
             </div>
         </div>
