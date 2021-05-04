@@ -950,7 +950,7 @@
                             </button>
 
                             <button
-                                *ngIf="empresaSeleccionada.IdTipoUsuario === 3"
+                                *ngIf="empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 2"
                                 type="button" class="btn-custom btn-mediano btn-add" style="float: right;"
                                 (click)="abrirEditar(empresaSeleccionada.Id)">
                                 Editar Alta
@@ -1137,7 +1137,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" *ngIf="!pantallaEditarAlta">
                 <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
