@@ -811,19 +811,33 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-6" *ngIf="empresaSeleccionada.EstadoAprobacion == 1">
                                         CUIT: *
                                         <div class="styled-select">
                                             <input type="text" placeholder="" mask="00-00000000-0" [(ngModel)]="empresaSeleccionada.CUIT" maxlength="13" />
                                         </div>
                                     </div>
+
+                                    <div class="col-xs-12 col-md-6" *ngIf = "empresaSeleccionada.EstadoAprobacion == 2">
+                                        CUIT: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" mask="00-00000000-0" [ngModel]="empresaSeleccionada.CUIT" maxlength="13" disabled/>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row myRow ">
-                                    <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf = "empresaSeleccionada.EstadoAprobacion == 1">
                                         Email: *
                                         <div class="styled-select">
                                             <input type="text" placeholder="" [(ngModel)]="empresaSeleccionada.Mail" maxlength="100"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf = "empresaSeleccionada.EstadoAprobacion == 2">
+                                        Email: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" [ngModel]="empresaSeleccionada.Mail" maxlength="100" disabled/>
                                         </div>
                                     </div>
 
@@ -951,7 +965,8 @@
                             </button>
 
                             <button
-                                *ngIf="empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 2"
+                                *ngIf="(empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 2) || 
+                                (empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 1)"
                                 type="button" class="btn-custom btn-mediano btn-add" style="float: right;"
                                 (click)="abrirEditar(empresaSeleccionada.Id)">
                                 Editar Alta
