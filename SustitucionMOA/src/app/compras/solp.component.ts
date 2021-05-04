@@ -5,7 +5,6 @@ import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { Solp } from './Solp';
-import { SolpService } from './solp.service';
 
 @Component({
     selector: 'app-solp',

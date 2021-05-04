@@ -8,6 +8,7 @@ export class Solp {
     public mail: string;
     public fechaDeEntregaDeOfertasFecha: Date;
     public fechaDeEntregaDeOfertasHora: Time;
+    public horaEntrega: any;
 
 
     //paso 2
@@ -23,6 +24,7 @@ export class Solp {
     public tecnicoSeguridad: boolean;
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Time;
+    public visitaDeObraMasiva: boolean;
 
 }
 
