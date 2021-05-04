@@ -17,7 +17,11 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId)
         {
-            return ObtenerFotoCartasPorte(new List<string> { cartaPorteId });
+            byte[] fileBytes = System.IO.File.ReadAllBytes("C:/Users/jyon/Downloads/580452949-150207.tif");
+            //return ObtenerFotoCartasPorte(new List<string> { cartaPorteId });
+            return new List<CartaPorteFoto> {
+                 new  CartaPorteFoto("1000", fileBytes, fileBytes, "tiff")
+            };
         }
 
         public List<CartaPorteFoto> ObtenerFotoCartasPorte(List<string> cartaPorteIds)
@@ -30,7 +34,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ObtenerFotosPorCartaPorteID(cartaPorteFotos, cartaPorteId);
                 }
 
-                if(cartaPorteFotos.Count == 0)
+                if (cartaPorteFotos.Count == 0)
                 {
                     throw new SustitucionMOAModel.CustomExceptions.InfoCustomException("No hay foto para la/s carta/s porte seleccionada");
                 }
@@ -50,7 +54,8 @@ namespace SustitucionMOAWS.WSConsumers
                 FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
                 foreach (FotoDto foto in fotos.Fotos)
                 {
-                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica));
+                    //todo: modificar la extension cuando este listo
+                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica, "tiff"));
                 }
             }
             catch

@@ -6,6 +6,8 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+var Tiff = require('tiff.js');
+var fs = require('fs');
 
 @Component({
     selector: 'app-carta-porte-descarga',
@@ -26,6 +28,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     cartaPorteDescarga = "";
     showModalBox = false;
     data: any;
+    canvasTiff : any; 
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); }
 
@@ -117,6 +120,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
 
             result => {
+                debugger
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -125,9 +129,11 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-                    this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
-                    this.cartaPorteDescarga = cartaDePorteNumero;
-                    document.getElementById("openModalHiddenButton").click();
+
+                    // this.fotoSrc = 'data:image/png;base64,'+ result[0].Foto;
+                    // this.cartaPorteDescarga = cartaDePorteNumero;
+                    // document.getElementById("openModalHiddenButton").click();
+                    this.loadFileTiff(result[0].foto);
                     return true;
                 }
             },
@@ -144,6 +150,12 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
     isAllChecked() {
         return this.data.cartasPorte.every((_: { state: any; }) => _.state);
+    }
+
+    loadFileTiff(imagen : any) : void
+    {
+        let tiff = new Tiff({buffer: imagen});
+        this.canvasTiff = tiff.toCanvas();
     }
 }
 

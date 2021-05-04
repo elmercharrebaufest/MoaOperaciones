@@ -15,11 +15,14 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
 
         public string FotoChica { get; set; }
 
-        public CartaPorteFoto(string cartaPorteID, byte[] foto, byte[] fotoChica)
+        public string Extension { get; set; }
+
+        public CartaPorteFoto(string cartaPorteID, byte[] foto, byte[] fotoChica, string extension)
         {
             CartaPorteID = cartaPorteID;
             Foto = Convert.ToBase64String(foto); 
-            FotoChica = Convert.ToBase64String(fotoChica); ;
+            FotoChica = Convert.ToBase64String(fotoChica);
+            Extension = extension;
         }
 
     }
