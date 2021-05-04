@@ -56,6 +56,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   hectareasSoja: number;
   latitud: string;
   longitud: string;
+  CUIT: string;
   file: any;
 
   proveedorSelected: any;
@@ -192,6 +193,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
     this.blockUI.stop();
     return false; //<-- Prevent Refresh
 
+  }
+
+  verificarCUITIngresado() {
+    this.declaracionComformidad.CUITDeclaracion = this.CUIT;
+    if (this.CUIT.length == 11 && this.cosechaId > 0) {
+      this.declaracionComformidad.verificarDeclaracion();
+    }
   }
 
   getCosechas() {

@@ -27,6 +27,10 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaModificacion { get; set; }
 
+        public string CUIT { get; set; }
+
+        public string RazonSocial { get; set; }
+
         public bool Borrado { get; set; }
     }
 }

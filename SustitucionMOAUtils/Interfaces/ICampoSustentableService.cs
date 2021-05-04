@@ -11,17 +11,17 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface ICampoSustentableService
     {
+        string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido);
         Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz);
         string Borrar(string mailUsuario, int campoCosechaId, int proveedorId);
         Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz);
+        string ExportarCamposProveedores(string mailUsuario);
+        byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion);
+        byte[] ImprimirDeclaracion(int proveedorId, int cosechaId);
         List<CampoProveedorListadoDto> Listar(string mailUsuario);
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
         List<Cosecha> ObtenerCosechas();
-        string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales, int cosechaId);
-        byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales);
-        EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId);
-        byte[] ImprimirDeclaracion(int proveedorId, int cosechaId);
-        string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, HttpPostedFileBase fileSubido);
-        string ExportarCamposProveedores(string mailUsuario);
+        EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
     }
+
 }

@@ -189,11 +189,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult VerificarDeclaracion(int proveedorId, int cosechaId)
+        public JsonResult VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion)
         {
             try
             {
-                return JsonCustom(campoSustentableService.VerificarDeclaracion(proveedorId, cosechaId));
+                return JsonCustom(campoSustentableService.VerificarDeclaracion(proveedorId, cosechaId, CUITDeclaracion));
             }
             catch (InfoCustomException e)
             {
@@ -212,11 +212,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public JsonResult GenerarDeclaracionProveedor(int proveedorId, int cosechaId, double hectareasTotales)
+        public JsonResult GenerarDeclaracionProveedor(int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion)
         {
             try
             {
-                var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, cosechaId, hectareasTotales);
+                var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, cosechaId, hectareasTotales, CUITDeclaracion, razonSocialDeclaracion);
                 PDFResponse result = new PDFResponse
                 {
                     pdf = new Pdf()
@@ -244,11 +244,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public JsonResult AdjuntarDeclaracionFirmada(int proveedorId, int cosechaId, HttpPostedFileBase fileSubido)
+        public JsonResult AdjuntarDeclaracionFirmada(int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido)
         {
             try
             {
-                return JsonCustom(campoSustentableService.AdjuntarDeclaracionFirmada(SessionPersister.User.username, proveedorId, cosechaId, fileSubido));
+                return JsonCustom(campoSustentableService.AdjuntarDeclaracionFirmada(SessionPersister.User.username, proveedorId, cosechaId, CUITDeclaracion, fileSubido));
             }
             catch (InfoCustomException e)
             {
