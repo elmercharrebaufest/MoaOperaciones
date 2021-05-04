@@ -56,13 +56,13 @@ namespace SustitucionMOA.Controllers
                     IdUsuario = ObtenerUsuarioActual().Id,
                     Fecha = DateTime.Now,
                     CodigoProveedor = SessionPersister.Proveedor,
-                    Contrato = int.Parse(contratoJson.Contrato),
-                    Fijacion = int.Parse(contratoJson.Fijacion),
+                    Contrato = this.ParseContrato(contratoJson.Contrato),
+                    Fijacion = this.ParseFijacion(contratoJson.Fijacion),
                     CantidadKilos = contratoJson.Cantidad
                 };
 
                 var logPesificacion = logPesificacionService.GuardarPesificacion(nuevaPesificacion);
-           
+
                 var respuestaDeContrato = _pesificacionService.SetContrato(SessionPersister.Proveedor, contratoJson.Contrato, contratoJson.Fijacion, contratoJson.Cantidad);
 
                 //si todo el proceso fue exitoso actualizo en MOAOperaciones el exitoso en el log
@@ -161,6 +161,29 @@ namespace SustitucionMOA.Controllers
         {
             string userMail = SessionPersister.getUsername();
             return usuarioService.GetUsuario(userMail);
+        }
+
+        private int ParseContrato(string contrato)
+        {
+            int valor = 0;
+            if (int.TryParse(contrato, out valor))
+            {
+                return valor;
+            }
+            return 0;
+        }
+
+        private int? ParseFijacion(string fijacion)
+        {
+            if (string.IsNullOrEmpty(fijacion))
+                return null;
+
+            int valor = 0;
+            if (int.TryParse(fijacion, out valor))
+            {
+                return valor;
+            }
+            return 0;
         }
     }
 }
