@@ -24,7 +24,7 @@
                         <p class="crearConsultaTitulos">Codigo Proveedor<span class="requerido">*</span></p>
                         <div class="styled-select ">
                             <input type="search" [(ngModel)]="codigoProveedor" class="fourRounded"
-                                aria-controls="tableModal">
+                                aria-controls="tableModal" disabled>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3 col-md-3">
@@ -52,13 +52,13 @@
                             <p class="crearConsultaTitulos">Corredor<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="search" [(ngModel)]="codigoCorredor" class="fourRounded"
-                                    aria-controls="tableModal">
+                                    aria-controls="tableModal" disabled>
                             </div>
                         </div>
                         <div [ngClass]="esCorredor ? 'col-md-6' : 'col-md-12' " class="col-xs-12 col-sm-6">
                             <p class="crearConsultaTitulos">Nombre<span class="requerido">*</span></p>
                             <div class="styled-select ">
-                                <input type="search" [(ngModel)]="nombre" class="fourRounded" aria-controls="tableModal">
+                                <input type="search" [(ngModel)]="nombre" class="fourRounded" aria-controls="tableModal" disabled>
                             </div>
                         </div>
                     </div>

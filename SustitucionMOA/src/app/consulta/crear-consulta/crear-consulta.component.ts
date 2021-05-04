@@ -234,6 +234,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
+            if(this.esCorredor){
+                this.floatMsgService.setErrorMsg("Recuerde seleccionar un Proveedor.");
+                return true;
+            }
             this.floatMsgService.setErrorMsg("El campo proveedor esta vacio.");
             return true;
         }
@@ -420,8 +424,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.spinnerComponent.showIt();
 
         if (this.esCorredor) {
-            this.codigoProveedor = this.proveedorSelected.idVendedor;
-            this.razonSocialProveedor = this.proveedorSelected.descVendedor;
+            if(this.proveedorSelected)
+            {
+                this.codigoProveedor = this.proveedorSelected.idVendedor;
+                this.razonSocialProveedor = this.proveedorSelected.descVendedor;
+            }
             this.razonSocialCorredor = this.nombre;
         }
         else {

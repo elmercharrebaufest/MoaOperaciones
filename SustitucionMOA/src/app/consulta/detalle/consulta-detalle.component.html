@@ -34,10 +34,19 @@
                             </a>
                         </ng-container>
                     </div>
-                    <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                    class="col-xs-12 col-sm-12 col-md-12">
-                        {{comentario.Fecha | date:'hh:mm'}}
-                    </p>
+
+                    <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
+                        <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                        class="col-xs-12 col-sm-12 col-md-12">
+                            {{comentario.Fecha | date:'hh:mm'}} | {{comentario.Usuario.Mail}}
+                        </p>
+                    </div>
+                    <ng-template #elseBlock>
+                        <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                        class="col-xs-12 col-sm-12 col-md-12">
+                            {{comentario.Fecha | date:'hh:mm'}}
+                        </p>
+                    </ng-template>
                 </div>
             </div>
 

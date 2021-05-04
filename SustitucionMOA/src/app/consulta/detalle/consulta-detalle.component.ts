@@ -85,6 +85,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     username = sessionStorage.getItem("userName");
     detalle: string = "";
     esInterno = this.isAuthorized('CONSULTA ABM');
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
