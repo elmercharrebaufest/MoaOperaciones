@@ -74,4 +74,17 @@ export class AltaEmpresaService extends BaseService {
             .get('/api/AltaEmpresa/GuardarSIPER', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
+
+    public getRubros(): Observable<any> {
+        return this.http
+            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    public getTipoCambiario(): Observable<any> {
+        return this.http
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
 }

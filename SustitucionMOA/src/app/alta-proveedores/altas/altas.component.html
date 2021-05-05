@@ -43,11 +43,12 @@
                     </div>
                 </div>
 
+                <!---
                 <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
                     <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
                         <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
                     </div>
-                </a>
+                </a>-->
             </div>
 
         </div>
@@ -291,8 +292,9 @@
                 <!-- DETALLE -->
 
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
+                    <!--ALTA PROVEEDOR GRANOS-->
                     <div class="row myRow firstSection roundedInfo" id="container"
-                        *ngIf="empresaSeleccionada.IdTipoUsuario != 3">
+                        *ngIf="empresaSeleccionada.IdTipoUsuario != 3 && !pantallaEditarAlta">
                         <mdb-stepper #stepper>
                             <div class="col-md-5">
                                 <mdb-step name="Step 1" label="Informe comercial"
@@ -569,8 +571,9 @@
                         </mdb-stepper>
                     </div>
 
+                    <!--ALTA NO GRANOS-->
                     <div id="divInfoNoGranos" class="row myRow firstSection roundedInfo"
-                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3">
+                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3 && !pantallaEditarAlta">
 
                         <div class="col-md-12">
                             <h3>Información del proveedor {{empresaSeleccionada.RazonSocial}}</h3>
@@ -793,8 +796,160 @@
                         </div>
 
                     </div>
+                    <!--EDITAR NO GRANOS-->
+                    <div id="divInfoNoGranos" class="row myRow firstSection roundedInfo"
+                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3 && pantallaEditarAlta">
+                        <mensaje></mensaje>
+                        <div class="col-md-12">
+                            <h3>Información del proveedor {{empresaSeleccionada.RazonSocial}}</h3>
+                            <div class="form-group grey">
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Raz&oacute;n Social: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.RazonSocial" name="empresaSeleccionada.RazonSocial" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
 
-                    <div class="row">
+                                    <div class="col-xs-12 col-md-6" *ngIf="empresaSeleccionada.EstadoAprobacion == 1">
+                                        CUIT: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" mask="00-00000000-0" [(ngModel)]="empresaSeleccionada.CUIT" maxlength="13" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6" *ngIf = "empresaSeleccionada.EstadoAprobacion == 2">
+                                        CUIT: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" mask="00-00000000-0" [ngModel]="empresaSeleccionada.CUIT" maxlength="13" disabled/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf = "empresaSeleccionada.EstadoAprobacion == 1">
+                                        Email: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" [(ngModel)]="empresaSeleccionada.Mail" maxlength="100"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-6" *ngIf = "empresaSeleccionada.EstadoAprobacion == 2">
+                                        Email: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" [ngModel]="empresaSeleccionada.Mail" maxlength="100" disabled/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        Telefono: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.Telefono" name="empresaSeleccionada.Telefono" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Rubro: *
+                                        <div class="styled-select">
+                                            <select [(ngModel)]="IdRubro">
+                                                <option *ngFor="let x of rubros" value="{{x.Id}}">{{x.Nombre}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        Condición de Pago: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.CondicionDePago" name="empresaSeleccionada.CondicionDePago" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Servicio prestado a Molinos: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.ServicioPrestado" name="empresaSeleccionada.Rubro" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        Estimado facturación anual a MOA ($):
+                                        <div class="styled-select">
+                                            <input type="search" numeric decimals="0" [(ngModel)]="empresaSeleccionada.FacturacionAnual"
+                                                maxlength="12" (change)="calcularFacturacion()">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Organización de Compra: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.OrganizacionDeCompra" name="empresaSeleccionada.OrganizacionDeCompra" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-6">
+                                        Razón de elección del proveedor:
+                                        <div class="styled-select">
+                                            <input type="text" class="" placeholder="" [(ngModel)]="empresaSeleccionada.RazonDeEleccion" maxlength="200">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="RealizarAnalisisNOSIS" placeholder=""
+                                        [disabled]="nosisObligatorio" [(ngModel)]="empresaSeleccionada.RealizarAnalisisNOSIS">
+                                    <label for="RealizarAnalisisNOSIS">Realizar Analisis NOSIS</label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="RequiereVerificacionCompras"
+                                        [disabled]="ingresoAPlanta" class="checkboxMargin" placeholder=""
+                                        [(ngModel)]="empresaSeleccionada.RequiereVerificacionCompras">
+                                    <label for="RequiereVerificacionCompras">Requiere Verificación de compras</label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="ingresoAPlanta" class="checkboxMargin"
+                                        placeholder="" [(ngModel)]="empresaSeleccionada.IngresoAPlanta" (change)="verificarIngresoAPlanta()">
+                                    <label for="ingresoAPlanta">Proveedor con ingreso a planta</label>
+                                </div>
+                                
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="altaInterna" class="checkboxMargin"
+                                        placeholder="" [(ngModel)]="empresaSeleccionada.AltaInterna">
+                                    <label for="altaInterna"> Alta interna</label>
+                                </div>
+                                
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="siperObligatorio" class="checkboxMargin"
+                                        placeholder="" [(ngModel)]="empresaSeleccionada.SiperObligatorio">
+                                    <label for="siperObligatorio"> SIPER obligatorio</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12">
+                            <div class="form-group col-md-12 center">
+                                <button
+                                    *ngIf="empresaSeleccionada.IdTipoUsuario === 3"
+                                    type="button" class="btn-custom btn-mediano btn-add" (click)="volver()">
+                                    Regresar
+                                </button>
+                                <button
+                                    *ngIf="empresaSeleccionada.IdTipoUsuario === 3"
+                                    type="button" class="btn-custom btn-mediano btn-add" (click)="editarAltaNoGranos()">
+                                    Editar Alta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="!pantallaEditarAlta">
                         <div class="form-group align-right">
                             <button [disabled]="listaArchivos.length === 0" type="button"
                                 class="btn-custom btn-mediano btn-add" style="float: right;"
@@ -808,9 +963,17 @@
                                 (click)="descargarFormularioNG(empresaSeleccionada.Id)">
                                 Descargar Formulario de Solicitud de alta
                             </button>
+
+                            <button
+                                *ngIf="(empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 2) || 
+                                (empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 1)"
+                                type="button" class="btn-custom btn-mediano btn-add" style="float: right;"
+                                (click)="abrirEditar(empresaSeleccionada.Id)">
+                                Editar Alta
+                            </button>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" *ngIf="!pantallaEditarAlta">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-header" id="headingMolinos">
@@ -957,7 +1120,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" *ngIf="!pantallaEditarAlta">
                         <table
                             *ngIf="empresaSeleccionada.HistorialAprobaciones && empresaSeleccionada.HistorialAprobaciones.length > 0"
                             id="tableModalHistorial"
@@ -990,7 +1153,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" *ngIf="!pantallaEditarAlta">
                 <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
@@ -1018,7 +1181,7 @@
                 <div class="col-xs-12" style="align-items: center;">
                     <spinner-small #spinnerModal></spinner-small>
                 </div>
-                <div class="row btnSections">
+                <div class="row btnSections" *ngIf="!pantallaEditarAlta">
                     <button type="button" class="btn-custom btn-mediano btn-add"
                         *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(7)">

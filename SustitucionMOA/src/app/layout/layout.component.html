@@ -519,14 +519,14 @@
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseU" aria-expanded="false" aria-controls="collapseU">
-                            Usuarios <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            Administraci&oacute;n <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('ABM USUARIOS')">
                                 <a (click)="goToSeccion('/usuario/list')" href="#">
-                                    Listado
+                                    Listado de usuarios
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('ABM EMPRESAS')">

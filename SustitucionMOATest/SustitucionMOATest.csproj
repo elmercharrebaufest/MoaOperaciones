@@ -101,6 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LogPesificacionServiceTest.cs" />
     <Compile Include="Services\AltaEmpresaGranosServiceTest.cs" />
+    <Compile Include="Services\AltaEmpresaNoGranosServiceTest.cs" />
     <Compile Include="Services\AltaEmpresaServiceTest.cs" />
     <Compile Include="Services\AzureB2CServiceTest.cs" />
     <Compile Include="Services\CampoSustentableServiceTest.cs" />
