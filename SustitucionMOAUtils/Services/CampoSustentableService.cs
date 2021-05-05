@@ -496,6 +496,8 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = cp.Proveedor.RazonSocial
                 },
                 CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                CUITProveedor = cp.CUIT,
+                RazonSocialProveedor = cp.RazonSocial,
                 CosechaId = cp.CampoCosecha.Cosecha_Id,
                 MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
             });
@@ -519,7 +521,7 @@ namespace SustitucionMOAUtils.Services
                                 Latitud = cp.Latitud,
                                 Longitud = cp.Longitud,
                                 CampoCosechaId = cp.CampoCosecha_Id,
-                                ProveedorNombre = cp.Proveedor.RazonSocial,
+                                ProveedorNombre = cp.RazonSocial,
                                 LocalidadNombre = cp.CampoCosecha.Campo.Localidad.Nombre,
                                 CampoSustentableId = cp.CampoCosecha.CampoSustentable_Id,
                                 CosechaId = cp.CampoCosecha.Cosecha_Id,

@@ -14,8 +14,10 @@ import { DeclaracionConformidadComponent } from './declaracion-conformidad/decla
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { SpinnerModule } from 'primeng/spinner';
-import {AutoCompleteModule} from 'primeng/autocomplete';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+
 import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion-declaracion.component';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   imports: [
@@ -26,18 +28,20 @@ import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion
     ReCaptchaModule,
     FormsModule,
     ReactiveFormsModule,
-    AutoCompleteModule, DropdownModule, MultiSelectModule, SpinnerModule
+    AutoCompleteModule, DropdownModule, MultiSelectModule, SpinnerModule,
+    NgxMaskModule.forRoot(),
+
   ],
-    declarations: [
-      ListadoCamposComponent,
-      AltaComponent,
-      EdicionComponent,
-      DeclaracionConformidadComponent,
-      ImpresionDeclaracionComponent,
-    ],
-    providers: [
-        VentaSustentableService,
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [
+    ListadoCamposComponent,
+    AltaComponent,
+    EdicionComponent,
+    DeclaracionConformidadComponent,
+    ImpresionDeclaracionComponent,
+  ],
+  providers: [
+    VentaSustentableService,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class VentaSustentableModule { }
