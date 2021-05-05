@@ -116,7 +116,7 @@
                             <td *ngIf="esInterno">{{campo.IdScato || 'Pendiente'}}</td>
                             <td>{{campo.NombreCosecha}}</td>
                             <td>{{campo.NombreCampo}}</td>
-                            <td>{{campo.CodigoProveedor}}</td>
+                            <td>{{campo.CUITProveedor}}</td>
                             <td [ngClass]="{'estadoRechazado': campo.ToneladasAprobadas === 0,
                                             'estadoAprobado': campo.ToneladasAprobadas > 0,
                                             'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}</td>

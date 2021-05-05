@@ -25,7 +25,6 @@ using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
-
     public class CampoSustentableService : ICampoSustentableService
     {
         private readonly IRepositorio repositorio;
@@ -45,6 +44,10 @@ namespace SustitucionMOAUtils.Services
 
             ValidarCampo(usuario, campoProveedor, archivoKmz);
 
+
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
+
+            campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
             campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
@@ -308,7 +311,7 @@ namespace SustitucionMOAUtils.Services
                 if (declaracion.FechaFirma > cosecha.Inicio)
                 {
                     var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
-                    estado.DeclaracionFirmada = proveedor.Archivos.Any(a => a.FileKey == fileKey);
+                    estado.DeclaracionFirmada = !string.IsNullOrEmpty(declaracion.Archivo?.Ruta);
                     estado.OpcionDeclaracionCampoSustentable = declaracion.OpcionDeclarada;
                     estado.HectareasDeclaracionCampoSustentable = declaracion.HectareasDeclaradas;
                     estado.CUIT = declaracion.CUIT;
@@ -384,7 +387,7 @@ namespace SustitucionMOAUtils.Services
             //    repositorio.Remover(archivoRemover);
             //}
 
-            declaracion.Archivo = new Archivo { FileKey = fileKey, Ruta = rutaArchivo };
+            declaracion.Archivo.Ruta = rutaArchivo;
 
             fileSubido.SaveAs(rutaArchivo);
 
@@ -419,6 +422,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+                var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
+
                 declaracion = new DeclaracionCampoSustentable
                 {
                     Proveedor_Id = proveedorId,
@@ -428,7 +433,7 @@ namespace SustitucionMOAUtils.Services
                     HectareasDeclaradas = hectareasTotales,
                     CUIT = CUITDeclaracion,
                     RazonSocial = razonSocialDeclaracion,
-                    Archivo_Id = 0
+                    Archivo = new Archivo { FileKey = fileKey, Ruta = "" }
                 };
 
                 repositorio.Agregar(declaracion);
