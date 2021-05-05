@@ -17,10 +17,17 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
 
         public string Extension { get; set; }
 
+        public bool EsArchivoTiff
+        {
+            get {
+                return Extension.ToLower().Equals(".tiff");
+            }
+        }
+
         public CartaPorteFoto(string cartaPorteID, byte[] foto, byte[] fotoChica, string extension)
         {
             CartaPorteID = cartaPorteID;
-            Foto = Convert.ToBase64String(foto); 
+            Foto = Convert.ToBase64String(foto);
             FotoChica = Convert.ToBase64String(fotoChica);
             Extension = extension;
         }

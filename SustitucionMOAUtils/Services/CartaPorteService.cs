@@ -40,19 +40,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtroProducto = new DropdownContent(),
                     filtroVendedor = new DropdownContent(),
-                    data = new CartaPorteDescargaWSMOAResponse { 
-                     cartasPorte = new List<CartaPorteDescargaView> {
-                     new CartaPorteDescargaView {
-                         fechaDescarga ="10/10/*2021",
-                         contrnum = "1000",
-                         producto ="lala",
-                          fechaDescargaDate = DateTime.Now,
-                          netoDescontadoString ="1000",
-                          cg ="1000"
-                         }
-                     }
-                    } //(CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas)
-                };
+                    data = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas)
+                }; 
 
                 ValidarRespuesta(dataView.data);
 

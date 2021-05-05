@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CartaPorteBaseComponent } from './../carta-porte.component';
 import { CartaPorteService, CartaPorteDescargaService } from './../carta-porte2.service';
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -6,8 +6,10 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-var Tiff = require('tiff.js');
-var fs = require('fs');
+import baseParse from 'base64-arraybuffer';
+
+declare var Tiff: any;
+
 
 @Component({
     selector: 'app-carta-porte-descarga',
@@ -15,7 +17,6 @@ var fs = require('fs');
     providers: [{ provide: CartaPorteService, useClass: CartaPorteDescargaService }]
 })
 export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
-
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
 
@@ -28,7 +29,6 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     cartaPorteDescarga = "";
     showModalBox = false;
     data: any;
-    canvasTiff : any; 
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); }
 
@@ -120,7 +120,6 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
 
             result => {
-                debugger
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -129,11 +128,14 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-
-                    // this.fotoSrc = 'data:image/png;base64,'+ result[0].Foto;
-                    // this.cartaPorteDescarga = cartaDePorteNumero;
-                    // document.getElementById("openModalHiddenButton").click();
-                    this.loadFileTiff(result[0].foto);
+                    if (result[0].EsArchivoTiff) {
+                        this.fotoSrc = this.loadFileTiff(result[0].Foto);
+                    }
+                    else {
+                        this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    }
+                    this.cartaPorteDescarga = cartaDePorteNumero;
+                    document.getElementById("openModalHiddenButton").click();
                     return true;
                 }
             },
@@ -152,10 +154,10 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         return this.data.cartasPorte.every((_: { state: any; }) => _.state);
     }
 
-    loadFileTiff(imagen : any) : void
-    {
-        let tiff = new Tiff({buffer: imagen});
-        this.canvasTiff = tiff.toCanvas();
+    loadFileTiff(imagen: any): string {
+        let imganenBuffer = baseParse.decode(imagen); //convierto el byte[] aun array buffer
+        let archivoTiff = new Tiff({ buffer: imganenBuffer });
+        return archivoTiff.toDataURL(); //obtiene un texto plano png del archivo a mostrar
     }
 }
 

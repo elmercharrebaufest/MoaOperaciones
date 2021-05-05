@@ -17,11 +17,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public List<CartaPorteFoto> ObtenerFotoCartaPorte(string cartaPorteId)
         {
-            byte[] fileBytes = System.IO.File.ReadAllBytes("C:/Users/jyon/Downloads/580452949-150207.tif");
-            //return ObtenerFotoCartasPorte(new List<string> { cartaPorteId });
-            return new List<CartaPorteFoto> {
-                 new  CartaPorteFoto("1000", fileBytes, fileBytes, "tiff")
-            };
+            return ObtenerFotoCartasPorte(new List<string> { cartaPorteId });
         }
 
         public List<CartaPorteFoto> ObtenerFotoCartasPorte(List<string> cartaPorteIds)
