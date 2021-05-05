@@ -10,6 +10,9 @@ import { FormsModule } from '@angular/forms';
 import { ComprasRoutingModule } from './compras-routing.module';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
+import { DialogModule } from 'primeng/dialog';
+import { EditorModule } from 'primeng/editor';
+import { PliegoPreviewComponent } from './preview/pliego.preview.component';
 
 @NgModule({
     imports: [
@@ -18,13 +21,16 @@ import { CalendarModule } from 'primeng/calendar';
         FormsModule,
         SharedModule,
         InputTextModule,
-        CalendarModule
+        CalendarModule,
+        DialogModule,
+        EditorModule
     ],
     declarations: [
         SolpComponent,
         DashboardComponent,
         Generacion1Component,
-        Generacion2Component
+        Generacion2Component,
+        PliegoPreviewComponent
     ],
     providers: [
         SolpService

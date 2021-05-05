@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
@@ -9,6 +9,7 @@ import { Solp } from './Solp';
 @Component({
     selector: 'app-solp',
     templateUrl: './solp.component.html',
+    styleUrls: ['./compras.component.css'],
     animations: [
         trigger('fadeInOut', [
             transition(
@@ -32,15 +33,37 @@ import { Solp } from './Solp';
 })
 export class SolpComponent extends BaseComponent implements OnInit {
 
+    // @HostListener('window:beforeunload', [ '$event' ])
+    // handleClose($event) {
+    //     // if(!this.cambiosGuardados)
+    //     //     $event.returnValue = false;
+        
+    //     // if(!this.cambiosGuardados)
+    //     //     return false;
+
+    //     // return true;
+    // }
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    solpActual: Solp = new Solp;
-    
-    pasoActual: Paso;
+    cambiosGuardados:boolean = false;
+    mostrarPreview:boolean = false;
+    solpActual: Solp = new Solp();
+    _pasoActual: Paso;
+
+    set pasoActual(value: Paso) {
+        this.actualizarPasoCompleto(this._pasoActual);
+        this._pasoActual = value;
+     }
+     
+     get pasoActual(): Paso {
+         return this._pasoActual;
+     }
+
     pasos:Paso[] = [{
         Codigo: 'PliegoGeneracion1',
         Nombre: 'Generación',
@@ -146,5 +169,43 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     salir(){
         this.navService.navegarSeccion('/compras');
+    }
+
+    guardarCambios(){
+        this.cambiosGuardados = true;
+    }
+
+    finalizar(){
+
+    }
+
+    actualizarPasoCompleto(paso:Paso){
+        if(paso){
+           switch(paso.Codigo){
+            case 'PliegoGeneracion1':
+                paso.Completo = this.listaStringCompleta([
+                    this.solpActual.nombreDeObra,
+                    this.solpActual.fiscalContrato,
+                    this.solpActual.mail,
+                    this.solpActual.fechaEntrega,
+                    this.solpActual.horaEntrega
+                ]);
+                break;
+            case 'PliegoGeneracion2':
+                break;
+            case 'PliegoEspecificacion':
+                break;
+            case 'PliegoCotizacion':
+                break;
+            case 'SolpCabecera':
+                break;  
+            case 'SolpeSubposiciones':
+                break; 
+            } 
+        }
+    }
+
+    listaStringCompleta(lista: string[]){
+        return lista.filter(x=> !x || x.length == 0).length == 0;
     }
 }

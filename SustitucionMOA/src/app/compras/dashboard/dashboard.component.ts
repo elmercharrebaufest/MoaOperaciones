@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
@@ -14,6 +14,7 @@ declare var $: any;
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
+    styleUrls: ['../compras.component.css'],
     providers: [SolpService]
 
 })

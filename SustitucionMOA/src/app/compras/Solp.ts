@@ -9,6 +9,7 @@ export class Solp {
     public fechaDeEntregaDeOfertasFecha: Date;
     public fechaDeEntregaDeOfertasHora: Time;
     public horaEntrega: any;
+    public fechaEntrega: any;
 
 
     //paso 2

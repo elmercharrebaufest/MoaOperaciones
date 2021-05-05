@@ -8,6 +8,8 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
+import * as uuid from 'uuid';
+
 
 
 declare var $: any;
@@ -15,6 +17,7 @@ declare var $: any;
 @Component({
     selector: 'generacion2',
     templateUrl: `generacion2.component.html`,
+    styleUrls: ['../compras.component.css'],
 })
 export class Generacion2Component extends ListBaseComponent {
 
@@ -32,7 +35,6 @@ export class Generacion2Component extends ListBaseComponent {
     fechaEntrega: any;
     horaEntrega: any;
     
-    numeroVisita = 0;
 
     
 
@@ -47,13 +49,34 @@ export class Generacion2Component extends ListBaseComponent {
 
     }
 
-    // nuevaVisitaDeObra: any[] = [
-    //     {
-    //         fechaEntrega: "",
-    //         horaEntrega: ""
-    //     }
-    // ];
+    listaVisitas: any[] = [
+        {
+            id: uuid.v4(),
+            visitaDeObraFecha: "",
+            visitaDeObraHora: ""
+        }
+    ];
     
+    agregarNuevaVisita() {
+        this.listaVisitas.push( 
+            {
+            id: uuid.v4(),
+            visitaDeObraFecha: "",
+            visitaDeObraHora: ""
+            }
+        )
+
+    };
+
+    eliminarVisita(id) {
+        this.listaVisitas = this.listaVisitas.filter(x => x.id != id);
+
+        if(this.listaVisitas.length == 0 ){
+            this.agregarNuevaVisita();
+        }
+        
+    }
+
 
     setTabs() {
         this.setMenuSeccionTab("Generacion2", "Generacion2");

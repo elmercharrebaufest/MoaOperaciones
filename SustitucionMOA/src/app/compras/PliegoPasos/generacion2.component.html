@@ -4,41 +4,47 @@
     <section class="col-xs-12 col-sm-12 col-md-12">
         <mensaje></mensaje>
         <div class="inputCompras">
-            <div class="margenNeg">
+            <div class="row myRow margenNeg">
 
 
-                <div class="row myRow">
+                <div class="row myRow" style="padding-top: 2px;">
                     
-                    <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
 
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder="" 
                             [checked]="model.visitaDeObra" (change)="model.visitaDeObra = !model.visitaDeObra">
-                            <label for="visitaDeObra">Visita de obra</label>
+                            <label class="labelCompras" for="visitaDeObra">Visita de obra</label>
                         </div>
 
-                        <div class="col-xs-12 col-sm-6 col-md-6">
+                       
+                        <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="visitaDeObraMasiva" placeholder="" 
                             [checked]="model.visitaDeObraMasiva" (change)="model.visitaDeObraMasiva = !model.visitaDeObraMasiva">
-                            <label for="visitaDeObraMasiva">Visita de obra masiva *</label>    
+                            <label class="labelCompras" for="visitaDeObraMasiva">Visita de obra masiva *</label>    
                         </div>
                      
-                        <div class="col-xs-12 col-sm-12 col-md-8">
-                            <div class="styled-select" *ngIf="model.visitaDeObraMasiva">
-                                <p-calendar [(ngModel)]="model.visitaDeObraFecha" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>                          
-                                
+                        <div *ngFor="let visita of listaVisitas">
+                            <div class="col-xs-12 col-sm-12 col-md-8 margenInput">
+                                <div class="styled-select" *ngIf="model.visitaDeObraMasiva">
+                                    <p-calendar   [(ngModel)]="visita.visitaDeObraFecha"  [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>                          
+                                    
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-xs-12 col-md-4 prime-hora">
-                            <div *ngIf="model.visitaDeObraMasiva">
-                                <p-calendar class="styled-select" [(ngModel)]="model.visitaDeObraHora" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
+                            
+                            <div class="col-xs-12 col-sm-12 col-md-4 prime-hora margenInput">
+                                <div *ngIf="model.visitaDeObraMasiva" >
+                                    <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-1">
+                                <span (click)="eliminarVisita(visita.id)" *ngIf="model.visitaDeObraMasiva"><i class="fa fa-trash"></i></span>
                             </div>
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" *ngIf="model.visitaDeObraMasiva">
                             <div>
-                                <a href="" >Agregar nueva visita de obra</a>
+                                <span (click)="agregarNuevaVisita()" class="enlaceVisita" ><i class="fa fa-plus">&nbsp; Agregar nueva visita de obra</i></span>
                             </div>
                         </div>
 
@@ -46,16 +52,16 @@
                         
 
 
-                    <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
 
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             Supervisor sector *
                             <div class="styled-select">
                                 <input type="text" class="" placeholder="" [(ngModel)]="supervisorSector" maxlength="100">
                             </div>
                         </div>
                 
-                        <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             Supervisor de trabajo *
                             <div class="styled-select">
                                 <input type="text" class="" placeholder="" [(ngModel)]="supervisorTrabajo" maxlength="100">
@@ -67,7 +73,7 @@
                 </div>
 
 
-                <div class="row myRow">
+                <div class="row myRow margenInput" style="padding-top: 2px;">
 
                     <div  class="col-xs-12 col-sm-6 col-md-6">
 
@@ -75,19 +81,19 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="obradores" placeholder="" 
                             [checked]="model.obradores" (change)="model.obradores = !model.obradores">
-                            <label for="obradores">Obradores</label>
+                            <label class="labelCompras" for="obradores">Obradores</label>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="modoElevacion" placeholder="" 
                             [checked]="model.modoElevacion" (change)="model.modoElevacion = !model.modoElevacion">
-                            <label for="modoElevacion">Modo de elevacion o andamios</label>
+                            <label class="labelCompras" for="modoElevacion">Modo de elevacion o andamios</label>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="tecnicoSeguridad" placeholder="" 
                             [checked]="model.tecnicoSeguridad" (change)="model.tecnicoSeguridad = !model.tecnicoSeguridad">
-                            <label for="tecnicoSeguridad">Tecnico de seguridad</label>
+                            <label class="labelCompras" for="tecnicoSeguridad">Tecnico de seguridad</label>
                         </div> 
 
                     </div>
@@ -98,13 +104,13 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="descripcionTecnica" placeholder="" 
                             [checked]="model.descripcionTecnica" (change)="model.descripcionTecnica = !model.descripcionTecnica">
-                            <label for="descripcionTecnica">Descripcion tecnica del trabajo</label>
+                            <label class="labelCompras" for="descripcionTecnica">Descripcion tecnica del trabajo</label>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <input type="checkbox" style="margin-right: 5px;" id="entregaDocumentacion" placeholder="" 
                             [checked]="model.entregaDocumentacion" (change)="model.entregaDocumentacion = !model.entregaDocumentacion">
-                            <label for="entregaDocumentacion">Entrega de documentacion tecnica</label>
+                            <label class="labelCompras" for="entregaDocumentacion">Entrega de documentacion tecnica</label>
                         </div>
 
 
@@ -112,13 +118,13 @@
                             Fecha limite de consulta *
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-8">
+                        <div class="col-xs-12 col-sm-12 col-md-8 margenInput">
                             <div class="styled-select">
                                 <p-calendar [(ngModel)]="model.fechaLimiteFecha" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
                             </div>
                         </div>
 
-                        <div class="col-xs-12 col-md-4">
+                        <div class="col-xs-12 col-sm-12 col-md-4 margenInput">
                             <p-calendar class="styled-select" [(ngModel)]="model.fechaLimiteHora" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>    
                         </div>
 
