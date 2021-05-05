@@ -109,6 +109,8 @@
     <Build Include="DBO\Tables\CampoCosecha.sql" />
     <Build Include="DBO\Tables\Cosecha.sql" />
     <Build Include="DBO\Tables\CampoProveedor.sql" />
+    <Build Include="DBO\Tables\LogPesificacion.sql" />
+    <None Include="scripts\PermisosLogPesificaciones.sql" />
     <Build Include="DBO\Tables\DeclaracionCampoSustentable.sql" />
     <None Include="scripts\SP_ActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />

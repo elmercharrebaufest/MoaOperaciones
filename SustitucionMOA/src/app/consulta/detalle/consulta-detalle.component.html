@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Asunto: {{this.consulta.Asunto}}</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>N° de Consulta: {{this.consulta.Id}} | Asunto: {{this.consulta.Asunto}}</strong> </div>
         </div>
     </section>
     <mensaje></mensaje>
@@ -17,7 +17,7 @@
                             {{comentario.Fecha | date:'dd/MM/yyyy'}}
                         </p>
                     </div>
-                    <div class="row myRow">
+                    <div class="row myRow" *ngIf="comentario.Detalle != '' ">
                         <div [ngClass]="comentarioPropio(comentario) ? 'comentarioPropio' : 'comentarioRespuesta' " 
                         class="col-xs-12 col-sm-6 col-md-7" [innerText]="comentario.Detalle">
                             {{comentario.Detalle}}
@@ -55,20 +55,25 @@
                 <input [disabled]="disable()"
                  class="adjuntarArchivo" #fileInput type="image" src="Content/images/buttons/Adjuntar.svg">
                 <input [disabled]="disable()"
-                 class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)">
+                 class="adjuntarArchivo1" #fileInput type="file" style="display:none" (change)="cargarArchivo($event)" multiple>
             </div>
+
             <div class="col-xs-12 col-sm-12 col-md-2">
                 <button [disabled]="disable()"
                 (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
             </div>
-            <div *ngIf="esInterno" class="col-xs-12 col-sm-12 col-md-3">
-                <input type="checkbox" [(ngModel)]="solicitudDoc">
-                <label class="solicitudDoc">Solicitud de documentos</label>
-            </div>
             <div class="col-xs-12 col-sm-6 col-md-6">
                 <p *ngIf="this.file != null">{{this.file.name}}</p>
+            </div>
+
+            <div *ngIf="listaArchivos.length > 0" class="col-xs-12 col-sm-12 col-md-10 archivosBox" style="width: 71%;">
+                <ng-container *ngFor="let Archivo of listaArchivos, let i = index">
+                    <p class="col-md-11">{{Archivo.name}}</p>
+                    <span class="fa fa-times col-md-1" (click)="borrarArchivo(i)"></span>
+                    <br>
+                </ng-container>
             </div>
         </div>
         

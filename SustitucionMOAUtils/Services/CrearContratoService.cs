@@ -558,7 +558,7 @@ namespace SustitucionMOAUtils.Services
                 cookiesDataAgro.Fecha = DateTime.Now;
                 return cookiesDataAgro;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }

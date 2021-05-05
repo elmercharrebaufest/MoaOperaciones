@@ -28,5 +28,6 @@ namespace SustitucionMOAModel.Enums
         public const string ProtocoloSanitarioCovid = "protocoloSanitarioCovid";
         public const string CampoSustentableKMZ = "campoSustentableKMZ";
         public const string DeclaracionCampoSustentable = "declaracionCampoSustentable";
+        public const string ArchivoLogPesificaciones = "archivoLogPesificaciones";
     }
 }

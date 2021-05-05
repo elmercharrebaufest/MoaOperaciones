@@ -599,7 +599,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(_usuarioService.GetProveedorPorCodigo(codigo));
+                return JsonCustom(_usuarioService.GetProveedorPorCodigo(codigo, SessionPersister.getUsername()));
             }
             catch (InfoCustomException e)
             {

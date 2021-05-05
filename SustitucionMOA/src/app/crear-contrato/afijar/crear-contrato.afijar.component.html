@@ -345,7 +345,7 @@
                     </label><label class="labelSwitch"> Calidad</label>
                 </div>
                 <div class="form-group col-md-8" *ngIf="contrato.CalidadTercero == true">
-                    <input type="text" [(ngModel)]="ObservacionCalidadTercero" class="form-control" />
+                    <input type="text" [(ngModel)]="ObservacionCalidadTercero" class="form-control" placeholder="ej: Dañado libre hasta el 5%" />
                 </div>
             </div>
             <div class="row">
@@ -356,7 +356,7 @@
                     </label><label class="labelSwitch"> Sustentable</label>
                 </div>
                 <div class="form-group col-md-8" *ngIf="contrato.SustentableTercero == true">
-                    <input type="text" [(ngModel)]="ObservacionSustentableTercero" class="form-control" />
+                    <input type="text" [(ngModel)]="ObservacionSustentableTercero" class="form-control" placeholder="ej: tarifa 2 USDM"/>
                 </div>
 
             </div>

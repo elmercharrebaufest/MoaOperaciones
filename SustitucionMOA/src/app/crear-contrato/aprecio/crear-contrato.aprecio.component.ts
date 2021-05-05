@@ -194,8 +194,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.costoFinanciero = null;
 
             if (this.contrato.Precio > 0 && this.contrato.PagoDiferidoTercero == true) {
-                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado == 0)) {
-                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor a 0.";
+                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado < 7)) {
+                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor o igual a 7.";
                     return;
                 }
                 let tasa = 0;
@@ -208,8 +208,16 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
                     this.costoFinanciero = "La cantidad de días ingresados supera el maximo permitido.";
                 } else {
                     let precio = Number(this.contrato.Precio.toString().replace(',', '.'));
-                    this.costoFinanciero = (precio + (tasa * precio / 100)).toFixed(2);
-                    console.log("tasa " + tasa + " costo " + this.costoFinanciero);
+                    tasa = Number(tasa);
+                    let costo = Math.round(precio * (tasa / 100) * (this.contrato.DiasPesificado - 3) / 365 * 2) / 2;
+                    let d10 = costo / 10.00;
+                    costo = Math.round(d10 * 2) / 2;
+                    costo = costo * 10;
+
+                    let precioNeto = precio + costo;
+
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
+
                 }
             }
 
@@ -371,8 +379,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if (this.contrato.DiasPesificado <= 0 && this.contrato.PagoDiferidoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe ingresar la cantidad de días de Pago Diferido.");
+        if (this.contrato.DiasPesificado < 7 && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de Pago Diferido debe ser mayor o igual a 7.");
             return false;
         }
 

@@ -57,6 +57,8 @@ import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
 import { ConsultaService } from "./consulta/consulta.service";
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
+import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -67,9 +69,9 @@ import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustent
     NgxPaginationModule,
     SelectModule,
     ModalModule,
-
     ReCaptchaModule,
     SharedModule,
+    LogPesificacionModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
   ],

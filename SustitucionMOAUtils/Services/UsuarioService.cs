@@ -158,7 +158,7 @@ namespace SustitucionMOAUtils.Services
 
             List<string> contacto = new List<string>
             {
-                "BOL", "DATMAE", "PAR", "FIN", "CAL", "COM",
+                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                 "FINDIR", "FINCOR", "FLE"
@@ -265,14 +265,18 @@ namespace SustitucionMOAUtils.Services
             return vendedorService.GetVendedores(usuarioMail);
         }
 
-        public ProveedorDto GetProveedorPorCodigo(string codigo)
+        public ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario)
         {
-
-            Entidades.Proveedor proveedor = repositorio.Obtener<Entidades.Proveedor>(x => x.CodigoProveedor == codigo);
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigo && x.Mail == mailUsuario);
 
             if (proveedor == null)
             {
-                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigo);
+
+                if (proveedor == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+                }
             }
             var ret = new ProveedorDto(proveedor);
 
@@ -300,7 +304,7 @@ namespace SustitucionMOAUtils.Services
                 var proveedorSAP = new VendedorDetalleConsumerMOA().request(codigoProveedor, codigoCorredor);
 
                 if (!proveedorSAP.cabeceras.Any())
-                { 
+                {
                     throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigoProveedor));
                 }
 

@@ -261,12 +261,13 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
         this.mensajeError = `Debe completar la localidad en la fila ${filaError} de capacidad productiva.`;
         return true;
       }
-
-      if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e")) {
-        this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
-        return true;
+      if(item.Hectareas != undefined)
+      {
+        if (item.Hectareas.toString().includes(".") || item.Hectareas.toString().includes(",") || item.Hectareas.toString().includes("e")) {
+          this.mensajeError = `Las hectareas deben ser un número entero en la fila ${filaError} de capacidad productiva.`;
+          return true;
+        }
       }
-
       if (item.Toneladas == null || item.Toneladas == 0) {
         this.mensajeError = `Debe completar las toneladas en la fila ${filaError} de capacidad productiva.`;
         return true;

@@ -47,10 +47,11 @@ namespace SustitucionMOAUtils.Services
                     Localidad = cp.CampoCosecha.Campo.Localidad.Nombre,
                     Latitud = cp.Latitud,
                     Longitud = cp.Longitud,
-                    HectareasSoja = cp.HectareasSoja
+                    HectareasSoja = cp.HectareasSoja,
+                    NombreCosecha = cp.CampoCosecha.Cosecha.Nombre
                 }
                 , cp => cp.FechaCreacion.HasValue
-                    //&& DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
@@ -63,8 +64,8 @@ namespace SustitucionMOAUtils.Services
                 var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Codigo Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
 
                 Attachment archivoZip;
-                var nombreArchivoXls = $"Listado campos {DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].Nombre}.xls";
-                var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].Nombre}.zip";
+                var nombreArchivoXls = $"Listado campos {DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.xls";
+                var nombreArchivoZip = $"Campos sustentables{DateTime.Today:yyyy-MM-dd} - Cosecha {camposAReportar[0].NombreCosecha}.zip";
 
                 var outputMemStream = new MemoryStream();
 
@@ -96,24 +97,18 @@ namespace SustitucionMOAUtils.Services
                 Attachment archivoExcel;
                 MemoryStream streamExcel = new MemoryStream();
                 var sw = new StreamWriter(streamExcel);
-                try
-                {
-                    sw.Write(excelFile);
-                    sw.Flush();
-                    streamExcel.Seek(0, SeekOrigin.Begin);
 
-                    archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-                }
-                finally
-                {
-                    sw.Dispose();
-                }
+                sw.Write(excelFile);
+                sw.Flush();
+                streamExcel.Seek(0, SeekOrigin.Begin);
+
+                archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {
-                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].Nombre} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
+                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].NombreCosecha} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                     CantidadCampos = camposAReportar.Count(),
-                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"],
+                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
@@ -122,9 +117,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 });
 
+                sw.Dispose();
                 outputMemStream.Dispose();
-                zipStream.Dispose();
-                streamExcel.Dispose();
             }
         }
 

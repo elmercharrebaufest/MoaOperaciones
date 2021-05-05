@@ -115,6 +115,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
                 link.click();
                 setTimeout(function () {
                   window.URL.revokeObjectURL(url);
+
                 }, 0);
                 this.blockUI.stop();
                 return false;

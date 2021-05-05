@@ -107,7 +107,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     pagosDiferidos: any = new Array();
     maximoDiasDiferimiento: number = 0;
     costoFinanciero: string ;
-
+    placeholderDolarizado: string = this.placeHoldeDolarizado();
     ngOnInit() {
 
         this.setTabs();
@@ -127,6 +127,15 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                 this.crearModificar = "Modificar";
             };
         });
+    }
+
+    placeHoldeDolarizado() {
+        let today = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+        let dd = String(today.getDate());
+        let mm = String(today.getMonth() + 1); //January is 0!
+        let yyyy = today.getFullYear();
+        let text = dd + '/' + mm + '/' + yyyy;
+        return "ej: " + text ;
     }
 
     negocioHabilitado(contrato) {

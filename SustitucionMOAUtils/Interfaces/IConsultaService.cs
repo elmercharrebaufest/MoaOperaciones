@@ -7,8 +7,8 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IConsultaService
     {
-        ConsultaDto AgregarConsulta(Consulta consulta);
-        ComentarioDto AgregarComentario(int consultaId, Comentario comentario);
+        ConsultaDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
+        ComentarioDto AgregarComentario(int consultaId, Comentario comentario, HttpFileCollectionBase files);
         string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files);
         ConsultaDto ObtenerConsulta(int consultaId);
         void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId);
