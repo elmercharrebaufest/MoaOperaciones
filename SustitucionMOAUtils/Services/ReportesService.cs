@@ -29,8 +29,6 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarReporteCamposSustentablesTSA()
         {
-            Logger.Log.Info("Empiezo Metodo");
-
             var dateToCompare = DateTime.Today;
 
             var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDTO>(
@@ -54,21 +52,13 @@ namespace SustitucionMOAUtils.Services
                     && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
             );
 
-            Logger.Log.Info("2");
-
-
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
             {
                 throw new InfoCustomException("No se encontraron campos sustentables a reportar");
             }
 
-            Logger.Log.Info("3");
-
-
             foreach (var camposAReportar in camposAReportarPorCosecha)
             {
-
-                Logger.Log.Info("4");
 
                 var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Codigo Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
 
@@ -81,16 +71,11 @@ namespace SustitucionMOAUtils.Services
                 var zipStream = new ZipOutputStream(outputMemStream);
                 zipStream.SetLevel(3);
 
-                Logger.Log.Info("5");
-
-
                 foreach (var campo in camposAReportar)
                 {
                     string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
 
                     var kmzFileName = MakeValidFileName(string.Concat(string.Concat(campo.Id, "-", campo.Nombre, ".kmz")));
-
-                    Logger.Log.Info("6");
 
                     ZipEntry entry = new ZipEntry(kmzFileName)
                     {
@@ -105,7 +90,6 @@ namespace SustitucionMOAUtils.Services
                 zipStream.IsStreamOwner = false;
 
                 outputMemStream.Position = 0;
-                Logger.Log.Info("7");
 
                 archivoZip = new Attachment(outputMemStream, nombreArchivoZip);
 
@@ -118,8 +102,6 @@ namespace SustitucionMOAUtils.Services
                 streamExcel.Seek(0, SeekOrigin.Begin);
 
                 archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
-                Logger.Log.Info("8");
-                Logger.Log.Info(string.Concat("Reportando a ", ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"]));
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {
@@ -129,28 +111,13 @@ namespace SustitucionMOAUtils.Services
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
-                    archivoExcel
-                }
-                });
-
-                EmailSender.SendReporte(new ReporteCamposSustentables()
-                {
-                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].NombreCosecha} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
-                    CantidadCampos = camposAReportar.Count(),
-                    Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
-                    Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
-                    Adjuntos = new List<Attachment>
-                {
+                    archivoExcel,
                     archivoZip
                 }
                 });
 
-                Logger.Log.Info("9");
-
                 sw.Dispose();
                 outputMemStream.Dispose();
-
-                Logger.Log.Info("10");
 
             }
         }
