@@ -84,25 +84,26 @@ namespace SustitucionMOAUtils.Email
             Logger.Log.Info(template);
             Logger.Log.Info(cuerpo);
             Logger.Log.Info("Lei cuerpo y template ");
+            Logger.Log.Info(EmailConfig.getEmailAddFrom());
 
             MailMessage mail = new MailMessage
             {
                 From = new MailAddress(EmailConfig.getEmailAddFrom()),
-                Subject = reporte.Asunto,
-                Body = cuerpo,
-                IsBodyHtml = true
+                Subject = "LLEGANDO",
+                Body = "TEST",
+                IsBodyHtml = false
             };
 
             Logger.Log.Info("adjuntos");
 
 
-            if (reporte.Adjuntos != null)
-            {
-                foreach (Attachment attachment in reporte.Adjuntos)
-                {
-                    mail.Attachments.Add(attachment);
-                }
-            }
+            //if (reporte.Adjuntos != null)
+            //{
+            //    foreach (Attachment attachment in reporte.Adjuntos)
+            //    {
+            //        mail.Attachments.Add(attachment);
+            //    }
+            //}
 
             Logger.Log.Info("destino");
 
@@ -136,6 +137,7 @@ namespace SustitucionMOAUtils.Email
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
+               // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
                 Host = EmailConfig.getEmailHost()
             };
             return client;
