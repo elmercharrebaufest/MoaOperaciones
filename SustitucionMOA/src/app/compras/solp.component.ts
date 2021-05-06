@@ -70,6 +70,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Activo: false,
         Completo: false,
         Iniciado: false,
+        Preview: false,
         Numero: 1
     },
     {
@@ -78,6 +79,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Activo: false,
         Completo: false,
         Iniciado: false,
+        Preview: false,
         Numero: 2
     },
     {
@@ -86,6 +88,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Activo: false,
         Completo: false,
         Iniciado: false,
+        Preview: true,
         Numero: 3
     },
     {
@@ -94,6 +97,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Activo: false,
         Completo: false,
         Iniciado: false,
+        Preview: true,
         Numero: 4
     },
     {
@@ -102,14 +106,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Activo: false,
         Completo: false,
         Iniciado: false,
+        Preview: true,
         Numero: 5
     },
     {
-        Codigo: 'SolpeSubposiciones',
+        Codigo: 'SolpSubposiciones',
         Nombre: 'Subposiciones',
         Activo: false,
         Completo: false,
         Iniciado: false,
+        Preview: true,
         Numero: 6
     }];
 
@@ -203,7 +209,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 break;
             case 'SolpCabecera':
                 break;  
-            case 'SolpeSubposiciones':
+            case 'SolpSubposiciones':
                 break; 
             } 
         }

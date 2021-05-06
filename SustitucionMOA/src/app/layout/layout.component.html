@@ -506,22 +506,15 @@
                     </div>
                 </div>
 
-                    <!-- *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS') || isAuthorized('VER ALTAS NO GRANOS') || isAuthorized('ABM NOTIFICACIONES')) "> -->
-                <div class="panel panel-default"
-                    *ngIf="isNoGranosSelected()">
-                    <div class="panel-heading seccion" role="tab" id="compras">
+                <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="compras" *ngIf="isAuthorized('ABM SOLP')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
                             Compras <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
-                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel">
+                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel" *ngIf="isAuthorized('ABM SOLP')">
                         <div class="panel-body">
-                            <div>
-                                <a (click)="goToSeccion('/compras/solp')" href="#">
-                                    SOLP
-                                </a>
-                            </div>
                             <div>
                                 <a (click)="goToSeccion('/compras/dashboard')" href="#">
                                     DASHBOARD
