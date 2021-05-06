@@ -192,6 +192,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 ]);
                 break;
             case 'PliegoGeneracion2':
+                paso.Completo = this.listaStringCompleta([
+                    this.solpActual.supervisorSector,
+                    this.solpActual.supervisorTrabajo
+                ]);
                 break;
             case 'PliegoEspecificacion':
                 break;
