@@ -119,6 +119,7 @@ namespace SustitucionMOAUtils.Services
 
                 archivoExcel = new Attachment(streamExcel, nombreArchivoXls);
                 Logger.Log.Info("8");
+                Logger.Log.Info(string.Concat("Reportando a ", ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"]));
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {

@@ -76,9 +76,15 @@ namespace SustitucionMOAUtils.Email
 
         public static void SendReporte(ReporteBase reporte)
         {
+            Logger.Log.Info("SendReporte");
             SmtpClient client = GetSmtpClient();
             var template = File.ReadAllText(reporte.Template);
             var cuerpo = string.Format(template, reporte.GetFecha(), reporte.GetBody());
+
+            Logger.Log.Info(template);
+            Logger.Log.Info(cuerpo);
+            Logger.Log.Info("Lei cuerpo y template ");
+
             MailMessage mail = new MailMessage
             {
                 From = new MailAddress(EmailConfig.getEmailAddFrom()),
@@ -86,6 +92,9 @@ namespace SustitucionMOAUtils.Email
                 Body = cuerpo,
                 IsBodyHtml = true
             };
+
+            Logger.Log.Info("adjuntos");
+
 
             if (reporte.Adjuntos != null)
             {
@@ -95,21 +104,29 @@ namespace SustitucionMOAUtils.Email
                 }
             }
 
+            Logger.Log.Info("destino");
+
+
             //Mas de un destinatario
             if (reporte.Destinatario.Contains(","))
             {
                 foreach (var destinatario in reporte.Destinatario.Split(','))
                 {
+                    Logger.Log.Info(destinatario);
+
                     mail.To.Add(destinatario);
                 }
             }
             //Solo un destinatario
             else
             {
+                    Logger.Log.Info(reporte.Destinatario);
                 mail.To.Add(reporte.Destinatario);
             }
-
+            Logger.Log.Info("Mando mail");
             client.Send(mail);
+            Logger.Log.Info("Se va");
+
         }
 
         private static SmtpClient GetSmtpClient()
