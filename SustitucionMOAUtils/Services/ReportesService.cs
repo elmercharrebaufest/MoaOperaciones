@@ -123,7 +123,7 @@ namespace SustitucionMOAUtils.Services
 
                 EmailSender.SendReporte(new ReporteCamposSustentables()
                 {
-                    Asunto = $"Reporte de Altas de Campos Sustentables - Cosecha {camposAReportar[0].NombreCosecha} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
+                    Asunto = $"ReporteEEEEEEEEEE de Altas de Campos Sustentables - Cosecha {camposAReportar[0].NombreCosecha} - Resumen Diario {DateTime.Today:yyyy-MM-dd}",
                     CantidadCampos = camposAReportar.Count(),
                     Destinatario = ConfigurationManager.AppSettings["EmailToReporteCamposSustentables"],
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
