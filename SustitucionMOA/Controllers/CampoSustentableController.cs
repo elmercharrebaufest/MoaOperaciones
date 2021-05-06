@@ -267,11 +267,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
-        public JsonResult ImprimirDeclaracion(int proveedorId, int cosechaId)
+        public JsonResult ImprimirDeclaracion(int proveedorId, int cosechaId, string CUIT)
         {
             try
             {
-                var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId, cosechaId);
+                var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId, cosechaId, CUIT);
                 PDFResponse result = new PDFResponse
                 {
                     pdf = new Pdf()

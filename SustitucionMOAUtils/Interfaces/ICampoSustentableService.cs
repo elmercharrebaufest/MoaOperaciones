@@ -17,7 +17,7 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz);
         string ExportarCamposProveedores(string mailUsuario);
         byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion);
-        byte[] ImprimirDeclaracion(int proveedorId, int cosechaId);
+        byte[] ImprimirDeclaracion(int proveedorId, int cosechaId, string CUIT);
         List<CampoProveedorListadoDto> Listar(string mailUsuario);
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
         List<Cosecha> ObtenerCosechas();

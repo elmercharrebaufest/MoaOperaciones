@@ -29,9 +29,7 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarReporteCamposSustentablesTSA()
         {
-
             var dateToCompare = DateTime.Today;
-
 
             var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDTO>(
                 cp => cp.CampoCosecha.Cosecha.Nombre,
@@ -39,8 +37,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     IdScato = cp.CampoCosecha.Campo.IdScato,
                     Id = cp.CampoCosecha.Campo.Id,
-                    RazonSocial = cp.Proveedor.RazonSocial,
-                    CUIT = cp.Proveedor.CUIT,
+                    RazonSocial = cp.RazonSocial,
+                    CUIT = cp.CUIT,
                     Nombre = cp.CampoCosecha.Campo.Nombre,
                     Provincia = cp.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Departamento = cp.CampoCosecha.Campo.Localidad.Partido.Descripcion,

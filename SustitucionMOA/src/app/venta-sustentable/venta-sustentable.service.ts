@@ -111,10 +111,11 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
-    imprimirDeclaracion(proveedorId: number, cosechaId: number) {
+    imprimirDeclaracion(proveedorId: number, cosechaId: number, CUIT: string) {
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());
         params.set("cosechaId", cosechaId.toString());
+        params.set("CUIT", CUIT);
         return this.http
             .get('/api/CampoSustentable/ImprimirDeclaracion', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));

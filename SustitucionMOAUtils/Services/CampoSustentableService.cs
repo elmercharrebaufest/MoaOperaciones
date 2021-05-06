@@ -131,7 +131,7 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.CampoSustentableBorrado;
         }
 
-        public byte[] ImprimirDeclaracion(int proveedorId, int cosechaId)
+        public byte[] ImprimirDeclaracion(int proveedorId, int cosechaId, string CUIT)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
             var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
@@ -148,15 +148,15 @@ namespace SustitucionMOAUtils.Services
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
+                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
 
-            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == proveedor.CUIT);
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
 
             DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
-                CUIT = proveedor.CUIT,
-                RazonSocial = proveedor.RazonSocial,
+                CUIT = declaracion.CUIT,
+                RazonSocial = declaracion.RazonSocial,
                 Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
                 CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
                 Campos = allCampos
@@ -177,10 +177,10 @@ namespace SustitucionMOAUtils.Services
 
                 pdfReaderCampos.SelectPages("2");
 
-                var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
+                //var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
 
-                var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
-                byte[] fileBytes = File.ReadAllBytes(archivoDeclaracion.Ruta);
+                //var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
+                byte[] fileBytes = File.ReadAllBytes(declaracion.Archivo.Ruta);
 
                 PdfReader pdfReaderDeclaracion = new PdfReader(fileBytes);
 
