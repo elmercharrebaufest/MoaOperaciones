@@ -214,7 +214,7 @@ export class LayoutComponent implements OnDestroy {
                     case 'Carga de Negocios':
                         this.auxiliarSeccionesVisitadas = 'Carga de Negocios';
                         this.textoTooltip = 'En esta pantalla podrás seleccionar el tipo de negocio que deseas operar.';
-                        this.textoTooltip2 = '';
+                        this.textoTooltip2 = '';//'<a href="https://www.youtube.com/watch?v=NooUcellVgY&list=RDEMb_bDv34i1yX9BKQmQom11w&index=4" target="_blank">click aqui</a>';
                         break;
                     case 'A Precio':
                         this.auxiliarSeccionesVisitadas = 'A Precio';

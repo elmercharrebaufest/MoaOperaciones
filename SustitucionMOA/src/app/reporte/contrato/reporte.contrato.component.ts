@@ -1,6 +1,10 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
+import { registerLocaleData } from '@angular/common';
+import { Seccion } from './../../common/models/seccion';
+
+import es from '@angular/common/locales/es';
 declare var $: any;
 
 
@@ -9,7 +13,7 @@ declare var $: any;
     templateUrl: `reporte.contrato.component.html`,
     providers: [{ provide: ReporteService, useClass: ReporteContratoService }]
 })
-export class ReporteContratoComponent extends ReporteBaseComponent {
+export class ReporteContratoComponent extends ReporteBaseComponent implements OnInit {
 
     fechaDesde: any = null;
     fechaHasta: any = null;
@@ -38,6 +42,16 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
     negocioParAanular: any;
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
+    }
+
+    ngOnInit() {
+        registerLocaleData(es);
+        this.navService.setSeccionList(
+            [
+                new Seccion('/reporte/contrato', 'reporte', 'Contratos'),
+                //new Seccion('/reporte/cupo', 'reporte', 'Cupos'),
+            ]
+        );
     }
 
     ngAfterViewInit(): void {
@@ -186,6 +200,7 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                                 TipoNegocio: x.TipoNegocio,
                                 Cantidad: x.Cantidad,
                                 Precio: x.Precio,
+                                PrecioNeto: x.PrecioNeto,
                                 Moneda: x.Moneda,
                                 DestinoDescripcion: x.DestinoDescripcion,
                                 FechaDesde: new Date(parseInt(x.FechaDesde.substr(6))),
@@ -198,15 +213,22 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                                 Consignatario: x.Consignatario,
                                 Estado_Contrato: x.Estado_Contrato,
                                 Estado: x.Estado,
-                                PagoDiferidoTercero: x.PagoDiferidoTercero,
+                                PagoDiferidoTercero: x.PagoDiferidoTercero != true ? "No" : "Si",
                                 DolarizadoTercero: x.DolarizadoTercero,
                                 CalidadTercero: x.CalidadTercero,
                                 SustentableTercero: x.SustentableTercero,
                                 TipoNegocioId: x.TipoNegocioId,
                                 Id: x.Id,
+                                ObservacionTercero: x.ObservacionTercero,
+                                Acuerdo: x.Acuerdo
                             };
                             return item;
                         });
+                        for (var i = 0; i < this.data.length; i++) {
+                            if (this.data[i].PagoDiferidoTercero == "Si") {
+                                this.data[i].PagoDiferidoTercero = this.obtenerPagoDiferido(this.data[i].ObservacionTercero);
+                            }
+                        }
                         console.log(this.data);
                     },
                     error => {
@@ -217,6 +239,15 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
         }
     }
 
+    obtenerPagoDiferido(observacion) {
+        var p = observacion.split("|");
+        var n = "Si";
+        var f = p.filter(function (e) { return e.includes("Pago Diferido:") });
+        if (f) {
+            n = f[0].split(":")[1].trim();
+        }
+        return n;
+    }
     validar() {
         var dateParts = $("#noCursor_fechaDesde").val().split("/");
         var fechaDesde = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
@@ -281,7 +312,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent {
                 } else if (result.info != undefined) {
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj = JSON.parse(result);
+
+                    let obj = JSON.parse(result.DatosContrato);
                     this.datosContrato = obj;
 
                     obj.Datos.Bolsa.forEach(element => {

@@ -40,14 +40,23 @@ export class LiquidacionBaseComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([
-            new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
-            new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
-            new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
-            new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
-            new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
-        ]);
-
+        if (this.securityService.tienePermiso("INFORMAR LIQUIDACION")) {
+            this.navService.setSeccionList([
+                new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
+                new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
+                new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
+                new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
+                new Seccion('/liquidacion/informar', 'liquidacion', 'Informar')
+            ]);
+        }
+        else {
+            this.navService.setSeccionList([
+                new Seccion('/liquidacion/aprobada', 'liquidacion', 'Aprobadas'),
+                new Seccion('/liquidacion/observada', 'liquidacion', 'Observadas'),
+                new Seccion('/liquidacion/paga', 'liquidacion', 'Pagas'),
+                new Seccion('/liquidacion/informada', 'liquidacion', 'Informadas'),
+            ]);
+        }
         this.getData();
     }
 

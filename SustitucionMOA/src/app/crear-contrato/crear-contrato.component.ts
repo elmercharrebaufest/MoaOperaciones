@@ -1,23 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CrearContratoService } from './crear-contrato.service';
-import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
-import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
-import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
-import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
+import { ActivatedRoute, Params } from "@angular/router";
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { precioMoaCompraNet } from '../common/models/precioMoaCompraNet';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
-import { SessionDataService } from './../common/services/SessionDataService';
-import { SecurityService } from './../common/services/SecurityService';
-import { NavService } from './../common/services/NavService';
+import { Seccion } from './../common/models/seccion';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
-import { Seccion } from './../common/models/seccion';
-import { ContratoAPrecio } from '../common/models/contratoAPrecio';
-import { habilitacionPizarra } from '../common/models/habilitacionPizarra';
-import { precioMoaCompraNet } from '../common/models/precioMoaCompraNet';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { BaseComponent } from '../common/base-components/base-component';
-import { Router, ActivatedRoute, Params } from "@angular/router";
+import { NavService } from './../common/services/NavService';
+import { SecurityService } from './../common/services/SecurityService';
+import { SessionDataService } from './../common/services/SessionDataService';
+import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
+import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
+import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
+import { CrearContratoService } from './crear-contrato.service';
 
 declare var $: any;
 
@@ -26,7 +21,7 @@ declare var $: any;
     template: ``,
     providers: [CrearContratoService]
 })
-export class CrearContratoBaseComponent extends ListBaseComponent {
+export class CrearContratoBaseComponent extends ListBaseComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -34,6 +29,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     protected spinnerComponent: SpinnerComponent;
     @ViewChild("spinnerCampana")
     protected spinnerCampana: SpinnerSmallComponent;
+    BolsaId: any;
+    bolsaRecomendada: any;
 
     constructor(
         protected service: CrearContratoService,
@@ -49,6 +46,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         this.mensajeComponent = new MensajeComponent();
         this.spinnerCampana = new SpinnerSmallComponent();
     }
+
     crearModificar: string = "Crear";
     id: number = 0;
     contratoEditar: any;
@@ -61,6 +59,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     proveedores = [];
     pendienteFijar: any;
     pendienteFijarContrato: string = "";
+    mensajeCambioBolsa: string = "";
     pendientesFijar = [];
     keyword = 'Nombre';
     keyword2 = "RazonSocial";
@@ -73,6 +72,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     fechafInicio = new Date().toLocaleDateString('en-GB');
     fechafFin = new Date().toLocaleDateString('en-GB');
 
+    bolsasAutomaticas: any = new Array();
     datosContrato: any = new Array();
     materiales: any = new Array();
     monedas: any = new Array();
@@ -104,18 +104,22 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
     ObservacionCalidadTercero: string = "";
     ObservacionSustentableTercero: string = "";
     ObservacionTercero: string = "";
+    pagosDiferidos: any = new Array();
+    maximoDiasDiferimiento: number = 0;
+    costoFinanciero: string ;
+    placeholderDolarizado: string = this.placeHoldeDolarizado();
     ngOnInit() {
 
         this.setTabs();
         this.checkPermisos();
-        this.navService.setSeccionList([
+        //this.navService.setSeccionList([
 
-            //new Seccion('/crear-contrato/cargarnegocio', 'crear-contrato', 'Seleccione un negcio'),
-            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
-            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
-            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+        //    new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+        //    new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+        //    new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+        //    new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Fijacion'),
 
-        ]);
+        //]);
         //this.obteneDatosContrato();
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) {
@@ -124,6 +128,16 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
             };
         });
     }
+
+    placeHoldeDolarizado() {
+        let today = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000);
+        let dd = String(today.getDate());
+        let mm = String(today.getMonth() + 1); //January is 0!
+        let yyyy = today.getFullYear();
+        let text = dd + '/' + mm + '/' + yyyy;
+        return "ej: " + text ;
+    }
+
     negocioHabilitado(contrato) {
         this.blockUI.start('');
         this.unsubscribe();
@@ -206,6 +220,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         );
         return false;
     }
+
     obteneDatosContrato(contrato) {
         this.unsubscribe();
         this.subscription = this.service.obteneDatosContrato(contrato.TipoNegocioId).subscribe(
@@ -219,8 +234,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     this.blockUI.stop();
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
-                    let obj = JSON.parse(result);
-                    this.datosContrato = obj;                   
+                    let obj2 = JSON.parse(result.BolsaAutomatica);
+                    this.bolsasAutomaticas = obj2.Data;
+                    let obj = JSON.parse(result.DatosContrato);
+                    this.datosContrato = obj;
 
                     //obj.Datos.material.forEach(element => {
                     //    let el = {
@@ -283,11 +300,14 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         this.monedasTodas.push(el);
                     });
                     obj.Datos.Condicion.forEach(element => {
-                        let el = {
-                            Id: element.Id,
-                            Descripcion: element.Descripcion
+                        if (element.Id == 2 || element.Id == 5 || element.Id == 7) {
+                            let el = {
+                                Id: element.Id,
+                                Descripcion: element.Descripcion
+                            }
+                            this.condicionFijacion.push(el);
                         }
-                        this.condicionFijacion.push(el);
+
                     });
                     this.validarDirecto(contrato);
                 }
@@ -323,8 +343,25 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         if (this.id > 0) {
                             this.habilitaciones(contrato);
                         }
+                        this.navService.setSeccionList([
+
+                            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+                            new Seccion('/crear-contrato/alta-masiva', 'crear-contrato', 'Alta Masiva'),
+
+                        ]);
                     } else {
+                        this.obtenerDatosCompraNet(contrato, "");
                         this.esCorredorEnDataAgro = false;
+                        this.navService.setSeccionList([
+
+                            new Seccion('/crear-contrato/aprecio', 'crear-contrato', 'A Precio'),
+                            new Seccion('/crear-contrato/afijar', 'crear-contrato', 'A Fijar'),
+                            new Seccion('/crear-contrato/fijacion', 'crear-contrato', 'Fijacion'),
+
+                        ]);
+
                         this.blockUI.stop();
                         if (this.id == 0) {
                             this.obtenerDatosCompraNet(contrato, "");
@@ -332,6 +369,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                             this.habilitaciones(contrato);
                         }
                     }
+                    this.blockUI.stop();
                 }
             },
             error => {
@@ -343,6 +381,19 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
         );
 
         return false;
+    }
+
+    comparePagosDiferidos(a, b) {
+        const bandA = a.CantidadDia;
+        const bandB = b.CantidadDia;
+
+        let comparison = 0;
+        if (bandA > bandB) {
+            comparison = 1;
+        } else if (bandA < bandB) {
+            comparison = -1;
+        }
+        return comparison;
     }
 
     habilitaciones(contrato) {
@@ -370,8 +421,26 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                             }
                             this.campanias.push(el);
                         });
-                        
-                        if (contrato.TipoNegocioId == 3 ) {
+
+                        this.pagosDiferidos = new Array();
+                        if (obj.TraerPagosDiferido) {
+                            JSON.parse(obj.TraerPagosDiferido).forEach(element => {
+                                let el = {
+                                    Id: element.Id,
+                                    Descripcion: `${element.CantidadDia} dias $${element.Importe}`,
+                                    CantidadDia: element.CantidadDia,
+                                    Tasa: element.Tasa
+                                }
+                                this.pagosDiferidos.push(el);
+                                if (this.maximoDiasDiferimiento < element.CantidadDia) {
+                                    this.maximoDiasDiferimiento = element.CantidadDia;
+                                }
+                            });
+                            this.pagosDiferidos.sort(this.comparePagosDiferidos);
+                            console.log(this.pagosDiferidos)
+                        }
+
+                        if (contrato.TipoNegocioId == 3) {
                             this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                         } else {
                             this.blockUI.stop();
@@ -410,6 +479,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     this.datosCompraNet = obj;
                     contrato.ClasificacionId = obj.ClasificacionCompraNetId;
                     contrato.BolsaId = obj.BolsaCompraNetId;
+                    this.BolsaId = obj.BolsaCompraNetId;
                     contrato.BoletoId = obj.BoletoCompraNetId;
                     if (obj.BoletoCompraNetId == 1) {
                         this.bolsasSelect = this.bolsasConfirma;
@@ -450,6 +520,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                     if (contrato.TipoNegocioId == 3) {
                         this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                     }
+                    this.SeleccionAutomaticaBolsa(contrato);
                 }
 
             },
@@ -604,12 +675,14 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                             (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Acopiador.Directo == "NO"))) {
                         this.mensajeModal = "No est\u00E1 habilitado en Ruca";
                         document.getElementById("openModalMensajeModal").click();
+                        this.blockUI.stop();
                         return;
                     }
 
                     if (obj.FechaActualizacion == "NO") {
                         this.mensajeModal = "Falta fecha de actualizaci\u00F3n de legajo";
                         document.getElementById("openModalMensajeModal").click();
+                        this.blockUI.stop();
                         return;
                     }
                     this.blockUI.stop();
@@ -792,6 +865,12 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
                         contrato.ContratoVendedor = obj.ContratoVendedor;
                         contrato.ContratoCorredor = obj.ContratoCorredor;
                         contrato.PagoDiferidoTercero = obj.PagoDiferidoTercero;
+                        contrato.PagoDiferidoTerceroId = obj.PagoDiferidoTerceroId;
+                        if (!obj.PagoDiferidoTerceroId && this.ObservacionPagoDiferidoTercero)
+                            contrato.PagoDiferidoTerceroId = -1;
+                        if (contrato.PagoDiferidoTerceroId > 0)
+                            this.ObservacionPagoDiferidoTercero = "";
+
                         contrato.DolarizadoTercero = obj.DolarizadoTercero;
                         contrato.CalidadTercero = obj.CalidadTercero;
                         contrato.SustentableTercero = obj.SustentableTercero;
@@ -880,6 +959,38 @@ export class CrearContratoBaseComponent extends ListBaseComponent {
 
         );
         return false;
+    };
+
+    SeleccionAutomaticaBolsa(contrato) {
+        console.log("SeleccionAutomaticaBolsa", this.bolsasAutomaticas);
+        if (contrato.BoletoId == 1) {
+            var p = this.bolsasAutomaticas.filter(a => a.DestinoId == contrato.DestinoId && a.ProvinciaId == contrato.ProvinciaId)
+            if (p.length == 1) {
+                if (p[0].BolsaId != contrato.BolsaId) {
+                    this.bolsaRecomendada = p[0].BolsaId;
+                    this.mensajeCambioBolsa = p[0].Bolsa;
+                    document.getElementById("openModalbolsaModal").click();
+                }
+
+            }
+        }
+    }
+
+    cambiarBolsa(contrato) {
+        contrato.BolsaId = this.bolsaRecomendada;
+    }
+
+    changeDestino(contrato) {
+        console.log("changeDestino");
+        console.log(contrato.DestinoId)
+        if (this.BolsaId != null && contrato.BoletoId == 1) {
+            contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(contrato);
+    }
+
+    altaMasiva() {
+        this.navService.navegarSeccion("/crear-contrato/alta-masiva");
     };
 
 }

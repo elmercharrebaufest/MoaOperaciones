@@ -6,7 +6,9 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">Seleccione el tipo de negocio que desea cargar  </div>
         </div>
-
+        <div *ngIf="acuerdosPendientes != null">
+            <div class="alert alert-warning"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>{{acuerdosPendientes}}</div>
+        </div>
     </section>
     <!--End CONTENT-->
 </div>

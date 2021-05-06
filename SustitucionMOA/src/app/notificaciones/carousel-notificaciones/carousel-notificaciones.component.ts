@@ -26,47 +26,46 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
 
 
   constructor(protected service: NotificacionesService, protected navService: NavService,
-              protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
-    protected floatMsgService: FloatMsgService, protected modalService: ModalService)
-    {
-        super(navService, securytiService, floatMsgService, modalService);
-    }
+    protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
+    protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    super(navService, securytiService, floatMsgService, modalService);
+  }
 
   ngOnInit(): void {
-      this.navService.setSeccionList([]);
-      this.getNotificaciones();
-    }
-  
-    getNotificaciones() {
-        this.data = null;
-        try {
-            this.unsubscribe();
-            this.subscription = this.service.getNotificaciones().subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                    } else if (result.info != undefined) {
-                    } else {
-                      this.data = result.data;
-                      this.totalNotificaciones = this.data.length
-                      this.notificacionActual = this.data[this.indiceNotificacion];
+    this.navService.setSeccionList([]);
+    this.getNotificaciones();
+  }
 
-                      if (this.data.length > 0)
-                        this.mostrarNotificaciones = true;
-                      this.actualizarBotones()
-                    }
-                },
-                error => {
-                }
+  getNotificaciones() {
+    this.data = null;
+    try {
+      this.unsubscribe();
+      this.subscription = this.service.getNotificaciones().subscribe(
+        result => {
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+          } else if (result.info != undefined) {
+          } else {
+            this.data = result.data;
+            this.totalNotificaciones = this.data.length
+            this.notificacionActual = this.data[this.indiceNotificacion];
 
-            );
-        } catch (e) {
-            return false; //<-- Prevent Refresh
+            if (this.data.length > 0)
+              this.mostrarNotificaciones = true;
+            this.actualizarBotones()
+          }
+        },
+        error => {
         }
 
-        return false; //<-- Prevent Refresh
+      );
+    } catch (e) {
+      return false; //<-- Prevent Refresh
     }
+
+    return false; //<-- Prevent Refresh
+  }
 
   siguienteNotificacion() {
     this.notificacionActual = this.data[++this.indiceNotificacion];
@@ -84,10 +83,10 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
 
   actualizarBotones() {
     this.mostrarBotonSiguiente = (this.indiceNotificacion + 1) != this.totalNotificaciones;
-    
+
     this.mostrarBotonAnterior = this.indiceNotificacion != 0;
-    
-    this.mostrarVerMas = (this.notificacionActual.LinkAdjunto || '') != '';
+
+    this.mostrarVerMas = this.notificacionActual ? ((this.notificacionActual.LinkAdjunto || '') != '') : false;
 
   }
 }

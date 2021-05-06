@@ -388,12 +388,16 @@
                     </div>
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
+                            <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
+                                <a (click)="goToSeccion('/sustentable/listado-campos')" href="#"> Campo Sustentable</a>
+                            </div>
                             <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
                                 <a (click)="goToSeccion('/vendedor/status')" href="#">
                                     <!--data-toggle="tab">-->Consulta de Vendedor
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('PESIFICACION') && isGranosSelected()">
+                            <div
+                                *ngIf="(isAuthorized('PESIFICACION') || isAuthorized('VER PESIFICACIONES')) && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
@@ -456,9 +460,47 @@
                         </div>
                     </div>
                 </div>
+                <!--
+                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                    <div class="panel-heading seccion" role="tab" id="operar">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseConsultas" aria-expanded="false" aria-controls="collapseConsultas">
+                            Consultas <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseConsultas" class="collapse" aria-labelledby="operar" role="tabpanel">
+                        <div class="panel-body">
+                            <div *ngIf="isAuthorized('CONTACTO MAIL') && isGranosSelected()">
+                                <a (click)="goToSeccion('/mis-consultas')" href="#"> Mis Consultas</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
+                            href="#" data-parent="#accordionMenu">
+                            Contacto
+                        </a>
+                    </div>
+                </div>-->
+
+
+                <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
+                <div class="panel panel-default"
+                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA')">
+                    <div class="panel-heading seccion" role="tab" id="contacto">
+                        <a class="link-header collapsed" data-toggle="collapse"
+                            (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
+                            <!--data-toggle="tab">-->Contacto
+                        </a>
+                    </div>
+                </div>
+                <div class="panel panel-default"
+                    *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
+                    <div class="panel-heading seccion" role="tab" id="contacto">
+                        <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
                             href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
@@ -477,14 +519,14 @@
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseU" aria-expanded="false" aria-controls="collapseU">
-                            Usuarios <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            Administraci&oacute;n <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
                         <div class="panel-body">
                             <div *ngIf="isAuthorized('ABM USUARIOS')">
                                 <a (click)="goToSeccion('/usuario/list')" href="#">
-                                    Listado
+                                    Listado de usuarios
                                 </a>
                             </div>
                             <div *ngIf="isAuthorized('ABM EMPRESAS')">
@@ -500,6 +542,11 @@
                             <div *ngIf="isAuthorized('VER ALTAS NO GRANOS')">
                                 <a (click)="goToSeccion('/usuario/alta-empresa-no-granos')" href="#">
                                     Alta Empresa No Granos
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('GUARDADO Y CONSULTA DE LOG PESIFICACIONES')">
+                                <a (click)="goToSeccion('/logPesificacion')" href="#">
+                                    Administración de pesificaciones
                                 </a>
                             </div>
                         </div>
@@ -595,9 +642,9 @@
                 <span>Ayuda</span>
             </div>
             <span class="tooltiptexto" aria-hidden="true">
-                {{this.textoTooltip}}
+                <label [innerHTML]="textoTooltip"></label>
                 <br>
-                {{this.textoTooltip2}}
+                <label [innerHTML]="textoTooltip2"></label>
             </span>
         </div>
 

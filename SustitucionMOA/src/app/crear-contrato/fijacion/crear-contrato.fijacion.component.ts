@@ -33,6 +33,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         } else {
             this.negocioHabilitado(this.contrato);
         }
+       
     }
 
     ngAfterViewInit(): void {
@@ -151,28 +152,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         }
     }
 
-    //selectEventLocalidad(item) {
-    //    this.contrato.LocalidadId = item.LocalidadId;
-    //    this.contrato.ProvinciaId = item.ProvinciaId;
-    //    if (item.ProvinciaId != 1) {
-    //        this.contrato.EstablecimientoPropio = null;
-    //    }
-    //}
-
-    //onChangeSearchLocalidad(term: string) {
-    //    if (term.length > 2) {
-    //        this.unsubscribe();
-    //        this.subscription = this.service.searchLocalidad(term).subscribe(
-    //            result => {
-    //                this.localidades = result;
-    //            },
-    //            error => {
-    //                this.mensajeComponent.setErrorMsg(error.message);
-    //            }
-    //        );
-    //    }
-    //}
-
     onBoletoSelected() {
         this.contrato.BolsaId = 0;
         if (this.contrato.BoletoId == 1) {
@@ -199,10 +178,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         return this.contrato.BoletoId != 3;
     }
 
-    //isVisibleEstablecimiento(): boolean {
-    //    return this.contrato.ProvinciaId == 1;
-    //}
-
     grabarContratoFijacion() {
         console.log(this.contrato);
         if (!this.validarContrato()) {
@@ -228,7 +203,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
-            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.contrato.DiasPesificado + "días.";
         }
 
         this.mensajeComponent.setMsgsEmpty();
@@ -311,12 +286,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             return false;
         }
 
-
-        //if (this.contrato.LocalidadId == null || this.contrato.LocalidadId == undefined) {
-        //    this.mensajeComponent.setErrorMsg("Debe completar la Localidad.");
-        //    return false;
-        //}
-
         if (this.contrato.Pizarra == false && (this.contrato.MonedaId == null || this.contrato.MonedaId == undefined || this.contrato.MonedaId == "")) {
             this.mensajeComponent.setErrorMsg("Debe completar la Moneda.");
             return false;
@@ -329,8 +298,12 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
+        if (this.contrato.DiasPesificado < 7 && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de Pago Diferido debe ser mayor o igual a 7.");
+            return false;
+        }
+        if (this.costoFinanciero == "La cantidad de días ingresados supera el maximo permitido.") {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de diferimiento ingresados supera el maximo permitido.");
             return false;
         }
         return true;
@@ -344,21 +317,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         this.contrato.PlanCanje = false;
     }
 
-    //changeClasificacion(event) {
-    //    if (this.contrato.ClasificacionId == 1) {
-    //        this.contrato.PlanCanje = false;
-    //        this.contrato.Consignatario = false;
-    //    }
-    //}
-    //isNotProductor(event) {
-    //    if (this.contrato.ClasificacionId == 1) {
-    //        return false;
-    //    } else {
-    //        return true;
-    //    }
-    //}
-
-
     onChangeMaterial() {
         if (this.contrato.MaterialId != null) {
             this.pendientesFijar = [];
@@ -370,10 +328,6 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
             this.contrato.Pizarra = false;
         }
     }
-    //changePizarra() {
-    //    this.contrato.Precio = 0;
-    //    this.contrato.MonedaId = null;
-    //}
 
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;
@@ -447,5 +401,39 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
     isVisibleContratoDetalle(): boolean {
         var result = !(this.pendienteFijar == null || this.pendienteFijar == "" || this.pendienteFijar == undefined);
         return result;
+    }      
+
+    changeDiasDiferido(event) {
+        setTimeout(() => {
+            this.costoFinanciero = null;
+
+            if (this.contrato.Precio > 0 && this.contrato.PagoDiferidoTercero == true) {
+                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado < 7)) {
+                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor o igual a 7.";
+                    return;
+                }
+                let tasa = 0;
+                this.pagosDiferidos.forEach(element => {
+                    if (this.contrato.DiasPesificado <= element.CantidadDia && tasa == 0) {
+                        tasa = element.Tasa;
+                    }
+                });
+                if (tasa == 0) {
+                    this.costoFinanciero = "La cantidad de días ingresados supera el maximo permitido.";
+                } else {
+                    let precio = Number(this.contrato.Precio.toString().replace(',', '.'));
+                    tasa = Number(tasa);
+                    let costo = Math.round(precio * (tasa / 100) * (this.contrato.DiasPesificado - 3) / 365 * 2) / 2;
+                    let d10 = costo / 10.00;
+                    costo = Math.round(d10 * 2) / 2;
+                    costo = costo * 10;
+
+                    let precioNeto = precio + costo;
+
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
+                }
+            }
+
+        }, 0);
     }
 }

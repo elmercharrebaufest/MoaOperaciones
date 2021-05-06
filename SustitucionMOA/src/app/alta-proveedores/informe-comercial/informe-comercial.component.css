@@ -1,0 +1,463 @@
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.show {
+  display: inline;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-content{
+  border-radius: 11px!important;
+}
+
+.card-container {
+  margin-top: 15px;
+  padding-left: 35px;
+  padding-right: 35px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.modal-notificacion {
+  font-size: 16px;
+}
+
+.modal-footer{
+  border-top: none!important;
+}
+
+.fade-complete {
+  margin: 0;
+  padding-top: 140px;
+}
+
+.btn-close {
+  color: white !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+.btn-close:hover {
+  text-shadow: #00000096 2px 1px !important;
+}
+
+.requerido {
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.adjuntar {
+  font-weight: 400;
+  border-radius: 5px;
+  color: white;
+  background: #172f8f;
+  padding: 5px;
+}
+
+.adjuntar:hover {
+  cursor: pointer;
+}
+
+.link-adjuntar {
+  font-weight: 400;
+  color: #075088;
+  font-size: 16px;
+}
+
+.link-adjuntar:hover {
+  cursor: pointer;
+}
+
+
+.styled-elements {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #3f4845;
+  overflow: hidden;
+  width: 100%;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+}
+.styled-elements select,
+.styled-elements input {
+  font-family: "Roboto Condensed", Arial, sans-serif;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  padding: 5px;
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+  height: 40px;
+  font-size: 16px;
+  width: 85%;
+  margin-right: 5px;
+  color: #818A91;
+  margin-bottom: 10px;
+}
+
+.styled-elements input,
+.styled-elements textarea {
+  padding: 5px 10px;
+  font-family: "Roboto Condensed", Arial, sans-serif;
+
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+  color: #818A91;
+  background: white;
+  font-size: 16px;
+  border: 1px solid #DDDDDD;
+}
+
+.styled-elements textarea {
+  height: 75px;
+}
+
+.styled-elements.autocomplete {
+  overflow: visible;
+
+}
+
+
+.informe-comercial {
+  display: flex;
+  flex-direction: column;
+}
+
+.informe-comercial div {
+  display: flex;
+  margin: 10px 0;
+}
+
+.enviar {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.download {
+  color: #172f8f;
+  text-decoration: none;
+}
+
+
+.input-formulario {
+  font-family: "Roboto Regular";
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  padding: 5px;
+  border-radius: 4px 4px 4px 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+  height: 40px;
+  font-size: 16px;
+  color: #818A91;
+}
+
+.step-container-row {
+  font-weight: normal !important;
+  color: #959595 !important;
+  font-size: 16px !important;
+  padding-left: 0 !important;
+  text-align: start !important;
+}
+
+label {
+  font-weight: normal !important;
+  color: #959595 !important;
+  font-size: 16px !important;
+  padding-left: 0 !important;
+  text-align: start !important;
+}
+
+.link-archivo{
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #1C7CD5;
+  font-size: 16px;
+}
+
+.link-eliminar{
+  font-weight: normal;
+  letter-spacing: 0px;
+  color:#DD441E;
+  font-size: 16px;
+}
+
+.container-archivos{
+  padding-bottom: 15px;
+}
+
+p {
+  font-weight: normal !important;
+  color: #959595 !important;
+  font-size: 13px !important;
+  padding-left: 0 !important;
+  text-align: start !important;
+}
+
+ .padding-left-15px{
+   padding-left: 15px;
+ }
+
+#myModal, #modalCartaPresentacion {
+    overflow: scroll !important;
+    margin-top: 0;
+}
+
+.formulario-campo {
+  padding: 10px 0;
+}
+
+.padding-5-0 {
+  padding: 5px 0;
+}
+
+.padding-0-5 {
+  padding: 0 5px;
+}
+.formulario-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #172f8f;
+}
+
+.margin-bottom-12px {
+  margin-bottom: 12px;
+}
+
+.margin-5px {
+  margin: 0 5px !important;
+}
+
+.titulo {
+  font-family: "Roboto Regular";
+  font-size: 16px;
+  font-weight: bold;
+  color: #075088;
+  margin-left: 5px !important;
+}
+
+
+.form-control-file {
+  margin: 10px 0;
+}
+
+.input-custom {
+  border-radius: 3px;
+  border: 1px solid lightgray;
+  padding: 3px;
+  background: #e9e7e72b;
+}
+
+.modal-footer {
+  justify-content: center;
+  display: flex;
+}
+
+.table-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #172f8f;
+}
+
+.dropdown-granos {
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.dropdown-campania {
+  margin-bottom: 12px;
+  height: 32px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.table-custom {
+  border-top:none!important
+}
+
+.table-custom>tbody>tr>td,
+.table-custom>tbody>tr>th {
+  border-top: none!important;
+}
+
+.cssTable>tfoot>tr>td,
+.cssTable>tfoot>tr>th {
+  border: none!important;
+}
+
+.btn-add-container {
+  padding-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 9px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.declaracionJuradaDiv {
+  display: flex;
+  align-items: center;
+}
+
+#declaracionJurada {
+  margin: 10px;
+}
+
+.cssTable {
+  border-top: 1px;
+}
+
+.cssTable td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cssTable thead th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.titulos {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: #003399;
+    font-size: 24px;
+    border: none;
+    background: none;
+    width: 98%;
+    text-align: left;
+}
+
+.card {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: .25rem;
+    width: 98%;
+    text-align: left;
+     background-color: white;
+    border-radius: 11px;
+    margin-bottom: 15px;
+}
+
+.step-container {
+    position: relative;
+    text-align: left;
+    background-color: white;
+    border-radius: 11px;
+    margin-bottom: 15px;
+}
+
+.step-container-header {
+  padding: 10px;
+  background-color: #959595;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: auto;
+  font-size: 15px;
+  font-weight: normal;
+  color: white;
+  padding-left: 0px;
+}
+
+.card-header {
+  background-color: #959595;
+  font-weight: normal;
+  font-size: 15px;
+  color: white;
+  border-radius: 11px;
+}
+
+.card-header-open {
+    border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+}
+
+.titulos {
+    position: relative;
+    color:white
+}
+
+.titulos::after {
+    content: "\f107";
+    color: #333;
+    top: -2px;
+    right: 0px;
+    position: absolute;
+    font-family: "FontAwesome"
+}
+
+.titulos[aria-expanded="true"]::after {
+    content: "\f106";
+}
+
+.step-container-row{
+  font-weight: normal;
+}
+
+.ng-autocomplete{
+  font-family: "Roboto Condensed", Arial, sans-serif !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+  width: 80%;
+  color: #818A91;
+  box-shadow: none;
+  padding-left: 0px!important;
+  padding-right: 0px!important;
+  font-weight: normal!important;
+}
+
+::ng-deep .autocomplete-container {
+   font-family: "Roboto Condensed", Arial, sans-serif !important;
+  border: 1px solid #DDDDDD !important;
+  border-radius: 4px !important;
+  -moz-border-radius: 4px 4px 4px 4px!important;
+  -webkit-border-radius: 4px 4px 4px 4px!important;
+  height: 40px !important;
+  font-size: 16px !important;
+  color: #818A91!important;
+  box-shadow: none;
+}
+
+.autocomplete-container .input-container input {
+  color: #818A91!important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: normal;
+}

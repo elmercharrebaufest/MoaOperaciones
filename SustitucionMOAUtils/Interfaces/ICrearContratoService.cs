@@ -26,5 +26,14 @@ namespace SustitucionMOAUtils.Interfaces
         string TraerPrecioMoaMateriales(int tipoNegocioId);
         string AnularNegocio(int negocioId, int tipoNegocioId, string motivo);
         string TraerContratoCompleto(int negocioId, int tipoNegocioId);
+        string TraerPagosDiferido(int material, int tiponegocio);
+        List<MaterialDto> BuscarMateriales();
+        List<CentroDto> BuscarCentros();
+        List<CampaniaDto> BuscarCampanias();
+        string ObteneContratosAcuerdo(int idDataAgro);
+        BasicoContrato TraerContratoCompleto(int id, string tipo);
+        List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
+        string ConfiguracionBolsaAutomatica();
+        byte[] ExcelModeloAltaMasiva();
     }
 }

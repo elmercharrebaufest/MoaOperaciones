@@ -1,10 +1,14 @@
-﻿using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+﻿using Hangfire;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
+using SustitucionMOA.Jobs;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Services;
+using SustitucionMOAUtils.Validadores;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -75,6 +79,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IAzureB2CService>().To(typeof(AzureB2CService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IDataAgroService>().To(typeof(DataAgroService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IUsuarioService>().To(typeof(UsuarioService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IContactoMailService>().To(typeof(ContactoMailService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IConsultaService>().To(typeof(ConsultaService)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<IVendedorService>().To(typeof(VendedorService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaEmpresaNoGranosService>().To(typeof(AltaEmpresaNoGranosService)).InScope(ctx => OperationContext.Current);
@@ -91,6 +97,14 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ITicketPesadaService>().To(typeof(TicketPesadaService)).InScope(ctx => OperationContext.Current);
 
 
+            kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IReporteCamposSustentablesTSAJob>().To(typeof(ReporteCamposSustentablesTSAJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IReporteConflictosCamposSustentablesJob>().To(typeof(ReporteConflictosCamposSustentablesJob)).InScope(ctx => OperationContext.Current);
+
+            kernel.Bind<ICampoSustentableService>().To(typeof(CampoSustentableService)).InScope(ctx => OperationContext.Current);
+
+            kernel.Bind<ILogPesificacionService>().To(typeof(LogPesificacionService)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IValidadorPesificacion>().To(typeof(ValidadorPesificacion)).InScope(ctx => OperationContext.Current);
 
 
             #region InterfacesSAP
@@ -100,6 +114,9 @@ namespace SustitucionMOA.App_Start
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
+            kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
+            //Activador Ninject Hangfire
+            GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }
     }
 }

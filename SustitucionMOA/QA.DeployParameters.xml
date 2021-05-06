@@ -2,6 +2,7 @@
 <parameters>
 	<setParameter name="IIS Web Application Name" value="MOAOperaciones" />
 	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=GVICSQLTEST2016.molinosagro.ad;initial catalog=MOAOperaciones;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework" />
+  <setParameter name="HfContexto-Web.config Connection String" value="data source=GVICSQLTEST2016.molinosagro.ad;Initial Catalog=MOAOperacionesHangfire;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
 	<setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />

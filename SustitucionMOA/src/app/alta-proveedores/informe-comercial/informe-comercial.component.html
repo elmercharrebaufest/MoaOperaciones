@@ -1,0 +1,394 @@
+<label *ngIf="displayType==='link'">
+  <span class="link-adjuntar" (click)="iniciarForm()">
+    Completar
+  </span>
+  informe comercial
+</label>
+<button *ngIf="displayType==='button'" (click)="iniciarForm()" class="btn-custom btn-add btn-mediano">
+  Informe comercial
+</button>
+
+<button data-target="#myModal" id="openModalHiddenButton" data-toggle="modal" style="display: none">
+
+</button>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
+  style="background-color: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" onClick="abrirModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Informe comercial</h4>
+      </div>
+      <div class="modal-body">
+        <div class="tab-pane container-fluid" id="tab2">
+          <div class="formulario col-xs-12 col-md-12">
+            <div class="titulo">
+              Domicilio Actividad
+            </div>
+            <div class="formulario-campo">
+              <div class="col-md-4">
+                <div class="formulario-label">
+                  Dirección
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="direccion" placeholder="Direccion" autocomplete="chrome-off"
+                    [(ngModel)]="informe.direccion" maxlength="100" />
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Código postal
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="codigoPostal" placeholder="Codigo postal" autocomplete="chrome-off"
+                    [(ngModel)]="informe.codigoPostal" maxlength="20" />
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="formulario-label">
+                  Localidad
+                </div>
+                <div>
+                  <input [(ngModel)]="informe.localidadId" type="hidden" id="localidadinf"
+                    style="font-weight: 100 !important;">
+
+                  <div>
+                    <div>
+                      <div class="col-md-10 ng-autocomplete">
+                        <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
+                          (selected)='selectEventInforme($event)' [(ngModel)]="informe.localidad"
+                          (inputChanged)='onChangeSearchInforme($event)' (inputFocused)='selectEventInforme($event)'
+                          [itemTemplate]="itemTemplate" [placeHolder]="'Localidad'"
+                          [notFoundText]="autocompleteNotFoundText" autocomplete="chrome-off"
+                          [notFoundTemplate]="notFoundTemplate">
+                        </ng-autocomplete>
+                      </div>
+                      <div class="col-md-2">
+                        <span class="requerido">*</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <ng-template #itemTemplate let-item>
+                    <a [innerHTML]="item.Nombre"></a>
+                  </ng-template>
+
+                  <ng-template #notFoundTemplate let-notFound>
+                    <div [innerHTML]="notFound"></div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="formulario col-xs-12 col-md-12">
+            <div class="titulo">
+              Contacto
+            </div>
+            <div class="formulario-campo ">
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Apellido
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="Apellido" placeholder="Apellido" autocomplete="chrome-off"
+                    [(ngModel)]="informe.ContactoComercial.Apellido" maxlength="50" />
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Nombres
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="Nombres" placeholder="Nombres" autocomplete="chrome-off"
+                    [(ngModel)]="informe.ContactoComercial.Nombres" maxlength="50" />
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Puesto
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="Puesto" placeholder="Puesto" autocomplete="chrome-off"
+                    [(ngModel)]="informe.ContactoComercial.Puesto" maxlength="50" />
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Teléfono
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="Telefono" placeholder="Telefono" autocomplete="chrome-off"
+                    [(ngModel)]="informe.ContactoComercial.Telefono1" maxlength="100" />
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="formulario col-xs-12 col-md-12">
+            <div class="titulo ">
+              Antecedentes comerciales
+            </div>
+            <div class="formulario-campo ">
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Clientes anteriores
+                </div>
+                <div class="styled-elements">
+                  <input type="text" id="ClienteAnt" placeholder="Clientes anteriores" autocomplete="chrome-off"
+                    [(ngModel)]="informe.ClienteAnt" maxlength="100" />
+                </div>
+              </div>
+            </div>
+
+            <div class="formulario-campo ">
+              <div class="col-md-12">
+                <div class="formulario-label">
+                  Otros comentarios
+                </div>
+                <div class="styled-elements">
+                  <textarea id="Comentarios" placeholder="Otros comentarios" [(ngModel)]="informe.Comentarios"
+                    maxlength="300"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="formulario-campo ">
+              <div class="col-md-3">
+                <div class="formulario-label">
+                  Campaña
+                </div>
+                <div class="styled-elements">
+                  <select name="{{campaniaActual}}" [(ngModel)]="campaniaActual" placeholder="Campaña">
+                    <option disabled hidden [value]="selectUndefinedOptionValue"> Campaña
+                    </option>
+                    <option *ngFor="let camp of listaCampanias" value="{{camp.CampaniaIdActual}}">
+                      {{camp.CampaniaActual}}
+                    </option>
+                  </select>
+                  <span class="requerido">*</span>
+                </div>
+              </div>
+              <div class="col-md-9">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <br />
+              </div>
+            </div>
+            <div class="formulario-campo">
+
+              <div class="titulo">
+                Capacidad productiva
+              </div>
+              <table class="table table-borderless table-custom">
+                <tbody>
+                  <tr *ngFor="let field of informe.NuevosCampos; let i = index">
+                    <td width="135px">
+                      <div class="styled-elements">
+                        <select name="{{field.MaterialId}}" [(ngModel)]="field.MaterialId">
+                          <option disabled hidden [value]="selectUndefinedOptionValue">
+                            Grano
+                          </option>
+                          <option *ngFor="let material of listaMateriales" value="{{material.Id}}">
+                            {{material.Descripcion}}
+                          </option>
+                        </select>
+                        <span class="requerido">*</span>
+                        <input [(ngModel)]="field.CampaniaId" type="text" value="0" name="{{field.CampaniaId}}"
+                          style="display:none;" />
+                      </div>
+                    </td>
+                    <td>
+                      <input [(ngModel)]="field.LocalidadId" type="hidden" id="localidad_{{i}}">
+
+                      <div>
+                        <div>
+                          <div class="ng-autocomplete col-md-10">
+                            <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
+                              (selected)='selectEventProduccion($event, i)' [(ngModel)]="field.Localidad"
+                              (inputChanged)='onChangeSearchProduccion($event)'
+                              (inputFocused)='selectEventProduccion($event)' [itemTemplate]="itemTemplate"
+                              [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
+                              [notFoundTemplate]="notFoundTemplate">
+                            </ng-autocomplete>
+                          </div>
+                          <div class="col-md-2">
+                            <span class="requerido">*</span>
+                          </div>
+                        </div>
+
+
+                        <ng-template #itemTemplate let-item>
+                          <a [innerHTML]="item.Nombre"></a>
+                        </ng-template>
+
+                        <ng-template #notFoundTemplate let-notFound>
+                          <div [innerHTML]="notFound"></div>
+                        </ng-template>
+                      </div>
+
+                    </td>
+                    <td width="83px">
+                      <div class="styled-elements">
+                        <input [(ngModel)]="field.Hectareas" type="number" placeholder="HAS" autocomplete="chrome-off"
+                          name="{{field.Hectareas}}" />
+                      </div>
+                    </td>
+                    <td width="110px">
+                      <div class="styled-elements">
+                        <input [(ngModel)]="field.Toneladas" type="number" placeholder="TNS" autocomplete="chrome-off"
+                          name="{{field.Toneladas}}" />
+                        <span class="requerido">*</span>
+                      </div>
+                    </td>
+                    <td width="125px">
+                      <div class="styled-elements">
+                        <select [(ngModel)]="field.ArrendaPropia">
+                          <option disabled hidden [value]="selectUndefinedOptionValue">
+                            Condición
+                          </option>
+                          <option value="true">Propio</option>
+                          <option value="false">Alquilado</option>
+                        </select>
+                        <span class="requerido">*</span>
+                      </div>
+                    </td>
+                    <td width="75px">
+                      <button class="btn-remove btn-custom btn-chico" type="button" (click)="deleteFieldValue(i)">
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+
+                </tbody>
+
+              </table>
+              <div class="btn-add-container">
+                <button class="btn-add btn-custom btn-chico" type="button" (click)="addFieldValue()">
+                  Agregar
+                </button>
+
+              </div>
+            </div>
+
+            <div class="formulario-campo">
+              <!-- TABLA 2 -->
+              <div class="titulo ">
+                Capacidad planta
+              </div>
+              <div>
+                <table class="table table-borderless table-custom">
+                  <tbody>
+                    <tr *ngFor="let acopio of informe.NuevosAcopios; let i = index">
+                      <td>
+                        <input [(ngModel)]="acopio.CampaniaID" type="text" value="0" name="{{acopio.CampaniaID}}"
+                          style="display:none;" />
+
+                        <input [(ngModel)]="acopio.LocalidadID" type="hidden" id="localidadalm_{{i}}"
+                          style="font-weight: 100 !important;">
+
+                        <div>
+                          <div>
+                            <div class="ng-autocomplete col-md-10">
+                              <ng-autocomplete [data]="dataLocalidades" [searchKeyword]="keyword"
+                                (selected)='selectEventAlmacenamiento($event, i)' [(ngModel)]="acopio.Localidad"
+                                (inputChanged)='onChangeSearchAlmacenamiento($event)'
+                                (inputFocused)='selectEventAlmacenamiento($event)' [itemTemplate]="itemTemplate"
+                                [notFoundText]="autocompleteNotFoundText" [placeHolder]="'Localidad'"
+                                [notFoundTemplate]="notFoundTemplate">
+                              </ng-autocomplete>
+                            </div>
+                            <div class="col-md-2">
+                              <span class="requerido">*</span>
+                            </div>
+                          </div>
+
+
+                          <ng-template #itemTemplate let-item>
+                            <a [innerHTML]="item.Nombre"></a>
+                          </ng-template>
+
+                          <ng-template #notFoundTemplate let-notFound>
+                            <div [innerHTML]="notFound"></div>
+                          </ng-template>
+                        </div>
+                      </td>
+                      <td width="110px">
+                        <div class="styled-elements">
+                          <input [(ngModel)]="acopio.Toneladas" type="number" autocomplete="chrome-off"
+                            placeholder="TNS" />
+                          <span class="requerido">*</span>
+                        </div>
+                      </td>
+                      <td width="125px">
+                        <div class="styled-elements">
+                          <select [(ngModel)]="acopio.ArrendaPropia">
+                            <option disabled hidden [value]="selectUndefinedOptionValue">
+                              Condición
+                            </option>
+                            <option value="true">Propio</option>
+                            <option value="false">Alquilado</option>
+                          </select>
+                          <span class="requerido">*</span>
+                        </div>
+                      </td>
+                      <td width="75px">
+                        <button class="btn-remove btn-custom btn-chico" type="button" (click)="deleteFieldValueAlm(i)">
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="btn-add-container">
+                <button class="btn-add btn-custom btn-chico" type="button" (click)="addFieldValueAlm()">
+                  Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="formulario" style="width:100%;text-align: center;">
+          <div *ngIf="mensajeError != ''" class="formulario-input;">
+            <div class="alert alert-danger">
+              <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+            </div>
+          </div>
+          <spinner-small #spinnerModal></spinner-small>
+
+          <div class="formulario-input">
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-2">
+              <button type="button" class="btn-custom btn-cerrar btn-mediano" data-dismiss="modal">Cerrar</button>
+            </div>
+            <div class="col-md-1">
+
+            </div>
+            <div class="col-md-3">
+              <button class="btn-custom btn-guardar btn-grande" id="InformeComercialDescargar"
+                (click)="generarInformeComercial()">Guardar y Descargar</button>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -43,6 +43,7 @@
     public ContratoCorredor: string;
     public ContratoVendedor: string;
     public CantidadCamiones: number;
+    public DiasPesificado: number;
 
     constructor() {
         this.TipoNegocioId = 2;

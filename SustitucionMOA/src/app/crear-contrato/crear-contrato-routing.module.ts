@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { CrearContratoAPrecioComponent } from './aprecio/crear-contrato.aprecio.component';
 import { CrearContratoAFijarComponent } from './afijar/crear-contrato.afijar.component';
 import { CrearContratoFijacionComponent } from './fijacion/crear-contrato.fijacion.component';
+import { CrearContratoAltaMasivaComponent } from './alta-masiva/crear-contrato.alta-masiva.component';
 import { CrearContratoCargarNegocioComponent } from './cargarnegocio/crear-contrato.cargarnegocio.component';
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
     { path: 'aprecio/:id', component: CrearContratoAPrecioComponent },
     { path: "afijar/:id", component: CrearContratoAFijarComponent },
     { path: "fijacion/:id", component: CrearContratoFijacionComponent },
+    { path: "alta-masiva", component: CrearContratoAltaMasivaComponent },
 
 ];
 

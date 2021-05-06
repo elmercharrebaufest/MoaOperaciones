@@ -58,10 +58,6 @@ namespace SustitucionMOAWS.WSConsumers
                 throw;
             }
         }
-
-        private void ObtenerTicketPesada (ConsultaTicketPesada consultaTicketPesada)
-        {
-        }
     }
 
 }

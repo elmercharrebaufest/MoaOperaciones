@@ -1,17 +1,8 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
 import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
-import { NavService } from '../../common/services/NavService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { SecurityService } from '../../common/services/SecurityService';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { ModalService } from '../../common/services/ModalService';
-import { Seccion } from '../../common/models/seccion';
-import { forEach } from '@angular/router/src/utils/collection';
-import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
+
 declare var $: any;
 
 @Component({
@@ -151,11 +142,16 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     selectEventLocalidad(item) {
+        console.log("selectEventLocalidad");
         this.contrato.LocalidadId = item.LocalidadId;
         this.contrato.ProvinciaId = item.ProvinciaId;
         if (item.ProvinciaId != 1) {
             this.contrato.EstablecimientoPropio = null;
         }
+        if (this.BolsaId != null && this.contrato.BoletoId == 1) {
+            this.contrato.BolsaId = this.BolsaId;
+        }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     onChangeSearchLocalidad(term: string) {
@@ -186,10 +182,46 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.BoletoId == 4) {
             this.bolsasSelect = this.bolsasCarta;
         }
+        this.SeleccionAutomaticaBolsa(this.contrato);
     }
 
     changePagoDiferido(event) {
         this.contrato.DolarizadoTercero = false;
+    }
+
+    changeDiasDiferido(event) {
+        setTimeout(() => {
+            this.costoFinanciero = null;
+
+            if (this.contrato.Precio > 0 && this.contrato.PagoDiferidoTercero == true) {
+                if ((this.contrato.DiasPesificado == null || this.contrato.DiasPesificado == undefined || this.contrato.DiasPesificado < 7)) {
+                    this.costoFinanciero = "La cantidad de días de Pago Diferido debe ser mayor o igual a 7.";
+                    return;
+                }
+                let tasa = 0;
+                this.pagosDiferidos.forEach(element => {
+                    if (this.contrato.DiasPesificado <= element.CantidadDia && tasa == 0) {
+                        tasa = element.Tasa;
+                    }
+                });
+                if (tasa == 0) {
+                    this.costoFinanciero = "La cantidad de días ingresados supera el maximo permitido.";
+                } else {
+                    let precio = Number(this.contrato.Precio.toString().replace(',', '.'));
+                    tasa = Number(tasa);
+                    let costo = Math.round(precio * (tasa / 100) * (this.contrato.DiasPesificado - 3) / 365 * 2) / 2;
+                    let d10 = costo / 10.00;
+                    costo = Math.round(d10 * 2) / 2;
+                    costo = costo * 10;
+
+                    let precioNeto = precio + costo;
+
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
+
+                }
+            }
+
+        }, 0);
     }
 
     changeDolarizado(event) {
@@ -254,7 +286,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Dolarizado: " + this.ObservacionDolarizadoTercero;
         }
         if (this.contrato.PagoDiferidoTercero == true) {
-            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.ObservacionPagoDiferidoTercero;
+            this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Pago Diferido: " + this.contrato.DiasPesificado + " días.";
         }
         if (this.contrato.CalidadTercero == true) {
             this.contrato.ObservacionTercero = this.contrato.ObservacionTercero + "| Calidad: " + this.ObservacionCalidadTercero;
@@ -347,10 +379,12 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación la fecha de Dolarizado.");
             return false;
         }
-        if ((this.ObservacionPagoDiferidoTercero == "" || this.ObservacionPagoDiferidoTercero == undefined) && this.contrato.PagoDiferidoTercero == true) {
-            this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de Pago Diferido.");
+        if (this.contrato.DiasPesificado < 7 && this.contrato.PagoDiferidoTercero == true) {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de Pago Diferido debe ser mayor o igual a 7.");
             return false;
         }
+
+
         if ((this.ObservacionCalidadTercero == "" || this.ObservacionCalidadTercero == undefined) && this.contrato.CalidadTercero == true) {
             this.mensajeComponent.setErrorMsg("Debe completar en la observación el detalle de la calidad.");
             return false;
@@ -394,6 +428,10 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         }
         if (this.contrato.Cantidad == null || this.contrato.Cantidad == undefined || this.contrato.Cantidad <= 0) {
             this.mensajeComponent.setErrorMsg("Debe completar la Cantidad.");
+            return false;
+        }
+        if (this.costoFinanciero == "La cantidad de días ingresados supera el maximo permitido.") {
+            this.mensajeComponent.setErrorMsg("La cantidad de días de diferimiento ingresados supera el maximo permitido.");
             return false;
         }
         return true;
@@ -499,4 +537,6 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     isSoja(): boolean {
         return this.contrato.MaterialId == 3;
     }
+
+
 }
