@@ -265,7 +265,7 @@ namespace SustitucionMOAUtils.Services
 
             string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
 
-            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.Proveedor.CUIT);
+            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
 
             string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
