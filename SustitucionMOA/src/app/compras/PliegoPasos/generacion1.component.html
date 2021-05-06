@@ -3,22 +3,22 @@
     <div class="col-md-12 col-xs-12 col-sm-12">
         <div class="inputCompras">
             <div class="row myRow margenNeg">
-                <div class="col-xs-12 col-sm-6 col-md-5">
+                <div class="col-xs-12 col-sm-5 col-md-5">
                     Nombre de obra *
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-6">
+                <div class="col-xs-12 col-sm-5 col-md-5">
                     Fecha de entrega de ofertas *
                 </div>
             </div>
             <div class="row myRow margenInput" style="padding-top: 2px;">
-                <div class="col-xs-12 col-sm-6 col-md-5">
+                <div class="col-xs-12 col-sm-5 col-md-5">
                     <div class="styled-select">
                         <input pInputText type="text" [(ngModel)]="model.nombreDeObra" class="fourRounded" placeholder="" aria-controls="tableModal">
                     </div>
                 </div>            
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="styled-select">
-                        <p-calendar class="btnCompras" [(ngModel)]="model.fechaEntrega" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                        <p-calendar [(ngModel)]="model.fechaEntrega" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-2 col-md-2 prime-hora">
@@ -33,7 +33,7 @@
                         <input type="search" [(ngModel)]="model.fiscalContrato" class="fourRounded" placeholder="" aria-controls="tableModal">
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-5 col-md-6">
+                <div class="col-xs-12 col-sm-5 col-md-5">
                     Tel&eacute;fono
                     <div class="styled-select ">
                         <input type="search" [(ngModel)]="model.telefono" class="fourRounded" placeholder="" aria-controls="tableModal">
