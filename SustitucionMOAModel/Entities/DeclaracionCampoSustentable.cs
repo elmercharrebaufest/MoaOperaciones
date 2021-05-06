@@ -16,8 +16,13 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("Cosecha_Id")]
         public virtual Cosecha Cosecha { get; set; }
-        
+
         [Key, Column(Order = 1)]
+        public string CUIT { get; set; }
+
+        public string RazonSocial { get; set;  }
+        
+        //[Key, Column(Order = 1)]
         public int Proveedor_Id { get; set; }
 
         [ForeignKey("Proveedor_Id")]
@@ -28,5 +33,11 @@ namespace SustitucionMOAModel.Entities
         public OpcionesDeclaracionCampoSustentable? OpcionDeclarada { get; set; }
 
         public double? HectareasDeclaradas { get; set; }
+
+
+        public int Archivo_Id { get; set; }
+
+        [ForeignKey("Archivo_Id")]
+        public virtual Archivo Archivo { get; set; }
     }
 }

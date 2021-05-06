@@ -56,6 +56,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   hectareasSoja: number;
   latitud: string;
   longitud: string;
+  CUIT: string;
   file: any;
 
   proveedorSelected: any;
@@ -101,6 +102,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
           this.proveedorId = result.Id;
+          this.CUIT = result.CUIT;
+          this.declaracionComformidad.CUITDeclaracion = result.CUIT;
+          this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
 
           if (this.proveedorId > 0 && this.cosechaId > 0) {
             this.declaracionComformidad.proveedorId = this.proveedorId;
@@ -152,8 +156,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     campoProveedor = {
       HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
+      CUIT: this.CUIT,
       Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha
     }
+
 
     this.mensajeComponent.setMsgsEmpty();
     this.spinnerComponent.showIt();
@@ -192,6 +198,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
     this.blockUI.stop();
     return false; //<-- Prevent Refresh
 
+  }
+
+  verificarCUITIngresado() {
+    this.declaracionComformidad.CUITDeclaracion = this.CUIT;
+    if (this.CUIT.length == 11 && this.cosechaId > 0) {
+      this.declaracionComformidad.verificarDeclaracion();
+    }
   }
 
   getCosechas() {

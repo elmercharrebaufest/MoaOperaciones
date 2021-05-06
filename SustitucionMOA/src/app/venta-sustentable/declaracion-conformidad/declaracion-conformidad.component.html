@@ -67,6 +67,14 @@
               Hectareas:<div class="styled-select" style="width: 100px;"> <input type="text" name="hectareasTotales"
                   [disabled]="totalidadCosecha == 1" [(ngModel)]="hectareasTotales" pattern="[0-9]+"></div>
             </div>
+
+
+            <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="razonSocial == ''">
+              Razon Social:
+              <div class="styled-select" style="width: 300px;">
+                <input type="text" name="razonSocialDeclaracion" [(ngModel)]="razonSocialDeclaracion">
+              </div>
+            </div>
           </div>
           <br>
           <div class="row">

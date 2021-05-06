@@ -35,6 +35,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   razonSocial: string = ""
   CUIT: string = "";
   fechaActual: string = ""
+  razonSocialDeclaracion: string = ""
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
   file: File
@@ -43,15 +44,16 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   @Input() nombreCosecha: string = "";
   @Input() cosechaId: number = 0;
 
-  @Output() resultadoDeclaracion = new EventEmitter<boolean>();
+  @Input() CUITDeclaracion: string = "";
 
+  @Output() resultadoDeclaracion = new EventEmitter<boolean>();
 
   ngOnInit() {
   }
 
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId).subscribe(
+    this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId, this.CUITDeclaracion).subscribe(
       result => {
         if (result.logout == true) {
           this.sessionDataService.logout();
@@ -77,43 +79,6 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     return false;
   }
 
-  firmarDeclaracion() {
-    if (this.totalidadCosecha == 1) {
-      this.hectareasTotales = 0;
-    }
-    else {
-      if (this.hectareasTotales <= 0) {
-        this.mensajeComponent.setInfoMsg("Debe completar las hectareas totales");
-        return false;
-      }
-    }
-    this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.firmarDeclaracion(this.proveedorId, this.hectareasTotales).subscribe(
-      result => {
-        if (result.logout == true) {
-          this.sessionDataService.logout();
-        } else if (result.error != undefined && result.error != "") {
-          this.mensajeComponent.setErrorMsg(result.error);
-        } else if (result.info != undefined) {
-          this.mensajeComponent.setInfoMsg(result.info);
-        } else {
-          this.mensajeComponent.setSuccessMsg(result);
-
-          setTimeout(() => {
-            this.cerrarModal();
-            this.resultadoDeclaracion.emit(true)
-          }, 3000);
-        }
-      },
-      error => {
-        this.mensajeComponent.setErrorMsg(error.message);
-      }
-    );
-
-    return false;
-  }
-
-
   cargarArchivo(event: any) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -125,7 +90,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     this.blockUI.start('Generando declaración');
     try {
       this.subscription = this.service
-        .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales)
+        .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales, this.CUITDeclaracion, this.razonSocialDeclaracion)
         .subscribe(
           (result) => {
             if (result.error) {
@@ -152,23 +117,18 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
                   window.URL.revokeObjectURL(url);
 
                 }, 0);
-
+                this.blockUI.stop();
                 return false;
               }
             }
           },
           () => {
+            this.blockUI.stop();
           }
         );
     }
     catch (e) {
       this.floatMsgService.setErrorMsg(e);
-    }
-    finally {
-      setTimeout(function () {
-        this.blockUI.stop();
-      }, 500);
-
     }
   }
 
@@ -194,7 +154,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
 
     this.mensajeComponent.setMsgsEmpty();
-    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.file).subscribe(
+    this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.CUITDeclaracion, this.file).subscribe(
       result => {
         if (result.logout == true) {
           this.sessionDataService.logout();

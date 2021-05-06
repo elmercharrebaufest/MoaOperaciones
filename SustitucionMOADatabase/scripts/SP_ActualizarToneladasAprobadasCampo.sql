@@ -1,10 +1,11 @@
---IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[ActualizarToneladasAprobadasCampo]') AND type in (N'P', N'PC'))
---DROP PROCEDURE ActualizarToneladasAprobadasCampo
---GO
-
-CREATE PROCEDURE ActualizarToneladasAprobadasCampo @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500)
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[ActualizarToneladasAprobadasCampo] @IdCampo INT, @IdTSA INT, @Cuit NVARCHAR(15), @ToneladasAprobadas FLOAT, @MotivoRechazo NVARCHAR(500)
 AS
 BEGIN
+SET NOCOUNT ON
 BEGIN TRY
 	BEGIN TRAN
 	DECLARE @CampoCosechaId INT
@@ -20,7 +21,7 @@ BEGIN TRY
 		INNER JOIN dbo.CampoProveedor cp ON p.Id = cp.Proveedor_Id
 		INNER JOIN dbo.CampoCosecha cc ON cp.CampoCosecha_Id = cc.Id
 		INNER JOIN dbo.Cosecha c ON cc.Cosecha_Id = c.Id
-		WHERE p.CUIT = @Cuit AND GETDATE() BETWEEN c.Inicio AND c.Fin AND cc.CampoSustentable_Id = @CampoSustentableId
+		WHERE CP.CUIT = @Cuit AND GETDATE() BETWEEN c.Inicio AND c.Fin AND cc.CampoSustentable_Id = @CampoSustentableId
 	END
 	ELSE
 	BEGIN
@@ -34,7 +35,7 @@ BEGIN TRY
 
 			IF @CampoCosechaId IS NOT NULL
 			BEGIN
-				IF NOT EXISTS(SELECT 1 FROM dbo.CampoProveedor cp INNER JOIN dbo.Proveedor p ON cp.Proveedor_Id = p.Id  WHERE cp.CampoCosecha_Id = @CampoCosechaId AND p.CUIT = @Cuit)
+				IF NOT EXISTS(SELECT 1 FROM dbo.CampoProveedor cp INNER JOIN dbo.Proveedor p ON cp.Proveedor_Id = p.Id  WHERE cp.CampoCosecha_Id = @CampoCosechaId AND CP.CUIT = @Cuit)
 				BEGIN
 					UPDATE cp
 					SET CampoCosecha_Id = @CampoCosechaId
@@ -42,7 +43,7 @@ BEGIN TRY
 					INNER JOIN dbo.CampoCosecha cc ON CC.Id = cp.CampoCosecha_Id
 					INNER JOIN dbo.Cosecha c on c.Id = cc.Cosecha_Id
 					INNER JOIN dbo.Proveedor p ON p.Id = cp.Proveedor_Id
-					WHERE p.CUIT = @Cuit AND GETDATE() BETWEEN c.Inicio AND c.Fin AND cc.CampoSustentable_Id = @IdCampo
+					WHERE CP.CUIT = @Cuit AND GETDATE() BETWEEN c.Inicio AND c.Fin AND cc.CampoSustentable_Id = @IdCampo
 				END
 			END
 			--No existe todavía relacion entre el campo que debemos asignar y la cosecha. Lo creamos ahora
@@ -104,7 +105,7 @@ BEGIN TRY
                 (
                     [IdCampo] 
                     ,[IdTSA]
-                    ,[IdCampoSutentable] 
+                    ,[IdCampoSustentable] 
                     ,[ToneladasActuales]
                     ,[ToneladasInformadas] 
                     ,[StockDisponible]
@@ -154,6 +155,7 @@ BEGIN TRY
 END TRY
 BEGIN CATCH
 	ROLLBACK TRAN
+	RETURN -99
 END CATCH
 
 END
