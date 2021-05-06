@@ -125,6 +125,14 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   onChangeCosecha() {
 
+    if (this.CUIT.length != 11) {
+      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+      setTimeout(() => {
+        this.cosechaId = 0;
+      }, 100);
+      return false
+    }
+
     if (this.proveedorId > 0 && this.cosechaId > 0) {
       this.declaracionComformidad.proveedorId = this.proveedorId;
       this.declaracionComformidad.cosechaId = this.cosechaId;
@@ -168,6 +176,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
       this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
         result => {
           this.spinnerComponent.hideIt();
+          this.blockUI.stop();
+
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
@@ -175,7 +185,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
           } else if (result.info != undefined) {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
-            this.blockUI.stop();
 
             this.mensajeComponent.setSuccessMsg(result.Mensaje);
             setTimeout(() => {
@@ -253,6 +262,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
     if (!this.localidadId || this.localidadId <= 0) {
       this.mensajeComponent.setErrorMsg("Falta seleccionar la localidad.");
       return true;
+    }
+
+    if (this.CUIT.length != 11) {
+      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+      return false
     }
 
     if (!this.cosechaId || this.cosechaId <= 0) {
