@@ -12,16 +12,12 @@
                     <div class="col-xs-12 col-sm-6 col-md-6">
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="visitaDeObra" placeholder="" 
-                            [checked]="model.visitaDeObra" (change)="model.visitaDeObra = !model.visitaDeObra">
-                            <label class="labelCompras" for="visitaDeObra">Visita de obra</label>
+                            <p-checkbox [(ngModel)]="model.visitaDeObra" label="Visita de obra" binary="true"></p-checkbox>
                         </div>
 
                        
                         <div class="col-xs-12 col-sm-6 col-md-6 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="visitaDeObraMasiva" placeholder="" 
-                            [checked]="model.visitaDeObraMasiva" (change)="model.visitaDeObraMasiva = !model.visitaDeObraMasiva">
-                            <label class="labelCompras" for="visitaDeObraMasiva">Visita de obra masiva *</label>    
+                            <p-checkbox [(ngModel)]="model.visitaDeObraMasiva" label="Visita de obra masiva" binary="true"></p-checkbox>
                         </div>
                      
                         <div *ngFor="let visita of listaVisitas">
@@ -78,21 +74,15 @@
 
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="obradores" placeholder="" 
-                            [checked]="model.obradores" (change)="model.obradores = !model.obradores">
-                            <label class="labelCompras" for="obradores">Obradores</label>
+                            <p-checkbox [(ngModel)]="model.obradores" label="Obradores" binary="true"></p-checkbox>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="modoElevacion" placeholder="" 
-                            [checked]="model.modoElevacion" (change)="model.modoElevacion = !model.modoElevacion">
-                            <label class="labelCompras" for="modoElevacion">Modo de elevacion o andamios</label>
+                            <p-checkbox [(ngModel)]="model.modoElevacion" label="Modo de elevacion o andamios" binary="true"></p-checkbox>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="tecnicoSeguridad" placeholder="" 
-                            [checked]="model.tecnicoSeguridad" (change)="model.tecnicoSeguridad = !model.tecnicoSeguridad">
-                            <label class="labelCompras" for="tecnicoSeguridad">Tecnico de seguridad</label>
+                            <p-checkbox [(ngModel)]="model.tecnicoSeguridad" label="Técnico de seguridad" binary="true"></p-checkbox>
                         </div> 
 
                     </div>
@@ -101,15 +91,11 @@
 
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="descripcionTecnica" placeholder="" 
-                            [checked]="model.descripcionTecnica" (change)="model.descripcionTecnica = !model.descripcionTecnica">
-                            <label class="labelCompras" for="descripcionTecnica">Descripcion tecnica del trabajo</label>
+                            <p-checkbox [(ngModel)]="model.descripcionTecnica" label="Descripción tecnica del trabajo" binary="true"></p-checkbox>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            <input type="checkbox" style="margin-right: 5px;" id="entregaDocumentacion" placeholder="" 
-                            [checked]="model.entregaDocumentacion" (change)="model.entregaDocumentacion = !model.entregaDocumentacion">
-                            <label class="labelCompras" for="entregaDocumentacion">Entrega de documentacion tecnica</label>
+                            <p-checkbox [(ngModel)]="model.entregaDocumentacion" label="Entrega de documentación técnica" binary="true"></p-checkbox>
                         </div>
 
 

@@ -14,6 +14,7 @@ import { DialogModule } from 'primeng/dialog';
 import { EditorModule } from 'primeng/editor';
 import { PliegoPreviewComponent } from './preview/pliego.preview.component';
 import { SidebarModule } from 'primeng/sidebar';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { SidebarModule } from 'primeng/sidebar';
         CalendarModule,
         DialogModule,
         EditorModule,
-        SidebarModule
+        SidebarModule,
+        CheckboxModule
     ],
     declarations: [
         SolpComponent,
