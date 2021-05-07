@@ -110,6 +110,7 @@
     text-align: center;
     vertical-align: -webkit-baseline-middle;
     margin-left: -15px;
+    cursor: pointer;
   }
  
   ::ng-deep .ui-button{
@@ -117,6 +118,10 @@
     border-color: #5B5B5B !important;
   }
 
+  .widthCompras {
+    width: 75%;
+  }
   ::ng-deep .ui-sidebar-bottom {
     height: 4em !important;
+  }
   }

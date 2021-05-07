@@ -1,15 +1,15 @@
-<div class="container">
+<div class="container clearfix">
     <!-- CONTENT-->
     <!-- Contiene todo -->
-    <section class="col-xs-12 col-sm-12 col-md-12">
+    <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <mensaje></mensaje>
         <div class="inputCompras">
-            <div class="row myRow margenNeg">
+            <div class="row myRow">
 
 
                 <div class="row myRow" style="padding-top: 2px;">
                     
-                    <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <p-checkbox [(ngModel)]="model.visitaDeObra" label="Visita de obra" binary="true"></p-checkbox>
@@ -23,7 +23,7 @@
                         <div *ngFor="let visita of listaVisitas">
                             <div class="col-xs-12 col-sm-12 col-md-7 margenInput">
                                 <div class="styled-select" *ngIf="model.visitaDeObraMasiva">
-                                    <p-calendar [(ngModel)]="visita.visitaDeObraFecha"  [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>    
+                                    <p-calendar [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha"  [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>    
                                 </div>
                             </div>
                             
@@ -33,13 +33,13 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-1">
-                                <span (click)="eliminarVisita(visita.id)" *ngIf="model.visitaDeObraMasiva"><i class="fa fa-trash"></i></span>
+                                <span (click)="eliminarVisita(visita.id)" *ngIf="model.visitaDeObraMasiva"><img src="./Content/images/icons/trash.png" alt="imageAlt" /></span>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" *ngIf="model.visitaDeObraMasiva">
                             <div>
-                                <span (click)="agregarNuevaVisita()" class="enlaceVisita" ><i class="fa fa-plus">&nbsp; Agregar nueva visita de obra</i></span>
+                                <span (click)="agregarNuevaVisita()" class="enlaceVisita" ><i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
                             </div>
                         </div>
 
@@ -47,19 +47,19 @@
                         
 
 
-                    <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             Supervisor sector *
-                            <div class="styled-select">
-                                <input type="text" class="" placeholder="" [(ngModel)]="model.supervisorSector" maxlength="100">
+                            <div class="styled-select widthCompras">
+                                <input type="text" class="" placeholder="Ingrese supervisor de sector" [(ngModel)]="model.supervisorSector" maxlength="100">
                             </div>
                         </div>
                 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             Supervisor de trabajo *
-                            <div class="styled-select">
-                                <input type="text" class="" placeholder="" [(ngModel)]="model.supervisorTrabajo" maxlength="100">
+                            <div class="styled-select widthCompras">
+                                <input type="text" class="" placeholder="Ingrese supervisor de trabajo" [(ngModel)]="model.supervisorTrabajo" maxlength="100">
                             </div>
                         </div>
                     
@@ -70,7 +70,7 @@
 
                 <div class="row myRow margenInput" style="padding-top: 2px;">
 
-                    <div  class="col-xs-12 col-sm-6 col-md-6">
+                    <div  class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
 
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
@@ -87,7 +87,7 @@
 
                     </div>
 
-                    <div  class="col-xs-12 col-sm-6 col-md-6">
+                    <div  class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
 
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
@@ -105,7 +105,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-7 margenInput">
                             <div class="styled-select">
-                                <p-calendar [(ngModel)]="model.fechaLimiteFecha" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                                <p-calendar [style]="{'width': '75%'}" [(ngModel)]="model.fechaLimiteFecha" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
                             </div>
                         </div>
 
