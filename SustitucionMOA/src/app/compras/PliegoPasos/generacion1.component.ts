@@ -52,6 +52,7 @@ export class Generacion1Component extends ListBaseComponent {
         if(!this.model.mail)
             this.model.mail = sessionStorage.getItem("username");
         this.model.horaEntrega = new Date(1,1,1,10,0,0,0);
+        this.model.fechaEntrega = new Date(2021,1,1);
     }
 
 
