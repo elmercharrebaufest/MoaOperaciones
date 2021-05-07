@@ -13,6 +13,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { DialogModule } from 'primeng/dialog';
 import { EditorModule } from 'primeng/editor';
 import { PliegoPreviewComponent } from './preview/pliego.preview.component';
+import { SidebarModule } from 'primeng/sidebar';
 
 @NgModule({
     imports: [
@@ -23,7 +24,8 @@ import { PliegoPreviewComponent } from './preview/pliego.preview.component';
         InputTextModule,
         CalendarModule,
         DialogModule,
-        EditorModule
+        EditorModule,
+        SidebarModule
     ],
     declarations: [
         SolpComponent,

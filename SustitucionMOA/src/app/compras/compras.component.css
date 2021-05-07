@@ -116,3 +116,7 @@
     background-color:#5B5B5B !important;
     border-color: #5B5B5B !important;
   }
+
+  ::ng-deep .ui-sidebar-bottom {
+    height: 4em !important;
+  }
