@@ -385,7 +385,6 @@ namespace SustitucionMOATest.Services
             var result = target.ObtenerArchivosSubidos(mailUsuario, proveedorId, false);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Archivo>()), Times.Never);
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
             Assert.AreEqual(expected, result);
         }

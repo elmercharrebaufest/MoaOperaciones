@@ -59,6 +59,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var camposAReportar in camposAReportarPorCosecha)
             {
+
                 var excelFile = ExcelExport.ToExcel(camposAReportar, new string[] { "ID", "Codigo Operaciones", "Titular CCPP", "CUIT", "Nombre del Establecimiento", "Provincia", "Departamento", "Localidad", "Latitud", "Longitud", "Has de soja declaradas" }, string.Empty);
 
                 Attachment archivoZip;
@@ -110,13 +111,14 @@ namespace SustitucionMOAUtils.Services
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
-                    archivoZip,
-                    archivoExcel
+                    archivoExcel,
+                    archivoZip
                 }
                 });
 
                 sw.Dispose();
                 outputMemStream.Dispose();
+
             }
         }
 
