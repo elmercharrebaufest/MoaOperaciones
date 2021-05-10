@@ -26,6 +26,7 @@ export class Solp {
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
+    public observaciones: string;
 
 }
 
