@@ -3569,21 +3569,25 @@ div.panel-body a.active{
   width:98px
 }
 
-.btn-remove {
+.btn-remove, .btn-rojo {
   background: #DD441E;
 }
 
-.btn-add {
+.btn-add, .btn-azul {
   background: #075088;
   margin: 0;
 }
 
-.btn-cerrar {
+.btn-cerrar, .btn-gris {
   background: #959595;
 }
 
-.btn-guardar {
+.btn-guardar, .btn-verde {
   background: #009688;
+}
+
+.btn-radius {
+  border-radius: 4px;
 }
 
 .titleExtraData{
