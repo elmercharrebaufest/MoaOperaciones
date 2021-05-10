@@ -21,6 +21,10 @@ export class Generacion1Component extends ListBaseComponent {
     @Input('model') 
     protected model:Solp;
 
+    @Input('locale') 
+    protected locale:any;
+
+
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }

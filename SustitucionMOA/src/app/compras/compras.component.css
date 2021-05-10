@@ -125,3 +125,9 @@
     height: 4em !important;
   }
 
+  .pointer {
+    cursor: pointer;
+    vertical-align: center;
+    text-align: center;
+  }
+

@@ -16,7 +16,7 @@ export class Solp {
     public visitaDeObra: boolean;
     public supervisorSector: string;
     public visitaDeObraFecha: Date;
-    public visitaDeObraHora: Time;
+    public visitaDeObraHora: Date;
     public supervisorTrabajo: string;
     public obradores: boolean;
     public descripcionTecnica: boolean;
@@ -24,7 +24,7 @@ export class Solp {
     public entregaDocumentacion: boolean;
     public tecnicoSeguridad: boolean;
     public fechaLimiteFecha: Date;
-    public fechaLimiteHora: Time;
+    public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
 
 }

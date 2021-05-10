@@ -54,6 +54,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     mostrarPreview:boolean = false;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
+    es: any;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -125,6 +126,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[0].Iniciado = true;
 
             this.pasoActual = this.pasos[0];
+
+            this.es = {
+                firstDayOfWeek: 0,
+                dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+                dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+                dayNamesMin: ["Do","Lu","Ma","Mi","Ju","Vi","Sa"],
+                monthNames: [ "Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" ],
+                monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun","Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+                today: 'Today',
+                clear: 'Clear'
+            };
         }
     }
 
@@ -218,4 +230,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
     listaStringCompleta(lista: string[]){
         return lista.filter(x=> !x || x.length == 0).length == 0;
     }
+
+    
+
+    
+       
 }
+

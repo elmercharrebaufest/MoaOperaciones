@@ -22,10 +22,10 @@
                 <!-- contenido -->
                 <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
                     <div *ngSwitchCase="'PliegoGeneracion1'" [@fadeInOut] >
-                        <generacion1 [(model)]="solpActual"></generacion1>
+                        <generacion1 [(model)]="solpActual" [(locale)]="es"></generacion1>
                     </div>
                     <div  *ngSwitchCase="'PliegoGeneracion2'" [@fadeInOut] >
-                        <generacion2 [(model)]="solpActual"></generacion2>
+                        <generacion2 [(model)]="solpActual" [(locale)]="es"></generacion2>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut] >
                         Paso en construccion

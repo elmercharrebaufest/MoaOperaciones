@@ -24,6 +24,9 @@ export class Generacion2Component extends ListBaseComponent {
     @Input('model') 
     protected model:Solp;
 
+    @Input('locale') 
+    protected locale:any;
+
 
   
 
@@ -35,9 +38,10 @@ export class Generacion2Component extends ListBaseComponent {
     solpPaso2Result: any;
     fechaEntrega: any;
     horaEntrega: any;
-    
-
-    
+    visitaDeObraHora: any;
+    visitaDeObraFecha: any;
+    fechaLimiteHora: any;
+    fechaLimiteFecha: any;
 
    
     parsearFecha () {
@@ -85,6 +89,9 @@ export class Generacion2Component extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
+        this.model.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
+        this.model.fechaLimiteFecha = new Date(2021,1,1);
+        
     }
 
 }
