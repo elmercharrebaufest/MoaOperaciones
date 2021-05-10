@@ -34,25 +34,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                //{
-                //    List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                //                     x =>
-                //                     (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                //                        || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                //                        || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                //                        || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                //                        || x.EstadoAprobacion == EstadoAprobacion.Aprobado
-                //                        || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                //                        || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
-                //                        || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
-                //                        || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
-                //                        || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
-                //                        || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                //                        || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
-                //                    && x.HistorialAprobaciones.Count > 0
-                //                    && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
-                //                    );
-
                 List<ProveedorAltaDto> proveedorDtos = 
                     repositorio
                         .Listar<Proveedor>(
