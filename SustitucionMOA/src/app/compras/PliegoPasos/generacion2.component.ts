@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -43,12 +43,16 @@ export class Generacion2Component extends ListBaseComponent {
     fechaLimiteHora: any;
     fechaLimiteFecha: any;
 
-   
-    parsearFecha () {
+
+    //variables auxiliares de text rich
+    posicionDeInicioInsert: number = 0;
+
+
+    parsearFecha() {
         this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-    if(this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null){
-        var dateParts = this.fechaEntrega.split("-");
-        this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
+        if (this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null) {
+            var dateParts = this.fechaEntrega.split("-");
+            this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
         }
         console.log(this.model.fechaDeEntregaDeOfertasFecha, "No funciona");
 
@@ -61,13 +65,13 @@ export class Generacion2Component extends ListBaseComponent {
             visitaDeObraHora: ""
         }
     ];
-    
+
     agregarNuevaVisita() {
-        this.listaVisitas.push( 
+        this.listaVisitas.push(
             {
-            id: uuid.v4(),
-            visitaDeObraFecha: "",
-            visitaDeObraHora: ""
+                id: uuid.v4(),
+                visitaDeObraFecha: "",
+                visitaDeObraHora: ""
             }
         )
 
@@ -76,10 +80,10 @@ export class Generacion2Component extends ListBaseComponent {
     eliminarVisita(id) {
         this.listaVisitas = this.listaVisitas.filter(x => x.id != id);
 
-        if(this.listaVisitas.length == 0 ){
+        if (this.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
-        
+
     }
 
 
@@ -92,6 +96,49 @@ export class Generacion2Component extends ListBaseComponent {
         this.model.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
         this.model.fechaLimiteFecha = new Date(2021,1,1);
         
+    }
+
+    selectionChange(event) {
+
+        if (event.range && this.model.observaciones) {
+            this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observaciones);
+        }
+    }
+
+    fileChange(file) {
+        if (this.posicionDeInicioInsert != undefined) {
+            var textoInicial = this.model.observaciones.substring(0, this.posicionDeInicioInsert + 1);
+            var textoFinal = this.model.observaciones.substring(this.posicionDeInicioInsert + 1, this.model.observaciones.length);
+            this.model.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
+            this.posicionDeInicioInsert = undefined;
+        }
+        else {
+
+            this.model.observaciones = this.model.observaciones + '<img src=' + file + '>';
+        }
+    }
+
+    ObtenerPosicionInsert(posicion: number, texto: string) {
+        let contar = false;
+        for (var i = 0; i < texto.length; i++) {
+            var letra = texto[i];
+            if (letra == "<") {
+                contar = false;
+                continue
+            }
+            else if (letra == ">") {
+                contar = true;
+                continue;
+            }
+
+            if (contar) {
+                posicion--;
+
+            }
+
+            if (posicion == 0)
+                return i;
+        }
     }
 
 }

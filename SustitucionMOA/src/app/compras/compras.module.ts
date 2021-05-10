@@ -15,6 +15,7 @@ import { EditorModule } from 'primeng/editor';
 import { PliegoPreviewComponent } from './preview/pliego.preview.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import { CheckboxModule } from 'primeng/checkbox';
         DashboardComponent,
         Generacion1Component,
         Generacion2Component,
-        PliegoPreviewComponent
+        PliegoPreviewComponent,
+        DragAndDropDirective
     ],
     providers: [
         SolpService
