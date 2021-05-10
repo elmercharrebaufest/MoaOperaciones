@@ -69,7 +69,7 @@
 
                 <div class="row myRow margenInput" style="padding-top: 2px;">
 
-                    <div  class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
+                    <div  class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
@@ -86,7 +86,7 @@
 
                     </div>
 
-                    <div  class="col-xs-12 col-sm-6 col-md-6 col-lg-5">
+                    <div  class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
 
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
@@ -97,21 +97,21 @@
                             <p-checkbox [(ngModel)]="model.entregaDocumentacion" label="Entrega de documentación técnica" binary="true"></p-checkbox>
                         </div>
 
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputRight margenInput">
+                            <div class="col-xs-12 col-sm-12 col-md-12 ">
+                                Fecha limite de consulta
+                            </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                            Fecha limite de consulta
-                        </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8">
+                                <div class="styled-select">
+                                    <p-calendar [style]="{'width': '75%'}" [(ngModel)]="model.fechaLimiteFecha" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                                </div>
+                            </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-7 margenInput">
-                            <div class="styled-select">
-                                <p-calendar [style]="{'width': '75%'}" [(ngModel)]="model.fechaLimiteFecha" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                            <div class="col-xs-12 col-sm-12 col-md-4 prime-hora">
+                                <p-calendar class="styled-select" [(ngModel)]="model.fechaLimiteHora" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>    
                             </div>
                         </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-4 prime-hora margenInput">
-                            <p-calendar class="styled-select" [(ngModel)]="model.fechaLimiteHora" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>    
-                        </div>
-
                     </div>
 
                 </div>
