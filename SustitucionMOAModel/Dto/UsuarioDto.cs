@@ -22,6 +22,8 @@ namespace SustitucionMOAModel.Dto
         public string Tipo { get; set; }
         public List<string> Permisos { get; set; }
 
+        public UsuarioDto() { }
+
         public UsuarioDto(Usuario usuario)
         {
             Id = usuario.Id;

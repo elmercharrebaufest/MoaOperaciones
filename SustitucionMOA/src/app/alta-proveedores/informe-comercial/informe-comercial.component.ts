@@ -68,7 +68,7 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
 
   iniciarForm() {
     if (this.proveedorId > 0) {
-      document.getElementById("openModalHiddenButtonCartaPresentacion").click();
+      document.getElementById("openModalHiddenButton").click();
       this.obtenerCampanias();
     }
     else {

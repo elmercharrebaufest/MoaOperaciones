@@ -3,7 +3,8 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>N° de Consulta: {{this.consulta.Id}} | Asunto: {{this.consulta.Asunto}}</strong> </div>
+            <div class="col-xs-12 col-sm-10 "><strong>Asunto: {{this.consulta.Asunto}}</strong><br></div>
+            <div class="col-xs-12 col-sm-10 subtitulo">N° de Consulta: {{this.consulta.Id}} | Usuario: {{this.consulta.Usuario.Mail}} | Cuit: {{this.consulta.Usuario.CUIT}}</div>
         </div>
     </section>
     <mensaje></mensaje>
@@ -34,10 +35,19 @@
                             </a>
                         </ng-container>
                     </div>
-                    <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
-                    class="col-xs-12 col-sm-12 col-md-12">
-                        {{comentario.Fecha | date:'hh:mm'}}
-                    </p>
+
+                    <div *ngIf="(comentarioPropio(comentario) && esCorredor) || esInterno; else elseBlock">
+                        <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                        class="col-xs-12 col-sm-12 col-md-12">
+                            {{comentario.Fecha | date:'hh:mm'}} | {{comentario.Usuario.Mail}}
+                        </p>
+                    </div>
+                    <ng-template #elseBlock>
+                        <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                        class="col-xs-12 col-sm-12 col-md-12">
+                            {{comentario.Fecha | date:'hh:mm'}}
+                        </p>
+                    </ng-template>
                 </div>
             </div>
 
@@ -63,6 +73,15 @@
                 (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
+
+                <!--
+                <button *ngIf="esInterno"
+                (click)="recordarComentario" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
+                    <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Recordar mensaje</div>
+                </button>
+                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add" (click)="goToSeccion('/consulta/mis-consultas');">
+                    regresar
+                </button> -->
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6">
                 <p *ngIf="this.file != null">{{this.file.name}}</p>
@@ -79,9 +98,48 @@
         
         <!--MENU LATERAL-->
         <div *ngIf="esInterno" class="rounded shadow col-xs-12 col-sm-6 menuLateralConsulta">
-            <div>
-                Creado el {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
-                <hr>
+
+            <div class="col-xs-12 col-md-12 center pillVerdeMenu">
+                <ul class="nav nav-pills center" role="tablist">
+                    <li role="presentation" class="active"><a href="#Administracion" aria-controls="Administracion"
+                        role="tab" data-toggle="tab" (click)="this.MostrarDatosAdicionales = false">Administraci&oacute;n</a></li>
+
+                    <li role="presentation"><a href="#Datos" aria-controls="Datos" role="tab"
+                            data-toggle="tab" (click)="this.MostrarDatosAdicionales = true">Datos</a></li>
+                </ul>
+            </div>
+
+            <br>
+            <br>
+
+            <hr style="margin-top: 10px; margin-bottom: 10px;">
+
+            <div *ngIf="this.MostrarDatosAdicionales">
+                <div *ngFor="let dato of datosExtra" class="col-md-12">
+                    <ng-container *ngIf="dato.Value != null && this.Value != '' ">
+                        <strong>{{dato.Nombre}}:</strong> {{dato.Value}}<br>
+                    </ng-container>
+                </div>
+
+                <div class="col-md-12">
+                    <ng-container *ngIf="this.consulta.Fecha != null">
+                        <div *ngIf="this.consulta.Categoria.Code == 'REI' && this.consulta.SubCategoria.Code == 'RET'">
+                            <strong>Fecha Pago:</strong> {{this.consulta.Fecha | date:'dd/MM/yyyy'}}<br>
+                        </div>
+                        <div *ngIf="this.consulta.Categoria.Code == 'REI' &&  this.consulta.SubCategoria.Code == 'PER'">
+                            <strong>Fecha Factura:</strong> {{this.consulta.Fecha | date:'dd/MM/yyyy'}}<br>
+                        </div>
+                        <div *ngIf="this.consulta.Categoria.Code == 'BOL' &&  this.consulta.SubCategoria.Code == 'OPC'">
+                            <strong>Fecha emision de la oblea:</strong> {{this.consulta.Fecha | date:'dd/MM/yyyy'}}<br>
+                        </div>
+                    </ng-container>
+                    <strong>Fecha Creacion:</strong> {{this.consulta.FechaCreacion | date:'dd/MM/yyyy'}}
+                </div>
+            </div>
+
+            
+            
+            <div *ngIf="!this.MostrarDatosAdicionales" style="padding: 10px;">
                 <div>
                     <p class="bold" style="margin: 7px;">Estado</p>
                     <p-dropdown [options]="estadosList" [(ngModel)]="this.estadoId" 
