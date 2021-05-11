@@ -25,6 +25,7 @@ namespace SustitucionMOAUtils.Services
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
+        private static readonly string EMAIL_TEMPLATE_RECORDATORIO = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RecordatorioComentario.html");
 
         public ConsultaService(IRepositorio repositorio)
         {
@@ -250,6 +251,27 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
 
             return ret;
+        }
+
+        public string RecordarComentario(int consultaId)
+        {
+            var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
+
+            try
+            {
+                var copia = new List<string>();
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_RECORDATORIO);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Usuario.Mail, consulta.Id, consulta.Asunto);
+                string asunto = "Molinos Agro - Respuesta sin leer en: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+
+            return "Enviado Correctamente";
         }
 
         private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)

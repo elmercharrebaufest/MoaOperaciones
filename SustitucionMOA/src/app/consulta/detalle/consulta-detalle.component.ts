@@ -312,6 +312,27 @@ export class DetalleConsultaComponent extends BaseComponent {
         return false;
     }
 
+    recordarComentario(){
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.recordarComentario(this.consultaId).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{      
+                        this.mensajeComponent.setSuccessMsg(result);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );   
+    }
+
     descargarArchivo(archivoId: number) {
         this.service.DescargarArchivo(archivoId)
         .subscribe(

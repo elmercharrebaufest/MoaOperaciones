@@ -20,5 +20,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos);
         string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId);
         string ObtenerRutaArchivo(int archivoId);
+        string RecordarComentario(int consultaId);
     }
 }
