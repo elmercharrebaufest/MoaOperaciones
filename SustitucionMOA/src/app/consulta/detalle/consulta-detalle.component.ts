@@ -71,6 +71,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     subcategoriaId: any;
     estadoId: number;
     categoriaId: number;
+    MostrarDatosAdicionales: boolean = false;
 
     listaArchivos: Array<File> = new Array<File>();
 
@@ -86,6 +87,7 @@ export class DetalleConsultaComponent extends BaseComponent {
     detalle: string = "";
     esInterno = this.isAuthorized('CONSULTA ABM');
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    datosExtra = [];
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
@@ -111,6 +113,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                 this.cambiarEstadoPorCode("GES");
             }
         }, 500);
+        this.setDatosExtra()
     }
 
     scrollBottom(){
@@ -221,6 +224,56 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
+    }
+
+    setDatosExtra(){
+        this.datosExtra = 
+        [
+            {Nombre: "Razon Social Corredor", Value: this.consulta.RazonSocialCorredor},
+            {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor},
+            {Nombre: "Razon Social Proveedor", Value: this.consulta.RazonSocialProveedor},
+            {Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor},
+            {Nombre: "Categoria", Value: this.consulta.Categoria.Nombre},
+            {Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre},
+            {Nombre: "N° de Contrato", Value: this.consulta.ContratoNo},
+            {Nombre: "Importe", Value: this.consulta.Importe},
+            {Nombre: "Impuesto", Value: this.consulta.Impuesto},
+            {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo},
+            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo}
+        ]
+    }
+
+    getNombreComprobanteExtra(){
+        if(this.consulta.Categoria.Code == 'REI' && this.consulta.SubCategoria.Code == 'PER') return "Cliente"
+
+        if(this.consulta.Categoria.Code == 'APP') return "Material"
+
+        if(this.consulta.Categoria.Code == 'MATBA' && this.consulta.SubCategoria.Code == 'CAL') return "Carátula"
+
+        if((this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'PDF') ||
+        (this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'CCP')) 
+        return "N° Proforma"
+
+        return "Otro Comprobante"
+    }
+
+    getNombreComprobante(){
+        if(this.consulta.SubCategoria.Code == 'RET') return "N° Salida de pago"
+        
+        if(this.consulta.SubCategoria.Code == 'PER' || this.consulta.Categoria.Code == 'COM' 
+        || (this.consulta.Categoria.Code == 'PROVG' && this.consulta.SubCategoria.Code == 'VENC') 
+        || (this.consulta.Categoria.Code == 'PROVG' && this.consulta.SubCategoria.Code == 'POTR')
+        ) return "N° de factura"
+
+        if(this.consulta.SubCategoria.Code == 'NROR' || this.consulta.Categoria.Code == 'FINCOR' 
+        || this.consulta.Categoria.Code == 'FINDIR') return "N° COE"
+
+        if(this.consulta.Categoria.code == 'CAL' || this.consulta.Categoria.Code == 'APP' 
+        || (this.consulta.Categoria.Code == 'MATBA' && this.consulta.SubCategoria.Code == 'CAL') ||
+        (this.consulta.Categoria.Code == 'FLET' && this.consulta.SubCategoria.Code == 'CCP')) 
+        return "CCPP"
+
+        return "Comprobante"
     }
 
     cambiarEstadoPorCode(code: string){
@@ -355,6 +408,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                             x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
                         });
                         this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
+                        this.consulta.Fecha = new Date (this.getDateFromAspNetFormat(this.consulta.Fecha));
                         this.estadoId = result.EstadoConsultaId;
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;

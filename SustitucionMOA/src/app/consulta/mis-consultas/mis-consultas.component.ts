@@ -126,13 +126,13 @@ export class MisConsultasComponent extends ListBaseComponent {
             { field: 'Id',                      header: 'Id',           filterType: 'text',     visibleExternal: true,  width: 6,  size: 4 },
             { field: 'RazonSocialCorredor',     header: 'Corredor',     filterType: 'text',     visibleExternal: false, width: 10, size: 4 },
             { field: 'RazonSocialProveedor',    header: 'Proveedor',    filterType: 'text',     visibleExternal: false, width: 10, size: 3 },
-            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 10, size: 1 },
-            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2 },
+            { field: 'Categoria',               header: 'Categoria',    filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'Categoria.Nombre'},
+            { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre'},
             { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 16, size: 0 },
-            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1 },
+            { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
             { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 2, selectionMode : 'single' },
             { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 12, size: 3, selectionMode : 'single' },
-            { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 }
+            { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 },
         ];
 
         let isExternal = this.isExternal;
@@ -233,6 +233,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         this.isExternal = result.isExternal;
                         this.setColumnas();
+
                     }
                 },
                 error => {
@@ -276,10 +277,13 @@ export class MisConsultasComponent extends ListBaseComponent {
                         this.categorias.forEach(c => {
                             let categoria = result.data.categorias.filter(x=> x.Id == c.Id)[0];
                             c.Cantidad = categoria.Cantidad;
+
                         });
 
-                        let estadosCode = ['INI', 'GES'];
+                        let estadosCode = ['INI', 'GES', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e=> estadosCode.indexOf(e.Code) >= 0);
+
+
                     }
                 },
                 error => {

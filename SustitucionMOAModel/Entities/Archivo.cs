@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,13 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Archivos")]
         public virtual ICollection<Comentario> Comentarios { get; set; }
 
+        public string ObtenerNombre(string ruta)
+        {
+            if (Path.GetFileName(ruta) != null)
+                return Path.GetFileName(ruta);
+
+            return "";
+        }
 
         public override int GetHashCode()
         {

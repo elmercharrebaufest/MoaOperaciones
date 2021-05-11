@@ -4210,3 +4210,14 @@ input[type=number]::-webkit-inner-spin-button {
   cursor: pointer;
   transition: all 0.25s linear;
 }
+.center {
+  justify-items: center;
+  display: flex;
+  justify-content: center;
+}
+.pillVerdeMenu>.nav-pills>li.active>a, .pillVerdeMenu>.nav-pills>li.active>a:focus, .pillVerdeMenu>.nav-pills>li.active>a:hover {
+  background-color: #009688;
+}
+.subtitulo{
+  font-size: 25px;
+}

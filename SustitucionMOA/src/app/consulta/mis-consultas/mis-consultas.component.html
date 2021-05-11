@@ -36,8 +36,10 @@
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
                                     <th style="width: 3rem"></th>
-                                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" class="col"  >
-                                        <span class="consulta-table-header">{{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon></span> 
+
+                                    <th *ngFor="let col of columns" [pSortableColumn]="col.filterType != 'custom'? col.field : col.sortdropdown" class="col"  >
+                                        <span class="consulta-table-header">{{col.header}} 
+                                            <p-sortIcon [field]="col.filterType != 'custom'? col.field : col.sortdropdown"></p-sortIcon></span> 
                                     </th>
                                     <th style="width: 4rem"></th>
                                 </tr>

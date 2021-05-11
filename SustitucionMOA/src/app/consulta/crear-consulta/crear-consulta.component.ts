@@ -113,9 +113,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     cliente: any;
 
     fechaFactura: string;
-
-
     prueba: any;
+
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
     }
@@ -173,28 +172,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $formInput.val(null);
     }
 
-    vaciarCamposAdicionales() {
-        this.contrato = '';
-        this.razonSocial = '';
-        this.cuit = '';
-        this.nombreVendedor = '';
-        this.comprobante = '';
-        this.fechaPago = '';
-        this.importe = '';
-        this.impuesto = '';
-    }
-
-    vaciarCampos() {
-        this.vaciarCamposAdicionales();
-        this.proveedor = "";
-        this.nombre = "";
-        this.email = "";
-        this.telefono = "";
-        this.categoriaDropdownComponent.setSelectItem("");
-        this.comentario = "";
-        this.fileInput.nativeElement.value = "";
-    }
-
     getCombos() {
         this.unsubscribe();
         try {
@@ -210,7 +187,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
-                        this.proveedorId = result.proveedorID
+                        this.proveedorId = result.proveedorId
                     }
                 },
                 error => {
@@ -324,7 +301,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
-            if (this.files == null || this.files.length < 2) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 2) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
@@ -338,19 +315,19 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo Impuesto esta vacio.");
                 return true;
             }
-            if (this.files == null || this.files.length < 1) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar constancia");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF') {
-            if (this.files == null || this.files.length < 1) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar Informe Comercial");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP') {
-            if (this.files == null || this.files.length < 1) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar Carta presentacón");
                 return true;
             }

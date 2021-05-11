@@ -4,7 +4,9 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -22,6 +24,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
+        private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
 
         public ConsultaService(IRepositorio repositorio)
         {
@@ -50,6 +53,8 @@ namespace SustitucionMOAUtils.Services
             {
                 EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
                 ActualizarEstadoConsulta(consultaId, estado.Id);
+                var copia = new List<String>();
+                EnviarMailRespuesta(consulta, copia, comentario.Detalle);
             }
             if (!esInterno && consulta.EstadoConsulta.Code == "DOC")
             {
@@ -166,10 +171,101 @@ namespace SustitucionMOAUtils.Services
 
             var c = repositorio.Obtener<Consulta>(includes, y=> y.Id == consultaId);
 
-            var ret = new ConsultaDto(c);
-            ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto(x)).ToList();
+            var ret = new ConsultaDto()
+            {
+                Id = c.Id,
+                Asunto = c.Asunto,
+                CodigoCorredor = c.CodigoCorredor,
+                RazonSocialCorredor = c.RazonSocialCorredor,
+                CodigoProveedor = c.CodigoProveedor,
+                RazonSocialProveedor = c.RazonSocialProveedor,
+                CategoriaId = c.Categoria_Id,
+                Categoria = new CategoriaDto
+                {
+                    Id = c.Categoria.Id,
+                    Code = c.Categoria.Code,
+                    Nombre = c.Categoria.Nombre
+                },
+                SubCategoriaId = c.SubCategoria_Id != null ? c.SubCategoria_Id : 0,
+                SubCategoria = c.SubCategoria != null ? new SubCategoriaDto
+                {
+                    Id = c.SubCategoria.Id,
+                    Code = c.SubCategoria.Code,
+                    Nombre = c.SubCategoria.Nombre,
+                    CategoriaId = c.SubCategoria.Categoria_Id
+                } : new SubCategoriaDto { Nombre = "" },
+                EstadoConsultaId = c.EstadoConsulta_Id,
+                EstadoConsulta = new EstadoConsultaDto
+                {
+                    Id = c.EstadoConsulta.Id,
+                    Descripcion = c.EstadoConsulta.Descripcion,
+                    Color = c.EstadoConsulta.Color,
+                    Code = c.EstadoConsulta.Code
+                },
+                FechaCreacion = c.FechaCreacion,
+                FechaUltimaModificacion = c.FechaUltimaModificacion,
+                UsuarioId = c.Usuario_Id,
+                Usuario = new UsuarioDto()
+                {
+                    Id = c.Usuario.Id,
+                    CodigoProveedor = c.Usuario.ObtenerCodigoProveedor(),
+                    CUIT = c.Usuario.CUITRegistro,
+                    Mail = c.Usuario.Mail
+                },
+                Fecha = c.Detalle != null ? c.Detalle.Fecha : null,
+                ComprobanteNo = c.Detalle != null ? c.Detalle.ComprobanteNo : "",
+                OtroComprobanteNo = c.Detalle != null ? c.Detalle.OtroComprobanteNo : "",
+                ContratoNo = c.Detalle != null ? c.Detalle.ContratoNo : "",
+                Importe = c.Detalle != null ? c.Detalle.Importe : null,
+                Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
+                BolsaEmisoraOblea = c.Detalle != null ? c.Detalle.BolsaEmisoraOblea : "",
+                CausaConsultaId = c.Detalle.CausaConsulta != null ? c.Detalle.CausaConsulta_Id : null,
+                CausaConsulta = c.Detalle.CausaConsulta != null ? new CausaConsultaDto
+                {
+                    Id = c.Detalle.CausaConsulta.Id,
+                    Nombre = c.Detalle.CausaConsulta.Nombre
+                } : null
+            };
+
+            ret.Comentarios = c.Comentarios.Select(x => new ComentarioDto()
+            {
+                Id = x.Id,
+                Detalle = x.Detalle,
+                Fecha = x.Fecha,
+                UsuarioId = x.Usuario_Id,
+                Usuario = new UsuarioDto()
+                {
+                    Id = x.Usuario.Id,
+                    CodigoProveedor = x.Usuario.ObtenerCodigoProveedor(),
+                    CUIT = x.Usuario.CUITRegistro,
+                    Mail = x.Usuario.Mail
+                },
+                Archivos = x.Archivos.Select(a => new ArchivoDto()
+                { 
+                    Id = a.Id,
+                    Ruta = a.Ruta,
+                    FileKey = a.FileKey,
+                    Nombre = a.ObtenerNombre(a.Ruta),
+                }).ToList() 
+            }).ToList();
 
             return ret;
+        }
+
+        private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
+                string asunto = "Molinos Agro - Respuesta a su consulta" + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
         }
 
         public string ObtenerRutaArchivo(int archivoId)

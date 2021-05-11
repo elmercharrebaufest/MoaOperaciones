@@ -854,6 +854,7 @@
     <Content Include="Template\EstadoAlta.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\RespuestaConsulta.html" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="Views\Shared\Error.cshtml" />
