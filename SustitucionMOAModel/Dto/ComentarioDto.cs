@@ -26,7 +26,8 @@ namespace SustitucionMOAModel.Dto
             UsuarioId = comentario.Usuario_Id;
             if (comentario.Archivos != null) {
                 Archivos = comentario.Archivos.Select(a => new ArchivoDto(a)).ToList();
-            }
+            };
+            Usuario = new UsuarioDto(comentario.Usuario);
         }
     }
 }

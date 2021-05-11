@@ -4224,3 +4224,10 @@ input[type=number]::-webkit-inner-spin-button {
     display: flex;
     justify-content: center;
 }
+.pillVerdeMenu > .nav-pills > li.active > a, .pillVerdeMenu > .nav-pills > li.active > a:focus, .pillVerdeMenu > .nav-pills > li.active > a:hover {
+    background-color: #009688;
+}
+
+.subtitulo {
+    font-size: 25px;
+}

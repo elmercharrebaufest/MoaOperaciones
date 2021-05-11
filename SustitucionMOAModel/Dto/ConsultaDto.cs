@@ -39,6 +39,7 @@ namespace SustitucionMOAModel.Dto
         public SubCategoriaDto SubCategoria { get; set; }
         public EstadoConsultaDto EstadoConsulta { get; set; }
         public CausaConsultaDto CausaConsulta { get; set; }
+        public UsuarioDto Usuario { get; set; }
         public IList<ComentarioDto> Comentarios { get; set; }
 
         public int? DiasReclamo { 
@@ -77,7 +78,7 @@ namespace SustitucionMOAModel.Dto
             this.FechaCreacion = consulta.FechaCreacion;
             this.FechaUltimaModificacion = consulta.FechaUltimaModificacion;
             this.UsuarioId = consulta.Usuario_Id;
-
+            this.Usuario = new UsuarioDto(consulta.Usuario);
             if (consulta.Detalle != null) {
                 this.Fecha = consulta.Detalle.Fecha;
                 this.ComprobanteNo = consulta.Detalle.ComprobanteNo;
