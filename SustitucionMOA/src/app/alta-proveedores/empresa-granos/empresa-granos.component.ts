@@ -54,6 +54,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     archivoSeleccionado: Archivo = null;
 
     listaArchivos: Array<Archivo> = [];
+    granosFlag = sessionStorage.getItem("granosFlag");
 
     informe = new InformeComercial();
 
