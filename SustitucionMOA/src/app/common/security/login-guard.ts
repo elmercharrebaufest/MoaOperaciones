@@ -34,10 +34,8 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         await this.http.get('/api/Home/VerificarEstadoSesion', { headers: headers }).subscribe(
             res => {
                 let result = res.json()
-                console.log("Estado sesión:", result)
                 if (!result.tieneSesion) {
                     this.sessionDataService.logout();
-                    //this.router.navigate(['login']);
                     window.location.href = window.location.origin + '/SignOut';
                     return false;
                 }
@@ -48,7 +46,6 @@ export class LoginGuard implements CanActivate, CanActivateChild {
 
         let loggedIn: boolean = (sessionStorage.getItem("proveedor") != undefined && sessionStorage.getItem("proveedor") != "");
 
-        console.log("Desde checkIfNeedLogIn")
         this.getEstado();
 
         if (!loggedIn) {
@@ -62,7 +59,6 @@ export class LoginGuard implements CanActivate, CanActivateChild {
     private checkIfLoggedIn(): boolean {
 
         let loggedIn: boolean = (sessionStorage.getItem("proveedor") != undefined && sessionStorage.getItem("proveedor") != "");
-        console.log("Desde checkIfLoggedIn")
         this.getEstado();
 
         if (loggedIn) {
