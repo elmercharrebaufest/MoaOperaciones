@@ -79,6 +79,7 @@ namespace SustitucionMOAUtils.Email
             SmtpClient client = GetSmtpClient();
             var template = File.ReadAllText(reporte.Template);
             var cuerpo = string.Format(template, reporte.GetFecha(), reporte.GetBody());
+
             MailMessage mail = new MailMessage
             {
                 From = new MailAddress(EmailConfig.getEmailAddFrom()),
@@ -108,8 +109,8 @@ namespace SustitucionMOAUtils.Email
             {
                 mail.To.Add(reporte.Destinatario);
             }
-
             client.Send(mail);
+
         }
 
         private static SmtpClient GetSmtpClient()
@@ -119,6 +120,7 @@ namespace SustitucionMOAUtils.Email
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
+               // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
                 Host = EmailConfig.getEmailHost()
             };
             return client;

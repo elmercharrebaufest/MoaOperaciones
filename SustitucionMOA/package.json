@@ -50,6 +50,7 @@
     "node-xlsx": "^0.11.2",
     "primeicons": "^1.0.0-beta.9",
     "primeng": "^6.1.7",
+    "quill": "^1.3.7",
     "reflect-metadata": "^0.1.8",
     "rxjs": "6.6.0",
     "rxjs-compat": "^6.6.0",

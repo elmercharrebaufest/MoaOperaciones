@@ -16,6 +16,7 @@ import { PliegoPreviewComponent } from './preview/pliego.preview.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CotizacionComponent } from './PliegoPasos/cotizacion.component';
+import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { CotizacionComponent } from './PliegoPasos/cotizacion.component';
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
-        CotizacionComponent
+        CotizacionComponent,
+        DragAndDropDirective
     ],
     providers: [
         SolpService
