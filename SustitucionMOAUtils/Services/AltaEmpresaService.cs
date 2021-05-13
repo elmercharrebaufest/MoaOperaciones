@@ -23,6 +23,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IDataAgroService dataAgroService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -187,7 +188,23 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string SetEstadoAprobacion(int proveedorId,
+        public void EnviarMailAuditoria(Proveedor proveedor)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
+                var asunto = "Asunto a definir";
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial);
+
+                EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception e)
+            {
+            }
+
+        }
+
+            public string SetEstadoAprobacion(int proveedorId,
                                           EstadoAprobacion estado,
                                           string observacion,
                                           string usuarioMail,
