@@ -169,6 +169,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     selected: false
                 }
             ];
+
+            this.solpActual.fechaEntrega = new Date();
+            this.solpActual.fechaLimiteFecha = new Date();
+            this.solpActual.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
         }
     }
 

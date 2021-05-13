@@ -59,9 +59,6 @@ export class CotizacionComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-        this.model.comienzoJornadaLaboral = new Date(1,1,1,10,0,0,0);
-        this.model.terminoJornadaLaboral = new Date(1,1,1,10,0,0,0);
-
     }
 
 }

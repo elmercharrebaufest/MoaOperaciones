@@ -130,6 +130,7 @@
     text-align: center !important;
     border-radius: 3em !important;
     width: 12% !important;
+    margin-right: 2px !important;
   }
 
   ::ng-deep .weekDayBtn .ui-togglebutton.ui-state-default {
@@ -161,6 +162,9 @@
     font-family: "Roboto Condensed", Arial, sans-serif;
   }
 
+  .weekDayBtn {
+    margin-right: 2px !important;
+  }
 
 
   
