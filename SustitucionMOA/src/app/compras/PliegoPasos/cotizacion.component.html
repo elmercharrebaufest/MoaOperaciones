@@ -1,0 +1,56 @@
+<div class="container-fluid">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="inputCompras">
+
+
+            <div class="row myRow">
+
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        Ejecucion en
+                    </div>    
+                        
+                    <div class="styled-select1 col-xs-6 col-sm-12 col-md-3 col-lg-3" style="right: 6em;">
+                        <input pInputText type="text" [(ngModel)]="model.ejecucion" class="fourRounded" aria-controls="tableModal" placeholder="30">
+                        dias corridos
+                    </div>   
+
+                </div>  
+
+
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                        Observaciones
+                        <textarea [(ngModel)]="model.observaciones" name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros"></textarea>
+                    </div>
+                </div>    
+
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        Jornada laboral
+                    </div> 
+
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 " style="right: 4em;">
+                        <weekday-select [(model)]="model.jornadaLaboralDias" ></weekday-select>
+                    </div>
+                   
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="right: 6em;">
+                            Desde
+                            <p-calendar name="hora1" [style]="{'width': '45%'}" class="styled-select" [(ngModel)]="model.comienzoJornadaLaboral" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>    
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="right: 7em;">
+                            Hasta
+                            <p-calendar name="hora2" [style]="{'width': '45%'}" class="styled-select" [(ngModel)]="model.terminoJornadaLaboral" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>    
+                        </div>
+                    </div>
+                    
+                </div>    
+
+            </div>
+    
+        </div>
+    </div>
+</div>

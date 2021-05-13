@@ -1,4 +1,5 @@
-import { Time } from "@angular/common";
+import { Time, WeekDay } from "@angular/common";
+import { WeekDayItem } from "../common/models/weekDayItem";
 
 export class Solp {
     //paso 1
@@ -26,6 +27,14 @@ export class Solp {
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
+
+    // paso 4
+    public ejecucion: number;
+    public jornadaLaboralDias: WeekDayItem[];
+    public comienzoJornadaLaboral: Date;
+    public terminoJornadaLaboral: Date;
+    public observaciones: string;
+    
 
 }
 

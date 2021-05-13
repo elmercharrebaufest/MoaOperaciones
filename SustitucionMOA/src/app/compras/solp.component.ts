@@ -1,4 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { WeekDay } from '@angular/common';
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
@@ -137,6 +138,37 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 today: 'Today',
                 clear: 'Clear'
             };
+
+            this.solpActual.jornadaLaboralDias = [
+                {
+                    weekDay: WeekDay.Monday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Tuesday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Wednesday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Thursday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Friday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Saturday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Sunday,
+                    selected: false
+                }
+            ];
         }
     }
 
