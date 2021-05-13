@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -188,15 +189,32 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public void EnviarMailAuditoria(Proveedor proveedor)
+        public void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor)
         {
             try
             {
+                
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
-                var asunto = "Asunto a definir";
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial);
+                string asunto = "";
 
-                EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, null, null, null, null);
+
+                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: ambos";
+                }
+                if(proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
+                {
+                    asunto = "Asunto a definir: funcionarios";
+                }
+                if(proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: empleados";
+                }
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial);
+                var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
+
+                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
             }
             catch (Exception e)
             {

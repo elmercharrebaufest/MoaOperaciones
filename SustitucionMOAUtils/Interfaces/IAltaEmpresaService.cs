@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,8 @@ namespace SustitucionMOAUtils.Interfaces
         string DeshabilitarUsuario(string usuarioMail, int proveedorID, string observacion, string observarcionProveedor);
 
         string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion);
+
+        void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor);
 
         string GuardarSIPER(int proveedorId, string estadoSIPER);
 
