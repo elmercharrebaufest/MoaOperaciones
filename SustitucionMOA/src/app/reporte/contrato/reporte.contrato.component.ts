@@ -3,6 +3,7 @@ import { ReporteBaseComponent } from './../reporte.component';
 import { ReporteService, ReporteContratoService } from './../reporte.service';
 import { registerLocaleData } from '@angular/common';
 import { Seccion } from './../../common/models/seccion';
+import { interval, Subscription } from 'rxjs';
 
 import es from '@angular/common/locales/es';
 declare var $: any;
@@ -40,6 +41,10 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
     proveedorid: any = null;
     motivoAnulacion: string = "";
     negocioParAanular: any;
+
+    actualizarAutomaticamente: boolean = true;
+
+
     setTabs() {
         this.setMenuSeccionTab("reporte", "Contratos");
     }
@@ -178,6 +183,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
         });
 
         this.getDatosCombos();
+        const source = interval(30000);
+        this.subscription = source.subscribe(val => this.refrescar());
     }
 
     obteneContratos() {
@@ -220,7 +227,8 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                                 TipoNegocioId: x.TipoNegocioId,
                                 Id: x.Id,
                                 ObservacionTercero: x.ObservacionTercero,
-                                Acuerdo: x.Acuerdo
+                                Acuerdo: x.Acuerdo,
+                                Contrato: x.ContratoSAP
                             };
                             return item;
                         });
@@ -476,6 +484,22 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
         }
         if (negocio.TipoNegocioId == 3) {
             this.navService.navegarSeccion("/crear-contrato/fijacion/" + negocio.Id);
+        }
+    }
+
+    onCheckboxChange(e) {
+
+        if (e.target.checked) {
+            this.actualizarAutomaticamente = true;
+        } else {
+            this.actualizarAutomaticamente = false;
+        }
+    }
+
+    refrescar() {
+        console.log("refrescar");
+        if (this.actualizarAutomaticamente == true) {
+            this.obteneContratos();
         }
     }
 
