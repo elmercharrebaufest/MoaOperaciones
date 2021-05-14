@@ -216,6 +216,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 ]);
                 break;
             case 'PliegoEspecificacion':
+                paso.Completo = this.listaStringCompleta([
+                    this.solpActual.especificacionesViewModel.observaciones
+                ]);
                 break;
             case 'PliegoCotizacion':
                 break;

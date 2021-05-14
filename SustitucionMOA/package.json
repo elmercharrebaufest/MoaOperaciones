@@ -46,6 +46,7 @@
     "ngx-mask": "^6.5.18",
     "ngx-modal": "0.0.29",
     "ngx-pagination": "^3.0.3",
+    "ngx-quill": "^7.3.9",
     "ngx-smart-modal": "^7.4.1",
     "node-xlsx": "^0.11.2",
     "primeicons": "^1.0.0-beta.9",
