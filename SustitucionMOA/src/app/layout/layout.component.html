@@ -623,9 +623,9 @@
                 <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i
                         class="glyphicon glyphicon-remove"></i></button>
                 <br>
-                {{this.textoTooltip}}
+                <label [innerHTML]="textoTooltip"></label>
                 <br>
-                {{this.textoTooltip2}}
+                <label [innerHTML]="textoTooltip2"></label>
             </span>
         </div>
     </div>
