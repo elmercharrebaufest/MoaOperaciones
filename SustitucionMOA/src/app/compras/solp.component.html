@@ -27,6 +27,9 @@
                     <div  *ngSwitchCase="'PliegoGeneracion2'" [@fadeInOut] >
                         <generacion2 [(model)]="solpActual" [(locale)]="es"></generacion2>
                     </div>
+                    <div  *ngSwitchCase="'PliegoEspecificacion'" [@fadeInOut] >
+                        <especificaciones [(model)]="solpActual" [(locale)]="es"></especificaciones>
+                    </div>
                     <div *ngSwitchDefault [@fadeInOut] >
                         Paso en construccion
                     </div>

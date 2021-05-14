@@ -117,59 +117,55 @@
                 </div>
 
                 <div class="row myRow">
-                    <div class="col-xs-12 col-md-12 col-ms-12">
-                        
-                    </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                        
                         <label class="labelCompras" for="editorTexto"> Observaciones:</label>
 
-                        <p-editor #editorTexto id="editorTexto" appDragAndDrop (onFileDropped)="fileChange($event)" 
-                        (onSelectionChange)="selectionChange($event)" 
-                        [(ngModel)]="model.observaciones" [style]="{'height':'320px', 'width':'100%'}">
-                            <p-header>
-                                <span class="ql-formats">
-                                    <select class="ql-size">
-                                        <option value="Pequeño"></option>
-                                        <option selected></option>
-                                        <option value="Mediano"></option>
-                                        <option value="Grande"></option>
-                                    </select>
-                                </span>
+                        <quill-editor appDragAndDrop id="observaciones" [(ngModel)]="model.observaciones"  [styles]="{'height':'160px'}"
+                        (onFileDropped)="fileChange($event)" (onSelectionChanged)="selectionChange($event)" placeholder="">
 
-                                <span class="ql-formats">
-                                    <button class="ql-bold" aria-label="Bold"></button>
-                                    <button class="ql-italic" aria-label="Italic"></button>
-                                    <button class="ql-underline" aria-label="Underline"></button>
-                                </span>
+                           <div quill-editor-toolbar>
+                               <span class="ql-formats">
+                                   <select class="ql-size">
+                                       <option value="small"></option>
+                                       <option selected></option>
+                                       <option value="large"></option>
+                                       <option value="huge"></option>
+                                   </select>
+                               </span>
 
-                                <span class="ql-formats">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                    <button class="ql-indent" value="-1"></button>
-                                    <button class="ql-indent" value="+1"></button>
-                                </span>
+                               <span class="ql-formats">
+                                   <button class="ql-bold" aria-label="bold"></button>
+                                   <button class="ql-italic" aria-label="italic"></button>
+                                   <button class="ql-underline" aria-label="underline"></button>
+                                   <button class="ql-strike" aria-label="strike"></button>
+                               </span>
+
+                               <span class="ql-formats">
+                                   <button class="ql-list" value="ordered"></button>
+                                   <button class="ql-list" value="bullet"></button>
+                                   <button class="ql-indent" value="-1"></button>
+                                   <button class="ql-indent" value="+1"></button>
+                               </span>
 
 
-                                <span class="ql-formats">
-                                    <select class="ql-align">
-                                        <option selected></option>
-                                        <option value="center"></option>
-                                        <option value="right"></option>
-                                        <option value="justify"></option>
-                                    </select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button aria-label="Borra estilos" class="ql-clean" type="button"></button>
-                                    <button aria-label="Adjuntar imagen" class="ql-image" type="button"></button>
-                                </span>
-                            </p-header>
-                        </p-editor>
+                               <span class="ql-formats">
+                                   <select class="ql-align">
+                                       <option selected></option>
+                                       <option value="center"></option>
+                                       <option value="right"></option>
+                                       <option value="justify"></option>
+                                   </select>
+                               </span>
+                               <span class="ql-formats">
+                                   <button aria-label="Borra estilos" class="ql-clean" type="button"></button>
+                                   <button aria-label="Adjuntar imagen" class="ql-image" type="button"></button>
+                               </span>
+                           </div>
+
+                       </quill-editor>
                     </div>
-
                 </div>
-
-
             </div>
         </div>
         <!-- END form-->
