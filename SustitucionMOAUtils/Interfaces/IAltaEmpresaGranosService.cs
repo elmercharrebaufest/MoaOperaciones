@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using System.Collections.Generic;
@@ -11,16 +12,16 @@ namespace SustitucionMOAUtils.Interfaces
     {
         byte[] GenerarInformeComercial(ParamInformeComercial informeComercial, string mailUsuario, int proveedorId);
         byte[] GenerarCartaDePresentacion(RptCartaDePresentacionInfo cartadePresentacion, string mailUsuario, int proveedorId);
+        Localidad GetLocalidad(int localidadId);
         string GuardarArchivo(HttpPostedFileBase fileSubido, string fileKey, string mailUsuario, int proveedorId);
         Task<string> ObtenerMaterialesDataAgro();
-        List<ArchivoDto> ObtenerArchivosSubidos(string mail, int proveedorId, bool esOperador);
-        string EnviarSolicitudUsuario(string mail, int proveedorId, bool esGuardarYNotificar, AltaEmpresaViewModel altaEmpresa);
-        string ObtenerArchivo(string mail, int archivoID, int proveedorId);
-        string ObtenerArchivos(string mail, int proveedorId, string pathBase);
-        string EliminarArchivo(string mail, int archivoID, int proveedorId);
+        List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId, bool esOperador);
+        string EnviarSolicitudUsuario(string mailUsuario, int proveedorId, bool esGuardarYNotificar, AltaEmpresaViewModel altaEmpresa);
+        string ObtenerArchivo(string mailUsuario, int archivoID, int proveedorId);
+        string ObtenerArchivos(string mailUsuario, int proveedorId, string pathBase);
+        string EliminarArchivo(string mailUsuario, int archivoID, int proveedorId);
         InfoProveedorDataAgroDto ObtenerInfoProveedor(string mailUsuario, int proveedorId);
-        AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId);
+        AltaEmpresaViewModel CargarSolicitudUsuario(string mailUsuario, int proveedorId);
         Task<string> ObtenerCampañasDataAgroAsync();
-
     }
 }

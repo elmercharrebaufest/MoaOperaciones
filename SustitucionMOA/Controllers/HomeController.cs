@@ -56,7 +56,7 @@ namespace SustitucionMOA.Controllers
             {
                 try
                 {
-                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl, ExpiresUtc = DateTime.Now.AddMinutes(1) });
 
                 }
                 //Ignoramos esta excepción porque la da cuando carga recursos
@@ -115,6 +115,43 @@ namespace SustitucionMOA.Controllers
             return null;
         }
 
+        public ActionResult VerificarEstadoSesion()
+        {
+            try
+            {
+                if (!Request.IsAuthenticated)
+                {
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = redirectUrl });
+
+                    return null;
+                    //return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { tieneSesion = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult ValidarLoginAzure()
         {
             try
@@ -133,13 +170,14 @@ namespace SustitucionMOA.Controllers
                 string seccionesVisitadas = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsSeccionesVisitadas).Value;
 
                 bool esNuevoUsuario = bool.Parse(esNuevoUsuarioStr);
-
+                bool aceptoTyC = false;
                 List<string> permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList();
 
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
                 Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
+                aceptoTyC = usuario.AceptoTyC;
 
                 seccionesVisitadas = usuario.SeccionesVisitadas;
 
@@ -212,23 +250,30 @@ namespace SustitucionMOA.Controllers
                 }
                 else
                 {
-                    if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
+                    if ((string.IsNullOrEmpty(proveedor) || proveedor == "-") && usuario.Roles.Any(r => r.Codigo == "COMERCIAL"))
                     {
-                        redirectURL = "/aduana/pesada-online";
-                    }
-                    else if (tipoUsuario == "CLIE")
-                    {
-                        redirectURL = "/cuenta-corriente/simple";
+                        redirectURL = "/usuario/cambio-vendedor";
                     }
                     else
                     {
-                        if (granosFlag == "A" || granosFlag == "G")
+                        if (tipoUsuario == "ADMP" || tipoUsuario == "ADNA" || tipoUsuario == "RYDD")
                         {
-                            redirectURL = "/home";
+                            redirectURL = "/aduana/pesada-online";
+                        }
+                        else if (tipoUsuario == "CLIE")
+                        {
+                            redirectURL = "/cuenta-corriente/simple";
                         }
                         else
                         {
-                            redirectURL = "/home-ngs";
+                            if (granosFlag == "A" || granosFlag == "G")
+                            {
+                                redirectURL = "/home";
+                            }
+                            else
+                            {
+                                redirectURL = "/home-ngs";
+                            }
                         }
                     }
                 }
@@ -246,6 +291,7 @@ namespace SustitucionMOA.Controllers
                     esNuevoUsuario,
                     redirectURL,
                     seccionesVisitadas,
+                    aceptoTyC,
                 }, JsonRequestBehavior.AllowGet);
 
             }
@@ -308,6 +354,28 @@ namespace SustitucionMOA.Controllers
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult AceptarTyC()
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Mail == SessionPersister.User.username);
+                usuario.AceptoTyC = true;
+                usuario.AceptoTyCFecha = DateTime.Now;
+                repositorio.GuardarCambios();
+                return JsonCustom(new { data = true });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }

@@ -76,5 +76,7 @@ namespace SustitucionMOAModel.Entities
 
         public bool? SiperObligatorio { get; set; }
 
+        //public virtual ICollection<DeclaracionCampoSustentable> DeclaracionesCamposSustentables { get; set; }
+
     }
 }

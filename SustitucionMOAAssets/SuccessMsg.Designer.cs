@@ -142,6 +142,33 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to El campo sustentable se ha actualizado correctamente..
+        /// </summary>
+        public static string CampoSustentableActualizado {
+            get {
+                return ResourceManager.GetString("CampoSustentableActualizado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El campo sustentable se ha guardado correctamente..
+        /// </summary>
+        public static string CampoSustentableAgregado {
+            get {
+                return ResourceManager.GetString("CampoSustentableAgregado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to El campo sustentable se ha borrado correctamente..
+        /// </summary>
+        public static string CampoSustentableBorrado {
+            get {
+                return ResourceManager.GetString("CampoSustentableBorrado", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to El commodity ({0}) se ha actualizado correctamente.
         /// </summary>
         public static string CommodityActualizacionOK {
@@ -174,6 +201,15 @@ namespace SustitucionMOAAssets {
         public static string DatosPesadasGuardadosOK {
             get {
                 return ResourceManager.GetString("DatosPesadasGuardadosOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to La declaración del campo sustentable ha sido firmada correctamente..
+        /// </summary>
+        public static string DeclaracionCampoSustentableFirmada {
+            get {
+                return ResourceManager.GetString("DeclaracionCampoSustentableFirmada", resourceCulture);
             }
         }
         

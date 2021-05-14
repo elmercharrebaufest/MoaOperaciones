@@ -9,5 +9,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IReportesService
     {
         void EnviarReporteLiquidacionesInformadas();
+        void EnviarReporteCamposSustentablesTSA();
+        void EnviarReporteConflictosCamposSustentables();
     }
 }

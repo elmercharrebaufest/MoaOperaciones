@@ -11,7 +11,7 @@ import { SecurityService } from './../common/services/SecurityService';
 import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 
 
 

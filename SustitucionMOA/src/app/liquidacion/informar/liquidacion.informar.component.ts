@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavService } from '../../common/services/NavService';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { SecurityService } from '../../common/services/SecurityService';
-import { Seccion } from '../../common/models/Seccion';
+import { Seccion } from '../../common/models/seccion';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { ModalService } from '../../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';

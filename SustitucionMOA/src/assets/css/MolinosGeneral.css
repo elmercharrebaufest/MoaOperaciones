@@ -122,7 +122,7 @@ a:hover {
   .col-sm-15 {
     width: 20%;
     float: left;
-  }
+  }  
 }
 @media (min-width: 992px) {
   .col-md-15 {
@@ -2654,7 +2654,7 @@ fa-file-word-o {
 .documentos p {
   font-size: 16px;
   margin-bottom: 0px;
-  color: #959595;
+  color: #707070;
   font-weight: normal;
 }
 .documentos title-caps {
@@ -2717,7 +2717,7 @@ fa-file-word-o {
   margin-bottom: 5px;
 }
 .documento .doc-description{
-  color: #959595;
+  color: #707070;
   font-weight: normal;
   margin: 10px 0px 5px 0px;
 }
@@ -3418,12 +3418,12 @@ i.unselected{
   cursor: pointer;
 }
 
-a.link-header[aria-expanded=true] span{
+a.link-header[aria-expanded=true] span, div.link-header[aria-expanded=true] span{
   transform: rotate(180deg);
   transition: all 0.25s ease-out;
 }
 
-a.link-header[aria-expanded=false] span{
+a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] span{
   transition: all 0.25s ease-out;
 }
 
@@ -3435,13 +3435,18 @@ a.link-header[aria-expanded=false] span{
   color: #067935;
 }
 
+/* TODO: Cambiar por una sola clase */
 #misReportes,
 #misOperaciones,
 #infoFinanciera,
 #operar,
 #documentacion,
 #contacto,
-#usuarios {
+#ventaSustentable,
+#usuarios,
+#mis-consultas,
+#compras,
+#faq {
     height: 35px;
 }
 
@@ -3564,21 +3569,25 @@ div.panel-body a.active{
   width:98px
 }
 
-.btn-remove {
+.btn-remove, .btn-rojo {
   background: #DD441E;
 }
 
-.btn-add {
+.btn-add, .btn-azul {
   background: #075088;
   margin: 0;
 }
 
-.btn-cerrar {
+.btn-cerrar, .btn-gris {
   background: #959595;
 }
 
-.btn-guardar {
+.btn-guardar, .btn-verde {
   background: #009688;
+}
+
+.btn-radius {
+  border-radius: 4px;
 }
 
 .titleExtraData{
@@ -3683,7 +3692,7 @@ div.panel-body a.active{
   position: absolute;
   z-index: 1;
   top: -6px;
-  right: 160%;
+  right: 115px;
 }
 
 .tooltipscontainer .tooltipAyuda {
@@ -3742,4 +3751,483 @@ div.panel-body a.active{
 	flex-direction: row;
 	justify-content: left;
 	align-items: center;
+}
+.crearConsultaComentario{
+  height: 228px;
+  margin-top: 40px;
+}
+.crearConsultaTitulos{
+  top: 239px !important;
+  left: 276px !important;
+  height: 21px !important;
+
+  text-align: left !important;
+  letter-spacing: 0px !important;
+  color: #373A3C !important;
+  opacity: 1 !important;
+  /*font-size: 18px;*/
+  font: normal normal normal 16px Roboto Regular;
+  font-weight: 600;
+}
+.btn-enviar{
+  width: 120px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
+.enviarComentario{
+  margin-bottom: 5px;
+  border: none;
+  outline:none;
+  background-color: white;
+}
+.margin-left{
+  margin-left: 20px;
+}
+.menuLateralConsulta{
+  text-align: left;
+  font: normal normal normal 16px/28px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+  left: 10px;
+  width: 28%;
+  position: relative;
+  top: -353px;
+}
+.bold{
+  font-weight: bold;
+}
+.añadirComentario{
+  height: 100px;
+
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  opacity: 1;
+  font: normal normal normal 16px Roboto Regular;
+}
+.btn-enviar-comentario{
+  position: relative;
+  right: 10px;
+  width: 85px;
+  height: 36px;
+  background: #009688 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
+.fechaComentario{
+  padding: 4px;
+  height: 27px;
+  background: white 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+}
+.fechaComentarioTexto{
+  width: 102px;
+  padding: 4px;
+  height: 27px;
+  background: #707070 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  margin: auto;
+
+  text-align: center;
+  font: normal normal normal 14px/19px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+}
+.comentarioRespuesta{
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 5px;
+  padding: 20px;
+  width: auto;
+  max-width: 58.33333333%;
+
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+.comentarioPropio{
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  margin: 5px;
+  padding: 20px;
+  float: right;
+  width: auto;
+  max-width: 58.33333333%;
+  
+  text-align: left;
+  font: normal normal normal 16px/18px Roboto Regular;
+  letter-spacing: 0px;
+  color: #F4F4F4;
+  opacity: 1;
+}
+.horaComentarioRespuesta{
+  text-align: right;
+}
+.detalleConsulta{
+  height: 350px;
+  overflow-y: auto;
+  border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  background: #fff;
+  padding: 10px;
+  transition: 0.5s;
+  width: 70%;
+}
+.contenedorNuevoComentario{
+  border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  background: #fff;
+  padding: 10px;
+  transition: 0.5s;
+  width: 70%;
+}
+.detalleConsulta::-webkit-scrollbar{
+  width: 10px;
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-track{
+  background: white;
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-thumb{
+  background: #707070; 
+  border-radius: 10px;
+}
+.detalleConsulta::-webkit-scrollbar-thumb:hover{
+  background: #707070;  
+  border-radius: 10px;
+}
+.ui-table-wrapper{
+  font-family: 'Roboto Regular';
+}
+.archivosDetalle .fa {
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.widthAutoConsultaPropio{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  float: right; 
+  right: -10px;
+}
+.widthAutoConsultaRespuesta{
+  width: auto;
+  max-width: 58.33333333%;
+  padding-bottom: 7px;
+  right: 10px;
+}
+.archivosDetallePropio {
+  margin: 2px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #009688 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetallePropio:hover {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: white;
+  background: #00645a 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  -webkit-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  box-shadow: 2px 2px 2px -3px rgba(0, 0, 0, 0.45);
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetalle {
+  margin: 2px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetalle:hover {
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #cacaca 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+  padding: 20px;
+  padding-bottom: 10px;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.archivosDetallePropio .fa{
+  font-size: 25px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.filters-text-table {
+  width: 90% !important;
+}
+.filters-calendar-table {
+  width: calc(100% - 2.357em) !important;
+}
+.consulta-table th {
+  text-transform: capitalize !important;
+}
+
+.consulta-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+p-dropdown>div {
+  width: 100% !important;
+}
+input:focus::placeholder, textarea:focus::placeholder {
+  color: transparent;
+}
+.solicitudDoc{
+margin: 2px;
+}
+.ui-autocomplete{
+  top: -10px;
+}
+.estadoAprobado{
+  color:#009688;
+}
+.estadoRechazado{
+  color:#DD441E;
+}
+.estadoEnGestion{
+  color: #F0AD4E;
+}
+
+
+/* Preguntas frecuentes o Faq */
+
+.documentacion .panel-body div {
+  padding: 20px;
+  font-family: Roboto Regular;
+  font-size: 16px;
+  background-color: white;
+  text-transform: none;
+  color: #000;
+  font-weight: 300;
+  margin-left: 15px;
+}
+/*
+.categoriaOnDesktop{
+  position: fixed;
+  top: 100px;
+  /*sino position: fixed;
+}*/
+.categoriaOnMobile{
+  position: relative;
+}
+
+ .categoriaOnMobile{
+  visibility:visible;
+  display: unset;
+  }
+
+.categoriaMenuFaq{
+  border-color: white;
+  font-size: 16px;
+  font-family: Roboto Regular;
+}
+/*
+.posts, .archivepostsMobile {
+list-style: square url('http://www.webbossuk.com/admin/images/reply-arrow.png');
+}
+*/
+.posts{
+  margin-bottom: 7px;
+}
+.tituloPregunta{
+  font-weight: bold;
+  text-align: left;
+  margin-left: 30px;
+  font-size: 16px;
+  color: #707070;
+  margin-top: 15px;
+}
+.tituloPregunta:hover{
+  color: #067935;
+  text-decoration: none;
+}
+.collapsing {
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.5s;
+  transition: height 0.5s ease;
+}
+.panel-default>.panel-heading{
+  background-color: white;
+  font-size: 23px !important;
+  font-weight: bold !important;
+  margin-bottom: 0px !important;
+  color: #707070 !important;
+  font-family: Roboto Regular;
+}
+.panel-title{
+  color: #707070 !important;
+  font-size: 21px !important;
+  font-weight: normal !important;
+  font-family: Roboto Regular;
+  text-transform: uppercase;
+}
+.aFaqClick{
+  width: 194px;
+  height: 36px;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: #707070;
+  opacity: 1;
+}
+.aFaqClick:hover{
+  width: 194px;
+  height: 36px;
+  background: var(--unnamed-color-959595) 0% 0% no-repeat padding-box !important;
+  background: #959595 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: white;
+  opacity: 1;
+}
+.aFaqClick:focus{
+  width: 194px;
+  height: 36px;
+  background: var(--unnamed-color-959595) 0% 0% no-repeat padding-box !important;
+  background: #067935 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+  text-align: center;
+  font-family: Roboto Regular;
+  font-size: 13px;
+  letter-spacing: 0px;
+  color: white;
+  opacity: 1;
+}
+.grisOscuro{
+  color: #707070 !important;
+}
+.aFaqClickCat, .aFaqClickCat:hover, .aFaqClickCat:active, .aFaqClickCat:visited, .aFaqClickCat:focus{
+  text-decoration: none;
+}
+.datosFaq {
+  border-radius: 11px;
+  background: white;
+  padding: 0px;
+  font-size: 16px;
+  color: #3f4845;
+  box-shadow: 0px 3px 6px #00000029;
+}
+.containerMenuFaq{
+  width: 226px;
+  height: 56px;
+  opacity: 1;
+}
+
+.requerido {
+  color: red;
+  font-weight: bold;
+}
+
+.ng-autocomplete, .ui-autocomplete {
+  width: 100%!important;
+}
+.tituloCategoriaListaUsuarios{
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Roboto Regular';
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.archivosBox {
+  margin: 15px;
+  padding-top: 15px;
+  text-align: left;
+  /*font: normal normal normal 16px/18px Roboto Regular;*/
+  color: #707070;
+  background: #FAFAFA 0% 0% no-repeat padding-box;
+  box-shadow: 1px 1px 6px #00000029;
+  border-radius: 4px;
+  opacity: 1;
+
+  filter: alpha(opacity=80);
+  cursor: pointer;
+  transition: all 0.25s linear;
+}
+.centerbtn {
+    margin-left: 180px !important;
+}
+.center {
+    justify-items: center;
+    display: flex;
+    justify-content: center;
+}
+.pillVerdeMenu > .nav-pills > li.active > a, .pillVerdeMenu > .nav-pills > li.active > a:focus, .pillVerdeMenu > .nav-pills > li.active > a:hover {
+    background-color: #009688;
+}
+
+.subtitulo {
+    font-size: 25px;
 }

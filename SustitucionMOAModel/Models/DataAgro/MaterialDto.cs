@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Models.DataAgro
+{
+    public partial class MaterialDto
+    {
+        public int MaterialId { get; set; }
+        public string Descripcion { get; set; }
+        public string CampaniaActual { get; set; }
+        public int CampaniaIdActual { get; set; }
+        public string CampaniaTablero { get; set; }
+        public int CampaniaTableroId { get; set; }
+        public string Codigo { get; set; }
+    }
+}

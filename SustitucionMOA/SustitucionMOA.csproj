@@ -127,7 +127,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
@@ -225,7 +225,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\blockui.css" />
+    <Content Include="Content\css\fonts\primeicons.svg" />
+    <Content Include="Content\css\primeicons.css" />
+    <Content Include="Content\css\primeng.min.css" />
+    <Content Include="Content\css\theme.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\images\buttons\ChoseFile.svg" />
+    <Content Include="Content\images\buttons\Adjuntar.svg" />
     <Content Include="Content\images\buttons\EXPORT.svg" />
     <Content Include="Content\images\buttons\EXPORT_MODAL.svg" />
     <Content Include="Content\images\buttons\Information.svg" />
@@ -239,9 +245,7 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
-    <Content Include="dist\assets\css\MolinosForms.css" />
-    <Content Include="dist\assets\css\MolinosGeneral.css" />
-    <Content Include="dist\assets\css\styles.css" />
+    <Content Include="Content\images\icons\trash.png" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -280,6 +284,7 @@
     <Content Include="dist\index.html" />
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
+    <Content Include="dist\styles.*.css" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -288,26 +293,18 @@
     <Content Include="src\app\aduana\pesada\online\pesada.online.component.html" />
     <Content Include="src\app\alta-proveedores\altas\altas.component.css" />
     <Content Include="src\app\alta-proveedores\altas\altas.component.html" />
-    <Content Include="src\app\alta-proveedores\altas\altas.component.js" />
-    <Content Include="src\app\alta-proveedores\altas\altas.component.spec.js" />
     <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.css" />
     <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.html" />
-    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.js" />
-    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js" />
     <Content Include="src\app\alta-proveedores\detalle-empresa\detalle-empresa.component.css" />
     <Content Include="src\app\alta-proveedores\detalle-empresa\detalle-empresa.component.html" />
     <Content Include="src\app\alta-proveedores\empresa-granos\empresa-granos.component.css" />
     <Content Include="src\app\alta-proveedores\empresa-granos\empresa-granos.component.html" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.css" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.html" />
-    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js" />
-    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js" />
     <Content Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.css" />
     <Content Include="src\app\alta-proveedores\estado-solicitud\estado-solicitud.component.html" />
     <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.css" />
     <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.html" />
-    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js" />
-    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.js" />
     <Content Include="src\app\app.component.html" />
     <Content Include="src\app\carta-porte\aplicacion\carta-porte.aplicacion.component.html" />
     <Content Include="src\app\carta-porte\carta-porte-modal\carta-porte-modal.component.css" />
@@ -317,14 +314,22 @@
     <Content Include="src\app\carta-porte\formulario\carta-porte.formulario.component.html" />
     <TypeScriptCompile Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.service.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
+    <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
+    <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
     <Content Include="src\app\common\view-child\dropdown\dropdown.component.html" />
     <Content Include="src\app\common\view-child\filtro-fecha\filtro-fecha.component.html" />
     <Content Include="src\app\common\view-child\mensaje-modal\mensaje-modal.component.html" />
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
+    <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
+    <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
     <Content Include="src\app\contacto-mail\contacto-mail.component.html" />
+    <Content Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.html" />
+    <Content Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
+    <Content Include="src\app\faq\faq.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
@@ -382,6 +387,8 @@
     <Content Include="src\app\ryd\carga-pesadas\carga-pesadas.component.html" />
     <Content Include="src\app\ryd\informe\informe.component.html" />
     <Content Include="src\app\ryd\listado-pesadas\listado-pesadas.component.html" />
+    <Content Include="src\app\ticket-pesada\ticket-pesada.component.css" />
+    <Content Include="src\app\ticket-pesada\ticket-pesada.component.html" />
     <Content Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.css" />
     <Content Include="src\app\usuario\alta\usuario.alta.component.html" />
     <Content Include="src\app\usuario\cambio-contrasenia\usuario.cambio-contrasenia.component.html" />
@@ -393,6 +400,7 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\font-awesome.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="node_modules\primeicons\primeicons.css" />
     <Content Include="Content\css\loader.css" />
     <Content Include="Content\css\ng2-select.css" />
     <Content Include="Content\css\normalize.css" />
@@ -421,6 +429,14 @@
     <Content Include="Content\js\jquery.js" />
     <Content Include="Content\js\molinos.js" />
     <Content Include="Content\js\trmix.min.js" />
+    <Content Include="src\app\venta-sustentable\alta\alta.component.html" />
+    <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.css" />
+    <Content Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.html" />
+    <Content Include="src\app\venta-sustentable\edicion\edicion.component.css" />
+    <Content Include="src\app\venta-sustentable\edicion\edicion.component.html" />
+    <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.css" />
+    <Content Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.html" />
+    <Content Include="src\app\venta-sustentable\listado-campos\listado-campos.component.html" />
     <Content Include="src\assets\css\MolinosForms.css" />
     <Content Include="src\assets\css\MolinosGeneral.css" />
     <Content Include="src\assets\css\styles.css" />
@@ -652,7 +668,6 @@
     <Content Include="Documentacion\Carta de garantía.doc" />
     <Content Include="Documentacion\Carta de notificación de anulación de cesión.doc" />
     <Content Include="Documentacion\Carta de notificación de cambio de cuenta.doc" />
-    <Content Include="Documentacion\Criterios de Retención MOA.docx" />
     <Content Include="Documentacion\Legajos Molinos Agro S.A..pdf" />
     <Content Include="Documentacion\Listado de documentos requeridos para el alta o actualización.doc" />
     <Content Include="Documentacion\Modelo de carta datanet.doc" />
@@ -669,14 +684,6 @@
     <Content Include="angular.json" />
     <Content Include="Documentacion\Código de Conducta para Proveedores MOA.pdf" />
     <Content Include="Documentacion\Instructivo - Pago de Tasa Municipal con Mercado Pago.pdf" />
-    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.js.map" />
-    <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.spec.js.map" />
-    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.js.map" />
-    <Content Include="src\app\alta-proveedores\cuit-invalido\cuit-invalido.component.spec.js.map" />
-    <Content Include="src\app\alta-proveedores\altas\altas.component.js.map" />
-    <Content Include="src\app\alta-proveedores\altas\altas.component.spec.js.map" />
-    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.js.map" />
-    <Content Include="src\app\alta-proveedores\proveedor-detalle\proveedor-detalle.component.spec.js.map" />
     <Content Include="officetohtml\files\demo.docx" />
     <Content Include="officetohtml\files\demo.pdf" />
     <Content Include="officetohtml\files\demo.pptx" />
@@ -825,6 +832,12 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\fonts\Roboto-Regular.ttf" />
     <Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
+    <Content Include="Documentacion\CARGA MASIVA DE CORREDORES.xlsx" />
+    <Content Include="Content\css\fonts\primeicons.eot" />
+    <Content Include="Content\css\fonts\primeicons.ttf" />
+    <Content Include="Content\css\fonts\primeicons.woff" />
+    <Content Include="Documentacion\Criterios de Retención MOA.pdf" />
+    <Content Include="Documentacion\GMP MOA.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -837,12 +850,19 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
+    <Content Include="Template\ReporteCamposSustentables.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Template\ReporteConflictosCamposSustentables.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Template\ReporteLiquidacionesInformadas.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\EstadoAlta.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\RespuestaConsulta.html" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -894,6 +914,8 @@
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
+    <Compile Include="Controllers\ConsultaController.cs" />
+    <Compile Include="Controllers\CampoSustentableController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
     <Compile Include="Controllers\AltaEmpresaGranosController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -903,6 +925,7 @@
     <Compile Include="Controllers\ContratoController.cs" />
     <Compile Include="Controllers\CuentaCorrienteController.cs" />
     <Compile Include="Controllers\DataAgroController.cs" />
+    <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
     <Compile Include="Controllers\FleteController.cs" />
@@ -917,11 +940,14 @@
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
+    <Compile Include="Controllers\TicketPesadaController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VendedorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Jobs\ReporteCamposSustentablesTSAJob.cs" />
+    <Compile Include="Jobs\ReporteConflictosCamposSustentablesJob.cs" />
     <Compile Include="Jobs\ReporteLiquidacionesInformadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaJob.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -951,9 +977,26 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
+    <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
+    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\alta-masiva\crear-contrato.alta-masiva.component.ts" />
+    <TypeScriptCompile Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
@@ -994,7 +1037,25 @@
     <TypeScriptCompile Include="src\app\liquidacion\liquidacion.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago-routing.module.ts" />
     <TypeScriptCompile Include="src\app\pago\pago.module.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.ts" />
+    <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.service.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\edicion\edicion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\edicion\edicion.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\sustentable.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable-routing.Module.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />
@@ -1151,8 +1212,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="dist\assets\css\" />
+    <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
+    <Folder Include="Views\LogPesificacion\" />
+    <Folder Include="Views\TicketPesada\" />
     <Folder Include="Views\OrdenDeCarga\" />
   </ItemGroup>
   <ItemGroup>

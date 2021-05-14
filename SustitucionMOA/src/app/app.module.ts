@@ -7,6 +7,7 @@ import {
 import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AutocompleteLibModule } from "angular-ng-autocomplete";
 import { ReCaptchaModule } from "angular2-recaptcha";
 import { BlockUIModule } from 'ng-block-ui';
@@ -51,21 +52,38 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
-;
+import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
+import { NgxMaskModule } from "ngx-mask";
+import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
+import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
+import { NotificacionesService } from "./notificaciones/notificaciones.service";
+import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
+import { BlockUIModule } from 'ng-block-ui';
+import { FaqComponent } from './faq/faq.component'
+import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
+import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
+import { ConsultaBaseComponent } from "./consulta/consulta.component";
+import { ConsultaService } from "./consulta/consulta.service";
+import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
+import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
+import { ComprasModule } from "./compras/compras.module";
+
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpModule,
     AppRoutingModule,
     FormsModule,
     NgxPaginationModule,
     SelectModule,
     ModalModule,
-    Ng2AutoCompleteModule,
     ReCaptchaModule,
-    AutocompleteLibModule,
     SharedModule,
+    LogPesificacionModule,
+    NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
+    ComprasModule,
   ],
   declarations: [
     AppComponent,
@@ -86,7 +104,11 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     AltaNotificacionesComponent,
     ListadoNotificacionesComponent,
     CarouselNotificacionesComponent,
-    NumericDirective],
+    VentaSustentableBaseComponent,
+    FaqComponent,
+    TicketPesadaComponent,
+    ConsultaBaseComponent,
+    VentaSustentableBaseComponent],
   providers: [
     DatePipe,
     SessionDataService,
@@ -103,9 +125,11 @@ import { VendedorStatusService } from "./vendedor/vendedor_status.service";
     SecurityService,
     EmpresaGranosService,
     EstadoSolicitudService,
-    NotificacionesService
+    NotificacionesService,
+    TicketPesadaService,
+    ConsultaService
   ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
-export class AppModule {}
+export class AppModule { }

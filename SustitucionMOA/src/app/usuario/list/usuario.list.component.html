@@ -121,12 +121,16 @@
                     <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <span *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
-                            <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}" [(ngModel)]="rol.checked">
-                            &nbsp;
-                            <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-                        </span>
+                    <div class="row" *ngFor="let titulo of titulos">
+                        <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
+                        <hr>
+                        <ng-container *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
+                            <span class="col-md-6" *ngIf="rol.Code == titulo">
+                                <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}" [(ngModel)]="rol.checked">
+                                &nbsp;
+                                <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                            </span>
+                        </ng-container>
                     </div>
                 </div>
                 <div class="modal-footer">

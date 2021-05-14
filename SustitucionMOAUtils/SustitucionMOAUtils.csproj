@@ -39,6 +39,12 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Excel, Version=2.1.2.3, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.2.1.2.3\lib\net45\Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
       <Private>True</Private>
@@ -108,9 +114,14 @@
     <Compile Include="Email\EmailConfig.cs" />
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\ExcelExport.cs" />
+    <Compile Include="Export\ExcelImport.cs" />
+    <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Interfaces\IAltaEmpresaNoGranosService.cs" />
+    <Compile Include="Interfaces\IContactoMailService.cs" />
+    <Compile Include="Interfaces\IConsultaService.cs" />
     <Compile Include="Interfaces\IAzureService.cs" />
+    <Compile Include="Interfaces\ICampoSustentableService.cs" />
     <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IFeriadoService.cs" />
@@ -123,13 +134,18 @@
     <Compile Include="Interfaces\INotificacionService.cs" />
     <Compile Include="Interfaces\IOrdenDeCargaService.cs" />
     <Compile Include="Interfaces\IReportesService.cs" />
+    <Compile Include="Interfaces\ITicketPesadaService.cs" />
+    <Compile Include="Interfaces\ILogPesificacionService.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
+    <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
+    <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
+    <Compile Include="Services\CampoSustentableService.cs" />
     <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\FeriadoService.cs" />
     <Compile Include="Services\AltaEmpresaService.cs" />
@@ -155,8 +171,12 @@
     <Compile Include="Services\ReportesService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />
+    <Compile Include="Services\TicketPesadaService.cs" />
+    <Compile Include="Services\LogPesificacionService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
+    <Compile Include="Validadores\ResultadoValidacionPesificacion.cs" />
+    <Compile Include="Validadores\ValidadorPesificacion.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAAssets\SustitucionMOAAsset.csproj">

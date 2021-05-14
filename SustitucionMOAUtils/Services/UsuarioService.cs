@@ -6,6 +6,8 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -14,6 +16,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
+using Models = SustitucionMOAModel.Models;
+
 
 namespace SustitucionMOAUtils.Services
 {
@@ -28,58 +32,7 @@ namespace SustitucionMOAUtils.Services
             this.vendedorService = vendedorService;
         }
 
-        [Obsolete]
-        public GetPerfilesResponseMOA getPerfiles()
-        {
-            try
-            {
-                PerfilesWSMOAResponse response = new PerfilesConsumerMOA().request();
-
-                if (response.perfiles.Count == 0)
-                {
-                    throw new ValidationCustomException(ErrorMsg.ErrorNoHayPerfiles);
-                }
-
-                if (response.tipos.Count == 0)
-                {
-                    throw new ValidationCustomException(ErrorMsg.ErrorNoHayTipos);
-                }
-
-                GetPerfilesResponseMOA data = new GetPerfilesResponseMOA();
-                foreach (Perfil perfil in response.perfiles)
-                {
-                    data.perfiles.Add(new DropdownPerfilElement()
-                    {
-                        value = perfil.perfil,
-                        label = perfil.nombre
-                    });
-                }
-                foreach (TipoProveedor tipo in response.tipos)
-                {
-                    data.tipos.Add(new DropdownTipoElement()
-                    {
-                        value = tipo.tipo,
-                        label = tipo.descripcion
-                    });
-                }
-
-                return data;
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        public void SeccionVisitada (string mailUsuario, string seccion)
+        public void SeccionVisitada(string mailUsuario, string seccion)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
             if (usuario.SeccionesVisitadas.Contains(seccion)) return;
@@ -87,33 +40,6 @@ namespace SustitucionMOAUtils.Services
             usuario.SeccionesVisitadas += $"-{seccion}";
             repositorio.GuardarCambios();
         }
-
-        //public UsuariosWSMOAResponse getUsuarios()
-        //{
-        //    try
-        //    {
-        //        UsuariosWSMOAResponse response = new UsuariosConsumerMOA().request();
-
-        //        if (response.usuarios.Count == 0)
-        //        {
-        //            throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "Usuarios"));
-        //        }
-        //        return response;
-        //    }
-        //    catch (InfoCustomException e)
-        //    {
-        //        throw e;
-        //    }
-        //    catch (ValidationCustomException e)
-        //    {
-        //        throw e;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new WSCustomException(ErrorMsg.ErrorWS, e);
-        //    }
-        //}
-
 
         public List<UsuarioDto> GetUsuarios()
         {
@@ -135,187 +61,24 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        [Obsolete]
-        public string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva)
+        public UsuarioDto GetUsuario(string email)
         {
             try
             {
-                if (contraseniaActual == null || contraseniaActual == "")
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Mail == email);
+
+                if (usuario == null)
                 {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Contraseña Actual"));
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
                 }
+                var ret = new UsuarioDto(usuario);
+                ret.Permisos = usuario.ObtenerPermisos();
 
-                if (contraseniaNueva == null || contraseniaNueva == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Contraseña Nueva"));
-                }
-
-                LoginWSMOAResponse response = new CambioPassConsumerMOA().request(username, contraseniaActual, contraseniaNueva);
-
-                if (response.error != "09")
-                {
-                    throw new ValidationCustomException(response.texto);
-                }
-
-                return SuccessMsg.CambioPassOK;
+                return ret;
             }
-            catch (InfoCustomException e)
+            catch (Exception)
             {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        [Obsolete]
-        public LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia)
-        {
-            try
-            {
-                if (numeroProveedor == null || numeroProveedor == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Número de Proveedor"));
-                }
-
-                if (claveActivacion == null || claveActivacion == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Clave Activación"));
-                }
-
-                if (username == null || username == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Nombre de Usuario"));
-                }
-
-                if (contrasenia == null || contrasenia == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Contraseña"));
-                }
-
-                LoginWSMOAResponse response = new UsuarioNuevoConsumerMOA().request(username, numeroProveedor, claveActivacion, contrasenia);
-
-                if (response.error == "10")
-                {
-                    throw new ValidationCustomException(response.texto);
-                }
-
-                return response;
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        [Obsolete]
-        public string alta(UsuarioAlta usuario)
-        {
-            try
-            {
-
-                UsuarioCrearWSMOAResponse response = new UsuarioCrearConsumerMOA().request(usuario.email, usuario.numeroProveedor, usuario.perfil, usuario.tipo);
-
-                if (response.error == "99")
-                {
-                    throw new ValidationCustomException(response.texto);
-                }
-
-                return SuccessMsg.AltaUsuarioOK;
-
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        [Obsolete]
-        public string recuperarContrasenia(string usename)
-        {
-            try
-            {
-                if (usename == null || usename == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorCompleteCampo, "Usuario"));
-                }
-
-                LoginWSMOAResponse response = new UsuarioOlvidePassConsumerMOA().request(usename);
-
-                if (response.error != "11")
-                {
-                    throw new ValidationCustomException(response.texto);
-                }
-
-                return SuccessMsg.OlvideContraniaOk;
-
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
-            }
-        }
-
-        [Obsolete]
-        public string desbloquear(string usename)
-        {
-            try
-            {
-                if (usename == null || usename == "")
-                {
-                    throw new ValidationCustomException(String.Format(ErrorMsg.ErrorValorNuloVacio, "Nombre de Usuario"));
-                }
-
-                LoginWSMOAResponse response = new UsuarioDesbloquearConsumerMOA().request(usename);
-
-                if (response.error == "10")
-                {
-                    throw new ValidationCustomException(response.texto == null ? String.Format(ErrorMsg.ErrorUsuarioDesbloquear, usename) : response.texto);
-                }
-
-                return String.Format(SuccessMsg.UsuarioDesbloqueadoOK, usename); ;
-
-            }
-            catch (InfoCustomException e)
-            {
-                throw e;
-            }
-            catch (ValidationCustomException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+                throw;
             }
         }
 
@@ -329,8 +92,6 @@ namespace SustitucionMOAUtils.Services
 
             usuario.Habilitado = true;
 
-            //usuario.RemoverRoles();
-
             usuario.RemoverRol("DES");
 
             repositorio.GuardarCambios();
@@ -343,8 +104,6 @@ namespace SustitucionMOAUtils.Services
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuarioMail);
 
             usuario.Habilitado = false;
-
-            //usuario.RemoverRoles();
 
             var proveedor = usuario.ObtenerProveedor();
 
@@ -364,32 +123,6 @@ namespace SustitucionMOAUtils.Services
         public Rol ObtenerRolPorCodigo(string codigo)
         {
             return repositorio.Obtener<Rol>(u => u.Codigo == codigo);
-        }
-
-        public Rol ObtenerRolPorTipo(string tipoUsuario)
-        {
-            var codigo = "";
-            switch (tipoUsuario.ToLower())
-            {
-                case "g":
-                    codigo = "GRAN";
-                    break;
-
-                case "ng":
-                    codigo = "NOGRAN";
-                    break;
-
-                case "a":
-                case "corr":
-                    codigo = "GYNG";
-                    break;
-
-                case "cli":
-                    codigo = "CLIENT";
-                    break;
-            }
-
-            return ObtenerRolPorCodigo(codigo);
         }
 
         public byte[] getDocumento(string nombre)
@@ -418,7 +151,28 @@ namespace SustitucionMOAUtils.Services
 
         public List<RolDropdownDto> GetRoles()
         {
-            return repositorio.Listar<Rol>().Where(r => r.EsEditable).Select(x => new RolDropdownDto(x)).ToList();
+            List<string> interno = new List<string>
+            {
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP"
+            };
+
+            List<string> contacto = new List<string>
+            {
+                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
+                "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
+                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "FINDIR", "FINCOR", "FLE"
+            };
+
+            var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
+                .Select(x => new RolDropdownDto
+                {
+                    Id = x.Id,
+                    Nombre = x.Nombre,
+                    Code = interno.Contains(x.Codigo) ? "Interno" : contacto.Contains(x.Codigo) ? "Contacto" : "Externo"
+                }).ToList();
+
+            return roles;
         }
 
         public string GuardarRoles(List<int> idRoles, int idUsuario)
@@ -431,6 +185,37 @@ namespace SustitucionMOAUtils.Services
             {
                 Rol rolAAgregar = repositorio.Obtener<Rol>(r => r.Id == idRol);
                 usuario.AgregarRol(rolAAgregar);
+            }
+
+            var esAdministradorMolinos = usuario
+                                            .Roles
+                                            .Where(
+                                                r => r.Codigo == "ADM"
+                                                || r.Codigo == "TODOS"
+                                                || r.Codigo == "OPE"
+                                                || r.Codigo == "APRO"
+                                                || r.Codigo == "COMPRAS"
+                                                || r.Codigo == "COMERCIAL")
+                                            .Any();
+
+            //Si es usuario de molinos, buscamos todos los proveedores que tiene, lo aprobamos y le sacamos el historial de aprobación. 
+            //Esto es para que estos proveedores no aparezcan en el listado de altas pendientes
+
+            if (esAdministradorMolinos)
+            {
+                foreach (var prov in usuario.Proveedores)
+                {
+                    prov.EstadoAprobacion = EstadoAprobacion.Aprobado;
+
+                    prov.Observaciones = "";
+
+                    var historial = repositorio.Listar<ProveedorHistorialAprobacion>(h => h.Proveedor_Id == prov.Id);
+
+                    repositorio.RemoverTodos(historial);
+
+                    prov.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+
+                }
             }
 
             repositorio.GuardarCambios();
@@ -462,10 +247,90 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Rol> GetRolesUsuario(string email)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == email);
+                return usuario.Roles.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
         {
             return vendedorService.GetVendedores(usuarioMail);
+        }
+
+        public ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario)
+        {
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigo && x.Mail == mailUsuario);
+
+            if (proveedor == null)
+            {
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigo);
+
+                if (proveedor == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+                }
+            }
+            var ret = new ProveedorDto(proveedor);
+
+            return ret;
+        }
+
+
+        /// <summary>
+        /// Es método cumple el mismo funcionamiento que GetProveedorPorCodigo. 
+        /// La diferencia es que cuando se recibe un proveedor que no está en nuestra DB, lo crea. 
+        /// Esto lo hacemos para los corredores, de los cuales no tenemos todos los proveedores cargados
+        /// </summary>
+        /// <param name="mailUsuario"></param>
+        /// <param name="codigoCorredor"></param>
+        /// <param name="codigoProveedor"></param>
+        /// <returns></returns>
+        public ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor);
+            var usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
+            var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.Mail == mailUsuario);
+
+            if (proveedor == null)
+            {
+                var proveedorSAP = new VendedorDetalleConsumerMOA().request(codigoProveedor, codigoCorredor);
+
+                if (!proveedorSAP.cabeceras.Any())
+                {
+                    throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigoProveedor));
+                }
+
+                var tipoProveedorGranos = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "G");
+
+                Proveedor nuevoProveedorMOA = new Proveedor
+                {
+                    IdProveedorCorredor = corredor.Id,
+                    Mail = usuario.Mail,
+                    Observaciones = "Proveedor agregado automaticamente por MOA Operaciones",
+                    CodigoProveedor = codigoProveedor,
+                    CUIT = proveedorSAP.cabeceras.FirstOrDefault().cuit,
+                    RazonSocial = proveedorSAP.cabeceras.FirstOrDefault().descripcion,
+                    EstadoAprobacion = EstadoAprobacion.Aprobado,
+                    TipoProveedor = tipoProveedorGranos
+                };
+
+                usuario.Proveedores.Add(nuevoProveedorMOA);
+
+                repositorio.GuardarCambios();
+
+                proveedor = nuevoProveedorMOA;
+            }
+            var ret = new ProveedorDto(proveedor);
+
+            return ret;
         }
     }
 }

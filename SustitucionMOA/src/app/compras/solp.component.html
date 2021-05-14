@@ -1,0 +1,63 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "> <strong>¿Que tipo de SOLP quiere iniciar?</strong></div>
+        </div>
+        <!--End Title-->
+        <!-- Form-->
+        <div class="row myRow firstSection">
+            <div class="rounded shadow">
+                <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
+            </div>
+        </div>
+
+        <div class="row myRow mySearch" style="margin-bottom: 4em;">
+            <div class="col-xs-12 col-md-12 rounded shadow animate">
+                <div class="col-xs-12 col-md-12 headerCompras">
+                    <strong>Paso {{pasoActual.Numero}}:</strong> {{pasoActual.Nombre}}
+                </div>
+                <hr>
+                <!-- contenido -->
+                <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
+                    <div *ngSwitchCase="'PliegoGeneracion1'" [@fadeInOut] >
+                        <generacion1 [(model)]="solpActual" [(locale)]="es"></generacion1>
+                    </div>
+                    <div  *ngSwitchCase="'PliegoGeneracion2'" [@fadeInOut] >
+                        <generacion2 [(model)]="solpActual" [(locale)]="es"></generacion2>
+                    </div>
+                    <div *ngSwitchDefault [@fadeInOut] >
+                        Paso en construccion
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
+            <div class="row" >
+                <div class="col-xs-2"></div>
+                <div class="col-xs-3" style="margin-left: 3em;">
+                    <!-- <button class="btn btn-danger" (click)="salir()"><i class="fa fa-reply"></i>&nbsp; SALIR</button> -->
+                </div>
+                <div class="col-xs-6">
+                    <button class="btn btn-defaut btn-secondary" (click)="navegar(pasoAnterior())">{{pasoAnterior().descripcion}}</button>&nbsp;
+                    <button class="btn btn-primary" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
+                    <button class="btn btn-primary" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
+                    <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())" >{{pasoSiguiente().descripcion}}</button>
+                    <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
+                </div>
+            </div>
+        </p-sidebar>
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
+</div>
+<p-dialog header="Previsualización" 
+        [(visible)]="mostrarPreview" 
+        [width]="800" 
+        draggable="false"
+        blockScroll="true"
+        modal="modal"
+        appendTo="body">
+    <pliego-preview [(model)]="solpActual"></pliego-preview>
+</p-dialog>

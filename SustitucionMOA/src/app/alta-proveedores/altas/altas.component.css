@@ -114,3 +114,8 @@ thead tr th{
   display: flex;
   flex-direction: column;
 }
+
+.tableContainer {
+  width: 100%; 
+  overflow-x: auto;
+}

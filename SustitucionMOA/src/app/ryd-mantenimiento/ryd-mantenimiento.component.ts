@@ -9,7 +9,7 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
 import { BaseComponent } from './../common/base-components/base-component';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 import { Balanza, BalanzaBusqueda, BalanzaAplicar } from './ryd-mantenimiento';
 import { Subscription } from 'rxjs';
 import { ModalService } from './../common/services/ModalService';

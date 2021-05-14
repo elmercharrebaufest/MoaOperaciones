@@ -1,6 +1,5 @@
 ﻿import { Component, Renderer, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Router } from "@angular/router";
-
 import { Seccion } from './../common/models/seccion';
 import { LayoutService } from './layout.service';
 import { SessionDataService } from './../common/services/SessionDataService';
@@ -10,9 +9,9 @@ import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mensaje-modal.component';
-
 import { LoginGuard } from './../common/security/login-guard';
 import { ok } from 'assert';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 declare var $: any;
 
 @Component({
@@ -22,7 +21,7 @@ declare var $: any;
 })
 
 export class LayoutComponent implements OnDestroy {
-
+    @BlockUI() blockUI: NgBlockUI;
     titulo: string;
     username: string;
     nombre: string;
@@ -136,7 +135,7 @@ export class LayoutComponent implements OnDestroy {
             seccionActive => {
                 this.seccionActive = seccionActive;
 
-                switch(this.seccionActive){
+                switch (this.seccionActive) {
                     case 'Fijaciones':
                     case 'Ampliaciones':
                     case 'Anulaciones':
@@ -210,6 +209,26 @@ export class LayoutComponent implements OnDestroy {
                     case 'Pesificacion':
                         this.auxiliarSeccionesVisitadas = 'Pesificacion';
                         this.textoTooltip = 'En esta categoría podrás pesificar tus negocios en dólares, individual o masivamente, y consultar aquellos negocios pendientes de pesificar.';
+                        this.textoTooltip2 = '';
+                        break;
+                    case 'Carga de Negocios':
+                        this.auxiliarSeccionesVisitadas = 'Carga de Negocios';
+                        this.textoTooltip = 'En esta pantalla podrás seleccionar el tipo de negocio que deseas operar.';
+                        this.textoTooltip2 = '';//'<a href="https://www.youtube.com/watch?v=NooUcellVgY&list=RDEMb_bDv34i1yX9BKQmQom11w&index=4" target="_blank">click aqui</a>';
+                        break;
+                    case 'A Precio':
+                        this.auxiliarSeccionesVisitadas = 'A Precio';
+                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
+                        this.textoTooltip2 = '';
+                        break;
+                    case 'A Fijar':
+                        this.auxiliarSeccionesVisitadas = 'A Fijar';
+                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
+                        this.textoTooltip2 = '';
+                        break;
+                    case 'Fijacion':
+                        this.auxiliarSeccionesVisitadas = 'Fijacion';
+                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
                         this.textoTooltip2 = '';
                         break;
                     default:
@@ -340,6 +359,7 @@ export class LayoutComponent implements OnDestroy {
     ngAfterViewInit() {
         this.modalService.modal = this.modal;
         this.mensajeModalComponent = new MensajeModalComponent();
+        this.blockUI.stop();
     }
 
     cerrarSesion() {

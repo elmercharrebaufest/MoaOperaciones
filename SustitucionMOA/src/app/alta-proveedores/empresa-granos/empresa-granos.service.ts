@@ -8,6 +8,7 @@ import { map, timeoutWith } from "rxjs/operators";
 import { CartaPresentacion } from "../../common/models/cartaPresentacion";
 import { InformeComercial } from "../../common/models/informeComercial";
 import { BaseService } from "./../../common/services/BaseService";
+import { Empresa } from "./../altas/Empresa";
 
 @Injectable()
 export class EmpresaGranosService extends BaseService {
@@ -280,5 +281,63 @@ export class EmpresaGranosService extends BaseService {
                 headers: this.headers,
             })
             .pipe(map(this.extractData));
+    }
+
+    descargarFormularioNG(empresaId: number) : Observable < any > {
+            let payload = new FormData();           
+
+    payload.append("empresaId", empresaId.toString());
+
+        return this.http
+            .post("/api/AltaEmpresaNoGranos/DescargarFormularioNG", payload)
+            .pipe(
+                timeoutWith(
+                    30000,
+                    throwError(
+                        new Error(
+                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                        )
+                    )
+                )
+            )
+            .pipe(map(this.extractData));
+    }
+    
+    public getRubros(): Observable<any> {
+        return this.http
+            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    public getTipoCambiario(): Observable<any> {
+        return this.http
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    public editarProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any, 
+        realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any, servicioPrestado: any, 
+        organizacionDeCompra: any, razonDeEleccion: any, facturacionAnual: any, idProveedor: any,
+        requiereVerificacionCompras: any, ingresoAPlanta: any, altaInterna: any, siperObligatorio: any) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('razonSocial', razonSocial);
+        params.set('cuit', cuit);
+        params.set('email', email);
+        params.set('telefono', telefono);
+        params.set('realizarAnalisisNOSIS', realizarAnalisisNOSIS);
+        params.set('IdRubro', IdRubro);
+        params.set('condicionDePago', condicionDePago);
+        params.set('servicioPrestado', servicioPrestado);
+        params.set('organizacionDeCompra', organizacionDeCompra);
+        params.set('razonDeEleccion', razonDeEleccion);
+        params.set('facturacionAnual', facturacionAnual);
+        params.set('proveedorId', idProveedor);
+        params.set('requiereVerificacionCompras', requiereVerificacionCompras);
+        params.set('ingresoAPlanta', ingresoAPlanta);
+        params.set('altaInterna', altaInterna);
+        params.set('siperObligatorio', siperObligatorio);
+
+        return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
+            map(this.extractData))   
     }
 }

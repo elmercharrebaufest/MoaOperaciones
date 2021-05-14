@@ -280,6 +280,15 @@
                                         </span>
                                     </div>
                                 </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('FechaOperacion')">
+                                    Fecha Operacion
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaOperacion' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaOperacion' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
                                 <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Cuit')">
                                     Cuit
                                     <div>
@@ -340,6 +349,15 @@
                                         <span>
                                             <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Precio' && orderDirection > 0 }"></i>
                                             <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Precio' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('PrecioNeto')">
+                                    Precio Neto
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'PrecioNeto' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'PrecioNeto' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -464,14 +482,25 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let contratoInfo of data | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd" role="row" [class.odd]="!odd">
-                                <td class="{{contratoInfo.Estado_Contrato}}"><a title="Anular" href="javascript:void(0);" *ngIf="contratoInfo.Estado_Contrato == 'Carga'" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;{{contratoInfo.Estado_Contrato}}</td>
+                                <td class="{{contratoInfo.Estado_Contrato}}">
+                                    {{contratoInfo.Estado_Contrato}}
+                                    <br />
+                                    <span *ngIf="contratoInfo.Estado == 9">
+                                        <a title="Anular" href="javascript:void(0);" (click)="anular(contratoInfo)"><i class="fa fa-trash" aria-hidden="true"></i></a> &nbsp;
+                                    </span>
+                                    <span *ngIf="contratoInfo.Estado == 9 && contratoInfo.Acuerdo == null">
+                                        <a title="Editar" href="javascript:void(0);" (click)="editar(contratoInfo)"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp;
+                                    </span>
+                                </td>
+                                <td>{{contratoInfo.FechaOperacion | date: 'dd/MM/yyyy'}}</td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.ContratoCorredor}}</td>
                                 <td>{{contratoInfo.TipoNegocio}}</td>
-                                <td>{{contratoInfo.Cantidad}}</td>
-                                <td>{{contratoInfo.Precio}}</td>
+                                <td>{{contratoInfo.Cantidad | number:'':'es'}}</td>
+                                <td>{{contratoInfo.Precio | number:'1.2-2':'es'}}</td>
+                                <td>{{contratoInfo.PrecioNeto | number:'1.2-2':'es'}}</td>
                                 <td>{{contratoInfo.Moneda}}</td>
                                 <td>{{contratoInfo.DestinoDescripcion}}</td>
                                 <td>{{contratoInfo.FechaDesde | date: 'dd/MM/yyyy'}}</td>
@@ -480,8 +509,8 @@
                                 <td>{{contratoInfo.Campania}}</td>
                                 <td>{{contratoInfo.Clasificacion}}</td>
                                 <td>{{contratoInfo.Localidad}}</td>
-                                <td>{{contratoInfo.Consignatario}}</td>
-                                <td>{{contratoInfo.PagoDiferidoTercero == true ? "Si":"No"}}</td>
+                                <td>{{contratoInfo.Consignatario == true ? "Si":"No"}}</td>
+                                <td>{{contratoInfo.PagoDiferidoTercero}}</td>
                                 <td>{{contratoInfo.DolarizadoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.CalidadTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.SustentableTercero == true ? "Si":"No"}}</td>

@@ -18,6 +18,18 @@
     AltaInterna: boolean;
     SiperObligatorio: boolean;
 
+    FacturacionAnual?: number;
+    ServicioPrestado?: string;
+    OrganizacionDeCompra?: string; 
+    RealizarAnalisisNOSIS?: boolean;
+    RequiereVerificacionCompras?: boolean;
+    IngresoAPlanta?: boolean;
+    Rubro?: string;
+    Telefono?: any;
+    CondicionDePago?: any;
+    RazonDeEleccion?: any;
+    SolicitanteInterno?: any;
+    
 }
 
 export class HistorialAprobaciones {

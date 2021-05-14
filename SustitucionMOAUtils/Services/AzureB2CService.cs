@@ -122,7 +122,6 @@ namespace SustitucionMOAUtils.Services
             {
                 CUIT = usuario.CUITRegistro,
                 EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
-                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
                 FechaSolicitud = DateTime.Now
             };
 

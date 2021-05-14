@@ -9,18 +9,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IUsuarioService
     {
-        GetPerfilesResponseMOA getPerfiles();
 
         List<UsuarioDto> GetUsuarios();
-
-        string cambiarContrasenia(string username, string contraseniaActual, string contraseniaNueva);
-        LoginWSMOAResponse registrar(string numeroProveedor, string claveActivacion, string username, string contrasenia);
-
-        string alta(UsuarioAlta usuario);
-
-        string recuperarContrasenia(string usename);
-
-        string desbloquear(string usename);
+        UsuarioDto GetUsuario(string email);
 
         string HabilitarUsuario(string usuarioMail);
 
@@ -35,6 +26,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
 
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
+        List<Rol> GetRolesUsuario(string email);
         void SeccionVisitada(string mailUsuario, string seccion);
+        ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario);
+        ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor);
     }
 }
