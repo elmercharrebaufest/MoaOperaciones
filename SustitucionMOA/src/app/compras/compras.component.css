@@ -108,7 +108,7 @@
   ::ng-deep .ui-calendar .ui-button{
     background-color:#5B5B5B !important;
     border-color: #5B5B5B !important;
-  }
+} 
 
   .widthCompras {
     width: 75%;
@@ -172,3 +172,36 @@
 
   
   
+  
+  /*pesificaciones*/
+
+  ::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose {
+  width: 130px !important;
+  height: 34px !important;
+  background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box !important;
+  border: 1px solid #95989A !important;
+  opacity: 1 !important;
+}
+
+/* estilos upload */
+::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose {
+  width: 150px !important;
+  height: 34px !important;
+  background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box !important;
+  border: 1px solid #95989A !important;
+  opacity: 1 !important;
+}
+
+::ng-deep div.ui-fileupload-buttonbar  {
+  background-color: #FFFFFF !important;
+  border: none;
+}
+
+::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose > span{
+  color: #666666;
+}
+
+::ng-deep div.ql-editor{
+  font-weight:normal;
+}
+/* fin estilos upload */

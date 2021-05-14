@@ -30,6 +30,8 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
     archivoNombre: string;
     adjunto: FileList;
     ngOnInit() {
+        this.setTabs();
+        this.checkPermisos();
         //super.ngOnInit();
         //this.negocioHabilitado(this.contrato);
         this.obtenercontratosAcuerdo()

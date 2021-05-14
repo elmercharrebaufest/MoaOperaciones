@@ -218,17 +218,22 @@ export class LayoutComponent implements OnDestroy {
                         break;
                     case 'A Precio':
                         this.auxiliarSeccionesVisitadas = 'A Precio';
-                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
-                        this.textoTooltip2 = '';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga Contrato A PRECIO Corredor - MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS - Carga Contrato a Precio - Moaoperaciones.mp4" target="_blank">click aqui</a>.';
                         break;
                     case 'A Fijar':
                         this.auxiliarSeccionesVisitadas = 'A Fijar';
-                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
-                        this.textoTooltip2 = '';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga Contrato A FIJAR Corredor - MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS%20-%20Carga%20Contrato%20A%20Fijar%20-%20Moaoperaciones.mp4" target="_blank">click aqui</a>.';
                         break;
                     case 'Fijacion':
                         this.auxiliarSeccionesVisitadas = 'Fijacion';
-                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Fijaci%C3%B3n%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS%20-%20Carga%20Fijaci%C3%B3n%20-%20Moaoperaciones.mp4" target="_blank">click aqui</a>.';
+                        break;
+                    case 'Alta Masiva':
+                        this.auxiliarSeccionesVisitadas = 'Alta Masiva';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Masiva%20Contratos%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
                         this.textoTooltip2 = '';
                         break;
                     default:
