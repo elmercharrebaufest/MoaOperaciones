@@ -183,6 +183,7 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
         }
 
+        /*
         [Test]
         public void PostComentario()
         {
@@ -301,7 +302,7 @@ namespace SustitucionMOATest.Controllers
             Assert.NotNull(resultado);
             Assert.NotNull(resultado.Data);
             Assert.AreEqual(expectedJson, resultJson);
-        }
+        }*/
 
         [Test]
         public void PatchRecategorizarConsulta()

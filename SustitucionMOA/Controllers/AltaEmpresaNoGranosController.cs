@@ -149,6 +149,37 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult EditarProveedorNoGranos(int proveedorId, string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
+            , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string usuarioMail
+            , bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio)
+        {
+            try
+            {
+                return JsonCustom(altaEmpresaNoGranosService.EditarAltaEmpresaNoGranos(proveedorId, razonSocial, cuit, email, telefono, realizarAnalisisNOSIS, 
+                IdRubro, CondicionDePago, ServicioPrestado, OrganizacionDeCompra, RazonDeEleccion, FacturacionAnual
+                ,requiereVerificacionCompras, ingresoAPlanta, altaInterna, siperObligatorio));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult ObtenerInfoProveedor(string mail, int proveedorId)
         {
             try

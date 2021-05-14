@@ -300,6 +300,22 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public Localidad GetLocalidad(int localidadId)
+        {
+            if(localidadId <= 0)
+            {
+                throw new InfoCustomException("Id de localidad invalido");
+            }
+
+            var localidad = repositorio.Obtener<Localidad>(l => l.LocalidadId == localidadId);
+
+            if (localidad == null) throw new InfoCustomException("No existe la localidad");
+
+            //localidad.Nombre = localidad.Nombre + " (" + localidad.Provincia.Nombre + ")";
+
+            return localidad;                    
+        }
+
         public string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, Proveedor proveedor)
         {
             return string.Concat(rutaArchivosProveedores, "/", proveedor.CUIT, "/", proveedor.Id, "/", fileKey);

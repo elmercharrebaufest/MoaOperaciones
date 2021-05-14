@@ -142,6 +142,30 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpGet]
+        public JsonResult ExportarCamposProveedores()
+        {
+            try
+            {
+                return JsonCustom(campoSustentableService.ExportarCamposProveedores(SessionPersister.User.username));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpGet]
         public JsonResult Cosechas()
         {
@@ -165,11 +189,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult VerificarDeclaracion(int proveedorId)
+        public JsonResult VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion)
         {
             try
             {
-                return JsonCustom(campoSustentableService.VerificarDeclaracion(proveedorId));
+                return JsonCustom(campoSustentableService.VerificarDeclaracion(proveedorId, cosechaId, CUITDeclaracion));
             }
             catch (InfoCustomException e)
             {
@@ -188,11 +212,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public JsonResult GenerarDeclaracionProveedor(int proveedorId, double hectareasTotales)
+        public JsonResult GenerarDeclaracionProveedor(int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion)
         {
             try
             {
-                var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, hectareasTotales);
+                var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, cosechaId, hectareasTotales, CUITDeclaracion, razonSocialDeclaracion);
                 PDFResponse result = new PDFResponse
                 {
                     pdf = new Pdf()
@@ -220,11 +244,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public JsonResult AdjuntarDeclaracionFirmada(int proveedorId, HttpPostedFileBase fileSubido)
+        public JsonResult AdjuntarDeclaracionFirmada(int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido)
         {
             try
             {
-                return JsonCustom(campoSustentableService.AdjuntarDeclaracionFirmada(SessionPersister.User.username, proveedorId, fileSubido));
+                return JsonCustom(campoSustentableService.AdjuntarDeclaracionFirmada(SessionPersister.User.username, proveedorId, cosechaId, CUITDeclaracion, fileSubido));
             }
             catch (InfoCustomException e)
             {
@@ -243,11 +267,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
-        public JsonResult ImprimirDeclaracion(int proveedorId)
+        public JsonResult ImprimirDeclaracion(int proveedorId, int cosechaId, string CUIT)
         {
             try
             {
-                var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId);
+                var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId, cosechaId, CUIT);
                 PDFResponse result = new PDFResponse
                 {
                     pdf = new Pdf()

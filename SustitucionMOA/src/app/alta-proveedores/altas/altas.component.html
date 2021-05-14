@@ -8,7 +8,20 @@
         <!--End Title-->
         <!--Search-->
         <div class="myRow firstSection mySearch">
+
+            <button class="btn btn-custom btn-mediano btn-radius" *ngIf="isAuthorized('VER ALTAS GRANOS')"
+                [ngClass]="{'btn-verde': idTipoProveedor === 2, 'btn-gris' : idTipoProveedor !== 2 }"
+                (click)="cambiarFiltroTipoProveedor(2)">
+                Directo Granos
+            </button>
+            <button class="btn btn-custom btn-mediano btn-radius" *ngIf="isAuthorized('VER ALTAS NO GRANOS')"
+                [ngClass]="{'btn-verde': idTipoProveedor === 3, 'btn-gris' : idTipoProveedor !== 3 }"
+                (click)="cambiarFiltroTipoProveedor(3)">
+                No Granos
+            </button>
+
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Refinar resultados</title-caps>
                 </div>
@@ -29,25 +42,6 @@
 
                     </div>
                 </div>
-
-                <div class="col-xs-6  col-sm-4 col-md-5"
-                    *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
-                    Tipo proveedor:
-                    <div class="styled-select ">
-                        <select [(ngModel)]="idTipoProveedor">
-                            <option value="0" selected>Todos</option>
-                            <option value="2" selected>Granos</option>
-                            <option value="3" selected>No granos</option>
-                            <option value="4" selected>Corredor</option>
-                        </select>
-                    </div>
-                </div>
-
-                <a (click)="getEmpresa()" href="#" style="text-decoration:none!important">
-                    <div class="btn btn-custom btn-add" style="margin-top:23px!important">Buscar
-                        <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
-                    </div>
-                </a>
             </div>
 
         </div>
@@ -59,7 +53,7 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
 
-                <div class="tableContainer">
+                <div class="tableContainer" *ngIf="idTipoProveedor === 2 || idTipoProveedor === 4">
                     <table *ngIf="isVisible()" id="tableModal"
                         class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
                         cellspacing="0" role="grid" aria-describedby="tableModal_info"
@@ -245,6 +239,168 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="tableContainer" *ngIf="idTipoProveedor === 3">
+                    <table *ngIf="isVisible()" id="tableModal"
+                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
+                        cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                        style="width: 100%; padding:10px 0; background: white !important;">
+                        <thead>
+                            <tr role="row">
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CodigoProveedor')">
+                                    Codigo<div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('CUIT')">
+                                    CUIT
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CUIT' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('RazonSocial')">
+                                    Razon Social
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'RazonSocial' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Comercial')">
+                                    Solicitante Interno
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Comercial' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('EstadoSIPER')">
+                                    Estado Siper
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoSIPER' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('UltimaEdicion')">
+                                    Ultima Edición
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'UltimaEdicion' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('FechaSolicitud')">
+                                    Fecha Solicitud
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaSolicitud' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1"
+                                    (click)="orderColumnBy('EstadoAprobacionDescripcion')">
+                                    Estado
+                                    <div>
+                                        <span>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection > 0 }"></i>
+                                            <i
+                                                [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'EstadoAprobacionDescripcion' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let empresa of data
+                                                | customFilterOr : 'CUIT' : 'RazonSocial' : filtroAlta
+                                                | customFilter : 'EstadoAprobacionDescripcion' : selectedEstado
+                                                | customNumericFilter : 'IdTipoUsuario' : idTipoProveedor : 0
+                                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}
+                                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+                                                ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0">
+                                <td>{{empresa.CodigoProveedor || "-"}}</td>
+                                <td>{{empresa.CUIT}}</td>
+                                <td>{{empresa.RazonSocial || "-"}}</td>
+                                <td>{{empresa.Comercial || "-"}}</td>
+                                <td>{{empresa.EstadoSIPER || "-"}}</td>
+                                <td>
+                                    {{ empresa.UltimaEdicion ? (empresa.UltimaEdicion.slice(6,-2) | date: 'dd/MM/yyyy')
+                                    : ""
+                                    }}
+                                </td>
+                                <td>
+                                    {{ empresa.FechaSolicitud ? (empresa.FechaSolicitud.slice(6,-2) | date:
+                                    'dd/MM/yyyy') :
+                                    "" }}
+                                </td>
+
+                                <td>{{empresa.EstadoAprobacionDescripcion}}</td>
+                                <td class="acciones">
+                                    <a (click)="copiar(empresa.Mail,empresa.Id)" id="h{{empresa.Id}}"
+                                        data-toggle="popover" data-trigger="focus" data-placement="top"
+                                        title="{{empresa.Mail}}" data-html="true"
+                                        data-content="Mail Copiado al portapapeles">
+                                        <span title="Copiar correo del proveedor" class="fa fa-envelope"
+                                            style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
+                                    </a>
+                                    <button
+                                        *ngIf="empresa.EstadoAprobacion != 3 && empresa.EstadoAprobacion != 11  && empresa.EstadoAprobacion != 15"
+                                        type="button" style="width: 70px;font-size: 12px;"
+                                        class="btn-custom btn-add btn-chico" (click)="abrirModal(empresa)">
+                                        Ver
+                                    </button>
+                                    <button type="button" style="display:none" id="openModalHiddenButton"
+                                        data-toggle="modal" data-target="#myModal"></button>
+
+                                    <button type="button"
+                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                                        class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
+                                        Alta interna
+                                    </button>
+
+                                    <button type="button"
+                                        *ngIf="empresa.EstadoAprobacion === 15 && empresa.IdTipoUsuario === 3"
+                                        class="btn-custom btn-add btn-chico" (click)="completarAlta(empresa)">
+                                        Completar Alta
+                                    </button>
+
+                                    <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
+                                        type="button" style="width: 70px;font-size: 12px;"
+                                        class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
+                                        Verificar DataAgro
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
@@ -291,8 +447,9 @@
                 <!-- DETALLE -->
 
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
+                    <!--ALTA PROVEEDOR GRANOS-->
                     <div class="row myRow firstSection roundedInfo" id="container"
-                        *ngIf="empresaSeleccionada.IdTipoUsuario != 3">
+                        *ngIf="empresaSeleccionada.IdTipoUsuario != 3 && !pantallaEditarAlta">
                         <mdb-stepper #stepper>
                             <div class="col-md-5">
                                 <mdb-step name="Step 1" label="Informe comercial"
@@ -569,8 +726,9 @@
                         </mdb-stepper>
                     </div>
 
+                    <!--ALTA NO GRANOS-->
                     <div id="divInfoNoGranos" class="row myRow firstSection roundedInfo"
-                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3">
+                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3 && !pantallaEditarAlta">
 
                         <div class="col-md-12">
                             <h3>Información del proveedor {{empresaSeleccionada.RazonSocial}}</h3>
@@ -793,8 +951,181 @@
                         </div>
 
                     </div>
+                    <!--EDITAR NO GRANOS-->
+                    <div id="divInfoNoGranos" class="row myRow firstSection roundedInfo"
+                        *ngIf="empresaSeleccionada.IdTipoUsuario == 3 && pantallaEditarAlta">
+                        <mensaje></mensaje>
+                        <div class="col-md-12">
+                            <h3>Información del proveedor {{empresaSeleccionada.RazonSocial}}</h3>
+                            <div class="form-group grey">
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Raz&oacute;n Social: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.RazonSocial"
+                                                name="empresaSeleccionada.RazonSocial" class="fourRounded"
+                                                placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
 
-                    <div class="row">
+                                    <div class="col-xs-12 col-md-6" *ngIf="empresaSeleccionada.EstadoAprobacion == 1">
+                                        CUIT: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" mask="00-00000000-0"
+                                                [(ngModel)]="empresaSeleccionada.CUIT" maxlength="13" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6" *ngIf="empresaSeleccionada.EstadoAprobacion == 2">
+                                        CUIT: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" mask="00-00000000-0"
+                                                [ngModel]="empresaSeleccionada.CUIT" maxlength="13" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-sm-12 col-md-6"
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 1">
+                                        Email: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" [(ngModel)]="empresaSeleccionada.Mail"
+                                                maxlength="100" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-6"
+                                        *ngIf="empresaSeleccionada.EstadoAprobacion == 2">
+                                        Email: *
+                                        <div class="styled-select">
+                                            <input type="text" placeholder="" [ngModel]="empresaSeleccionada.Mail"
+                                                maxlength="100" disabled />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        Telefono: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.Telefono"
+                                                name="empresaSeleccionada.Telefono" class="fourRounded" placeholder=""
+                                                aria-controls="tableModal">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Rubro: *
+                                        <div class="styled-select">
+                                            <select [(ngModel)]="IdRubro">
+                                                <option *ngFor="let x of rubros" value="{{x.Id}}">{{x.Nombre}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        Condición de Pago: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.CondicionDePago"
+                                                name="empresaSeleccionada.CondicionDePago" class="fourRounded"
+                                                placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Servicio prestado a Molinos: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.ServicioPrestado"
+                                                name="empresaSeleccionada.Rubro" class="fourRounded" placeholder=""
+                                                aria-controls="tableModal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        Estimado facturación anual a MOA ($):
+                                        <div class="styled-select">
+                                            <input type="search" numeric decimals="0"
+                                                [(ngModel)]="empresaSeleccionada.FacturacionAnual" maxlength="12"
+                                                (change)="calcularFacturacion()">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row myRow ">
+                                    <div class="col-xs-12 col-md-6">
+                                        Organización de Compra: *
+                                        <div class="styled-select">
+                                            <input type="search" [(ngModel)]="empresaSeleccionada.OrganizacionDeCompra"
+                                                name="empresaSeleccionada.OrganizacionDeCompra" class="fourRounded"
+                                                placeholder="" aria-controls="tableModal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-sm-12 col-md-6">
+                                        Razón de elección del proveedor:
+                                        <div class="styled-select">
+                                            <input type="text" class="" placeholder=""
+                                                [(ngModel)]="empresaSeleccionada.RazonDeEleccion" maxlength="200">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="RealizarAnalisisNOSIS"
+                                        placeholder="" [disabled]="nosisObligatorio"
+                                        [(ngModel)]="empresaSeleccionada.RealizarAnalisisNOSIS">
+                                    <label for="RealizarAnalisisNOSIS">Realizar Analisis NOSIS</label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="RequiereVerificacionCompras"
+                                        [disabled]="ingresoAPlanta" class="checkboxMargin" placeholder=""
+                                        [(ngModel)]="empresaSeleccionada.RequiereVerificacionCompras">
+                                    <label for="RequiereVerificacionCompras">Requiere Verificación de compras</label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="ingresoAPlanta"
+                                        class="checkboxMargin" placeholder=""
+                                        [(ngModel)]="empresaSeleccionada.IngresoAPlanta"
+                                        (change)="verificarIngresoAPlanta()">
+                                    <label for="ingresoAPlanta">Proveedor con ingreso a planta</label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="altaInterna"
+                                        class="checkboxMargin" placeholder=""
+                                        [(ngModel)]="empresaSeleccionada.AltaInterna">
+                                    <label for="altaInterna"> Alta interna</label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="checkbox" style="margin-right: 5px;" id="siperObligatorio"
+                                        class="checkboxMargin" placeholder=""
+                                        [(ngModel)]="empresaSeleccionada.SiperObligatorio">
+                                    <label for="siperObligatorio"> SIPER obligatorio</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row col-md-12">
+                            <div class="form-group col-md-12 center">
+                                <button *ngIf="empresaSeleccionada.IdTipoUsuario === 3" type="button"
+                                    class="btn-custom btn-mediano btn-add" (click)="volver()">
+                                    Regresar
+                                </button>
+                                <button *ngIf="empresaSeleccionada.IdTipoUsuario === 3" type="button"
+                                    class="btn-custom btn-mediano btn-add" (click)="editarAltaNoGranos()">
+                                    Editar Alta
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="!pantallaEditarAlta">
                         <div class="form-group align-right">
                             <button [disabled]="listaArchivos.length === 0" type="button"
                                 class="btn-custom btn-mediano btn-add" style="float: right;"
@@ -808,9 +1139,16 @@
                                 (click)="descargarFormularioNG(empresaSeleccionada.Id)">
                                 Descargar Formulario de Solicitud de alta
                             </button>
+
+                            <button *ngIf="(empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 2) || 
+                                (empresaSeleccionada.IdTipoUsuario === 3 && empresaSeleccionada.EstadoAprobacion == 1)"
+                                type="button" class="btn-custom btn-mediano btn-add" style="float: right;"
+                                (click)="abrirEditar(empresaSeleccionada.Id)">
+                                Editar Alta
+                            </button>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" *ngIf="!pantallaEditarAlta">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-header" id="headingMolinos">
@@ -957,7 +1295,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" *ngIf="!pantallaEditarAlta">
                         <table
                             *ngIf="empresaSeleccionada.HistorialAprobaciones && empresaSeleccionada.HistorialAprobaciones.length > 0"
                             id="tableModalHistorial"
@@ -990,7 +1328,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" *ngIf="!pantallaEditarAlta">
                 <div class="row" style="padding-left: 10px;padding-right: 10px;" *ngIf="(empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 7 && isAuthorized('ABM EMPRESAS APROBADOR'))
                      || (empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS OPERADOR'))
@@ -1018,7 +1356,7 @@
                 <div class="col-xs-12" style="align-items: center;">
                     <spinner-small #spinnerModal></spinner-small>
                 </div>
-                <div class="row btnSections">
+                <div class="row btnSections" *ngIf="!pantallaEditarAlta">
                     <button type="button" class="btn-custom btn-mediano btn-add"
                         *ngIf="empresaSeleccionada.EstadoAprobacion == 2 && isAuthorized('ABM EMPRESAS OPERADOR')"
                         (click)="cambiarEstado(7)">

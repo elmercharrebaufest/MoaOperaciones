@@ -6,6 +6,8 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -14,6 +16,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
+using Models = SustitucionMOAModel.Models;
+
 
 namespace SustitucionMOAUtils.Services
 {
@@ -28,7 +32,7 @@ namespace SustitucionMOAUtils.Services
             this.vendedorService = vendedorService;
         }
 
-        public void SeccionVisitada (string mailUsuario, string seccion)
+        public void SeccionVisitada(string mailUsuario, string seccion)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
             if (usuario.SeccionesVisitadas.Contains(seccion)) return;
@@ -61,7 +65,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x=> x.Mail == email);
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Mail == email);
 
                 if (usuario == null)
                 {
@@ -149,12 +153,12 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP"
             };
 
             List<string> contacto = new List<string>
             {
-                "BOL", "DATMAE", "PAR", "FIN", "CAL", "COM",
+                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                 "FINDIR", "FINCOR", "FLE"
@@ -165,7 +169,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     Id = x.Id,
                     Nombre = x.Nombre,
-                    Code = interno.Contains(x.Codigo)? "Interno" : contacto.Contains(x.Codigo)? "Contacto" : "Externo"
+                    Code = interno.Contains(x.Codigo) ? "Interno" : contacto.Contains(x.Codigo) ? "Contacto" : "Externo"
                 }).ToList();
 
             return roles;
@@ -261,14 +265,68 @@ namespace SustitucionMOAUtils.Services
             return vendedorService.GetVendedores(usuarioMail);
         }
 
-        public ProveedorDto GetProveedorPorCodigo(string codigo)
+        public ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario)
         {
-
-            Entidades.Proveedor proveedor = repositorio.Obtener<Entidades.Proveedor>(x => x.CodigoProveedor == codigo);
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigo && x.Mail == mailUsuario);
 
             if (proveedor == null)
             {
-                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigo);
+
+                if (proveedor == null)
+                {
+                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigo));
+                }
+            }
+            var ret = new ProveedorDto(proveedor);
+
+            return ret;
+        }
+
+
+        /// <summary>
+        /// Es método cumple el mismo funcionamiento que GetProveedorPorCodigo. 
+        /// La diferencia es que cuando se recibe un proveedor que no está en nuestra DB, lo crea. 
+        /// Esto lo hacemos para los corredores, de los cuales no tenemos todos los proveedores cargados
+        /// </summary>
+        /// <param name="mailUsuario"></param>
+        /// <param name="codigoCorredor"></param>
+        /// <param name="codigoProveedor"></param>
+        /// <returns></returns>
+        public ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor);
+            var usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == mailUsuario);
+            var corredor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoCorredor && x.Mail == mailUsuario);
+
+            if (proveedor == null)
+            {
+                var proveedorSAP = new VendedorDetalleConsumerMOA().request(codigoProveedor, codigoCorredor);
+
+                if (!proveedorSAP.cabeceras.Any())
+                {
+                    throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Proveedor", codigoProveedor));
+                }
+
+                var tipoProveedorGranos = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "G");
+
+                Proveedor nuevoProveedorMOA = new Proveedor
+                {
+                    IdProveedorCorredor = corredor.Id,
+                    Mail = usuario.Mail,
+                    Observaciones = "Proveedor agregado automaticamente por MOA Operaciones",
+                    CodigoProveedor = codigoProveedor,
+                    CUIT = proveedorSAP.cabeceras.FirstOrDefault().cuit,
+                    RazonSocial = proveedorSAP.cabeceras.FirstOrDefault().descripcion,
+                    EstadoAprobacion = EstadoAprobacion.Aprobado,
+                    TipoProveedor = tipoProveedorGranos
+                };
+
+                usuario.Proveedores.Add(nuevoProveedorMOA);
+
+                repositorio.GuardarCambios();
+
+                proveedor = nuevoProveedorMOA;
             }
             var ret = new ProveedorDto(proveedor);
 

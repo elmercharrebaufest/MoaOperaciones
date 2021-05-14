@@ -31,4 +31,24 @@ export class AutocompleteLocalidadService extends BaseService {
       })
       .pipe(map(this.extractData));
   }
+
+  getLocalidadById(localidadId: number) {
+    this.headers = new Headers();
+    this.headers.append("Content-Type", "application/json");
+    this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+    this.headers.append("Cache-control", "no-cache");
+    this.headers.append("Cache-control", "no-store");
+    this.headers.append("Expires", "0");
+    this.headers.append("Pragma", "no-cache");
+
+    let params: URLSearchParams = new URLSearchParams();
+    params.set("localidadId", localidadId.toString());
+
+    return this.http
+      .get("/api/AltaEmpresaGranos/GetLocalidad", {
+        search: params,
+        headers: this.headers,
+      })
+      .pipe(map(this.extractData));
+  }
 }

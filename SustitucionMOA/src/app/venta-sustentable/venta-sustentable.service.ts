@@ -90,41 +90,53 @@ export class VentaSustentableService extends BaseService {
                 map(this.extractData));
     }
 
-    verificarDeclaracion(proveedorId: number) {
+    verificarDeclaracion(proveedorId: number, cosechaId: number, CUIT: string) {
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());
+        params.set("cosechaId", cosechaId.toString());
+        params.set("CUITDeclaracion", CUIT)
         return this.http
             .get('/api/CampoSustentable/VerificarDeclaracion', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
-
-    firmarDeclaracion(proveedorId: number, hectareasTotales: number) {
+    generarDeclaracionProveedor(proveedorId: number, cosechaId: number, hectareasTotales: number, CUIT: string, RazonSocial: string) {
         return this.http
-            .post('/api/CampoSustentable/FirmarDeclaracion', { proveedorId: proveedorId, hectareasTotales: hectareasTotales }, this.headersPost).pipe(
+            .post('/api/CampoSustentable/GenerarDeclaracionProveedor', {
+                proveedorId: proveedorId,
+                cosechaId: cosechaId,
+                hectareasTotales: hectareasTotales,
+                CUITDeclaracion: CUIT,
+                RazonSocialDeclaracion: RazonSocial
+            }, this.headersPost).pipe(
                 map(this.extractData));
     }
 
-    generarDeclaracionProveedor(proveedorId: number, hectareasTotales: number) {
-        return this.http
-            .post('/api/CampoSustentable/GenerarDeclaracionProveedor', { proveedorId: proveedorId, hectareasTotales: hectareasTotales }, this.headersPost).pipe(
-                map(this.extractData));
-    }
-
-    imprimirDeclaracion(proveedorId: number) {
+    imprimirDeclaracion(proveedorId: number, cosechaId: number, CUIT: string) {
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());
+        params.set("cosechaId", cosechaId.toString());
+        params.set("CUIT", CUIT);
         return this.http
             .get('/api/CampoSustentable/ImprimirDeclaracion', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
 
-    adjuntarDeclaracionFirmada(proveedorId: number, fileSubido: File) {
+    adjuntarDeclaracionFirmada(proveedorId: number, cosechaId: number, CUITDeclaracion: string, fileSubido: File) {
         var payload = new FormData();
 
         payload.append('proveedorId', proveedorId.toString());
+        payload.append('cosechaId', cosechaId.toString());
+        payload.append('CUITDeclaracion', CUITDeclaracion);
         payload.append('fileSubido', fileSubido);
         return this.http
             .post('/api/CampoSustentable/AdjuntarDeclaracionFirmada', payload, this.headersPost).pipe(
                 map(this.extractData));
+    }
+
+    exportExcel() {
+        return this.http
+            .get('/api/CampoSustentable/ExportarCamposProveedores').pipe(
+                map(this.extractData)
+            );
     }
 }

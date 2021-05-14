@@ -2,6 +2,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { StepsModule } from 'primeng/steps';
+
 import { FiltroFechaComponent } from "./view-child/filtro-fecha/filtro-fecha.component";
 import { DropdownComponent } from "./view-child/dropdown/dropdown.component";
 import { MensajeComponent } from "./view-child/mensaje/mensaje.component";
@@ -29,6 +31,7 @@ import { SpinnerModule } from 'primeng/spinner';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NumericDirective } from './directive/numeric.directive';
 import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
+import { StepperComponent } from './view-child/stepper/stepper.component';
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -39,12 +42,13 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
         AutoCompleteModule],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
-        CartaPresentacionComponent, NumericDirective],
+        CartaPresentacionComponent, NumericDirective, StepperComponent],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
-        CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective],
+        CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective,
+        StepperComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }

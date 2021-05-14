@@ -12,9 +12,11 @@ namespace SustitucionMOAUtils.Email
 {
     public class EmailSender
     {
-        public static void send(ContactoContenido contactoContenido, byte[] file, string fileName) {
+        public static void send(ContactoContenido contactoContenido, byte[] file, string fileName)
+        {
 
-            if (!EmailConfig.getEmailHab()) {
+            if (!EmailConfig.getEmailHab())
+            {
                 return;
             }
 
@@ -77,6 +79,7 @@ namespace SustitucionMOAUtils.Email
             SmtpClient client = GetSmtpClient();
             var template = File.ReadAllText(reporte.Template);
             var cuerpo = string.Format(template, reporte.GetFecha(), reporte.GetBody());
+
             MailMessage mail = new MailMessage
             {
                 From = new MailAddress(EmailConfig.getEmailAddFrom()),
@@ -85,13 +88,17 @@ namespace SustitucionMOAUtils.Email
                 IsBodyHtml = true
             };
 
-            foreach (Attachment attachment in reporte.Adjuntos)
+            if (reporte.Adjuntos != null)
             {
-                mail.Attachments.Add(attachment);
+                foreach (Attachment attachment in reporte.Adjuntos)
+                {
+                    mail.Attachments.Add(attachment);
+                }
             }
 
             //Mas de un destinatario
-            if (reporte.Destinatario.Contains(",")){
+            if (reporte.Destinatario.Contains(","))
+            {
                 foreach (var destinatario in reporte.Destinatario.Split(','))
                 {
                     mail.To.Add(destinatario);
@@ -102,22 +109,25 @@ namespace SustitucionMOAUtils.Email
             {
                 mail.To.Add(reporte.Destinatario);
             }
-
             client.Send(mail);
+
         }
 
-        private static SmtpClient GetSmtpClient() {
+        private static SmtpClient GetSmtpClient()
+        {
             SmtpClient client = new SmtpClient
             {
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
+               // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
                 Host = EmailConfig.getEmailHost()
             };
             return client;
         }
 
-        private static string BodyBuilder(ContactoContenido contactoContenido) {
+        private static string BodyBuilder(ContactoContenido contactoContenido)
+        {
 
             if (contactoContenido.camposAdicionales == "A")
             {
@@ -137,7 +147,8 @@ namespace SustitucionMOAUtils.Email
                         + "Motivo: " + contactoContenido.motivo + "\n\n"
                         + "Reclamo: " + contactoContenido.comentario;
             }
-            else {
+            else
+            {
                 return "Nro. Proveedor: " + contactoContenido.proveedor + "\n\n"
                         + "Contacto: " + contactoContenido.nombre + "\n\n"
                         + "Mail de Contacto: " + contactoContenido.email + "\n\n"
@@ -205,7 +216,7 @@ namespace SustitucionMOAUtils.Email
                 throw;
             }
         }
-      
+
 
     }
 }

@@ -8,6 +8,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.CredentialService;
 using System;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -42,6 +44,10 @@ namespace SustitucionMOAUtils.Services
 
             ValidarCampo(usuario, campoProveedor, archivoKmz);
 
+
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
+
+            campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
             campoProveedor.Archivo = (new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" });
@@ -86,12 +92,15 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.FechaModificacion = DateTime.Now;
             /*
             ValidarCampo(usuario, campoProveedor, archivoKmz);
+            */
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
             campoProveedor.Longitud = campoProveedorObj.Longitud;
-            campoProveedor.Latitud = campoProveedorObj.Latitud;*/
+            campoProveedor.Latitud = campoProveedorObj.Latitud;
+            campoProveedor.CampoCosecha.ToneladasAprobadas = campoProveedorObj.CampoCosecha.ToneladasAprobadas;
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
+            campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
 
             repositorio.GuardarCambios();
 
@@ -122,10 +131,10 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.CampoSustentableBorrado;
         }
 
-        public byte[] ImprimirDeclaracion(int proveedorId)
+        public byte[] ImprimirDeclaracion(int proveedorId, int cosechaId, string CUIT)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            var cosecha = ObtenerCosechaActual();
+            var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
 
             var allCampos = repositorio.Listar<CampoProveedor, CamposSustentableReporte>
                 (c => new CamposSustentableReporte
@@ -139,15 +148,17 @@ namespace SustitucionMOAUtils.Services
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.Proveedor_Id == proveedorId && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
+                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
 
-            DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
+
+            DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
-                CUIT = proveedor.CUIT,
-                RazonSocial = proveedor.RazonSocial,
-                Fecha = proveedor.FechaFirmaDeclaracionCampoSustentable?.ToString("dd/MM/yyyy"),
-                CantidadParteSoja = proveedor.HectareasDeclaracionCampoSustentable.Value,
+                CUIT = declaracion.CUIT,
+                RazonSocial = declaracion.RazonSocial,
+                Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
+                CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
                 Campos = allCampos
             };
 
@@ -166,8 +177,10 @@ namespace SustitucionMOAUtils.Services
 
                 pdfReaderCampos.SelectPages("2");
 
-                var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.DeclaracionCampoSustentable);
-                byte[] fileBytes = File.ReadAllBytes(archivoDeclaracion.Ruta);
+                //var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
+
+                //var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
+                byte[] fileBytes = File.ReadAllBytes(declaracion.Archivo.Ruta);
 
                 PdfReader pdfReaderDeclaracion = new PdfReader(fileBytes);
 
@@ -185,7 +198,7 @@ namespace SustitucionMOAUtils.Services
             return archivoResult;
         }
 
-        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentable datos)
+        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
         {
             var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
             var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
@@ -236,7 +249,7 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
         {
-            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id).DeclaracionFirmada)
+            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
             {
                 throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
             }
@@ -252,7 +265,7 @@ namespace SustitucionMOAUtils.Services
 
             string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
 
-            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.Proveedor.CUIT);
+            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
 
             string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
@@ -268,28 +281,41 @@ namespace SustitucionMOAUtils.Services
             archivoKmz.SaveAs(rutaArchivo);
         }
 
-        public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId)
+        public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            Cosecha cosechaActual = ObtenerCosechaActual();
+            var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
+
+            string razonSocial = "";
+
+            if (string.IsNullOrEmpty(CUITDeclaracion))
+            {
+                CUITDeclaracion = proveedor.CUIT;
+                razonSocial = proveedor.RazonSocial;
+            }
 
             var estado = new EstadoDeclaracionSustentableDto
             {
                 DeclaracionFirmada = false,
-                CosechaActual = cosechaActual.Nombre,
-                CUIT = proveedor.CUIT,
-                RazonSocial = proveedor.RazonSocial,
+                CosechaActual = cosecha.Nombre,
+                CUIT = CUITDeclaracion,
+                RazonSocial = razonSocial,
                 HectareasDeclaracionCampoSustentable = 0,
                 OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad
             };
 
-            if (proveedor.FechaFirmaDeclaracionCampoSustentable != null)
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUITDeclaracion);
+
+            if (declaracion != null)
             {
-                if (proveedor.FechaFirmaDeclaracionCampoSustentable > cosechaActual.Inicio)
+                if (declaracion.FechaFirma > cosecha.Inicio)
                 {
-                    estado.DeclaracionFirmada = proveedor.Archivos.Any(a => a.FileKey == FileKeys.DeclaracionCampoSustentable);
-                    estado.OpcionDeclaracionCampoSustentable = proveedor.OpcionDeclaracionCampoSustentable;
-                    estado.HectareasDeclaracionCampoSustentable = proveedor.HectareasDeclaracionCampoSustentable;
+                    var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
+                    estado.DeclaracionFirmada = !string.IsNullOrEmpty(declaracion.Archivo?.Ruta);
+                    estado.OpcionDeclaracionCampoSustentable = declaracion.OpcionDeclarada;
+                    estado.HectareasDeclaracionCampoSustentable = declaracion.HectareasDeclaradas;
+                    estado.CUIT = declaracion.CUIT;
+                    estado.RazonSocial = declaracion.RazonSocial;
                 }
             }
 
@@ -301,27 +327,13 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
         }
 
-        public string FirmarDeclaracion(string mailUsuario, int proveedorId, double hectareasTotales)
+        public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido)
         {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            if (fileSubido == null)
+            {
+                throw new ValidationCustomException("Debe subir el archivo de declaración en formato PDF");
+            }
 
-            ValidarUsuario(usuario, proveedorId);
-
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-
-            proveedor.FechaFirmaDeclaracionCampoSustentable = DateTime.Now;
-
-            proveedor.OpcionDeclaracionCampoSustentable = hectareasTotales > 0 ? OpcionesDeclaracionCampoSustentable.Parcial : OpcionesDeclaracionCampoSustentable.Totalidad;
-
-            proveedor.HectareasDeclaracionCampoSustentable = hectareasTotales;
-
-            repositorio.GuardarCambios();
-
-            return SuccessMsg.DeclaracionCampoSustentableFirmada;
-        }
-
-        public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, HttpPostedFileBase fileSubido)
-        {
             if (Path.GetExtension(fileSubido.FileName).ToLower() != ".pdf")
             {
                 throw new ValidationCustomException("Debe subir el archivo de declaración en formato PDF");
@@ -335,15 +347,28 @@ namespace SustitucionMOAUtils.Services
 
             string fileName = Path.GetFileName(fileSubido.FileName);
 
-            var fileKey = FileKeys.DeclaracionCampoSustentable;
+            //var fileKey = FileKeys.DeclaracionCampoSustentable;
+            var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
+
+            if (string.IsNullOrEmpty(CUITDeclaracion))
+            {
+                CUITDeclaracion = proveedor.CUIT;
+            }
+
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUITDeclaracion);
+
+            if (declaracion == null)
+            {
+                throw new ValidationCustomException("Debe haber imprimido la declaración antes de adjuntarla.");
+            }
 
             string rutaArchivosProveedores = ConfigurationManager.AppSettings["RutaArchivosProveedores"];
 
-            string rutaCarpeta = string.Concat(rutaArchivosProveedores, "/", proveedor.CUIT, "/", proveedor.Id, "/", fileKey);
+            string rutaCarpeta = string.Concat(rutaArchivosProveedores, "/", CUITDeclaracion, "/", proveedor.Id, "/", fileKey);
 
             string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
 
-            proveedor.FechaFirmaDeclaracionCampoSustentable = DateTime.Now;
+            declaracion.FechaFirma = DateTime.Now;
 
             Directory.CreateDirectory(rutaCarpeta);
 
@@ -355,14 +380,14 @@ namespace SustitucionMOAUtils.Services
                 file.Delete();
             }
 
-            var archivoRemover = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
+            //var archivoRemover = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
 
-            if (archivoRemover != null)
-            {
-                repositorio.Remover(archivoRemover);
-            }
+            //if (archivoRemover != null)
+            //{
+            //    repositorio.Remover(archivoRemover);
+            //}
 
-            proveedor.Archivos.Add(new Archivo { FileKey = fileKey, Ruta = rutaArchivo });
+            declaracion.Archivo.Ruta = rutaArchivo;
 
             fileSubido.SaveAs(rutaArchivo);
 
@@ -371,7 +396,7 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.DeclaracionCampoSustentableFirmada;
         }
 
-        public byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, double hectareasTotales)
+        public byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
@@ -379,23 +404,52 @@ namespace SustitucionMOAUtils.Services
 
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-            proveedor.FechaFirmaDeclaracionCampoSustentable = DateTime.Now;
+            if (string.IsNullOrEmpty(CUITDeclaracion))
+            {
+                CUITDeclaracion = proveedor.CUIT;
+                razonSocialDeclaracion = proveedor.RazonSocial;
+            }
 
-            proveedor.OpcionDeclaracionCampoSustentable = hectareasTotales > 0 ? OpcionesDeclaracionCampoSustentable.Parcial : OpcionesDeclaracionCampoSustentable.Totalidad;
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUITDeclaracion);
 
-            proveedor.HectareasDeclaracionCampoSustentable = hectareasTotales;
+            if (declaracion != null)
+            {
+                declaracion.FechaFirma = DateTime.Now;
+                declaracion.OpcionDeclarada = hectareasTotales > 0 ? OpcionesDeclaracionCampoSustentable.Parcial : OpcionesDeclaracionCampoSustentable.Totalidad;
+                declaracion.HectareasDeclaradas = hectareasTotales;
+                declaracion.Proveedor_Id = proveedorId;
+                declaracion.RazonSocial = razonSocialDeclaracion;
+            }
+            else
+            {
+                var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
+
+                declaracion = new DeclaracionCampoSustentable
+                {
+                    Proveedor_Id = proveedorId,
+                    Cosecha_Id = cosechaId,
+                    FechaFirma = DateTime.Now,
+                    OpcionDeclarada = hectareasTotales > 0 ? OpcionesDeclaracionCampoSustentable.Parcial : OpcionesDeclaracionCampoSustentable.Totalidad,
+                    HectareasDeclaradas = hectareasTotales,
+                    CUIT = CUITDeclaracion,
+                    RazonSocial = razonSocialDeclaracion,
+                    Archivo = new Archivo { FileKey = fileKey, Ruta = "" }
+                };
+
+                repositorio.Agregar(declaracion);
+            }
 
             repositorio.GuardarCambios();
 
-            var cosecha = ObtenerCosechaActual();
+            var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
 
-            DeclaracionCampoSustentable datos = new DeclaracionCampoSustentable
+            DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
-                CUIT = proveedor.CUIT,
-                RazonSocial = proveedor.RazonSocial,
-                Fecha = proveedor.FechaFirmaDeclaracionCampoSustentable?.ToString("dd/MM/yyyy"),
-                CantidadParteSoja = proveedor.HectareasDeclaracionCampoSustentable.Value,
+                CUIT = declaracion.CUIT,
+                RazonSocial = declaracion.RazonSocial,
+                Fecha = declaracion.FechaFirma?.ToString("dd/MM/yyyy"),
+                CantidadParteSoja = declaracion.HectareasDeclaradas.Value,
                 Campos = null
             };
 
@@ -419,53 +473,35 @@ namespace SustitucionMOAUtils.Services
 
         public List<Cosecha> ObtenerCosechas()
         {
-            return repositorio.Listar<Cosecha>();
+            return repositorio.Listar<Cosecha>(c => DateTime.Now >= c.Inicio && DateTime.Now <= c.Fin);
         }
 
         public List<CampoProveedorListadoDto> Listar(string mailUsuario)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-            List<CampoProveedorListadoDto> listado;
-
-            if (usuario.ObtenerPermisos().Contains("VER TODOS CAMPOS SUSTENTABLE"))
+            return ListarCampos(usuario, cp => new CampoProveedorListadoDto()
             {
-                listado = repositorio
-                               .Listar<CampoProveedor>(p => !p.Borrado)
-                               .Select(cp => new CampoProveedorListadoDto
-                               {
-                                   IdScato = cp.CampoCosecha.Campo.IdScato,
-                                   NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                                   HectareasSoja = cp.HectareasSoja,
-                                   HectareasTotales = cp.HectareasTotales,
-                                   NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                                   ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                                   CampoCosechaId = cp.CampoCosecha_Id,
-                                   Proveedor = new ProveedorDto(cp.Proveedor),
-                                   CodigoProveedor = cp.Proveedor.CodigoProveedor
-                               }).ToList();
-            }
-            else
-            {
-                var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
-                listado = repositorio
-                         .Listar<CampoProveedor>(p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado)
-                         .Select(cp => new CampoProveedorListadoDto
-                         {
-                             IdScato = cp.CampoCosecha.Campo.IdScato,
-                             NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
-                             HectareasSoja = cp.HectareasSoja,
-                             HectareasTotales = cp.HectareasTotales,
-                             NombreCampo = cp.CampoCosecha.Campo.Nombre,
-                             ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
-                             CampoCosechaId = cp.CampoCosecha_Id,
-                             Proveedor = new ProveedorDto(cp.Proveedor),
-                             CodigoProveedor = cp.Proveedor.CodigoProveedor
-                         }).ToList();
-            }
-            return listado;
+                IdScato = cp.CampoCosecha.Campo.IdScato,
+                NombreCosecha = cp.CampoCosecha.Cosecha.Nombre,
+                HectareasSoja = cp.HectareasSoja,
+                HectareasTotales = cp.HectareasTotales,
+                NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
+                CampoCosechaId = cp.CampoCosecha_Id,
+                Proveedor = new ProveedorDto()
+                {
+                    Id = cp.Proveedor.Id,
+                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    RazonSocial = cp.Proveedor.RazonSocial
+                },
+                CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                CUITProveedor = cp.CUIT,
+                RazonSocialProveedor = cp.RazonSocial,
+                CosechaId = cp.CampoCosecha.Cosecha_Id,
+                MotivoRechazo = cp.CampoCosecha.MotivoRechazo,
+            });
         }
-
 
         public CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId)
         {
@@ -480,17 +516,71 @@ namespace SustitucionMOAUtils.Services
                                 HectareasSoja = cp.HectareasSoja,
                                 HectareasTotales = cp.HectareasTotales,
                                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                                Localidad_Id = cp.CampoCosecha.Campo.Localidad_Id,
                                 ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
                                 Longitud = cp.Longitud,
                                 CampoCosechaId = cp.CampoCosecha_Id,
-                                ProveedorNombre = cp.Proveedor.RazonSocial,
+                                ProveedorNombre = cp.RazonSocial,
                                 LocalidadNombre = cp.CampoCosecha.Campo.Localidad.Nombre,
                                 CampoSustentableId = cp.CampoCosecha.CampoSustentable_Id,
                                 CosechaId = cp.CampoCosecha.Cosecha_Id,
                             });
 
             return campo;
+        }
+
+        public string ExportarCamposProveedores(string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var esAdminCampos = usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE");
+            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas" };
+            dynamic listado;
+
+            if (esAdminCampos)
+            {
+                headersBase.Insert(0, "Id Scato");
+                listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
+                {
+                    Campo = cp.CampoCosecha.Campo.Nombre,
+                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                    HectareasSoja = cp.HectareasSoja,
+                    HectareasTotales = cp.HectareasTotales,
+                    IdScato = cp.CampoCosecha.Campo.IdScato,
+                    Motivo = cp.CampoCosecha.MotivoRechazo,
+                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                });
+            }
+            else
+            {
+                listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
+                {
+                    Campo = cp.CampoCosecha.Campo.Nombre,
+                    CodigoProveedor = cp.Proveedor.CodigoProveedor,
+                    Cosecha = cp.CampoCosecha.Cosecha.Nombre,
+                    HectareasSoja = cp.HectareasSoja,
+                    HectareasTotales = cp.HectareasTotales,
+                    Motivo = cp.CampoCosecha.MotivoRechazo,
+                    ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas
+                });
+
+            }
+
+            return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
+        }
+
+        private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
+        {
+            if (usuario.TienePermiso("VER TODOS CAMPOS SUSTENTABLE"))
+            {
+                return repositorio.Listar(proyeccion, p => !p.Borrado);
+            }
+            else
+            {
+                var proveedoresIds = usuario.Proveedores.Select(pr => pr.Id);
+                return repositorio.Listar(proyeccion, p => proveedoresIds.Contains(p.Proveedor_Id) && !p.Borrado);
+            }
         }
     }
 }

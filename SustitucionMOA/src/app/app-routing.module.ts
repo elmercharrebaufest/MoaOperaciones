@@ -19,6 +19,9 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
+import { SolpComponent } from "./compras/solp.component";
+import { DashboardComponent } from './compras/dashboard/dashboard.component' 
+
 
 const appRoutes: Routes = [
   // { path: "documentacion", component: DocumentacionComponent },
@@ -143,6 +146,8 @@ const appRoutes: Routes = [
         path: "consulta",
         loadChildren: "./consulta/consulta.module#ConsultaModule",
       },
+      { path: "logPesificacion",  loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
+      { path: "compras", loadChildren:"./compras/compras.module#ComprasModule" },
     ],
   },
   { path: "**", component: HomeComponent },

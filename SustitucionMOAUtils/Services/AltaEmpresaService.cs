@@ -34,25 +34,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                //{
-                //    List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                //                     x =>
-                //                     (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                //                        || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                //                        || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                //                        || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                //                        || x.EstadoAprobacion == EstadoAprobacion.Aprobado
-                //                        || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                //                        || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
-                //                        || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
-                //                        || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
-                //                        || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
-                //                        || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                //                        || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
-                //                    && x.HistorialAprobaciones.Count > 0
-                //                    && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
-                //                    );
-
                 List<ProveedorAltaDto> proveedorDtos = 
                     repositorio
                         .Listar<Proveedor>(
@@ -547,7 +528,17 @@ namespace SustitucionMOAUtils.Services
         {
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
             var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "aprobada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
-            string asunto = "Molinos Agro – Alta generada pendiente de envío documentación original.";
+            string asunto;
+
+            if(proveedor.TipoProveedor.NombreCorto == "NG")
+            {
+                asunto = "Molinos Agro – Alta generada con éxito";
+            }
+            else
+            {
+                asunto = "Molinos Agro – Alta generada pendiente de envío documentación original.";
+            }
+          
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 

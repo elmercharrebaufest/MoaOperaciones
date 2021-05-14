@@ -29,8 +29,8 @@ export class SeleccionarProveedorService extends BaseService {
 
   public obtenerProveedorPorCodigo(codigoProveedor: string): Observable<any> {
     let params: URLSearchParams = new URLSearchParams();
-    params.set("codigo", codigoProveedor);
-    return this.http.get("/api/Usuario/GetProveedorPorCodigo", { search: params, headers: this.headers, })
+    params.set("codigoProveedor", codigoProveedor);
+    return this.http.get("/api/Usuario/VerificarYObtenerProveedor", { search: params, headers: this.headers, })
       .pipe(timeoutWith(30000, observableThrowError(
         new Error(
           "Tiempo de respuesta agotado, por favor intentar nuevamente"

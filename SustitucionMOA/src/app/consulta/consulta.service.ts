@@ -43,11 +43,26 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public AgregarConsulta(consulta: object) {
-        let body = JSON.stringify(consulta);
-        let params: URLSearchParams = new URLSearchParams();
+    public AgregarConsulta(consulta: object, comentario: Comentario, archivo: any  = null) {
+        let consultaJson = JSON.stringify(consulta);
+        let comentarioJson = JSON.stringify(comentario);
+        var payload = new FormData();
+
+        if(archivo != null)
+        {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append('consultaJson', consultaJson);
+        payload.append('comentarioJson', comentarioJson);
+        payload.append("file", archivo);
+        
         return this.http
-            .post('/api/consulta/Consulta', consulta, { search: params, headers: this.headers }).map(this.extractData);
+            .post('/api/consulta/Consulta',  payload , this.headers).pipe(
+                map(this.extractData));
     }
 
     public getCombos(): Observable<any> {
@@ -70,12 +85,24 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public agregarComentario(consultaId: string, comentario: Comentario): Observable<any>{
-        let body = JSON.stringify(comentario);
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('consultaId', consultaId.toString());
+    public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any>{
+        let comentarioJson = JSON.stringify(comentario);
+        var payload = new FormData();
+        
+        if(archivo != null)
+        {
+            for (let i = 0; i < archivo.length; i++) {
+                let fileToUpload = archivo[i];
+                payload.append("file", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        payload.append('comentarioJson', comentarioJson);
+        payload.append('consultaId', consultaId.toString());
+        payload.append("file", archivo);
+
         return this.http
-            .post('/api/consulta/Comentarios', comentario, { search: params, headers: this.headers }).map(this.extractData);
+            .post('/api/consulta/Comentarios', payload, this.headers).map(this.extractData);
     }
 
     public getDetalleConsulta(consultaId: string){

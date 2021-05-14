@@ -47,7 +47,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   localidadId: any;
   provinciaId: any;
-
+  nombreCosecha: string;
   sojaParcial: boolean;
   sojaTotal: boolean;
 
@@ -56,6 +56,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   hectareasSoja: number;
   latitud: string;
   longitud: string;
+  CUIT: string;
   file: any;
 
   proveedorSelected: any;
@@ -101,10 +102,17 @@ export class AltaComponent extends BaseComponent implements OnInit {
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
           this.proveedorId = result.Id;
-          this.declaracionComformidad.proveedorId = this.proveedorId;
+          this.CUIT = result.CUIT;
+          this.declaracionComformidad.CUITDeclaracion = result.CUIT;
+          this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
 
-          if (this.proveedorId > 0)
+          if (this.proveedorId > 0 && this.cosechaId > 0) {
+            this.declaracionComformidad.proveedorId = this.proveedorId;
+            this.declaracionComformidad.cosechaId = this.cosechaId;
+            this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
             this.declaracionComformidad.verificarDeclaracion();
+          }
+
           return result.Id;
         }
       },
@@ -115,6 +123,24 @@ export class AltaComponent extends BaseComponent implements OnInit {
     );
   }
 
+  onChangeCosecha() {
+
+    if (this.CUIT.length != 11) {
+      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+      setTimeout(() => {
+        this.cosechaId = 0;
+      }, 100);
+      return false
+    }
+
+    if (this.proveedorId > 0 && this.cosechaId > 0) {
+      this.declaracionComformidad.proveedorId = this.proveedorId;
+      this.declaracionComformidad.cosechaId = this.cosechaId;
+      this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
+      this.declaracionComformidad.verificarDeclaracion();
+    }
+
+  }
   campoProveedorAgregar() {
     this.blockUI.start('Informando campo sustentable.');
 
@@ -138,8 +164,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     campoProveedor = {
       HectareasTotales: this.hectareasTotales, HectareasSoja: this.hectareasSoja,
+      CUIT: this.CUIT,
       Latitud: this.latitud, Longitud: this.longitud, Proveedor_Id: this.proveedorId, CampoCosecha: campoCosecha
     }
+
 
     this.mensajeComponent.setMsgsEmpty();
     this.spinnerComponent.showIt();
@@ -148,6 +176,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
       this.subscription = this.service.campoProveedorAgregar(campoProveedor, this.file).subscribe(
         result => {
           this.spinnerComponent.hideIt();
+          this.blockUI.stop();
+
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
@@ -155,7 +185,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
           } else if (result.info != undefined) {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
-            this.blockUI.stop();
 
             this.mensajeComponent.setSuccessMsg(result.Mensaje);
             setTimeout(() => {
@@ -180,6 +209,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   }
 
+  verificarCUITIngresado() {
+    this.declaracionComformidad.CUITDeclaracion = this.CUIT;
+    if (this.CUIT.length == 11 && this.cosechaId > 0) {
+      this.declaracionComformidad.verificarDeclaracion();
+    }
+  }
+
   getCosechas() {
     this.mensajeComponent.setMsgsEmpty();
     this.spinnerComponent.showIt();
@@ -195,7 +231,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.mensajeComponent.setInfoMsg(result.info);
           } else {
             this.cosechas = result;
-            this.cosechaId = this.cosechas[0].Id;
+            this.cosechas = [{ Id: 0, Nombre: "Seleccione" }, ...this.cosechas];
+
+            this.cosechaId = 0;
+            this.onChangeCosecha();
           }
         },
         error => {
@@ -223,6 +262,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
     if (!this.localidadId || this.localidadId <= 0) {
       this.mensajeComponent.setErrorMsg("Falta seleccionar la localidad.");
       return true;
+    }
+
+    if (this.CUIT.length != 11) {
+      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+      return false
     }
 
     if (!this.cosechaId || this.cosechaId <= 0) {
@@ -269,5 +313,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
   redirigirAListado() {
     this.goToSeccion('/sustentable/listado-campos');
 
+  }
+
+  onResultadoDeclaracion(result: boolean) {
+    if (!result)
+      this.cosechaId = 0;
   }
 }

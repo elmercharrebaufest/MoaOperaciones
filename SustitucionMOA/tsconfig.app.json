@@ -24,7 +24,9 @@
     "src/app/pago/no-granos/pago-no-granos.module.ts",
     "src/app/common/shared.module.ts",
     "src/app/crear-contrato/crear-contrato.module.ts",
-    "src/app/common/models/Seccion.ts"
+    "src/app/common/models/Seccion.ts",
+    "src/app/compras/compras.module.ts"
+
   ],
   "include": [
     "src/**/*.d.ts"

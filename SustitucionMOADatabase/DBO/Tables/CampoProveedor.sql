@@ -10,6 +10,8 @@
     [FechaCreacion] DATETIME NULL, 
     [FechaModificacion] DATETIME NULL, 
     [Borrado] BIT NULL, 
+    [CUIT] NVARCHAR(15) NULL, 
+    [RazonSocial] NVARCHAR(200) NULL, 
     PRIMARY KEY(CampoCosecha_Id, Proveedor_Id),
     CONSTRAINT [FK_CampoProveedor_ToArchivo] FOREIGN KEY ([Archivo_Id]) REFERENCES [Archivo]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToCampoCosecha] FOREIGN KEY ([CampoCosecha_Id]) REFERENCES [CampoCosecha]([Id]),

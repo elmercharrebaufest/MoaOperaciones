@@ -1,4 +1,4 @@
-﻿import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
 import { PesificacionService } from './pesificacion.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -19,7 +19,7 @@ declare var $: any;
     providers: [PesificacionService]
 })
 
-export class PesificacionComponent extends ListBaseComponent implements OnInit, AfterViewInit {
+export class PesificacionComponent extends ListBaseComponent implements OnInit, OnDestroy {
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -81,8 +81,11 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                         this.contratos = new Array();
                     } else if (result.info != undefined) {
                         this.contratos = new Array();
+                        this.verificarPermiso();
+
                     } else {
                         this.contratos = result;
+                        this.verificarPermiso();
                     }
                 },
                 error => {
@@ -100,12 +103,14 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
         return false; //<-- Prevent Refresh
     }
 
-    ngAfterViewInit() {
+    verificarPermiso() {
         if (this.securityService.tienePermiso("PESIFICACION")) {
             this.permitirCarga = true;
         }
         else {
-            document.getElementById("linkPendiente").click();
+            this.permitirCarga = false;
+            if (document.getElementById("linkPendiente") != null)
+                document.getElementById("linkPendiente").click();
         }
     }
 
@@ -127,9 +132,11 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                     this.mensajeComponent.setInfoMsg(result.info);
                 } else {
                     this.fecha = result;
+
                     this.contrato = "";
                     this.fijacion = "";
                     this.cantidad = 0;
+                    this.verificarPermiso();
                     this.getListaContratos();
                 }
             },
@@ -137,7 +144,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                 this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
                 return false;
-            }
+            },
 
         );
         return false;
@@ -200,7 +207,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                     this.getListaContratos();
                     this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                 }
-                $("#myModalConfirmacion").hide();
+                $("#hidemyModal").click();
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 return false;

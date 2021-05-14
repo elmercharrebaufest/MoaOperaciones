@@ -28,6 +28,19 @@ namespace SustitucionMOAModel.Dto
         public int ProveedorId { get; set; }
         public string CodigoProveedor { get; set; }
 
+        public string CUITProveedor { get; set; }
+
+        public string RazonSocialProveedor { get; set; }
+
+        public int CosechaId { get; set; }
+        public string MotivoRechazo { get; set; }
+        public string Estado { 
+            get
+            {
+                return ToneladasAprobadas > 0 ? "Aprobado" : ToneladasAprobadas == 0 ? "Desaprobado" : "En gestión";
+            }
+        }
+
         public override bool Equals(object obj)
         {
             return obj is CampoProveedorListadoDto dto &&

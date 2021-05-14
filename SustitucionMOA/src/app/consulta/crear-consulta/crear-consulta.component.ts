@@ -71,7 +71,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     codigoCorredor: any;
     codigoProveedor: any;
-    razonSocialProveedor: string;
+    razonSocialProveedor: string = "";
     razonSocialCorredor: string;
 
     subcategoria: Subcategoria = {
@@ -84,7 +84,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategoriaCode: any;
 
     proveedorSelected: any;
-
+    listaArchivos: Array<File> = new Array<File>();
 
     Detalle: any;
     nuevoComentario: any;
@@ -102,7 +102,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     fecha: Date;
     importe: any;
     impuesto: any;
-    file: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
 
@@ -114,9 +113,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     cliente: any;
 
     fechaFactura: string;
-
-
     prueba: any;
+
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
     }
@@ -134,6 +132,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
         else {
             this.codigoProveedor = sessionStorage.getItem("proveedor");
         }
+        $(".adjuntarArchivo").click(function () {
+            $(".adjuntarArchivo1").click();
+        });
     }
 
     ngAfterViewInit(): void {
@@ -157,32 +158,18 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
+        let file;
+
         if (fileList.length > 0) {
             this.files = fileList;
+            for (let i = 0; i < fileList.length; i++) {
+                file = fileList[i];
+                this.listaArchivos.push(file);
+            }
         }
-    }
 
-    vaciarCamposAdicionales() {
-        this.contrato = '';
-        this.razonSocial = '';
-        this.cuit = '';
-        this.nombreVendedor = '';
-        this.comprobante = '';
-        this.fechaPago = '';
-        this.importe = '';
-        this.impuesto = '';
-    }
-
-    vaciarCampos() {
-        this.vaciarCamposAdicionales();
-        this.proveedor = "";
-        this.nombre = "";
-        this.email = "";
-        this.telefono = "";
-        this.categoriaDropdownComponent.setSelectItem("");
-        this.comentario = "";
-        this.file = null;
-        this.fileInput.nativeElement.value = "";
+        let $formInput = $('input[type=file]');
+        $formInput.val(null);
     }
 
     getCombos() {
@@ -200,7 +187,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
-                        this.proveedorId = result.proveedorID
+                        this.proveedorId = result.proveedorId
                     }
                 },
                 error => {
@@ -224,6 +211,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
+            if(this.esCorredor){
+                this.floatMsgService.setErrorMsg("Recuerde seleccionar un Proveedor.");
+                return true;
+            }
             this.floatMsgService.setErrorMsg("El campo proveedor esta vacio.");
             return true;
         }
@@ -310,7 +301,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
-            if (this.files == null || this.files.length < 2) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 2) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
@@ -324,19 +315,19 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo Impuesto esta vacio.");
                 return true;
             }
-            if (this.files == null || this.files.length < 1) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar constancia");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF') {
-            if (this.files == null || this.files.length < 1) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar Informe Comercial");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP') {
-            if (this.files == null || this.files.length < 1) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar Carta presentacón");
                 return true;
             }
@@ -410,8 +401,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.spinnerComponent.showIt();
 
         if (this.esCorredor) {
-            this.codigoProveedor = this.proveedorSelected.idVendedor;
-            this.razonSocialProveedor = this.proveedorSelected.descVendedor;
+            if(this.proveedorSelected)
+            {
+                this.codigoProveedor = this.proveedorSelected.idVendedor;
+                this.razonSocialProveedor = this.proveedorSelected.descVendedor;
+            }
             this.razonSocialCorredor = this.nombre;
         }
         else {
@@ -424,15 +418,12 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return;
         }
 
-
-        if (this.fechaPago != '' && this.fechaPago != null) {
-            var dateParts = this.fechaPago.split("-");
-            this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
-        }
-
-
-        this.Detalle = {
-            Consulta_Id: null, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra,
+        if(this.fechaPago != '' && this.fechaPago != null){
+        var dateParts = this.fechaPago.split("-");
+        this.fecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
+        } 
+    
+        this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
             ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
         }
 
@@ -443,8 +434,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
 
+        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date()};
+
         try {
-            this.subscription = this.service.AgregarConsulta(this.consulta).subscribe(
+            this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -456,14 +449,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
-                        setTimeout(() => {
-                            this.postComentario(result.Id, this.nuevoComentario);
-                        }, 200);
                         this.spinnerComponent.hideIt();
-                        setTimeout(() => {
-                            this.blockUI.stop();
-                            this.goToSeccion('/consulta/mis-consultas');
-                        }, 1000);
+                        this.blockUI.stop();
+                        this.goToSeccion('/consulta/mis-consultas');
                     }
                 },
                 error => {
@@ -477,44 +465,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
     }
 
-    postComentario(consultaId, detalle) {
-        let comentario: Comentario = { consulta_Id: consultaId, Detalle: detalle, Fecha: new Date() };
-        this.subscription = this.service.agregarComentario(consultaId, comentario).subscribe(
-            result => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                }
-                else {
-                    this.postArchivos(result.Id, consultaId);
-                    this.file = null;
-                }
-            },
-        );
-    }
-
-    postArchivos(comentarioId, consultaId) {
-        if (this.files) {
-            for (let i = 0; i < this.files.length; i++) {
-                this.subscription = this.service.adjuntar(this.files[i], consultaId, comentarioId).subscribe(
-                    result => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        }
-                    },
-                );
-            }
-        }
-    }
-
-    setSubcategorias(categoria) {
+    setSubcategorias(categoria){
         this.categoriaCount = 1;
         this.subcategoriaCode = null;
         this.categoria = categoria;
@@ -524,8 +475,15 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.Avisos(this.categoriaCode);
 
         this.subcategorias.forEach(x => {
-            if (x.CategoriaId == categoria.Id) {
-                this.subcategoriasList.push(x);
+            if(x.CategoriaId == categoria.Id){
+                if(x.Code == "INF" && this.esCorredor){
+                }
+                else if(x.Code == "CAP" && !this.esCorredor){
+                }
+                else
+                {
+                    this.subcategoriasList.push(x);
+                }
             }
         });
 
@@ -535,6 +493,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
         else {
             this.tieneSubcategorias = true;
         }
+    }
+
+    borrarArchivo(i: number)
+    {
+        this.listaArchivos.splice(i, 1);
     }
 
     Avisos(categoriaCode) {
