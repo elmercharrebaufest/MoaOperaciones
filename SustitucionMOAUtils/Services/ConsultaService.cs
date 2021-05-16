@@ -280,7 +280,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
-                string asunto = "Molinos Agro - Respuesta a su consulta" + consulta.Asunto;
+                string asunto = "Molinos Agro - Respuesta a su consulta: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
             }
