@@ -207,7 +207,7 @@ export class PesificacionComponent extends ListBaseComponent implements OnInit, 
                     this.getListaContratos();
                     this.mensajeComponent.setSuccessMsg("Operacion realizada exitosamente");
                 }
-                $("#myModalConfirmacion").hide();
+                $("#hidemyModal").click();
                 this.spinnerSmallComponent.hideIt();
                 this.visibleEnviar = true;
                 return false;

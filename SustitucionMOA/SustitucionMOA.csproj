@@ -242,6 +242,7 @@
     <Content Include="Content\images\header\logo_.png" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
+    <Content Include="Content\images\icons\Icono_Eliminar.png" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
@@ -834,6 +835,8 @@
     <Content Include="Content\css\fonts\primeicons.woff" />
     <Content Include="Documentacion\Criterios de Retención MOA.pdf" />
     <Content Include="Documentacion\GMP MOA.pdf" />
+    <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
+    <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -852,12 +855,14 @@
     <Content Include="Template\ReporteConflictosCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\AvisoAuditoria.html" />
     <Content Include="Template\ReporteLiquidacionesInformadas.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\EstadoAlta.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\RespuestaConsulta.html" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="Views\Shared\Error.cshtml" />

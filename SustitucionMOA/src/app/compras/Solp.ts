@@ -1,5 +1,7 @@
 import { Time, WeekDay } from "@angular/common";
 import { WeekDayItem } from "../common/models/weekDayItem";
+import * as uuid from 'uuid';
+import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
 
 export class Solp {
     //paso 1
@@ -11,7 +13,6 @@ export class Solp {
     public fechaDeEntregaDeOfertasHora: Time;
     public horaEntrega: any;
     public fechaEntrega: any;
-
 
     //paso 2
     public visitaDeObra: boolean;
@@ -40,5 +41,10 @@ export class Solp {
 
     
 
+    //paso 3
+    public especificacionesViewModel : EspecificacionesViewModel = new EspecificacionesViewModel();
+
 }
+
+
 

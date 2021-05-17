@@ -18,6 +18,10 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { CotizacionComponent } from './PliegoPasos/cotizacion.component';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
 import {KeyFilterModule} from 'primeng/keyfilter';
+import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component'
+import {FileUploadModule} from 'primeng/fileupload';
+import { QuillModule } from 'ngx-quill'
+
 
 @NgModule({
     imports: [
@@ -31,7 +35,9 @@ import {KeyFilterModule} from 'primeng/keyfilter';
         EditorModule,
         SidebarModule,
         CheckboxModule,
-        KeyFilterModule
+        KeyFilterModule,
+        FileUploadModule,
+        QuillModule.forRoot()
     ],
     declarations: [
         SolpComponent,
@@ -39,6 +45,7 @@ import {KeyFilterModule} from 'primeng/keyfilter';
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
+        EspecificacionesComponent
         CotizacionComponent,
         DragAndDropDirective
     ],
