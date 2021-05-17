@@ -17,7 +17,7 @@ namespace SustitucionMOAWS.CredentialService
 
         public static string getPassword()
         {
-           // Password = "eugeniomartin4";
+            //Password = "eugeniomartin4";
             return Password;
         }
 

@@ -16,6 +16,10 @@ import { PliegoPreviewComponent } from './preview/pliego.preview.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
+import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component'
+import {FileUploadModule} from 'primeng/fileupload';
+import { QuillModule } from 'ngx-quill'
+
 
 @NgModule({
     imports: [
@@ -28,7 +32,9 @@ import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
         DialogModule,
         EditorModule,
         SidebarModule,
-        CheckboxModule
+        CheckboxModule,
+        FileUploadModule,
+        QuillModule.forRoot()
     ],
     declarations: [
         SolpComponent,
@@ -36,7 +42,8 @@ import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
-        DragAndDropDirective
+        DragAndDropDirective,
+        EspecificacionesComponent
     ],
     providers: [
         SolpService
