@@ -45,7 +45,7 @@ import { QuillModule } from 'ngx-quill'
         Generacion1Component,
         Generacion2Component,
         PliegoPreviewComponent,
-        EspecificacionesComponent
+        EspecificacionesComponent,
         CotizacionComponent,
         DragAndDropDirective
     ],

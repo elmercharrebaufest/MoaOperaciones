@@ -7,7 +7,7 @@ export class EspecificacionesViewModel {
         this.archivosAdjuntos = new Array<File>();
 
         //inicializador por defecto de las observaciones
-        this.observaciones = "<p>3.b - Consideraciones particulares:</p><p>3.b.1 Especificaciones técnica de tares:</p><p><span class='ql-size-small'>Especificación técnica de la obra, generalidades, detalles, puntos de control, planos, diagramas , etc.</span></p></div>"
+        this.observaciones = "<p>3.b - Consideraciones particulares:</p><p>3.b.1 Especificaciones técnica de tareas:</p><p><span class='ql-size-small'>Especificación técnica de la obra, generalidades, detalles, puntos de control, planos, diagramas , etc.</span></p></div>"
     }
 
     public observaciones: string;
