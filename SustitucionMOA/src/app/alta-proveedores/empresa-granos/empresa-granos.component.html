@@ -719,13 +719,12 @@
                         onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
+                    <h4 class="modal-title" *ngIf="granosFlag == 'NG'" id="myModalLabel">SOLICITUD ENVIADA CON ÉXITO</h4>
+                    <h4 *ngIf="granosFlag != 'NG'" class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
                 </div>
                 <div class="modal-body modal-notificacion" 
-                *ngIf="granosSelected == 'NG'; else elseBlock">
-                    <label>(Datos Maestros, Molinos Agro, Uruguay 4075 (1644) Victoria, Bs As)</label><br />
+                *ngIf="granosFlag == 'NG'; else elseBlock">
                     <label>¡Su solicitud fue enviada con éxito!</label><br />
-                    <br>
                     <label>¡Muchas gracias!</label><br />
                 </div>
                 <ng-template #elseBlock>
