@@ -29,7 +29,7 @@ namespace SustitucionMOAModel.Models.ViewModel.AltaEmpresa
         public string CargoProveedora { get; set; }
         public string NombreMolinos { get; set; }
         public string Vinculo { get; set; }
-       
+        public AltaEmpresaEmpleadosViewModel() { }
     }
     public class AltaEmpresaFuncionariosViewModel
     {
@@ -38,6 +38,6 @@ namespace SustitucionMOAModel.Models.ViewModel.AltaEmpresa
         public string NombreFuncionario { get; set; }
         public string CargoFuncionario { get; set; }
         public string Vinculo { get; set; }
-
+        public AltaEmpresaFuncionariosViewModel() { }
     }
 }
