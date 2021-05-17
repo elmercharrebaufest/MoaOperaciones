@@ -17,6 +17,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CotizacionComponent } from './PliegoPasos/cotizacion.component';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
+import {KeyFilterModule} from 'primeng/keyfilter';
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
         DialogModule,
         EditorModule,
         SidebarModule,
-        CheckboxModule
+        CheckboxModule,
+        KeyFilterModule
     ],
     declarations: [
         SolpComponent,
