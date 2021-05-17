@@ -19,26 +19,26 @@
                             <p-checkbox [(ngModel)]="model.visitaDeObraMasiva" label="Visita de obra masiva" binary="true"></p-checkbox>
                         </div>
 
-                        <div *ngFor="let visita of listaVisitas">
+                        <div *ngFor="let visita of model.listaVisitas">
                             <div class="col-xs-12 col-sm-12 col-md-7 margenInput">
-                                <div class="styled-select" *ngIf="model.visitaDeObraMasiva">
-                                    <p-calendar [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>    
+                                <div class="styled-select">
+                                    <p-calendar [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [disabled]="!model.visitaDeObraMasiva"  [readonlyInput]="true"></p-calendar>    
                                 </div>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-4 prime-hora margenInput">
-                                <div *ngIf="model.visitaDeObraMasiva" >
-                                    <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
+                                <div>
+                                    <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [disabled]="!model.visitaDeObraMasiva"  [timeOnly]="true"></p-calendar>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-1">
-                                <span (click)="eliminarVisita(visita.id)" *ngIf="model.visitaDeObraMasiva"><img class="pointer" src="./Content/images/icons/trash.png" alt="trash" style="padding: 8px;" /></span>
+                                <span  (click)="model.visitaDeObraMasiva ? eliminarVisita(visita.id) : null"><img [class.pointer]="model.visitaDeObraMasiva" src="./Content/images/icons/trash.png" alt="trash" style="padding: 8px;" /></span>
                             </div>
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" *ngIf="model.visitaDeObraMasiva">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <div>
-                                <span (click)="agregarNuevaVisita()" class="enlaceVisita" ><i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
+                                <span (click)="model.visitaDeObraMasiva ? agregarNuevaVisita() : null" [class.pointer]="model.visitaDeObraMasiva" class="enlaceVisita" ><i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
                             </div>
                         </div>
 

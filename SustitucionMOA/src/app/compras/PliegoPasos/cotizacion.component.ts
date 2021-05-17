@@ -11,7 +11,6 @@ import { Solp } from './../Solp';
 import { WeekDay } from '@angular/common';
 
 
-
 declare var $: any;
 
 @Component({

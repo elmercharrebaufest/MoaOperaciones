@@ -29,13 +29,16 @@ export class Solp {
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
     public observacionesGeneracion: string;
+    public listaVisitas: any;
 
     // paso 4
-    public ejecucion: number;
+    public ejecucion: any;
     public jornadaLaboralDias: WeekDayItem[];
     public comienzoJornadaLaboral: Date;
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
+
+
     
 
     //paso 3

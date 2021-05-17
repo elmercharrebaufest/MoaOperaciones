@@ -58,29 +58,28 @@ export class Generacion2Component extends ListBaseComponent {
 
     }
 
-    listaVisitas: any[] = [
-        {
-            id: uuid.v4(),
-            visitaDeObraFecha: "",
-            visitaDeObraHora: ""
-        }
-    ];
+    // listaVisitas: any[] = [
+    //     {
+    //         id: uuid.v4(),
+    //         visitaDeObraFecha: "",
+    //         visitaDeObraHora: ""
+    //     }
+    // ];
 
     agregarNuevaVisita() {
-        this.listaVisitas.push(
+        this.model.listaVisitas.push (
             {
                 id: uuid.v4(),
-                visitaDeObraFecha: "",
-                visitaDeObraHora: ""
+                visitaDeObraFecha: new Date(),
+                visitaDeObraHora: new Date(1,1,1,10,0,0,0)
             }
         )
-
     };
 
     eliminarVisita(id) {
-        this.listaVisitas = this.listaVisitas.filter(x => x.id != id);
+        this.model.listaVisitas = this.model.listaVisitas.filter(x => x.id != id);
 
-        if (this.listaVisitas.length == 0) {
+        if (this.model.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
 
