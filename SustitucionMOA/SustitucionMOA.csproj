@@ -852,6 +852,7 @@
     <Content Include="Template\ReporteConflictosCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\AvisoAuditoria.html" />
     <Content Include="Template\ReporteLiquidacionesInformadas.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
