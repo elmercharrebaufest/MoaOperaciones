@@ -484,10 +484,11 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Guardamos");
 
             repositorio.GuardarCambios();
-            if(proveedor.VinculoConEmpleadosDeMolinos == true || proveedor.VinculoConFuncionariosPublicos == true) 
+
+            /*if((proveedor.VinculoConEmpleadosDeMolinos?? false) || proveedor.VinculoConFuncionariosPublicos == true) 
             {
                 AltaEmpresaService.EnviarMailAuditoria(altaEmpresa ,proveedor);
-            }
+            }*/
 
             Log.Info("Fin");
 
