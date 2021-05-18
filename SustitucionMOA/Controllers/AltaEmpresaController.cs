@@ -39,10 +39,6 @@ namespace SustitucionMOA.Controllers
                 if (IdTipoProveedor > 0)
                 {
                     idTiposProveedor.Add(IdTipoProveedor);
-
-                    //Junto las altas de proveedores directos con las de corredores que presentan sus vendedores
-                    if (IdTipoProveedor == 2)
-                        idTiposProveedor.Add(4);
                 }
                 else
                 {
@@ -113,7 +109,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult GetEstados(int idTipoProveedor)
+        public ActionResult GetEstados()
         {
             try
             {
@@ -122,23 +118,14 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.AprobacionPendiente.ToFriendlyString(), EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.DocumentacionPendiente.ToFriendlyString(), EstadoAprobacion.DocumentacionPendiente.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString(), EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.RechazadoPorCompras.ToFriendlyString(), EstadoAprobacion.RechazadoPorCompras.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.AltaIncompleta.ToFriendlyString(), EstadoAprobacion.AltaIncompleta.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString())
                 };
-
-                if(idTipoProveedor == 2 || idTipoProveedor == 4)
-                {
-                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()));
-                }
-
-                if (idTipoProveedor == 3)
-                {
-                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString(), EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString()));
-                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.RechazadoPorCompras.ToFriendlyString(), EstadoAprobacion.RechazadoPorCompras.ToFriendlyString()));
-                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.AltaIncompleta.ToFriendlyString(), EstadoAprobacion.AltaIncompleta.ToFriendlyString()));
-                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString()));
-                }
-
                 List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>(EstadoAprobacion.Aprobado.ToFriendlyString(), EstadoAprobacion.Aprobado.ToFriendlyString()),
