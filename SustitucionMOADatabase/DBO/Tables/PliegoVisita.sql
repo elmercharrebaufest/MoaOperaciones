@@ -1,0 +1,13 @@
+﻿CREATE TABLE [dbo].[PliegoVisita]
+(
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Codigo] [nvarchar](max) NULL,
+	[Pliego_Id] [int] NULL,
+	[FechaHora] [datetime2] NULL,
+
+CONSTRAINT [PK_dbo.PliegoVisita] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+	CONSTRAINT [FK_PliegoVisita_Pliego] FOREIGN KEY (Pliego_Id) REFERENCES [Pliego]([Id]),
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
