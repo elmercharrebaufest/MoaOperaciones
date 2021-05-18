@@ -607,11 +607,28 @@ namespace SustitucionMOAUtils.Services
             return string.Concat("00", CUIT.Substring(2, 8));
         }
 
-        public string SolicitarInformacion(int proveedorId)
+        public string SolicitarInformacion(int proveedorId, string usuarioMail)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            int usuarioID = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
-            NotificarProveedor(EstadoAprobacion.EdicionRequerida, "Seguimos esperando la documentación solicitada ", proveedor);
+            //obtengo el mensaje del ultimo edicion requerido
+            var ultimaRequerido = proveedor.HistorialAprobaciones.LastOrDefault( x => x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida);
+            string mensajeNotificacion = ultimaRequerido != null ? ultimaRequerido.Observacion : "Seguimos esperando la documentación solicitada ";
+            
+            NotificarProveedor(EstadoAprobacion.EdicionRequerida, mensajeNotificacion, proveedor);
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.EdicionRequerida,
+                    Observacion = mensajeNotificacion,
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuarioID
+                }
+            );
+
+            repositorio.GuardarCambios();
 
             return "Proveedor notificado correctamente";
         }

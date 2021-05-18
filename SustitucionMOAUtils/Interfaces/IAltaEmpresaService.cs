@@ -29,7 +29,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         string GuardarSIPER(int proveedorId, string estadoSIPER);
 
-        string SolicitarInformacion(int proveedorId);
+        string SolicitarInformacion(int proveedorId, string usuarioMail);
 
     }
 }
