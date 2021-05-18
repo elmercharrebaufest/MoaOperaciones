@@ -25,8 +25,8 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int ClasificacionId { get; set; }
         public string Observacion { get; set; }
         public int DestinoId { get; set; }
-        public int BoletoId { get; set; }
-        public int BolsaId { get; set; }
+        public int? BoletoId { get; set; }
+        public int? BolsaId { get; set; }
         public int ProveedorId { get; set; }
         public int? CorredorId { get; set; }
         public int LocalidadId { get; set; }
@@ -53,6 +53,8 @@ namespace SustitucionMOAModel.Models.DataAgro
         public string ObservacionTercero { get; set; }
         public bool? CalidadTercero { get; set; }
         public bool? PagoDiferidoTercero { get; set; }
+        public int? DiasPesificado { get; set; }
+        
         public bool? DolarizadoTercero { get; set; }
         public bool? SustentableTercero { get; set; }
 

@@ -1,17 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ContratoService } from './contrato.service';
-import { FiltroFechaComponent } from './../common/view-child/filtro-fecha/filtro-fecha.component';
-import { MensajeComponent } from './../common/view-child/mensaje/mensaje.component';
-import { SpinnerComponent } from './../common/view-child/spinner/spinner.component';
-import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
-import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
+import { Component } from '@angular/core';
 import { ListBaseComponent } from './../common/base-components/list-base-component';
-import { SessionDataService } from './../common/services/SessionDataService';
-import { SecurityService } from './../common/services/SecurityService';
-import { NavService } from './../common/services/NavService';
+import { Seccion } from './../common/models/seccion';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { ModalService } from './../common/services/ModalService';
-import { Seccion } from './../common/models/Seccion';
+import { NavService } from './../common/services/NavService';
+import { SecurityService } from './../common/services/SecurityService';
+import { SessionDataService } from './../common/services/SessionDataService';
+import { ContratoService } from './contrato.service';
 
 
 
@@ -19,18 +14,18 @@ import { Seccion } from './../common/models/Seccion';
     selector: 'app-contrato',
     template: ``,
     providers: [ContratoService]
-})  
+})
 export class ContratoBaseComponent extends ListBaseComponent {
 
     constructor(protected service: ContratoService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-    filtroProducto : any = null;
-    filtroVendedor : any = null;
-    filtroContrato : string = "";
-    productoSelected : string = "";
-    vendedorSelected : string = "";
+    filtroProducto: any = null;
+    filtroVendedor: any = null;
+    filtroContrato: string = "";
+    productoSelected: string = "";
+    vendedorSelected: string = "";
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CONTRATOS"); }
 

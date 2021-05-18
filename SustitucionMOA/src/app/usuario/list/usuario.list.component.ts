@@ -49,6 +49,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     rolesUsuarioSeleccionado: Array<Rol> = [];
 
     usuarioSeleccionado: any = null;
+    titulos: Array<string> = ["Externo", "Interno", "Contacto"]
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -249,10 +250,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioSeleccionado = usuario;
         this.rolesUsuarioSeleccionado = new Array<Rol>();
 
-
-
         this.rolOptions = [];
         this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
+
+        console.log(this.rolesUsuarioSeleccionado)
 
         for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
             this.rolesUsuarioSeleccionado[i].checked = false;

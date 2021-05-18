@@ -1,0 +1,173 @@
+<button type="button" hidden id="openModalHiddenButton" data-toggle="modal" data-target="#declaracionModal"></button>
+
+<!-- Modal -->
+<div class="modal fade" id="declaracionModal" tabindex="-1" role="dialog" aria-labelledby="declaracionModalLabel"
+  data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+  <div class="modal-dialog" role="document" style="width: 1020px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-close" hidden data-dismiss="modal" aria-label="Close"
+          id="hidedeclaracionModal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="declaracionModalLabel">
+          Firma declaración de conformidad - {{razonSocial}} {{CUIT}}
+        </h4>
+
+      </div>
+      <div class="modal-body" style="padding-top:0; 
+    margin-left: 30px;
+    margin-right: 30px;
+">
+        <div class="content-wraper row myRow firstSection roundedInfo" style="margin-top:0;padding-top:0">
+          <div class="row">
+            <h3>
+              Declaración de Conformidad según criterios de sustentabilidad para la
+              producción de Biomasa, de acuerdo con los requisitos de la Directiva 2009/28/CE (modificada por la
+              Directiva 2015/1513)
+            </h3>
+            <h3>
+              Cosecha {{nombreCosecha}}
+              <br>
+            </h3>
+          </div>
+
+          <div class="row">
+            Por favor, elija la opción que corresponda:
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <input type="radio" name="totalidadCosecha" [value]="1" [(ngModel)]="totalidadCosecha">
+              La totalidad de la soja correspondiente a la cosecha {{nombreCosecha}} proveniente de mi tierra y
+              entregada a
+              Molinos Agro
+              S.A. ha sido cultivada en campos que ya se encontraban bajo agricultura antes del 1 de enero de 2008,
+              esto
+              es:
+              proviene de “tierras cultivables”
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 ">
+              <input type="radio" name="totalidadCosecha" [value]="2" [(ngModel)]="totalidadCosecha">
+              Parte de la soja correspondiente a la cosecha {{nombreCosecha}} producida en mi tierra y entregada a
+              Molinos
+              Agro
+              S.A., es
+              procedente de
+              hectáreas que ya se encontraban bajo agricultura
+              antes del 1 de enero de 2008, esto
+              es:
+              proviene de “tierras cultivables”
+            </div>
+
+
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              Hectareas:<div class="styled-select" style="width: 100px;"> <input type="text" name="hectareasTotales"
+                  [disabled]="totalidadCosecha == 1" [(ngModel)]="hectareasTotales" pattern="[0-9]+"></div>
+            </div>
+
+
+            <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="razonSocial == ''">
+              Razon Social:
+              <div class="styled-select" style="width: 300px;">
+                <input type="text" name="razonSocialDeclaracion" [(ngModel)]="razonSocialDeclaracion">
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <div class="row">
+
+                Las tierras de cultivo no forman parte de un área afectada por requisitos legales sobre protección
+                de
+                la
+                naturaleza,
+                protección de ecosistemas o especies raras; ni tienen ninguna restricción legal en la República
+                Argentina,
+                es decir, no
+                corresponden a una zona declarada como Parque Nacional, Reserva Ecológica, o cualquier otra
+                denominación
+                que
+                impida los
+                cultivos mencionados precedentemente. En caso de que una parte de la tierra en mi finca se
+                encontrase
+                dentro
+                de un área
+                de protección, todos los requisitos legales específicos para las actividades agrícolas en dicha área
+                serán
+                cumplidos.
+              </div>
+              <div class="row">
+                Las tierras de cultivo no forman parte de zonas de alto valor de biodiversidad como ser humedales,
+                turberas, bosques,
+                pastizales naturales, etc.
+
+              </div>
+              <div class="row">
+                Me comprometo a mantener y mostrar la información que demuestre lo expuesto anteriormente, cuando la
+                misma
+                sea requerida
+                con el fin de demostrar que esta declaración es acertada y legítima y, por ende, que la biomasa es
+                producida
+                en
+                cumplimiento de la Directiva Europea 2009/28/CE (y sus modificaciones)
+              </div>
+              <div class="row">
+                A su vez, mecomprometo a informar al primer punto de recolección, acerca de cualquier modificación
+                futura
+                relacionada
+                con los criterios de sostenibilidad descriptos más arriba.
+              </div>
+
+              <div class="row" style="color: red;">
+                Deberá imprimir la declaración y subirla firmada en formato PDF para continuar con el alta de campos
+                sustentables
+                <span class="requerido">*</span>
+              </div>
+            </div>
+          </div>
+          <div class="row btnSections" style="justify-content: center;margin-bottom: 20px;">
+            <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="imprimir()">
+              Imprimir declaracion
+            </button>
+          </div>
+
+          <hr>
+          <div>
+            <div class="row">
+              <h3>
+                Enviar declaración firmada
+              </h3>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <div class="styled-select">
+                <input #fileInput type="file" (change)="cargarArchivo($event)" accept=".pdf"
+                  placeholder="Cargar Archivo">
+              </div>
+              <br />
+            </div>
+            <div class="row btnSections" style="justify-content: center;margin-bottom: 20px;">
+              <button type="button" class="btn-custom btn-mediano btn-guardar" (click)="adjuntarDeclaracionFirmada()">
+                Adjuntar declaracion
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="col-xs-12" style="text-align: center;">
+          <spinner-small></spinner-small>
+          <mensaje></mensaje>
+        </div>
+        <div class="row btnSections" style="justify-content: center;">
+          <button type="button" class="btn-custom btn-mediano btn-remove" (click)="cancelar()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

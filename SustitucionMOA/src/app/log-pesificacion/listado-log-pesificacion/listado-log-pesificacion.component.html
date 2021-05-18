@@ -1,0 +1,144 @@
+
+<div class="content-wraper">
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+    <!--Title-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-12"><strong> Administración de Pesificaciones</strong> </div>
+    </div>
+    <!--End Title-->
+
+    <div class="row myRow firstSection mySearch">
+      <div class="col-xs-12 col-md-12 rounded shadow animate">
+        <div class="col-xs-12 col-md-12 search-header">
+          <title-caps>Refinar resultados</title-caps>
+        </div>
+        <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
+          Contrato:
+          <div class="styled-select ">
+            <input type="number" aria-controls="tableModal" [(ngModel)]="filtros.contrato">
+          </div>
+        </div>
+        <div id="searchFijacion" class="col-xs-12 col-sm-6 col-md-15">
+          Fijacion:
+          <div class="styled-select ">
+            <input type="number" aria-controls="tableModal" [(ngModel)]="filtros.fijacion">
+          </div>
+        </div>
+        <div id="searchMail" class="col-xs-12 col-sm-6 col-md-15">
+          Mail:
+          <div class="styled-select ">
+            <input type="search" aria-controls="tableModal" [(ngModel)]="filtros.mail">
+          </div>
+        </div>
+        <div id="searchProveedor" class="col-xs-12 col-sm-6 col-md-15">
+          Proveedor:
+          <div class="styled-select ">
+            <input type="search" aria-controls="tableModal" [(ngModel)]="filtros.proveedor">
+          </div>
+        </div>
+        <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15">
+          Fecha:
+          <div class="styled-select input-group date form_datetime_Inicio" data-provide="datepicker" data-date=""
+            data-date-format="dd/MM/yyyy" data-link-field="dtp_input_inicio">
+            <input type="text"  [(ngModel)]="fechaFiltro" id="noCursor" readonly />
+            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+          </div>
+          <input type="hidden" #dtp_input_inicio id="dtp_input_inicio" [(ngModel)]="fechaFiltro" />
+        </div>
+        <div id="searchBuscar" class="col-xs-12 col-sm-6 col-md-15">
+          <a (click)="filtrarResultatos()" style="text-decoration:none!important">
+            <div class="btn btn-custom btn-add" style="margin-top:10px!important">Buscar
+              <span class="fa fa-search" style="margin-left: 5px;margin-bottom: 2px;"></span>
+            </div>
+          </a>
+        </div>
+        <div id="showSearch" onClick="openSearch()">
+          <div style="">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+          </div>
+          <div>VER MÁS OPCIONES DE BÚSQUEDA</div>
+        </div>
+        <div id="hideSearch" onClick="closeSearch()">
+          <div style="">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </div>
+          <div>OCULTAR OPCIONES DE BÚSQUEDA</div>
+        </div>
+      </div>
+    </div>
+    <!-- End Search-->
+    <mensaje></mensaje>
+    <spinner></spinner>
+
+    <div class="row myRow">
+      <div class="clearfix myTables">
+        <table id="tablaLogPesificaciones"
+          class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+          cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+          <thead>
+            <tr role="row">
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('contrato')">Contrato
+                <span>
+                  <i
+                    [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection > 0 }"></i>
+                  <i
+                    [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'contrato' && orderDirection < 0 }"></i>
+                </span>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('fecha')">Fecha de creación</th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('fijacion')">Fijación
+                <span>
+                  <i
+                    [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'fijacion' && orderDirection > 0 }"></i>
+                  <i
+                    [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'fijacion' && orderDirection < 0 }"></i>
+                </span>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('cantidadKilos')">Kilos
+                <span>
+                  <i
+                    [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'cantidadKilos' && orderDirection > 0 }"></i>
+                  <i
+                    [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'cantidadKilos' && orderDirection < 0 }"></i>
+                </span>
+              </th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('usuario')">Usuario</th>
+              <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('usuario')">Proveedor</th>
+              <th tabindex="0" rowspan="1" colspan="1">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let pesificacion of listadoPesificaciones | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
+              role="row" [class.odd]="!odd">
+              <td>{{pesificacion.contrato}}</td>
+              <td>{{pesificacion.fecha}}</td>
+              <td>{{pesificacion.fijacion}}</td>
+              <td>{{pesificacion.cantidadKilos}}</td>
+              <td>{{pesificacion.usuario}}</td>
+              <td>{{pesificacion.proveedor}}</td>
+              <td>{{pesificacion.estado}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisiblePaginacion()">
+          <div class="dataTables_paginate paging_simple_numbers">
+            <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+              [class.disabled]="pT.isFirstPage()"> Anterior </a>
+            <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+              <a class="paginate_button" (click)="pT.setCurrent(page.value)" *ngIf="pT.getCurrent() !== page.value">{{
+                page.label }}</a>
+              <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{
+                page.label }}</a>
+            </span>
+            <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
+              Siguiente </a>
+          </div>
+        </pagination-template>
+      </div>
+      <hr>
+    </div>
+  </section>
+  <!--End CONTENT-->
+</div>

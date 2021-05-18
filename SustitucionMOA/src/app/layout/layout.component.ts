@@ -11,6 +11,7 @@ import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spin
 import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mensaje-modal.component';
 import { LoginGuard } from './../common/security/login-guard';
 import { ok } from 'assert';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 declare var $: any;
 
 @Component({
@@ -20,7 +21,7 @@ declare var $: any;
 })
 
 export class LayoutComponent implements OnDestroy {
-
+    @BlockUI() blockUI: NgBlockUI;
     titulo: string;
     username: string;
     nombre: string;
@@ -134,7 +135,7 @@ export class LayoutComponent implements OnDestroy {
             seccionActive => {
                 this.seccionActive = seccionActive;
 
-                switch(this.seccionActive){
+                switch (this.seccionActive) {
                     case 'Fijaciones':
                     case 'Ampliaciones':
                     case 'Anulaciones':
@@ -208,6 +209,31 @@ export class LayoutComponent implements OnDestroy {
                     case 'Pesificacion':
                         this.auxiliarSeccionesVisitadas = 'Pesificacion';
                         this.textoTooltip = 'En esta categoría podrás pesificar tus negocios en dólares, individual o masivamente, y consultar aquellos negocios pendientes de pesificar.';
+                        this.textoTooltip2 = '';
+                        break;
+                    case 'Carga de Negocios':
+                        this.auxiliarSeccionesVisitadas = 'Carga de Negocios';
+                        this.textoTooltip = 'En esta pantalla podrás seleccionar el tipo de negocio que deseas operar.';
+                        this.textoTooltip2 = '';//'<a href="https://www.youtube.com/watch?v=NooUcellVgY&list=RDEMb_bDv34i1yX9BKQmQom11w&index=4" target="_blank">click aqui</a>';
+                        break;
+                    case 'A Precio':
+                        this.auxiliarSeccionesVisitadas = 'A Precio';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga Contrato A PRECIO Corredor - MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS - Carga Contrato a Precio - Moaoperaciones.mp4" target="_blank">click aqui</a>.';
+                        break;
+                    case 'A Fijar':
+                        this.auxiliarSeccionesVisitadas = 'A Fijar';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga Contrato A FIJAR Corredor - MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS%20-%20Carga%20Contrato%20A%20Fijar%20-%20Moaoperaciones.mp4" target="_blank">click aqui</a>.';
+                        break;
+                    case 'Fijacion':
+                        this.auxiliarSeccionesVisitadas = 'Fijacion';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Fijaci%C3%B3n%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS%20-%20Carga%20Fijaci%C3%B3n%20-%20Moaoperaciones.mp4" target="_blank">click aqui</a>.';
+                        break;
+                    case 'Alta Masiva':
+                        this.auxiliarSeccionesVisitadas = 'Alta Masiva';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Masiva%20Contratos%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
                         this.textoTooltip2 = '';
                         break;
                     default:
@@ -338,6 +364,7 @@ export class LayoutComponent implements OnDestroy {
     ngAfterViewInit() {
         this.modalService.modal = this.modal;
         this.mensajeModalComponent = new MensajeModalComponent();
+        this.blockUI.stop();
     }
 
     cerrarSesion() {

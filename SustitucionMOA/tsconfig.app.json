@@ -11,7 +11,9 @@
     "src/app/app.module.ts",
     "src/app/carta-porte/carta-porte.module.ts",
     "src/app/contrato/contrato.module.ts",
+    "src/app/venta-sustentable/venta-sustentable.module.ts",
     "src/app/reporte/reporte.module.ts",
+    "src/app/consulta/consulta.module.ts",
     "src/app/cuenta-corriente/cuenta-corriente.module.ts",
     "src/app/dato-fiscal/dato-fiscal.module.ts",
     "src/app/factura/factura.module.ts",
@@ -21,7 +23,9 @@
     "src/app/pago/pago.module.ts",
     "src/app/pago/no-granos/pago-no-granos.module.ts",
     "src/app/common/shared.module.ts",
-    "src/app/crear-contrato/crear-contrato.module.ts"
+    "src/app/crear-contrato/crear-contrato.module.ts",
+    "src/app/common/models/Seccion.ts",
+    "src/app/compras/compras.module.ts"
 
   ],
   "include": [

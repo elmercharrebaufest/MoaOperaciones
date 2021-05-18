@@ -58,7 +58,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     filtroAlta: string = "";
     mensajeSIPERGuardado: string = "";
     idTipoProveedor: number = 0;
+    pantallaEditarAlta: boolean = false;
 
+    tipoCambiario: number = 1;
+    rubros: any;
+    IdRubro: number;
+    facturacionAnual: number;
+    nosisObligatorio: boolean;
+    RealizarAnalisisNOSIS: boolean;
 
     listaArchivos: Array<Archivo> = [];
 
@@ -113,6 +120,31 @@ export class AltasComponent extends BaseComponent implements OnInit {
         }
         return false; //<-- Prevent Refresh
     }
+
+    getTipoCambiario() {
+        try {
+            this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.tipoCambiario = result.data;
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
     getEstados() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -208,6 +240,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     resetVariables(){
         this.mensajeSIPERGuardado = "";
+        this.pantallaEditarAlta = false;
     }
 
     cambiarEstado(estadoId: number) {
@@ -330,6 +363,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
 
+    abrirEditar(proveedorId: number) {
+        this.pantallaEditarAlta = true;
+        this.getTipoCambiario()
+        this.getRubrosOptions();
+    }
 
     handleFileInput(files: FileList, fileKey: string) {
         this.mensajeComponent.setMsgsEmpty();
@@ -549,6 +587,111 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     completarAlta(empresa: Empresa) {
        this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
+    }
+
+    getRubrosOptions() {
+        try {
+            this.subscriptionDropDowns = this.service.getRubros().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.rubros = result.data;
+                        
+                        if(this.empresaSeleccionada.Rubro != "")
+                        {
+                            this.rubros.forEach(rubro => {
+                                if(rubro.Nombre == this.empresaSeleccionada.Rubro){
+                                    this.IdRubro = rubro.Id;
+                                }
+                            });
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    volver(){
+        this.pantallaEditarAlta = false;
+    }
+
+    editarAltaNoGranos(){
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.facturacionAnual == null) {
+            this.facturacionAnual = 0;
+        }
+
+        try {
+            this.service.editarProveedorNoGranos(this.empresaSeleccionada.RazonSocial, this.empresaSeleccionada.CUIT, this.empresaSeleccionada.Mail,
+                        this.empresaSeleccionada.Telefono ,
+                        this.empresaSeleccionada.RealizarAnalisisNOSIS? this.empresaSeleccionada.RealizarAnalisisNOSIS : false, 
+                        this.IdRubro, this.empresaSeleccionada.CondicionDePago,
+                        this.empresaSeleccionada.ServicioPrestado, this.empresaSeleccionada.OrganizacionDeCompra, this.empresaSeleccionada.RazonDeEleccion,
+                        this.empresaSeleccionada.FacturacionAnual, this.empresaSeleccionada.Id, 
+                        this.empresaSeleccionada.RequiereVerificacionCompras? this.empresaSeleccionada.RequiereVerificacionCompras : false,
+                        this.empresaSeleccionada.IngresoAPlanta? this.empresaSeleccionada.IngresoAPlanta : false, 
+                        this.empresaSeleccionada.AltaInterna? this.empresaSeleccionada.AltaInterna : false, 
+                        this.empresaSeleccionada.SiperObligatorio? this.empresaSeleccionada.SiperObligatorio : false
+                        ).subscribe(
+                    result => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            setTimeout(() => {
+                                this.pantallaEditarAlta = false;
+                            }, 1000);
+                        }
+                    },
+                    error => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    calcularFacturacion() {
+
+        if (this.tipoCambiario <= 0)
+            this.tipoCambiario = 1;
+        let facturacionDolares = this.empresaSeleccionada.FacturacionAnual / this.tipoCambiario
+
+
+        if (facturacionDolares > 15000)
+        {
+            this.nosisObligatorio = true;
+            this.empresaSeleccionada.RealizarAnalisisNOSIS = true;
+        }
+        else
+        {
+            this.nosisObligatorio = false;
+        }
+    }
+
+    verificarIngresoAPlanta(){
+        if (this.empresaSeleccionada.IngresoAPlanta)
+            this.empresaSeleccionada.RequiereVerificacionCompras = true;
     }
 
     descargarFormularioNG(empresaId: number) {

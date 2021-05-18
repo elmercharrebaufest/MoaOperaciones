@@ -10,7 +10,7 @@ import { DropdownComponent, DropdownOption } from './../common/view-child/dropdo
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 
@@ -130,7 +130,7 @@ export class ContactoMailComponent extends ListBaseComponent {
                 this.nombre,
                 this.email,
                 this.telefono,
-                this.categoriaSelected.label,
+                this.categoriaSelected.value,
                 this.categoriaSelected.camposAdicionales,
                 this.comentario,
                 this.contrato,

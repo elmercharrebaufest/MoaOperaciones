@@ -20,13 +20,19 @@ namespace SustitucionMOASecurity
         {
             get
             {
-                return new Usuario
+                if (ClaimsPrincipal.Current.Claims.Any())
                 {
-                    username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value,
-                    nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value,
-                    permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList()
-
-                };
+                    return new Usuario
+                    {
+                        username = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType).Value,
+                        nombre = ClaimsPrincipal.Current.FindFirst(Globals.ClaimsNombreType).Value,
+                        permisos = ClaimsPrincipal.Current.Claims.Where(c => c.Type.Equals(Globals.ClaimsPermisosType)).Select(c => c.Value).ToList()
+                    };
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -39,6 +45,23 @@ namespace SustitucionMOASecurity
                     return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
                 }
                 return null;
+            }
+            set
+            {
+                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
+                //HttpContext.Current.Session[proveedorSessionvar] = value;
+            }
+        }
+
+        public static int ProveedorId
+        {
+            get
+            {
+                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorId) != null)
+                {
+                    return int.Parse(ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorId).Value);
+                }
+                return 0;
             }
             set
             {

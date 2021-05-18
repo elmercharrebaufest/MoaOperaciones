@@ -40,6 +40,8 @@
         public const string DESCARGAR_LIQUIDACIONES = "DESCARGAR LIQUIDACIONES";
         public const string CONSULTAR_LIQUIDACIONES_NG = "CONSULTAR LIQUIDACIONES NG";
         public const string DESCARGAR_LIQUIDACIONES_NG = "DESCARGAR LIQUIDACIONES NG";
+        public const string INFORMAR_LIQUIDACION = "INFORMAR LIQUIDACION";
+
 
         /* PERMISOS PAGO */
         public const string CONSULTAR_PAGOS = "CONSULTAR PAGOS";
@@ -65,6 +67,7 @@
         public const string ABM_USUARIOS = "ABM USUARIOS";
         public const string CAMBIAR_CONTRASENIA = "CAMBIAR CONTRASENIA";
         public const string SELECCIONAR_VENDEDOR = "SELECCIONAR VENDEDOR";
+        public const string ELEGIR_TODOS_VENDEDORES = "ELEGIR TODOS VENDEDORES";
 
         /* PERMISOS VENDEDOR */
         public const string CONSULTAR_DOCUMENTACION = "CONSULTAR DOCUMENTACION";
@@ -85,9 +88,11 @@
 
         /*CONTACTO MAIL*/
         public const string CONTACTO_MAIL = "CONTACTO MAIL";
+        public const string CARGAR_CONSULTA = "CARGAR CONSULTA";
 
         /*PESIFICACION*/
         public const string PESIFICACION = "PESIFICACION";
+        public const string VER_PESIFICACION = "VER PESIFICACION";
 
         /*DATA AGRO*/
         public const string DATAAGROLOGIN = "DATAAGROLOGIN";
@@ -112,6 +117,16 @@
         /* PERMISOS ALTA EMPRESA NO GRANOS*/
         public const string ALTA_EMPRESA_NO_GRANOS = "ALTA EMPRESA NO GRANOS";
 
+        /* PERMISOS CONSULTAS */
+        public const string CONSULTA_LISTADO = "LISTADO CONSULTA";
+        public const string CONSULTA_AMB = "CONSULTA ABM";
+        /* PERMISOS CAMPO SUSTENTABLE */
+        public const string ABM_CAMPOS_SUSTENTABLE = "ABM CAMPOS SUSTENTABLE";
+        public const string VER_TODOS_CAMPOS_SUSTENTABLE = "VER TODOS CAMPOS SUSTENTABLE";
+        public const string EDICION_CAMPOS_CREADOS = "EDICION CAMPOS CREADOS";
+
+        /*LOG PESIFICACIONES*/
+        public const string CONSULTA_LOG_PESIFICACIONES = "GUARDADO Y CONSULTA DE LOG PESIFICACIONES";
 
     }
 }

@@ -1,0 +1,31 @@
+
+.ng-autocomplete{
+  font-family: "Roboto Condensed", Arial, sans-serif !important;
+  border-radius: 4px;
+  -moz-border-radius: 4px 4px 4px 4px;
+  -webkit-border-radius: 4px 4px 4px 4px;
+  width: 80%;
+  color: #818A91;
+  box-shadow: none;
+  padding-left: 0px!important;
+  padding-right: 0px!important;
+  font-weight: normal!important;
+}
+
+::ng-deep .autocomplete-container {
+   font-family: "Roboto Condensed", Arial, sans-serif !important;
+  border: 1px solid #DDDDDD !important;
+  border-radius: 4px !important;
+  -moz-border-radius: 4px 4px 4px 4px!important;
+  -webkit-border-radius: 4px 4px 4px 4px!important;
+  height: 40px !important;
+  font-size: 16px !important;
+  color: #818A91!important;
+  box-shadow: none;
+}
+
+.autocomplete-container .input-container input {
+  color: #818A91!important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: normal;
+}

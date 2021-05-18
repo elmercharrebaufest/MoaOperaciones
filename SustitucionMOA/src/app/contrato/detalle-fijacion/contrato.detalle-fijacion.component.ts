@@ -10,7 +10,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { SessionDataService } from './../../common/services/SessionDataService';
-import { Seccion } from './../../common/models/Seccion';
+import { Seccion } from './../../common/models/seccion';
 import { ModalService } from './../../common/services/ModalService';
 
 @Component({
