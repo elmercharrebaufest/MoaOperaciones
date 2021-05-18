@@ -101,12 +101,12 @@ namespace SustitucionMOAUtils.Services
             }
 
             var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C"))
-                .Select(v => new Vendedor() 
-                { 
-                    descVendedor = v.RazonSocial, 
+                .Select(v => new Vendedor()
+                {
+                    descVendedor = v.RazonSocial,
                     estado = "Alta interna Pendiente.",
                     estadoMoa = v.EstadoAprobacionDescripcion,
-                    idVendedor = v.CodigoProveedor 
+                    idVendedor = v.CodigoProveedor
                 });
 
             response.vendedores = response.vendedores.Distinct().ToList();
