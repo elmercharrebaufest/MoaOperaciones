@@ -27,8 +27,8 @@
                         </div>
                         <div class="row col-xs-3 justify-content-start"
                             *ngFor="let archivo of viewModel.archivosGuardadosEspecificaciones">
-                            <img class="pointer" src="./Content/images/icons/trashRed.png" alt="imageAlt"
-                                (click)="eliminarAdjunto(archivo)" />
+                            <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                (click)="eliminarAdjunto(archivo)" style="width: 26px;"/>
                             <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                 {{archivo.nombreArchivo}}</a>
                         </div>

@@ -27,7 +27,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             Mail *
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="model.mail" class="fourRounded" placeholder="" aria-controls="tableModal">
+                                <input type="text"  pInputText [(ngModel)]="model.mail" class="fourRounded" placeholder="" aria-controls="tableModal">
                             </div>    
                         </div>
                     </div>   
@@ -40,7 +40,7 @@
                             
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 margenInput">
                                 <div class="styled-select">
-                                    <p-calendar [(ngModel)]="model.fechaEntrega" [locale]="locale" [style]="{'width': '75%'}" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>
+                                    <p-calendar [(ngModel)]="model.fechaEntrega" [locale]="locale" [style]="{'width': '75%'}" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>
                                 </div>
                             </div>
                         
