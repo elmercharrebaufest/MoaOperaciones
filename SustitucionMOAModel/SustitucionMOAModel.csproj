@@ -75,6 +75,7 @@
     <Compile Include="Dto\Resultado.cs" />
     <Compile Include="Entities\Categoria.cs" />
     <Compile Include="Entities\CausaConsulta.cs" />
+    <Compile Include="Entities\Centro.cs" />
     <Compile Include="Entities\Comentario.cs" />
     <Compile Include="Entities\ConflictoCampoSustentable.cs" />
     <Compile Include="Entities\Consulta.cs" />
@@ -90,8 +91,18 @@
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />
+    <Compile Include="Entities\Pliego.cs" />
+    <Compile Include="Entities\PliegoArchivo.cs" />
+    <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
+    <Compile Include="Entities\Solp.cs" />
+    <Compile Include="Entities\SolpPosicion.cs" />
+    <Compile Include="Entities\SolpProveedor.cs" />
+    <Compile Include="Entities\SolpSubposicion.cs" />
     <Compile Include="Entities\SubCategoria.cs" />
+    <Compile Include="Entities\TablaEstado.cs" />
+    <Compile Include="Entities\TablaGeneral.cs" />
+    <Compile Include="Entities\TablaSap.cs" />
     <Compile Include="Enums\EstadosConsulta.cs" />
     <Compile Include="Enums\IngresosBrutos.cs" />
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
