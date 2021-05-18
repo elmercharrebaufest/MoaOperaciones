@@ -27,7 +27,7 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "30 6 * * *", tz);
 
-            RecurringJob.AddOrUpdate<Jobs.IReporteCamposSustentablesTSAJob>(
+           /* RecurringJob.AddOrUpdate<Jobs.IReporteCamposSustentablesTSAJob>(
                 "ReporteCamposSustentablesTSAJob",
                 j => j.Execute(),
                 "30 6 * * *", tz);
@@ -36,7 +36,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IReporteConflictosCamposSustentablesJob>(
                 "ReporteConflictosCamposSustentablesJob",
                 j => j.Execute(),
-                "30 6 * * *", tz);
+                "30 6 * * *", tz);*/
         }
     }
 }
