@@ -34,10 +34,36 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                if (!SessionPersister.User.permisos.Contains("VER ALTAS GRANOS"))
-                    IdTipoProveedor = 3;
+                List<int> idTiposProveedor = new List<int>();
 
-                var empresas = altaEmpresaService.GetEmpresas(IdTipoProveedor);
+                if (IdTipoProveedor > 0)
+                {
+                    idTiposProveedor.Add(IdTipoProveedor);
+
+                    //Junto las altas de proveedores directos con las de corredores que presentan sus vendedores
+                    if (IdTipoProveedor == 2)
+                        idTiposProveedor.Add(4);
+                }
+                else
+                {
+                    if (SessionPersister.User.permisos.Contains("VER ALTAS GRANOS"))
+                    {
+                        //Ambos
+                        idTiposProveedor.Add(1);
+                        //Directo Granos
+                        idTiposProveedor.Add(2);
+                        //Corredor
+                        idTiposProveedor.Add(4);
+                    }
+
+                    if (SessionPersister.User.permisos.Contains("VER ALTAS NO GRANOS"))
+                    {
+                        //No Granos
+                        idTiposProveedor.Add(3);
+                    }
+                }
+
+                var empresas = altaEmpresaService.GetEmpresas(idTiposProveedor);
                 //MP: Comento esta parte, ya que esto ahora lo formateamos en el service. Ademas, esto generaba que se rompan algunos filtros
                 //foreach (var item in empresas)
                 //{
@@ -86,8 +112,8 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
-        public ActionResult GetEstados()
+
+        public ActionResult GetEstados(int idTipoProveedor)
         {
             try
             {
@@ -96,20 +122,29 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.AprobacionPendiente.ToFriendlyString(), EstadoAprobacion.AprobacionPendiente.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.DocumentacionPendiente.ToFriendlyString(), EstadoAprobacion.DocumentacionPendiente.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.AnalisisDeNosis.ToFriendlyString(), EstadoAprobacion.AnalisisDeNosis.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EtapaFinal.ToFriendlyString(), EstadoAprobacion.EtapaFinal.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.EdicionRequerida.ToFriendlyString(), EstadoAprobacion.EdicionRequerida.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString(), EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.RechazadoPorCompras.ToFriendlyString(), EstadoAprobacion.RechazadoPorCompras.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.AltaIncompleta.ToFriendlyString(), EstadoAprobacion.AltaIncompleta.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString())
                 };
+
+                if(idTipoProveedor == 2 || idTipoProveedor == 4)
+                {
+                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString(), EstadoAprobacion.DeshabilitadoEnDataAgro.ToFriendlyString()));
+                }
+
+                if (idTipoProveedor == 3)
+                {
+                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString(), EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString()));
+                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.RechazadoPorCompras.ToFriendlyString(), EstadoAprobacion.RechazadoPorCompras.ToFriendlyString()));
+                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.AltaIncompleta.ToFriendlyString(), EstadoAprobacion.AltaIncompleta.ToFriendlyString()));
+                    estadosIntermedios.Add(new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString()));
+                }
+
                 List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>(EstadoAprobacion.Aprobado.ToFriendlyString(), EstadoAprobacion.Aprobado.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.Rechazado.ToFriendlyString(), EstadoAprobacion.Rechazado.ToFriendlyString())
                 };
-                
+
                 return JsonCustom(new { intermedios = estadosIntermedios, finales = estadosFinales });
             }
             catch (InfoCustomException e)
@@ -126,21 +161,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        string AddSpacesToSentence(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return "";
-            StringBuilder newText = new StringBuilder(text.Length * 2);
-            newText.Append(text[0]);
-            for (int i = 1; i < text.Length; i++)
-            {
-                if (char.IsUpper(text[i]) && text[i - 1] != ' ')
-                    newText.Append(' ');
-                newText.Append(text[i]);
-            }
-            return newText.ToString();
-        }
-
+       
         [System.Web.Http.HttpGet]
         public ActionResult GuardarSIPER(int proveedorId, string estadoSIPER)
         {
@@ -212,7 +233,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult SolicitarInformacion (int empresaId)
+        public ActionResult SolicitarInformacion(int empresaId)
         {
             try
             {

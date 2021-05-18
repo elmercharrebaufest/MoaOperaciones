@@ -1,5 +1,5 @@
 
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs';
@@ -21,11 +21,11 @@ export class AltaEmpresaService extends BaseService {
 
         return this.http
             .get('/api/AltaEmpresa/getEmpresas', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
 
-    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string,estadoSIPER: string): Observable<any> {
+    public setEstadoAprobacion(empresaId: number, estadoId: number, observacion: string, observacionesProveedor: string, estadoSIPER: string): Observable<any> {
         let params: URLSearchParams = new URLSearchParams();
         params.set('empresaId', empresaId.toString());
         params.set('estado', estadoId.toString());
@@ -41,14 +41,18 @@ export class AltaEmpresaService extends BaseService {
         params.set('empresaId', empresaId.toString());
         return this.http
             .get('/api/AltaEmpresa/solicitarInformacion', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
 
 
-    public getEstados(): Observable<any> {
+    public getEstados(idTipoProveedor): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+
+        params.set('idTipoProveedor', idTipoProveedor.toString());
+
         return this.http
-            .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(
+            .get('/api/AltaEmpresa/getEstados', { search: params, headers: this.headers }).pipe(
                 map(this.extractData));
     }
 
@@ -63,10 +67,10 @@ export class AltaEmpresaService extends BaseService {
         params.set('proveedorID', empresaId.toString());
         return this.http
             .get('/api/AltaEmpresa/VerificarEstadoDataAgro', { search: params, headers: this.headers }).pipe(
-            map(this.extractData));
+                map(this.extractData));
     }
 
-    public GuardarSIPER(proveedorId: number, estadoSIPER: string){
+    public GuardarSIPER(proveedorId: number, estadoSIPER: string) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('proveedorId', proveedorId.toString());
         params.set('estadoSIPER', estadoSIPER);
@@ -74,4 +78,17 @@ export class AltaEmpresaService extends BaseService {
             .get('/api/AltaEmpresa/GuardarSIPER', { search: params, headers: this.headers })
             .pipe(map(this.extractData));
     }
+
+    public getRubros(): Observable<any> {
+        return this.http
+            .get('/api/usuario/getRubros', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
+    public getTipoCambiario(): Observable<any> {
+        return this.http
+            .get('/api/dataagro/GetTipoCambiario', { headers: this.headers }).pipe(
+                map(this.extractData));
+    }
+
 }

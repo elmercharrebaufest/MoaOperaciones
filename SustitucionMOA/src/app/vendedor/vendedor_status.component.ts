@@ -6,7 +6,7 @@ import { MensajeComponent } from './../common/view-child/mensaje/mensaje.compone
 import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
-import { Seccion } from './../common/models/Seccion';
+import { Seccion } from './../common/models/seccion';
 import { BaseComponent } from './../common/base-components/base-component';
 import { SessionDataService } from './../common/services/SessionDataService';
 

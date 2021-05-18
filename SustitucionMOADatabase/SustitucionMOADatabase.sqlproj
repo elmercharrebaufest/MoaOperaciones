@@ -91,12 +91,36 @@
     <Build Include="DBO\Tables\IngresoBruto.sql" />
     <Build Include="DBO\Tables\SituacionIVA.sql" />
     <None Include="scripts\CreacionRolCompras.sql" />
+    <Build Include="DBO\Tables\Categoria.sql" />
+    <Build Include="DBO\Tables\Comentario.sql" />
+    <Build Include="DBO\Tables\ComentarioArchivo.sql" />
+    <Build Include="DBO\Tables\Consulta.sql" />
+    <Build Include="DBO\Tables\EstadoConsulta.sql" />
+    <Build Include="DBO\Tables\SubCategoria.sql" />
+    <Build Include="DBO\Tables\ConsultaDetalle.sql" />
+    <Build Include="DBO\Tables\CausaConsulta.sql" />
+    <None Include="scripts\CreacionCategorias.sql" />
+    <None Include="scripts\CreacionCausasConsulta.sql" />
+    <Build Include="DBO\Tables\CategoriaRol.sql" />
     <Build Include="DBO\Tables\LiquidacionInformada.sql" />
+    <None Include="scripts\Update Comerciales.sql" />
+    <None Include="scripts\UpdateFechaSolicitud.sql" />
+    <Build Include="DBO\Tables\CampoSustentable.sql" />
+    <Build Include="DBO\Tables\CampoCosecha.sql" />
+    <Build Include="DBO\Tables\Cosecha.sql" />
+    <Build Include="DBO\Tables\CampoProveedor.sql" />
+    <Build Include="DBO\Tables\LogPesificacion.sql" />
+    <None Include="scripts\PermisosLogPesificaciones.sql" />
+    <Build Include="DBO\Tables\DeclaracionCampoSustentable.sql" />
+    <None Include="scripts\SP_ActualizarToneladasAprobadasCampo.sql" />
+    <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />
+    <None Include="scripts\CreacionRolSolp.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
     <None Include="DatabasePublishPreProd.xml" />
     <None Include="scripts\Rol_NuevoNoGranos.sql" />
+    <None Include="SustitucionMOADatabase.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />
@@ -106,5 +130,6 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="scripts\PermisosNotificaciones.sql" />
+    <None Include="scripts\CrearHanfireDBSchema.sql" />
   </ItemGroup>
 </Project>

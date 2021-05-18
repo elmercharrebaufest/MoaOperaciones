@@ -33,7 +33,6 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, "", this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 throw new ValidationCustomException("No se encontró una CCPP con el número ingresado.");
             }
 

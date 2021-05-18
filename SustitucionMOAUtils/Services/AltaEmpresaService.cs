@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -23,6 +24,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IDataAgroService dataAgroService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -30,29 +32,10 @@ namespace SustitucionMOAUtils.Services
             this.dataAgroService = dataAgroService;
         }
 
-        public List<ProveedorAltaDto> GetEmpresas(int IdTipoProveedor)
+        public List<ProveedorAltaDto> GetEmpresas(List<int> IdTiposProveedor)
         {
             try
             {
-                //{
-                //    List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
-                //                     x =>
-                //                     (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
-                //                        || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
-                //                        || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
-                //                        || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
-                //                        || x.EstadoAprobacion == EstadoAprobacion.Aprobado
-                //                        || x.EstadoAprobacion == EstadoAprobacion.Rechazado
-                //                        || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
-                //                        || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
-                //                        || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
-                //                        || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
-                //                        || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                //                        || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
-                //                    && x.HistorialAprobaciones.Count > 0
-                //                    && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
-                //                    );
-
                 List<ProveedorAltaDto> proveedorDtos = 
                     repositorio
                         .Listar<Proveedor>(
@@ -70,7 +53,7 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
                                     || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
                                 && x.HistorialAprobaciones.Count > 0
-                                && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id))
+                                && IdTiposProveedor.Contains(x.TipoProveedor.Id))
                         .Select(proveedor => new ProveedorAltaDto
                                 {
                                     CodigoProveedor = proveedor.CodigoProveedor ?? "",
@@ -187,7 +170,41 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string SetEstadoAprobacion(int proveedorId,
+        public void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor)
+        {
+            try
+            {
+                
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
+                string asunto = "";
+                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
+                var Vinculofuncionarios = altaEmpresa.Funcionarios;
+
+                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: ambos";
+                }
+                if(proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
+                {
+                    asunto = "Asunto a definir: funcionarios";
+                }
+                if(proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: empleados";
+                }
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
+                var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
+
+                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception e)
+            {
+            }
+
+        }
+
+            public string SetEstadoAprobacion(int proveedorId,
                                           EstadoAprobacion estado,
                                           string observacion,
                                           string usuarioMail,
@@ -547,7 +564,17 @@ namespace SustitucionMOAUtils.Services
         {
             var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
             var cuerpo = string.Format(cuerpoTemplate, proveedor.RazonSocial, "aprobada", !string.IsNullOrWhiteSpace(observacionParaElProveedor) ? observacionParaElProveedor : "-");
-            string asunto = "Molinos Agro – Alta generada pendiente de envío documentación original.";
+            string asunto;
+
+            if(proveedor.TipoProveedor.NombreCorto == "NG")
+            {
+                asunto = "Molinos Agro – Alta generada con éxito";
+            }
+            else
+            {
+                asunto = "Molinos Agro – Alta generada pendiente de envío documentación original.";
+            }
+          
             EmailSender.EnviarMail(new List<string> { proveedor.Mail }, asunto, cuerpo, copia, null, null, null);
         }
 

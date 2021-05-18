@@ -58,7 +58,14 @@ export class AltasComponent extends BaseComponent implements OnInit {
     filtroAlta: string = "";
     mensajeSIPERGuardado: string = "";
     idTipoProveedor: number = 0;
+    pantallaEditarAlta: boolean = false;
 
+    tipoCambiario: number = 1;
+    rubros: any;
+    IdRubro: number;
+    facturacionAnual: number;
+    nosisObligatorio: boolean;
+    RealizarAnalisisNOSIS: boolean;
 
     listaArchivos: Array<Archivo> = [];
 
@@ -67,6 +74,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
     ngOnInit(): void {
+        if (this.isAuthorized('VER ALTAS GRANOS'))
+            this.idTipoProveedor = 2;
+        else
+            this.idTipoProveedor = 3;
+
         this.getEstados();
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
@@ -95,8 +107,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.data = result.data;
 
                         setTimeout(function () {
-                            $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: {  "hide": 3000 } });
-                            
+                            $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
                         }, 100);
                     }
                 },
@@ -113,13 +124,38 @@ export class AltasComponent extends BaseComponent implements OnInit {
         }
         return false; //<-- Prevent Refresh
     }
+
+    getTipoCambiario() {
+        try {
+            this.subscriptionDropDowns = this.service.getTipoCambiario().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.tipoCambiario = result.data;
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
     getEstados() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.altaEmpresaService.getEstados().subscribe(
+            this.subscription = this.altaEmpresaService.getEstados(this.idTipoProveedor).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -133,6 +169,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         let estadosFinales = result.finales;
                         let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
                         this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
+                        this.selectedEstado = "";
                         this.getEmpresa();
                     }
                 },
@@ -165,49 +202,49 @@ export class AltasComponent extends BaseComponent implements OnInit {
         }
     }
 
-    guardarSIPER(){
+    guardarSIPER() {
         this.spinnerModal.showIt();
         this.subscription = this.altaEmpresaService.GuardarSIPER(this.empresaSeleccionada.Id, this.empresaSeleccionada.EstadoSIPER).subscribe(
             result => {
                 this.spinnerModal.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                        this.mensajeSIPERGuardado = result.error;
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                        this.mensajeSIPERGuardado = result.info;
-                        this.data = result.data;
-                    }
-                },
-                error => {
-                    this.spinnerModal.hideIt();
-                    this.mensajeSIPERGuardado = "Ocurrio un error al guardar el SIPER."
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.mensajeComponent.setErrorMsg(result.error);
+                    this.mensajeSIPERGuardado = result.error;
+                } else if (result.info != undefined) {
+                    this.mensajeComponent.setInfoMsg(result.info);
+                    this.mensajeSIPERGuardado = result.info;
+                    this.data = result.data;
                 }
+            },
+            error => {
+                this.spinnerModal.hideIt();
+                this.mensajeSIPERGuardado = "Ocurrio un error al guardar el SIPER."
+            }
 
-            );
-            
-            if (this.mensajeSIPERGuardado == "")
-                this.mensajeSIPERGuardado = "Se guardo correctamente."
+        );
+
+        if (this.mensajeSIPERGuardado == "")
+            this.mensajeSIPERGuardado = "Se guardo correctamente."
     }
 
     isNullOrWhitespace(input: string) {
-        
+
         if (typeof input === 'undefined' || input == null)
             return true;
-        
+
         var userText = input.replace(/^\s+/, '').replace(/\s+$/, '');
 
-        if (userText === '') 
-        {
+        if (userText === '') {
             return true;
         }
         return false;
     }
 
-    resetVariables(){
+    resetVariables() {
         this.mensajeSIPERGuardado = "";
+        this.pantallaEditarAlta = false;
     }
 
     cambiarEstado(estadoId: number) {
@@ -216,7 +253,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
             return false;
         }
         if (
-            estadoId == 7 
+            estadoId == 7
             && this.isNullOrWhitespace(this.empresaSeleccionada.EstadoSIPER)
             //Para los no granos solo valido el SIPER si es requerido que mande el siper
             && ((this.empresaSeleccionada.SiperObligatorio && this.empresaSeleccionada.IdTipoUsuario == 3)
@@ -330,6 +367,11 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
 
+    abrirEditar(proveedorId: number) {
+        this.pantallaEditarAlta = true;
+        this.getTipoCambiario()
+        this.getRubrosOptions();
+    }
 
     handleFileInput(files: FileList, fileKey: string) {
         this.mensajeComponent.setMsgsEmpty();
@@ -413,44 +455,44 @@ export class AltasComponent extends BaseComponent implements OnInit {
         link.click();
     }
 
-    descargarArchivos(mail: string, proveedorId: number){
+    descargarArchivos(mail: string, proveedorId: number) {
         this.service.descargarArchivosSubidos(mail, proveedorId)
-        .subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {
-                    var byteArray = new Uint8Array(result.FileContents);
-                    var blob = new Blob([byteArray], {
-                        type: "application/octet-stream",
-                    });
-
-                    if (window.navigator.msSaveOrOpenBlob) {
-                        // IE11
-                        window.navigator.msSaveOrOpenBlob(
-                            blob,
-                            result.FileDownloadName
-                        );
-                    } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
-                        document.body.appendChild(link);
-                        link.href = url;
-                        link.download = result.FileDownloadName;
-                        link.click();
-                        setTimeout(function () {
-                            window.URL.revokeObjectURL(url);
-                        }, 0);
-                        return false;
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
                     }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            return false;
+                        }
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.spinnerSmallComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        )
+            )
     }
 
     onOptionsSelected() {
@@ -538,17 +580,119 @@ export class AltasComponent extends BaseComponent implements OnInit {
         document.body.removeChild(el);
 
         $("#h" + id).popover('show');
-        setTimeout(function(){$("#h" + id).popover('hide')}, 1500);
+        setTimeout(function () { $("#h" + id).popover('hide') }, 1500);
 
         return false;
     }
 
     altaInterna(empresa: Empresa) {
-       this.goToSeccionParam('/alta-empresa-no-granos', empresa.Id.toString());
+        this.goToSeccionParam('/alta-empresa-no-granos', empresa.Id.toString());
     }
 
     completarAlta(empresa: Empresa) {
-       this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
+        this.goToSeccionParamTres('/usuario/alta-empresa-no-granos', empresa.Id.toString(), empresa.CUIT, empresa.Mail);
+    }
+
+    getRubrosOptions() {
+        try {
+            this.subscriptionDropDowns = this.service.getRubros().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.rubros = result.data;
+
+                        if (this.empresaSeleccionada.Rubro != "") {
+                            this.rubros.forEach(rubro => {
+                                if (rubro.Nombre == this.empresaSeleccionada.Rubro) {
+                                    this.IdRubro = rubro.Id;
+                                }
+                            });
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    volver() {
+        this.pantallaEditarAlta = false;
+    }
+
+    editarAltaNoGranos() {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.facturacionAnual == null) {
+            this.facturacionAnual = 0;
+        }
+
+        try {
+            this.service.editarProveedorNoGranos(this.empresaSeleccionada.RazonSocial, this.empresaSeleccionada.CUIT, this.empresaSeleccionada.Mail,
+                this.empresaSeleccionada.Telefono,
+                this.empresaSeleccionada.RealizarAnalisisNOSIS ? this.empresaSeleccionada.RealizarAnalisisNOSIS : false,
+                this.IdRubro, this.empresaSeleccionada.CondicionDePago,
+                this.empresaSeleccionada.ServicioPrestado, this.empresaSeleccionada.OrganizacionDeCompra, this.empresaSeleccionada.RazonDeEleccion,
+                this.empresaSeleccionada.FacturacionAnual, this.empresaSeleccionada.Id,
+                this.empresaSeleccionada.RequiereVerificacionCompras ? this.empresaSeleccionada.RequiereVerificacionCompras : false,
+                this.empresaSeleccionada.IngresoAPlanta ? this.empresaSeleccionada.IngresoAPlanta : false,
+                this.empresaSeleccionada.AltaInterna ? this.empresaSeleccionada.AltaInterna : false,
+                this.empresaSeleccionada.SiperObligatorio ? this.empresaSeleccionada.SiperObligatorio : false
+            ).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        setTimeout(() => {
+                            this.pantallaEditarAlta = false;
+                        }, 1000);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    calcularFacturacion() {
+
+        if (this.tipoCambiario <= 0)
+            this.tipoCambiario = 1;
+        let facturacionDolares = this.empresaSeleccionada.FacturacionAnual / this.tipoCambiario
+
+
+        if (facturacionDolares > 15000) {
+            this.nosisObligatorio = true;
+            this.empresaSeleccionada.RealizarAnalisisNOSIS = true;
+        }
+        else {
+            this.nosisObligatorio = false;
+        }
+    }
+
+    verificarIngresoAPlanta() {
+        if (this.empresaSeleccionada.IngresoAPlanta)
+            this.empresaSeleccionada.RequiereVerificacionCompras = true;
     }
 
     descargarFormularioNG(empresaId: number) {
@@ -589,5 +733,13 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     this.mensajeError = error.message;
                 }
             );
+    }
+
+
+    cambiarFiltroTipoProveedor(tipoProveedor: number) {
+        console.log("Cambiarlo:", tipoProveedor)
+        this.idTipoProveedor = tipoProveedor;
+
+        this.getEstados();
     }
 }

@@ -22,15 +22,16 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int PorcentajeDePago { get; set; }
         public int? ComercialCreadorId { get; set; }
         public int EstadoId { get; set; }
-        public int ClasificacionId { get; set; }
+        //public int ClasificacionId { get; set; }
         public string Observacion { get; set; }
         public int DestinoId { get; set; }
         public int? BoletoId { get; set; }
         public int? BolsaId { get; set; }
         public int ProveedorId { get; set; }
         public int? CorredorId { get; set; }
-        public int LocalidadId { get; set; }
-        public int ProvinciaId { get; set; }
+        public int? DiasPesificado { get; set; }
+        //public int LocalidadId { get; set; }
+        //public int ProvinciaId { get; set; }
         public DateTime FechaOperacion { get; set; }
         //public DateTime DesdeFijacion { get; set; }
         //public DateTime HastaFijacion { get; set; }

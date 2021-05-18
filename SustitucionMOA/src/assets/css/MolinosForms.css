@@ -542,3 +542,7 @@ entre fechas search*/
  display:none
 }*/
 }
+
+.ui-table .ui-sortable-column.ui-state-highlight {
+  background-color: #067935 !important;
+}

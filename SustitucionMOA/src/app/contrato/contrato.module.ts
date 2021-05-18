@@ -1,4 +1,4 @@
-﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+﻿import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContratoRoutingModule } from './contrato-routing.module';
 import { ContratoBaseComponent } from './contrato.component';
@@ -35,6 +35,6 @@ import { AutocompleteLibModule } from 'angular-ng-autocomplete';
     providers: [
         ContratoService
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ContratoModule { }

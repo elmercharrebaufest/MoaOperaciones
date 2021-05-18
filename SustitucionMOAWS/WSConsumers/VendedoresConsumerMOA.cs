@@ -58,6 +58,7 @@ namespace SustitucionMOAWS.WSConsumers
                 {
                     descVendedor = vendedor.DESC_VEND,
                     estado = vendedor.ESTADO,
+                    estadoMoa = "Habilitado",
                     fecha = vendedor.FECHA,
                     idVendedor = vendedor.ID_VENDEDOR
                 });

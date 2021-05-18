@@ -112,14 +112,14 @@ namespace SustitucionMOATest.Services
 
             var expected = new List<ArchivoDescargaDto>
             {
-                new ArchivoDescargaDto { Nombre = "TicketPesada.pdf", Datos = bytes},
-                new ArchivoDescargaDto { Nombre = "TicketReciboMunicipal.pdf", Datos = bytes},
-                new ArchivoDescargaDto { Nombre = "Foto CCPP 1.jpg", Datos = bytes},
-                new ArchivoDescargaDto { Nombre = "Foto CCPP 2.jpg", Datos = bytes},
-                new ArchivoDescargaDto { Nombre = "Ticket Pesada CCPP 1234.zip", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Ticket Pesada 1234.pdf", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Ticket Recibo Municipal 1234.pdf", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Foto CCPP 1234 - 1.jpg", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Foto CCPP 1234 - 2.jpg", Datos = bytes},
+                new ArchivoDescargaDto { Nombre = "Documentación CCPP 1234.zip", Datos = bytes},
             };
 
-            Assert.AreEqual(expected, resultado);
+            CollectionAssert.AreEquivalent(expected, resultado);
         }
     }
 }

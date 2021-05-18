@@ -105,4 +105,32 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="FechaComprobante" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="42940a4b-b76d-49ff-b41a-9c62b821887d" ChangeDateTime="02/09/2021 20:50:49">
+    <Property Name="ElementName" Value="[dbo].[RolCategoria].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RolCategoria]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Rol_Id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f26b44ae-6150-4efb-9e26-173927acb772" ChangeDateTime="04/23/2021 15:34:10">
+    <Property Name="ElementName" Value="[dbo].[ConflictoCampoSustentable].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ConflictoCampoSustentable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IdOperaciones" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="78bd6225-0108-4324-9887-3d3ca31c4379" ChangeDateTime="04/23/2021 16:01:26">
+    <Property Name="ElementName" Value="[dbo].[CampoCosecha].[StockUtilizado]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[CampoCosecha]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="StockDisponible" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="c4844c93-ab19-441b-a8c2-bdd45b357125" ChangeDateTime="04/26/2021 17:56:42">
+    <Property Name="ElementName" Value="[dbo].[ConflictoCampoSustentable].[IdCampoSutentable]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ConflictoCampoSustentable]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="IdCampoSustentable" />
+  </Operation>
 </Operations>

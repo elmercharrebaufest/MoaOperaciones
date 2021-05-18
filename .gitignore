@@ -275,3 +275,4 @@ SustitucionMOADatabase/SustitucionMOADatabase.jfm
 
 /SustitucionMOA/src/**/*.js
 /SustitucionMOA/src/**/*.map
+/SustitucionMOA/package-lock.json

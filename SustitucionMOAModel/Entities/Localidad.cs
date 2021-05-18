@@ -22,9 +22,9 @@ namespace SustitucionMOAModel.Entities
         public int PartidoId { get; set; }
 
         [ForeignKey("ProvinciaId")]
-        public Provincia Provincia { get; set; }
+        public virtual Provincia Provincia { get; set; }
 
         [ForeignKey("PartidoId")]
-        public Partido Partido { get; set; }
+        public virtual Partido Partido { get; set; }
     }
 }

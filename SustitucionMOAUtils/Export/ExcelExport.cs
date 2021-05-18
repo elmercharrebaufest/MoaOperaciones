@@ -21,18 +21,21 @@ namespace SustitucionMOAUtils.Export
             StringWriter sw = new StringWriter();
             HtmlTextWriter htw = new HtmlTextWriter(sw);
 
-            var tituloRow = new System.Data.DataTable("Titulo");
-            tituloRow.Columns.Add("Titulo");
-            tituloRow.Rows.Add(titulo);
-            var gridTitulo = new GridView();
-            gridTitulo.DataSource = tituloRow;
-            gridTitulo.GridLines = GridLines.None;
-            gridTitulo.Font.Bold = true;
-            gridTitulo.Font.Size = 14;
-            gridTitulo.ShowHeader = false;
-            gridTitulo.DataBind();
-            gridTitulo.Rows[0].Cells[0].ColumnSpan = headers.Count();
-            gridTitulo.RenderControl(htw);
+            if (!string.IsNullOrEmpty(titulo))
+            {
+                var tituloRow = new System.Data.DataTable("Titulo");
+                tituloRow.Columns.Add("Titulo");
+                tituloRow.Rows.Add(titulo);
+                var gridTitulo = new GridView();
+                gridTitulo.DataSource = tituloRow;
+                gridTitulo.GridLines = GridLines.None;
+                gridTitulo.Font.Bold = true;
+                gridTitulo.Font.Size = 14;
+                gridTitulo.ShowHeader = false;
+                gridTitulo.DataBind();
+                gridTitulo.Rows[0].Cells[0].ColumnSpan = headers.Count();
+                gridTitulo.RenderControl(htw);
+            }
 
             var gridData = new GridView();
             gridData.DataSource = dataList;
@@ -43,7 +46,6 @@ namespace SustitucionMOAUtils.Export
             }
 
             gridData.RenderControl(htw);
-            
 
             return sw.ToString();
         }

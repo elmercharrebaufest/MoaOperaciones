@@ -32,6 +32,7 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly IAltaEmpresaService AltaEmpresaService;
         private readonly string DataAgroURL;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
@@ -54,13 +55,13 @@ namespace SustitucionMOAUtils.Services
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
-                ValidarEstadoSolicitud(proveedor);
+                //ValidarEstadoSolicitud(proveedor);
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                var httpClientHandler = new HttpClientHandler()
+                var httpClientHandler = new HttpClientHandler
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
@@ -91,12 +92,14 @@ namespace SustitucionMOAUtils.Services
 
                     downloadKey = jsonResult.DownloadKey;
 
-
+                    byte[] InformeComercialPDF;
                     urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                    WebClient clienteDescarga = new WebClient();
-                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+                    using (WebClient clienteDescarga = new WebClient())
+                    {
+                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
 
-                    byte[] InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                        InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                    }
 
                     return InformeComercialPDF;
 
@@ -123,8 +126,6 @@ namespace SustitucionMOAUtils.Services
                 var urlCartaPresentacion = string.Concat(DataAgroURL, "/CartaDePresentacion/Generar");
                 var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
 
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
                 var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
                 var infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
 
@@ -132,13 +133,13 @@ namespace SustitucionMOAUtils.Services
                 cartadePresentacion.vendedorRazonSocial = proveedor.RazonSocial;
                 cartadePresentacion.vendedorActividad = infoProveedor.ProveedorClasificacion;
 
-                ValidarEstadoSolicitud(proveedor);
+                //ValidarEstadoSolicitud(proveedor);
 
                 string userName = DataAgroWSCredential.getUserName();
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                var httpClientHandler = new HttpClientHandler()
+                var httpClientHandler = new HttpClientHandler
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
@@ -169,15 +170,15 @@ namespace SustitucionMOAUtils.Services
 
                     downloadKey = jsonResult.DownloadKey;
 
-
                     urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
 
-                    WebClient clienteDescarga = new WebClient
-                    {
-                        Credentials = new NetworkCredential(userName, password, dominio)
-                    };
+                    byte[] InformeComercialPDF;
 
-                    byte[] InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                    using (WebClient clienteDescarga = new WebClient())
+                    {
+                        clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+                        InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                    };
 
                     return InformeComercialPDF;
 
@@ -207,20 +208,16 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                var httpClientHandler = new HttpClientHandler()
+                var httpClientHandler = new HttpClientHandler
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
 
                 using (var client = new HttpClient(httpClientHandler, false))
                 {
-                    var task = await client.PostAsync(urlBusquedaMateriales, null);
-
-                    //task.Wait();
+                    var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
 
                     var stringContent = task.Content.ReadAsStringAsync();
-
-                    string scapedJson = stringContent.Result.Replace("ñ", "ni");
 
                     return stringContent.Result;
                 }
@@ -247,12 +244,12 @@ namespace SustitucionMOAUtils.Services
 
                 string rutaArchivosProveedores = ConfigurationManager.AppSettings["RutaArchivosProveedores"];
 
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
                 var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 if (fileKey != FileKeys.ArchivosInternos)
+                {
                     ValidarEstadoSolicitud(proveedor);
+                }
 
                 string rutaCarpeta = ArmarRutaCarpeta(fileKey, rutaArchivosProveedores, proveedor);
 
@@ -275,7 +272,7 @@ namespace SustitucionMOAUtils.Services
                         file.Delete();
                     }
 
-                    var archivoRemover = proveedor.Archivos.Where(a => a.FileKey == fileKey).FirstOrDefault();
+                    var archivoRemover = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
 
                     if (archivoRemover != null)
                     {
@@ -304,6 +301,22 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public Localidad GetLocalidad(int localidadId)
+        {
+            if(localidadId <= 0)
+            {
+                throw new InfoCustomException("Id de localidad invalido");
+            }
+
+            var localidad = repositorio.Obtener<Localidad>(l => l.LocalidadId == localidadId);
+
+            if (localidad == null) throw new InfoCustomException("No existe la localidad");
+
+            //localidad.Nombre = localidad.Nombre + " (" + localidad.Provincia.Nombre + ")";
+
+            return localidad;                    
+        }
+
         public string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, Proveedor proveedor)
         {
             return string.Concat(rutaArchivosProveedores, "/", proveedor.CUIT, "/", proveedor.Id, "/", fileKey);
@@ -324,14 +337,12 @@ namespace SustitucionMOAUtils.Services
 
             Log.Info("Obtener Proveedor. Proveedor ID: " + proveedorId.ToString());
 
-            if (proveedorId > 0)
-                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            else
-                proveedor = usuario.ObtenerProveedorPorId(proveedorId);
+            proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
 
             if (proveedor.TipoProveedor.Nombre != "No Granos")
+            {
                 infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
-
+            }
 
             Log.Info("ValidarEstadoSolicitud");
 
@@ -369,7 +380,7 @@ namespace SustitucionMOAUtils.Services
 
                 var historialAnterior = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion != EstadoAprobacion.EdicionRequerida).OrderByDescending(x => x.Fecha).FirstOrDefault();
 
-                bool pasoPorEdicionRequerida = proveedor.HistorialAprobaciones.Where(h => h.EstadoAprobacion == EstadoAprobacion.EdicionRequerida).Any();
+                bool pasoPorEdicionRequerida = proveedor.HistorialAprobaciones.Any(h => h.EstadoAprobacion == EstadoAprobacion.EdicionRequerida);
                 //Si existe un historial le ponemos el anterior antes de ser observado. Si no, lo ponemos en el estado inicial del flujo de alta
                 //Ademas, nos fijamos que lo hallan mandado a observar
                 if (historialAnterior != null && pasoPorEdicionRequerida)
@@ -382,14 +393,7 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     Log.Info("If para chequear verificacion compras");
-                    if (proveedor.RequiereVerificacionCompras ?? false)
-                    {
-                        proveedor.EstadoAprobacion = EstadoAprobacion.PendienteAprobacionCompras;
-                    }
-                    else
-                    {
-                        proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-                    }
+                    proveedor.EstadoAprobacion = (proveedor.RequiereVerificacionCompras ?? false) ? EstadoAprobacion.PendienteAprobacionCompras : EstadoAprobacion.AprobacionPendiente;
                 }
 
 
@@ -480,6 +484,10 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Guardamos");
 
             repositorio.GuardarCambios();
+            if(proveedor.VinculoConEmpleadosDeMolinos == true || proveedor.VinculoConFuncionariosPublicos == true) 
+            {
+                AltaEmpresaService.EnviarMailAuditoria(altaEmpresa ,proveedor);
+            }
 
             Log.Info("Fin");
 
@@ -525,12 +533,9 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
             }
 
-            if (infoProveedor.EstadoSISA != "1")
+            if (infoProveedor.EstadoSISA != "1" && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
             {
-                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
-                }
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
             }
 
             return true;
@@ -548,12 +553,9 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CBU"));
             }
 
-            if (infoProveedor.EstadoSISA != "1")
+            if (infoProveedor.EstadoSISA != "1" && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
             {
-                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
-                }
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
             }
 
             return true;
@@ -564,7 +566,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Constancia CUIT"));
             }
-            if ((altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.Local || altaEmpresa.IdIngresoBruto ==  (int)IngresosBrutos.ConvenioMultilateral) 
+            if ((altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.Local || altaEmpresa.IdIngresoBruto == (int)IngresosBrutos.ConvenioMultilateral)
                 && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.InscripcionIIBB))
             {
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Inscripcion IIBB"));
@@ -586,12 +588,9 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (proveedor.SiperObligatorio ?? false)
+            if (proveedor.SiperObligatorio ?? false && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
             {
-                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
-                }
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
             }
 
             return true;
@@ -601,10 +600,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<ArchivoDto> archivos = new List<ArchivoDto>();
 
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-
 
             foreach (var archivo in proveedor.Archivos.Where(a => a.FileKey != (!esOperador ? FileKeys.ArchivosInternos : "")))
             {
@@ -620,20 +616,21 @@ namespace SustitucionMOAUtils.Services
 
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-            return proveedor.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault().Ruta;
+            return proveedor.Archivos.FirstOrDefault(f => f.Id.Equals(archivoID)).Ruta;
         }
 
         public string EliminarArchivo(string mailUsuario, int archivoID, int proveedorId)
         {
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
             string rutaArchivo = "";
 
-            var archivoEliminar = proveedor.Archivos.Where(f => f.Id.Equals(archivoID)).FirstOrDefault();
+            var archivoEliminar = proveedor.Archivos.FirstOrDefault(f => f.Id.Equals(archivoID));
 
             if (archivoEliminar.FileKey != FileKeys.ArchivosInternos)
+            {
                 ValidarEstadoSolicitud(proveedor);
+            }
 
             rutaArchivo = archivoEliminar.Ruta;
             proveedor.Archivos.Remove(archivoEliminar);
@@ -661,18 +658,12 @@ namespace SustitucionMOAUtils.Services
 
             Proveedor proveedor;
 
-            if (proveedorId > 0)
-                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            else
-                proveedor = usuario.ObtenerProveedor();
-
+            proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedor();
+            
             var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
 
-
             ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
-            //result = new ResultadoValidarProveedorComercial {
 
-            //};
             var info = new InfoProveedorDataAgroDto
             {
                 ProveedorCBU = result.ProveedorCBU,
@@ -685,17 +676,33 @@ namespace SustitucionMOAUtils.Services
             return info;
         }
 
-        public AltaEmpresaViewModel CargarSolicitudUsuario(string mail, int proveedorId)
+        public AltaEmpresaViewModel CargarSolicitudUsuario(string mailUsuario, int proveedorId)
         {
             AltaEmpresaViewModel altaEmpresa = new AltaEmpresaViewModel();
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mail);
 
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
             altaEmpresa.VinculoConEmpleadosDeMolinos = proveedor.VinculoConEmpleadosDeMolinos;
             altaEmpresa.VinculoConFuncionariosPublicos = proveedor.VinculoConFuncionariosPublicos;
-            altaEmpresa.Empleados = proveedor.RelacionConEmpleados.Select(a => new AltaEmpresaEmpleadosViewModel { CargoProveedora = a.CargoProveedora, NombreMolinos = a.NombreMolinos, NombreProveedora = a.NombreProveedora, Vinculo = a.Vinculo }).ToList();
-            altaEmpresa.Funcionarios = proveedor.RelacionConFuncionarios.Select(a => new AltaEmpresaFuncionariosViewModel { CargoFirma = a.CargoFirma, CargoFuncionario = a.CargoFuncionario, NombreFirma = a.NombreFirma, NombreFuncionario = a.NombreFuncionario, Vinculo = a.Vinculo }).ToList();
+
+            altaEmpresa.Empleados = proveedor.RelacionConEmpleados
+                                                .Select(a => new AltaEmpresaEmpleadosViewModel { 
+                                                    CargoProveedora = a.CargoProveedora, 
+                                                    NombreMolinos = a.NombreMolinos, 
+                                                    NombreProveedora = 
+                                                    a.NombreProveedora, 
+                                                    Vinculo = a.Vinculo })
+                                                .ToList();
+
+            altaEmpresa.Funcionarios = proveedor.RelacionConFuncionarios
+                                                .Select(a => new AltaEmpresaFuncionariosViewModel { 
+                                                    CargoFirma = a.CargoFirma, 
+                                                    CargoFuncionario = a.CargoFuncionario, 
+                                                    NombreFirma = a.NombreFirma, 
+                                                    NombreFuncionario = a.NombreFuncionario, 
+                                                    Vinculo = a.Vinculo })
+                                                .ToList();
+
             altaEmpresa.IdIngresoBruto = proveedor.IdIngresoBruto;
             altaEmpresa.IdSituacionIVA = proveedor.IdSituacionIVA;
             altaEmpresa.CBU = proveedor.CBU;
@@ -713,21 +720,14 @@ namespace SustitucionMOAUtils.Services
                 string password = DataAgroWSCredential.getPassword();
                 string dominio = DataAgroWSCredential.getDominio();
 
-                //userName = "emartin";
-                //password = "eugeniomartin2";
-                //dominio = "baunet";
-                //urlBusquedaMateriales = "http://localhost:52498/Campana/Buscar";
-
-                var httpClientHandler = new HttpClientHandler()
+                var httpClientHandler = new HttpClientHandler
                 {
                     Credentials = new NetworkCredential(userName, password, dominio),
                 };
 
                 using (var client = new HttpClient(httpClientHandler, false))
                 {
-                    var task = await client.PostAsync(urlBusquedaMateriales, null);
-
-                    //task.Wait();
+                    var task = await client.PostAsync(urlBusquedaMateriales, null).ConfigureAwait(false);
 
                     var stringContent = task.Content.ReadAsStringAsync();
 
