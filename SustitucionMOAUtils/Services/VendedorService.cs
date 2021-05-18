@@ -108,6 +108,7 @@ namespace SustitucionMOAUtils.Services
                     estadoMoa = v.EstadoAprobacionDescripcion,
                     idVendedor = v.CodigoProveedor
                 });
+            response.vendedores.AddRange(vendedoresAprobados);
 
             response.vendedores = response.vendedores.Distinct().ToList();
             return response;
