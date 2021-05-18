@@ -4,6 +4,12 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 "><strong>Altas de proveedores Pendientes</strong> </div>
+
+            <div class="col-xs-12 col-sm-2">
+                <a (click)="exportExcel()"  style="text-decoration:none!important" >
+                    <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                </a>
+            </div>
         </div>
         <!--End Title-->
         <!--Search-->
@@ -19,6 +25,7 @@
                 (click)="cambiarFiltroTipoProveedor(3)">
                 No Granos
             </button>
+
 
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
 
