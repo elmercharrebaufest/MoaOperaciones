@@ -24,6 +24,7 @@ export class Generacion1Component extends ListBaseComponent {
     @Input('locale') 
     protected locale:any;
 
+    
 
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -34,7 +35,7 @@ export class Generacion1Component extends ListBaseComponent {
     solpPaso1Result: any;
     fechaEntrega: any;
     horaEntrega: any;
-
+    hoy: Date = new Date();
     
     parsearFecha () {
         this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
@@ -55,6 +56,7 @@ export class Generacion1Component extends ListBaseComponent {
         this.setTabs();
         if(!this.model.mail)
             this.model.mail = sessionStorage.getItem("username");
+          
     }
 
 

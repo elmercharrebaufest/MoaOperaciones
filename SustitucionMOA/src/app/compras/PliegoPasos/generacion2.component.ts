@@ -42,7 +42,7 @@ export class Generacion2Component extends ListBaseComponent {
     visitaDeObraFecha: any;
     fechaLimiteHora: any;
     fechaLimiteFecha: any;
-
+    hoy: Date = new Date();
 
     //variables auxiliares de text rich
     posicionDeInicioInsert: number = 0;
