@@ -397,7 +397,7 @@
                     </div>
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
-                            <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE') && false">
+                            <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE') ">
                                 <a (click)="goToSeccion('/sustentable/listado-campos')" href="#"> Campo Sustentable</a>
                             </div>
                             <div *ngIf="isAuthorized('CONSULTAR VENDEDOR STATUS')">
@@ -498,7 +498,7 @@
 
                 <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
                 <div class="panel panel-default"
-                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA')  && false">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse"
                             (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
@@ -507,7 +507,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default"
-                    *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA')  && false ">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
                             href="#" data-parent="#accordionMenu">
