@@ -32,6 +32,7 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IDataAgroService dataAgroService;
+        protected readonly IAltaEmpresaService AltaEmpresaService;
         private readonly string DataAgroURL;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
@@ -483,6 +484,10 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Guardamos");
 
             repositorio.GuardarCambios();
+            if(proveedor.VinculoConEmpleadosDeMolinos == true || proveedor.VinculoConFuncionariosPublicos == true) 
+            {
+                AltaEmpresaService.EnviarMailAuditoria(altaEmpresa ,proveedor);
+            }
 
             Log.Info("Fin");
 

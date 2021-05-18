@@ -58,29 +58,28 @@ export class Generacion2Component extends ListBaseComponent {
 
     }
 
-    listaVisitas: any[] = [
-        {
-            id: uuid.v4(),
-            visitaDeObraFecha: "",
-            visitaDeObraHora: ""
-        }
-    ];
+    // listaVisitas: any[] = [
+    //     {
+    //         id: uuid.v4(),
+    //         visitaDeObraFecha: "",
+    //         visitaDeObraHora: ""
+    //     }
+    // ];
 
     agregarNuevaVisita() {
-        this.listaVisitas.push(
+        this.model.listaVisitas.push (
             {
                 id: uuid.v4(),
-                visitaDeObraFecha: "",
-                visitaDeObraHora: ""
+                visitaDeObraFecha: new Date(),
+                visitaDeObraHora: new Date(1,1,1,10,0,0,0)
             }
         )
-
     };
 
     eliminarVisita(id) {
-        this.listaVisitas = this.listaVisitas.filter(x => x.id != id);
+        this.model.listaVisitas = this.model.listaVisitas.filter(x => x.id != id);
 
-        if (this.listaVisitas.length == 0) {
+        if (this.model.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
 
@@ -93,28 +92,28 @@ export class Generacion2Component extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-        this.model.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
-        this.model.fechaLimiteFecha = new Date(2021,1,1);
+        
+        
         
     }
 
     selectionChange(event) {
 
-        if (event.range && this.model.observaciones) {
-            this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observaciones);
+        if (event.range && this.model.observacionesGeneracion) {
+            this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observacionesGeneracion);
         }
     }
 
     fileChange(file) {
         if (this.posicionDeInicioInsert != undefined) {
-            var textoInicial = this.model.observaciones.substring(0, this.posicionDeInicioInsert + 1);
-            var textoFinal = this.model.observaciones.substring(this.posicionDeInicioInsert + 1, this.model.observaciones.length);
-            this.model.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
+            var textoInicial = this.model.observacionesGeneracion.substring(0, this.posicionDeInicioInsert + 1);
+            var textoFinal = this.model.observacionesGeneracion.substring(this.posicionDeInicioInsert + 1, this.model.observacionesGeneracion.length);
+            this.model.observacionesGeneracion = textoInicial + '<img src=' + file + '>' + textoFinal;
             this.posicionDeInicioInsert = undefined;
         }
         else {
 
-            this.model.observaciones = this.model.observaciones + '<img src=' + file + '>';
+            this.model.observacionesGeneracion = this.model.observacionesGeneracion + '<img src=' + file + '>';
         }
     }
 

@@ -102,17 +102,17 @@
     letter-spacing: 0px;
     opacity: 1;
     font-weight: 200;
-    cursor: pointer;
   }
  
-  ::ng-deep .ui-button{
+  ::ng-deep .ui-calendar .ui-button{
     background-color:#5B5B5B !important;
     border-color: #5B5B5B !important;
-  }
+} 
 
   .widthCompras {
     width: 75%;
   }
+
   ::ng-deep .ui-sidebar-bottom {
     height: 4em !important;
   }
@@ -124,3 +124,86 @@
   .inputRight {
     right: 13px;
   }
+
+  ::ng-deep .weekDayBtn .ui-togglebutton {
+    text-align: center !important;
+    border-radius: 3em !important;
+    width: 12% !important;
+    margin-right: 2px !important;
+  }
+
+  ::ng-deep .weekDayBtn .ui-togglebutton.ui-state-default {
+    background-color: #fff !important;
+  }
+
+  ::ng-deep .weekDayBtn .ui-togglebutton.ui-state-active {
+    background-color: #1C7CD5 !important;
+    border: 1px solid #C9C9C9 !important;
+    color: honeydew !important;
+  }
+  
+  ::ng-deep .weekDayBtn .ui-togglebutton.ui-state-focus {
+    background-color: honeydew;
+    border: 1px solid #C9C9C9 !important; 
+  }
+
+  ::ng-deep .ui-inputtext {
+    width: 15%;
+  }
+
+  .styled-select1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #3f4845;
+    overflow: hidden;
+    font-family: "Roboto Condensed", Arial, sans-serif;
+  }
+
+  .weekDayBtn {
+    margin-right: 2px !important;
+  }
+
+  .ejecucionCompras {
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+  }
+
+  
+
+
+  
+  
+  
+  /*pesificaciones*/
+
+  ::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose {
+  width: 130px !important;
+  height: 34px !important;
+  background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box !important;
+  border: 1px solid #95989A !important;
+  opacity: 1 !important;
+}
+
+/* estilos upload */
+::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose {
+  width: 150px !important;
+  height: 34px !important;
+  background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box !important;
+  border: 1px solid #95989A !important;
+  opacity: 1 !important;
+}
+
+::ng-deep div.ui-fileupload-buttonbar  {
+  background-color: #FFFFFF !important;
+  border: none;
+}
+
+::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose > span{
+  color: #666666;
+}
+
+::ng-deep div.ql-editor{
+  font-weight:normal;
+}
+/* fin estilos upload */

@@ -4,6 +4,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -23,6 +24,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IDataAgroService dataAgroService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -168,7 +170,41 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string SetEstadoAprobacion(int proveedorId,
+        public void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor)
+        {
+            try
+            {
+                
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
+                string asunto = "";
+                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
+                var Vinculofuncionarios = altaEmpresa.Funcionarios;
+
+                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: ambos";
+                }
+                if(proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
+                {
+                    asunto = "Asunto a definir: funcionarios";
+                }
+                if(proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: empleados";
+                }
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
+                var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
+
+                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception e)
+            {
+            }
+
+        }
+
+            public string SetEstadoAprobacion(int proveedorId,
                                           EstadoAprobacion estado,
                                           string observacion,
                                           string usuarioMail,

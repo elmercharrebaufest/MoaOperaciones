@@ -1,10 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { WeekDay } from '@angular/common';
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../common/base-components/base-component';
 import { Paso } from '../common/models/paso';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { Solp } from './Solp';
+import * as uuid from 'uuid';
 
 @Component({
     selector: 'app-solp',
@@ -137,8 +139,62 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 today: 'Today',
                 clear: 'Clear'
             };
+
+            this.solpActual.jornadaLaboralDias = [
+                {
+                    weekDay: WeekDay.Monday,
+                    selected: true
+                },
+                {
+                    weekDay: WeekDay.Tuesday,
+                    selected: true
+                },
+                {
+                    weekDay: WeekDay.Wednesday,
+                    selected: true
+                },
+                {
+                    weekDay: WeekDay.Thursday,
+                    selected: true
+                },
+                {
+                    weekDay: WeekDay.Friday,
+                    selected: true
+                },
+                {
+                    weekDay: WeekDay.Saturday,
+                    selected: false
+                },
+                {
+                    weekDay: WeekDay.Sunday,
+                    selected: false
+                }
+            ];
+
+            this.solpActual.fechaEntrega = new Date();
+            this.solpActual.horaEntrega = new Date(1,1,1,10,0,0,0);
+            this.solpActual.fechaLimiteFecha = new Date();
+            this.solpActual.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
+            this.solpActual.visitaDeObraFecha = new Date();
+            this.solpActual.visitaDeObraHora = new Date(1,1,1,10,0,0,0);
+            this.solpActual.listaVisitas =  [
+                {
+                    id: uuid.v4(),
+                    visitaDeObraFecha: new Date(),
+                    visitaDeObraHora: new Date(1,1,1,10,0,0,0)
+                }];
+
+            this.solpActual.comienzoJornadaLaboral = new Date(1,1,1,7,0,0,0);
+            this.solpActual.terminoJornadaLaboral = new Date(1,1,1,16,0,0,0);
+            this.solpActual.ejecucion = "30";
+            this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
+            
+            
         }
     }
+
+
+   
 
     cambioPaso(paso){
         this.pasos.forEach((p,i) => {
@@ -216,8 +272,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 ]);
                 break;
             case 'PliegoEspecificacion':
+                paso.Completo = this.listaStringCompleta([
+                    this.solpActual.especificacionesViewModel.observaciones
+                ]);
                 break;
             case 'PliegoCotizacion':
+                paso.Completo = this.listaStringCompleta([
+                    this.solpActual.ejecucion,
+                    this.solpActual.jornadaLaboralDias,
+                    this.solpActual.comienzoJornadaLaboral,
+                    this.solpActual.terminoJornadaLaboral
+                ]);
                 break;
             case 'SolpCabecera':
                 break;  

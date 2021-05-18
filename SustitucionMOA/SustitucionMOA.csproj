@@ -246,6 +246,7 @@
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
     <Content Include="Content\images\icons\trash.png" />
+    <Content Include="Content\images\icons\trashRed.png" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -854,6 +855,7 @@
     <Content Include="Template\ReporteConflictosCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\AvisoAuditoria.html" />
     <Content Include="Template\ReporteLiquidacionesInformadas.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

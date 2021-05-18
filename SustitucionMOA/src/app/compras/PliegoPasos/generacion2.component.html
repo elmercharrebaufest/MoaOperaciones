@@ -19,26 +19,26 @@
                             <p-checkbox [(ngModel)]="model.visitaDeObraMasiva" label="Visita de obra masiva" binary="true"></p-checkbox>
                         </div>
 
-                        <div *ngFor="let visita of listaVisitas">
+                        <div *ngFor="let visita of model.listaVisitas">
                             <div class="col-xs-12 col-sm-12 col-md-7 margenInput">
-                                <div class="styled-select" *ngIf="model.visitaDeObraMasiva">
-                                    <p-calendar [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true"></p-calendar>    
+                                <div class="styled-select">
+                                    <p-calendar [style]="{'width': '75%'}" [(ngModel)]="visita.visitaDeObraFecha" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [disabled]="!model.visitaDeObraMasiva"  [readonlyInput]="true"></p-calendar>    
                                 </div>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-4 prime-hora margenInput">
-                                <div *ngIf="model.visitaDeObraMasiva" >
-                                    <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
+                                <div>
+                                    <p-calendar class="styled-select" [(ngModel)]="visita.visitaDeObraHora" [locale]="locale" [showIcon]="true" icon="fa fa-clock-o" [disabled]="!model.visitaDeObraMasiva"  [timeOnly]="true"></p-calendar>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-1">
-                                <span (click)="eliminarVisita(visita.id)" *ngIf="model.visitaDeObraMasiva"><img class="pointer" src="./Content/images/icons/trash.png" alt="imageAlt" /></span>
+                                <span  (click)="model.visitaDeObraMasiva ? eliminarVisita(visita.id) : null"><img [class.pointer]="model.visitaDeObraMasiva" src="./Content/images/icons/trash.png" alt="trash" style="padding: 8px;" /></span>
                             </div>
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput" *ngIf="model.visitaDeObraMasiva">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                             <div>
-                                <span (click)="agregarNuevaVisita()" class="enlaceVisita" ><i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
+                                <span (click)="model.visitaDeObraMasiva ? agregarNuevaVisita() : null" [class.pointer]="model.visitaDeObraMasiva" class="enlaceVisita" ><i class="fa fa-plus-square"></i>&nbsp; Agregar nueva visita de obra</span>
                             </div>
                         </div>
 
@@ -117,59 +117,55 @@
                 </div>
 
                 <div class="row myRow">
-                    <div class="col-xs-12 col-md-12 col-ms-12">
-                        
-                    </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                        
                         <label class="labelCompras" for="editorTexto"> Observaciones:</label>
 
-                        <p-editor #editorTexto id="editorTexto" appDragAndDrop (onFileDropped)="fileChange($event)" 
-                        (onSelectionChange)="selectionChange($event)" 
-                        [(ngModel)]="model.observaciones" [style]="{'height':'320px', 'width':'100%'}">
-                            <p-header>
-                                <span class="ql-formats">
-                                    <select class="ql-size">
-                                        <option value="Pequeño"></option>
-                                        <option selected></option>
-                                        <option value="Mediano"></option>
-                                        <option value="Grande"></option>
-                                    </select>
-                                </span>
+                        <quill-editor appDragAndDrop id="observaciones" [(ngModel)]="model.observaciones"  [styles]="{'height':'160px'}"
+                        (onFileDropped)="fileChange($event)" (onSelectionChanged)="selectionChange($event)" placeholder="">
 
-                                <span class="ql-formats">
-                                    <button class="ql-bold" aria-label="Bold"></button>
-                                    <button class="ql-italic" aria-label="Italic"></button>
-                                    <button class="ql-underline" aria-label="Underline"></button>
-                                </span>
+                           <div quill-editor-toolbar>
+                               <span class="ql-formats">
+                                   <select class="ql-size">
+                                       <option value="small"></option>
+                                       <option selected></option>
+                                       <option value="large"></option>
+                                       <option value="huge"></option>
+                                   </select>
+                               </span>
 
-                                <span class="ql-formats">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                    <button class="ql-indent" value="-1"></button>
-                                    <button class="ql-indent" value="+1"></button>
-                                </span>
+                               <span class="ql-formats">
+                                   <button class="ql-bold" aria-label="bold"></button>
+                                   <button class="ql-italic" aria-label="italic"></button>
+                                   <button class="ql-underline" aria-label="underline"></button>
+                                   <button class="ql-strike" aria-label="strike"></button>
+                               </span>
+
+                               <span class="ql-formats">
+                                   <button class="ql-list" value="ordered"></button>
+                                   <button class="ql-list" value="bullet"></button>
+                                   <button class="ql-indent" value="-1"></button>
+                                   <button class="ql-indent" value="+1"></button>
+                               </span>
 
 
-                                <span class="ql-formats">
-                                    <select class="ql-align">
-                                        <option selected></option>
-                                        <option value="center"></option>
-                                        <option value="right"></option>
-                                        <option value="justify"></option>
-                                    </select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button aria-label="Borra estilos" class="ql-clean" type="button"></button>
-                                    <button aria-label="Adjuntar imagen" class="ql-image" type="button"></button>
-                                </span>
-                            </p-header>
-                        </p-editor>
+                               <span class="ql-formats">
+                                   <select class="ql-align">
+                                       <option selected></option>
+                                       <option value="center"></option>
+                                       <option value="right"></option>
+                                       <option value="justify"></option>
+                                   </select>
+                               </span>
+                               <span class="ql-formats">
+                                   <button aria-label="Borra estilos" class="ql-clean" type="button"></button>
+                                   <button aria-label="Adjuntar imagen" class="ql-image" type="button"></button>
+                               </span>
+                           </div>
+
+                       </quill-editor>
                     </div>
-
                 </div>
-
-
             </div>
         </div>
         <!-- END form-->
