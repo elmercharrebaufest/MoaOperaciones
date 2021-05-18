@@ -224,7 +224,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.SolicitarInformacion(empresaId) });
+                return JsonCustom(new { data = altaEmpresaService.SolicitarInformacion(empresaId, ClaimsPrincipalExtension.GetClaimValue("emails")) });
             }
             catch (InfoCustomException e)
             {
