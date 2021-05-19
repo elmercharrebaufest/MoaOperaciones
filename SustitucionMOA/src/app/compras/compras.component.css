@@ -196,7 +196,15 @@
 
 ::ng-deep div.ui-fileupload-buttonbar  {
   background-color: #FFFFFF !important;
-  border: none;
+  border: none !important;
+}
+::ng-deep  div.ui-fileupload-content
+{
+  border: none !important;
+}
+::ng-deep div.ui-progressbar{
+  width: none !important;
+  display: none !important;
 }
 
 ::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose > span{

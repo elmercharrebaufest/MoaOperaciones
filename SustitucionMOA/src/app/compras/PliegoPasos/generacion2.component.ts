@@ -9,6 +9,9 @@ import { ModalService } from './../../common/services/ModalService';
 import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
 import * as uuid from 'uuid';
+import  ImageResize  from 'quill-image-resize-module';
+import Quill from 'quill';
+Quill.register('modules/imageResize', ImageResize);
 
 
 
@@ -27,11 +30,13 @@ export class Generacion2Component extends ListBaseComponent {
     @Input('locale') 
     protected locale:any;
 
-
-  
+    modulesEditor = {};
 
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.modulesEditor = {
+            imageResize: true
+        }
     }
 
 
@@ -105,7 +110,7 @@ export class Generacion2Component extends ListBaseComponent {
     }
 
     fileChange(file) {
-        if (this.posicionDeInicioInsert != undefined) {
+        if (this.posicionDeInicioInsert != undefined && this.model.observacionesGeneracion.length > this.posicionDeInicioInsert) {
             var textoInicial = this.model.observacionesGeneracion.substring(0, this.posicionDeInicioInsert + 1);
             var textoFinal = this.model.observacionesGeneracion.substring(this.posicionDeInicioInsert + 1, this.model.observacionesGeneracion.length);
             this.model.observacionesGeneracion = textoInicial + '<img src=' + file + '>' + textoFinal;
@@ -113,7 +118,7 @@ export class Generacion2Component extends ListBaseComponent {
         }
         else {
 
-            this.model.observacionesGeneracion = this.model.observacionesGeneracion + '<img src=' + file + '>';
+            this.model.observacionesGeneracion = '<img src=' + file + '>';
         }
     }
 

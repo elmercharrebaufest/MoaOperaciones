@@ -9,29 +9,43 @@
                 <div class="row myRow">
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                         <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
-                        <p-fileUpload name="myfile" files="this.viewModel.archivosAdjuntos" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                        <p-fileUpload name="myfile"  auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                             [showUploadButton]=false [showCancelButton]=false [customUpload]="true"
-                            (uploadHandler)="uploadHandler($event)" (onRemove)="clearFile($event)">
-                            <ng-template *ngIf="viewModel.archivosAdjuntos.length == 0" pTemplate="toolbar">
-                                <div *ngIf="viewModel.archivosAdjuntos.length == 0" style="display: inline !important;">
+                            (uploadHandler)="uploadHandler($event)" >
+                            <ng-template *ngIf="viewModel.archivosAdjuntosNuevos.length == 0" pTemplate="toolbar">
+                                <div *ngIf="viewModel.archivosAdjuntosNuevos.length == 0" style="display: inline !important;">
                                     Ningún archivo elegido</div>
+                            </ng-template>
+                            <ng-template let-file pTemplate="file">
+                                
                             </ng-template>
                         </p-fileUpload>
                     </div>
                 </div>
 
-                <div class="row myRow">
+                <div class="row myRow" *ngIf="viewModel.archivosAdjuntosNuevos.length > 0 || viewModel.archivosGuardadosEspecificaciones.length > 0">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div>
                             <label class="labelCompras" for="editorTexto"> Anexos agregados</label>
                         </div>
+                        <!--Archivos que ya fueron guardados-->
                         <div class="row col-xs-3 justify-content-start"
                             *ngFor="let archivo of viewModel.archivosGuardadosEspecificaciones">
                             <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                (click)="eliminarAdjunto(archivo)" style="width: 26px;"/>
+                                (click)="eliminarAdjuntoGuardado(archivo)" style="width: 26px;"/>
                             <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                 {{archivo.nombreArchivo}}</a>
                         </div>
+                        <!--Fin Archivos que ya fueron guardados-->
+                        <!--Archivos nuevos-->
+                        <div class="row col-xs-3 justify-content-start"
+                            *ngFor="let archivo of this.viewModel.archivosAdjuntosNuevos">
+                            <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                (click)="eliminarAdjuntoNuevo(archivo)" style="width: 26px;"/>
+                            <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
+                                {{archivo.name}}</a>
+                        </div>
+                        <!--Fin Archivos nuevos-->
                     </div>
                 </div>
 
@@ -40,7 +54,7 @@
                         <label class="labelCompras" for="editorTexto"> Observaciones</label>
                         <quill-editor appDragAndDrop id="observaciones" [(ngModel)]="viewModel.observaciones"
                             [styles]="{'min-height':'500px','max-height':'auto'}" (onFileDropped)="fileChange($event)"
-                            (onSelectionChanged)="selectionChange($event)" placeholder="">
+                            (onSelectionChanged)="selectionChange($event)" placeholder="" [modules]="modulesEditor">
 
                             <div quill-editor-toolbar>
                                 <span class="ql-formats">

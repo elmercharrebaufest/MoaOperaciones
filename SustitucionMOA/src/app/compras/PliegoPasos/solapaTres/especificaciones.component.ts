@@ -9,7 +9,9 @@ import { ModalService } from '../../../common/services/ModalService';
 import { SolpService } from '../../solp.service'
 import { Solp } from '../../Solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
-
+import  ImageResize  from 'quill-image-resize-module';
+import Quill from 'quill';
+ Quill.register('modules/imageResize', ImageResize);
 
 declare var $: any;
 
@@ -29,9 +31,14 @@ export class EspecificacionesComponent extends ListBaseComponent {
     //variables auxiliares de text rich
     posicionDeInicioInsert: number = 0;
     public viewModel: EspecificacionesViewModel;
+    modulesEditor = {};
 
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+        this.modulesEditor = {
+            imageResize: true
+        }
     }
 
     setTabs() {
@@ -40,41 +47,16 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-
-        //borrar cuando se implemente servicio de carga de datos
         this.viewModel = this.model.especificacionesViewModel;
-        this.viewModel.archivosGuardadosEspecificaciones = [
-            {
-                id: 0,
-                nombreArchivo: "Archivo 1",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 1,
-                nombreArchivo: "Archivo 2",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 2,
-                nombreArchivo: "Archivo 3",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 3,
-                nombreArchivo: "Archivo 4",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 5,
-                nombreArchivo: "Archivo 5",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            }
-        ]
-
     }
 
     //elimno el archivo, llamar al servicio de eliminacion
-    eliminarAdjunto(archivo): void {
+    eliminarAdjuntoNuevo(archivo): void {
+        var indice = this.viewModel.archivosAdjuntosNuevos.indexOf(archivo)
+        this.viewModel.archivosAdjuntosNuevos.splice(indice, 1)
+    }
+
+    eliminarAdjuntoGuardado(archivo): void {
         var indice = this.viewModel.archivosGuardadosEspecificaciones.indexOf(archivo)
         this.viewModel.archivosGuardadosEspecificaciones.splice(indice, 1)
     }
@@ -141,12 +123,7 @@ export class EspecificacionesComponent extends ListBaseComponent {
     }
 
     uploadHandler(filesUploaad: any): void {
-        this.viewModel.archivosAdjuntos = filesUploaad;
-    }
-
-    clearFile(evento:any): void{
-        var indice = this.viewModel.archivosAdjuntos["files"].indexOf(evento.file);
-        this.viewModel.archivosAdjuntos["files"].splice(indice, 1)
+        this.viewModel.archivosAdjuntosNuevos = filesUploaad["files"];
     }
 
     selectionChange(event): void {
@@ -156,15 +133,16 @@ export class EspecificacionesComponent extends ListBaseComponent {
     }
 
     fileChange(file): void {
-        if (this.posicionDeInicioInsert != undefined) {
-            var textoInicial = this.viewModel.observaciones.substring(0, this.posicionDeInicioInsert + 1);
-            var textoFinal = this.viewModel.observaciones.substring(this.posicionDeInicioInsert + 1, this.viewModel.observaciones.length);
-            this.viewModel.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
-            this.posicionDeInicioInsert = undefined;
+        if (this.posicionDeInicioInsert != undefined && this.viewModel.observaciones.length > this.posicionDeInicioInsert) {
+                var textoInicial = this.viewModel.observaciones.substring(0,  this.posicionDeInicioInsert + 1);
+                var textoFinal = this.viewModel.observaciones.substring(this.posicionDeInicioInsert + 1, this.viewModel.observaciones.length);
+                this.viewModel.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
+                this.posicionDeInicioInsert = undefined;
         }
         else {
             this.viewModel.observaciones = this.viewModel.observaciones + '<img src=' + file + '>';
         }
+        
     }
 
     ObtenerPosicionInsert(posicion: number, texto: string): number {
