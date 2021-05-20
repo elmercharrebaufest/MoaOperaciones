@@ -62,13 +62,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        <textarea type="search" [(ngModel)]="this.nuevoComentario" [value]=""
-                            class="fourRounded crearConsultaComentario" placeholder="Comentarios*"
-                            aria-controls="tableModal" rows="8"></textarea>
+
+                    <div class="for myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">Comentario<span class="requerido">*</span></p>
+                            <textarea type="search" [(ngModel)]="this.nuevoComentario" [value]=""
+                                class="fourRounded crearConsultaComentario"
+                                aria-controls="tableModal" rows="8"></textarea>
+                        </div>
                     </div>
-
-
 
                     <!-- Expanded para Reclamo Impositivo - Retenciones -->
                     <div class="col-xs-12 col-sm-12 col-md-12"
@@ -79,7 +81,7 @@
                                 N° Salida de pago<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -89,7 +91,7 @@
                                 Contrato/N° de factura<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -142,7 +144,7 @@
                                 N° de factura<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -176,7 +178,7 @@
                                 N° de contrato<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -189,7 +191,7 @@
                                 N° de contrato<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -244,7 +246,7 @@
                                 N° de contrato<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -254,7 +256,7 @@
                                 N° COE<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -266,7 +268,7 @@
                                 N° de contrato<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -276,7 +278,7 @@
                                 CCPP<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -288,7 +290,7 @@
                                 N° de Factura<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -310,7 +312,7 @@
                                 N° de contrato
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -320,7 +322,7 @@
                                 CCPP
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -332,7 +334,7 @@
                                 N° de contrato<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -345,7 +347,7 @@
                                 N° de Factura<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -358,7 +360,7 @@
                                 CCPP
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -382,7 +384,7 @@
                                 N° Proforma
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
+                                <input type="search" [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
                                     class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -395,7 +397,7 @@
                                 CCPP<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
                                     aria-controls="tableModal" required>
                             </div>
                         </div>
@@ -405,7 +407,7 @@
                                 N° Proforma
                             </p>
                             <div class="styled-select">
-                                <input type="number" [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
+                                <input type="search" [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
                                     class="fourRounded" aria-controls="tableModal" required>
                             </div>
                         </div>

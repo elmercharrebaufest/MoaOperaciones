@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -17,6 +18,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<EstadoConsultaDto> ObtenerEstados();
         List<SubCategoriaDto> ObtenerSubCategorias();
         List<CausaConsultaDto> ObtenerCausas();
+        string EnviarMailRecordatorio(int consultaId);
         List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos);
         string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId);
         string ObtenerRutaArchivo(int archivoId);

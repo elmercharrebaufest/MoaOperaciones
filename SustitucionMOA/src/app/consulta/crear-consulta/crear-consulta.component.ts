@@ -301,7 +301,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
-            if (this.listaArchivos == null || this.listaArchivos.length < 2) {
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
                 this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }

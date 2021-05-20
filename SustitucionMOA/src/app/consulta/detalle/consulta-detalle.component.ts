@@ -112,6 +112,9 @@ export class DetalleConsultaComponent extends BaseComponent {
             if(this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno){
                 this.cambiarEstadoPorCode("GES");
             }
+            if(this.consulta.EstadoConsulta.Code == 'GESRTA' && this.esInterno){
+                this.cambiarEstadoPorCode("GES");
+            }
         }, 500);
         this.setDatosExtra()
     }
@@ -229,17 +232,17 @@ export class DetalleConsultaComponent extends BaseComponent {
     setDatosExtra(){
         this.datosExtra = 
         [
-            {Nombre: "Razon Social Corredor", Value: this.consulta.RazonSocialCorredor},
-            {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor},
-            {Nombre: "Razon Social Proveedor", Value: this.consulta.RazonSocialProveedor},
-            {Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor},
-            {Nombre: "Categoria", Value: this.consulta.Categoria.Nombre},
-            {Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre},
-            {Nombre: "N° de Contrato", Value: this.consulta.ContratoNo},
-            {Nombre: "Importe", Value: this.consulta.Importe},
-            {Nombre: "Impuesto", Value: this.consulta.Impuesto},
-            {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo},
-            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo}
+            {Nombre: "Razón Social Corredor", Value: this.consulta.RazonSocialCorredor, NewLine: false},
+            {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor, NewLine: false},
+            {Nombre: "Razón Social Proveedor", Value: this.consulta.RazonSocialProveedor, NewLine: false},
+            {Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor, NewLine: false},
+            {Nombre: "Categoria", Value: this.consulta.Categoria.Nombre, NewLine: false},
+            {Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre, NewLine: false},
+            {Nombre: "N° de Contrato", Value: this.consulta.ContratoNo, NewLine: true},
+            {Nombre: "Importe", Value: this.consulta.Importe, NewLine: false},
+            {Nombre: "Impuesto", Value: this.consulta.Impuesto, NewLine: false},
+            {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo, NewLine: true},
+            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo, NewLine: true}
         ]
     }
 

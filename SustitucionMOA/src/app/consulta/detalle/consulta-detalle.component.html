@@ -117,7 +117,14 @@
             <div *ngIf="this.MostrarDatosAdicionales">
                 <div *ngFor="let dato of datosExtra" class="col-md-12">
                     <ng-container *ngIf="dato.Value != null && this.Value != '' ">
-                        <strong>{{dato.Nombre}}:</strong> {{dato.Value}}<br>
+                            <div *ngIf="dato.NewLine">
+                                <strong>{{dato.Nombre}}:</strong> <p [innerHTML]='dato.Value'></p>
+                                <br>
+                            </div>
+                            <div *ngIf="!dato.NewLine">
+                                <strong>{{dato.Nombre}}:</strong> {{dato.Value}}
+                                <br>
+                            </div>
                     </ng-container>
                 </div>
 
