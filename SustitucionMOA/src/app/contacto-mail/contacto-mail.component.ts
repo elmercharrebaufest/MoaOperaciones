@@ -239,6 +239,11 @@ export class ContactoMailComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.categoriaOptions = result.data;
+                        this.categoriaOptions.forEach(cat => {
+                            if(cat.label == 'ACTUALIZACIONES'){
+                                this.categoriaSelected = cat;
+                            }
+                        });
                     }
                 },
                 error => {
