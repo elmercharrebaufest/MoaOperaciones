@@ -28,7 +28,7 @@ export interface Consulta {
     Comentarios;
     
     DiasReclamo;
-
+    Usuario?;
 }
 
 export interface EstadoConsulta {

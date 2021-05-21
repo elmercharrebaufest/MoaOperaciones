@@ -3770,6 +3770,16 @@ div.panel-body a.active{
   border-radius: 2px;
   opacity: 1;
 }
+.btn-recordar{
+  position: relative;
+  right: 10px;
+  width: 85px;
+  height: 36px;
+  background: #075088 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
 .enviarComentario{
   margin-bottom: 5px;
   border: none;

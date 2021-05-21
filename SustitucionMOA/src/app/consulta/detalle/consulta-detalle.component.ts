@@ -232,6 +232,9 @@ export class DetalleConsultaComponent extends BaseComponent {
     setDatosExtra(){
         this.datosExtra = 
         [
+            {Nombre: "N° Consulta", Value: this.consulta.Id, NewLine: false},
+            {Nombre: "Mail Usuario", Value: this.consulta.Usuario.Mail, NewLine: false},
+            {Nombre: "CUIT Usuario", Value: this.consulta.Usuario.CUIT, NewLine: false},
             {Nombre: "Razón Social Corredor", Value: this.consulta.RazonSocialCorredor, NewLine: false},
             {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor, NewLine: false},
             {Nombre: "Razón Social Proveedor", Value: this.consulta.RazonSocialProveedor, NewLine: false},
@@ -242,7 +245,7 @@ export class DetalleConsultaComponent extends BaseComponent {
             {Nombre: "Importe", Value: this.consulta.Importe, NewLine: false},
             {Nombre: "Impuesto", Value: this.consulta.Impuesto, NewLine: false},
             {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo, NewLine: true},
-            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo, NewLine: true}
+            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo, NewLine: true},
         ]
     }
 

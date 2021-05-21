@@ -26,7 +26,6 @@ namespace SustitucionMOAUtils.Services
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
-        private static readonly string EMAIL_TEMPLATE_RECORDATORIO = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RecordatorioComentario.html");
 
         public ConsultaService(IRepositorio repositorio)
         {
@@ -215,8 +214,8 @@ namespace SustitucionMOAUtils.Services
                     Mail = c.Usuario.Mail
                 },
                 Fecha = c.Detalle != null ? c.Detalle.Fecha : null,
-                ComprobanteNo = c.Detalle != null ? c.Detalle.ComprobanteNo : "",
-                OtroComprobanteNo = c.Detalle != null ? c.Detalle.OtroComprobanteNo : "",
+                ComprobanteNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.ComprobanteNo) : "",
+                OtroComprobanteNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.OtroComprobanteNo) : "",
                 ContratoNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.ContratoNo) : "",
                 Importe = c.Detalle != null ? c.Detalle.Importe : null,
                 Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
@@ -256,11 +255,19 @@ namespace SustitucionMOAUtils.Services
 
         private string FormatearStringNewLine(string dato)
         {
-            dato = dato.Replace(",", "<br>");
-            dato = dato.Replace("/", "<br>");
-            dato = dato.Replace(" ", "<br>");
+            if(dato == null)
+            {
+                return dato;
+            }
 
-            dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");
+            if (dato.Contains("/") || dato.Contains(",") || dato.Contains(" "))
+            {
+                dato = dato.Replace(",", "<br>");
+                dato = dato.Replace("/", "<br>");
+                dato = dato.Replace(" ", "<br>");
+
+                dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");
+            }
 
             return dato;
         }
@@ -272,9 +279,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var copia = new List<string>();
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_RECORDATORIO);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Usuario.Mail, consulta.Id, consulta.Asunto);
-                string asunto = "Molinos Agro - Respuesta sin leer en: " + consulta.Asunto;
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
             }

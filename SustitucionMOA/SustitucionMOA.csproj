@@ -845,7 +845,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
-    <Content Include="Template\RecordatorioComentario.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

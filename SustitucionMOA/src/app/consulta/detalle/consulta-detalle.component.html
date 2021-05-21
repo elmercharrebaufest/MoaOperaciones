@@ -73,11 +73,12 @@
                 (click)="postComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
                     <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar</div>
                 </button>
-
-                
+            </div>
+            <br>
+            <div class="col-xs-12 col-sm-12 col-md-2">
                 <button *ngIf="esInterno"
                 (click)="recordarComentario()" class="mx-auto d-block enviarComentario" href="#" style="text-decoration:none!important">
-                    <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Recordar mensaje</div>
+                    <div class="btn-custom btn-mediano btn-add animate align-center btn-recordar">Recordar mensaje</div>
                 </button><!--
                 <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add" (click)="goToSeccion('/consulta/mis-consultas');">
                     regresar
@@ -119,7 +120,6 @@
                     <ng-container *ngIf="dato.Value != null && this.Value != '' ">
                             <div *ngIf="dato.NewLine">
                                 <strong>{{dato.Nombre}}:</strong> <p [innerHTML]='dato.Value'></p>
-                                <br>
                             </div>
                             <div *ngIf="!dato.NewLine">
                                 <strong>{{dato.Nombre}}:</strong> {{dato.Value}}
