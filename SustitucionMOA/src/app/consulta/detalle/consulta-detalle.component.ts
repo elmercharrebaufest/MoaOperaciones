@@ -381,7 +381,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos().subscribe(
+            this.subscription = this.service.getCombos(false).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

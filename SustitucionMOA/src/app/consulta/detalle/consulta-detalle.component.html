@@ -155,7 +155,7 @@
                 </div>
                 <div>
                     <p class="bold" style="margin: 7px;">Categoria</p>
-                    <p-dropdown [options]="categoriasList" [(ngModel)]="this.categoriaId" 
+                    <p-dropdown [options]="categoriasList" [(ngModel)]="categoriaId" 
                         name="categoriaId" [maxSelectedLabels]="1" autoWidth="false"
                         (onChange)="setSubcategorias($event.value)">
                     </p-dropdown>

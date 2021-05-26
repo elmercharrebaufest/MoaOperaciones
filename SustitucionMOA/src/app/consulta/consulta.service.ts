@@ -73,9 +73,12 @@ export class ConsultaService extends BaseService {
             map(this.extractData));
     }
 
-    public getCombos(): Observable<any> {
+    public getCombos(excluir: boolean): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('excluir', excluir.toString());
+
         return this.http
-            .get('/api/consulta/Combos', { headers: this.headers }).pipe(
+            .get('/api/consulta/Combos', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 
