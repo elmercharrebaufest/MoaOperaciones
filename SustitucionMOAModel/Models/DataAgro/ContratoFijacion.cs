@@ -57,8 +57,6 @@ namespace SustitucionMOAModel.Models.DataAgro
         public bool? PagoDiferidoTercero { get; set; }
         public bool? DolarizadoTercero { get; set; }
         public bool? TrigoEspecial { get; set; }
-
-
-
+        public string UsuarioTercero { get; set; }
     }
 }

@@ -142,7 +142,7 @@ namespace SustitucionMOA.Controllers
                 contratoAPrecio.MonedaSustentable = "USDM ";
                 contratoAPrecio.ContratoSAP = "";
                 contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
-
+                contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
                 string result = crearContratoService.CrearContratoAPrecio(contratoAPrecio);
 
@@ -189,6 +189,7 @@ namespace SustitucionMOA.Controllers
                 contratoAFijar.MonedaSustentable = "USDM ";
                 contratoAFijar.ContratoSAP = "";
                 contratoAFijar.CantidadCamiones = contratoAFijar.CantidadCamiones == 0 ? null : contratoAFijar.CantidadCamiones;
+                contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
                 string result = crearContratoService.CrearContratoAFijar(contratoAFijar);
@@ -442,6 +443,7 @@ namespace SustitucionMOA.Controllers
                 contratoFijacion.ComercialCreadorId = null;
                 contratoFijacion.MonedaSustentable = "USDM ";
                 contratoFijacion.CantidadCamiones = contratoFijacion.CantidadCamiones == 0 ? null : contratoFijacion.CantidadCamiones;
+                contratoFijacion.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
                 string result = crearContratoService.CrearContratoFijacion(contratoFijacion);
@@ -859,7 +861,7 @@ namespace SustitucionMOA.Controllers
                             contrato.LocalidadId = int.Parse(rows.ElementAt(ii)[13].ToString());
                             contrato.ProvinciaId = int.Parse(rows.ElementAt(ii)[14].ToString());
                             contrato.Observacion = ii.ToString();
-
+                            contrato.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
                             contratos.Add(contrato);
