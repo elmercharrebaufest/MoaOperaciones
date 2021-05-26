@@ -89,6 +89,7 @@ namespace SustitucionMOATest.Services
                 Patente = "ABC123",
                 TicketPesada = bytes,
                 TicketReciboMunicipal = bytes,
+                CertificadoCP = bytes,
                 FotoCP = new FotosDto
                 {
                     Fotos = new FotoDto[]
@@ -121,5 +122,37 @@ namespace SustitucionMOATest.Services
 
             CollectionAssert.AreEquivalent(expected, resultado);
         }
+
+        [Test()]
+        public void ObtenerTicketArchivosVacios()
+        {
+            byte[] bytes = new byte[] { };
+
+            var resultadoTickets = new ResultadoTickets
+            {
+                CP = "1234",
+                Patente = "ABC123",
+                TicketPesada = bytes,
+            };
+
+            var consulta = new ConsultaTicketPesada
+            {
+                NumeroCartaPorte = "1234",
+                PatenteCamion = "ABC123",
+                Mail = "mail@mail.com"
+            };
+
+            scatoComandosConsumerMock.Setup(s => s.ObtenerTicketPesada(It.IsAny<string>())).Returns(resultadoTickets);
+
+            var ex = Assert.Throws<ValidationCustomException>(() => target.ObtenerTicket(consulta));
+
+            var expected = "No hay documentos para la carta de porte ingresada.";
+
+            var result = ex.Message;
+
+            Assert.AreEqual(expected, result);
+
+        }
+
     }
 }
