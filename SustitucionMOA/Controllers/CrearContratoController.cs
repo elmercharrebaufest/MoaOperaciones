@@ -93,11 +93,8 @@ namespace SustitucionMOA.Controllers
                 if (idProveedorDataAgro.HasValue)
                 {
                     return JsonCustom(crearContratoService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
-                }
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                }               
+                var proveedor = ObtenerProveedor();
                 return JsonCustom(crearContratoService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
             }
             catch (InfoCustomException e)
@@ -129,11 +126,8 @@ namespace SustitucionMOA.Controllers
                 contrato = contrato.Replace("nia", "ña");
                 var contratoAPrecio = JsonConvert.DeserializeObject<ContratoAPrecio>(contrato);
 
-
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+               
+                var proveedor = ObtenerProveedor();
 
                 if (contratoAPrecio.CorredorId == null)
                 {
@@ -180,11 +174,7 @@ namespace SustitucionMOA.Controllers
                 contrato = contrato.Replace("nia", "ña");
                 var contratoAFijar = JsonConvert.DeserializeObject<ContratoAFijar>(contrato);
 
-
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                var proveedor = ObtenerProveedor();
 
                 if (contratoAFijar.CorredorId == null)
                 {
@@ -228,19 +218,14 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var proveedor = ObtenerProveedor();
 
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
                 var directo = crearContratoService.ValidarDirecto(proveedor.CUIT);
                 int result = 0;
                 if (directo == "false")
                 {
                     result = proveedor.IdDataAgro ?? 0;
                 }
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, $"ValidarDirecto userMail:{userMail}, codigoProveedor:{codigoProveedor},proveedor.CUIT:{proveedor.CUIT}, directo:{directo}");
 
                 return JsonCustom(result);
             }
@@ -274,12 +259,8 @@ namespace SustitucionMOA.Controllers
 
                 if (filtro.Length > 2)
                 {
-                    string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                    var proveedor = ObtenerProveedor();
 
-                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                    string codigoProveedor = SessionPersister.Proveedor;
-
-                    var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
                     return JsonCustom(crearContratoService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
                 }
                 else
@@ -404,10 +385,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                var proveedor = ObtenerProveedor();
 
                 if (esCorredorEnDataAgro)
                 {
@@ -449,10 +427,8 @@ namespace SustitucionMOA.Controllers
                 var contratoFijacion = JsonConvert.DeserializeObject<ContratoFijacion>(contrato);
 
 
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                var proveedor = ObtenerProveedor();
+
 
                 if (contratoFijacion.CorredorId == null)
                 {
@@ -498,13 +474,7 @@ namespace SustitucionMOA.Controllers
             try
             {
 
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
-
+                var proveedor = ObtenerProveedor();
 
                 string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
 
@@ -535,13 +505,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                var proveedor = ObtenerProveedor();
 
                 string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
                 System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
@@ -684,10 +648,8 @@ namespace SustitucionMOA.Controllers
                 {
                     return JsonCustom(crearContratoService.ValidarProveedor(proveedorId));
                 }
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
+                Proveedor proveedor = ObtenerProveedor();
+
                 return JsonCustom(crearContratoService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
             }
             catch (InfoCustomException e)
@@ -811,12 +773,8 @@ namespace SustitucionMOA.Controllers
                 //parsear excel
                 //validar tipo de datos
                 //enviar lista
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var proveedor = ObtenerProveedor();
 
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
 
                 var contratoAcuerdo = Request.Form.Get("contratoAcuerdo");
 
@@ -1164,12 +1122,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var proveedor = ObtenerProveedor();
 
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
-                string codigoProveedor = SessionPersister.Proveedor;
-
-                var proveedor = usuario.ObtenerProveedorPorCodigo(codigoProveedor);
                 return JsonCustom(crearContratoService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
             }
             catch (InfoCustomException e)
@@ -1232,6 +1186,28 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        private Proveedor ObtenerProveedor()
+        {
+            Proveedor proveedor;
+            string vendedor = SessionPersister.Proveedor;
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
+            if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+            {
+                if (!usuario.TieneProveedor(vendedor))
+                {
+                    throw new ValidationCustomException("Proveedor incorrecto");
+                }
+                proveedor = usuario.ObtenerProveedorPorCodigo(vendedor);
+            }
+            else
+            {
+                proveedor = repositorio.Obtener<Proveedor>(p => p.CodigoProveedor == vendedor);
+            }
+            return proveedor;
+        }
+
 
     }
 }

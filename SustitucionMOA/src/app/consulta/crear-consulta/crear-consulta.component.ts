@@ -175,7 +175,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     getCombos() {
         this.unsubscribe();
         try {
-            this.subscription = this.service.getCombos().subscribe(
+            this.subscription = this.service.getCombos(true).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -212,185 +212,189 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
             if(this.esCorredor){
-                this.floatMsgService.setErrorMsg("Recuerde seleccionar un Proveedor.");
+                this.mensajeComponent.setErrorMsg("Recuerde seleccionar un Proveedor.");
                 return true;
             }
-            this.floatMsgService.setErrorMsg("El campo proveedor esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo proveedor esta vacio.");
             return true;
         }
         if (this.categoriaCount == 0) {
-            this.floatMsgService.setErrorMsg("Por favor seleccione una categoria.");
+            this.mensajeComponent.setErrorMsg("Por favor seleccione una categoria.");
             return true;
         }
         if (this.tieneSubcategorias && this.subcategoriaCount == 0) {
-            this.floatMsgService.setErrorMsg("Por favor seleccione una subcategoria.");
+            this.mensajeComponent.setErrorMsg("Por favor seleccione una subcategoria.");
             return true;
         }
         if (this.asunto == "" || !this.asunto) {
-            this.floatMsgService.setErrorMsg("El campo Asunto esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Asunto esta vacio.");
             return true;
         }
         if (this.nombre == "" || !this.nombre) {
-            this.floatMsgService.setErrorMsg("El campo Nombre esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
         if (this.nuevoComentario == "" || !this.nuevoComentario) {
-            this.floatMsgService.setErrorMsg("El campo Comentario esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Comentario esta vacio.");
             return true;
         }
         if ((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)) {
-            this.floatMsgService.setErrorMsg("El campo Corredor esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Corredor esta vacio.");
             return true;
         }
         if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
 
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° Salida de pago esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° Salida de pago esta vacio.");
                 return true;
             }
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo Contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Contrato esta vacio.");
                 return true;
             }
             if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto retenido esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vacio.");
                 return true;
             }
             if (this.importe == "" || !this.importe) {
-                this.floatMsgService.setErrorMsg("El campo Importe retención esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Importe retención esta vacio.");
                 return true;
             }
             if (this.fechaPago == "" || !this.fechaPago) {
-                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                this.mensajeComponent.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
         }
         if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.fechaPago == "" || !this.fechaPago) {
-                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                this.mensajeComponent.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
             }
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de factura esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de factura esta vacio.");
                 return true;
             }
             if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto retenido esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vacio.");
                 return true;
             }
         }
         if ((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG')) {
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
             if (this.bolsaEmisoraOblea == "" || !this.bolsaEmisoraOblea) {
-                this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
-            if (this.listaArchivos == null || this.listaArchivos.length < 2) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
+                this.mensajeComponent.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
             if (this.fechaPago == "" || !this.fechaPago) {
-                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                this.mensajeComponent.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP') {
             if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto esta vacio.");
                 return true;
             }
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar constancia");
+                this.mensajeComponent.setErrorMsg("Falta adjuntar constancia");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF') {
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar Informe Comercial");
+                this.mensajeComponent.setErrorMsg("Falta adjuntar Informe Comercial");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP') {
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar Carta presentacón");
+                this.mensajeComponent.setErrorMsg("Falta adjuntar Carta presentacón");
                 return true;
             }
         }
         if ((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)) {
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
-                return true;
-            }
-            if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° COE esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'CAL') {
             if ((this.contrato == "" || !this.contrato) && (this.comprobante == "" || !this.comprobante)) {
-                this.floatMsgService.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
                 return true;
             }
         }
         if (this.categoriaCode == 'COM') {
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'APP') {
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.floatMsgService.setErrorMsg("El campo Material esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'PES') {
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if ((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')) {
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL') {
             if ((this.comprobante == "" || !this.comprobante) && (this.comprobanteExtra == "" || !this.comprobanteExtra)) {
-                this.floatMsgService.setErrorMsg("Debe completar Campo carátula o CCPP.");
+                this.mensajeComponent.setErrorMsg("Debe completar Campo carátula o CCPP.");
                 return true;
             }
         }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
                 return true;
             }
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo CCPP esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
+                return true;
+            }
+        }
+        if (this.categoriaCode == 'PAG') {
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+            if ((this.comprobanteExtra == "" || !this.comprobanteExtra) && (this.comprobante == "" || !this.comprobante)
+            && (this.contrato == "" || !this.contrato) && (this.fechaPago == "" || !this.fechaPago)) {
+                this.mensajeComponent.setErrorMsg("Debe completar uno de los campos obligatorios.");
                 return true;
             }
         }

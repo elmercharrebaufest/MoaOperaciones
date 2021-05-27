@@ -78,7 +78,7 @@
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
-                                <tr>
+                                <tr style="word-wrap: break-word;">
                                     <td style="width: 3rem; padding: 0">
                                         <a style="cursor: pointer;" [pRowToggler]="rowData">
                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -232,6 +232,9 @@
                                                     </div>
                                                     <div class="ui-g-6">
                                                         <b>Liquidaci&oacute;n :</b> {{rowData.ComprobanteNo}}
+                                                    </div>
+                                                    <div>
+                                                        <b>Id :</b> {{rowData.comprobanteExtra}}
                                                     </div>
                                                 </div>
                                                 <div class="ui-g" *ngIf="rowData.Categoria.Code == 'MATBA' && 
