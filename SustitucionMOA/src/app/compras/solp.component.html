@@ -15,7 +15,7 @@
 
         <div class="row myRow mySearch" style="margin-bottom: 4em;">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <div class="col-xs-12 col-md-12 headerCompras">
+                <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
                     <strong>Paso {{pasoActual.Numero}}:</strong> {{pasoActual.Nombre}}
                 </div>
                 <hr>
@@ -30,11 +30,14 @@
                     <div  *ngSwitchCase="'PliegoEspecificacion'" [@fadeInOut] >
                         <especificaciones [(model)]="solpActual" [(locale)]="es"></especificaciones>
                     </div>
-                    <div *ngSwitchDefault [@fadeInOut] >
-                        Paso en construccion
-                    </div>
                     <div  *ngSwitchCase="'PliegoCotizacion'" [@fadeInOut] >
                         <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
+                    </div>
+                    <div  *ngSwitchCase="'SolpCabecera'" [@fadeInOut] >
+                        <cabecera [(model)]="solpActual" [(locale)]="es"></cabecera>
+                    </div>
+                    <div *ngSwitchDefault [@fadeInOut] >
+                        Paso en construccion
                     </div>
                 </div>                
             </div>
@@ -51,6 +54,7 @@
                     <button class="btn btn-primary" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
                     <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())" >{{pasoSiguiente().descripcion}}</button>
                     <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
+                    <button class="btn btn-secondary" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                 </div>
             </div>
         </p-sidebar>
