@@ -8,11 +8,6 @@ export class Solp {
 
     constructor()
     {
-         this.nombreDeObra="";
-        // this.fiscalContrato="";
-        // this.mail="";
-        // this.supervisorSector="";
-        // this.supervisorTrabajo="";
     }
 
 
@@ -52,6 +47,15 @@ export class Solp {
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
+
+
+    //variables auxiliares de inicio de solp
+    public cargoPasoUno : boolean = false;
+    public cargoPasoDos : boolean = false;
+    public cargoPasoTres : boolean = false;
+    public cargoPasoCuatro : boolean = false;
+    public cargoPasoCinco : boolean = false;
+    public cargoPasoSeis : boolean = false;
 }
 
 

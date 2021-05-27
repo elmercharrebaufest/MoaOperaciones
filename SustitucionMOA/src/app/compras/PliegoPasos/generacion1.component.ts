@@ -1,4 +1,4 @@
-import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -8,10 +8,8 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
-import { SelectItem } from 'primeng/api';
-import { IValidadorPasoSolp } from '../IValidadorPasoSolp';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { forEach } from '@angular/router/src/utils/collection';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 
 declare var $: any;
 
@@ -20,7 +18,8 @@ declare var $: any;
     templateUrl: `generacion1.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class Generacion1Component extends ListBaseComponent implements IValidadorPasoSolp, AfterViewInit {
+
+export class Generacion1Component extends ListBaseComponent  {
 
     @Input('model')
     protected model: Solp;
@@ -28,8 +27,7 @@ export class Generacion1Component extends ListBaseComponent implements IValidado
     @Input('locale')
     protected locale: any;
 
-    @Input()
-    protected pasoIniciado: boolean;
+    @Output() onEstCompleto = new EventEmitter<any>();
 
     //validaciones
     formulario: FormGroup;
@@ -43,13 +41,11 @@ export class Generacion1Component extends ListBaseComponent implements IValidado
     constructor(protected service: SolpService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder) {
+        protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,
+        private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-    ngAfterViewInit(): void {
-       
-    }
 
     ngOnInit() {
         this.setTabs();
@@ -58,38 +54,27 @@ export class Generacion1Component extends ListBaseComponent implements IValidado
 
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
-            nombreDeObra: new FormControl('', [Validators.required,Validators.minLength(5)]),
+            nombreDeObra: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
             mail: new FormControl('', Validators.required)
         });
+        
+        this.validadorPasoSolpService.formulario = this.formulario;
+
+        if (this.model.cargoPasoUno) {
+            this.validadorPasoSolpService.aplicarValidaciones()
+        }
+        this.model.cargoPasoUno = true;
     }
 
+  
+    
 
-    esPasoInvalido(): boolean {
-        this.aplicarValidaciones();
-        return this.formulario.invalid;
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :"PliegoGeneracion1", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
-
-    aplicarValidaciones(): void {
-
-        Object.keys(this.formulario.controls).forEach(key => {
-            let control = this.formulario.get(key);
-            control.markAsDirty();
-            control.updateValueAndValidity();
-          });
-
-
-        // if (this.pasoIniciado) {
-        //     this.formulario.controls["nombreDeObra"].markAsDirty()
-        //     this.formulario.controls["fiscalContrato"].markAsDirty()
-        //     this.formulario.controls["mail"].markAsDirty()
-        //     this.formulario.controls["nombreDeObra"].updateValueAndValidity();
-        //     this.formulario.controls["fiscalContrato"].updateValueAndValidity();
-        //     this.formulario.controls["mail"].updateValueAndValidity();
-        // }
-    }
-
-
 
     parsearFecha() {
         this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
@@ -115,5 +100,9 @@ export class Generacion1Component extends ListBaseComponent implements IValidado
         return false;
     }
 
+    onBlur(control: string)
+    {
+        this.validadorPasoSolpService.onBlurDirty(control);
+    }
 
 }

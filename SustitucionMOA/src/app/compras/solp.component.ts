@@ -12,6 +12,7 @@ import { FacturaComponent } from '../factura/factura.component';
 import { Generacion1Component } from './PliegoPasos/generacion1.component';
 import { Generacion2Component } from './PliegoPasos/generacion2.component';
 import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component';
+import { DebugContext } from '@angular/core/src/view';
 
 @Component({
     selector: 'app-solp',
@@ -89,7 +90,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: false,
-        SinErroresValidacion: true,
         Numero: 1
     },
     {
@@ -99,7 +99,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: false,
-        SinErroresValidacion: true,
         Numero: 2
     },
     {
@@ -109,7 +108,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
-        SinErroresValidacion: true,
         Numero: 3
     },
     {
@@ -119,7 +117,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
-        SinErroresValidacion: true,
         Numero: 4
     },
     {
@@ -129,7 +126,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
-        SinErroresValidacion: true,
         Numero: 5
     },
     {
@@ -139,7 +135,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
-        SinErroresValidacion: true,
         Numero: 6
     }];
 
@@ -218,6 +213,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
 
     cambioPaso(paso) {
+
         this.pasos.forEach((p, i) => {
             if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
@@ -255,7 +251,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     navegar(paso) {
         if (paso.paso) {
             this.pasoActual = paso.paso
-            this.validarPasoSolpe(paso.paso);
         } else if (paso.descripcion == 'VOLVER') {
             this.navService.navegarSeccion('/compras');
         } else if (paso.descripcion == 'FINALIZAR') {
@@ -286,7 +281,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.fechaEntrega,
                         this.solpActual.horaEntrega
                     ]);
-
                     break;
                 case 'PliegoGeneracion2':
                     paso.Completo = this.listaStringCompleta([
@@ -322,43 +316,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    validarPasoSolpe(pasoActual: any) {
-        if (pasoActual.Numero == 1) {
-            pasoActual.ConErroresValidacion = this.camposObligatorios(this.pasos[0].Codigo);
-        }
-        else {
-            pasoActual.ConErroresValidacion = this.camposObligatorios(this.pasos[this.pasos.indexOf(pasoActual) - 1].Codigo);
-        }
-
+    //evento que se activa cuando se deja uno de los paso de la solp
+    //infomacionSolp : { codigo : string , esPasoInvalido : bool}
+    actualizarEstadoSolp(infomacionSolp: any) {
+        var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
+        pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
     }
 
-    camposObligatorios(pasoPliego: string): boolean {
-        let resultado = true;
-        switch (pasoPliego) {
-            case 'PliegoGeneracion1':
-                debugger
-                if (this.generacion1Component)
-                    resultado = this.generacion1Component.esPasoInvalido();
-                break;
-            case 'PliegoGeneracion2':
-                if (this.generacion2Component)
-                    // resultado =   this.generacion2Component.esPasoValido();
-                    break;
-            case 'PliegoEspecificacion':
-                if (this.especificacionesComponent)
-                    // resultado =  this.especificacionesComponent.esPasoValido();
-                    break;
-            case 'PliegoCotizacion':
-
-                break;
-            case 'SolpCabecera':
-                break;
-            case 'SolpSubposiciones':
-                break;
-        }
-
-        return resultado;
-    }
 
 }
 

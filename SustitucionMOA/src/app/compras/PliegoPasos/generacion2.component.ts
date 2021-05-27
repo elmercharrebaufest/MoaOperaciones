@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -11,8 +11,8 @@ import { Solp } from './../Solp';
 import * as uuid from 'uuid';
 import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
-import { IValidadorPasoSolp } from '../IValidadorPasoSolp';
 import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 Quill.register('modules/imageResize', ImageResize);
 
 
@@ -24,7 +24,7 @@ declare var $: any;
     templateUrl: `generacion2.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class Generacion2Component extends ListBaseComponent implements IValidadorPasoSolp  {
+export class Generacion2Component extends ListBaseComponent  {
 
     @Input('model') 
     protected model:Solp;
@@ -34,39 +34,22 @@ export class Generacion2Component extends ListBaseComponent implements IValidado
 
     modulesEditor = {};
 
-    mostrarSupervisorTrabajo= false;
-    mostrarSupervisorSector= false;
-
     //validaciones
     formulario2 : FormGroup;
+
+    @Output() onEstCompleto = new EventEmitter<any>();
 
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, 
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, 
         protected modalService: ModalService, protected route: ActivatedRoute, 
-        protected router: Router, private formBuilder: FormBuilder) {
+        protected router: Router, private formBuilder: FormBuilder,
+        private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.modulesEditor = {
             imageResize: true
         }
-
-        
-
-       
     }
     
-    aplicarValidaciones(): void {
-        Object.keys(this.formulario2.controls).forEach(key => {
-            let control = this.formulario2.get(key);
-            control.markAsDirty();
-            control.updateValueAndValidity();
-          });
-
-    }
-   
-
-    esPasoInvalido(): boolean {
-        return this.formulario2.invalid;
-    }
 
 
     solpPaso2Result: any;
@@ -91,14 +74,6 @@ export class Generacion2Component extends ListBaseComponent implements IValidado
         console.log(this.model.fechaDeEntregaDeOfertasFecha, "No funciona");
 
     }
-
-    // listaVisitas: any[] = [
-    //     {
-    //         id: uuid.v4(),
-    //         visitaDeObraFecha: "",
-    //         visitaDeObraHora: ""
-    //     }
-    // ];
 
     agregarNuevaVisita() {
         this.model.listaVisitas.push (
@@ -132,6 +107,13 @@ export class Generacion2Component extends ListBaseComponent implements IValidado
             supervisorTrabajo: new FormControl ('', Validators.required),
             supervisorSector: new FormControl ('', Validators.required),
           });
+
+          this.validadorPasoSolpService.formulario = this.formulario2;
+          if (this.model.cargoPasoDos) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoDos = true;
         
     }
 
@@ -185,6 +167,19 @@ export class Generacion2Component extends ListBaseComponent implements IValidado
         }
 
         return false;
+    }
+
+    
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :"PliegoGeneracion2", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+    }
+
+    
+    onBlur(control: string)
+    {
+        this.validadorPasoSolpService.onBlurDirty(control);
     }
 
 }

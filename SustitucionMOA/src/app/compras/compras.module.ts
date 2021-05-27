@@ -22,6 +22,7 @@ import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaci
 import {FileUploadModule} from 'primeng/fileupload';
 import { QuillModule } from 'ngx-quill'
 import { ReactiveFormsModule } from '@angular/forms';
+import { ValidadorPasoSolpService } from './validadorPasoSolpService';
     
 @NgModule({
     imports: [
@@ -51,7 +52,8 @@ import { ReactiveFormsModule } from '@angular/forms';
         DragAndDropDirective
     ],
     providers: [
-        SolpService
+        SolpService ,
+        ValidadorPasoSolpService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

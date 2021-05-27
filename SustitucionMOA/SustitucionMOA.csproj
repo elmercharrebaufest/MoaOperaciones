@@ -1003,7 +1003,6 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\IValidadorPasoSolp.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion2.component.ts" />
@@ -1016,6 +1015,7 @@
     <TypeScriptCompile Include="src\app\compras\Solp.ts" />
     <TypeScriptCompile Include="src\app\compras\SolpPasos\cabecera.component.ts" />
     <TypeScriptCompile Include="src\app\compras\SolpPasos\subposiciones.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />

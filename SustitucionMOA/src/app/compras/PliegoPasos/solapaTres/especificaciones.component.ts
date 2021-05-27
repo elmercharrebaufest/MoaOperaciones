@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../common/services/SessionDataService';
@@ -11,8 +11,8 @@ import { Solp } from '../../Solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
 import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
-import { IValidadorPasoSolp } from '../../IValidadorPasoSolp';
-import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
 
  Quill.register('modules/imageResize', ImageResize);
 
@@ -23,7 +23,7 @@ declare var $: any;
     templateUrl: `especificaciones.component.html`,
     styleUrls: ['../../compras.component.css'],
 })
-export class EspecificacionesComponent extends ListBaseComponent  implements IValidadorPasoSolp {
+export class EspecificacionesComponent extends ListBaseComponent {
 
     @Input('model')
     protected model: Solp;
@@ -38,9 +38,12 @@ export class EspecificacionesComponent extends ListBaseComponent  implements IVa
 
     formularioEspecificaciones : FormGroup;
 
+    @Output() onEstCompleto = new EventEmitter<any>();
+
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, 
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-         protected route: ActivatedRoute, protected router: Router,private formBuilder: FormBuilder) {
+         protected route: ActivatedRoute, protected router: Router,private formBuilder: FormBuilder,
+         private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.modulesEditor = {
@@ -48,13 +51,6 @@ export class EspecificacionesComponent extends ListBaseComponent  implements IVa
         }
     }
 
-    aplicarValidaciones(): void {
-        Object.keys(this.formularioEspecificaciones.controls).forEach(key => {
-            let control = this.formularioEspecificaciones.get(key);
-            control.markAsDirty();
-            control.updateValueAndValidity();
-          });
-    }
     mostrarError(nombreCampo: string): boolean {
         if (this.formularioEspecificaciones && this.formularioEspecificaciones.controls) {
             return (this.formularioEspecificaciones.controls[nombreCampo].invalid || (this.formularioEspecificaciones.controls[nombreCampo].errors && this.formularioEspecificaciones.controls[nombreCampo].errors.required))
@@ -62,16 +58,6 @@ export class EspecificacionesComponent extends ListBaseComponent  implements IVa
         }
 
         return false;
-    }
-
-    esPasoInvalido(): boolean {
-        let pasoValido = true;
-
-        if (this.viewModel.observaciones || this.viewModel.observaciones.trim() == "" || this.viewModel.ObservacionesEsValorPorDefecto()) {
-            pasoValido = false;
-        }
-
-        return pasoValido;
     }
 
     setTabs() {
@@ -84,9 +70,26 @@ export class EspecificacionesComponent extends ListBaseComponent  implements IVa
 
          //declaro las validaciones para los campos
          this.formularioEspecificaciones = this.formBuilder.group({
-            observacion: new FormControl(this.viewModel.valorPorDefecto, [Validators.required]),
+            observacion: new FormControl(this.viewModel.valorPorDefecto, [this.validatorObservaciones(this.viewModel.valorPorDefecto)]),
         });
+
+            this.validadorPasoSolpService.formulario = this.formularioEspecificaciones
+        if (this.model.cargoPasoTres) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoTres = true;
     }
+
+    validatorObservaciones(valorPorFecto: string): any {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (control.value == undefined || control.value =="" || control.value == valorPorFecto) {
+                return { 'requerid': true };
+            }
+            return null;
+        };
+    }
+    
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
@@ -204,6 +207,12 @@ export class EspecificacionesComponent extends ListBaseComponent  implements IVa
             if (posicion == 0)
                 return i;
         }
+    }
+
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :"PliegoEspecificacion", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
 }

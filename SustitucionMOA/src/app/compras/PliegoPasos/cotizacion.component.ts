@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -9,8 +9,8 @@ import { ModalService } from './../../common/services/ModalService';
 import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
 import { WeekDay } from '@angular/common';
-import { IValidadorPasoSolp } from '../IValidadorPasoSolp';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 
 
 declare var $: any;
@@ -20,7 +20,7 @@ declare var $: any;
     templateUrl: `cotizacion.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class CotizacionComponent extends ListBaseComponent implements IValidadorPasoSolp {
+export class CotizacionComponent extends ListBaseComponent {
 
     @Input('model')
     protected model: Solp;
@@ -31,26 +31,19 @@ export class CotizacionComponent extends ListBaseComponent implements IValidador
     //validaciones
     formularioCotizacion: FormGroup;
 
+    @Output() onEstCompleto = new EventEmitter<any>();
+
     constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
-        , private formBuilder: FormBuilder) {
+        , private formBuilder: FormBuilder,
+        private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
 
     }
 
-    esPasoInvalido(): boolean {
-        return this.formularioCotizacion.invalid;
-    }
-
-    aplicarValidaciones(): void {
-        Object.keys(this.formularioCotizacion.controls).forEach(key => {
-            let control = this.formularioCotizacion.get(key);
-            control.markAsDirty();
-            control.updateValueAndValidity();
-        });
-    }
+   
 
     mostrarError(nombreCampo: string): boolean {
         if (this.formularioCotizacion && this.formularioCotizacion.controls) {
@@ -77,8 +70,6 @@ export class CotizacionComponent extends ListBaseComponent implements IValidador
         return null;
     }
 
-
-
     ejecucion: number;
     comienzoJornadaLaboral: Date;
     terminoJornadaLaboral: Date;
@@ -99,6 +90,21 @@ export class CotizacionComponent extends ListBaseComponent implements IValidador
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required,this.validatorDias])
         });
 
+        this.validadorPasoSolpService.formulario = this.formularioCotizacion;
+        if (this.model.cargoPasoCuatro) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoCuatro = true;
+
     }
+
+    
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :"PliegoCotizacion", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+    }
+
 
 }
