@@ -121,8 +121,8 @@
                        
                         <label class="labelCompras" for="editorTexto"> Observaciones:</label>
 
-                        <quill-editor appDragAndDrop id="observaciones" [(ngModel)]="model.observaciones"  [styles]="{'height':'160px'}"
-                        (onFileDropped)="fileChange($event)" (onSelectionChanged)="selectionChange($event)" placeholder="">
+                        <quill-editor appDragAndDrop id="observaciones" [(ngModel)]="model.observacionesGeneracion"  [styles]="{'height':'160px'}"
+                        (onFileDropped)="fileChange($event)" (onSelectionChanged)="selectionChange($event)" placeholder="" [modules]="modulesEditor">
 
                            <div quill-editor-toolbar>
                                <span class="ql-formats">

@@ -14,6 +14,8 @@ import { Empresa } from './Empresa';
 import { Archivo } from '../../common/models/archivo';
 import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
 import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
+import { formatDate } from '@angular/common';
+import * as XLSX from 'xlsx'; 
 declare var $: any;
 
 
@@ -36,7 +38,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     @ViewChild("spinnerModal")
     protected spinnerModal: SpinnerSmallComponent;
-
 
     constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -741,5 +742,71 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.idTipoProveedor = tipoProveedor;
 
         this.getEstados();
+    }
+
+
+    //exportacion a Excel
+    exportExcel() {
+        this.mensajeComponent.setMsgsEmpty();
+        let informacionExportar: any;
+        switch (this.idTipoProveedor) {
+            case 2:
+            case 4: {
+                //granos
+                informacionExportar = this.data.map(info => {
+                    return {
+                        "Codigo": info.CodigoProveedor  || "-",
+                        "CUIT": info.CUIT || "-",
+                        "Razon Social": info.RazonSocial || "-",
+                        "Corredor": info.RazonSocialCorredor || "-",
+                        "Comercial": info.Comercial || "-",
+                        "SISA": info.SISAEstadoCuit || "-",
+                        "Estado Siper": info.EstadoSIPER,
+                        "Ultima Edición": info.UltimaEdicion != undefined? formatDate(info.UltimaEdicion.slice(6,-2), "dd/MM/yyyy", "en-EN") : "",
+                        "Fecha Solicitud": info.FechaSolicitud != undefined? formatDate(info.FechaSolicitud.slice(6,-2), "dd/MM/yyyy", "en-EN") : "",
+                        "Estado": info.EstadoAprobacionDescripcion
+                    }
+                })
+                break;
+            }
+            case 3: {
+                //no granos; 
+                informacionExportar = this.data.map(info => {
+                    return {
+                        "Codigo": info.CodigoProveedor || "-",
+                        "CUIT": info.CUIT || "-",
+                        "Razon Social": info.RazonSocial || "-",
+                        "Solicitante Interno": info.Comercial || "-",
+                        "Estado Siper": info.EstadoSIPER,
+                        "Ultima Edición": info.UltimaEdicion != undefined? formatDate(info.UltimaEdicion.slice(6,-2), "dd/MM/yyyy", "en-EN") : "",
+                        "Fecha Solicitud": info.FechaSolicitud != undefined? formatDate(info.FechaSolicitud.slice(6,-2), "dd/MM/yyyy", "en-EN") : "",
+                        "Estado": info.EstadoAprobacionDescripcion
+                    }
+                });
+                break;
+            }
+            default: {
+                informacionExportar = []
+                break;
+            }
+        }
+        if(informacionExportar.length == 0)
+        {
+            this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
+            return
+        }
+
+        this.DownloadJsonData(informacionExportar, "AltaProveedores");
+    }
+
+    DownloadJsonData(JSONData :any, FileTitle : string) {
+        
+        //crea la estructura inicial del archivo
+        let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
+        let workbook: XLSX.WorkBook = XLSX.utils.book_new();  
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Alta de proveedores');  
+
+        //escribe el file para ser descargado
+        const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');  
     }
 }

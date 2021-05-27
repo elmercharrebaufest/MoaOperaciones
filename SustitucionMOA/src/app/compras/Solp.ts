@@ -30,7 +30,7 @@ export class Solp {
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
-    public observacionesGeneracion: string;
+    public observacionesGeneracion: string ="";
     public listaVisitas: any;
 
     //paso 3

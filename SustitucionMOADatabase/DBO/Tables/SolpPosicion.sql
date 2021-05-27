@@ -1,0 +1,40 @@
+﻿CREATE TABLE [dbo].[SolpPosicion]
+(
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Solp_Id] [int] NOT NULL,
+	[FechaBaja] [datetime] NULL,
+	[TipoPosicion_Id] [int] NULL,
+	[TipoImputacion_Id] [int] NULL,
+	[TextoGenerico] [nvarchar](max) NULL,
+	[FechaEntregaServicio] [datetime] NULL,
+	[FechaLiberacion] [datetime] NULL,
+	[PlazoEntrega] [int] NULL,
+	[EsConcluido] [bit] NULL,
+	[EsFijacion] [bit] NULL,
+	[Centro_Id] [int] NULL,
+	[Almacen_Id] [int] NULL,
+	[NombreEntrega] [nvarchar](max) NULL,
+	[CalleEntrega] [nvarchar](max) NULL,
+	[NumeroEntrega] [nvarchar](max) NULL,
+	[CpEntrega] [nvarchar](max) NULL,
+	[PaisEntrega] [nvarchar](max) NULL,
+	[GrupoCompras_Id] [int] NULL,
+	[Solicitante] [nvarchar](max) NULL,
+	[NroNecesidad] [nvarchar](max) NULL,
+	[GrupoArticulo_Id] [int] NULL,
+	[CodigosProveedores] [nvarchar](max) NULL,
+	[Moneda_Id] [int] NULL,
+
+CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
+	CONSTRAINT [FK_SolpPosicion_Solp] FOREIGN KEY (Solp_Id) REFERENCES [Solp]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaGeneral_TipoPosicion] FOREIGN KEY (TipoPosicion_Id) REFERENCES [TablaGeneral]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaGeneral_TipoImputacion] FOREIGN KEY (TipoImputacion_Id) REFERENCES [TablaGeneral]([Id]),
+	CONSTRAINT [FK_SolpPosicion_Centro] FOREIGN KEY (Centro_Id) REFERENCES [Centro]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaSap_Almacen] FOREIGN KEY (Almacen_Id) REFERENCES [TablaSap]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoCompras] FOREIGN KEY (GrupoCompras_Id) REFERENCES [TablaSap]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoArticulo] FOREIGN KEY (GrupoArticulo_Id) REFERENCES [TablaSap]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaSap_Moneda] FOREIGN KEY (Moneda_Id) REFERENCES [TablaSap]([Id]),
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

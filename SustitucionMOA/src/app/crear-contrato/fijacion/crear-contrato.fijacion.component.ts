@@ -11,7 +11,9 @@ import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
 import { FijacionesAutomaticas } from '../../common/models/fijacionesAutomaticas';
+import { DatePipe, registerLocaleData } from '@angular/common';
 declare var $: any;
+import localeEsAr from '@angular/common/locales/es-AR';
 
 @Component({
     selector: 'app-crear-contrato-fijacion',
@@ -24,6 +26,7 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
 
 
     ngOnInit() {
+        registerLocaleData(localeEsAr, 'es-AR');
         super.ngOnInit();
         this.contrato.TipoNegocioId = 3;
         this.contrato.Id = this.id;
@@ -429,8 +432,11 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
                     costo = costo * 10;
 
                     let precioNeto = precio + costo;
-
-                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
+                    
+                    let fecha = new Date();
+                    fecha.setDate(fecha.getDate() + this.contrato.DiasPesificado);
+                    var datePipe = new DatePipe('es-AR');
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto) + "<br> Fecha: " + datePipe.transform(fecha, 'dd/MM/yyyy');
                 }
             }
 
