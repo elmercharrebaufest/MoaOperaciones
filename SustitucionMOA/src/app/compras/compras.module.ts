@@ -21,8 +21,8 @@ import {KeyFilterModule} from 'primeng/keyfilter';
 import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component'
 import {FileUploadModule} from 'primeng/fileupload';
 import { QuillModule } from 'ngx-quill'
-
-
+import { ReactiveFormsModule } from '@angular/forms';
+    
 @NgModule({
     imports: [
         CommonModule,
@@ -37,7 +37,8 @@ import { QuillModule } from 'ngx-quill'
         CheckboxModule,
         KeyFilterModule,
         FileUploadModule,
-        QuillModule.forRoot()
+        QuillModule.forRoot(),
+        ReactiveFormsModule
     ],
     declarations: [
         SolpComponent,

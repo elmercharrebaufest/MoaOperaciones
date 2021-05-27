@@ -60,6 +60,7 @@ import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustent
 import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
 import { ComprasModule } from "./compras/compras.module";
 
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -75,7 +76,7 @@ import { ComprasModule } from "./compras/compras.module";
     LogPesificacionModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
-    ComprasModule,
+    ComprasModule
   ],
   declarations: [
     AppComponent,

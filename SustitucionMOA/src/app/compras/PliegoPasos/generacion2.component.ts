@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -11,6 +11,8 @@ import { Solp } from './../Solp';
 import * as uuid from 'uuid';
 import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
+import { IValidadorPasoSolp } from '../IValidadorPasoSolp';
+import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
 Quill.register('modules/imageResize', ImageResize);
 
 
@@ -22,7 +24,7 @@ declare var $: any;
     templateUrl: `generacion2.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class Generacion2Component extends ListBaseComponent {
+export class Generacion2Component extends ListBaseComponent implements IValidadorPasoSolp  {
 
     @Input('model') 
     protected model:Solp;
@@ -32,11 +34,38 @@ export class Generacion2Component extends ListBaseComponent {
 
     modulesEditor = {};
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    mostrarSupervisorTrabajo= false;
+    mostrarSupervisorSector= false;
+
+    //validaciones
+    formulario2 : FormGroup;
+
+    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, 
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, 
+        protected modalService: ModalService, protected route: ActivatedRoute, 
+        protected router: Router, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.modulesEditor = {
             imageResize: true
         }
+
+        
+
+       
+    }
+    
+    aplicarValidaciones(): void {
+        Object.keys(this.formulario2.controls).forEach(key => {
+            let control = this.formulario2.get(key);
+            control.markAsDirty();
+            control.updateValueAndValidity();
+          });
+
+    }
+   
+
+    esPasoInvalido(): boolean {
+        return this.formulario2.invalid;
     }
 
 
@@ -98,7 +127,11 @@ export class Generacion2Component extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         
-        
+         //declaro las validaciones para los campos
+         this.formulario2 = this.formBuilder.group({
+            supervisorTrabajo: new FormControl ('', Validators.required),
+            supervisorSector: new FormControl ('', Validators.required),
+          });
         
     }
 
@@ -143,6 +176,15 @@ export class Generacion2Component extends ListBaseComponent {
             if (posicion == 0)
                 return i;
         }
+    }
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formulario2 && this.formulario2.controls) {
+            return (this.formulario2.controls[nombreCampo].invalid || (this.formulario2.controls[nombreCampo].errors && this.formulario2.controls[nombreCampo].errors.required))
+                && (this.formulario2.controls[nombreCampo].dirty || this.formulario2.controls[nombreCampo].touched)
+        }
+
+        return false;
     }
 
 }

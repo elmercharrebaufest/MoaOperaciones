@@ -9,6 +9,8 @@ import { ModalService } from './../../common/services/ModalService';
 import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
 import { WeekDay } from '@angular/common';
+import { IValidadorPasoSolp } from '../IValidadorPasoSolp';
+import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
 
 declare var $: any;
@@ -18,17 +20,61 @@ declare var $: any;
     templateUrl: `cotizacion.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class CotizacionComponent extends ListBaseComponent {
+export class CotizacionComponent extends ListBaseComponent implements IValidadorPasoSolp {
 
-    @Input('model') 
-    protected model:Solp;
+    @Input('model')
+    protected model: Solp;
 
-    @Input('locale') 
-    protected locale:any;
-  
+    @Input('locale')
+    protected locale: any;
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    //validaciones
+    formularioCotizacion: FormGroup;
+
+    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
+        , private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+
+    }
+
+    esPasoInvalido(): boolean {
+        return this.formularioCotizacion.invalid;
+    }
+
+    aplicarValidaciones(): void {
+        Object.keys(this.formularioCotizacion.controls).forEach(key => {
+            let control = this.formularioCotizacion.get(key);
+            control.markAsDirty();
+            control.updateValueAndValidity();
+        });
+    }
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formularioCotizacion && this.formularioCotizacion.controls) {
+            return (this.formularioCotizacion.controls[nombreCampo].invalid || (this.formularioCotizacion.controls[nombreCampo].errors && this.formularioCotizacion.controls[nombreCampo].errors.required))
+                && (this.formularioCotizacion.controls[nombreCampo].dirty || this.formularioCotizacion.controls[nombreCampo].touched)
+        }
+
+        return false;
+    }
+
+    validatorDias(control: AbstractControl): { [key: string]: boolean } | null {
+        let diasNoSeleccionados = 0;
+        for (let index = 0; index < control.value.length; index++) {
+            const dia =  control.value[index];
+            if (!dia.selected) {
+                diasNoSeleccionados = diasNoSeleccionados + 1;
+            }
+        }
+
+        if (control.value.length == diasNoSeleccionados) {
+            return { 'requerid': true };
+        }
+
+        return null;
     }
 
 
@@ -37,20 +83,6 @@ export class CotizacionComponent extends ListBaseComponent {
     comienzoJornadaLaboral: Date;
     terminoJornadaLaboral: Date;
 
-   
-    // parsearFecha () {
-    //     this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-    // if(this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null){
-    //     var dateParts = this.fechaEntrega.split("-");
-    //     this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
-    //     }
-    //     console.log(this.model.fechaDeEntregaDeOfertasFecha, "No funciona");
-
-    // }
-
-
-    
-   
 
     setTabs() {
         this.setMenuSeccionTab("Cotizacion", "Cotizacion");
@@ -58,6 +90,15 @@ export class CotizacionComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
+
+        //declaro las validaciones para los campos
+        this.formularioCotizacion = this.formBuilder.group({
+            ejecucion: new FormControl('', [Validators.required]),
+            comienzoJornadaLaboral: new FormControl('', Validators.required),
+            terminoJornadaLaboral: new FormControl('', Validators.required),
+            dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required,this.validatorDias])
+        });
+
     }
 
 }

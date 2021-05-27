@@ -169,11 +169,7 @@
     color: black;
   }
 
-  
 
-
-  
-  
   
   /*pesificaciones*/
 
@@ -215,3 +211,16 @@
   font-weight:normal;
 }
 /* fin estilos upload */
+
+::ng-deep #observaciones.error div.ql-toolbar{
+  border: 1px solid #a80000 !important;
+}
+
+::ng-deep #observaciones.error div.ql-container{
+  border: 1px solid #a80000 !important;
+
+}
+
+::ng-deep #jornadaLaboral.errorDias div.ui-button.ui-togglebutton{
+  border: 1px solid #a80000 !important;
+}

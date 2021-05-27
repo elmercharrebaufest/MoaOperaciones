@@ -11,6 +11,9 @@ import { Solp } from '../../Solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
 import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
+import { IValidadorPasoSolp } from '../../IValidadorPasoSolp';
+import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
+
  Quill.register('modules/imageResize', ImageResize);
 
 declare var $: any;
@@ -20,7 +23,7 @@ declare var $: any;
     templateUrl: `especificaciones.component.html`,
     styleUrls: ['../../compras.component.css'],
 })
-export class EspecificacionesComponent extends ListBaseComponent {
+export class EspecificacionesComponent extends ListBaseComponent  implements IValidadorPasoSolp {
 
     @Input('model')
     protected model: Solp;
@@ -33,12 +36,42 @@ export class EspecificacionesComponent extends ListBaseComponent {
     public viewModel: EspecificacionesViewModel;
     modulesEditor = {};
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    formularioEspecificaciones : FormGroup;
+
+    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, 
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+         protected route: ActivatedRoute, protected router: Router,private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.modulesEditor = {
             imageResize: true
         }
+    }
+
+    aplicarValidaciones(): void {
+        Object.keys(this.formularioEspecificaciones.controls).forEach(key => {
+            let control = this.formularioEspecificaciones.get(key);
+            control.markAsDirty();
+            control.updateValueAndValidity();
+          });
+    }
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formularioEspecificaciones && this.formularioEspecificaciones.controls) {
+            return (this.formularioEspecificaciones.controls[nombreCampo].invalid || (this.formularioEspecificaciones.controls[nombreCampo].errors && this.formularioEspecificaciones.controls[nombreCampo].errors.required))
+                && (this.formularioEspecificaciones.controls[nombreCampo].dirty || this.formularioEspecificaciones.controls[nombreCampo].touched)
+        }
+
+        return false;
+    }
+
+    esPasoInvalido(): boolean {
+        let pasoValido = true;
+
+        if (this.viewModel.observaciones || this.viewModel.observaciones.trim() == "" || this.viewModel.ObservacionesEsValorPorDefecto()) {
+            pasoValido = false;
+        }
+
+        return pasoValido;
     }
 
     setTabs() {
@@ -48,6 +81,11 @@ export class EspecificacionesComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.viewModel = this.model.especificacionesViewModel;
+
+         //declaro las validaciones para los campos
+         this.formularioEspecificaciones = this.formBuilder.group({
+            observacion: new FormControl(this.viewModel.valorPorDefecto, [Validators.required]),
+        });
     }
 
     //elimno el archivo, llamar al servicio de eliminacion

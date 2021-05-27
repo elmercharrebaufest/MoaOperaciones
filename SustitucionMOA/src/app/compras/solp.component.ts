@@ -7,6 +7,11 @@ import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { Solp } from './Solp';
 import * as uuid from 'uuid';
+import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
+import { FacturaComponent } from '../factura/factura.component';
+import { Generacion1Component } from './PliegoPasos/generacion1.component';
+import { Generacion2Component } from './PliegoPasos/generacion2.component';
+import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component';
 
 @Component({
     selector: 'app-solp',
@@ -15,22 +20,22 @@ import * as uuid from 'uuid';
     animations: [
         trigger('fadeInOut', [
             transition(
-              ':enter', 
-              [
-                style({ opacity: 0 }),
-                animate('1s ease-out', 
+                ':enter',
+                [
+                    style({ opacity: 0 }),
+                    animate('1s ease-out',
                         style({ opacity: 1 }))
-              ]
+                ]
             ),
             transition(
-              ':leave', 
-              [
-                style({ opacity: 1 }),
-                animate('0s ease-in', 
+                ':leave',
+                [
+                    style({ opacity: 1 }),
+                    animate('0s ease-in',
                         style({ opacity: 0 }))
-              ]
+                ]
             )
-          ]),
+        ]),
     ]
 })
 export class SolpComponent extends BaseComponent implements OnInit {
@@ -39,7 +44,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // handleClose($event) {
     //     // if(!this.cambiosGuardados)
     //     //     $event.returnValue = false;
-        
+
     //     // if(!this.cambiosGuardados)
     //     //     return false;
 
@@ -52,8 +57,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    cambiosGuardados:boolean = false;
-    mostrarPreview:boolean = false;
+    //obtengo los pasos para validar
+    @ViewChild("paso1")
+    protected generacion1Component: Generacion1Component;
+    @ViewChild("paso2")
+    protected generacion2Component: Generacion2Component;
+    @ViewChild("paso3")
+    protected especificacionesComponent: EspecificacionesComponent;
+
+
+
+    cambiosGuardados: boolean = false;
+    mostrarPreview: boolean = false;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
@@ -61,19 +76,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
         this._pasoActual = value;
-     }
-     
-     get pasoActual(): Paso {
-         return this._pasoActual;
-     }
+    }
 
-    pasos:Paso[] = [{
+    get pasoActual(): Paso {
+        return this._pasoActual;
+    }
+
+    pasos: Paso[] = [{
         Codigo: 'PliegoGeneracion1',
         Nombre: 'Generación',
         Activo: false,
         Completo: false,
         Iniciado: false,
         Preview: false,
+        SinErroresValidacion: true,
         Numero: 1
     },
     {
@@ -83,6 +99,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: false,
+        SinErroresValidacion: true,
         Numero: 2
     },
     {
@@ -92,6 +109,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
+        SinErroresValidacion: true,
         Numero: 3
     },
     {
@@ -101,6 +119,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
+        SinErroresValidacion: true,
         Numero: 4
     },
     {
@@ -110,6 +129,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
+        SinErroresValidacion: true,
         Numero: 5
     },
     {
@@ -119,11 +139,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Completo: false,
         Iniciado: false,
         Preview: true,
+        SinErroresValidacion: true,
         Numero: 6
     }];
 
     ngOnInit() {
-        if(this.pasos && this.pasos.length > 0){
+        if (this.pasos && this.pasos.length > 0) {
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
 
@@ -133,9 +154,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 firstDayOfWeek: 0,
                 dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
                 dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-                dayNamesMin: ["Do","Lu","Ma","Mi","Ju","Vi","Sa"],
-                monthNames: [ "Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" ],
-                monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun","Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+                dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                 today: 'Today',
                 clear: 'Clear'
             };
@@ -172,41 +193,37 @@ export class SolpComponent extends BaseComponent implements OnInit {
             ];
 
             this.solpActual.fechaEntrega = new Date();
-            this.solpActual.horaEntrega = new Date(1,1,1,10,0,0,0);
+            this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.fechaLimiteFecha = new Date();
-            this.solpActual.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
+            this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.visitaDeObraFecha = new Date();
-            this.solpActual.visitaDeObraHora = new Date(1,1,1,10,0,0,0);
-            this.solpActual.listaVisitas =  [
+            this.solpActual.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
+            this.solpActual.listaVisitas = [
                 {
                     id: uuid.v4(),
                     visitaDeObraFecha: new Date(),
-                    visitaDeObraHora: new Date(1,1,1,10,0,0,0)
+                    visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
                 }];
 
-            this.solpActual.comienzoJornadaLaboral = new Date(1,1,1,7,0,0,0);
-            this.solpActual.terminoJornadaLaboral = new Date(1,1,1,16,0,0,0);
+            this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
+            this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
-            this.grupoCompras.push({
-                key: 0,
-                value: "grupoCompras"
-            })
-            
+
         }
     }
 
     grupoCompras: any[];
 
-   
 
-    cambioPaso(paso){
-        this.pasos.forEach((p,i) => {
-            if(p.Codigo == this.pasoActual.Codigo){
+
+    cambioPaso(paso) {
+        this.pasos.forEach((p, i) => {
+            if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
                 p.Iniciado = true;
                 //p.Completo = true;
-            }else if(p.Codigo == paso.Codigo){
+            } else if (p.Codigo == paso.Codigo) {
                 p.Iniciado = true;
                 p.Activo = true;
             }
@@ -215,94 +232,133 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.pasoActual = paso;
     }
 
-    pasoAnterior(){
-        if(this.pasoActual.Numero == 1){
-            return {paso: null, descripcion: 'VOLVER'};   
+    pasoAnterior() {
+        if (this.pasoActual.Numero == 1) {
+            return { paso: null, descripcion: 'VOLVER' };
         } else {
-            var prev = this.pasos.find(x=>x.Numero == this.pasoActual.Numero - 1);
-            
-            return {paso: prev, descripcion: 'PASO ' + prev.Numero}
+            var prev = this.pasos.find(x => x.Numero == this.pasoActual.Numero - 1);
+
+            return { paso: prev, descripcion: 'PASO ' + prev.Numero }
         }
     }
 
-    pasoSiguiente(){
-        if(this.pasoActual.Numero == this.pasos[this.pasos.length - 1].Numero){
-            return {paso: null, descripcion: 'FINALIZAR'};   
+    pasoSiguiente() {
+        if (this.pasoActual.Numero == this.pasos[this.pasos.length - 1].Numero) {
+            return { paso: null, descripcion: 'FINALIZAR' };
         } else {
-            var next = this.pasos.find(x=>x.Numero == this.pasoActual.Numero + 1);
-            
-            return {paso: next, descripcion: 'PASO ' + next.Numero}
+            var next = this.pasos.find(x => x.Numero == this.pasoActual.Numero + 1);
+
+            return { paso: next, descripcion: 'PASO ' + next.Numero }
         }
     }
 
-    navegar(paso){
-        if(paso.paso){
+    navegar(paso) {
+        if (paso.paso) {
             this.pasoActual = paso.paso
-        } else if (paso.descripcion == 'VOLVER'){
+            this.validarPasoSolpe(paso.paso);
+        } else if (paso.descripcion == 'VOLVER') {
             this.navService.navegarSeccion('/compras');
-        } else if (paso.descripcion == 'FINALIZAR'){
+        } else if (paso.descripcion == 'FINALIZAR') {
             //guardar - finalizar
         }
     }
 
-    salir(){
+    salir() {
         this.navService.navegarSeccion('/compras');
     }
 
-    guardarCambios(){
+    guardarCambios() {
         this.cambiosGuardados = true;
     }
 
-    finalizar(){
+    finalizar() {
 
     }
 
-    actualizarPasoCompleto(paso:Paso){
-        if(paso){
-           switch(paso.Codigo){
-            case 'PliegoGeneracion1':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.nombreDeObra,
-                    this.solpActual.fiscalContrato,
-                    this.solpActual.mail,
-                    this.solpActual.fechaEntrega,
-                    this.solpActual.horaEntrega
-                ]);
-                break;
-            case 'PliegoGeneracion2':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.supervisorSector,
-                    this.solpActual.supervisorTrabajo
-                ]);
-                break;
-            case 'PliegoEspecificacion':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.especificacionesViewModel.observaciones
-                ]);
-                break;
-            case 'PliegoCotizacion':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.ejecucion,
-                    this.solpActual.jornadaLaboralDias,
-                    this.solpActual.comienzoJornadaLaboral,
-                    this.solpActual.terminoJornadaLaboral
-                ]);
-                break;
-            case 'SolpCabecera':
-                break;  
-            case 'SolpSubposiciones':
-                break; 
-            } 
+    actualizarPasoCompleto(paso: Paso) {
+        if (paso) {
+            switch (paso.Codigo) {
+                case 'PliegoGeneracion1':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.nombreDeObra,
+                        this.solpActual.fiscalContrato,
+                        this.solpActual.mail,
+                        this.solpActual.fechaEntrega,
+                        this.solpActual.horaEntrega
+                    ]);
+
+                    break;
+                case 'PliegoGeneracion2':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.supervisorSector,
+                        this.solpActual.supervisorTrabajo
+                    ]);
+
+
+                    break;
+                case 'PliegoEspecificacion':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.especificacionesViewModel.observaciones
+                    ]);
+
+                    break;
+                case 'PliegoCotizacion':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.ejecucion,
+                        this.solpActual.jornadaLaboralDias,
+                        this.solpActual.comienzoJornadaLaboral,
+                        this.solpActual.terminoJornadaLaboral
+                    ]);
+                    break;
+                case 'SolpCabecera':
+                    break;
+                case 'SolpSubposiciones':
+                    break;
+            }
         }
     }
 
-    listaStringCompleta(lista: string[]){
-        return lista.filter(x=> !x || x.length == 0).length == 0;
+    listaStringCompleta(lista: string[]) {
+        return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    
+    validarPasoSolpe(pasoActual: any) {
+        if (pasoActual.Numero == 1) {
+            pasoActual.ConErroresValidacion = this.camposObligatorios(this.pasos[0].Codigo);
+        }
+        else {
+            pasoActual.ConErroresValidacion = this.camposObligatorios(this.pasos[this.pasos.indexOf(pasoActual) - 1].Codigo);
+        }
 
-    
-       
+    }
+
+    camposObligatorios(pasoPliego: string): boolean {
+        let resultado = true;
+        switch (pasoPliego) {
+            case 'PliegoGeneracion1':
+                debugger
+                if (this.generacion1Component)
+                    resultado = this.generacion1Component.esPasoInvalido();
+                break;
+            case 'PliegoGeneracion2':
+                if (this.generacion2Component)
+                    // resultado =   this.generacion2Component.esPasoValido();
+                    break;
+            case 'PliegoEspecificacion':
+                if (this.especificacionesComponent)
+                    // resultado =  this.especificacionesComponent.esPasoValido();
+                    break;
+            case 'PliegoCotizacion':
+
+                break;
+            case 'SolpCabecera':
+                break;
+            case 'SolpSubposiciones':
+                break;
+        }
+
+        return resultado;
+    }
+
 }
 

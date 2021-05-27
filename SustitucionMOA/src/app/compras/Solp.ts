@@ -2,8 +2,20 @@ import { Time, WeekDay } from "@angular/common";
 import { WeekDayItem } from "../common/models/weekDayItem";
 import * as uuid from 'uuid';
 import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
+import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 
 export class Solp {
+
+    constructor()
+    {
+         this.nombreDeObra="";
+        // this.fiscalContrato="";
+        // this.mail="";
+        // this.supervisorSector="";
+        // this.supervisorTrabajo="";
+    }
+
+
     //paso 1
     public nombreDeObra: string;
     public fiscalContrato: string;
@@ -28,7 +40,7 @@ export class Solp {
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
-    public observacionesGeneracion: string ="";
+    public observacionesGeneracion: string = "";
     public listaVisitas: any;
 
     // paso 4
@@ -38,12 +50,8 @@ export class Solp {
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
 
-
-    
-
     //paso 3
-    public especificacionesViewModel : EspecificacionesViewModel = new EspecificacionesViewModel();
-
+    public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
 }
 
 
