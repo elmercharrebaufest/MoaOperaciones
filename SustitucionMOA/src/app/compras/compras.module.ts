@@ -21,6 +21,10 @@ import {KeyFilterModule} from 'primeng/keyfilter';
 import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component'
 import {FileUploadModule} from 'primeng/fileupload';
 import { QuillModule } from 'ngx-quill'
+import { CabeceraComponent } from './SolpPasos/cabecera.component';
+import {RadioButtonModule} from 'primeng/radiobutton';
+import {DropdownModule} from 'primeng/dropdown';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 
 @NgModule({
@@ -37,7 +41,10 @@ import { QuillModule } from 'ngx-quill'
         CheckboxModule,
         KeyFilterModule,
         FileUploadModule,
-        QuillModule.forRoot()
+        QuillModule.forRoot(),
+        RadioButtonModule,
+        DropdownModule,
+        AutoCompleteModule
     ],
     declarations: [
         SolpComponent,
@@ -47,7 +54,8 @@ import { QuillModule } from 'ngx-quill'
         PliegoPreviewComponent,
         EspecificacionesComponent,
         CotizacionComponent,
-        DragAndDropDirective
+        DragAndDropDirective,
+        CabeceraComponent
     ],
     providers: [
         SolpService

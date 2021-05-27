@@ -167,13 +167,16 @@
     font-weight: bold;
     font-size: 16px;
     color: black;
+    margin-top: 24px;
   }
 
-  
+  ::ng-deep .checkboxFechas > label {
+    font-weight: normal !important;
+  }
 
-
-  
-  
+  .widthAutocomplete {
+    width: 100%;
+  }
   
   /*pesificaciones*/
 

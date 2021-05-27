@@ -7,6 +7,8 @@ import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { Solp } from './Solp';
 import * as uuid from 'uuid';
+import { SelectItem } from 'primeng/api';
+
 
 @Component({
     selector: 'app-solp',
@@ -15,22 +17,22 @@ import * as uuid from 'uuid';
     animations: [
         trigger('fadeInOut', [
             transition(
-              ':enter', 
-              [
-                style({ opacity: 0 }),
-                animate('1s ease-out', 
+                ':enter',
+                [
+                    style({ opacity: 0 }),
+                    animate('1s ease-out',
                         style({ opacity: 1 }))
-              ]
+                ]
             ),
             transition(
-              ':leave', 
-              [
-                style({ opacity: 1 }),
-                animate('0s ease-in', 
+                ':leave',
+                [
+                    style({ opacity: 1 }),
+                    animate('0s ease-in',
                         style({ opacity: 0 }))
-              ]
+                ]
             )
-          ]),
+        ]),
     ]
 })
 export class SolpComponent extends BaseComponent implements OnInit {
@@ -39,7 +41,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // handleClose($event) {
     //     // if(!this.cambiosGuardados)
     //     //     $event.returnValue = false;
-        
+
     //     // if(!this.cambiosGuardados)
     //     //     return false;
 
@@ -52,22 +54,23 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    cambiosGuardados:boolean = false;
-    mostrarPreview:boolean = false;
+    cambiosGuardados: boolean = false;
+    mostrarPreview: boolean = false;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
 
+
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
         this._pasoActual = value;
-     }
-     
-     get pasoActual(): Paso {
-         return this._pasoActual;
-     }
+    }
 
-    pasos:Paso[] = [{
+    get pasoActual(): Paso {
+        return this._pasoActual;
+    }
+
+    pasos: Paso[] = [{
         Codigo: 'PliegoGeneracion1',
         Nombre: 'Generación',
         Activo: false,
@@ -123,7 +126,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }];
 
     ngOnInit() {
-        if(this.pasos && this.pasos.length > 0){
+        if (this.pasos && this.pasos.length > 0) {
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
 
@@ -133,9 +136,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 firstDayOfWeek: 0,
                 dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
                 dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-                dayNamesMin: ["Do","Lu","Ma","Mi","Ju","Vi","Sa"],
-                monthNames: [ "Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" ],
-                monthNamesShort: [ "Ene", "Feb", "Mar", "Abr", "May", "Jun","Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ],
+                dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+                monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                 today: 'Today',
                 clear: 'Clear'
             };
@@ -172,41 +175,39 @@ export class SolpComponent extends BaseComponent implements OnInit {
             ];
 
             this.solpActual.fechaEntrega = new Date();
-            this.solpActual.horaEntrega = new Date(1,1,1,10,0,0,0);
+            this.solpActual.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.fechaLimiteFecha = new Date();
-            this.solpActual.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
+            this.solpActual.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
             this.solpActual.visitaDeObraFecha = new Date();
-            this.solpActual.visitaDeObraHora = new Date(1,1,1,10,0,0,0);
-            this.solpActual.listaVisitas =  [
+            this.solpActual.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
+            this.solpActual.listaVisitas = [
                 {
                     id: uuid.v4(),
                     visitaDeObraFecha: new Date(),
-                    visitaDeObraHora: new Date(1,1,1,10,0,0,0)
+                    visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
                 }];
 
-            this.solpActual.comienzoJornadaLaboral = new Date(1,1,1,7,0,0,0);
-            this.solpActual.terminoJornadaLaboral = new Date(1,1,1,16,0,0,0);
+            this.solpActual.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
+            this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
-            this.grupoCompras.push({
-                key: 0,
-                value: "grupoCompras"
-            })
-            
+            // this.grupoCompras.push({
+            //     key: 0,
+            //     value: "grupoCompras"
+            // })
         }
     }
+    // grupoCompras: any[];
 
-    grupoCompras: any[];
 
-   
 
-    cambioPaso(paso){
-        this.pasos.forEach((p,i) => {
-            if(p.Codigo == this.pasoActual.Codigo){
+    cambioPaso(paso) {
+        this.pasos.forEach((p, i) => {
+            if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
                 p.Iniciado = true;
                 //p.Completo = true;
-            }else if(p.Codigo == paso.Codigo){
+            } else if (p.Codigo == paso.Codigo) {
                 p.Iniciado = true;
                 p.Activo = true;
             }
@@ -215,94 +216,116 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.pasoActual = paso;
     }
 
-    pasoAnterior(){
-        if(this.pasoActual.Numero == 1){
-            return {paso: null, descripcion: 'VOLVER'};   
+    pasoAnterior() {
+        if (this.pasoActual.Numero == 1) {
+            return { paso: null, descripcion: 'VOLVER' };
         } else {
-            var prev = this.pasos.find(x=>x.Numero == this.pasoActual.Numero - 1);
-            
-            return {paso: prev, descripcion: 'PASO ' + prev.Numero}
+            var prev = this.pasos.find(x => x.Numero == this.pasoActual.Numero - 1);
+
+            return { paso: prev, descripcion: 'PASO ' + prev.Numero }
         }
     }
 
-    pasoSiguiente(){
-        if(this.pasoActual.Numero == this.pasos[this.pasos.length - 1].Numero){
-            return {paso: null, descripcion: 'FINALIZAR'};   
+    pasoSiguiente() {
+        if (this.pasoActual.Numero == this.pasos[this.pasos.length - 1].Numero) {
+            return { paso: null, descripcion: 'FINALIZAR' };
         } else {
-            var next = this.pasos.find(x=>x.Numero == this.pasoActual.Numero + 1);
-            
-            return {paso: next, descripcion: 'PASO ' + next.Numero}
+            var next = this.pasos.find(x => x.Numero == this.pasoActual.Numero + 1);
+
+            return { paso: next, descripcion: 'PASO ' + next.Numero }
         }
     }
 
-    navegar(paso){
-        if(paso.paso){
+    navegar(paso) {
+        if (paso.paso) {
             this.pasoActual = paso.paso
-        } else if (paso.descripcion == 'VOLVER'){
+        } else if (paso.descripcion == 'VOLVER') {
             this.navService.navegarSeccion('/compras');
-        } else if (paso.descripcion == 'FINALIZAR'){
+        } else if (paso.descripcion == 'FINALIZAR') {
             //guardar - finalizar
         }
     }
 
-    salir(){
+    salir() {
         this.navService.navegarSeccion('/compras');
     }
 
-    guardarCambios(){
+    guardarCambios() {
         this.cambiosGuardados = true;
     }
 
-    finalizar(){
+    finalizar() {
 
     }
 
-    actualizarPasoCompleto(paso:Paso){
-        if(paso){
-           switch(paso.Codigo){
-            case 'PliegoGeneracion1':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.nombreDeObra,
-                    this.solpActual.fiscalContrato,
-                    this.solpActual.mail,
-                    this.solpActual.fechaEntrega,
-                    this.solpActual.horaEntrega
-                ]);
-                break;
-            case 'PliegoGeneracion2':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.supervisorSector,
-                    this.solpActual.supervisorTrabajo
-                ]);
-                break;
-            case 'PliegoEspecificacion':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.especificacionesViewModel.observaciones
-                ]);
-                break;
-            case 'PliegoCotizacion':
-                paso.Completo = this.listaStringCompleta([
-                    this.solpActual.ejecucion,
-                    this.solpActual.jornadaLaboralDias,
-                    this.solpActual.comienzoJornadaLaboral,
-                    this.solpActual.terminoJornadaLaboral
-                ]);
-                break;
-            case 'SolpCabecera':
-                break;  
-            case 'SolpSubposiciones':
-                break; 
-            } 
+    actualizarPasoCompleto(paso: Paso) {
+        if (paso) {
+            switch (paso.Codigo) {
+                case 'PliegoGeneracion1':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.nombreDeObra,
+                        this.solpActual.fiscalContrato,
+                        this.solpActual.mail,
+                        this.solpActual.fechaEntrega,
+                        this.solpActual.horaEntrega
+                    ]);
+                    break;
+                case 'PliegoGeneracion2':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.supervisorSector,
+                        this.solpActual.supervisorTrabajo
+                    ]);
+                    break;
+                case 'PliegoEspecificacion':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.especificacionesViewModel.observaciones
+                    ]);
+                    break;
+                case 'PliegoCotizacion':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.ejecucion,
+                        this.solpActual.jornadaLaboralDias,
+                        this.solpActual.comienzoJornadaLaboral,
+                        this.solpActual.terminoJornadaLaboral
+                    ]);
+                    break;
+                case 'SolpCabecera':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.selectClaseDocumento,
+                        // this.solpActual.servicio,
+                        // this.solpActual.textoGenerico,
+                        // this.solpActual.fechaEntregaServicio,
+                        // this.solpActual.fechaDeLiberacion,
+                        // this.solpActual.centroEntrega,
+                        // this.solpActual.almacenEntrega,
+                        // this.solpActual.calleEntrega,
+                        // this.solpActual.numeroEntrega,
+                        // this.solpActual.grupoCompras,
+                        // this.solpActual.articuloCompras,
+                        // this.solpActual.monedaCompras
+                    ]);
+                    break;
+                case 'SolpSubposiciones':
+                    break;
+            }
         }
     }
 
-    listaStringCompleta(lista: string[]){
-        return lista.filter(x=> !x || x.length == 0).length == 0;
+    listaStringCompleta(lista: any[]) {
+        return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
-    
+    scrollTo(el: HTMLElement){
+        el.scrollIntoView();
+    }
 
-    
-       
+    agregarPosicion(el: HTMLElement){
+        this.solpActual.agregarNuevaPosicion();
+        el.scrollIntoView();
+        
+    }
+
+
+
 }
 
