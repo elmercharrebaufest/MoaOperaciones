@@ -264,6 +264,7 @@ namespace SustitucionMOAUtils.Services
             {
                 dato = dato.Replace(",", "<br>");
                 dato = dato.Replace("/", "<br>");
+                dato = dato.Replace(";", "<br>");
                 dato = dato.Replace(" ", "<br>");
 
                 dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");

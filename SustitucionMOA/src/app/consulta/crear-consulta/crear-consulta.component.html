@@ -126,6 +126,52 @@
                         </div>
                     </div>
 
+                     <!-- Expanded para Pagos -->
+                     <div class="col-xs-12 col-sm-12 col-md-12"
+                     *ngIf="this.categoriaCode == 'PAG'">
+
+                     <div class="col-xs-12 col-sm-12 col-md-6">
+                         <p class="crearConsultaTitulos">
+                            Liquidación^
+                         </p>
+                         <div class="styled-select">
+                             <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
+                                 aria-controls="tableModal" required>
+                         </div>
+                     </div>
+
+                     <div class="col-xs-12 col-sm-12 col-md-6">
+                         <p class="crearConsultaTitulos">
+                            Contrato^
+                         </p>
+                         <div class="styled-select">
+                             <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
+                                 aria-controls="tableModal" required>
+                         </div>
+                     </div>
+
+                     <div class="col-xs-12 col-sm-12 col-md-6">
+                         <p class="crearConsultaTitulos">ID^</p>
+                         <div class="styled-select">
+                             <input type="search" [(ngModel)]="comprobanteExtra" name="comprobanteExtra" class="fourRounded"
+                                 aria-controls="tableModal" required>
+                         </div>
+                     </div>
+
+                     <div class="col-xs-12 col-sm-12 col-md-6">
+                         <p class="crearConsultaTitulos">Fecha^</p>
+                         <div class="styled-select">
+                             <div class="input-group date form_datetime" data-provide="datepicker" data-date=""
+                                 data-date-format="yyyy-MM-dd" data-link-field="dtp_fecha_pago">
+                                 <input type="text" id="noCursor" fechaInicioInput readonly />
+                                 <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                             </div>
+                             <input #dtp_fecha_pago id="dtp_fecha_pago" class="dtp_fecha_pago" value={{fechaPago}}
+                                 style="visibility: hidden;" required />
+                         </div>
+                     </div>
+                 </div>
+
                     <div class="col-xs-12 col-sm-12 col-md-12"
                         *ngIf="this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER'">
 
@@ -253,7 +299,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                N° COE<span class="requerido">*</span>
+                                N° COE
                             </p>
                             <div class="styled-select">
                                 <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
@@ -265,7 +311,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="this.categoriaCode == 'CAL' ">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                N° de contrato<span class="requerido">*</span>
+                                N° de contrato<span class="requerido">^</span>
                             </p>
                             <div class="styled-select">
                                 <input type="search" [(ngModel)]="contrato" name="contrato" class="fourRounded"
@@ -275,7 +321,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                CCPP<span class="requerido">*</span>
+                                CCPP<span class="requerido">^</span>
                             </p>
                             <div class="styled-select">
                                 <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
@@ -357,7 +403,7 @@
                         *ngIf="this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL'">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                CCPP
+                                CCPP^
                             </p>
                             <div class="styled-select">
                                 <input type="search" [(ngModel)]="comprobante" name="comprobante" class="fourRounded"
@@ -367,7 +413,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                Car&aacute;tula
+                                Car&aacute;tula^
                             </p>
                             <div class="styled-select">
                                 <input type="search" [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
@@ -434,6 +480,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4">
                         <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)" site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
                     </div>-->
+                    <div class="col-md-12">
+                    <P class="leyenda">^ Requerido ingresar al menos uno de los campos.<br>
+                    * Campo obligatorio.</P>
+                    </div>
                     <div class="myRow row">
                         <div class="col text-center">
                             <button class="mx-auto d-block enviarComentario" (click)="postConsulta()" href="#"

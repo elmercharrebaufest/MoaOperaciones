@@ -337,10 +337,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° COE esta vacio.");
-                return true;
-            }
         }
         if (this.categoriaCode == 'CAL') {
             if ((this.contrato == "" || !this.contrato) && (this.comprobante == "" || !this.comprobante)) {
@@ -391,6 +387,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
             }
             if (this.comprobante == "" || !this.comprobante) {
                 this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
+                return true;
+            }
+        }
+        if (this.categoriaCode == 'PAG') {
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+            if ((this.comprobanteExtra == "" || !this.comprobanteExtra) && (this.comprobante == "" || !this.comprobante)
+            && (this.contrato == "" || !this.contrato) && (this.fechaPago == "" || !this.fechaPago)) {
+                this.mensajeComponent.setErrorMsg("Debe completar uno de los campos obligatorios.");
                 return true;
             }
         }
