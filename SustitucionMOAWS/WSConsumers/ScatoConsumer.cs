@@ -50,8 +50,7 @@ namespace SustitucionMOAWS.WSConsumers
                 FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
                 foreach (FotoDto foto in fotos.Fotos)
                 {
-                    //todo: modificar la extension cuando este listo
-                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica, "tiff"));
+                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica, foto.Extension));
                 }
             }
             catch

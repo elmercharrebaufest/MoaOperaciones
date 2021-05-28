@@ -20,7 +20,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public bool EsArchivoTiff
         {
             get {
-                return Extension.ToLower().Equals(".tiff");
+                return Extension.ToLower().Equals("tiff") || Extension.ToLower().Equals("tif");
             }
         }
 
