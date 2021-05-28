@@ -24,7 +24,6 @@ namespace SustitucionMOAUtils.Services
         protected readonly IDataAgroService dataAgroService;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
-        private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
 
         public AltaEmpresaService(IRepositorio repositorio, IDataAgroService dataAgroService)
         {
@@ -36,6 +35,25 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                //{
+                //    List<Proveedor> proveedores = repositorio.Listar<Proveedor>(
+                //                     x =>
+                //                     (x.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente
+                //                        || x.EstadoAprobacion == EstadoAprobacion.AnalisisDeNosis
+                //                        || x.EstadoAprobacion == EstadoAprobacion.EtapaFinal
+                //                        || x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida
+                //                        || x.EstadoAprobacion == EstadoAprobacion.Aprobado
+                //                        || x.EstadoAprobacion == EstadoAprobacion.Rechazado
+                //                        || x.EstadoAprobacion == EstadoAprobacion.DeshabilitadoEnDataAgro
+                //                        || x.EstadoAprobacion == EstadoAprobacion.PendienteAprobacionCompras
+                //                        || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
+                //                        || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
+                //                        || x.EstadoAprobacion == EstadoAprobacion.SinAlta
+                //                        || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                //                    && x.HistorialAprobaciones.Count > 0
+                //                    && x.TipoProveedor.Id == (IdTipoProveedor > 0 ? IdTipoProveedor : x.TipoProveedor.Id)
+                //                    );
+
                 List<ProveedorAltaDto> proveedorDtos = 
                     repositorio
                         .Listar<Proveedor>(
@@ -168,40 +186,6 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
-        }
-
-        public void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor)
-        {
-            try
-            {
-                
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
-                string asunto = "";
-                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
-                var Vinculofuncionarios = altaEmpresa.Funcionarios;
-
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: ambos";
-                }
-                if(proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
-                {
-                    asunto = "Asunto a definir: funcionarios";
-                }
-                if(proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: empleados";
-                }
-
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
-                var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
-
-                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
-            }
-            catch (Exception e)
-            {
-            }
-
         }
 
             public string SetEstadoAprobacion(int proveedorId,
@@ -607,11 +591,28 @@ namespace SustitucionMOAUtils.Services
             return string.Concat("00", CUIT.Substring(2, 8));
         }
 
-        public string SolicitarInformacion(int proveedorId)
+        public string SolicitarInformacion(int proveedorId, string usuarioMail)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            int usuarioID = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
 
-            NotificarProveedor(EstadoAprobacion.EdicionRequerida, "Seguimos esperando la documentación solicitada ", proveedor);
+            //obtengo el mensaje del ultimo edicion requerido
+            var ultimaRequerido = proveedor.HistorialAprobaciones.LastOrDefault( x => x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida);
+            string mensajeNotificacion = ultimaRequerido != null ? ultimaRequerido.Observacion : "Seguimos esperando la documentación solicitada ";
+            
+            NotificarProveedor(EstadoAprobacion.EdicionRequerida, mensajeNotificacion, proveedor);
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.EdicionRequerida,
+                    Observacion = mensajeNotificacion,
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuarioID
+                }
+            );
+
+            repositorio.GuardarCambios();
 
             return "Proveedor notificado correctamente";
         }

@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -58,7 +59,7 @@ namespace SustitucionMOAUtils.Services
             }
             if (!esInterno && consulta.EstadoConsulta.Code == "DOC")
             {
-                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GES");
+                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GESRTA");
                 ActualizarEstadoConsulta(consultaId, estado.Id);
             }
 
@@ -213,9 +214,9 @@ namespace SustitucionMOAUtils.Services
                     Mail = c.Usuario.Mail
                 },
                 Fecha = c.Detalle != null ? c.Detalle.Fecha : null,
-                ComprobanteNo = c.Detalle != null ? c.Detalle.ComprobanteNo : "",
-                OtroComprobanteNo = c.Detalle != null ? c.Detalle.OtroComprobanteNo : "",
-                ContratoNo = c.Detalle != null ? c.Detalle.ContratoNo : "",
+                ComprobanteNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.ComprobanteNo) : "",
+                OtroComprobanteNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.OtroComprobanteNo) : "",
+                ContratoNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.ContratoNo) : "",
                 Importe = c.Detalle != null ? c.Detalle.Importe : null,
                 Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
                 BolsaEmisoraOblea = c.Detalle != null ? c.Detalle.BolsaEmisoraOblea : "",
@@ -252,19 +253,80 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
-        private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)
+        private string FormatearStringNewLine(string dato)
         {
+            if(dato == null)
+            {
+                return dato;
+            }
+
+            if (dato.Contains("/") || dato.Contains(",") || dato.Contains(" "))
+            {
+                dato = dato.Replace(",", "<br>");
+                dato = dato.Replace("/", "<br>");
+                dato = dato.Replace(";", "<br>");
+                dato = dato.Replace(" ", "<br>");
+
+                dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");
+            }
+
+            return dato;
+        }
+
+        public string RecordarComentario(int consultaId)
+        {
+            var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
+
             try
             {
+                var copia = new List<string>();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
-                string asunto = "Molinos Agro - Respuesta a su consulta" + consulta.Asunto;
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
+            }
+
+            return "Enviado Correctamente";
+        }
+
+        private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
+                string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        public string EnviarMailRecordatorio(int consultaId)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                Consulta consulta = GetConsulta(consultaId);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null);
+
+                return "Mail enviado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return "Error al enviar el Mail.";
             }
         }
 
@@ -440,12 +502,21 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias()
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir)
         {
             try
             {
-                List<string> exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
-                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code));
+                List<string> exclude = new List<string>() { };
+
+                if (excluir.HasValue && excluir == true)
+                {
+                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
+                }
+                else
+                {
+                    exclude = new List<string>() { };
+                }
+                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre);
                 return categorias.Select(x =>new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
@@ -487,7 +558,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var subcategorias = repositorio.Listar<SubCategoria>();
+                var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
                 return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)

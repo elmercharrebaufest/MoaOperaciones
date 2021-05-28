@@ -36,6 +36,7 @@ namespace SustitucionMOAUtils.Services
         private readonly string DataAgroURL;
 
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "EstadoAlta.html");
+        private static readonly string EMAIL_TEMPLATE_AUDITORIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "AvisoAuditoria.html");
 
 
         public AltaEmpresaGranosService(IRepositorio repositorio, IDataAgroService dataAgroService)
@@ -484,14 +485,51 @@ namespace SustitucionMOAUtils.Services
             Log.Info("Guardamos");
 
             repositorio.GuardarCambios();
-            if(proveedor.VinculoConEmpleadosDeMolinos == true || proveedor.VinculoConFuncionariosPublicos == true) 
+
+            Log.Info("Validamos DDJJ y enviamos mail.");
+
+            if (ValidarDDJJ(altaEmpresa))
             {
-                AltaEmpresaService.EnviarMailAuditoria(altaEmpresa ,proveedor);
+                EnviarMailAuditoria(altaEmpresa, proveedor);
             }
 
             Log.Info("Fin");
 
             return SuccessMsg.ValidacionPendienteOK;
+        }
+
+        private void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor)
+        {
+            try
+            {
+
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
+                string asunto = "";
+                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
+                var Vinculofuncionarios = altaEmpresa.Funcionarios;
+
+                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: ambos";
+                }
+                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
+                {
+                    asunto = "Asunto a definir: funcionarios";
+                }
+                if (proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
+                {
+                    asunto = "Asunto a definir: empleados";
+                }
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
+                var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
+
+                EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
+            }
+            catch (Exception e)
+            {
+            }
+
         }
 
         private void EnviarMailEdicionRequerida(Proveedor proveedor, string observacionParaElProveedor, List<string> copia)
@@ -510,6 +548,15 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private bool ValidarDDJJ(AltaEmpresaViewModel altaEmpresa)
+        {
+            var vinculoEmpleados = altaEmpresa.VinculoConEmpleadosDeMolinos.HasValue ? altaEmpresa.VinculoConEmpleadosDeMolinos ?? true : false;
+            var vinculoFuncionarios = altaEmpresa.VinculoConFuncionariosPublicos.HasValue ? altaEmpresa.VinculoConFuncionariosPublicos ?? true : false;
+
+            if (vinculoEmpleados || vinculoFuncionarios) return true;
+
+            return false;
+        }
 
         public bool ValidarEstadoSolicitud(Proveedor proveedor)
         {

@@ -7,12 +7,11 @@ import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { Solp } from './Solp';
 import * as uuid from 'uuid';
+import { SelectItem } from 'primeng/api';
 import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
 import { FacturaComponent } from '../factura/factura.component';
-import { Generacion1Component } from './PliegoPasos/generacion1.component';
-import { Generacion2Component } from './PliegoPasos/generacion2.component';
-import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component';
-import { DebugContext } from '@angular/core/src/view';
+
+
 
 @Component({
     selector: 'app-solp',
@@ -58,21 +57,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    //obtengo los pasos para validar
-    @ViewChild("paso1")
-    protected generacion1Component: Generacion1Component;
-    @ViewChild("paso2")
-    protected generacion2Component: Generacion2Component;
-    @ViewChild("paso3")
-    protected especificacionesComponent: EspecificacionesComponent;
-
-
-
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -207,13 +197,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         }
     }
-
-    grupoCompras: any[];
+    // grupoCompras: any[];
 
 
 
     cambioPaso(paso) {
-
         this.pasos.forEach((p, i) => {
             if (p.Codigo == this.pasoActual.Codigo) {
                 p.Activo = false;
@@ -287,14 +275,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.supervisorSector,
                         this.solpActual.supervisorTrabajo
                     ]);
-
-
                     break;
                 case 'PliegoEspecificacion':
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.especificacionesViewModel.observaciones
                     ]);
-
                     break;
                 case 'PliegoCotizacion':
                     paso.Completo = this.listaStringCompleta([
@@ -305,6 +290,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case 'SolpCabecera':
+                    paso.Completo = this.listaStringCompleta([
+                        this.solpActual.selectClaseDocumento,
+                        // this.solpActual.servicio,
+                        // this.solpActual.textoGenerico,
+                        // this.solpActual.fechaEntregaServicio,
+                        // this.solpActual.fechaDeLiberacion,
+                        // this.solpActual.centroEntrega,
+                        // this.solpActual.almacenEntrega,
+                        // this.solpActual.calleEntrega,
+                        // this.solpActual.numeroEntrega,
+                        // this.solpActual.grupoCompras,
+                        // this.solpActual.articuloCompras,
+                        // this.solpActual.monedaCompras
+                    ]);
                     break;
                 case 'SolpSubposiciones':
                     break;
@@ -312,16 +311,26 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    listaStringCompleta(lista: string[]) {
+    listaStringCompleta(lista: any[]) {
         return lista.filter(x => !x || x.length == 0).length == 0;
     }
 
+    scrollTo(el: HTMLElement){
+        el.scrollIntoView();
+    }
     //evento que se activa cuando se deja uno de los paso de la solp
     //infomacionSolp : { codigo : string , esPasoInvalido : bool}
     actualizarEstadoSolp(infomacionSolp: any) {
         var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
         pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
     }
+
+    agregarPosicion(el: HTMLElement){
+        this.solpActual.agregarNuevaPosicion();
+        el.scrollIntoView();
+        
+    }
+
 
 
 }

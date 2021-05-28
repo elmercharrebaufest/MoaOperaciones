@@ -65,9 +65,20 @@ export class ConsultaService extends BaseService {
                 map(this.extractData));
     }
 
-    public getCombos(): Observable<any> {
+    public recordarComentario(consultaId: any): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
         return this.http
-            .get('/api/consulta/Combos', { headers: this.headers }).pipe(
+            .get(`/api/Consulta/RecordarComentario`, { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+    public getCombos(excluir: boolean): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('excluir', excluir.toString());
+
+        return this.http
+            .get('/api/consulta/Combos', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 
@@ -76,8 +87,6 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/Consultas', { headers: this.headers }).pipe(
             map(this.extractData));
     }
-
-
 
     public getConsultaDetalle(idConsulta): Observable<any> {
         return this.http

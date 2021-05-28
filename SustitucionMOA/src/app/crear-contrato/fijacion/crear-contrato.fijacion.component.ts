@@ -433,10 +433,11 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
 
                     let precioNeto = precio + costo;
                     
-                    let fecha = new Date();
-                    fecha.setDate(fecha.getDate() + this.contrato.DiasPesificado);
-                    var datePipe = new DatePipe('es-AR');
-                    this.costoFinanciero = "Precio Neto: " + (precioNeto) + "<br> Fecha: " + datePipe.transform(fecha, 'dd/MM/yyyy');
+                    //let fecha = new Date();
+                    //let diasp = Number(this.contrato.DiasPesificado);
+                    //fecha.setDate(fecha.getDate() + diasp);
+                    //var datePipe = new DatePipe('es-AR');
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto) /*+ "<br> Fecha: " + datePipe.transform(fecha, 'dd/MM/yyyy')*/;
                 }
             }
 
