@@ -21,19 +21,19 @@
                 <hr>
                 <!-- contenido -->
                 <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
-                    <div *ngSwitchCase="'PliegoGeneracion1'" [@fadeInOut] >
-                        <generacion1 [(model)]="solpActual" [(locale)]="es"></generacion1>
+                    <div *ngSwitchCase="enumSolp.PliegoGeneracion1" [@fadeInOut] >
+                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></generacion1>
                     </div>
-                    <div  *ngSwitchCase="'PliegoGeneracion2'" [@fadeInOut] >
-                        <generacion2 [(model)]="solpActual" [(locale)]="es"></generacion2>
+                    <div  *ngSwitchCase="enumSolp.PliegoGeneracion2" [@fadeInOut] >
+                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></generacion2>
                     </div>
-                    <div  *ngSwitchCase="'PliegoEspecificacion'" [@fadeInOut] >
-                        <especificaciones [(model)]="solpActual" [(locale)]="es"></especificaciones>
+                    <div  *ngSwitchCase="enumSolp.PliegoEspecificacion" [@fadeInOut] >
+                        <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></especificaciones>
                     </div>
-                    <div  *ngSwitchCase="'PliegoCotizacion'" [@fadeInOut] >
-                        <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
+                    <div  *ngSwitchCase="enumSolp.PliegoCotizacion" [@fadeInOut] >
+                        <cotizacion [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></cotizacion>
                     </div>
-                    <div  *ngSwitchCase="'SolpCabecera'" [@fadeInOut] >
+                    <div  *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut] >
                         <cabecera [(model)]="solpActual" [(locale)]="es"></cabecera>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut] >

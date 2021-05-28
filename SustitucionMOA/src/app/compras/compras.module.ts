@@ -25,8 +25,9 @@ import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
 import {DropdownModule} from 'primeng/dropdown';
 import {AutoCompleteModule} from 'primeng/autocomplete';
-
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { ValidadorPasoSolpService } from './validadorPasoSolpService';
+    
 @NgModule({
     imports: [
         CommonModule,
@@ -44,7 +45,8 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
         QuillModule.forRoot(),
         RadioButtonModule,
         DropdownModule,
-        AutoCompleteModule
+        AutoCompleteModule,
+        ReactiveFormsModule
     ],
     declarations: [
         SolpComponent,
@@ -58,7 +60,8 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
         CabeceraComponent
     ],
     providers: [
-        SolpService
+        SolpService ,
+        ValidadorPasoSolpService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

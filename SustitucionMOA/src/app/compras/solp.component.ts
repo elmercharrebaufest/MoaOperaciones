@@ -8,6 +8,10 @@ import { SpinnerComponent } from '../common/view-child/spinner/spinner.component
 import { Solp } from './Solp';
 import * as uuid from 'uuid';
 import { SelectItem } from 'primeng/api';
+import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
+import { FacturaComponent } from '../factura/factura.component';
+import { EnumPasoSolp } from './enum-paso-solp';
+
 
 
 @Component({
@@ -60,6 +64,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     _pasoActual: Paso;
     es: any;
 
+    enumSolp: typeof EnumPasoSolp = EnumPasoSolp;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -71,7 +76,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     pasos: Paso[] = [{
-        Codigo: 'PliegoGeneracion1',
+        Codigo: EnumPasoSolp.PliegoGeneracion1,
         Nombre: 'Generación',
         Activo: false,
         Completo: false,
@@ -80,7 +85,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 1
     },
     {
-        Codigo: 'PliegoGeneracion2',
+        Codigo: EnumPasoSolp.PliegoGeneracion2,
         Nombre: 'Generación',
         Activo: false,
         Completo: false,
@@ -89,7 +94,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 2
     },
     {
-        Codigo: 'PliegoEspecificacion',
+        Codigo: EnumPasoSolp.PliegoEspecificacion,
         Nombre: 'Especificaciones técnicas',
         Activo: false,
         Completo: false,
@@ -98,7 +103,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 3
     },
     {
-        Codigo: 'PliegoCotizacion',
+        Codigo: EnumPasoSolp.PliegoCotizacion,
         Nombre: 'Cotización y plazo de ejecución',
         Activo: false,
         Completo: false,
@@ -107,7 +112,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 4
     },
     {
-        Codigo: 'SolpCabecera',
+        Codigo: EnumPasoSolp.SolpCabecera,
         Nombre: 'Cabecera',
         Activo: false,
         Completo: false,
@@ -116,7 +121,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Numero: 5
     },
     {
-        Codigo: 'SolpSubposiciones',
+        Codigo: EnumPasoSolp.SolpSubposiciones,
         Nombre: 'Subposiciones',
         Activo: false,
         Completo: false,
@@ -191,10 +196,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
-            // this.grupoCompras.push({
-            //     key: 0,
-            //     value: "grupoCompras"
-            // })
+
         }
     }
     // grupoCompras: any[];
@@ -261,7 +263,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     actualizarPasoCompleto(paso: Paso) {
         if (paso) {
             switch (paso.Codigo) {
-                case 'PliegoGeneracion1':
+                case EnumPasoSolp.PliegoGeneracion1:
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.nombreDeObra,
                         this.solpActual.fiscalContrato,
@@ -270,18 +272,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.horaEntrega
                     ]);
                     break;
-                case 'PliegoGeneracion2':
+                case EnumPasoSolp.PliegoGeneracion2:
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.supervisorSector,
                         this.solpActual.supervisorTrabajo
                     ]);
                     break;
-                case 'PliegoEspecificacion':
+                case EnumPasoSolp.PliegoEspecificacion:
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.especificacionesViewModel.observaciones
                     ]);
                     break;
-                case 'PliegoCotizacion':
+                case EnumPasoSolp.PliegoCotizacion:
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.ejecucion,
                         this.solpActual.jornadaLaboralDias,
@@ -289,7 +291,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.terminoJornadaLaboral
                     ]);
                     break;
-                case 'SolpCabecera':
+                case EnumPasoSolp.SolpCabecera:
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.selectClaseDocumento,
                         // this.solpActual.servicio,
@@ -305,7 +307,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         // this.solpActual.monedaCompras
                     ]);
                     break;
-                case 'SolpSubposiciones':
+                case EnumPasoSolp.SolpSubposiciones:
                     break;
             }
         }
@@ -317,6 +319,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     scrollTo(el: HTMLElement){
         el.scrollIntoView();
+    }
+    //evento que se activa cuando se deja uno de los paso de la solp
+    //infomacionSolp : { codigo : string , esPasoInvalido : bool}
+    actualizarEstadoSolp(infomacionSolp: any) {
+        var pasoSolp = this.pasos.find(x => x.Codigo == infomacionSolp.codigo);
+        pasoSolp.Completo = !infomacionSolp.esPasoInvalido;
     }
 
     agregarPosicion(el: HTMLElement){

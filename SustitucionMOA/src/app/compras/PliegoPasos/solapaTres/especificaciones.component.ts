@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../common/services/SessionDataService';
@@ -11,6 +11,10 @@ import { Solp } from '../../Solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
 import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
+import {FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
+import { EnumPasoSolp } from '../../enum-paso-solp';
+
  Quill.register('modules/imageResize', ImageResize);
 
 declare var $: any;
@@ -33,12 +37,28 @@ export class EspecificacionesComponent extends ListBaseComponent {
     public viewModel: EspecificacionesViewModel;
     modulesEditor = {};
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    formularioEspecificaciones : FormGroup;
+
+    @Output() onEstCompleto = new EventEmitter<any>();
+
+    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, 
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+         protected route: ActivatedRoute, protected router: Router,private formBuilder: FormBuilder,
+         private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.modulesEditor = {
             imageResize: true
         }
+    }
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formularioEspecificaciones && this.formularioEspecificaciones.controls) {
+            return (this.formularioEspecificaciones.controls[nombreCampo].invalid || (this.formularioEspecificaciones.controls[nombreCampo].errors && this.formularioEspecificaciones.controls[nombreCampo].errors.required))
+                && (this.formularioEspecificaciones.controls[nombreCampo].dirty || this.formularioEspecificaciones.controls[nombreCampo].touched)
+        }
+
+        return false;
     }
 
     setTabs() {
@@ -48,7 +68,29 @@ export class EspecificacionesComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.viewModel = this.model.especificacionesViewModel;
+
+         //declaro las validaciones para los campos
+         this.formularioEspecificaciones = this.formBuilder.group({
+            observacion: new FormControl(this.viewModel.valorPorDefecto, [this.validatorObservaciones(this.viewModel.valorPorDefecto)]),
+        });
+
+            this.validadorPasoSolpService.formulario = this.formularioEspecificaciones
+        if (this.model.cargoPasoTres) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoTres = true;
     }
+
+    validatorObservaciones(valorPorFecto: string): any {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (control.value == undefined || control.value =="" || control.value == valorPorFecto) {
+                return { 'requerid': true };
+            }
+            return null;
+        };
+    }
+    
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
@@ -166,6 +208,12 @@ export class EspecificacionesComponent extends ListBaseComponent {
             if (posicion == 0)
                 return i;
         }
+    }
+
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoEspecificacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
 }

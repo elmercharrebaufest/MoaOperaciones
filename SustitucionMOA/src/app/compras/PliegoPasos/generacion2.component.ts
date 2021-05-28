@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -11,7 +11,10 @@ import { Solp } from './../Solp';
 import * as uuid from 'uuid';
 import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
+import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 Quill.register('modules/imageResize', ImageResize);
+import { EnumPasoSolp } from '../enum-paso-solp';
 
 
 
@@ -22,7 +25,7 @@ declare var $: any;
     templateUrl: `generacion2.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class Generacion2Component extends ListBaseComponent {
+export class Generacion2Component extends ListBaseComponent  {
 
     @Input('model') 
     protected model:Solp;
@@ -32,12 +35,22 @@ export class Generacion2Component extends ListBaseComponent {
 
     modulesEditor = {};
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    //validaciones
+    formulario2 : FormGroup;
+
+    @Output() onEstCompleto = new EventEmitter<any>();
+
+    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, 
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, 
+        protected modalService: ModalService, protected route: ActivatedRoute, 
+        protected router: Router, private formBuilder: FormBuilder,
+        private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.modulesEditor = {
             imageResize: true
         }
     }
+    
 
 
     solpPaso2Result: any;
@@ -62,14 +75,6 @@ export class Generacion2Component extends ListBaseComponent {
         console.log(this.model.fechaDeEntregaDeOfertasFecha, "No funciona");
 
     }
-
-    // listaVisitas: any[] = [
-    //     {
-    //         id: uuid.v4(),
-    //         visitaDeObraFecha: "",
-    //         visitaDeObraHora: ""
-    //     }
-    // ];
 
     agregarNuevaVisita() {
         this.model.listaVisitas.push (
@@ -98,7 +103,18 @@ export class Generacion2Component extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         
-        
+         //declaro las validaciones para los campos
+         this.formulario2 = this.formBuilder.group({
+            supervisorTrabajo: new FormControl ('', Validators.required),
+            supervisorSector: new FormControl ('', Validators.required),
+          });
+
+          this.validadorPasoSolpService.formulario = this.formulario2;
+          if (this.model.cargoPasoDos) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoDos = true;
         
     }
 
@@ -143,6 +159,28 @@ export class Generacion2Component extends ListBaseComponent {
             if (posicion == 0)
                 return i;
         }
+    }
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formulario2 && this.formulario2.controls) {
+            return (this.formulario2.controls[nombreCampo].invalid || (this.formulario2.controls[nombreCampo].errors && this.formulario2.controls[nombreCampo].errors.required))
+                && (this.formulario2.controls[nombreCampo].dirty || this.formulario2.controls[nombreCampo].touched)
+        }
+
+        return false;
+    }
+
+    
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion2, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+    }
+
+    
+    onBlur(control: string)
+    {
+        this.validadorPasoSolpService.onBlurDirty(control);
     }
 
 }

@@ -1,11 +1,13 @@
 import { Time, WeekDay } from "@angular/common";
 import { WeekDayItem } from "../common/models/weekDayItem";
-import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
-import {SelectItem} from 'primeng/api';
+import { SelectItem } from 'primeng/api';
 import * as uuid from 'uuid';
 import { forEach } from "@angular/router/src/utils/collection";
+import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
+import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 
 export class Solp {
+
     //paso 1
     public nombreDeObra: string;
     public fiscalContrato: string;
@@ -30,11 +32,11 @@ export class Solp {
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
-    public observacionesGeneracion: string ="";
+    public observacionesGeneracion: string = "";
     public listaVisitas: any;
 
     //paso 3
-    public especificacionesViewModel : EspecificacionesViewModel = new EspecificacionesViewModel();
+    public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
 
     // paso 4
     public ejecucion: any;
@@ -46,25 +48,31 @@ export class Solp {
     //inicio Cabecera == paso 5
     public selectClaseDocumento: string
 
-    // posiciones
-
     public posiciones: PosicionSolp[];
     posicionActual: PosicionSolp;
     // fin cabecera
 
 
+    //variables auxiliares de inicio de solp
+    public cargoPasoUno: boolean = false;
+    public cargoPasoDos: boolean = false;
+    public cargoPasoTres: boolean = false;
+    public cargoPasoCuatro: boolean = false;
+    public cargoPasoCinco: boolean = false;
+    public cargoPasoSeis: boolean = false;
+
 
     constructor() {
         this.posiciones = [];
-        this.agregarNuevaPosicion(); 
+        this.agregarNuevaPosicion();
     }
 
-    agregarNuevaPosicion(){
+    agregarNuevaPosicion() {
         this.posiciones = [...this.posiciones, new PosicionSolp(this.posiciones.length + 1)]
         this.posicionActual = this.posiciones[this.posiciones.length - 1];
     }
 
-    eliminarPosicion(){
+    eliminarPosicion() {
         this.posicionActual = this.posiciones[0];
         this.posiciones = this.posiciones.filter(x => x.id != this.posicionActual.id);
         if (this.posiciones.length == 0) {
@@ -73,7 +81,7 @@ export class Solp {
         this.ordenarPosiciones();
     }
 
-    ordenarPosiciones(){
+    ordenarPosiciones() {
         var i = 1;
         this.posiciones.forEach(x => x.numeroPosicion = i++);
     }
@@ -81,7 +89,7 @@ export class Solp {
 
 
 
-export class PosicionSolp{
+export class PosicionSolp {
     public id: any;
     public numeroPosicion: number;
 
@@ -125,19 +133,19 @@ export class PosicionSolp{
     public proveedoresValidos: string[] = [];
     public proveedoresInvalidos: string[] = [];
     public proveedoresNoSugeridos: string[] = [];
-   
+
     // Moneda
     public selectMonedaCompras: string;
     public totalPosicion: number;
 
     constructor(numeroPosicion) {
         this.id = uuid.v4();
-        this.plazoDeEntrega = "0";   
+        this.plazoDeEntrega = "0";
         this.numeroPosicion = numeroPosicion;
         this.fechaEntregaServicio = new Date();
         this.fechaDeLiberacion = new Date();
-    
-        
+
+
     }
 }
 
