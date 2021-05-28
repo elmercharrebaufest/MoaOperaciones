@@ -14,6 +14,7 @@ import Quill from 'quill';
 import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 Quill.register('modules/imageResize', ImageResize);
+import { EnumPasoSolp } from '../enum-paso-solp';
 
 
 
@@ -173,7 +174,7 @@ export class Generacion2Component extends ListBaseComponent  {
     ngOnDestroy()
     {
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :"PliegoGeneracion2", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion2, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
     

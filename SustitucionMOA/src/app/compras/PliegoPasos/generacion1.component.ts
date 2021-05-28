@@ -10,6 +10,7 @@ import { SolpService } from './../solp.service'
 import { Solp } from './../Solp';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
+import { EnumPasoSolp } from '../enum-paso-solp';
 
 declare var $: any;
 
@@ -73,7 +74,7 @@ export class Generacion1Component extends ListBaseComponent  {
     ngOnDestroy()
     {
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :"PliegoGeneracion1", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion1, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
     parsearFecha() {

@@ -1003,6 +1003,7 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion2.component.ts" />

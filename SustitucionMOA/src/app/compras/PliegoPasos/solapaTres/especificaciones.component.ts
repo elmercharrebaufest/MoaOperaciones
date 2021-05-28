@@ -13,6 +13,7 @@ import  ImageResize  from 'quill-image-resize-module';
 import Quill from 'quill';
 import {FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
+import { EnumPasoSolp } from '../../enum-paso-solp';
 
  Quill.register('modules/imageResize', ImageResize);
 
@@ -212,7 +213,7 @@ export class EspecificacionesComponent extends ListBaseComponent {
     ngOnDestroy()
     {
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :"PliegoEspecificacion", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoEspecificacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
 }

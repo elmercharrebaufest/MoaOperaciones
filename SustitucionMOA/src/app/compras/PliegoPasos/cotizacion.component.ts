@@ -11,6 +11,7 @@ import { Solp } from './../Solp';
 import { WeekDay } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
+import { EnumPasoSolp } from '../enum-paso-solp';
 
 
 declare var $: any;
@@ -103,7 +104,7 @@ export class CotizacionComponent extends ListBaseComponent {
     ngOnDestroy()
     {
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :"PliegoCotizacion", esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoCotizacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
 
 
