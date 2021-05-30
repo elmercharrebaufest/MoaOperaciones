@@ -138,6 +138,35 @@ namespace SustitucionMOAUtils.Services
             return rubros;
         }
 
+        public string HabilitarProveedorOperando(int proveedorId, string razonSocial, string mail)
+        {
+            if(proveedorId <= 0) throw new InfoCustomException("Id invalido.");
+
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
+            if (proveedor == null) throw new InfoCustomException("No se encontro proveedor con ese Id.");
+            if (proveedor.TipoProveedor.NombreCorto != "NG") throw new InfoCustomException("El proveedor no es No Granos.");
+
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Mail == mail);
+            if(usuario == null) throw new InfoCustomException("El usuario no existe.");
+
+            //actualizo los datos del proveedor
+            proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
+            proveedor.RazonSocial = razonSocial;
+            proveedor.CodigoProveedor = FormatearCodigoProveedor(usuario.CUITRegistro);
+            proveedor.Observaciones = "";
+
+            //Le saco el Rol de Nuevo usuario NG al usuario.
+            usuario.RemoverRoles();
+
+            //Busco el Rol de NG y se lo agrego al usuario
+            Rol rolNg = repositorio.Obtener<Rol>(r => r.Codigo == "NOGRAN");
+            usuario.AgregarRol(rolNg);
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.UsuarioHabilitadoOK;
+        }
+
         public string RechazarProveedorNoGranos(int idProveedor, string usuarioMail,string observacionesParaElProveedor)
         {
 

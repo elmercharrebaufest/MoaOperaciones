@@ -87,4 +87,14 @@ export class AltaEmpresaService extends BaseService {
                 map(this.extractData));
     }
 
+    public proveedorNoGranosOperando(proveedorId: number, razonSocial: string, mail: string): Observable<any>{
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('proveedorId', proveedorId.toString())
+        params.set('razonSocial', razonSocial)
+        params.set('mail', mail)
+        return this.http
+            .get('/api/AltaEmpresaNoGranos/HabilitarNoGranosOperando', { search: params, headers: this.headers })
+            .pipe(map(this.extractData))
+    }
+
 }

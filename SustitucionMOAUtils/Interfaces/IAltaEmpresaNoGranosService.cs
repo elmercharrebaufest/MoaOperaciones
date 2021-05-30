@@ -23,5 +23,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         string GetRazonSocial(string CUIT);
         byte[] DescargarFormularioNG(ProveedorAltaDto proveedorDto);
+
+        string HabilitarProveedorOperando(int proveedorId, string razonSocial, string mail);
     }
 }
