@@ -505,8 +505,8 @@ namespace SustitucionMOAUtils.Services
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
                 string asunto = "";
-                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
-                var Vinculofuncionarios = altaEmpresa.Funcionarios;
+                var vinculoEmpleadoMolinos = altaEmpresa.Empleados.ToList();
+                var Vinculofuncionarios = altaEmpresa.Funcionarios.ToList();
 
                 if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
                 {
@@ -521,7 +521,9 @@ namespace SustitucionMOAUtils.Services
                     asunto = "Asunto a definir: empleados";
                 }
 
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, 
+                    vinculoEmpleadoMolinos,
+                    Vinculofuncionarios);
                 var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
