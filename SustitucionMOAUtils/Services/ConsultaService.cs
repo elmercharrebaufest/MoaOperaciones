@@ -111,10 +111,16 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
+                    subcategoriaCode = subcategoriaCode + "PC";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
                 else
                 {
-                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id; ;
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
+                    subcategoriaCode = subcategoriaCode + "FD";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
             }
 
@@ -123,10 +129,16 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                    var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
+                    subcategoriaCode = subcategoriaCode + "PC";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
                 else
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                    var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
+                    subcategoriaCode = subcategoriaCode + "PD";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
             }
 
