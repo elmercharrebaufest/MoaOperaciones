@@ -52,13 +52,6 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
-import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
-import { NgxMaskModule } from "ngx-mask";
-import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
-import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'
-import { NotificacionesService } from "./notificaciones/notificaciones.service";
-import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component'
-import { BlockUIModule } from 'ng-block-ui';
 import { FaqComponent } from './faq/faq.component'
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
