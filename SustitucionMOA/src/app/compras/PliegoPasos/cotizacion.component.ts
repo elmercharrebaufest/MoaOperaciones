@@ -6,7 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { SolpService } from './../solp.service'
+import { ComprasService } from '../compras.service'
 import { Solp } from './../Solp';
 import { WeekDay } from '@angular/common';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
@@ -34,7 +34,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
     @Output() onEstCompleto = new EventEmitter<any>();
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService,
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
         , private formBuilder: FormBuilder,

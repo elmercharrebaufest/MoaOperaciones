@@ -29,6 +29,9 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Archivos")]
         public virtual ICollection<Comentario> Comentarios { get; set; }
 
+        [InverseProperty("Archivos")]
+        public virtual ICollection<Pliego> Pliegos { get; set; }
+
         public string ObtenerNombre(string ruta)
         {
             if (Path.GetFileName(ruta) != null)

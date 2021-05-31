@@ -6,7 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { SolpService } from './../solp.service'
+import { ComprasService } from '../compras.service'
 import { Solp } from './../Solp';
 import { FormBuilder, FormGroup, FormControl, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
@@ -39,7 +39,7 @@ export class Generacion1Component extends ListBaseComponent  {
     horaEntrega: any;
     hoy: Date = new Date();
 
-    constructor(protected service: SolpService, protected navService: NavService,
+    constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,

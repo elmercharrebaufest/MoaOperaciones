@@ -132,6 +132,7 @@
     <None Include="DatabasePublishPreProd.xml" />
     <None Include="scripts\Rol_NuevoNoGranos.sql" />
     <None Include="SustitucionMOADatabase.publish.xml" />
+    <None Include="scripts\CargaInicialSolp.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />

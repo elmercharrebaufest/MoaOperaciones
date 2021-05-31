@@ -6,7 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { SolpService } from './../solp.service'
+import { ComprasService } from './../compras.service'
 import { PosicionSolp, Solp } from './../Solp';
 import { SelectItem } from 'primeng/api';
 // import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
@@ -27,7 +27,7 @@ export class CabeceraComponent extends ListBaseComponent {
     protected locale:any;
     
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
     }

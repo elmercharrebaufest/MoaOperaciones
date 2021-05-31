@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace SustitucionMOAModel.Entities
         public string Email { get; set; }
         public string Telefono { get; set; }
         public DateTime? FechaHoraEntrega { get; set; }
+        public string SupervisorSector { get; set; }
+        public string SupervisorTrabajo { get; set; }
         public bool? TieneVisitaObra { get; set; }
         public bool? TieneVisitaObraMasiva { get; set; }
         public bool? TieneObradores { get; set; }
@@ -34,6 +37,7 @@ namespace SustitucionMOAModel.Entities
 
         public virtual ICollection<PliegoVisita> VisitasMasivas { get; set; }
 
-
+        [InverseProperty("Pliegos")]
+        public virtual ICollection<Archivo> Archivos { get; set; }
     }
 }

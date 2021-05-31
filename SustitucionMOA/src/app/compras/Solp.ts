@@ -7,6 +7,7 @@ import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificaci
 import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 
 export class Solp {
+    public id: number;
 
     //paso 1
     public nombreDeObra: string;

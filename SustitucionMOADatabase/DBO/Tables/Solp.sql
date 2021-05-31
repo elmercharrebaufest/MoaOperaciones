@@ -2,9 +2,9 @@
 (
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[UsuarioCreacion_Id] [int] NOT NULL,
-	[UsuarioModificacion_Id] [int] NOT NULL,
-	[FechaCreacion] [datetime] NOT NULL,
-	[FechaModificacion] [datetime] NOT NULL,
+	[UsuarioModificacion_Id] [int] NULL,
+	[FechaCreacion] [datetime2] NOT NULL,
+	[FechaModificacion] [datetime2] NULL,
 	[Pliego_Id] [int] NULL,
 	[ClaseDocumento_Id] [int] NULL,
 	[NroSolp] [nvarchar](max) NULL,

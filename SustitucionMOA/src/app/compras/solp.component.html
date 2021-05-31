@@ -12,7 +12,8 @@
                 <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
             </div>
         </div>
-
+        <spinner></spinner>
+        <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <div class="row myRow mySearch" style="margin-bottom: 4em;">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>

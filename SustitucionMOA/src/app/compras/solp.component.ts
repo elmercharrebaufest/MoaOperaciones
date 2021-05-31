@@ -7,6 +7,15 @@ import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { Solp } from './Solp';
 import * as uuid from 'uuid';
+import { ComprasService } from './compras.service';
+import { NavService } from '../common/services/NavService';
+import { SessionDataService } from '../common/services/SessionDataService';
+import { SecurityService } from '../common/services/SecurityService';
+import { FloatMsgService } from '../common/services/FloatMsgService';
+import { ModalService } from '../common/services/ModalService';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Message } from 'primeng/components/common/api';
+import { MessageService } from 'primeng/components/common/messageservice';
 import { SelectItem } from 'primeng/api';
 import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
 import { FacturaComponent } from '../factura/factura.component';
@@ -36,8 +45,9 @@ import { EnumPasoSolp } from './enum-paso-solp';
                         style({ opacity: 0 }))
                 ]
             )
-        ]),
-    ]
+          ]),
+    ],
+    providers: [ComprasService, MessageService]
 })
 export class SolpComponent extends BaseComponent implements OnInit {
 
@@ -52,6 +62,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     //     // return true;
     // }
 
+    @BlockUI() blockUI: NgBlockUI;
+    
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -129,6 +141,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         Preview: true,
         Numero: 6
     }];
+
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        private messageService: MessageService) {
+        super(navService, securytiService, floatMsgService, modalService);
+
+    }
 
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
@@ -252,8 +270,49 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/compras');
     }
 
-    guardarCambios() {
-        this.cambiosGuardados = true;
+    guardarCambios(){
+        try {
+            this.blockUI.start('Guardando...');
+            this.spinnerComponent.showIt();
+
+            this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        this.blockUI.stop();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                        this.blockUI.stop();
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                        this.blockUI.stop();
+                    } else {
+                        this.spinnerComponent.hideIt();
+                        this.blockUI.stop();
+                        this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
+                        
+                        this.solpActual.id = result.Id;
+                        this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosAdjuntosNuevos.length);
+                        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = result.Adjuntos.map(x=> {
+                            return {
+                                id: x.Id,
+                                nombreArchivo: x.Nombre
+                            }
+                        });
+                        
+                        this.cambiosGuardados = true;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
     }
 
     finalizar() {

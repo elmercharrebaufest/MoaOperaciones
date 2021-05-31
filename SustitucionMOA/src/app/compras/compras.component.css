@@ -127,8 +127,10 @@
 
   ::ng-deep .weekDayBtn .ui-togglebutton {
     text-align: center !important;
-    border-radius: 3em !important;
-    width: 12% !important;
+    border-radius: 50% !important;
+    width: 2.5em !important;
+    height: 2.5em !important;
+    padding: 0 !important;
     margin-right: 2px !important;
   }
 
@@ -146,10 +148,15 @@
     background-color: honeydew;
     border: 1px solid #C9C9C9 !important; 
   }
-
-  ::ng-deep .ui-inputtext {
-    width: 15%;
+/* 
+  ::ng-deep .weekDayBtn .ui-inputtext {
+    width: 2.5em;
+    padding: 0.5em !important;
   }
+
+  ::ng-deep .weekDayBtn .ui-button-tex{
+    padding: 0.5em !important;
+  } */
 
   .styled-select1 {
     font-size: 1.5rem;

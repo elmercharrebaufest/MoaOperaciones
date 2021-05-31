@@ -7,6 +7,8 @@
 	[Email] [nvarchar](max) NULL,
 	[Telefono] [nvarchar](max) NULL,
 	[FechaHoraEntrega] [datetime2] NULL,
+	[SupervisorSector] [nvarchar](max) NULL,
+	[SupervisorTrabajo] [nvarchar](max) NULL,
 	[TieneVisitaObra] [bit] NULL,
 	[TieneVisitaObraMasiva] [bit] NULL,
 	[TieneObradores] [bit] NULL,

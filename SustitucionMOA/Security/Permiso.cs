@@ -128,5 +128,7 @@
         /*LOG PESIFICACIONES*/
         public const string CONSULTA_LOG_PESIFICACIONES = "GUARDADO Y CONSULTA DE LOG PESIFICACIONES";
 
+        /* COMPRAS SOLP */
+        public const string ABM_SOLP = "ABM SOLP";
     }
 }

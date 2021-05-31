@@ -62,6 +62,7 @@
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
+    <Compile Include="Dto\SolpDto.cs" />
     <Compile Include="Dto\SubCategoriaDto.cs" />
     <Compile Include="Dto\CategoriaDto.cs" />
     <Compile Include="Dto\ComentarioDto.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />
     <Compile Include="Entities\Pliego.cs" />
-    <Compile Include="Entities\PliegoArchivo.cs" />
     <Compile Include="Entities\PliegoVisita.cs" />
     <Compile Include="Entities\Rubro.cs" />
     <Compile Include="Entities\Solp.cs" />
@@ -103,10 +103,12 @@
     <Compile Include="Entities\TablaEstado.cs" />
     <Compile Include="Entities\TablaGeneral.cs" />
     <Compile Include="Entities\TablaSap.cs" />
+    <Compile Include="Enums\ComprasEnums.cs" />
     <Compile Include="Enums\EstadosConsulta.cs" />
     <Compile Include="Enums\IngresosBrutos.cs" />
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
     <Compile Include="Enums\SituacionIVA.cs" />
+    <Compile Include="Enums\Tablas.cs" />
     <Compile Include="Models\DataAgro\BasicoContrato.cs" />
     <Compile Include="Models\DataAgro\CookiesDataAgro.cs" />
     <Compile Include="Models\DataAgro\GrabarContratoResult.cs" />
