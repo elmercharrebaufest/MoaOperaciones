@@ -505,8 +505,8 @@ namespace SustitucionMOAUtils.Services
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
                 string asunto = "";
-                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
-                var Vinculofuncionarios = altaEmpresa.Funcionarios;
+                var vinculoEmpleadoMolinos = new StringBuilder();
+                var Vinculofuncionarios = new StringBuilder();
 
                 if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
                 {
@@ -519,6 +519,16 @@ namespace SustitucionMOAUtils.Services
                 if (proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
                 {
                     asunto = "Asunto a definir: empleados";
+                }
+
+                foreach (var empleado in altaEmpresa.Empleados)
+                {
+                    vinculoEmpleadoMolinos.AppendLine($"<tr><td>{empleado.NombreProveedora}</td><td>{empleado.CargoProveedora}</td><td>{empleado.NombreMolinos}</td><td>{empleado.Vinculo}</td></tr>");
+                }
+
+                foreach (var funcionario in altaEmpresa.Funcionarios)
+                {
+                    Vinculofuncionarios.AppendLine($"<tr><td>{funcionario.NombreFirma}</td><td>{funcionario.CargoFirma}</td><td>{funcionario.NombreFuncionario}</td><td>{funcionario.CargoFuncionario}</td><td>{funcionario.Vinculo}</td></tr>");
                 }
 
                 var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
