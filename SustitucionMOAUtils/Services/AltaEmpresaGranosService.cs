@@ -505,8 +505,8 @@ namespace SustitucionMOAUtils.Services
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
                 string asunto = "";
-                var vinculoEmpleadoMolinos = altaEmpresa.Empleados.ToList();
-                var Vinculofuncionarios = altaEmpresa.Funcionarios.ToList();
+                var vinculoEmpleadoMolinos = new StringBuilder();
+                var Vinculofuncionarios = new StringBuilder();
 
                 if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
                 {
@@ -521,9 +521,17 @@ namespace SustitucionMOAUtils.Services
                     asunto = "Asunto a definir: empleados";
                 }
 
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, 
-                    vinculoEmpleadoMolinos,
-                    Vinculofuncionarios);
+                foreach (var empleado in altaEmpresa.Empleados)
+                {
+                    vinculoEmpleadoMolinos.AppendLine($"<tr><td>{empleado.NombreProveedora}</td><td>{empleado.CargoProveedora}</td><td>{empleado.NombreMolinos}</td><td>{empleado.Vinculo}</td></tr>");
+                }
+
+                foreach (var funcionario in altaEmpresa.Funcionarios)
+                {
+                    Vinculofuncionarios.AppendLine($"<tr><td>{funcionario.NombreFirma}</td><td>{funcionario.CargoFirma}</td><td>{funcionario.NombreFuncionario}</td><td>{funcionario.CargoFuncionario}</td><td>{funcionario.Vinculo}</td></tr>");
+                }
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
                 var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
