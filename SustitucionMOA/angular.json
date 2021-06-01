@@ -22,16 +22,23 @@
             "assets": [
               "src/favicon.ico",
               "src/web.config",
-              {"glob": "**/*", "input": "Content", "output": "Content"}
+              {
+                "glob": "**/*",
+                "input": "Content",
+                "output": "Content"
+              }
             ],
             "styles": [
               "src/styles.css",
-              "./node_modules/quill/dist/quill.core.css", 
+              "./node_modules/quill/dist/quill.core.css",
               "./node_modules/quill/dist/quill.snow.css"
             ],
-            "scripts": ["./node_modules/quill/dist/quill.js",
-                       "./node_modules/ngx-quill/bundles/ngx-quill.umd.js",
-                       "./node_modules/xlsx/xlsx.js"]
+            "scripts": [
+              "./node_modules/tiff.js/tiff.min.js",
+              "./node_modules/quill/dist/quill.js",
+              "./node_modules/ngx-quill/bundles/ngx-quill.umd.js",
+              "./node_modules/xlsx/xlsx.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -21,7 +21,7 @@ import { CartaPorteFormularioComponent } from "./formulario/carta-porte.formular
     SharedModule,
     NgxPaginationModule,
     Ng2AutoCompleteModule,
-    AutocompleteLibModule,
+    AutocompleteLibModule
   ],
     declarations: [
       CartaPorteAplicacionComponent,

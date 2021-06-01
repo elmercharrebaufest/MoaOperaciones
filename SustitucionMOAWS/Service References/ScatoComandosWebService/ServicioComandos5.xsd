@@ -30,19 +30,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoPermiso" nillable="true" type="tns:TipoPermiso" />
-  <xs:simpleType name="UbicacionBarco">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="En_Viaje" />
-      <xs:enumeration value="Recalada" />
-      <xs:enumeration value="Subiendo" />
-      <xs:enumeration value="Rada" />
-      <xs:enumeration value="Muelle" />
-      <xs:enumeration value="Zarpo" />
-      <xs:enumeration value="Otra_Rada" />
-      <xs:enumeration value="Otro_Muelle" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="UbicacionBarco" nillable="true" type="tns:UbicacionBarco" />
   <xs:simpleType name="TipoPesada">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Bruto" />
