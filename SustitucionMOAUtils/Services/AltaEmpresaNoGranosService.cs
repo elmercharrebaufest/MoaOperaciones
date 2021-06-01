@@ -138,7 +138,7 @@ namespace SustitucionMOAUtils.Services
             return rubros;
         }
 
-        public string HabilitarProveedorOperando(int proveedorId, string razonSocial, string mail)
+        public string HabilitarProveedorOperando(int proveedorId, string razonSocial)
         {
             if(proveedorId <= 0) throw new InfoCustomException("Id invalido.");
 
@@ -146,17 +146,18 @@ namespace SustitucionMOAUtils.Services
             if (proveedor == null) throw new InfoCustomException("No se encontro proveedor con ese Id.");
             if (proveedor.TipoProveedor.NombreCorto != "NG") throw new InfoCustomException("El proveedor no es No Granos.");
 
-            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Mail == mail);
+            Usuario usuario = proveedor.UsuariosAsociados.First();
             if(usuario == null) throw new InfoCustomException("El usuario no existe.");
 
             //actualizo los datos del proveedor
             proveedor.EstadoAprobacion = EstadoAprobacion.Aprobado;
             proveedor.RazonSocial = razonSocial;
-            proveedor.CodigoProveedor = FormatearCodigoProveedor(usuario.CUITRegistro);
+            proveedor.CodigoProveedor = FormatearCodigoProveedor(proveedor.CUIT);
             proveedor.Observaciones = "";
 
             //Le saco el Rol de Nuevo usuario NG al usuario.
-            usuario.RemoverRoles();
+            usuario.RemoverRol("NUENOGRAN");
+            usuario.RemoverRol("DES");
 
             //Busco el Rol de NG y se lo agrego al usuario
             Rol rolNg = repositorio.Obtener<Rol>(r => r.Codigo == "NOGRAN");

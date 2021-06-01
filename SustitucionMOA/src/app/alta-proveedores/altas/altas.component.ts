@@ -426,7 +426,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         if(this.validarNoGranosOperando()) return
 
         this.subscription = this.altaEmpresaService
-            .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial, this.empresaSeleccionada.Mail)
+            .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
@@ -454,10 +454,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         if(this.empresaSeleccionada.RazonSocial == '' || !this.empresaSeleccionada.RazonSocial){
             this.mensajeComponent.setErrorMsg("Falta Completar la razón social.");
-            return true
-        }
-        if(this.empresaSeleccionada.Mail == '' || !this.empresaSeleccionada.Mail){
-            this.mensajeComponent.setErrorMsg("Falta Completar el mail.");
             return true
         }
 

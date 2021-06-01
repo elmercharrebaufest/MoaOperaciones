@@ -337,11 +337,11 @@ namespace SustitucionMOA.Controllers
 
 
         [HttpGet]
-        public ActionResult HabilitarNoGranosOperando(int proveedorId, string razonSocial, string mail)
+        public ActionResult HabilitarNoGranosOperando(int proveedorId, string razonSocial)
         {
             try
             {
-                return JsonCustom(altaEmpresaNoGranosService.HabilitarProveedorOperando(proveedorId, razonSocial, mail));
+                return JsonCustom(altaEmpresaNoGranosService.HabilitarProveedorOperando(proveedorId, razonSocial));
             }
             catch (InfoCustomException e)
             {
