@@ -504,22 +504,9 @@ namespace SustitucionMOAUtils.Services
             {
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
-                string asunto = "";
+                string asunto = "MOA Operaciones - Declaración jurada";
                 var vinculoEmpleadoMolinos = new StringBuilder();
                 var Vinculofuncionarios = new StringBuilder();
-
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: ambos";
-                }
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
-                {
-                    asunto = "Asunto a definir: funcionarios";
-                }
-                if (proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: empleados";
-                }
 
                 foreach (var empleado in altaEmpresa.Empleados)
                 {
