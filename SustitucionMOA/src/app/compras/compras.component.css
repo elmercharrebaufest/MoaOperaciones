@@ -177,6 +177,10 @@
   .widthAutocomplete {
     width: 100%;
   }
+
+  .botonAgregarPosicion {
+    float: right;
+  }
   
   /*pesificaciones*/
 

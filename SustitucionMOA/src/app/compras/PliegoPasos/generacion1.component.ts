@@ -57,7 +57,7 @@ export class Generacion1Component extends ListBaseComponent  {
         this.formulario = this.formBuilder.group({
             nombreDeObra: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
-            mail: new FormControl('', Validators.required)
+            mail: new FormControl('', [Validators.required, Validators.email])
         });
         
         this.validadorPasoSolpService.formulario = this.formulario;
