@@ -501,26 +501,11 @@ namespace SustitucionMOAUtils.Services
             {
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
-                string asunto = "";
+                string asunto = "MOA Operaciones - Declaración jurada";
                 var vinculoEmpleadoMolinos = altaEmpresa.Empleados.ToList();
                 var Vinculofuncionarios = altaEmpresa.Funcionarios.ToList();
 
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: ambos";
-                }
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
-                {
-                    asunto = "Asunto a definir: funcionarios";
-                }
-                if (proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: empleados";
-                }
-
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, 
-                    vinculoEmpleadoMolinos,
-                    Vinculofuncionarios);
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
                 var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);
