@@ -1,12 +1,5 @@
 ﻿<div class="content-wraper">
     <!-- CONTENT-->
-    <section class="container-fluid clearfix">
-        <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Asunto: {{this.consulta.Asunto}}</strong><br></div>
-            <div class="col-xs-12 col-sm-10 subtitulo">N° de Consulta: {{this.consulta.Id}} | Usuario: {{this.consulta.Usuario.Mail}} | Cuit: {{this.consulta.Usuario.CUIT}}</div>
-        </div>
-    </section>
     <mensaje></mensaje>
     <spinner></spinner>
     <div class="row myRow firstSection" style="overflow: hidden">
@@ -117,7 +110,7 @@
 
             <div *ngIf="this.MostrarDatosAdicionales">
                 <div *ngFor="let dato of datosExtra" class="col-md-12">
-                    <ng-container *ngIf="dato.Value != null && this.Value != '' ">
+                    <ng-container *ngIf="dato.Value != null && dato.Value != '' ">
                             <div *ngIf="dato.NewLine">
                                 <strong>{{dato.Nombre}}:</strong> <p [innerHTML]='dato.Value'></p>
                             </div>
@@ -183,6 +176,5 @@
 
             </div>
         </div>
-        <spinner></spinner>
     </div>
 </div>

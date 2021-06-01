@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
@@ -55,6 +55,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
     }
+
+    @Input() consultaId: any;
     categoriaSelected: any;
     estados: EstadoConsulta[];
     categorias: Categoria[];
@@ -79,7 +81,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     consulta: Consulta;
     comentariosList: any;
     estadoConsulta: number;
-    consultaId: string;
     file: any;
     fecha: any;
     hora: any;
@@ -107,7 +108,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         this.jqueryOnInit();
-        this.getConsultaId();
         this.getDetalleConsulta();
         this.getCombos();
     }
@@ -132,11 +132,6 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);
-    }
-
-    getConsultaId() {
-        const queryString = window.location.href;
-        this.consultaId = queryString.split('=')[1];
     }
 
     cargarArchivo(event: any) {

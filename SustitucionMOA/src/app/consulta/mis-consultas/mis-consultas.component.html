@@ -95,7 +95,7 @@
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                     </td>
                                     <td style="text-align: center; width: 5rem; padding: 0">
-                                        <a [routerLink]="['/consulta/detalle', { idConsulta:rowData.Id } ]"><button pButton type="button" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button></a>
+                                        <button pButton type="button" (click)="openModal(rowData.Id)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button>
                                     </td>
                                 </tr>
                             </ng-template>
@@ -275,4 +275,29 @@
         <!-- END tables-->
     </section>
     <!--End CONTENT-->
+</div>
+
+<button type="button" id="openModalHiddenButton" style="display: none;"
+                                        data-toggle="modal" data-target="#myModal">MODAL</button>
+
+<!--Modal-->
+
+<div class="modal fade col-md-12 col-xs-12 col-sm-12 misConsultas" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
+    style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document" [ngClass]="esInterno ? 'WidhtModalConsultasInterno' : 'WidhtModalConsultasExterno' ">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
+                    (click)=resetVariables()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Detalle Consulta
+                </h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;" *ngIf="mostrarDetalle">
+                <consulta-detalle [consultaId]="consultaId"></consulta-detalle>
+            </div>
+        </div>
+    </div>
 </div>
