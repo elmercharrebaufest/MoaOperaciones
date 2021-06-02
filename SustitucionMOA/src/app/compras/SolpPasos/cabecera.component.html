@@ -59,10 +59,10 @@
                                     Tipo de imputaci&oacute;n*
                                 </div> 
                                 <div>   
-                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="centroDeCosto" label="Centro de costo (K)" [(ngModel)]="model.posicionActual.centroDeCosto" inputId="servicio"></p-radioButton></div>
-                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeOt" label="Orden de OT (F)" [(ngModel)]="model.posicionActual.ordenDeOt" inputId="servicio"></p-radioButton></div>
-                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeInversion" label="Orden de inversión (F)" [(ngModel)]="model.posicionActual.ordenDeInversion" inputId="servicio"></p-radioButton></div>
-                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}"  name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.siniestroBeneficio" inputId="servicio"></p-radioButton></div>
+                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="centroDeCosto" label="Centro de costo (K)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton></div>
+                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeOt" label="Orden de OT (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton></div>
+                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeInversion" label="Orden de inversión (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton></div>
+                                    <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}"  name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton></div>
                                     <div *ngIf="mostrarError('tipoImputacion')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div> 

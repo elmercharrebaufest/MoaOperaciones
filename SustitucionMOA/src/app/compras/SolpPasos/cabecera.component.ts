@@ -82,36 +82,43 @@ export class CabeceraComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.claseDocumento = [
-                    { label: "ZSP1 - Mantenimiento mecánico", value: "zsp1" },
-                    { label: "ZSP2 - Mantenimiento electrico", value: "zsp2" }
+            { label: "Elegir", value: "Elegir" },
+            { label: "ZSP1 - Mantenimiento mecánico", value: "zsp1" },
+            { label: "ZSP2 - Mantenimiento electrico", value: "zsp2" }
         ];     
 
         this.centroEntrega = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Centro 1", value: "C1" },
             { label: "Centro 2", value: "C2" }
         ];
 
         this.almacenEntrega = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Almacen 1", value: "A1" },
             { label: "Almacen 2", value: "A2" }
         ];
 
         this.grupoCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Materiales", value: "Mat" },
             { label: "Servicios", value: "Ser" }
         ];
 
         this.solicitanteCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Mariano", value: "Mar" },
             { label: "Alberto", value: "Alb" }
         ];
 
         this.articuloCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Piedra", value: "Pie" },
             { label: "Papel", value: "Pap" }
         ];
 
         this.monedaCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "ARS", value: "$" },
             { label: "DOL", value: "U$" }
         ];
@@ -154,7 +161,8 @@ export class CabeceraComponent extends ListBaseComponent {
 
         this.formularioPosicion = [this.formularioActual]
 
-        this.validadorPasoSolpService.formulario = this.formularioActual
+        this.validadorPasoSolpService.formulario = this.formularioActual;
+
         if (this.model.cargoPasoCinco) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }

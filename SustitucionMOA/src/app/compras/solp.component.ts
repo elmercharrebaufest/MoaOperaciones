@@ -298,13 +298,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.textoGenerico,
                         this.solpActual.posicionActual.fechaEntregaServicio,
                         this.solpActual.posicionActual.fechaDeLiberacion,
-                        // this.solpActual.posicionActual.selectCentroEntrega,
-                        // this.solpActual.posicionActual.selectAlmacenEntrega,
+                        this.solpActual.posicionActual.selectCentroEntrega,
+                        this.solpActual.posicionActual.selectAlmacenEntrega,
                         this.solpActual.posicionActual.calleEntrega,
                         this.solpActual.posicionActual.numeroEntrega,
-                        // this.solpActual.posicionActual.selectGrupoCompras,
-                        // this.solpActual.posicionActual.selectArticuloCompras,
-                        // this.solpActual.posicionActual.selectMonedaCompras
+                        this.solpActual.posicionActual.selectGrupoCompras,
+                        this.solpActual.posicionActual.selectArticuloCompras,
+                        this.solpActual.posicionActual.selectMonedaCompras
                     ]);
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
