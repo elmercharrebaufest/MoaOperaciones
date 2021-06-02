@@ -11,6 +11,8 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IComprasService
     {
         SolpDto GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
+        string ObtenerRutaArchivo(int archivoId);
 
+        List<TablaSapDto> ObtenerTablaSap(string tabla);
     }
 }

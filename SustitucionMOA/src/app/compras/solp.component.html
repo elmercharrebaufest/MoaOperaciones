@@ -35,7 +35,7 @@
                         <cotizacion [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></cotizacion>
                     </div>
                     <div  *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut] >
-                        <cabecera [(model)]="solpActual" [(locale)]="es"></cabecera>
+                        <cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos"></cabecera>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut] >
                         Paso en construccion

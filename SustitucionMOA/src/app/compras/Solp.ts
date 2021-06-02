@@ -109,8 +109,8 @@ export class PosicionSolp {
     public indiceFijacion: boolean;
 
     // direccion de entrega
-    public selectCentroEntrega: string;
-    public selectAlmacenEntrega: string;
+    public selectCentroEntrega: any;
+    public selectAlmacenEntrega: any;
 
     public nombreEntrega: string;
     public calleEntrega: string;
@@ -119,10 +119,10 @@ export class PosicionSolp {
     public paisEntrega: string;
 
     // grupo de compras
-    public selectGrupoCompras: string;
-    public selectSolicitanteCompras: string;
+    public selectGrupoCompras: any;
+    public selectSolicitanteCompras: any;
     public necesidadCompras: string;
-    public selectArticuloCompras: string;
+    public selectArticuloCompras: any;
 
     // proveedores 
     public rubroElectrico: boolean;
@@ -137,7 +137,7 @@ export class PosicionSolp {
     public proveedoresNoSugeridos: string[] = [];
 
     // Moneda
-    public selectMonedaCompras: string;
+    public selectMonedaCompras: any;
     public totalPosicion: number;
 
     constructor(numeroPosicion) {

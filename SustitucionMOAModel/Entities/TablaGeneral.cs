@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Entities
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
 
-        public int Padre_Id { get; set; }
+        public int? Padre_Id { get; set; }
 
         [ForeignKey("Padre_Id")]
         public TablaGeneral Padre { get; set; }

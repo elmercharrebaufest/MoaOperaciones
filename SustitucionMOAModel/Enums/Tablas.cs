@@ -19,6 +19,7 @@ namespace SustitucionMOAModel.Enums
         public const string GrupoArticulo = "GrupoArticulo";
         public const string Moneda = "Moneda";
         public const string Unidad = "Unidad";
+        public const string Centro = "Centro";
         public const string CodigoServicioSap = "CodigoServicioSap";
         public const string EstadoSolpSap = "EstadoSolpSap";
     }

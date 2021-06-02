@@ -77,6 +77,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     es: any;
 
     enumSolp: typeof EnumPasoSolp = EnumPasoSolp;
+    combos: any;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -214,10 +215,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
-
+            
+            this.getCombos();
         }
     }
-    // grupoCompras: any[];
 
 
 
@@ -391,5 +392,31 @@ export class SolpComponent extends BaseComponent implements OnInit {
         el.scrollIntoView();
     }
 
+    getCombos() {
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.combos = result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
 }
 

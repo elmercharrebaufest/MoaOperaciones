@@ -23,6 +23,9 @@ declare var $: any;
 })
 export class CabeceraComponent extends ListBaseComponent {
 
+    @Input('combos') 
+    protected combos:any;
+
     @Input('model') 
     protected model:Solp;
 
@@ -81,47 +84,19 @@ export class CabeceraComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-        this.claseDocumento = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "ZSP1 - Mantenimiento mecánico", value: "zsp1" },
-            { label: "ZSP2 - Mantenimiento electrico", value: "zsp2" }
-        ];     
+        console.log(this.combos);
 
-        this.centroEntrega = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "Centro 1", value: "C1" },
-            { label: "Centro 2", value: "C2" }
-        ];
+        this.claseDocumento = this.combos.ClaseDocumento;
 
-        this.almacenEntrega = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "Almacen 1", value: "A1" },
-            { label: "Almacen 2", value: "A2" }
-        ];
+        this.centroEntrega = this.combos.Centro;
 
-        this.grupoCompras = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "Materiales", value: "Mat" },
-            { label: "Servicios", value: "Ser" }
-        ];
+        //this.almacenEntrega = this.combos.Almacen;
 
-        this.solicitanteCompras = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "Mariano", value: "Mar" },
-            { label: "Alberto", value: "Alb" }
-        ];
+        this.grupoCompras = this.combos.GrupoCompras;
 
-        this.articuloCompras = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "Piedra", value: "Pie" },
-            { label: "Papel", value: "Pap" }
-        ];
+        this.articuloCompras = this.combos.GrupoArticulo;
 
-        this.monedaCompras = [
-            { label: "Elegir", value: "Elegir" },
-            { label: "ARS", value: "$" },
-            { label: "DOL", value: "U$" }
-        ];
+        this.monedaCompras = this.combos.Moneda;
 
         this.formularioActual = this.formBuilder.group({
             servicio: new FormControl('', [Validators.required]),
@@ -226,6 +201,11 @@ export class CabeceraComponent extends ListBaseComponent {
     ngOnDestroy(){
         super.ngOnDestroy();
         this.onEstCompleto.emit({codigo :EnumPasoSolp.SolpCabecera, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+    }
+
+    centroSeleccionado(){
+        this.almacenEntrega = this.combos.Almacen.filter(x=> x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+        //TODO: completar campos de direccion segun this.combos.CentrosDireccion
     }
 
 }

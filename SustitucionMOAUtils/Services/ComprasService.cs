@@ -208,5 +208,17 @@ namespace SustitucionMOAUtils.Services
                 file.SaveAs(rutaArchivo);
             }
         }
+
+        public string ObtenerRutaArchivo(int archivoId)
+        {
+            var archivo = repositorio.Obtener<Archivo>(archivoId);
+
+            return archivo?.Ruta;
+        }
+
+        public List<TablaSapDto> ObtenerTablaSap(string tabla)
+        {
+            return repositorio.Listar<TablaSap>(x=>x.Tabla == tabla).Select(x=> new TablaSapDto(x)).ToList();
+        }
     }
 }

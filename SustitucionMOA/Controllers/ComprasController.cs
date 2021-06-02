@@ -2,11 +2,13 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -55,6 +57,23 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        public ActionResult DescargarArchivo(int archivoId)
+        {
+            try
+            {
+                string rutaArchivoSubido = service.ObtenerRutaArchivo(archivoId);
+
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+                string fileName = Path.GetFileName(rutaArchivoSubido);
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
         public ActionResult Combos()
         {
@@ -62,13 +81,14 @@ namespace SustitucionMOA.Controllers
             {
                 return JsonCustom(new
                 {
-                    //categorias = consultaService.ObtenerCategorias(),
-                    //subcategorias = consultaService.ObtenerSubCategorias(),
-                    //estados = consultaService.ObtenerEstados(),
-                    //causas = consultaService.ObtenerCausas(),
-                    //isExternal = !obtenerTodos,
-                    //proveedorId = SessionPersister.ProveedorId
-                }); ;
+                    ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
+                    Centro = service.ObtenerTablaSap(TablasSap.Centro),
+                    //CentroDireccion = service.ObtenerCentroDireccion(),
+                    Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
+                    GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
+                    GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
+                    Moneda = service.ObtenerTablaSap(TablasSap.Moneda)
+                });
             }
             catch (InfoCustomException e)
             {
