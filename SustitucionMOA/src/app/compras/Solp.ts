@@ -130,6 +130,7 @@ export class PosicionSolp {
     public rubroMecanico: boolean;
     public rubroIngenieria: boolean;
     public rubroConsultoria: boolean;
+    public tipoImputacion: boolean;
 
     public proveedoresValidos: string[] = [];
     public proveedoresInvalidos: string[] = [];
@@ -145,8 +146,6 @@ export class PosicionSolp {
         this.numeroPosicion = numeroPosicion;
         this.fechaEntregaServicio = new Date();
         this.fechaDeLiberacion = new Date();
-
-
     }
 }
 

@@ -353,17 +353,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 case EnumPasoSolp.SolpCabecera:
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.selectClaseDocumento,
-                        // this.solpActual.servicio,
-                        // this.solpActual.textoGenerico,
-                        // this.solpActual.fechaEntregaServicio,
-                        // this.solpActual.fechaDeLiberacion,
-                        // this.solpActual.centroEntrega,
-                        // this.solpActual.almacenEntrega,
-                        // this.solpActual.calleEntrega,
-                        // this.solpActual.numeroEntrega,
-                        // this.solpActual.grupoCompras,
-                        // this.solpActual.articuloCompras,
-                        // this.solpActual.monedaCompras
+                        this.solpActual.posicionActual.servicio,
+                        this.solpActual.posicionActual.textoGenerico,
+                        this.solpActual.posicionActual.fechaEntregaServicio,
+                        this.solpActual.posicionActual.fechaDeLiberacion,
+                        this.solpActual.posicionActual.selectCentroEntrega,
+                        this.solpActual.posicionActual.selectAlmacenEntrega,
+                        this.solpActual.posicionActual.calleEntrega,
+                        this.solpActual.posicionActual.numeroEntrega,
+                        this.solpActual.posicionActual.selectGrupoCompras,
+                        this.solpActual.posicionActual.selectArticuloCompras,
+                        this.solpActual.posicionActual.selectMonedaCompras
                     ]);
                     break;
                 case EnumPasoSolp.SolpSubposiciones:
@@ -389,10 +389,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     agregarPosicion(el: HTMLElement){
         this.solpActual.agregarNuevaPosicion();
         el.scrollIntoView();
-        
     }
-
-
 
 }
 

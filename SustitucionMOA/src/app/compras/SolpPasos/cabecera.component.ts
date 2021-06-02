@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -9,7 +9,10 @@ import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from './../compras.service'
 import { PosicionSolp, Solp } from './../Solp';
 import { SelectItem } from 'primeng/api';
-// import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
+import {FormBuilder, FormControl, Validators } from '@angular/forms';
+import { EnumPasoSolp } from '../enum-paso-solp';
 
 declare var $: any;
 
@@ -26,8 +29,9 @@ export class CabeceraComponent extends ListBaseComponent {
     @Input('locale') 
     protected locale:any;
     
+    
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router, private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
     }
@@ -46,7 +50,11 @@ export class CabeceraComponent extends ListBaseComponent {
     fechaDeLiberacion: any;
     hoy: Date = new Date();
     selectPosicion: any; 
-    // formulario5: FormGroup;
+
+    formularioPosicion: [FormGroup];
+    formularioActual: FormGroup;
+    
+    @Output() onEstCompleto = new EventEmitter<any>();
 
     
     // Funcion que crea el chips y setea el evento
@@ -74,46 +82,150 @@ export class CabeceraComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.claseDocumento = [
-                    { label: "ZSP1 - Mantenimiento mecánico", value: "zsp1" },
-                    { label: "ZSP2 - Mantenimiento electrico", value: "zsp2" }
+            { label: "Elegir", value: "Elegir" },
+            { label: "ZSP1 - Mantenimiento mecánico", value: "zsp1" },
+            { label: "ZSP2 - Mantenimiento electrico", value: "zsp2" }
         ];     
 
         this.centroEntrega = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Centro 1", value: "C1" },
             { label: "Centro 2", value: "C2" }
         ];
 
         this.almacenEntrega = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Almacen 1", value: "A1" },
             { label: "Almacen 2", value: "A2" }
         ];
 
         this.grupoCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Materiales", value: "Mat" },
             { label: "Servicios", value: "Ser" }
         ];
 
         this.solicitanteCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Mariano", value: "Mar" },
             { label: "Alberto", value: "Alb" }
         ];
 
         this.articuloCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "Piedra", value: "Pie" },
             { label: "Papel", value: "Pap" }
         ];
 
         this.monedaCompras = [
+            { label: "Elegir", value: "Elegir" },
             { label: "ARS", value: "$" },
             { label: "DOL", value: "U$" }
         ];
 
-    // // }
-        // //declaro las validaciones para los campos
-        // this.formulario5 = this.formBuilder.group({​​​​​​​​
-        // textoGenerico: new FormControl ('', Validators.required)
-        // }​​​​​​​​);
+        this.formularioActual = this.formBuilder.group({
+            servicio: new FormControl('', [Validators.required]),
+            centroDeCosto: new FormControl('', [Validators.required]),
+            ordenDeOt: new FormControl('', [Validators.required]),
+            ordenDeInversion: new FormControl('', [Validators.required]),
+            siniestroBeneficio: new FormControl('', [Validators.required]),
+            tipoImputacion: new FormControl('', [Validators.required]),
+            textoGenerico: new FormControl('', [Validators.required]),
+            fechaEntregaServicio: new FormControl('', [Validators.required]),
+            fechaDeLiberacion: new FormControl('', [Validators.required]),
+            plazoDeEntrega: new FormControl(),
+            concluido: new FormControl(),
+            indiceFijacion: new FormControl(),
+            selectCentroEntrega: new FormControl('', [Validators.required]),
+            nombreEntrega: new FormControl(),
+            codigoPostalEntrega: new FormControl(),
+            selectAlmacenEntrega: new FormControl('', [Validators.required]),
+            calleEntrega: new FormControl('', [Validators.required]),
+            paisEntrega: new FormControl(),
+            numeroEntrega: new FormControl('', [Validators.required]),
+            selectGrupoCompras: new FormControl('', [Validators.required]),
+            selectArticuloCompras: new FormControl('', [Validators.required]),
+            selectSolicitanteCompras: new FormControl('', [Validators.required]),
+            necesidadCompras: new FormControl('', [Validators.required]),
+            rubroElectrico: new FormControl(),
+            rubroCivil: new FormControl(),
+            rubroMecanico: new FormControl(),
+            rubroIngenieria: new FormControl(),
+            rubroConsultoria: new FormControl(),
+            proveedoresValidos: new FormControl(),
+            proveedoresInvalidos: new FormControl(),
+            proveedoresNoSugeridos: new FormControl(),
+            selectMonedaCompras: new FormControl('', [Validators.required])
+
+        });
+
+        this.formularioPosicion = [this.formularioActual]
+
+        this.validadorPasoSolpService.formulario = this.formularioActual;
+
+        if (this.model.cargoPasoCinco) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoCinco = true;
+        
+ 
     }
 
+    nuevaPosicion(){
+        this.formularioPosicion.push(this.formBuilder.group({
+            servicio: new FormControl('', [Validators.required]),
+            centroDeCosto: new FormControl('', [Validators.required]),
+            ordenDeOt: new FormControl('', [Validators.required]),
+            ordenDeInversion: new FormControl('', [Validators.required]),
+            siniestroBeneficio: new FormControl('', [Validators.required]),
+            tipoImputacion: new FormControl('', [Validators.required]),
+            textoGenerico: new FormControl('', [Validators.required]),
+            fechaEntregaServicio: new FormControl('', [Validators.required]),
+            fechaDeLiberacion: new FormControl('', [Validators.required]),
+            plazoDeEntrega: new FormControl(),
+            concluido: new FormControl(),
+            indiceFijacion: new FormControl(),
+            selectCentroEntrega: new FormControl('', [Validators.required]),
+            nombreEntrega: new FormControl(),
+            codigoPostalEntrega: new FormControl(),
+            selectAlmacenEntrega: new FormControl('', [Validators.required]),
+            calleEntrega: new FormControl('', [Validators.required]),
+            paisEntrega: new FormControl(),
+            numeroEntrega: new FormControl('', [Validators.required]),
+            selectGrupoCompras: new FormControl('', [Validators.required]),
+            selectArticuloCompras: new FormControl('', [Validators.required]),
+            selectSolicitanteCompras: new FormControl('', [Validators.required]),
+            necesidadCompras: new FormControl('', [Validators.required]),
+            rubroElectrico: new FormControl(),
+            rubroCivil: new FormControl(),
+            rubroMecanico: new FormControl(),
+            rubroIngenieria: new FormControl(),
+            rubroConsultoria: new FormControl(),
+            proveedoresValidos: new FormControl(),
+            proveedoresInvalidos: new FormControl(),
+            proveedoresNoSugeridos: new FormControl(),
+            selectMonedaCompras: new FormControl('', [Validators.required])
+
+            
+        }));
+    }
+
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formularioActual && this.formularioActual.controls) {
+            return (this.formularioActual.controls[nombreCampo].invalid || (this.formularioActual.controls[nombreCampo].errors && this.formularioActual.controls[nombreCampo].errors.required))
+                && (this.formularioActual.controls[nombreCampo].dirty || this.formularioActual.controls[nombreCampo].touched)
+        }
+
+        return false;
+    }
+
+
+    
+    ngOnDestroy(){
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.SolpCabecera, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+    }
 
 }
