@@ -27,6 +27,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValidadorPasoSolpService } from './validadorPasoSolpService';
+
     
 @NgModule({
     imports: [
