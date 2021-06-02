@@ -3890,8 +3890,19 @@ div.panel-body a.active{
   -webkit-border-radius: 10px 10px 0px 0px;
   background: #fff;
   padding: 10px;
-  transition: 0.5s;
+
   width: 70%;
+}
+.detalleConsultaExterno{
+  height: 350px;
+  overflow-y: auto;
+  border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  background: #fff;
+  padding: 10px;
+
+  width: 100%;
 }
 .contenedorNuevoComentario{
   border-radius: 0px 0px 10px 10px;
@@ -3899,22 +3910,31 @@ div.panel-body a.active{
   -webkit-border-radius: 0px 0px 10px 10px;
   background: #fff;
   padding: 10px;
-  transition: 0.5s;
+
   width: 70%;
 }
-.detalleConsulta::-webkit-scrollbar{
+.contenedorNuevoComentarioExterno{
+  border-radius: 0px 0px 10px 10px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  background: #fff;
+  padding: 10px;
+
+  width: 100%;
+}
+.detalleConsulta::-webkit-scrollbar, .detalleConsultaExterno::-webkit-scrollbar{
   width: 10px;
   border-radius: 10px;
 }
-.detalleConsulta::-webkit-scrollbar-track{
+.detalleConsulta::-webkit-scrollbar-track, .detalleConsultaExterno::-webkit-scrollbar-track{
   background: white;
   border-radius: 10px;
 }
-.detalleConsulta::-webkit-scrollbar-thumb{
+.detalleConsulta::-webkit-scrollbar-thumb, .detalleConsultaExterno::-webkit-scrollbar-thumb{
   background: #707070; 
   border-radius: 10px;
 }
-.detalleConsulta::-webkit-scrollbar-thumb:hover{
+.detalleConsulta::-webkit-scrollbar-thumb:hover, .detalleConsultaExterno::-webkit-scrollbar-thumb:hover{
   background: #707070;  
   border-radius: 10px;
 }
