@@ -212,8 +212,6 @@ export class CabeceraComponent extends ListBaseComponent {
         this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || direccionCentro.Direccion;
         this.model.posicionActual.numeroEntrega = this.model.posicionActual.numeroEntrega || direccionCentro.Numero;
         this.model.posicionActual.paisEntrega = this.model.posicionActual.paisEntrega || direccionCentro.Pais;
-
-
     }
 
 }

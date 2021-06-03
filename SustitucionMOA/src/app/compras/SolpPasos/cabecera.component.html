@@ -140,7 +140,8 @@
                                     <p-dropdown formControlName="selectCentroEntrega"  [options]="centroEntrega" 
                                     [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.selectCentroEntrega"
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
-                                    (onChange)="centroSeleccionado()"></p-dropdown>
+                                    (onChange)="centroSeleccionado()"
+                                    [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectCentroEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
@@ -169,7 +170,8 @@
                                     Almac&eacute;n*
                                     <p-dropdown formControlName="selectAlmacenEntrega"  [ngModelOptions]="{standalone:true}" 
                                     [options]="almacenEntrega" [(ngModel)]="model.posicionActual.selectAlmacenEntrega"
-                                    dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"></p-dropdown>
+                                    dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
+                                    [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectAlmacenEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
@@ -211,7 +213,8 @@
                                     Grupo de compras*                                                      
                                     <p-dropdown formControlName="selectGrupoCompras" [options]="grupoCompras" 
                                     [(ngModel)]="model.posicionActual.selectgrupoCompras"
-                                    dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"></p-dropdown>
+                                    dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
+                                    [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectGrupoCompras')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
@@ -221,7 +224,8 @@
                                     Grupo de art&iacute;culo*
                                     <p-dropdown formControlName="selectArticuloCompras"  [ngModelOptions]="{standalone:true}" 
                                     [options]="articuloCompras" [(ngModel)]="model.posicionActual.selectArticuloCompras"
-                                    dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"></p-dropdown>
+                                    dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
+                                    [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectArticuloCompras')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
