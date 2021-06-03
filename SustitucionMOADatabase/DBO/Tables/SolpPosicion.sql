@@ -32,7 +32,7 @@ CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED
 	CONSTRAINT [FK_SolpPosicion_Solp] FOREIGN KEY (Solp_Id) REFERENCES [Solp]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaGeneral_TipoPosicion] FOREIGN KEY (TipoPosicion_Id) REFERENCES [TablaGeneral]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaGeneral_TipoImputacion] FOREIGN KEY (TipoImputacion_Id) REFERENCES [TablaGeneral]([Id]),
-	CONSTRAINT [FK_SolpPosicion_Centro] FOREIGN KEY (Centro_Id) REFERENCES [Centro]([Id]),
+	CONSTRAINT [FK_SolpPosicion_TablaSap_Centro] FOREIGN KEY (Centro_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_Almacen] FOREIGN KEY (Almacen_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoCompras] FOREIGN KEY (GrupoCompras_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoArticulo] FOREIGN KEY (GrupoArticulo_Id) REFERENCES [TablaSap]([Id]),

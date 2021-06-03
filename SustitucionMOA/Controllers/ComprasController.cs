@@ -83,7 +83,7 @@ namespace SustitucionMOA.Controllers
                 {
                     ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
                     Centro = service.ObtenerTablaSap(TablasSap.Centro),
-                    //CentroDireccion = service.ObtenerCentroDireccion(),
+                    CentrosDireccion = service.ObtenerCentrosDireccion(),
                     Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
                     GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
                     GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),

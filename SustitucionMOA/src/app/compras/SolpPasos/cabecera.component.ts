@@ -206,6 +206,14 @@ export class CabeceraComponent extends ListBaseComponent {
     centroSeleccionado(){
         this.almacenEntrega = this.combos.Almacen.filter(x=> x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
         //TODO: completar campos de direccion segun this.combos.CentrosDireccion
+        let direccionCentro = this.combos.CentrosDireccion.find(x=> x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
+        this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega || this.model.posicionActual.selectCentroEntrega.Descripcion;
+        this.model.posicionActual.codigoPostalEntrega = this.model.posicionActual.codigoPostalEntrega || direccionCentro.Cp;
+        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || direccionCentro.Direccion;
+        this.model.posicionActual.numeroEntrega = this.model.posicionActual.numeroEntrega || direccionCentro.Numero;
+        this.model.posicionActual.paisEntrega = this.model.posicionActual.paisEntrega || direccionCentro.Pais;
+
+
     }
 
 }

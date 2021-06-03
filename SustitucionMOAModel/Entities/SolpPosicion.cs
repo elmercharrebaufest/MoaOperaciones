@@ -43,7 +43,7 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("TipoImputacion_Id")]
         public virtual TablaGeneral TipoImputacion { get; set; }
         [ForeignKey("Centro_Id")]
-        public virtual Centro Centro { get; set; }
+        public virtual TablaSap Centro { get; set; }
         [ForeignKey("Almacen_Id")]
         public virtual TablaSap Almacen { get; set; }
         [ForeignKey("GrupoCompras_Id")]

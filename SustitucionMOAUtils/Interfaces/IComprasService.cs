@@ -14,5 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerRutaArchivo(int archivoId);
 
         List<TablaSapDto> ObtenerTablaSap(string tabla);
+        List<CentroDireccionDto> ObtenerCentrosDireccion();
+        
     }
 }

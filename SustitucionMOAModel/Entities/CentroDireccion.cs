@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
-    public class Centro
+    public class CentroDireccion
     {
         [Key]
         public int Id { get; set; }
         public string CodigoSap { get; set; }
-        public string Descripcion { get; set; }
-        public string Nombre { get; set; }
-        public string Calle { get; set; }
+        public string Direccion { get; set; }
+        public string Numero { get; set; }
         public string Cp { get; set; }
         public string Pais { get; set; }
     }
