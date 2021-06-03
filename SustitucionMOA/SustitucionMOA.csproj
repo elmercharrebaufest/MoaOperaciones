@@ -975,6 +975,7 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />

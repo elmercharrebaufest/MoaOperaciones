@@ -133,4 +133,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="IdCampoSustentable" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="551616e5-9ddc-4fc6-ba65-c2092a8aa7d2" ChangeDateTime="06/02/2021 16:07:18">
+    <Property Name="ElementName" Value="[dbo].[Proveedor].[TieneAltaFisica]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Proveedor]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ContieneDocumentacionFisica" />
+  </Operation>
 </Operations>

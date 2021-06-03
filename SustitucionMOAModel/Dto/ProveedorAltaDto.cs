@@ -56,5 +56,7 @@ namespace SustitucionMOAModel.Dto
         public string IngresoBruto { get; set; }
         public string CBU { get; set; }
         public bool? SiperObligatorio { get; set; }
+
+        public bool? ContieneDocumentacionFisica { get; set; }
     }
 }
