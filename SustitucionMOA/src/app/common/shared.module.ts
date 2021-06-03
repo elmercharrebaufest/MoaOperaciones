@@ -34,6 +34,7 @@ import { AutocompleteLocalidadComponent } from './shared-components/autocomplete
 import { StepperComponent } from './view-child/stepper/stepper.component';
 import {ToggleButtonModule} from 'primeng/togglebutton';
 import { WeekdaySelectComponent } from './view-child/weekday-select/weekday-select.component';
+import { CustomFilterBoolean } from "./pipes/customFilterBoolean";
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -46,13 +47,13 @@ import { WeekdaySelectComponent } from './view-child/weekday-select/weekday-sele
     ],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
-        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent],
+        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,CustomFilterBoolean],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
         CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective,
-        StepperComponent, WeekdaySelectComponent],
+        StepperComponent, WeekdaySelectComponent,CustomFilterBoolean],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }

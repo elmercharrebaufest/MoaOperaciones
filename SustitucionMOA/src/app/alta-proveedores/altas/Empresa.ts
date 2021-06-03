@@ -29,7 +29,7 @@
     CondicionDePago?: any;
     RazonDeEleccion?: any;
     SolicitanteInterno?: any;
-    
+    ContieneDocumentacionFisica : boolean;
 }
 
 export class HistorialAprobaciones {

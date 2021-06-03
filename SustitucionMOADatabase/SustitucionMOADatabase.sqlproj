@@ -115,6 +115,7 @@
     <None Include="scripts\SP_ActualizarToneladasAprobadasCampo.sql" />
     <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />
     <None Include="scripts\CreacionRolSolp.sql" />
+    <None Include="scripts\UpdateAltaFisicaProveedores.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

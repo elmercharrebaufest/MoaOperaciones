@@ -78,5 +78,6 @@ namespace SustitucionMOAModel.Entities
 
         //public virtual ICollection<DeclaracionCampoSustentable> DeclaracionesCamposSustentables { get; set; }
 
+        public bool? ContieneDocumentacionFisica { get; set; }
     }
 }

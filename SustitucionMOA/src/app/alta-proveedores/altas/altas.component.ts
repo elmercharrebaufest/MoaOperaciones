@@ -74,6 +74,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
+
+    contieneDocumentacionFisica: number = 0;
+
     ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
@@ -808,4 +811,49 @@ export class AltasComponent extends BaseComponent implements OnInit {
         //escribe el file para ser descargado
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');  
     }
+
+    onChangeProveedor()
+    {
+        this.contieneDocumentacionFisica = 0;
+    }
+
+    onChangeDocumentacionFisica()
+    {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.facturacionAnual == null) {
+            this.facturacionAnual = 0;
+        }
+
+        try {
+            this.service.registrarDocumentacionFisica(this.empresaSeleccionada.Id,
+                 this.empresaSeleccionada.ContieneDocumentacionFisica
+                        ).subscribe(
+                    result => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                            this.getEmpresa();
+                        } else {
+                            setTimeout(() => {
+                                this.pantallaEditarAlta = false;
+                            }, 1000);
+                        }
+                    },
+                    error => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+         
+        }
+       
+    }
+
 }
