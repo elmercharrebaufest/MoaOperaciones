@@ -73,7 +73,8 @@
                                 <div>
                                     Texto gen&eacute;rico*
                                 </div> 
-                                <textarea [(ngModel)]="model.posicionActual.textoGenerico" name="textoGenerico" formControlName="textoGenerico" id="textoGenerico" cols="40" rows="1" placeholder="Ingrese nombre de la posicion"></textarea> 
+                                <!-- <textarea [(ngModel)]="model.posicionActual.textoGenerico" name="textoGenerico" formControlName="textoGenerico" id="textoGenerico" placeholder="Ingrese nombre de la posicion" maxlength="40" wrap="hard" rows="1"></textarea> -->
+                                <input class="styled-select1" [(ngModel)]="model.posicionActual.textoGenerico" name="textoGenerico" formControlName="textoGenerico" id="textoGenerico" placeholder="Ingrese nombre de la posicion" maxlength="40" wrap="hard" rows="1"/> 
                                 <div *ngIf="mostrarError('textoGenerico')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div> 
@@ -149,7 +150,7 @@
 
                                 <div class="margenInput">
                                     Nombre
-                                    <textarea formControlName="nombreEntrega"  [(ngModel)]="model.posicionActual.nombreEntrega" name="nombreEntrega" id="nombreEntrega" cols="30" rows="1" placeholder="Ingrese nombre"></textarea>  
+                                    <textarea pInputText formControlName="nombreEntrega"  [(ngModel)]="model.posicionActual.nombreEntrega" name="nombreEntrega" id="nombreEntrega" cols="30" rows="1" placeholder="Ingrese nombre"></textarea>  
                                     <div *ngIf="mostrarError('nombreEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
@@ -158,7 +159,7 @@
 
                                 <div class="margenInput">
                                     C&oacute;digo postal
-                                    <textarea formControlName="codigoPostalEntrega"  [(ngModel)]="model.posicionActual.codigoPostalEntrega" name="codigoPostalEntrega" id="codigoPostalEntrega" cols="30" rows="1" placeholder="Ingrese codigo postal"></textarea>  
+                                    <textarea pInputText formControlName="codigoPostalEntrega"  [(ngModel)]="model.posicionActual.codigoPostalEntrega" name="codigoPostalEntrega" id="codigoPostalEntrega" cols="30" rows="1" placeholder="Ingrese codigo postal"></textarea>  
                                     <div *ngIf="mostrarError('codigoPostalEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
@@ -179,7 +180,7 @@
 
                                 <div class="margenInput">
                                     Calle*
-                                    <textarea formControlName="calleEntrega"  [(ngModel)]="model.posicionActual.calleEntrega" name="calleEntrega" id="calleEntrega" cols="30" rows="1" placeholder="Ingrese la calle"></textarea>  
+                                    <textarea pInputText formControlName="calleEntrega"  [(ngModel)]="model.posicionActual.calleEntrega" name="calleEntrega" id="calleEntrega" cols="30" rows="1" placeholder="Ingrese la calle"></textarea>  
                                     <div *ngIf="mostrarError('calleEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div>
@@ -187,14 +188,14 @@
                             
                                 <div class="margenInput">
                                     Pa&iacute;s 
-                                    <textarea formControlName="paisEntrega"  [(ngModel)]="model.posicionActual.paisEntrega" name="paisEntrega" id="paisEntrega" cols="30" rows="1" placeholder="Ingrese el pais"></textarea>  
+                                    <textarea pInputText formControlName="paisEntrega"  [(ngModel)]="model.posicionActual.paisEntrega" name="paisEntrega" id="paisEntrega" cols="30" rows="1" placeholder="Ingrese el pais"></textarea>  
                                 </div>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 margenInput">
                                 <div class="margenInput" style="margin-top: 72px;">
                                     N&uacute;mero*
-                                    <textarea formControlName="numeroEntrega" pKeyFilter="pnum" [(ngModel)]="model.posicionActual.numeroEntrega" name="numeroEntrega" id="numeroEntrega" cols="30" rows="1"></textarea> 
+                                    <textarea pInputText formControlName="numeroEntrega" pKeyFilter="pnum" [(ngModel)]="model.posicionActual.numeroEntrega" name="numeroEntrega" id="numeroEntrega" cols="30" rows="1"></textarea> 
                                     <div *ngIf="mostrarError('numeroEntrega')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div> 
@@ -235,7 +236,7 @@
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 margenInput">
                                 <div class="margenInput">
                                     Solicitante*                                    
-                                    <textarea formControlName="selectSolicitanteCompras" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" name="selectSolicitanteCompras" id="selectSolicitanteCompras" cols="30" rows="1"></textarea> 
+                                    <textarea pInputText formControlName="selectSolicitanteCompras" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" name="selectSolicitanteCompras" id="selectSolicitanteCompras" cols="30" rows="1"></textarea> 
                                     <div *ngIf="mostrarError('selectSolicitanteCompras')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div> 
@@ -245,7 +246,7 @@
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 margenInput">
                                 <div class="margenInput">
                                     N° Necesidad
-                                    <textarea formControlName="necesidadCompras"  class="style-select" [(ngModel)]="model.posicionActual.necesidadCompras" name="necesidadCompras" id="necesidadCompras" cols="30" rows="1"></textarea>  
+                                    <textarea pInputText formControlName="necesidadCompras"  class="style-select" [(ngModel)]="model.posicionActual.necesidadCompras" name="necesidadCompras" id="necesidadCompras" cols="30" rows="1"></textarea>  
                                 </div>
                             </div>
                         </div>

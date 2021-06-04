@@ -189,8 +189,8 @@
   .botonAgregarPosicion {
     float: right;
   }
-/* 
-  ::ng-deep .ui-autocomplete-token {
+
+  /* ::ng-deep .ui-autocomplete-token {
     background-color: #E6E6E6 !important;
     color: #1A1A1A !important;
     font-size: 14px !important;
@@ -200,6 +200,7 @@
   ::ng-deep .ui-state-active > span {
     background-color: #E6E6E6 !important;
     color: #1A1A1A !important;
+
   } */
   
   /* fin Estilo paso 5 Cabecera */
