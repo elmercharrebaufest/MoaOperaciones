@@ -340,4 +340,15 @@ export class EmpresaGranosService extends BaseService {
         return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
             map(this.extractData))   
     }
+
+    public registrarDocumentacionFisica(proveedorId: number , contieneDocumentacionFisica : boolean)
+    {
+        let params = {
+            proveedorId : proveedorId ,
+            contieneDocumentacionFisica : contieneDocumentacionFisica
+        }
+
+        return this.http.get('/api/AltaEmpresaNoGranos/RegistrarDocumentacionFisica', { search: params, headers: this.headers }).pipe(
+            map(this.extractData))   
+    }
 }

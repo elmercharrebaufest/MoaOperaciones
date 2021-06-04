@@ -32,6 +32,7 @@ CREATE TABLE [dbo].[Proveedor](
     [TipoProveedor_Id] INT NULL, 
     [SiperObligatorio] BIT NULL, 
    
+    [ContieneDocumentacionFisica] BIT NULL, 
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

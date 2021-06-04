@@ -36,6 +36,8 @@ namespace SustitucionMOAModel.Dto
 
         public bool? AltaInterna { get; set; }
 
+        public bool? ContieneDocumentacionFisica { get; set; }
+
         public ProveedorDto() { }
         public ProveedorDto(Proveedor proveedor)
         {
@@ -72,6 +74,9 @@ namespace SustitucionMOAModel.Dto
                 UltimaEdicion = null;
                 HistorialAprobaciones = new List<ProveedorHistorialAprobacionDto>();
             }
+
+            //Para el tipo proveedor No Granos
+            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica;
         }
 
         public ProveedorDto(Models.WSMapMOA.Usuario.Usuario x)
