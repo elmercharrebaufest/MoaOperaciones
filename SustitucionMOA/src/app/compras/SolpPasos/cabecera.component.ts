@@ -53,26 +53,50 @@ export class CabeceraComponent extends ListBaseComponent {
 
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
+
+    proveedoresAutocomplete: any;
     
     @Output() onEstCompleto = new EventEmitter<any>();
 
     
     // Funcion que crea el chips y setea el evento
-    onKeyUp(event: KeyboardEvent, texts: string[]) {
-      if (event.key == "Enter") {
-       let tokenInput = event.srcElement as any;
-       if (tokenInput.value) {
-        texts.push(tokenInput.value);
-        tokenInput.value = "";
-       }
-      }
-    }  
+    // onKeyUp(event: KeyboardEvent, texts: string[]) {
+    //   if (event.key == "Enter") {
+    //    let tokenInput = event.srcElement as any;
+    //    if (tokenInput.value) {
+    //     texts.push(tokenInput.value);
+    //     tokenInput.value = "";
+    //    }
+    //   }
+    // }  
 
-    // Funcion que hace la lista para el autocomplete
-    search(event){
-        let query = event.query;
-        this.resultadoProveedores = [];
-    }
+    
+    // onKeyUp(event: KeyboardEvent, texts: string[]) {
+    //     debugger
+    //     var charCode = event.which || event.keyCode;
+        
+    //     if (event.key == "Enter" || event.key == "Tab" ) {
+    //       if(event.key == "Tab" && this.proveedoresAutocomplete){
+    //         texts.push(this.proveedoresAutocomplete);
+    //         this.proveedoresAutocomplete = "";
+    //         let tokenInput = event.srcElement as any;
+    //         tokenInput.value = "";
+    //       } 
+    //       else {
+    //         let tokenInput = event.srcElement as any;
+    //             if (tokenInput.value) {
+    //                 texts.push(tokenInput.value);
+    //                 tokenInput.value = "";
+    //             }
+    //         }    
+    //     }
+    // }
+
+    // // Funcion que hace la lista para el autocomplete
+    // search(event){
+    //     let query = event.query;
+    //     this.resultadoProveedores = [];
+    // }
 
 
     setTabs() {
@@ -82,43 +106,42 @@ export class CabeceraComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.claseDocumento = [
-            { label: "Elegir", value: "Elegir" },
             { label: "ZSP1 - Mantenimiento mecánico", value: "zsp1" },
             { label: "ZSP2 - Mantenimiento electrico", value: "zsp2" }
         ];     
 
         this.centroEntrega = [
-            { label: "Elegir", value: "Elegir" },
+            { label: "Seleccionar", value: "Seleccionar" },
             { label: "Centro 1", value: "C1" },
             { label: "Centro 2", value: "C2" }
         ];
 
         this.almacenEntrega = [
-            { label: "Elegir", value: "Elegir" },
+            { label: "Seleccionar", value: "Seleccionar" },
             { label: "Almacen 1", value: "A1" },
             { label: "Almacen 2", value: "A2" }
         ];
 
         this.grupoCompras = [
-            { label: "Elegir", value: "Elegir" },
+            { label: "Seleccionar", value: "Seleccionar" },
             { label: "Materiales", value: "Mat" },
             { label: "Servicios", value: "Ser" }
         ];
 
         this.solicitanteCompras = [
-            { label: "Elegir", value: "Elegir" },
+            { label: "Seleccionar", value: "Seleccionar" },
             { label: "Mariano", value: "Mar" },
             { label: "Alberto", value: "Alb" }
         ];
 
         this.articuloCompras = [
-            { label: "Elegir", value: "Elegir" },
+            { label: "Seleccionar", value: "Seleccionar" },
             { label: "Piedra", value: "Pie" },
             { label: "Papel", value: "Pap" }
         ];
 
         this.monedaCompras = [
-            { label: "Elegir", value: "Elegir" },
+            { label: "Seleccionar", value: "Seleccionar" },
             { label: "ARS", value: "$" },
             { label: "DOL", value: "U$" }
         ];
@@ -168,6 +191,24 @@ export class CabeceraComponent extends ListBaseComponent {
         }
 
         this.model.cargoPasoCinco = true;
+
+        // document.getElementById("proveedoresValidos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
+
+        // document.getElementById("proveedoresInvalidos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
+
+        // document.getElementById("proveedoresNoSugeridos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
         
  
     }

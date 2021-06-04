@@ -27,7 +27,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ValidadorPasoSolpService } from './validadorPasoSolpService';
-
+import {ChipsModule} from 'primeng/chips';
     
 @NgModule({
     imports: [
@@ -47,7 +47,8 @@ import { ValidadorPasoSolpService } from './validadorPasoSolpService';
         RadioButtonModule,
         DropdownModule,
         AutoCompleteModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        ChipsModule
     ],
     declarations: [
         SolpComponent,
