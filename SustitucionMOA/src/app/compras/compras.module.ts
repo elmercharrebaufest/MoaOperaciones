@@ -30,7 +30,8 @@ import { ValidadorPasoSolpService } from './validadorPasoSolpService';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
-
+import { ChipsModule } from 'primeng/chips';
+    
 @NgModule({
     imports: [
         CommonModule,
@@ -52,7 +53,8 @@ import { ToastModule } from 'primeng/toast';
         RadioButtonModule,
         DropdownModule,
         AutoCompleteModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        ChipsModule
     ],
     declarations: [
         SolpComponent,
