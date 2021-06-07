@@ -25,5 +25,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] DescargarFormularioNG(ProveedorAltaDto proveedorDto);
 
         string HabilitarProveedorOperando(int proveedorId, string razonSocial);
+
+        bool RegistrarDocumentacionFisica(int proveedorId, bool contieneDocumentacionFisica, string mailUsuarioAlta);
     }
 }
