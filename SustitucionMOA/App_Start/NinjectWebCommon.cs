@@ -111,6 +111,7 @@ namespace SustitucionMOA.App_Start
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IOrdenCargaConsumerMOA>().To(typeof(OrdenCargaConsumerMOA)).InScope(ctx => OperationContext.Current);
             #endregion
 
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();

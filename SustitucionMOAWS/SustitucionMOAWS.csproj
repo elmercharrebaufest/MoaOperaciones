@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="CredentialService\DataAgroWSCredential.cs" />
     <Compile Include="CredentialService\SAPCredential.cs" />
+    <Compile Include="Interfaces\IOrdenCargaConsumerMOA.cs" />
     <Compile Include="Interfaces\IScatoComandosConsumer.cs" />
     <Compile Include="Interfaces\IScatoConsumer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -186,6 +187,29 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\OrdenCargaControlWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\OrdenCargaCrearWebServiceMOA\Reference.cs" />
+    <Compile Include="Service References\OrdenCargaCrearWebServiceMOA\Reference1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\OrdenCargaEntregadaWebServiceMOA\Reference.cs" />
+    <Compile Include="Service References\OrdenCargaEntregadaWebServiceMOA\Reference1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\OrdenCargarControlEstadoWebServiceMOA\Reference.cs" />
+    <Compile Include="Service References\OrdenCargarControlEstadoWebServiceMOA\Reference1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\PagoComprobantesWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -314,6 +338,7 @@
     <Compile Include="WSConsumers\ContactoMailCategoriasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContactoMailConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoDetalleConsumerMOA.cs" />
+    <Compile Include="WSConsumers\OrdenCargaConsumerMOA.cs" />
     <Compile Include="WSConsumers\PDFProformaFinalConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratoPDFConsumerMOA.cs" />
     <Compile Include="WSConsumers\ContratosConsumerMOA.cs" />
@@ -697,6 +722,10 @@
     <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4920.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\OrdenCargaControlWebServiceMOA\SI_MPMF_MOAOP_CONTROL_CARGA.wsdl" />
+    <None Include="Service References\OrdenCargaCrearWebServiceMOA\SI_MPMF_MOAOP_CREAR_ORDEN_CARGA.wsdl" />
+    <None Include="Service References\OrdenCargaEntregadaWebServiceMOA\SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE.wsdl" />
+    <None Include="Service References\OrdenCargarControlEstadoWebServiceMOA\SI_MPMF_MOAOP_CONTROL_ESTADO.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SustitucionMOAWS.PagoComprobantesWebServiceMOA.SI_MPMF_MOAOP_DET_PAGOS_NGResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -2045,6 +2074,7 @@
     <WCFMetadataStorage Include="Service References\LoginWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\MovimientoBalanzaWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\NoticiasDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\OrdenCargaControlWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoDetalleWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagosNGWebServiceMOA\" />
@@ -2703,6 +2733,32 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\OrdenCargaControlWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\OrdenCargaControlWebServiceMOA\configuration.svcinfo" />
+    <None Include="Service References\OrdenCargaControlWebServiceMOA\configuration91.svcinfo" />
+    <Content Include="Service References\OrdenCargaCrearWebServiceMOA\configuration.svcinfo" />
+    <Content Include="Service References\OrdenCargaCrearWebServiceMOA\configuration91.svcinfo" />
+    <Content Include="Service References\OrdenCargaCrearWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Service References\OrdenCargaEntregadaWebServiceMOA\configuration.svcinfo" />
+    <Content Include="Service References\OrdenCargaEntregadaWebServiceMOA\configuration91.svcinfo" />
+    <Content Include="Service References\OrdenCargaEntregadaWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference1.cs</LastGenOutput>
+    </Content>
+    <Content Include="Service References\OrdenCargarControlEstadoWebServiceMOA\configuration.svcinfo" />
+    <Content Include="Service References\OrdenCargarControlEstadoWebServiceMOA\configuration91.svcinfo" />
+    <Content Include="Service References\OrdenCargarControlEstadoWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference1.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.OrdenCargaControlWebServiceMOA;
 using SustitucionMOAWS.OrdenCargaCrearWebServiceMOA;
 using SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class OrdenCargaConsumerMOA
+    public class OrdenCargaConsumerMOA : IOrdenCargaConsumerMOA
     {
 
         /*
@@ -52,7 +53,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            return service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido);
+            return service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
         }
 
         /*
@@ -88,7 +89,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            return service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, out pedidoOutput);
+            return service.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(cliente, contrato, corredor, kilos, material, pedidoInput, out pedidoOutput).Trim();
         }
 
 
@@ -127,7 +128,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            return service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, out mensaje);
+            return service.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(documento, kilos, nombreConductor, patenteAcoplado, patenteChasis, pedido, tipoDocumento, transportista, out mensaje).Trim();
         }
 
         /* 
@@ -169,7 +170,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
-            return service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista);
+            return service.SI_MPMF_MOAOP_CONTROL_ESTADO(entrega, pedido, transportista).Trim();
         }
     }
 }

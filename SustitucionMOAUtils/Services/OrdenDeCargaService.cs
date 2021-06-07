@@ -6,6 +6,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,10 +17,12 @@ namespace SustitucionMOAUtils.Services
     public class OrdenDeCargaService : IOrdenDeCargaService
     {
         protected readonly IRepositorio repositorio;
+        protected readonly IOrdenCargaConsumerMOA consumer;
 
-        public OrdenDeCargaService(IRepositorio repositorio)
+        public OrdenDeCargaService(IRepositorio repositorio, IOrdenCargaConsumerMOA consumer)
         {
             this.repositorio = repositorio;
+            this.consumer = consumer;
         }
 
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
@@ -39,21 +42,74 @@ namespace SustitucionMOAUtils.Services
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
 
-            VerificarContrato(ordenDeCarga);
-
-            VerificarCorredor(ordenDeCarga);
-
-            VerificarTransporte(ordenDeCarga);
-
-            EnviarASAP(ordenDeCarga);
-
-            VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
+            var crearPedido = VerificarOrden(ordenDeCarga, cliente);
 
             repositorio.Agregar(ordenDeCarga);
 
             repositorio.GuardarCambios();
 
+            if (crearPedido)
+            {
+                EnviarASAP(ordenDeCarga, cliente);
+            }
+            else
+            {
+
+            }
+
+            VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
+
+
+
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
+        }
+
+        private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente)
+        {
+
+            /* 
+            CC-01	'Más de un contrato vigente para Cliente/Corredor'
+            CC-02	'Transportista no dado de alta'
+            CC-03	'Verificar Pedido' 
+            CC-04	'Verificar Crédito de pedido'
+            CC-05	'Pedido entregado completamente'
+            CC-00	'OK'
+            */
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, "");
+
+            switch (result)
+            {
+                case "CC-00":
+                    ordenDeCarga.TransporteExiste = true;
+                    ordenDeCarga.CorredorSeleccionado = true;
+                    ordenDeCarga.ContratoSAP = "11111";
+                    return true;
+
+                case "CC-01":
+                    ordenDeCarga.TransporteExiste = false;
+                    break;
+
+                case "CC-02":
+                    ordenDeCarga.CorredorSeleccionado = false;
+                    break;
+
+                case "CC-03":
+                    throw new ValidationCustomException("El pedido informado no existe.");
+
+                case "CC-04":
+                    ordenDeCarga.TransporteExiste = true;
+                    ordenDeCarga.CorredorSeleccionado = true;
+                    ordenDeCarga.ContratoSAP = "11111";
+                    break;
+
+                case "CC-05":
+                    ordenDeCarga.TransporteExiste = true;
+                    ordenDeCarga.CorredorSeleccionado = true;
+                    ordenDeCarga.ContratoSAP = "11111";
+                    break;
+            }
+
+            return false;
         }
 
         public List<OrdenDeCargaDto> Listar(string mailUsuario)
@@ -363,7 +419,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     orden.ActualizarEstado();
 
-                    EnviarASAP(orden);
+                    //EnviarASAP(orden);
                 }
             }
 
@@ -397,11 +453,18 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        private void EnviarASAP(OrdenDeCarga orden)
+        private void EnviarASAP(OrdenDeCarga orden, Proveedor cliente)
         {
-            if (orden.Estado == EstadoOrdenDeCarga.Confirmado)
+            //OV-01   'Verificar Contrato, Material, Cliente'
+            //OV-02   'Verificar cantidad pendiente de Contratada'
+            //OV-03   'Pedido creado - Verificar Crédito de pedido'
+            //OV-00   'OK'
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
+
+            if (result == "OK")
             {
                 orden.InformadaSAP = true;
+                //orden.numeroPedido = ""
 
                 orden.ActualizarEstado();
             }
