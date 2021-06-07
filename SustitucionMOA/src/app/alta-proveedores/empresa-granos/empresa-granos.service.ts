@@ -340,14 +340,4 @@ export class EmpresaGranosService extends BaseService {
         return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
             map(this.extractData))   
     }
-
-    public proveedorNoGranosOperando(proveedorId: number, razonSocial: string, mail: string){
-        let payload = new FormData();
-        payload.append('proveedorId', proveedorId.toString())
-        payload.append('razonSocial', razonSocial)
-        payload.append('mail', mail)
-        return this.http
-            .post('/apo/AltaEmpresaNoGranos/HabilitarNoGranosOperando', payload)
-            .pipe(map(this.extractData))
-    }
 }
