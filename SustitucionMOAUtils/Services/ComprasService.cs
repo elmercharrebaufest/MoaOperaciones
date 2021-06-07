@@ -221,6 +221,11 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<TablaSap>(x=>x.Tabla == tabla).Select(x=> new TablaSapDto(x)).ToList();
         }
 
+        public List<TablaGeneralDto> ObtenerTablaGeneral(string tabla)
+        {
+            return repositorio.Listar<TablaGeneral>(x => x.Tabla == tabla).Select(x => new TablaGeneralDto(x)).ToList();
+        }
+
         public List<CentroDireccionDto> ObtenerCentrosDireccion()
         {
             return repositorio.Listar<CentroDireccion>().Select(x=> new CentroDireccionDto(x)).ToList();

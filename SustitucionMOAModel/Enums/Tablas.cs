@@ -28,7 +28,6 @@ namespace SustitucionMOAModel.Enums
     {
         public const string TipoImputacionSolp = "TipoImputacionSolp";
         public const string TipoFiltroSolpProveedor = "TipoFiltroSolpProveedor";
-        public const string TipoPliegoArchivo = "TipoPliegoArchivo";
         public const string CamposObligatoriosCabeceraSolp = "CamposObligatoriosCabeceraSolp";
     }
 }

@@ -5,6 +5,7 @@ import * as uuid from 'uuid';
 import { forEach } from "@angular/router/src/utils/collection";
 import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
 import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
+import { FormGroup } from "@angular/forms";
 
 export class Solp {
     public id: number;
@@ -47,7 +48,7 @@ export class Solp {
     public observacionesCotizacion: string;
 
     //inicio Cabecera == paso 5
-    public selectClaseDocumento: string
+    public selectClaseDocumento: any
 
     public posiciones: PosicionSolp[];
     posicionActual: PosicionSolp;
@@ -85,6 +86,10 @@ export class Solp {
     ordenarPosiciones() {
         var i = 1;
         this.posiciones.forEach(x => x.numeroPosicion = i++);
+    }
+
+    posicionesValidas(){
+        return !this.posiciones.find(x=>!x.posicionValida);
     }
 }
 
@@ -139,6 +144,8 @@ export class PosicionSolp {
     // Moneda
     public selectMonedaCompras: any;
     public totalPosicion: number;
+
+    public posicionValida: boolean;
 
     constructor(numeroPosicion) {
         this.id = uuid.v4();

@@ -14,7 +14,15 @@
                             Clase documento*
                             <div>
                                 <p-dropdown [options]="claseDocumento" [(ngModel)]="model.selectClaseDocumento" 
-                                    dataKey="Id" optionLabel="Descripcion"></p-dropdown>
+                                    dataKey="Id" optionLabel="Descripcion"
+                                    (onChange)="cambiarClaseDocumento()">
+                                    <ng-template let-item pTemplate="selectedItem">
+                                        {{item.value.CodigoSap + " - " + item.value.Descripcion}}
+                                    </ng-template>
+                                    <ng-template let-item pTemplate="item">
+                                        {{item.value.CodigoSap + " - " + item.value.Descripcion}}
+                                    </ng-template>
+                                </p-dropdown>
                             </div>
                         </div>
                     </div>
@@ -28,13 +36,15 @@
                             Posiciones
                         </div> 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 margenInput" >
-                            <p-dropdown [options]="model.posiciones" [(ngModel)]="model.posicionActual" dataKey="id" optionLabel="id">
+                            <p-dropdown [options]="model.posiciones" [(ngModel)]="model.posicionActual" dataKey="id" optionLabel="id"
+                            (onFocus)="validarPosicionActual()">
                                 <ng-template let-item pTemplate="selectedItem">
-                                    #{{item.value.numeroPosicion + " " + (item.value.textoGenerico || "")}}
-
+                                    #{{item.value.numeroPosicion + " " + (item.value.textoGenerico || " ")}}
+                                    <i *ngIf="item.value.posicionValida === false" class="fa fa-exclamation" style="color:red"></i>
                                 </ng-template>
                                 <ng-template let-item pTemplate="item">
-                                    #{{item.value.numeroPosicion + " " + (item.value.textoGenerico || "")}}
+                                    #{{item.value.numeroPosicion + " " + (item.value.textoGenerico || " ")}}
+                                    <i *ngIf="item.value.posicionValida === false" class="fa fa-exclamation" style="color:red"></i>
                                 </ng-template>
                             </p-dropdown>
                         </div>
@@ -46,7 +56,7 @@
                 <form [formGroup]="formularioActual">
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
-                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
+                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 margenInput">
                                 <div>
                                     Tipo de posici&oacute;n*
                                 </div>    
@@ -55,7 +65,7 @@
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                                 <div>
                                     Tipo de imputaci&oacute;n*
                                 </div> 
@@ -69,7 +79,7 @@
                                     </div> 
                                 </div>
                             </div> 
-                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 margenInput">
                                 <div>
                                     Texto gen&eacute;rico*
                                 </div> 
@@ -91,7 +101,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                                 <div>
-                                    Fecha de entrega de servicio*
+                                    Fecha de entrega de servicio {{ mostrarAsterisco('fechaEntregaServicio') }}
                                 </div>
                                 <div class="styled-select">
                                     <p-calendar formControlName="fechaEntregaServicio"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>    
@@ -102,7 +112,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                                 <div>
-                                    Fecha de liberaci&oacute;n*
+                                    Fecha de liberaci&oacute;n {{ mostrarAsterisco('fechaDeLiberacion') }}
                                 </div>
                                 <div class="styled-select">
                                     <p-calendar formControlName="fechaDeLiberacion"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaDeLiberacion" [locale]="locale" [showIcon]="true" dateFormat="yy-mm-dd" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>   
@@ -136,7 +146,7 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
                                 <div class="margenInput">
-                                    Centro*
+                                    Centro {{ mostrarAsterisco('selectCentroEntrega') }}
                                     <p-dropdown formControlName="selectCentroEntrega"  [options]="centroEntrega" 
                                     [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.selectCentroEntrega"
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
@@ -169,7 +179,7 @@
 
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
                             <div class="margenInput">
-                                    Almac&eacute;n*
+                                    Almac&eacute;n {{ mostrarAsterisco('selectAlmacenEntrega') }}
                                     <p-dropdown formControlName="selectAlmacenEntrega"  [ngModelOptions]="{standalone:true}" 
                                     [options]="almacenEntrega" [(ngModel)]="model.posicionActual.selectAlmacenEntrega"
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
@@ -213,7 +223,7 @@
 
                             <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 margenInput">
                                 <div class="margenInput">
-                                    Grupo de compras*                                                      
+                                    Grupo de compras {{ mostrarAsterisco('selectGrupoCompras') }}                                                      
                                     <p-dropdown formControlName="selectGrupoCompras" [options]="grupoCompras" 
                                     [(ngModel)]="model.posicionActual.selectgrupoCompras"
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
@@ -306,7 +316,13 @@
                                 Moneda*   
                                 <p-dropdown formControlName="selectMonedaCompras"  [ngModelOptions]="{standalone:true}" [options]="monedaCompras" 
                                 [(ngModel)]="model.posicionActual.selectMonedaCompras"
-                                dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"></p-dropdown>
+                                dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar">
+                                <ng-template let-item pTemplate="selectedItem">
+                                    {{item.value.CodigoSap + " - " + item.value.Descripcion}}
+                                </ng-template>
+                                <ng-template let-item pTemplate="item">
+                                    {{item.value.CodigoSap + " - " + item.value.Descripcion}}
+                                </ng-template></p-dropdown>
                                 <div *ngIf="mostrarError('selectMonedaCompras')">
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>

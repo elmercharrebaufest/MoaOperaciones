@@ -7,29 +7,28 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
-    public class TablaGeneralDto
+    public class TablaSapDto
     {
         public int Id { get; set; }
         public string Tabla { get; set; }
         public string Codigo { get; set; }
+        public string CodigoSap { get; set; }
         public string Descripcion { get; set; }
         public int? IdPadre { get; set; }
-        public TablaGeneralDto Padre { get; set; }
 
-        public TablaGeneralDto()
+        public TablaSapDto()
         {
 
         }
 
-        public TablaGeneralDto(TablaGeneral entity)
+        public TablaSapDto(TablaSap entity)
         {
             this.Id = entity.Id;
             this.Tabla = entity.Tabla;
             this.Codigo = entity.Codigo;
+            this.CodigoSap = entity.CodigoSap;
             this.Descripcion = entity.Descripcion;
             this.IdPadre = entity.Padre_Id;
-            if(entity.Padre != null)
-                this.Padre = new TablaGeneralDto(entity.Padre);
         }
     }
 }

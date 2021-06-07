@@ -87,7 +87,12 @@ namespace SustitucionMOA.Controllers
                     Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
                     GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
                     GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
-                    Moneda = service.ObtenerTablaSap(TablasSap.Moneda)
+                    Moneda = service.ObtenerTablaSap(TablasSap.Moneda),
+                    CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
+                    {
+                        ClaseDocumentoCodigo = x.Padre.Codigo,
+                        Codigo = x.Codigo
+                    })
                 });
             }
             catch (InfoCustomException e)

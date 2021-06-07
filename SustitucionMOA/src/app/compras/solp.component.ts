@@ -20,6 +20,7 @@ import { SelectItem } from 'primeng/api';
 import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
 import { FacturaComponent } from '../factura/factura.component';
 import { EnumPasoSolp } from './enum-paso-solp';
+import { CabeceraComponent } from './SolpPasos/cabecera.component';
 
 
 
@@ -69,6 +70,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+
+    @ViewChild(CabeceraComponent)
+    protected cabecera: CabeceraComponent;
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
@@ -388,6 +392,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     agregarPosicion(el: HTMLElement){
+        this.cabecera.validarPosicionActual();
         this.solpActual.agregarNuevaPosicion();
         el.scrollIntoView();
     }

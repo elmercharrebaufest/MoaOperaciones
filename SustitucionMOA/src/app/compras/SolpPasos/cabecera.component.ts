@@ -31,8 +31,6 @@ export class CabeceraComponent extends ListBaseComponent {
 
     @Input('locale') 
     protected locale:any;
-    
-    
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router, private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -58,6 +56,40 @@ export class CabeceraComponent extends ListBaseComponent {
     formularioActual: FormGroup;
 
     proveedoresAutocomplete: any;
+    camposObligatorios: any[] = [
+        { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
+        { campo: 'centroDeCosto',               esObligatorio: false,   esFijo: true },
+        { campo: 'ordenDeOt',                   esObligatorio: false,   esFijo: true },
+        { campo: 'ordenDeInversion',            esObligatorio: false,   esFijo: true },
+        { campo: 'siniestroBeneficio',          esObligatorio: false,   esFijo: true },
+        { campo: 'tipoImputacion',              esObligatorio: true,    esFijo: true },
+        { campo: 'textoGenerico',               esObligatorio: true,    esFijo: true },
+        { campo: 'fechaEntregaServicio',        esObligatorio: false,    esFijo: false },
+        { campo: 'fechaDeLiberacion',           esObligatorio: false,    esFijo: false },
+        { campo: 'plazoDeEntrega',              esObligatorio: false,   esFijo: true },
+        { campo: 'concluido',                   esObligatorio: false,   esFijo: true },
+        { campo: 'indiceFijacion',              esObligatorio: false,   esFijo: true },
+        { campo: 'selectCentroEntrega',         esObligatorio: false,    esFijo: false },
+        { campo: 'nombreEntrega',               esObligatorio: false,   esFijo: true },
+        { campo: 'codigoPostalEntrega',         esObligatorio: false,   esFijo: true },
+        { campo: 'selectAlmacenEntrega',        esObligatorio: false,    esFijo: false },
+        { campo: 'calleEntrega',                esObligatorio: true,    esFijo: true },
+        { campo: 'paisEntrega',                 esObligatorio: false,   esFijo: true },
+        { campo: 'numeroEntrega',               esObligatorio: true,    esFijo: true },
+        { campo: 'selectGrupoCompras',          esObligatorio: false,    esFijo: false },
+        { campo: 'selectArticuloCompras',       esObligatorio: true,    esFijo: true },
+        { campo: 'selectSolicitanteCompras',    esObligatorio: true,    esFijo: true },
+        { campo: 'necesidadCompras',            esObligatorio: false,   esFijo: true },
+        { campo: 'rubroElectrico',              esObligatorio: false,   esFijo: true },
+        { campo: 'rubroCivil',                  esObligatorio: false,   esFijo: true },
+        { campo: 'rubroIngenieria',             esObligatorio: false,   esFijo: true },
+        { campo: 'rubroMecanico',               esObligatorio: false,   esFijo: true },
+        { campo: 'rubroConsultoria',            esObligatorio: false,   esFijo: true },
+        { campo: 'proveedoresValidos',          esObligatorio: false,   esFijo: true },
+        { campo: 'proveedoresInvalidos',        esObligatorio: false,   esFijo: true },
+        { campo: 'proveedoresNoSugeridos',      esObligatorio: false,   esFijo: true },
+        { campo: 'selectMonedaCompras',         esObligatorio: true,    esFijo: true },
+    ];
     
     @Output() onEstCompleto = new EventEmitter<any>();
 
@@ -108,60 +140,16 @@ export class CabeceraComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-        console.log(this.combos);
 
         this.claseDocumento = this.combos.ClaseDocumento;
-
         this.centroEntrega = this.combos.Centro;
-
-        //this.almacenEntrega = this.combos.Almacen;
-
         this.grupoCompras = this.combos.GrupoCompras;
-
         this.articuloCompras = this.combos.GrupoArticulo;
-
         this.monedaCompras = this.combos.Moneda;
 
-        this.formularioActual = this.formBuilder.group({
-            servicio: new FormControl('', [Validators.required]),
-            centroDeCosto: new FormControl('', [Validators.required]),
-            ordenDeOt: new FormControl('', [Validators.required]),
-            ordenDeInversion: new FormControl('', [Validators.required]),
-            siniestroBeneficio: new FormControl('', [Validators.required]),
-            tipoImputacion: new FormControl('', [Validators.required]),
-            textoGenerico: new FormControl('', [Validators.required]),
-            fechaEntregaServicio: new FormControl('', [Validators.required]),
-            fechaDeLiberacion: new FormControl('', [Validators.required]),
-            plazoDeEntrega: new FormControl(),
-            concluido: new FormControl(),
-            indiceFijacion: new FormControl(),
-            selectCentroEntrega: new FormControl('', [Validators.required]),
-            nombreEntrega: new FormControl(),
-            codigoPostalEntrega: new FormControl(),
-            selectAlmacenEntrega: new FormControl('', [Validators.required]),
-            calleEntrega: new FormControl('', [Validators.required]),
-            paisEntrega: new FormControl(),
-            numeroEntrega: new FormControl('', [Validators.required]),
-            selectGrupoCompras: new FormControl('', [Validators.required]),
-            selectArticuloCompras: new FormControl('', [Validators.required]),
-            selectSolicitanteCompras: new FormControl('', [Validators.required]),
-            necesidadCompras: new FormControl('', [Validators.required]),
-            rubroElectrico: new FormControl(),
-            rubroCivil: new FormControl(),
-            rubroMecanico: new FormControl(),
-            rubroIngenieria: new FormControl(),
-            rubroConsultoria: new FormControl(),
-            proveedoresValidos: new FormControl(),
-            proveedoresInvalidos: new FormControl(),
-            proveedoresNoSugeridos: new FormControl(),
-            selectMonedaCompras: new FormControl('', [Validators.required])
-
-        });
-
-        this.formularioPosicion = [this.formularioActual]
-
+        this.setControlesObligatorios(this.model.selectClaseDocumento || this.claseDocumento[0]);
         this.validadorPasoSolpService.formulario = this.formularioActual;
-
+        
         if (this.model.cargoPasoCinco) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
@@ -189,65 +177,78 @@ export class CabeceraComponent extends ListBaseComponent {
  
     }
 
-    nuevaPosicion(){
-        this.formularioPosicion.push(this.formBuilder.group({
-            servicio: new FormControl('', [Validators.required]),
-            centroDeCosto: new FormControl('', [Validators.required]),
-            ordenDeOt: new FormControl('', [Validators.required]),
-            ordenDeInversion: new FormControl('', [Validators.required]),
-            siniestroBeneficio: new FormControl('', [Validators.required]),
-            tipoImputacion: new FormControl('', [Validators.required]),
-            textoGenerico: new FormControl('', [Validators.required]),
-            fechaEntregaServicio: new FormControl('', [Validators.required]),
-            fechaDeLiberacion: new FormControl('', [Validators.required]),
-            plazoDeEntrega: new FormControl(),
-            concluido: new FormControl(),
-            indiceFijacion: new FormControl(),
-            selectCentroEntrega: new FormControl('', [Validators.required]),
-            nombreEntrega: new FormControl(),
-            codigoPostalEntrega: new FormControl(),
-            selectAlmacenEntrega: new FormControl('', [Validators.required]),
-            calleEntrega: new FormControl('', [Validators.required]),
-            paisEntrega: new FormControl(),
-            numeroEntrega: new FormControl('', [Validators.required]),
-            selectGrupoCompras: new FormControl('', [Validators.required]),
-            selectArticuloCompras: new FormControl('', [Validators.required]),
-            selectSolicitanteCompras: new FormControl('', [Validators.required]),
-            necesidadCompras: new FormControl('', [Validators.required]),
-            rubroElectrico: new FormControl(),
-            rubroCivil: new FormControl(),
-            rubroMecanico: new FormControl(),
-            rubroIngenieria: new FormControl(),
-            rubroConsultoria: new FormControl(),
-            proveedoresValidos: new FormControl(),
-            proveedoresInvalidos: new FormControl(),
-            proveedoresNoSugeridos: new FormControl(),
-            selectMonedaCompras: new FormControl('', [Validators.required])
+    setControlesObligatorios(claseDocumento){
+        this.actualizarCamposObligatorios(claseDocumento);
 
-            
-        }));
+        if(!this.formularioActual){
+            this.formularioActual = this.formBuilder.group({});
+            this.camposObligatorios.forEach(x=> {
+                let control = x.esObligatorio ? new FormControl('', [Validators.required]) : new FormControl();
+                this.formularioActual.addControl(x.campo, control);
+            });
+
+            return;
+        }
+
+        this.camposObligatorios.forEach(x=> {
+            let formControl = this.formularioActual.controls[x.campo];
+            formControl.clearValidators();
+            if(x.esObligatorio){
+                formControl.setValidators(Validators.required);
+            }
+        });
     }
 
+    actualizarCamposObligatorios(claseDocumento){
+        //reset de obligatorios configurables
+        this.camposObligatorios.forEach(c => {
+            if(!c.esFijo)
+                c.esObligatorio = false;
+        });
+
+        let camposObligatorios = this.combos.CamposObligatoriosCabeceraSolp.filter(x=>x.ClaseDocumentoCodigo == claseDocumento.Codigo);
+
+        camposObligatorios.forEach(c => {
+            this.camposObligatorios.find(x=>x.campo == c.Codigo).esObligatorio = true;
+        });
+    }
+
+    cambiarClaseDocumento(){
+        this.setControlesObligatorios(this.model.selectClaseDocumento);
+        this.validarPosicionActual();
+    }
 
     mostrarError(nombreCampo: string): boolean {
         if (this.formularioActual && this.formularioActual.controls) {
-            return (this.formularioActual.controls[nombreCampo].invalid || (this.formularioActual.controls[nombreCampo].errors && this.formularioActual.controls[nombreCampo].errors.required))
-                && (this.formularioActual.controls[nombreCampo].dirty || this.formularioActual.controls[nombreCampo].touched)
+            let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
+            if(campoObligatorio){
+                let control = this.formularioActual.controls[nombreCampo];
+                return (control.invalid || (control.errors && control.errors.required))
+                    && (control.dirty || control.touched)
+            }
         }
 
         return false;
     }
 
-
+    mostrarAsterisco(nombreCampo: string){
+        return this.camposObligatorios.find(x=>x.campo == nombreCampo).esObligatorio ? '*' : '';
+    }
     
     ngOnDestroy(){
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :EnumPasoSolp.SolpCabecera, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.validarPosicionActual();
+
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.SolpCabecera, esPasoInvalido : this.model.posicionesValidas()});
+    }
+
+    validarPosicionActual() {
+        this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();
     }
 
     centroSeleccionado(){
         this.almacenEntrega = this.combos.Almacen.filter(x=> x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
-        //TODO: completar campos de direccion segun this.combos.CentrosDireccion
+        
         let direccionCentro = this.combos.CentrosDireccion.find(x=> x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
         this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega || this.model.posicionActual.selectCentroEntrega.Descripcion;
         this.model.posicionActual.codigoPostalEntrega = this.model.posicionActual.codigoPostalEntrega || direccionCentro.Cp;
