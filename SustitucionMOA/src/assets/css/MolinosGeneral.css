@@ -3435,7 +3435,6 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
   color: #067935;
 }
 
-/* TODO: Cambiar por una sola clase */
 #misReportes,
 #misOperaciones,
 #infoFinanciera,
@@ -3445,7 +3444,6 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
 #ventaSustentable,
 #usuarios,
 #mis-consultas,
-#compras,
 #faq {
     height: 35px;
 }
@@ -3688,7 +3686,7 @@ div.panel-body a.active{
   position: absolute;
   z-index: 1;
   top: -6px;
-  right: 115px;
+  right: 160%;
 }
 
 .tooltipscontainer .tooltipAyuda {
@@ -4221,16 +4219,13 @@ input[type=number]::-webkit-inner-spin-button {
   cursor: pointer;
   transition: all 0.25s linear;
 }
-.centerbtn {
-    margin-left: 180px !important;
-}
 .center {
-    justify-items: center;
-    display: flex;
-    justify-content: center;
+  justify-items: center;
+  display: flex;
+  justify-content: center;
 }
-.pillVerdeMenu > .nav-pills > li.active > a, .pillVerdeMenu > .nav-pills > li.active > a:focus, .pillVerdeMenu > .nav-pills > li.active > a:hover {
-    background-color: #009688;
+.pillVerdeMenu>.nav-pills>li.active>a, .pillVerdeMenu>.nav-pills>li.active>a:focus, .pillVerdeMenu>.nav-pills>li.active>a:hover {
+  background-color: #009688;
 }
 .subtitulo{
   font-size: 25px;

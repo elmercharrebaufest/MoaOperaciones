@@ -255,6 +255,8 @@
                                     </button>
                                     <button type="button" style="display:none" id="openModalHiddenButton"
                                         data-toggle="modal" data-target="#myModal"></button>
+                                        <button type="button" style="display:none" id="openModalVieneOperando"
+                                        data-toggle="modal" data-target="#ModalVieneOperando"></button>
 
                                     <button type="button"
                                         *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && isAuthorized('ALTA EMPRESA NO GRANOS')"
@@ -272,6 +274,12 @@
                                         type="button" style="width: 70px;font-size: 12px;"
                                         class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
                                         Verificar DataAgro
+                                    </button>
+
+                                    <button *ngIf="(empresa.EstadoAprobacion === 11 || empresa.EstadoAprobacion === 15)  && isAuthorized('ALTA EMPRESA NO GRANOS') && empresa.IdTipoUsuario === 3"
+                                        type="button" style="width: 70px;font-size: 12px;"
+                                        class="btn-custom btn-add btn-chico" (click)="AbrilModalYaVenianOperando(empresa)">
+                                        Operando
                                     </button>
                                 </td>
                             </tr>
@@ -1310,6 +1318,42 @@
                         (click)="cambiarEstado(16)">
                         Anular aprobación
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal Vienen Operando-->
+<div class="modal fade" id="ModalVieneOperando" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
+    style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document" style="width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
+                    (click)=resetVariables()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Habilitar Proveedor No Granos Operando
+                </h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                <div class="content-wraper" style="margin-top:0;padding-top:0">
+                    <div class="for myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">Raz&oacute;n Social<span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="empresaSeleccionada.RazonSocial" name="empresaSeleccionada.RazonSocial" class="fourRounded"
+                                    aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="for myRow center">
+                        <button type="button" class="btn-custom btn-mediano btn-add" (click)="proveedorNoGranosOperando()">
+                                Guardar
+                         </button>
+                    </div>
                 </div>
             </div>
         </div>

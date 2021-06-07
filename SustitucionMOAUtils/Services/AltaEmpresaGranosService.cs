@@ -632,9 +632,12 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (proveedor.SiperObligatorio ?? false && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+            if (proveedor.SiperObligatorio ?? false)
             {
-                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+                if(!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+                }
             }
 
             return true;
