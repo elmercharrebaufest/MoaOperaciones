@@ -1,16 +1,9 @@
-﻿<div class="content-wraper">
+﻿<div class="content-wraper" style="padding-bottom: 0px; margin-bottom: 0px;" [ngClass]="esInterno? '' : 'modalDetalleConsulta'">
     <!-- CONTENT-->
-    <section class="container-fluid clearfix">
-        <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Asunto: {{this.consulta.Asunto}}</strong><br></div>
-            <div class="col-xs-12 col-sm-10 subtitulo">N° de Consulta: {{this.consulta.Id}} | Usuario: {{this.consulta.Usuario.Mail}} | Cuit: {{this.consulta.Usuario.CUIT}}</div>
-        </div>
-    </section>
     <mensaje></mensaje>
     <spinner></spinner>
     <div class="row myRow firstSection" style="overflow: hidden">
-        <div class="detalleConsulta shadow col-xs-12 col-sm-6" #detalleConsulta>
+        <div class="shadow col-xs-12 col-sm-6" #detalleConsulta [ngClass]="esInterno? 'detalleConsulta' : 'detalleConsultaExterno'">
             <div *ngFor="let comentario of consulta.Comentarios, let i = index">
                 <div>
                     <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || ((comentario.Fecha | date:'dd/MM/yyyy') != (consulta.Comentarios[i-1].Fecha | date:'dd/MM/yyyy'))">
@@ -54,7 +47,7 @@
         </div>
 
         <!--AÑANDIR COMENTARIO-->
-        <div class="contenedorNuevoComentario shadow col-xs-12 col-sm-6" id="contenedorNuevoComentario">
+        <div class="col-xs-12 col-sm-6" id="contenedorNuevoComentario" [ngClass]="esInterno? 'shadow contenedorNuevoComentario' : 'contenedorNuevoComentarioExterno'">
             <hr>
             <div class="col-xs-12 col-sm-12 col-md-9">
                 <textarea [disabled]="disable()"
@@ -117,7 +110,7 @@
 
             <div *ngIf="this.MostrarDatosAdicionales">
                 <div *ngFor="let dato of datosExtra" class="col-md-12">
-                    <ng-container *ngIf="dato.Value != null && this.Value != '' ">
+                    <ng-container *ngIf="dato.Value != null && dato.Value != '' ">
                             <div *ngIf="dato.NewLine">
                                 <strong>{{dato.Nombre}}:</strong> <p [innerHTML]='dato.Value'></p>
                             </div>
@@ -183,6 +176,5 @@
 
             </div>
         </div>
-        <spinner></spinner>
     </div>
 </div>
