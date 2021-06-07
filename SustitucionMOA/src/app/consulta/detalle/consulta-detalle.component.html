@@ -1,8 +1,11 @@
-﻿<div class="content-wraper" style="padding-bottom: 0px; margin-bottom: 0px;" [ngClass]="esInterno? '' : 'modalDetalleConsulta'">
+﻿
+<div class="content-wraper" style="padding-bottom: 0px; margin-bottom: 0px;" [ngClass]="esInterno? '' : 'modalDetalleConsulta'">
     <!-- CONTENT-->
-    <mensaje></mensaje>
-    <spinner></spinner>
-    <div class="row myRow firstSection" style="overflow: hidden">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <mensaje></mensaje>
+        <spinner></spinner>
+    </div>
+    <div class="row myRow firstSection" style="overflow: hidden; position: relative;">
         <div class="shadow col-xs-12 col-sm-6" #detalleConsulta [ngClass]="esInterno? 'detalleConsulta' : 'detalleConsultaExterno'">
             <div *ngFor="let comentario of consulta.Comentarios, let i = index">
                 <div>
