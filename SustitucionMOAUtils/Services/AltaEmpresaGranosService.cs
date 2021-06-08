@@ -501,7 +501,7 @@ namespace SustitucionMOAUtils.Services
             {
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
-                string asunto = "MOA Operaciones - Declaración jurada";
+                string asunto = "MOA Operaciones - Conflicto de Interés Declarado en Alta de Proveedor";
                 var vinculoEmpleadoMolinos = new StringBuilder();
                 var Vinculofuncionarios = new StringBuilder();
 
