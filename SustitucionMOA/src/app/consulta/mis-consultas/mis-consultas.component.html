@@ -95,7 +95,7 @@
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                     </td>
                                     <td style="text-align: center; width: 5rem; padding: 0">
-                                        <button pButton type="button" (click)="openModal(rowData.Id)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button>
+                                        <button pButton type="button" (click)="openModal(rowData.Id, rowData.Asunto)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button>
                                     </td>
                                 </tr>
                             </ng-template>
@@ -292,7 +292,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
-                    Detalle Consulta
+                    {{consultaId}} - {{asunto}}
                 </h4>
             </div>
             <div class="modal-body" style="padding-top:0;" *ngIf="mostrarDetalle">

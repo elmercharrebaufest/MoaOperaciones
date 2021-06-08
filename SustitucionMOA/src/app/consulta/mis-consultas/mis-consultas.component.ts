@@ -68,6 +68,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     windowSize: string;
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
+    asunto: string;
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
@@ -258,7 +259,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    openModal(idConsulta){
+    openModal(idConsulta, asunto){
         if(this.mostrarDetalle){
             this.resetVariables();
         }
@@ -266,6 +267,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         setTimeout(() => {
             this.consultaId = idConsulta;
             this.mostrarDetalle = true;
+            this.asunto = asunto;
             document.getElementById("openModalHiddenButton").click();
         }, 500);
     }
