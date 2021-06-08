@@ -424,11 +424,12 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     proveedorNoGranosOperando(){
+        debugger
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
 
         if(this.validarNoGranosOperando()) return
-
+        
         this.subscription = this.altaEmpresaService
             .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial)
             .subscribe(
@@ -445,6 +446,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeComponent.setSuccessMsg(result.info);
+                        document.getElementById("hidemyModalOperando").click();
                     }
                 },
                 (error) => {
@@ -452,6 +455,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+
+        document.getElementById("hidemyModalOperando").click();
     }
 
     validarNoGranosOperando(){
