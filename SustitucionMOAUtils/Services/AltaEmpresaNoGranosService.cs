@@ -165,7 +165,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            return SuccessMsg.UsuarioHabilitadoOK;
+            return "Proveedor Habilitado.";
         }
 
         public string RechazarProveedorNoGranos(int idProveedor, string usuarioMail,string observacionesParaElProveedor)
