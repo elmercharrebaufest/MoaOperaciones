@@ -25,10 +25,10 @@
     background-color: #fff; 
     border: 1px solid #5B5B5B;
   }
-  
+
   .cardText {
     text-align: center;
-    font-family: 'Roboto Condensed';
+    font-family: 'Roboto Regular';
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
@@ -88,7 +88,6 @@
   } 
  
   ::ng-deep .ui-chkbox-label, .labelCompras {
-    font-family: "Roboto Condensed", Arial, sans-serif !important;
     font-weight: bold !important;
     font-size: 16px !important;
 
@@ -162,7 +161,6 @@
     font-weight: 400;
     color: #3f4845;
     overflow: hidden;
-    font-family: "Roboto Condensed", Arial, sans-serif;
   }
 
   .weekDayBtn {
@@ -198,7 +196,6 @@
     font-size: 1.5rem;
     font-weight: 400;
     overflow: hidden;
-    font-family: "Roboto Condensed", Arial, sans-serif;
   }
 
   /* ::ng-deep .ui-autocomplete-token {
@@ -215,8 +212,6 @@
   } */
   
   /* fin Estilo paso 5 Cabecera */
-
-  /*pesificaciones*/
 
   ::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose {
   width: 130px !important;
@@ -268,4 +263,16 @@
 
 ::ng-deep #jornadaLaboral.errorDias div.ui-button.ui-togglebutton{
   border: 1px solid #a80000 !important;
+}
+
+::ng-deep body,
+::ng-deep input,
+.cardText,
+.obligatorio,
+.headerCompras,
+.styled-select,
+::ng-deep .ui-chkbox-label, .labelCompras,
+.styled-select1,
+.valorTotal {
+  font-family: 'Roboto Regular' !important;
 }
