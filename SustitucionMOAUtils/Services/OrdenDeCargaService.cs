@@ -75,9 +75,12 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-00	'OK'
             */
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, "");
+            var result1 = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, "");
+            var result2 = consumer.CrearOrdenRequest("", "", "", 0 , "", "", out string _);
+            var result3 = consumer.OrdenCargaControlEstadoRequest("", "", "");
+            var result4 = consumer.OrdenCargaEntregadaRequest("", 0, "", "", "", "", "", "", out string _);
 
-            switch (result)
+            switch (result1)
             {
                 case "CC-00":
                     ordenDeCarga.TransporteExiste = true;
@@ -459,7 +462,7 @@ namespace SustitucionMOAUtils.Services
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
+            var result = "";// consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
 
             if (result == "OK")
             {

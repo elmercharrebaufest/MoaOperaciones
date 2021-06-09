@@ -8,20 +8,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SustitucionMOAWS.OrdenCargaControlWebServiceMOA {
+namespace SustitucionMOAWS.OrdenCargaControlSAP {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA")]
     public interface SI_MPMF_MOAOP_CONTROL_CARGA {
         
         // CODEGEN: Generating message contract since the wrapper namespace (urn:sap-com:document:sap:rfc:functions) of message SI_MPMF_MOAOP_CONTROL_CARGARequest does not match the default value (urn:OPERACIONES)
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGAResponse SI_MPMF_MOAOP_CONTROL_CARGA(SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest request);
+        SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse SI_MPMF_MOAOP_CONTROL_CARGA(SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest request);
+        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -86,12 +86,12 @@ namespace SustitucionMOAWS.OrdenCargaControlWebServiceMOA {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface SI_MPMF_MOAOP_CONTROL_CARGAChannel : SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA, System.ServiceModel.IClientChannel {
+    public interface SI_MPMF_MOAOP_CONTROL_CARGAChannel : SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class SI_MPMF_MOAOP_CONTROL_CARGAClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA>, SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA {
+    public partial class SI_MPMF_MOAOP_CONTROL_CARGAClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA>, SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA {
         
         public SI_MPMF_MOAOP_CONTROL_CARGAClient() {
         }
@@ -113,36 +113,36 @@ namespace SustitucionMOAWS.OrdenCargaControlWebServiceMOA {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGAResponse SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA.SI_MPMF_MOAOP_CONTROL_CARGA(SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest request) {
+        SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA.SI_MPMF_MOAOP_CONTROL_CARGA(SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest request) {
             return base.Channel.SI_MPMF_MOAOP_CONTROL_CARGA(request);
         }
         
         public string SI_MPMF_MOAOP_CONTROL_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_MATERIAL, string IM_PEDIDO) {
-            SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest();
+            SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.IM_CORREDOR = IM_CORREDOR;
             inValue.IM_CUIT = IM_CUIT;
             inValue.IM_MATERIAL = IM_MATERIAL;
             inValue.IM_PEDIDO = IM_PEDIDO;
-            SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGAResponse retVal = ((SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA)(this)).SI_MPMF_MOAOP_CONTROL_CARGA(inValue);
+            SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse retVal = ((SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA)(this)).SI_MPMF_MOAOP_CONTROL_CARGA(inValue);
             return retVal.EX_MENSAJE;
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA.SI_MPMF_MOAOP_CONTROL_CARGAAsync(SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest request) {
+        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA.SI_MPMF_MOAOP_CONTROL_CARGAAsync(SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest request) {
             return base.Channel.SI_MPMF_MOAOP_CONTROL_CARGAAsync(request);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_MATERIAL, string IM_PEDIDO) {
-            SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGARequest();
+        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGAResponse> SI_MPMF_MOAOP_CONTROL_CARGAAsync(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, string IM_CUIT, string IM_MATERIAL, string IM_PEDIDO) {
+            SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.IM_CORREDOR = IM_CORREDOR;
             inValue.IM_CUIT = IM_CUIT;
             inValue.IM_MATERIAL = IM_MATERIAL;
             inValue.IM_PEDIDO = IM_PEDIDO;
-            return ((SustitucionMOAWS.OrdenCargaControlWebServiceMOA.SI_MPMF_MOAOP_CONTROL_CARGA)(this)).SI_MPMF_MOAOP_CONTROL_CARGAAsync(inValue);
+            return ((SustitucionMOAWS.OrdenCargaControlSAP.SI_MPMF_MOAOP_CONTROL_CARGA)(this)).SI_MPMF_MOAOP_CONTROL_CARGAAsync(inValue);
         }
     }
 }

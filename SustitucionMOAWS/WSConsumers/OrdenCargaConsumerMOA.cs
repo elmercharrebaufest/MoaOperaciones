@@ -1,14 +1,9 @@
 ﻿using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.OrdenCargaControlWebServiceMOA;
-using SustitucionMOAWS.OrdenCargaCrearWebServiceMOA;
-using SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA;
-using SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
+using SustitucionMOAWS.OrdenCargaControlSAP;
+using SustitucionMOAWS.OrdenCargaCrearSAP;
+using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -55,7 +50,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             return service.SI_MPMF_MOAOP_CONTROL_CARGA(cliente, contrato, corredor, cuit, material, pedido).Trim();
         }
-
         /*
         * RFC Z_MPMF_MOAOP_CREAR_ORDEN_CARGA con:
         http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/5147d92447383f65943ba1a0023727db
@@ -161,7 +155,6 @@ namespace SustitucionMOAWS.WSConsumers
         Z_MPMF_MOAOP_CONTROL_ESTADO 	CE-08	'Transportista no dado de alta' 
 
         */
-
 
         public string OrdenCargaControlEstadoRequest(string entrega, string pedido, string transportista)
         {

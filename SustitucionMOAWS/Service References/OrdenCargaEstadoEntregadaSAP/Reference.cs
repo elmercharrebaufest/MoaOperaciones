@@ -8,20 +8,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA {
+namespace SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE")]
     public interface SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request);
+        SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse> SI_MPMF_MOAOP_ORDEN_CARGA_ENTREAsync(SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request);
+        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse> SI_MPMF_MOAOP_ORDEN_CARGA_ENTREAsync(SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -99,12 +99,12 @@ namespace SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface SI_MPMF_MOAOP_ORDEN_CARGA_ENTREChannel : SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE, System.ServiceModel.IClientChannel {
+    public interface SI_MPMF_MOAOP_ORDEN_CARGA_ENTREChannel : SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE>, SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE {
+    public partial class SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE>, SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE {
         
         public SI_MPMF_MOAOP_ORDEN_CARGA_ENTREClient() {
         }
@@ -126,12 +126,12 @@ namespace SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request) {
+        SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request) {
             return base.Channel.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(request);
         }
         
         public string SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(string IM_DOCUMENTO, decimal IM_KILOS, string IM_NOMBRECONDUCTOR, string IM_PATENTEACOPLADO, string IM_PATENTECHASIS, string IM_PEDIDO, string IM_TIPODOCUMENTO, string IM_TRANSPORTISTA, out string EX_MENSAJE) {
-            SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest inValue = new SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest();
+            SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest inValue = new SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest();
             inValue.IM_DOCUMENTO = IM_DOCUMENTO;
             inValue.IM_KILOS = IM_KILOS;
             inValue.IM_NOMBRECONDUCTOR = IM_NOMBRECONDUCTOR;
@@ -140,12 +140,12 @@ namespace SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA {
             inValue.IM_PEDIDO = IM_PEDIDO;
             inValue.IM_TIPODOCUMENTO = IM_TIPODOCUMENTO;
             inValue.IM_TRANSPORTISTA = IM_TRANSPORTISTA;
-            SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse retVal = ((SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE)(this)).SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(inValue);
+            SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse retVal = ((SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE)(this)).SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE(inValue);
             EX_MENSAJE = retVal.EX_MENSAJE;
             return retVal.EX_ENTREGA;
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse> SI_MPMF_MOAOP_ORDEN_CARGA_ENTREAsync(SustitucionMOAWS.OrdenCargaEntregadaWebServiceMOA.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request) {
+        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREResponse> SI_MPMF_MOAOP_ORDEN_CARGA_ENTREAsync(SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP.SI_MPMF_MOAOP_ORDEN_CARGA_ENTRERequest request) {
             return base.Channel.SI_MPMF_MOAOP_ORDEN_CARGA_ENTREAsync(request);
         }
     }

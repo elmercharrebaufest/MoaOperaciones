@@ -8,20 +8,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SustitucionMOAWS.OrdenCargaCrearWebServiceMOA {
+namespace SustitucionMOAWS.OrdenCargaCrearSAP {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA")]
     public interface SI_MPMF_MOAOP_CREAR_ORDEN_CARGA {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request);
+        SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse> SI_MPMF_MOAOP_CREAR_ORDEN_CARGAAsync(SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request);
+        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse> SI_MPMF_MOAOP_CREAR_ORDEN_CARGAAsync(SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -89,12 +89,12 @@ namespace SustitucionMOAWS.OrdenCargaCrearWebServiceMOA {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface SI_MPMF_MOAOP_CREAR_ORDEN_CARGAChannel : SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA, System.ServiceModel.IClientChannel {
+    public interface SI_MPMF_MOAOP_CREAR_ORDEN_CARGAChannel : SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA>, SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA {
+    public partial class SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA>, SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA {
         
         public SI_MPMF_MOAOP_CREAR_ORDEN_CARGAClient() {
         }
@@ -116,24 +116,24 @@ namespace SustitucionMOAWS.OrdenCargaCrearWebServiceMOA {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request) {
+        SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request) {
             return base.Channel.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(request);
         }
         
         public string SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(string IM_CLIENTE, string IM_CONTRATO, string IM_CORREDOR, decimal IM_KILOS, string IM_MATERIAL, string IM_PEDIDO, out string EX_PEDIDO) {
-            SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest();
+            SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest inValue = new SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest();
             inValue.IM_CLIENTE = IM_CLIENTE;
             inValue.IM_CONTRATO = IM_CONTRATO;
             inValue.IM_CORREDOR = IM_CORREDOR;
             inValue.IM_KILOS = IM_KILOS;
             inValue.IM_MATERIAL = IM_MATERIAL;
             inValue.IM_PEDIDO = IM_PEDIDO;
-            SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse retVal = ((SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA)(this)).SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(inValue);
+            SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse retVal = ((SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGA)(this)).SI_MPMF_MOAOP_CREAR_ORDEN_CARGA(inValue);
             EX_PEDIDO = retVal.EX_PEDIDO;
             return retVal.EX_MENSAJE;
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse> SI_MPMF_MOAOP_CREAR_ORDEN_CARGAAsync(SustitucionMOAWS.OrdenCargaCrearWebServiceMOA.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request) {
+        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAResponse> SI_MPMF_MOAOP_CREAR_ORDEN_CARGAAsync(SustitucionMOAWS.OrdenCargaCrearSAP.SI_MPMF_MOAOP_CREAR_ORDEN_CARGARequest request) {
             return base.Channel.SI_MPMF_MOAOP_CREAR_ORDEN_CARGAAsync(request);
         }
     }

@@ -8,20 +8,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA {
+namespace SustitucionMOAWS.OrdenCargaControlEstadoSAP {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:OPERACIONES", ConfigurationName="OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO")]
     public interface SI_MPMF_MOAOP_CONTROL_ESTADO {
         
         // CODEGEN: Generating message contract since the wrapper namespace (urn:sap-com:document:sap:rfc:functions) of message SI_MPMF_MOAOP_CONTROL_ESTADORequest does not match the default value (urn:OPERACIONES)
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADOResponse SI_MPMF_MOAOP_CONTROL_ESTADO(SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest request);
+        SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADOResponse SI_MPMF_MOAOP_CONTROL_ESTADO(SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://sap.com/xi/WebService/soap1.1", ReplyAction="*")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADOResponse> SI_MPMF_MOAOP_CONTROL_ESTADOAsync(SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest request);
+        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADOResponse> SI_MPMF_MOAOP_CONTROL_ESTADOAsync(SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -71,12 +71,12 @@ namespace SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface SI_MPMF_MOAOP_CONTROL_ESTADOChannel : SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO, System.ServiceModel.IClientChannel {
+    public interface SI_MPMF_MOAOP_CONTROL_ESTADOChannel : SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class SI_MPMF_MOAOP_CONTROL_ESTADOClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO>, SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO {
+    public partial class SI_MPMF_MOAOP_CONTROL_ESTADOClient : System.ServiceModel.ClientBase<SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO>, SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO {
         
         public SI_MPMF_MOAOP_CONTROL_ESTADOClient() {
         }
@@ -98,30 +98,30 @@ namespace SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADOResponse SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO.SI_MPMF_MOAOP_CONTROL_ESTADO(SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest request) {
+        SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADOResponse SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO.SI_MPMF_MOAOP_CONTROL_ESTADO(SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest request) {
             return base.Channel.SI_MPMF_MOAOP_CONTROL_ESTADO(request);
         }
         
         public string SI_MPMF_MOAOP_CONTROL_ESTADO(string IM_ENTREGA, string IM_PEDIDO, string IM_TRANSPORTISTA) {
-            SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest inValue = new SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest();
+            SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest inValue = new SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest();
             inValue.IM_ENTREGA = IM_ENTREGA;
             inValue.IM_PEDIDO = IM_PEDIDO;
             inValue.IM_TRANSPORTISTA = IM_TRANSPORTISTA;
-            SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADOResponse retVal = ((SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO)(this)).SI_MPMF_MOAOP_CONTROL_ESTADO(inValue);
+            SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADOResponse retVal = ((SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO)(this)).SI_MPMF_MOAOP_CONTROL_ESTADO(inValue);
             return retVal.EX_SALIDA;
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADOResponse> SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO.SI_MPMF_MOAOP_CONTROL_ESTADOAsync(SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest request) {
+        System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADOResponse> SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO.SI_MPMF_MOAOP_CONTROL_ESTADOAsync(SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest request) {
             return base.Channel.SI_MPMF_MOAOP_CONTROL_ESTADOAsync(request);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADOResponse> SI_MPMF_MOAOP_CONTROL_ESTADOAsync(string IM_ENTREGA, string IM_PEDIDO, string IM_TRANSPORTISTA) {
-            SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest inValue = new SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADORequest();
+        public System.Threading.Tasks.Task<SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADOResponse> SI_MPMF_MOAOP_CONTROL_ESTADOAsync(string IM_ENTREGA, string IM_PEDIDO, string IM_TRANSPORTISTA) {
+            SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest inValue = new SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADORequest();
             inValue.IM_ENTREGA = IM_ENTREGA;
             inValue.IM_PEDIDO = IM_PEDIDO;
             inValue.IM_TRANSPORTISTA = IM_TRANSPORTISTA;
-            return ((SustitucionMOAWS.OrdenCargarControlEstadoWebServiceMOA.SI_MPMF_MOAOP_CONTROL_ESTADO)(this)).SI_MPMF_MOAOP_CONTROL_ESTADOAsync(inValue);
+            return ((SustitucionMOAWS.OrdenCargaControlEstadoSAP.SI_MPMF_MOAOP_CONTROL_ESTADO)(this)).SI_MPMF_MOAOP_CONTROL_ESTADOAsync(inValue);
         }
     }
 }
