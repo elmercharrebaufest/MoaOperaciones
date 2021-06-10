@@ -1,10 +1,6 @@
 ﻿using SustitucionMOAModel.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -14,6 +10,9 @@ namespace SustitucionMOAModel.Entities
         public int Id { get; set; }
 
         public int Cliente_Id { get; set; }
+
+
+        public virtual Proveedor Cliente { get; set;  }
 
         public DateTime FechaCarga { get; set; }
 
@@ -55,6 +54,9 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime? FechaEntregaGenerada { get; set; }
 
+        public string NumeroPedido { get; set; }
+
+
         public void ActualizarEstado ()
         {
             if(string.IsNullOrEmpty(ContratoSAP) || !TransporteExiste || !CorredorSeleccionado)
@@ -69,13 +71,20 @@ namespace SustitucionMOAModel.Entities
                 }
                 else
                 { 
-                    if (AprobadoCredito)
+                    if (!AprobadoCredito)
                     {
                         Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
                     }
                     else
                     {
-                        Estado = EstadoOrdenDeCarga.EntregaGenerada;
+                        if (FechaEntregaGenerada != null)
+                        {
+                            Estado = EstadoOrdenDeCarga.EntregaGenerada;
+                        }
+                        else
+                        {
+                            Estado = EstadoOrdenDeCarga.EntregaPendiente;
+                        }
                     }
                 }
             }

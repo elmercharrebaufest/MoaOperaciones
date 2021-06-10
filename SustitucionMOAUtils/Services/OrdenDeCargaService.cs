@@ -75,12 +75,10 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-00	'OK'
             */
-            var result1 = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, "");
-            var result2 = consumer.CrearOrdenRequest("", "", "", 0 , "", "", out string _);
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, "");
             var result3 = consumer.OrdenCargaControlEstadoRequest("", "", "");
-            var result4 = consumer.OrdenCargaEntregadaRequest("", 0, "", "", "", "", "", "", out string _);
 
-            switch (result1)
+            switch (result)
             {
                 case "CC-00":
                     ordenDeCarga.TransporteExiste = true;
@@ -337,9 +335,12 @@ namespace SustitucionMOAUtils.Services
         {
             orden.TransporteExiste = TransporteExiste(orden.CUITTransporte);
 
-            if (orden.TransporteExiste)
+            var resultadoVerificarOrden = VerificarOrden(orden, orden.Cliente);
+
+            if (resultadoVerificarOrden || orden.TransporteExiste)
             {
                 orden.ActualizarEstado();
+                repositorio.GuardarCambios();
                 return SuccessMsg.OrdenDeCargaActualizada;
             }
             else
@@ -391,6 +392,23 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        private void EnviarASAP(OrdenDeCarga orden, Proveedor cliente)
+        {
+            //OV-01   'Verificar Contrato, Material, Cliente'
+            //OV-02   'Verificar cantidad pendiente de Contratada'
+            //OV-03   'Pedido creado - Verificar Crédito de pedido'
+            //OV-00   'OK'
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
+
+            if (result == "OK")
+            {
+                orden.InformadaSAP = true;
+                orden.NumeroPedido = numeroPedido;
+
+                orden.ActualizarEstado();
+                repositorio.GuardarCambios();
+            }
+        }
 
         #endregion
 
@@ -456,22 +474,41 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        private void EnviarASAP(OrdenDeCarga orden, Proveedor cliente)
+
+        private void GenerarEntregaSAP (OrdenDeCarga orden)
         {
-            //OV-01   'Verificar Contrato, Material, Cliente'
-            //OV-02   'Verificar cantidad pendiente de Contratada'
-            //OV-03   'Pedido creado - Verificar Crédito de pedido'
-            //OV-00   'OK'
-            var result = "";// consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
+            var conductor = string.Concat(orden.ApellidoChofer, ", ", orden.NombreChofer);
 
-            if (result == "OK")
+            var tipoDocumento = "DNI";
+            var result = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, conductor, orden.PatenteAcoplado, orden.ChasisAcoplado, orden.NumeroPedido, tipoDocumento, orden.RazonSocialTransporte, out string _);
+
+            //OE-00   'OK'
+            //OE-01   'No existe tranportista'
+            //OE-02   'Entrega Creada - Error al insertar'
+
+            switch (result)
             {
-                orden.InformadaSAP = true;
-                //orden.numeroPedido = ""
+                case "OE-00":
+                    orden.TransporteExiste = true;
+                    orden.FechaEntregaGenerada = DateTime.Now;
+                    orden.ActualizarEstado();
+                    repositorio.GuardarCambios();
 
-                orden.ActualizarEstado();
+                    break;
+
+                case "OE-01":
+                    orden.TransporteExiste = false;
+                    orden.ActualizarEstado();
+                    repositorio.GuardarCambios();
+                    break;
+
+                case "OE-02":
+                    //TODO: Que hacemos aca?
+                    break;
             }
+
         }
+
         #endregion
 
 
