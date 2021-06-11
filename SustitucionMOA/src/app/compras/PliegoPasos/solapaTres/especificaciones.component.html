@@ -6,16 +6,15 @@
             <mensaje></mensaje>
             <div class="inputCompras">
                 <div class="row myRow" style="padding-top: 2px;">
-
                     <div class="row myRow">
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
-                            <p-fileUpload name="myfile" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                            <p-fileUpload [styles]="{'margin-left':'-13px'}" name="myfile" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                                 [showUploadButton]=false [showCancelButton]=false [customUpload]="true"
                                 (uploadHandler)="uploadHandler($event)">
                                 <ng-template *ngIf="viewModel.archivosAdjuntosNuevos.length == 0" pTemplate="toolbar">
                                     <div *ngIf="viewModel.archivosAdjuntosNuevos.length == 0"
-                                        style="display: inline !important;">
+                                        style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
                                         Ningún archivo elegido</div>
                                 </ng-template>
                                 <ng-template let-file pTemplate="file">
@@ -51,7 +50,7 @@
                             <!--Fin Archivos nuevos-->
                         </div>
                     </div>
-<!--border: 1px solid #a80000;-->
+                    <!--border: 1px solid #a80000;-->
                     <div class="row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <label class="labelCompras" for="editorTexto"> Observaciones</label>
@@ -108,9 +107,15 @@
                         </div>
                     </div>
                 </div>
+               
             </div>
             <!-- END form-->
         </section>
         <!--End CONTENT-->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="margenInput obligatorio">
+                * Campos obligatorios
+            </div>
+        </div>
     </div>
 </form>
