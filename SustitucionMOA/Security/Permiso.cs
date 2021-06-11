@@ -128,5 +128,7 @@
         /*LOG PESIFICACIONES*/
         public const string CONSULTA_LOG_PESIFICACIONES = "GUARDADO Y CONSULTA DE LOG PESIFICACIONES";
 
+        /*Alta interna Granos*/
+        public const string NOTIFICAR_ALTA_INTERNA_GRANOS = "NOTIFICAR ALTA INTERNA GRANOS";
     }
 }

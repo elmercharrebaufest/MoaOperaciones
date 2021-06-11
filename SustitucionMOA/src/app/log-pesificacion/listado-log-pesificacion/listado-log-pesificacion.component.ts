@@ -93,7 +93,6 @@ export class ListadoLogPesificacionComponent implements OnInit {
   public filtrarResultatos(): void {
     this.spinnerComponent.showIt();
     this.listadoPesificaciones = [];
-    debugger
     this.filtros.fecha = $("#dtp_input_inicio").val();
     this.logEspecificacionService.getFiltrarPesificaciones(this.filtros).subscribe(
       result => {

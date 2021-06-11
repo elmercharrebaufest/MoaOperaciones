@@ -116,6 +116,7 @@
     <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />
     <None Include="scripts\CreacionRolSolp.sql" />
     <None Include="scripts\UpdateAltaFisicaProveedores.sql" />
+    <None Include="scripts\PermisoAltaInternaGranos.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
