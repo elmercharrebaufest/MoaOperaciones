@@ -450,7 +450,7 @@
                                 </a>
                             </div>
                             <div
-                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES') && !esUsuarioComercial">
                                 <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>

@@ -54,7 +54,7 @@
                     *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
                     Tipo proveedor:
                     <div class="styled-select ">
-                        <select [(ngModel)]="idTipoProveedor"  (ngModelChange)="onChangeProveedor()">
+                        <select [(ngModel)]="idTipoProveedor" (ngModelChange)="onChangeProveedor()">
                             <option value="0" selected>Todos</option>
                             <option value="2" selected>Granos</option>
                             <option value="3" selected>No granos</option>
@@ -270,6 +270,7 @@
                                         Completar Alta
                                     </button>
 
+
                                     <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
                                         type="button" style="width: 70px;font-size: 12px;"
                                         class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
@@ -281,6 +282,15 @@
                                         class="btn-custom btn-add btn-chico" (click)="AbrilModalYaVenianOperando(empresa)">
                                         Operando
                                     </button>
+
+                                    <!-- Alta interna Granos-->
+                                    <button type="button"
+                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario != 3 && isAuthorized('NOTIFICAR ALTA INTERNA GRANOS')"
+                                        class="btn-custom btn-add btn-chico"
+                                        (click)="goToSeccionParam('/alta-empresa-granos',  empresa.Id)">
+                                        Alta Interna
+                                    </button>
+                                    <!-- Fin Granos-->
                                 </td>
                             </tr>
                         </tbody>
@@ -677,11 +687,10 @@
                                         'No'}} </label>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-5">
-                                    Presento documentación física:  
-                                    <input type="checkbox" style="margin-right: 5px;" id="AltaFisica"
-                                        placeholder=""
+                                    Presento documentación física:
+                                    <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
                                         [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
-                                        (ngModelChange)="onChangeDocumentacionFisica()"> 
+                                        (ngModelChange)="onChangeDocumentacionFisica()">
                                 </div>
                             </div>
                         </div>

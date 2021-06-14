@@ -76,6 +76,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     esMultiFirma: boolean = false;
 
+    esGuardarYNotificar: boolean = false;
+    esUsuarioComercial: boolean = false;
+
     constructor(
         protected service: EmpresaGranosService,
         protected navService: NavService,
@@ -106,7 +109,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     protected spinnerModal: SpinnerSmallComponent;
 
     checkPermisos() {
-        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS")
     }
 
     setTabs() {
@@ -119,6 +122,9 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         this.esMultiFirma = this.securityService.tienePermiso(
             "CONSULTAR VENDEDOR PENDIENTES"
         );
+
+        //comercial
+        this.esUsuarioComercial =  this.securityService.tienePermiso('ABM EMPRESAS');
 
         this.route.params.forEach((params: Params) => {
             if (params["id"] > 0) this.proveedorId = params["id"];
@@ -139,6 +145,8 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                 autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
             }
         }, 1000);
+
+        this.setTipoNotificacion();
 
     }
 
@@ -323,7 +331,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
             this.navService.navegarSeccion(
                 "/dato-fiscal/vendedores-pendientes"
             );
-        } else {
+        }
+        else if (this.esUsuarioComercial)
+        {
+            this.navService.navegarSeccion(
+                "/altas"
+            );
+        }
+        else {
             this.navService.navegarSeccion("/estado-solicitud");
         }
     }
@@ -587,12 +602,57 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
                     this.empleados = result.Empleados;
                     this.funcionarios = result.Funcionarios;
+
+                    this.setTipoNotificacion();
                 }
             },
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
+    }
+
+
+
+
+    onNotificar() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        this.subscription = this.service
+            .notificarSolicitud(this.proveedorId)
+            .subscribe(
+                (result) => {
+                    this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.redirigirAEstado();
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+
+    }
+
+    setTipoNotificacion() {
+        if (this.esUsuarioComercial) {
+            this.esGuardarYNotificar = this.codigoDeConducta;
+            return;
+        }
+
+        this.esGuardarYNotificar = true;
     }
 
 }
