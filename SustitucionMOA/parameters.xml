@@ -116,6 +116,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailToReporteCamposSustentables Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailToReporteCamposSustentables']
+                           /@value" />
+	</parameter>
+
 
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
