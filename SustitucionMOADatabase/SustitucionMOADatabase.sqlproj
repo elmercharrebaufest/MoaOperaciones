@@ -127,7 +127,7 @@
     <Build Include="DBO\Tables\SolpSubposicion.sql" />
     <Build Include="DBO\Tables\PliegoArchivo.sql" />
     <Build Include="DBO\Tables\PliegoVisita.sql" />
-    <Build Include="scripts\PermisoAltaInternaGranos.sql" />
+    <None Include="scripts\PermisoAltaInternaGranos.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
