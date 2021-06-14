@@ -28,6 +28,8 @@
 	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
 	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
+	<setParameter name="EmailToReporteCamposSustentables Config" value="mpfeiffer@baufest.com,maria.capalbo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
+
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
 	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagro;AccountKey=F/Y5guJSOeg5ZlfjTIhfDK+TFn/leZLdhFswGYpDn7JCYnSxTs3kD9FY9TlVaxPdZZY+E7qaK92mkYN4k6deuQ==;EndpointSuffix=core.windows.net" />

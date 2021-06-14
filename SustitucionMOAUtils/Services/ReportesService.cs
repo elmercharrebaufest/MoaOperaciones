@@ -29,6 +29,19 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarReporteCamposSustentablesTSA()
         {
+
+            //if (DateTime.Today.DayOfWeek != DayOfWeek.Tuesday && DateTime.Today.DayOfWeek != DayOfWeek.Friday)
+            //{
+            //    return;
+            //}
+
+            ///*Mail del Martes: Se va a enviar los campos registrados los Viernes, Sábado, Domingo y Lunes anteriores
+            //Mail del Viernes: Se va a enviar los campos registrados los Martes, Miércoles y Jueves anteriores */
+
+            //var diasAtras = DateTime.Today.DayOfWeek == DayOfWeek.Tuesday ? 4 : 3;
+
+            //var dateToCompare = DateTime.Today.AddDays(-diasAtras);
+
             var dateToCompare = DateTime.Today;
 
             var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDTO>(
@@ -49,7 +62,8 @@ namespace SustitucionMOAUtils.Services
                     NombreCosecha = cp.CampoCosecha.Cosecha.Nombre
                 }
                 , cp => cp.FechaCreacion.HasValue
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) == DbFunctions.TruncateTime(dateToCompare)
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare) 
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today)
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
