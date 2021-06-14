@@ -63,7 +63,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 , cp => cp.FechaCreacion.HasValue
                     && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare) 
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today)
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) <= DbFunctions.TruncateTime(DateTime.Today)
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
