@@ -203,7 +203,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         this.mensajeComponent.setMsgsEmpty();
-        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date() };
+        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
         this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
             result => {
                 if (result.logout == true) {
@@ -436,6 +436,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta = result;
                         this.consulta.Comentarios.forEach(x => {
                             x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
+                            x.FechaRecordado = new Date (this.getDateFromAspNetFormat(x.FechaRecordado));
                         });
                         this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
                         this.consulta.Fecha = new Date (this.getDateFromAspNetFormat(this.consulta.Fecha));

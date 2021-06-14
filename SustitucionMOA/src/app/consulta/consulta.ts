@@ -62,5 +62,7 @@ export interface Causa {
 export class Comentario{
     consulta_Id: any; 
     Detalle: any; 
-    Fecha: any
+    Fecha: any;
+    Recordado: any;
+    FechaRecordado: any;
 }

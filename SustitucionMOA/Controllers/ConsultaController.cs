@@ -252,9 +252,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 if (consultaId <= 0 || estadoConsultaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
-
                 consultaService.ActualizarEstadoConsulta(consultaId, estadoConsultaId);
-
                 return JsonCustom(new { });
             }
             catch (InfoCustomException e)
