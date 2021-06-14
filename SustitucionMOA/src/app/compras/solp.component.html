@@ -37,6 +37,10 @@
                     <div  *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut] >
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" ></cabecera>
                     </div>
+                    <div  *ngSwitchCase="enumSolp.SolpSubposiciones" [@fadeInOut] >
+                        <subPosicion #cabecera  [(locale)]="es"  ></subPosicion>
+                    </div>
+                    
                     <div *ngSwitchDefault [@fadeInOut] >
                         Paso en construccion
                     </div>

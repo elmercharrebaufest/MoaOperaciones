@@ -371,6 +371,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.selectMonedaCompras
                     ]);
                     break;
+                    case EnumPasoSolp.SolpSubposiciones:
+                        paso.Completo = this.listaStringCompleta([
+                        ]);
+                        break;
                 case EnumPasoSolp.SolpSubposiciones:
                     break;
             }
