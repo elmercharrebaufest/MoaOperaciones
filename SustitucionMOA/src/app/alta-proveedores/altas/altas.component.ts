@@ -418,6 +418,57 @@ export class AltasComponent extends BaseComponent implements OnInit {
         return false;
     }
 
+    AbrilModalYaVenianOperando(empresa: any){
+        this.empresaSeleccionada = empresa;
+        document.getElementById("openModalVieneOperando").click();
+    }
+
+    proveedorNoGranosOperando(){
+        debugger
+        this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+
+        if(this.validarNoGranosOperando()) return
+        
+        this.subscription = this.altaEmpresaService
+            .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial)
+            .subscribe(
+                (result) => {
+                    this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeComponent.setSuccessMsg(result.info);
+                        document.getElementById("hidemyModalOperando").click();
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+
+        document.getElementById("hidemyModalOperando").click();
+    }
+
+    validarNoGranosOperando(){
+        this.mensajeComponent.setMsgsEmpty();
+        if(this.empresaSeleccionada.RazonSocial == '' || !this.empresaSeleccionada.RazonSocial){
+            this.mensajeComponent.setErrorMsg("Falta Completar la razón social.");
+            return true
+        }
+
+        return false
+    }
+
     obtenerArchivosSubidos(mail: string, proveedorId: number) {
         this.subscription = this.service.obtenerArchivosSubidos(mail, proveedorId).subscribe(
             result => {
