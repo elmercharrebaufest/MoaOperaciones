@@ -94,6 +94,7 @@ namespace SustitucionMOAUtils.Email
                 {
                     attachment.ContentStream.Seek(0, SeekOrigin.Begin);
                     mail.Attachments.Add(attachment);
+                    attachment.ContentStream.Flush();
                 }
             }
 
