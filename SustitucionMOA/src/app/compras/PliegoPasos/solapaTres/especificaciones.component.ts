@@ -9,13 +9,13 @@ import { ModalService } from '../../../common/services/ModalService';
 import { ComprasService } from '../../compras.service'
 import { Solp } from '../../Solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
-import  ImageResize  from 'quill-image-resize-module';
+import ImageResize from 'quill-image-resize-module';
 import Quill from 'quill';
-import {FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../enum-paso-solp';
 
- Quill.register('modules/imageResize', ImageResize);
+Quill.register('modules/imageResize', ImageResize);
 
 declare var $: any;
 
@@ -37,14 +37,14 @@ export class EspecificacionesComponent extends ListBaseComponent {
     public viewModel: EspecificacionesViewModel;
     modulesEditor = {};
 
-    formularioEspecificaciones : FormGroup;
+    formularioEspecificaciones: FormGroup;
 
     @Output() onEstCompleto = new EventEmitter<any>();
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, 
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-         protected route: ActivatedRoute, protected router: Router,private formBuilder: FormBuilder,
-         private validadorPasoSolpService : ValidadorPasoSolpService) {
+        protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,
+        private validadorPasoSolpService: ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.modulesEditor = {
@@ -69,12 +69,12 @@ export class EspecificacionesComponent extends ListBaseComponent {
         this.setTabs();
         this.viewModel = this.model.especificacionesViewModel;
 
-         //declaro las validaciones para los campos
-         this.formularioEspecificaciones = this.formBuilder.group({
+        //declaro las validaciones para los campos
+        this.formularioEspecificaciones = this.formBuilder.group({
             observacion: new FormControl(this.viewModel.valorPorDefecto, [this.validatorObservaciones(this.viewModel.valorPorDefecto)]),
         });
 
-            this.validadorPasoSolpService.formulario = this.formularioEspecificaciones
+        this.validadorPasoSolpService.formulario = this.formularioEspecificaciones
         if (this.model.cargoPasoTres) {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
@@ -84,13 +84,13 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     validatorObservaciones(valorPorFecto: string): any {
         return (control: AbstractControl): ValidationErrors | null => {
-            if (control.value == undefined || control.value =="" || control.value == valorPorFecto) {
+            if (control.value == undefined || control.value == "" || control.value == valorPorFecto) {
                 return { 'requerid': true };
             }
             return null;
         };
     }
-    
+
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
@@ -103,44 +103,37 @@ export class EspecificacionesComponent extends ListBaseComponent {
         this.viewModel.archivosGuardadosEspecificaciones.splice(indice, 1)
     }
 
-    descargarArchivo(archivo): void {
-        this.service.DescargarArchivo(archivo.id)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
 
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            // IE11
-                            window.navigator.msSaveOrOpenBlob(
-                                blob,
-                                result.FileDownloadName
-                            );
-                        } else {
-                            var url = window.URL.createObjectURL(blob);
-                            var link = document.createElement("a");
-                            document.body.appendChild(link);
-                            link.href = url;
-                            link.download = result.FileDownloadName;
-                            link.click();
-                            setTimeout(function () {
-                                window.URL.revokeObjectURL(url);
-                            }, 0);
-                            return false;
+    descargarArchivo(archivo): void {
+        debugger
+        var a = this.viewModel;
+        if (archivo.id != undefined) {
+
+            this.service.DescargarArchivo(archivo.id)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
                         }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                (error) => {
-                    this.spinnerSmallComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+                )
+        }
+        else {
+            this.downloadArchivoLocal(archivo, archivo.name);
+
+        }
     }
 
     uploadHandler(filesUploaad: any): void {
@@ -155,10 +148,10 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     fileChange(file): void {
         if (this.posicionDeInicioInsert != undefined && this.viewModel.observaciones.length > this.posicionDeInicioInsert) {
-                var textoInicial = this.viewModel.observaciones.substring(0,  this.posicionDeInicioInsert + 1);
-                var textoFinal = this.viewModel.observaciones.substring(this.posicionDeInicioInsert + 1, this.viewModel.observaciones.length);
-                this.viewModel.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
-                this.posicionDeInicioInsert = undefined;
+            var textoInicial = this.viewModel.observaciones.substring(0, this.posicionDeInicioInsert + 1);
+            var textoFinal = this.viewModel.observaciones.substring(this.posicionDeInicioInsert + 1, this.viewModel.observaciones.length);
+            this.viewModel.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
+            this.posicionDeInicioInsert = undefined;
         }
         else {
             this.viewModel.observaciones = this.viewModel.observaciones + '<img src=' + file + '>';
@@ -187,10 +180,30 @@ export class EspecificacionesComponent extends ListBaseComponent {
         }
     }
 
-    ngOnDestroy()
-    {
+    ngOnDestroy() {
         super.ngOnDestroy();
-        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoEspecificacion, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+        this.onEstCompleto.emit({ codigo: EnumPasoSolp.PliegoEspecificacion, esPasoInvalido: this.validadorPasoSolpService.esPasoInvalido() });
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(
+                blob,
+                nombreArchivo
+            );
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
+        }
     }
 
 }

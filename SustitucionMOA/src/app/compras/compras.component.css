@@ -25,10 +25,10 @@
     background-color: #fff; 
     border: 1px solid #5B5B5B;
   }
-  
+
   .cardText {
     text-align: center;
-    font-family: 'Roboto Condensed';
+    font-family: 'Roboto Regular';
     font-weight: 400;
     font-style: normal;
     font-size: 24px;
@@ -70,9 +70,22 @@
     margin-bottom: 20px;
     font-weight: 100;
     margin-left: 15px;
-    
-  
   }
+
+  .posicionCompras {
+    height: 50px;
+    letter-spacing: var(--unnamed-character-spacing-0);
+    color: var(--status);
+    text-align: left;
+    letter-spacing: 0px;
+    color: #1C7CD5;
+    opacity: 1;
+    font-size: 24px;
+    font-family: Roboto Regular;
+    font-weight: 100;
+  }
+
+
   
   .margenInput {
     margin-bottom: 1em;
@@ -88,7 +101,6 @@
   } 
  
   ::ng-deep .ui-chkbox-label, .labelCompras {
-    font-family: "Roboto Condensed", Arial, sans-serif !important;
     font-weight: bold !important;
     font-size: 16px !important;
 
@@ -110,6 +122,10 @@
 
   .widthCompras {
     width: 75%;
+  }
+
+  .widthInputDias {
+    width: 15%;
   }
 
   ::ng-deep .ui-sidebar-bottom {
@@ -147,13 +163,13 @@
     background-color: honeydew;
     border: 1px solid #C9C9C9 !important; 
   }
-/* 
-  ::ng-deep .weekDayBtn .ui-inputtext {
+
+  /* ::ng-deep .weekDayBtn .ui-inputtext {
     width: 2.5em;
     padding: 0.5em !important;
-  }
+  } */
 
-  ::ng-deep .weekDayBtn .ui-button-tex{
+  /* ::ng-deep .weekDayBtn .ui-button-tex{
     padding: 0.5em !important;
   } */
 
@@ -162,7 +178,6 @@
     font-weight: 400;
     color: #3f4845;
     overflow: hidden;
-    font-family: "Roboto Condensed", Arial, sans-serif;
   }
 
   .weekDayBtn {
@@ -198,7 +213,6 @@
     font-size: 1.5rem;
     font-weight: 400;
     overflow: hidden;
-    font-family: "Roboto Condensed", Arial, sans-serif;
   }
 
   /* ::ng-deep .ui-autocomplete-token {
@@ -216,7 +230,29 @@
   
   /* fin Estilo paso 5 Cabecera */
 
-  /*pesificaciones*/
+  /* .estiloCompras {
+    color: #666666;
+    text-align: left;
+    letter-spacing: 0;
+    font-size: 16px !important;
+    font-family: Roboto Regular !important;
+  } */
+
+  .prototipo {
+    margin: 0px -1px 10px 0px !important;
+  }
+
+  .alinearTitulo {
+    margin-left: -13px;
+  }
+
+  .alinearAlturaMenuDashboard {
+    margin-top: -50px;
+  }
+
+  .alinearAlturaMenu {
+    margin-top: -70px;
+  }
 
   ::ng-deep div.ui-fileupload-buttonbar span.ui-fileupload-choose {
   width: 130px !important;
@@ -238,6 +274,14 @@
 ::ng-deep div.ui-fileupload-buttonbar  {
   background-color: #FFFFFF !important;
   border: none !important;
+  margin-left: -13px;
+  color: #666666;
+  text-align: left;
+  letter-spacing: 0;
+  font-size: 16px !important;
+  font-family: Roboto Regular !important;
+  font-weight:normal;
+
 }
 ::ng-deep  div.ui-fileupload-content
 {
@@ -268,4 +312,33 @@
 
 ::ng-deep #jornadaLaboral.errorDias div.ui-button.ui-togglebutton{
   border: 1px solid #a80000 !important;
+}
+
+::ng-deep body,
+::ng-deep input,
+.cardText,
+.obligatorio,
+.headerCompras,
+.styled-select,
+::ng-deep .ui-chkbox-label, .labelCompras,
+.styled-select1,
+.valorTotal {
+  font-family: 'Roboto Regular' !important;
+}
+
+.botonesCompras {
+  color: #666666;
+  text-align: left;
+  letter-spacing: 0;
+  font-size: 14px !important;
+  font-family: Roboto Regular !important;
+  font-weight:bold;
+}
+
+.botonesComprasColor {
+  text-align: left;
+  letter-spacing: 0;
+  font-size: 14px !important;
+  font-family: Roboto Regular !important;
+  font-weight:bold;
 }
