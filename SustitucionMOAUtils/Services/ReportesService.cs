@@ -80,6 +80,7 @@ namespace SustitucionMOAUtils.Services
 
                 var outputMemStream = new MemoryStream();
 
+
                 var zipStream = new ZipOutputStream(outputMemStream);
                 zipStream.SetLevel(3);
 
@@ -100,7 +101,7 @@ namespace SustitucionMOAUtils.Services
                     zipStream.CloseEntry();
                 }
                 zipStream.IsStreamOwner = false;
-
+                zipStream.Close();
                 outputMemStream.Position = 0;
 
                 archivoZip = new Attachment(outputMemStream, nombreArchivoZip);
@@ -123,7 +124,8 @@ namespace SustitucionMOAUtils.Services
                     Template = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteCamposSustentables.html"),
                     Adjuntos = new List<Attachment>
                 {
-                    archivoExcel,
+                    archivoExcel
+                    ,
                     archivoZip
                 }
                 });
