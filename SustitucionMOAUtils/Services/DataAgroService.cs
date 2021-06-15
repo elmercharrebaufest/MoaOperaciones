@@ -181,15 +181,15 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT)
+        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool corredor = false)
         {
             try
             {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT);
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(CUIT, corredor);
 
                 return respuesta;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return null;
             }
