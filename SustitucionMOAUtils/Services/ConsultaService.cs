@@ -246,6 +246,8 @@ namespace SustitucionMOAUtils.Services
                 Detalle = x.Detalle,
                 Fecha = x.Fecha,
                 UsuarioId = x.Usuario_Id,
+                Recordado = x.Recordado,
+                FechaRecordado = x.FechaRecordado,
                 Usuario = new UsuarioDto()
                 {
                     Id = x.Usuario.Id,
@@ -272,7 +274,7 @@ namespace SustitucionMOAUtils.Services
                 return dato;
             }
 
-            if (dato.Contains("/") || dato.Contains(",") || dato.Contains(" "))
+            if (dato.Contains("/") || dato.Contains(",") || dato.Contains(" ") || dato.Contains(";"))
             {
                 dato = dato.Replace(",", "<br>");
                 dato = dato.Replace("/", "<br>");
@@ -287,16 +289,20 @@ namespace SustitucionMOAUtils.Services
 
         public string RecordarComentario(int consultaId)
         {
-            var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
-
             try
             {
+                var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
                 var copia = new List<string>();
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
                 string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
+
+                consulta.FechaUltimaModificacion = DateTime.Now;
+                consulta.Comentarios.Last().Recordado = true;
+                consulta.Comentarios.Last().FechaRecordado = DateTime.Now;
+                repositorio.GuardarCambios();
             }
             catch (Exception ex)
             {
@@ -328,6 +334,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 Consulta consulta = GetConsulta(consultaId);
+
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
                 string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
