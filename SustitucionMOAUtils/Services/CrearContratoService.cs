@@ -730,5 +730,27 @@ namespace SustitucionMOAUtils.Services
 
             return reporte;
         }
+
+        public string TraerHabilitarSustentable( )
+        {
+            try
+            {
+                var url = string.Concat(DataAgroURL, "/CompraNetTercero/HabilitarSustentable");
+                return ConsultarDataAaro(url, "");
+
+            }
+            catch (InfoCustomException)
+            {
+                throw;
+            }
+            catch (ValidationCustomException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
     }
 }

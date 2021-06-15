@@ -505,6 +505,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     changeMoneda(event) {
+        console.log("asdsad");
         this.contrato.PagoDiferidoTercero = false;
         this.contrato.DolarizadoTercero = false;
         if (this.contrato.MonedaId != "" && this.contrato.MonedaId != undefined && this.contrato.MonedaId != null) {
@@ -543,6 +544,49 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
     isSoja(): boolean {
         return this.contrato.MaterialId == 3;
+    }
+
+    isSustentableHabilitado(): boolean {
+        let dateParts = $("#noCursor2").val().split("/");
+        let entrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+        let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega >= entrega && a.HastaEntrega <= entrega);
+        return sustentables.length == 1 && this.isSoja();
+    }
+
+    changeSustentable(event) {
+
+        if (this.contrato.SustentableTercero == true) {
+            let dateParts = $("#noCursor2").val().split("/");
+            let entrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+            let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega >= entrega && a.HastaEntrega <= entrega);
+            if (sustentables.length == 1) {
+                this.contrato.ImporteSustentable = sustentables[0].Precio;
+                this.contrato.MonedaSustentableId = sustentables[0].MonedaId;
+                this.contrato.Sustentable = true;
+                this.ObservacionSustentableTercero = sustentables[0].Precio + " " + sustentables[0].MonedaId
+            } else {
+                this.contrato.ImporteSustentable = null;
+                this.contrato.MonedaSustentableId = null;
+                this.contrato.Sustentable = false;
+                this.contrato.SustentableTercero = false;
+                console.log("no esta haibltiado sustentable.")
+            }
+        } else {
+            this.contrato.ImporteSustentable = null;
+            this.contrato.MonedaSustentableId = null;
+            this.contrato.Sustentable = false;
+        }
+    }
+
+    changeFechaHasta(event) {
+        setTimeout(() => {
+            console.log("changeFechaHasta");
+            this.contrato.SustentableTercero == true
+            this.contrato.ImporteSustentable = null;
+            this.contrato.MonedaSustentableId = null;
+            this.contrato.Sustentable = false;
+        }, 0);
+
     }
 
 
