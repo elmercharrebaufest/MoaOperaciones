@@ -11,6 +11,9 @@ BEGIN
 	VALUES ('GES', 'En Gestion', '#ec8b3b')
 
 	INSERT INTO EstadoConsulta(Code, Descripcion, Color)
+	VALUES ('GESRTA', 'En Gestion Rta', '#ec8b3b')
+
+	INSERT INTO EstadoConsulta(Code, Descripcion, Color)
 	VALUES ('DOC', 'Solicitud de información', '#9e9604')
 
 	INSERT INTO EstadoConsulta(Code, Descripcion, Color)

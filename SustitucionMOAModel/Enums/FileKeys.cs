@@ -29,5 +29,8 @@ namespace SustitucionMOAModel.Enums
         public const string CampoSustentableKMZ = "campoSustentableKMZ";
         public const string DeclaracionCampoSustentable = "declaracionCampoSustentable";
         public const string ArchivoLogPesificaciones = "archivoLogPesificaciones";
+        public const string AdjuntoSolp = "adjuntoSolp";
+        public const string EspecificacionesTecnicasPliego = "especificacionesTecnicasPliego";
+        public const string ArchivoPliego = "archivoPliego";
     }
 }

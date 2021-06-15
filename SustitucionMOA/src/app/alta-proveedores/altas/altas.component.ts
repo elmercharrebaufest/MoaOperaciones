@@ -74,6 +74,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
+
+    contieneDocumentacionFisica: number = 0;
+
     ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
@@ -413,6 +416,57 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
+    }
+
+    AbrilModalYaVenianOperando(empresa: any){
+        this.empresaSeleccionada = empresa;
+        document.getElementById("openModalVieneOperando").click();
+    }
+
+    proveedorNoGranosOperando(){
+        debugger
+        this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+
+        if(this.validarNoGranosOperando()) return
+        
+        this.subscription = this.altaEmpresaService
+            .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial)
+            .subscribe(
+                (result) => {
+                    this.spinnerSmallComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        this.mensajeComponent.setSuccessMsg(result.info);
+                        document.getElementById("hidemyModalOperando").click();
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+
+        document.getElementById("hidemyModalOperando").click();
+    }
+
+    validarNoGranosOperando(){
+        this.mensajeComponent.setMsgsEmpty();
+        if(this.empresaSeleccionada.RazonSocial == '' || !this.empresaSeleccionada.RazonSocial){
+            this.mensajeComponent.setErrorMsg("Falta Completar la razón social.");
+            return true
+        }
+
+        return false
     }
 
     obtenerArchivosSubidos(mail: string, proveedorId: number) {
@@ -808,4 +862,49 @@ export class AltasComponent extends BaseComponent implements OnInit {
         //escribe el file para ser descargado
         const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');  
     }
+
+    onChangeProveedor()
+    {
+        this.contieneDocumentacionFisica = 0;
+    }
+
+    onChangeDocumentacionFisica()
+    {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.facturacionAnual == null) {
+            this.facturacionAnual = 0;
+        }
+
+        try {
+            this.service.registrarDocumentacionFisica(this.empresaSeleccionada.Id,
+                 this.empresaSeleccionada.ContieneDocumentacionFisica
+                        ).subscribe(
+                    result => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                            this.getEmpresa();
+                        } else {
+                            setTimeout(() => {
+                                this.pantallaEditarAlta = false;
+                            }, 1000);
+                        }
+                    },
+                    error => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+         
+        }
+       
+    }
+
 }

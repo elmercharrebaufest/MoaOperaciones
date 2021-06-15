@@ -75,6 +75,8 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
         autocompletesLocalidad[i].setAttribute("autocomplete", "chrome-off");
       }
     }, 1000);
+
+    this.cartaPresentacion.vendedorMailContacto = sessionStorage.getItem("username");
   }
 
 

@@ -43,6 +43,7 @@
       <xs:enumeration value="Calado" />
       <xs:enumeration value="RechazadosDemorados" />
       <xs:enumeration value="NoGranos" />
+      <xs:enumeration value="Circular" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoCalle" nillable="true" type="tns:TipoCalle" />
@@ -54,18 +55,138 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoUva" nillable="true" type="tns:TipoUva" />
+  <xs:simpleType name="TipoPinchazo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UnoYDos">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="DosYTres">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TipoPinchazo" nillable="true" type="tns:TipoPinchazo" />
+  <xs:simpleType name="TipoPermiso">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Abm" />
+      <xs:enumeration value="Actividad" />
+      <xs:enumeration value="Grupo" />
+      <xs:enumeration value="Reporte" />
+      <xs:enumeration value="Puerto" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TipoPermiso" nillable="true" type="tns:TipoPermiso" />
+  <xs:simpleType name="TipoDocumentoIngreso">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OrdenCargaInterna" />
+      <xs:enumeration value="CartaPorte" />
+      <xs:enumeration value="OrdenDeDescarga" />
+      <xs:enumeration value="OrdenCargaFas" />
+      <xs:enumeration value="OrdenDeDescargaFason" />
+      <xs:enumeration value="OrdenCargaInternaFason" />
+      <xs:enumeration value="OrdenEntrePlantas" />
+      <xs:enumeration value="Remito" />
+      <xs:enumeration value="OrdenDeCargaContenedor" />
+      <xs:enumeration value="RemitoBodegaUvaPropia" />
+      <xs:enumeration value="RemitoBodegaUvaTerceros" />
+      <xs:enumeration value="RemitoBodegaVino" />
+      <xs:enumeration value="HojaDeRuta" />
+      <xs:enumeration value="HojaDeRutaYerbatera" />
+      <xs:enumeration value="Embarque" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TipoDocumentoIngreso" nillable="true" type="tns:TipoDocumentoIngreso" />
   <xs:simpleType name="TipoVehiculo">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="Camión" />
-      <xs:enumeration value="Tren" />
-      <xs:enumeration value="Bitren" />
-      <xs:enumeration value="CamiónC" />
-      <xs:enumeration value="CamiónD" />
-      <xs:enumeration value="CamiónE" />
-      <xs:enumeration value="Vapor" />
+      <xs:enumeration value="Camiones">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Camión">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Tren">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Bitren">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CamiónC">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CamiónD">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CamiónE">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Vapor">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">6</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoVehiculo" nillable="true" type="tns:TipoVehiculo" />
+  <xs:simpleType name="OrigenVehiculo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Argentina" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="OrigenVehiculo" nillable="true" type="tns:OrigenVehiculo" />
+  <xs:simpleType name="TipoDeWorkflow">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Ingreso" />
+      <xs:enumeration value="Egreso" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="TipoDeWorkflow" nillable="true" type="tns:TipoDeWorkflow" />
+  <xs:simpleType name="EstadoTransmisionASap">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Correcto" />
+      <xs:enumeration value="Pendiente" />
+      <xs:enumeration value="Error" />
+      <xs:enumeration value="Cancelada" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="EstadoTransmisionASap" nillable="true" type="tns:EstadoTransmisionASap" />
   <xs:simpleType name="Modalidad">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Manual" />
@@ -112,26 +233,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="ClaseBin" nillable="true" type="tns:ClaseBin" />
-  <xs:simpleType name="TipoDocumentoIngreso">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="OrdenCargaInterna" />
-      <xs:enumeration value="CartaPorte" />
-      <xs:enumeration value="OrdenDeDescarga" />
-      <xs:enumeration value="OrdenCargaFas" />
-      <xs:enumeration value="OrdenDeDescargaFason" />
-      <xs:enumeration value="OrdenCargaInternaFason" />
-      <xs:enumeration value="OrdenEntrePlantas" />
-      <xs:enumeration value="Remito" />
-      <xs:enumeration value="OrdenDeCargaContenedor" />
-      <xs:enumeration value="RemitoBodegaUvaPropia" />
-      <xs:enumeration value="RemitoBodegaUvaTerceros" />
-      <xs:enumeration value="RemitoBodegaVino" />
-      <xs:enumeration value="HojaDeRuta" />
-      <xs:enumeration value="HojaDeRutaYerbatera" />
-      <xs:enumeration value="Embarque" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="TipoDocumentoIngreso" nillable="true" type="tns:TipoDocumentoIngreso" />
   <xs:simpleType name="MedioDePago">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Manual" />
@@ -139,19 +240,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="MedioDePago" nillable="true" type="tns:MedioDePago" />
-  <xs:simpleType name="TipoDeWorkflow">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Ingreso" />
-      <xs:enumeration value="Egreso" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="TipoDeWorkflow" nillable="true" type="tns:TipoDeWorkflow" />
-  <xs:simpleType name="OrigenVehiculo">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Argentina" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="OrigenVehiculo" nillable="true" type="tns:OrigenVehiculo" />
   <xs:simpleType name="CamaraFormatoDeArchivo">
     <xs:restriction base="xs:string">
       <xs:enumeration value="NoEspecificado" />
@@ -161,17 +249,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="CamaraFormatoDeArchivo" nillable="true" type="tns:CamaraFormatoDeArchivo" />
-  <xs:simpleType name="UbicacionBarco">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="En_Viaje" />
-      <xs:enumeration value="Recalada" />
-      <xs:enumeration value="Subiendo" />
-      <xs:enumeration value="Rada" />
-      <xs:enumeration value="Muelle" />
-      <xs:enumeration value="Zarpo" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="UbicacionBarco" nillable="true" type="tns:UbicacionBarco" />
   <xs:simpleType name="FormulaDescuento">
     <xs:restriction base="xs:string">
       <xs:enumeration value="DeTabla" />
@@ -247,15 +324,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoImpresion" nillable="true" type="tns:TipoImpresion" />
-  <xs:simpleType name="EstadoTransmisionASap">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Correcto" />
-      <xs:enumeration value="Pendiente" />
-      <xs:enumeration value="Error" />
-      <xs:enumeration value="Cancelada" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="EstadoTransmisionASap" nillable="true" type="tns:EstadoTransmisionASap" />
   <xs:simpleType name="TipoStockBines">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Centro" />
@@ -296,6 +364,7 @@
       <xs:enumeration value="AlertaAutomatica" />
       <xs:enumeration value="NotificacionEstadoWeb" />
       <xs:enumeration value="CartaPorte" />
+      <xs:enumeration value="CambioEstadoBalanzas" />
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoAlerta" nillable="true" type="tns:TipoAlerta" />
@@ -441,16 +510,6 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:element name="TipoDeServicio" nillable="true" type="tns:TipoDeServicio" />
-  <xs:simpleType name="TipoPermiso">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Abm" />
-      <xs:enumeration value="Actividad" />
-      <xs:enumeration value="Grupo" />
-      <xs:enumeration value="Reporte" />
-      <xs:enumeration value="Puerto" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="TipoPermiso" nillable="true" type="tns:TipoPermiso" />
   <xs:simpleType name="EstadoRomaneo">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Pendiente" />

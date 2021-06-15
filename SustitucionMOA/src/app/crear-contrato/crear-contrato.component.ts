@@ -669,10 +669,20 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                     if (obj != null) {
                         obj = JSON.parse(obj);
                     }
-                    if ((contrato.ClasificacionId == 2 || contrato.ClasificacionId == 3) &&
+                    if ((contrato.ClasificacionId == 2) &&
                         ((contrato.PlanCanje == true && obj.Ruca.Acopiador.PlanCanje == "NO") ||
                             (contrato.Consignatario == true && obj.Ruca.Acopiador.Consignatario == "NO") ||
                             (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Acopiador.Directo == "NO"))) {
+                        this.mensajeModal = "No est\u00E1 habilitado en Ruca";
+                        document.getElementById("openModalMensajeModal").click();
+                        this.blockUI.stop();
+                        return;
+                    }
+
+                    if ((contrato.ClasificacionId == 3) &&
+                        ((contrato.PlanCanje == true && obj.Ruca.Otros.PlanCanje == "NO") ||
+                            (contrato.Consignatario == true && obj.Ruca.Otros.Consignatario == "NO") ||
+                            (contrato.PlanCanje == false && contrato.Consignatario == false && obj.Ruca.Otros.Directo == "NO"))) {
                         this.mensajeModal = "No est\u00E1 habilitado en Ruca";
                         document.getElementById("openModalMensajeModal").click();
                         this.blockUI.stop();

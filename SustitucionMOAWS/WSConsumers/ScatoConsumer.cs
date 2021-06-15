@@ -30,7 +30,7 @@ namespace SustitucionMOAWS.WSConsumers
                     ObtenerFotosPorCartaPorteID(cartaPorteFotos, cartaPorteId);
                 }
 
-                if(cartaPorteFotos.Count == 0)
+                if (cartaPorteFotos.Count == 0)
                 {
                     throw new SustitucionMOAModel.CustomExceptions.InfoCustomException("No hay foto para la/s carta/s porte seleccionada");
                 }
@@ -50,7 +50,7 @@ namespace SustitucionMOAWS.WSConsumers
                 FotosDto fotos = service.ObtenerFotosCartaPortePorNumero(cartaPorteId);
                 foreach (FotoDto foto in fotos.Fotos)
                 {
-                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica));
+                    cartaPorteFotos.Add(new CartaPorteFoto(cartaPorteId, foto.Foto, foto.FotoChica, foto.Extension));
                 }
             }
             catch

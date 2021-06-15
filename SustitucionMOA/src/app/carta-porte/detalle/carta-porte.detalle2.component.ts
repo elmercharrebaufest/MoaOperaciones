@@ -11,7 +11,8 @@ import { Seccion } from './../../common/models/seccion';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
-
+import baseParse from 'base64-arraybuffer';
+declare var Tiff: any;
 
 
 @Component({
@@ -190,7 +191,12 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-                    this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    if (result[0].EsArchivoTiff) {
+                        this.fotoSrc = this.loadFileTiff(result[0].Foto);
+                    }
+                    else {
+                        this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    }
                     document.getElementById("openModalHiddenButton").click();
                     return true;
                 }
@@ -200,5 +206,11 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
             }
         );
         return false;
+    }
+
+    loadFileTiff(imagen: any): string {
+        let imganenBuffer = baseParse.decode(imagen); //convierto el byte[] aun array buffer
+        let archivoTiff = new Tiff({ buffer: imganenBuffer });
+        return archivoTiff.toDataURL(); //obtiene un texto plano png del archivo a mostrar
     }
 }

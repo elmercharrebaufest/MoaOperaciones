@@ -92,7 +92,9 @@ namespace SustitucionMOAUtils.Email
             {
                 foreach (Attachment attachment in reporte.Adjuntos)
                 {
+                    //attachment.ContentStream.Seek(0, SeekOrigin.Begin);
                     mail.Attachments.Add(attachment);
+                    //attachment.ContentStream.Flush();
                 }
             }
 

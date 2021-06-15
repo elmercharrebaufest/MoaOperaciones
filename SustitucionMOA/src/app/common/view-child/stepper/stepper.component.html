@@ -1,115 +1,132 @@
 ﻿<!-- <p-steps [model]="items" styleClass="steps-custom" [readonly]="readonly" [(activeIndex)]="activeIndex" ></p-steps> -->
 
 <style>
-.stepper{
-    margin-top: 1em;
-    padding-top: 1m;
-    padding-bottom: 1em;
-    height: 10em;
+.stepper-header,
+.stepper-items{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items:flex-start;
+  margin-top: 1.2em;
 }
 
-.stepper li {
-  width: 3em;
-  height: 3em;
-  text-align: center;
-  border-radius: 1.5em;
-  background:#F3F3F3;
-  margin: 0 3em;
+.stepper-header {
+  margin-top: 1em;
+  padding-left: 45px;
+  padding-right: 45px;
+  align-items: center;
+}
+
+.step {
   display: inline-block;
-  color: white;
-  position: relative;
+  cursor: pointer;
+}
+
+.circle {
+  height: 2.5em;
+  width: 2.5em;
+  background:#F3F3F3;
   box-shadow: 0px 3px 6px #00000029;
-  cursor: pointer;
+  border-radius: 50%;
 }
 
-.stepper li::after{
-  content: '';
-  position: absolute;
-  top: 1.1em;
-  left: 2.8em;
-  width: 6em;
-  height: .5em;
-  background: #F3F3F3;
-  cursor: default;
+.separator {
+  height: 0.5em;
+  background:#F3F3F3;
+  flex-grow: 1;
+  border-radius: 2px;
 }
 
-.stepper li:last-child::after {
-  display: none;
+.item {
+  width: 10em;
 }
 
-.stepper .stepper-item {
-  position: absolute;
-  top: 3.1em;
-  left: -1em;
+.stepper-item {
   text-align: center;
-  width: 5em;
   text-decoration: none;
-  cursor: pointer;
+  font-family: 'Roboto Regular';
 }
 
-.stepper .stepper-item-number {
+.stepper-item-number {
   font-weight: bold;
   font-size: 1.5em;
 }
 
-.stepper .stepper-item-number,
-.stepper .stepper-item-title {
+.stepper-item-number,
+.stepper-item-title {
   display: block;
   color: #999999;
 }
 
-.stepper .active {
+.active {
   background: #fff;
   border: solid #1B73CB;
 }
 
-.stepper li.active::after {
-  background: #ECEEEF;
-}
-
-.stepper li.active .stepper-item-number,
-.stepper li.active .stepper-item-title {
-  color: #1B73CB;
-}
-
-.stepper .complete {
-  background: #5CB85C;
-  border: solid #5CB85C;
-}
-
-.stepper li.active-complete::after,
-.stepper li.complete::after {
-  background: #5CB85C;
-}
-
-.stepper li.complete .stepper-item-number,
-.stepper li.complete .stepper-item-title {
-  color: #5CB85C;
-}
-
-.stepper .incomplete {
+.incomplete {
   background: #fff;
   border: solid #EDA24D;
 }
 
-.stepper li.active-incomplete::after,
-.stepper li.incomplete::after {
-  background: #F0AD4E;
+.complete {
+  background: #5CB85C;
+  border: solid #5CB85C;
 }
 
-.stepper li.incomplete .stepper-item-number,
-.stepper li.incomplete .stepper-item-title {
+.separator.active {
+  background: #ECEEEF;
+  border: solid #ECEEEF;
+}
+
+.separator.active-incomplete,
+.separator.incomplete{
+  background: #F0AD4E;
+  border: solid #F0AD4E;
+}
+
+.separator.active-complete{
+  background: #5CB85C;
+  border: solid #5CB85C;
+}
+
+.item.active,
+.item.incomplete,
+.item.complete {
+  background:none;
+  border: none;
+}
+
+.active .stepper-item-number,
+.active .stepper-item-title {
+  color: #1B73CB;
+}
+
+.incomplete .stepper-item-number,
+.incomplete .stepper-item-title {
   color: #F0AD4E;
 }
+
+.complete .stepper-item-number,
+.complete .stepper-item-title {
+  color: #5CB85C;
+}
+
 </style>
 
-<div class="stepper">
-    <ul role="tablist">
-        <li *ngFor="let item of items; let i = index" [class]="getItemClass(i)" (click)="itemClick($event, item, i)">
-            <a class="stepper-item">
-              <span class="stepper-item-number">Paso {{i + 1}}</span>
-              <span class="stepper-item-title">{{item.label}}</span>
-          </a>
-        </li>
-    </ul>
+<div class="stepper-header">
+  <ng-template ngFor let-item [ngForOf]="items" let-i="index">
+    <div [ngClass]="'step circle ' + getItemClass(i)" (click)="itemClick($event, item, i)"></div>
+    <div [ngClass]="'separator ' + getItemClass(i)" *ngIf="i != items.length-1"></div>
+  </ng-template>
+</div>
+<div class="stepper-items">
+  <ng-template ngFor let-item [ngForOf]="items" let-i="index">
+    <div [ngClass]="'step item ' + getItemClass(i)" (click)="itemClick($event, item, i)">
+      <a class="stepper-item">
+        <span class="stepper-item-number">Paso {{i + 1}}</span>
+        <span class="stepper-item-title">{{item.label}}</span>
+    </a>
+    </div>
+    <div class="separator" *ngIf="i != items.length-1" hidden></div>
+  </ng-template>
 </div>

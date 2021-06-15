@@ -57,14 +57,18 @@ export class MisConsultasComponent extends ListBaseComponent {
     estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
-
+    consultaId: any = 1;
+    paraInnerHtml: string = "";
     subcategoriasList: SelectItem[];
-
+    mostrarDetalle: boolean = false;
     es: any;
     datesRange: SelectItem[] = [{ label: 'Fecha', value: null }, { label: 'Desde', value: 'desde' }, { label: 'Hasta', value: 'hasta' }, { label: 'Rango', value: 'rango' }];
     isExternal: boolean;
     showFilters: boolean;
     windowSize: string;
+    esInterno = this.isAuthorized('CONSULTA ABM');
+    widthModal: string;
+    asunto: string;
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
@@ -222,7 +226,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos().subscribe(
+            this.subscription = this.service.getCombos(false).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -253,6 +257,19 @@ export class MisConsultasComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    openModal(idConsulta, asunto){
+        if(this.mostrarDetalle){
+            this.resetVariables();
+        }
+
+        setTimeout(() => {
+            this.consultaId = idConsulta;
+            this.mostrarDetalle = true;
+            this.asunto = asunto;
+            document.getElementById("openModalHiddenButton").click();
+        }, 500);
     }
 
     listarConsultas() {
@@ -286,7 +303,7 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         });
 
-                        let estadosCode = ['INI', 'GES', 'DOC'];
+                        let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e=> estadosCode.indexOf(e.Code) >= 0);
 
 
@@ -333,6 +350,11 @@ export class MisConsultasComponent extends ListBaseComponent {
         });
 
         this.DownloadJsonData(data, 'Consultas', true);
+    }
+
+    resetVariables(){
+        this.consultaId = 1;
+        this.mostrarDetalle = false;
     }
 
     DownloadJsonData(JSONData, FileTitle, ShowLabel) {

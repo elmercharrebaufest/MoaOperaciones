@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Entities
+{
+    public class Pliego
+    {
+        [Key]
+        public int Id { get; set; }
+        public string Codigo { get; set; }
+        public string NombreObra { get; set; }
+        public string FiscalContrato { get; set; }
+        public string Email { get; set; }
+        public string Telefono { get; set; }
+        public DateTime? FechaHoraEntrega { get; set; }
+        public string SupervisorSector { get; set; }
+        public string SupervisorTrabajo { get; set; }
+        public bool? TieneVisitaObra { get; set; }
+        public bool? TieneVisitaObraMasiva { get; set; }
+        public bool? TieneObradores { get; set; }
+        public bool? TieneMedioElevacion { get; set; }
+        public bool? TieneTecnicoSeguridad { get; set; }
+        public bool? TieneDescripcionTecnica { get; set; }
+        public bool? TieneDocumentacionTecnica { get; set; }
+        public DateTime? FechaHoraLimiteConsulta { get; set; }
+        public string ObservacionesGeneracion { get; set; }
+        public int? DiasEjecucion { get; set; }
+        public string ObservacionesCotizacion { get; set; }
+        public string JornadaLaboralDias { get; set; }
+        public DateTime? JornadaLaboralHorasDesde { get; set; }
+        public DateTime? JornadaLaboralHorasHasta { get; set; }
+
+        public virtual ICollection<PliegoVisita> VisitasMasivas { get; set; }
+
+        [InverseProperty("Pliegos")]
+        public virtual ICollection<Archivo> Archivos { get; set; }
+    }
+}

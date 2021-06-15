@@ -304,7 +304,7 @@ namespace SustitucionMOAUtils.Services
 
         public Localidad GetLocalidad(int localidadId)
         {
-            if(localidadId <= 0)
+            if (localidadId <= 0)
             {
                 throw new InfoCustomException("Id de localidad invalido");
             }
@@ -315,7 +315,7 @@ namespace SustitucionMOAUtils.Services
 
             //localidad.Nombre = localidad.Nombre + " (" + localidad.Provincia.Nombre + ")";
 
-            return localidad;                    
+            return localidad;
         }
 
         public string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, Proveedor proveedor)
@@ -504,21 +504,18 @@ namespace SustitucionMOAUtils.Services
             {
 
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_AUDITORIA);
-                string asunto = "";
-                var vinculoEmpleadoMolinos = altaEmpresa.Empleados;
-                var Vinculofuncionarios = altaEmpresa.Funcionarios;
+                string asunto = "MOA Operaciones - Conflicto de Interés Declarado en Alta de Proveedor";
+                var vinculoEmpleadoMolinos = new StringBuilder();
+                var Vinculofuncionarios = new StringBuilder();
 
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == true)
+                foreach (var empleado in altaEmpresa.Empleados)
                 {
-                    asunto = "Asunto a definir: ambos";
+                    vinculoEmpleadoMolinos.AppendLine($"<tr><td>{empleado.NombreProveedora}</td><td>{empleado.CargoProveedora}</td><td>{empleado.NombreMolinos}</td><td>{empleado.Vinculo}</td></tr>");
                 }
-                if (proveedor.VinculoConFuncionariosPublicos == true && proveedor.VinculoConEmpleadosDeMolinos == false)
+
+                foreach (var funcionario in altaEmpresa.Funcionarios)
                 {
-                    asunto = "Asunto a definir: funcionarios";
-                }
-                if (proveedor.VinculoConFuncionariosPublicos == false && proveedor.VinculoConEmpleadosDeMolinos == true)
-                {
-                    asunto = "Asunto a definir: empleados";
+                    Vinculofuncionarios.AppendLine($"<tr><td>{funcionario.NombreFirma}</td><td>{funcionario.CargoFirma}</td><td>{funcionario.NombreFuncionario}</td><td>{funcionario.CargoFuncionario}</td><td>{funcionario.Vinculo}</td></tr>");
                 }
 
                 var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
@@ -635,9 +632,12 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (proveedor.SiperObligatorio ?? false && !proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+            if (proveedor.SiperObligatorio ?? false)
             {
-                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+                if(!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+                {
+                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
+                }
             }
 
             return true;
@@ -706,7 +706,7 @@ namespace SustitucionMOAUtils.Services
             Proveedor proveedor;
 
             proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedor();
-            
+
             var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
 
             ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
@@ -733,21 +733,25 @@ namespace SustitucionMOAUtils.Services
             altaEmpresa.VinculoConFuncionariosPublicos = proveedor.VinculoConFuncionariosPublicos;
 
             altaEmpresa.Empleados = proveedor.RelacionConEmpleados
-                                                .Select(a => new AltaEmpresaEmpleadosViewModel { 
-                                                    CargoProveedora = a.CargoProveedora, 
-                                                    NombreMolinos = a.NombreMolinos, 
-                                                    NombreProveedora = 
-                                                    a.NombreProveedora, 
-                                                    Vinculo = a.Vinculo })
+                                                .Select(a => new AltaEmpresaEmpleadosViewModel
+                                                {
+                                                    CargoProveedora = a.CargoProveedora,
+                                                    NombreMolinos = a.NombreMolinos,
+                                                    NombreProveedora =
+                                                    a.NombreProveedora,
+                                                    Vinculo = a.Vinculo
+                                                })
                                                 .ToList();
 
             altaEmpresa.Funcionarios = proveedor.RelacionConFuncionarios
-                                                .Select(a => new AltaEmpresaFuncionariosViewModel { 
-                                                    CargoFirma = a.CargoFirma, 
-                                                    CargoFuncionario = a.CargoFuncionario, 
-                                                    NombreFirma = a.NombreFirma, 
-                                                    NombreFuncionario = a.NombreFuncionario, 
-                                                    Vinculo = a.Vinculo })
+                                                .Select(a => new AltaEmpresaFuncionariosViewModel
+                                                {
+                                                    CargoFirma = a.CargoFirma,
+                                                    CargoFuncionario = a.CargoFuncionario,
+                                                    NombreFirma = a.NombreFirma,
+                                                    NombreFuncionario = a.NombreFuncionario,
+                                                    Vinculo = a.Vinculo
+                                                })
                                                 .ToList();
 
             altaEmpresa.IdIngresoBruto = proveedor.IdIngresoBruto;
@@ -833,6 +837,41 @@ namespace SustitucionMOAUtils.Services
             }
 
             return filePath;
+        }
+
+        public string NotificarSolicitud(string mailUsuario, int proveedorId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
+
+            if (proveedor.TipoProveedor.Nombre != "Granos" || usuario.TipoUsuario.Nombre == "Corredor")
+            {
+                return ErrorMsg.ErrorSinPermiso;
+            }
+
+            string mensaje = "Alta en proceso. Ya puede ingresar a aceptar el código de conducta.";
+
+            if (proveedor.HistorialAprobaciones == null)
+            {
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+            }
+
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    Observacion = "Notificado al proveedor",
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuario.Id
+                }
+            );
+
+
+            EnviarMailEdicionRequerida(proveedor, mensaje, null);
+       
+            return SuccessMsg.ValidacionPendienteOK;
         }
     }
 }

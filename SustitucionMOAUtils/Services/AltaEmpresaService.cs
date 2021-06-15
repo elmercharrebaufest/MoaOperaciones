@@ -116,8 +116,8 @@ namespace SustitucionMOAUtils.Services
                                     SituacionIVA = ((SituacionIVA)(proveedor.IdSituacionIVA ?? 0)).ToFriendlyString(),
                                     IdIngresoBruto = proveedor.IdIngresoBruto,
                                     IngresoBruto = ((IngresosBrutos)(proveedor.IdIngresoBruto ?? 0)).ToFriendlyString(),
-                                    SiperObligatorio = proveedor.SiperObligatorio
-
+                                    SiperObligatorio = proveedor.SiperObligatorio,
+                                    ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica
                                 })
                         .ToList();
 

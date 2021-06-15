@@ -808,7 +808,7 @@ Header Mobile */
   padding: 0px !important;
 }
 .titleSection {
-  font-size: 30px;
+  font-size: 24px;
   border-bottom: 1px solid #707070;
   padding-bottom: 5px;
   margin-left: 0px;
@@ -3435,7 +3435,6 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
   color: #067935;
 }
 
-/* TODO: Cambiar por una sola clase */
 #misReportes,
 #misOperaciones,
 #infoFinanciera,
@@ -3445,7 +3444,6 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
 #ventaSustentable,
 #usuarios,
 #mis-consultas,
-#compras,
 #faq {
     height: 35px;
 }
@@ -3688,7 +3686,7 @@ div.panel-body a.active{
   position: absolute;
   z-index: 1;
   top: -6px;
-  right: 115px;
+  right: 160%;
 }
 
 .tooltipscontainer .tooltipAyuda {
@@ -3750,7 +3748,6 @@ div.panel-body a.active{
 }
 .crearConsultaComentario{
   height: 228px;
-  margin-top: 40px;
 }
 .crearConsultaTitulos{
   top: 239px !important;
@@ -3773,6 +3770,16 @@ div.panel-body a.active{
   border-radius: 2px;
   opacity: 1;
 }
+.btn-recordar{
+  position: relative;
+  right: 10px;
+  width: 85px;
+  height: 36px;
+  background: #075088 0% 0% no-repeat padding-box !important;
+  box-shadow: 0px 2px 2px #0000003D;
+  border-radius: 2px;
+  opacity: 1;
+}
 .enviarComentario{
   margin-bottom: 5px;
   border: none;
@@ -3788,10 +3795,8 @@ div.panel-body a.active{
   letter-spacing: 0px;
   color: #707070;
   opacity: 1;
-  left: 10px;
-  width: 28%;
-  position: relative;
-  top: -353px;
+  max-height: 539px;
+  overflow-y: auto;
 }
 .bold{
   font-weight: bold;
@@ -3881,8 +3886,6 @@ div.panel-body a.active{
   -webkit-border-radius: 10px 10px 0px 0px;
   background: #fff;
   padding: 10px;
-  transition: 0.5s;
-  width: 70%;
 }
 .contenedorNuevoComentario{
   border-radius: 0px 0px 10px 10px;
@@ -3890,22 +3893,20 @@ div.panel-body a.active{
   -webkit-border-radius: 0px 0px 10px 10px;
   background: #fff;
   padding: 10px;
-  transition: 0.5s;
-  width: 70%;
 }
-.detalleConsulta::-webkit-scrollbar{
+.detalleConsulta::-webkit-scrollbar, .menuLateralConsulta::-webkit-scrollbar{
   width: 10px;
   border-radius: 10px;
 }
-.detalleConsulta::-webkit-scrollbar-track{
+.detalleConsulta::-webkit-scrollbar-track, .menuLateralConsulta::-webkit-scrollbar-track{
   background: white;
   border-radius: 10px;
 }
-.detalleConsulta::-webkit-scrollbar-thumb{
+.detalleConsulta::-webkit-scrollbar-thumb, .menuLateralConsulta::-webkit-scrollbar-thumb{
   background: #707070; 
   border-radius: 10px;
 }
-.detalleConsulta::-webkit-scrollbar-thumb:hover{
+.detalleConsulta::-webkit-scrollbar-thumb:hover, .menuLateralConsulta::-webkit-scrollbar-thumb:hover{
   background: #707070;  
   border-radius: 10px;
 }
@@ -4212,18 +4213,27 @@ input[type=number]::-webkit-inner-spin-button {
   cursor: pointer;
   transition: all 0.25s linear;
 }
-.centerbtn {
-    margin-left: 180px !important;
-}
 .center {
-    justify-items: center;
-    display: flex;
-    justify-content: center;
+  justify-items: center;
+  display: flex;
+  justify-content: center;
 }
-.pillVerdeMenu > .nav-pills > li.active > a, .pillVerdeMenu > .nav-pills > li.active > a:focus, .pillVerdeMenu > .nav-pills > li.active > a:hover {
-    background-color: #009688;
+.pillVerdeMenu>.nav-pills>li.active>a, .pillVerdeMenu>.nav-pills>li.active>a:focus, .pillVerdeMenu>.nav-pills>li.active>a:hover {
+  background-color: #009688;
 }
-
-.subtitulo {
-    font-size: 25px;
+.subtitulo{
+  font-size: 25px;
+}
+.leyenda {
+  color: #000;
+  font-family: Roboto Regular;
+  font-size: 15px;
+}
+.WidhtModalConsultasInterno{
+  width: auto; 
+  max-width: 1300px;
+}
+.WidhtModalConsultasExterno{
+  width: auto; 
+  max-width: 900px;
 }
