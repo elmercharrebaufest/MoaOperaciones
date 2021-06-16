@@ -27,6 +27,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);
+        List<Rol> GetRolesApiKey(string apikey);
         void SeccionVisitada(string mailUsuario, string seccion);
         ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario);
         ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor);

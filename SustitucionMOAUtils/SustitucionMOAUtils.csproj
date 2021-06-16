@@ -135,6 +135,7 @@
     <Compile Include="Interfaces\IReportesService.cs" />
     <Compile Include="Interfaces\ITicketPesadaService.cs" />
     <Compile Include="Interfaces\ILogPesificacionService.cs" />
+    <Compile Include="Interfaces\IExternalApiService.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Services\RYDService.cs" />
     <Compile Include="Services\TicketPesadaService.cs" />
     <Compile Include="Services\LogPesificacionService.cs" />
+    <Compile Include="Services\ExternalApiService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
     <Compile Include="Validadores\ResultadoValidacionPesificacion.cs" />
