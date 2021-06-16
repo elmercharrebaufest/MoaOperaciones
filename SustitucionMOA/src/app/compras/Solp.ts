@@ -63,6 +63,10 @@ export class Solp {
     public cargoPasoCinco: boolean = false;
     public cargoPasoSeis: boolean = false;
 
+    // // dashboard
+    // public selectEstadoSolp: any;
+    // public fechaSolp: Date;
+    
 
     constructor() {
         this.posiciones = [];

@@ -31,6 +31,10 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+
+
     
 @NgModule({
     imports: [
@@ -54,7 +58,9 @@ import { ChipsModule } from 'primeng/chips';
         DropdownModule,
         AutoCompleteModule,
         ReactiveFormsModule,
-        ChipsModule
+        ChipsModule,
+        MultiSelectModule,
+        OverlayPanelModule
     ],
     declarations: [
         SolpComponent,

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -7,6 +7,11 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from '../compras.service';
+import { SelectItem } from 'primeng/api';
+import { Solp } from '../Solp';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+
+
 
 
 declare var $: any;
@@ -20,15 +25,36 @@ declare var $: any;
 })
 export class DashboardComponent extends ListBaseComponent {
 
+    @Input('locale') 
+    protected locale:any;
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+
+        
+    }
+
+    estadoSolp: SelectItem[];
+    // selectEstadoSolp: any;
+    selectEstadoSolp: string[] = [];
+
+    buscarDashboard: string;
+    fechaSolp: any;
+    hoy: Date = new Date();
+    es: any;
+
+    display: boolean = false;
+
+    showDialog() {
+        this.display = true;
     }
 
     cards = [ 
         { nombre: "Con documento de pliego", path: "/compras/solp" },
-        // { nombre: "Con documentos requerimientos", path: "" },
-        // { nombre: "Sin documento", path: "" },
-        // { nombre: "Emergencia", path: "" },
+        // { nombre: "Con documentos requerimientos", path: ""},
+        // { nombre: "Sin documento", path: ""},
+        // { nombre: "Emergencia", path: ""},
         // { nombre: "Adicional", path: ""}
     ]
 
@@ -46,7 +72,33 @@ export class DashboardComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
 
+        this.estadoSolp = [
+            {label: 'Creada', value: 'Creada'},
+            {label: 'Liberada', value: 'Liberada'},
+            {label: 'Parc. liberada', value: 'Parc. liberada'},
+            {label: 'Relac. a ped. compra', value: 'Relac. a ped. compra'},
+            {label: 'Finalizada', value: 'Finalizada'}
+        ];  
+
+        this.es = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Today',
+            clear: 'Clear'
+        };
+        
     }
 
     
+
+    
+    
+    
+    
+   
 }
+    

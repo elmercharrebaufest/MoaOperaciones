@@ -8,7 +8,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <!--Cards-->
-                <div class="col-md-3" *ngFor="let card of cards" (click)="goToSeccion(card.path)">
+                <div class="col-md-4" *ngFor="let card of cards" (click)="card.class === 'disabled' ? disabled : goToSeccion(card.path)">
                     <div class="card cardCompra">
                         <h3 class="cardText">{{card.nombre}}</h3>
                     </div>
@@ -16,7 +16,87 @@
                 <!--End Cards-->
             </div>
         </div>
+
+        <div>
+            <div class="row titleSection" >
+                <div class="col-xs-12 col-sm-10" style="margin-top: 60px;"> <strong>Estado de solicitudes</strong></div>
+            </div>
+                
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="row" style="margin-top: 1em; margin-bottom: 1em;">
+
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1">
+                                <i class="pi pi-search"></i>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Buscar" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        <p-multiSelect [options]="estadoSolp" [(ngModel)]="selectEstadoSolp" [selectionLimit]="1" [panelStyle]="{minWidth:'12em'}" [maxSelectedLabels]="1" defaultLabel="Estado SOLP" [filter]="false" [showClear]="false" [resetFilterOnHide]="true" showHeader="true"></p-multiSelect>
+                    </div>
+              
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="position: fixed; left: 0; top: 0;">
+                            <p-overlayPanel class="overlayPanel" #op [showCloseIcon]="true" >
+                                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                        Desde
+                                    </div>
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-left: 1em;">
+                                        Hasta  
+                                    </div>          
+                                </div>
+                                <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                        <p-calendar [(ngModel)]="desdeDashboard" [locale]="es" dateFormat="dd-M-yy" ></p-calendar>
+                                    </div>    
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-left: 1em;">
+                                        <p-calendar [(ngModel)]="hastaDashboard" [locale]="es" dateFormat="dd-M-yy"></p-calendar>
+                                    </div>     
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                        <button class="btn">Ultimo mes</button>
+                                    </div>
+                                    <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-left: 1em;">
+                                        <button class="btn">Ultimo año</button>
+                                    </div>    
+                                </div>
+                            </p-overlayPanel>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1" style="right: 10em;">
+                        <button type="text" pButton label="Fecha" (click)="op.toggle($event, actualTarget)"></button>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                      <p-radioButton name="dashboard" value="Materiales" label="Materiales" [(ngModel)]="materialesDashboard" inputId="materialesDashboard"></p-radioButton>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-1 col-lg-1">
+                        <p-radioButton name="dashboard" value="SAP" label="SAP" [(ngModel)]="sapDashboard" inputId="sapDashboard"></p-radioButton>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                        <p-radioButton name="mantenimiento" value="Mantenimiento" label="Mantenimiento" [(ngModel)]="mantenimientoDashboard" inputId="mantenimientoDashboard"></p-radioButton>
+                    </div>
+
+                
+
+
+
+                </div>
+
+               
+            </div>
+ 
+        </div>
+
     </section>
 </div>
-
-

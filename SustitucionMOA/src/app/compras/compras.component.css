@@ -342,3 +342,12 @@
   font-family: Roboto Regular !important;
   font-weight:bold;
 }
+
+/* ::ng-deep  .ui-overlaypanel .overlayPanel .ng-trigger .ng-trigger-animation .ng-tns-c3-5 .ui-overlaypanel .ui-widget .ui-widget-content .ui-corner-all .ui-shadow .ng-star-inserted {
+  width: 500px !important;
+  height: 500px !important;
+} */
+
+.text-danger {
+  font-weight: 400;
+}

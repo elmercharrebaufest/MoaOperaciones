@@ -47,7 +47,7 @@
                             </p-dropdown>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 margenInput" style="text-align: right;">
-                            <button class="btn btn-danger" (click)="model.eliminarPosicion()"><img  src="./Content/images/icons/trash.svg" alt="trash"/> Eliminar posici&oacute;n</button>
+                            <button class="btn btn-danger" (click)="model.eliminarPosicion()"><img  src="./Content/images/icons/trashWhite.svg" alt="trashWhite"/> Eliminar posici&oacute;n</button>
                         </div>
                     </div>
                 </div>    
@@ -102,7 +102,7 @@
                                     Fecha de entrega de servicio {{ mostrarAsterisco('fechaEntregaServicio') }}
                                 </div>
                                 <div class="styled-select">
-                                    <p-calendar formControlName="fechaEntregaServicio"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>    
+                                    <p-calendar formControlName="fechaEntregaServicio"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>    
                                 </div>
                                 <div *ngIf="mostrarError('fechaEntregaServicio')">
                                     <p class="text-danger">campo obligatorio</p>
@@ -113,7 +113,7 @@
                                     Fecha de liberaci&oacute;n {{ mostrarAsterisco('fechaDeLiberacion') }}
                                 </div>
                                 <div class="styled-select">
-                                    <p-calendar formControlName="fechaDeLiberacion"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaDeLiberacion" [locale]="locale" [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>   
+                                    <p-calendar formControlName="fechaDeLiberacion"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaDeLiberacion" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>   
                                     <div *ngIf="mostrarError('fechaDeLiberacion')">
                                         <p class="text-danger">campo obligatorio</p>
                                     </div> 
