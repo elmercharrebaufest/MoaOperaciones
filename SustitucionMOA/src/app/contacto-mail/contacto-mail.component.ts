@@ -130,7 +130,7 @@ export class ContactoMailComponent extends ListBaseComponent {
                 this.nombre,
                 this.email,
                 this.telefono,
-                this.categoriaSelected.value,
+                this.categoriaSelected.label,
                 this.categoriaSelected.camposAdicionales,
                 this.comentario,
                 this.contrato,
@@ -239,6 +239,11 @@ export class ContactoMailComponent extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.categoriaOptions = result.data;
+                        this.categoriaOptions.forEach(cat => {
+                            if(cat.label == 'ACTUALIZACIONES'){
+                                this.categoriaSelected = cat;
+                            }
+                        });
                     }
                 },
                 error => {
