@@ -1,4 +1,5 @@
-﻿using SustitucionMOAExternalAPI.Managers;
+﻿using Ninject;
+using SustitucionMOAExternalAPI.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,19 +22,21 @@ namespace SustitucionMOAExternalAPI.Handlers
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            var authManager = request.GetDependencyScope().GetService(typeof(IAuthenticationManager)) as IAuthenticationManager;
+
             IEnumerable<string> listaCabeceras;
             var existeCabeceraApiKey = request.Headers.TryGetValues(API_KEY, out listaCabeceras);
             if (existeCabeceraApiKey && listaCabeceras.Any())
             {
-                List<string> roles = AuthenticationManager.ObtenerRoles(listaCabeceras.First());
+                List<string> permisos = authManager.ObtenerPermisos(listaCabeceras.First());
 
-                if(roles != null && roles.Count > 0)
+                if(permisos != null && permisos.Count > 0)
                 {
                     var config = GlobalConfiguration.Configuration;
                     var controllerSelector = new DefaultHttpControllerSelector(config);
                     var controller = controllerSelector.SelectController(request);
 
-                    var principal = new GenericPrincipal(new GenericIdentity("Auth_" + controller.ControllerName), roles.ToArray());
+                    var principal = new GenericPrincipal(new GenericIdentity("Auth_" + controller.ControllerName), permisos.ToArray());
                     AutorizarAccesoApi(principal);
                 }
             }
