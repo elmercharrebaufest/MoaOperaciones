@@ -549,7 +549,13 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     isSustentableHabilitado(): boolean {
         let dateParts = $("#noCursor2").val().split("/");
         let entrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-        let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega >= entrega && a.HastaEntrega <= entrega);
+        let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega <= entrega && a.HastaEntrega >= entrega);
+        if (sustentables.length == 1 && this.contrato.SustentableTercero == true && this.isSoja()) {
+            this.contrato.ImporteSustentable = sustentables[0].Precio;
+            this.contrato.MonedaSustentableId = sustentables[0].MonedaId;
+            this.contrato.Sustentable = true;
+            this.ObservacionSustentableTercero = sustentables[0].Precio + " " + sustentables[0].MonedaId
+        } 
         return sustentables.length == 1 && this.isSoja();
     }
 
@@ -558,7 +564,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         if (this.contrato.SustentableTercero == true) {
             let dateParts = $("#noCursor2").val().split("/");
             let entrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
-            let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega >= entrega && a.HastaEntrega <= entrega);
+            let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega <= entrega && a.HastaEntrega >= entrega);
             if (sustentables.length == 1) {
                 this.contrato.ImporteSustentable = sustentables[0].Precio;
                 this.contrato.MonedaSustentableId = sustentables[0].MonedaId;
@@ -577,17 +583,5 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
             this.contrato.Sustentable = false;
         }
     }
-
-    changeFechaHasta(event) {
-        setTimeout(() => {
-            console.log("changeFechaHasta");
-            this.contrato.SustentableTercero == true
-            this.contrato.ImporteSustentable = null;
-            this.contrato.MonedaSustentableId = null;
-            this.contrato.Sustentable = false;
-        }, 0);
-
-    }
-
-
+       
 }
