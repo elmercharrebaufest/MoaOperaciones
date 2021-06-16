@@ -20,7 +20,7 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-        public ResultadoValidarProveedorComercial ValidarCUIT(string CUIT, bool corredor = false)
+        public ResultadoValidarProveedorComercial ValidarCUIT(string CUIT, bool? corredor = false)
         {
             try
             {

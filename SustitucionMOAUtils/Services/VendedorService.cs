@@ -323,8 +323,8 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
             }
 
-            if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
-                throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
+            //if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any())
+              //  throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
 
             var nuevoVendedor = new Proveedor
             {

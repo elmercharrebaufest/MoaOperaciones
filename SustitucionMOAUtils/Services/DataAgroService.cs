@@ -69,7 +69,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT);
+                ResultadoValidarProveedorComercial respuesta = new DataAgroConsumer().ValidarCUIT(proveedor.CUIT, null);
 
                 var tipoUsuarioGranos = ObtenerTipoPorNombreCorto("G");
 
@@ -181,7 +181,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool corredor = false)
+        public ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false)
         {
             try
             {
