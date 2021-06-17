@@ -60,7 +60,6 @@ namespace SustitucionMOAModel.Models.DataAgro
 
         public string ContratoCorredor { get; set; }
         public string ContratoVendedor { get; set; }
-
-
+        public string UsuarioTercero { get; set; }
     }
 }
