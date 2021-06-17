@@ -128,6 +128,7 @@
     <Build Include="DBO\Tables\PliegoArchivo.sql" />
     <Build Include="DBO\Tables\PliegoVisita.sql" />
     <None Include="scripts\PermisoAltaInternaGranos.sql" />
+    <Build Include="DBO\Tables\ComentarioRecordado.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

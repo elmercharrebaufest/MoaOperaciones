@@ -41,9 +41,9 @@
                                 {{comentario.Fecha | date:'hh:mm'}} | {{comentario.Usuario.Mail}}
                             </p>
                             <div *ngIf="esInterno && comentario.Detalle != '' && comentario.Recordado">
-                                <p [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
+                                <p *ngFor="let recordado of comentario.ComentarioRecordados" [ngClass]="comentarioPropio(comentario) ? 'horaComentarioRespuesta' : ''"
                                 class="col-xs-12 col-sm-12 col-md-12">
-                                    Mensaje recordado el {{comentario.FechaRecordado | date:'dd/MM/yyyy hh:mm'}}
+                                    Mensaje recordado el {{recordado.FechaRecordado | date:'dd/MM/yyyy hh:mm'}}<br>
                                 </p>
                             </div>
                         </div>

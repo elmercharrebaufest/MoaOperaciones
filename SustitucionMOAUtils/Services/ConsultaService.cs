@@ -144,6 +144,8 @@ namespace SustitucionMOAUtils.Services
 
             comentario.Usuario_Id = consulta.Usuario_Id;
 
+            comentario.ComentarioRecordado = new List<ComentarioRecordado>();
+
             if (consulta.Comentarios == null)
             {
                 consulta.Comentarios = new List<Comentario>();
@@ -261,7 +263,12 @@ namespace SustitucionMOAUtils.Services
                     Ruta = a.Ruta,
                     FileKey = a.FileKey,
                     Nombre = a.ObtenerNombre(a.Ruta),
-                }).ToList() 
+                }).ToList(),
+                ComentarioRecordados = x.ComentarioRecordado.Select(cr => new ComentarioRecordadoDto()
+                { 
+                    Id = cr.Id,
+                    FechaRecordado = cr.FechaRecordado
+                }).ToList()
             }).ToList();
 
             return ret;
@@ -300,8 +307,11 @@ namespace SustitucionMOAUtils.Services
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
 
                 consulta.FechaUltimaModificacion = DateTime.Now;
+
+                var comentarioRecordado = new ComentarioRecordado() { Id = -1, FechaRecordado = DateTime.Now };
+
                 consulta.Comentarios.Last().Recordado = true;
-                consulta.Comentarios.Last().FechaRecordado = DateTime.Now;
+                consulta.Comentarios.Last().ComentarioRecordado.Add(comentarioRecordado);
                 repositorio.GuardarCambios();
             }
             catch (Exception ex)

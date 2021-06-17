@@ -28,5 +28,6 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Comentarios")]
         public virtual ICollection<Archivo> Archivos { get; set; }
 
+        public virtual ICollection<ComentarioRecordado> ComentarioRecordado { get; set; }
     }
 }

@@ -436,7 +436,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta = result;
                         this.consulta.Comentarios.forEach(x => {
                             x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
-                            x.FechaRecordado = new Date (this.getDateFromAspNetFormat(x.FechaRecordado));
+                            if(x.ComentarioRecordados.length >= 1){
+                                x.ComentarioRecordados.forEach(cr => {
+                                    cr.FechaRecordado = new Date (this.getDateFromAspNetFormat(cr.FechaRecordado));
+                                });
+                            }
                         });
                         this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
                         this.consulta.Fecha = new Date (this.getDateFromAspNetFormat(this.consulta.Fecha));
