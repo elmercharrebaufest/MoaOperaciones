@@ -140,4 +140,25 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="FechaRecordado" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="fb713bc2-82bf-4056-ac42-02098f0a88eb" ChangeDateTime="06/17/2021 02:39:40">
+    <Property Name="ElementName" Value="[dbo].[FK_ComentarioRecordado_ToTable]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[ComentarioRecordado]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[ [ForeignKey(&quot;Consulta_Id&quot;)]]]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2378b085-1e28-4554-b03f-29f158296e93" ChangeDateTime="06/17/2021 02:40:15">
+    <Property Name="ElementName" Value="[dbo].[ [ForeignKey(&quot;Consulta_Id&quot;)]]]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[ComentarioRecordado]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_dbo.ComentarioRecordado_dbo.Comentario_Comentario_Id]" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="3317aed5-39c6-49d7-ab4a-2f3ab7bb0bab" ChangeDateTime="06/17/2021 03:32:14">
+    <Property Name="ElementName" Value="[dbo].[FK_dbo.ComentarioRecordado_dbo.ComentarioRecordado_Comentario_Id]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[ComentarioRecordado]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_dbo.ComentarioRecordado_dbo.Comentario_Comentario_Id]" />
+  </Operation>
 </Operations>

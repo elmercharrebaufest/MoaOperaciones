@@ -57,6 +57,7 @@
     <Compile Include="Dto\CamposSustentableReporte.cs" />
     <Compile Include="Dto\CampoSustentableExportBaseDTO.cs" />
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
+    <Compile Include="Dto\ComentarioRecordadoDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Entities\Categoria.cs" />
     <Compile Include="Entities\CausaConsulta.cs" />
     <Compile Include="Entities\Comentario.cs" />
+    <Compile Include="Entities\ComentarioRecordado.cs" />
     <Compile Include="Entities\ConflictoCampoSustentable.cs" />
     <Compile Include="Entities\Consulta.cs" />
     <Compile Include="Entities\ConsultaDetalle.cs" />
