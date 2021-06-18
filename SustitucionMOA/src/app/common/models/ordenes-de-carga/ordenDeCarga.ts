@@ -1,6 +1,6 @@
 import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
 
-export class OrdenDeCarga  {
+export class OrdenDeCarga {
     CUITTercero: number;
     CUITCliente: number;
     NombreChofer: string;
@@ -30,8 +30,8 @@ export class OrdenDeCarga  {
         this.CUITChofer = 20391666687;
         this.PatenteAcoplado = "ABC123";
         this.ChasisAcoplado = "ABBSM1231412";
-        this.RazonSocialTransporte = "Martin";
-        this.CUITTransporte = 20391666686;
+        this.RazonSocialTransporte = "ORLANDI LUIS EDUARDO";
+        this.CUITTransporte = 20086452597;
         this.Producto = "Soja";
         this.Cantidad = 30000;
         this.Observacion = "Vamo lo redó";

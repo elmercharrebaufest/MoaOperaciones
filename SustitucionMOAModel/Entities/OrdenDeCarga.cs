@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -11,7 +12,7 @@ namespace SustitucionMOAModel.Entities
 
         public int Cliente_Id { get; set; }
 
-
+        [ForeignKey("Cliente_Id")]
         public virtual Proveedor Cliente { get; set;  }
 
         public DateTime FechaCarga { get; set; }

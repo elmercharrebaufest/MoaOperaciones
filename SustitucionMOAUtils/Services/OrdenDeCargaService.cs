@@ -37,8 +37,16 @@ namespace SustitucionMOAUtils.Services
             else
                 cliente = usuario.ObtenerProveedor();
 
+            //if (ordenDeCarga.Corredor.Trim() == "")
+            //{
+                ordenDeCarga.Corredor = "";
+            //}
+
+            ordenDeCarga.ContratoSAP = "";
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
+            ordenDeCarga.Producto = "99709";
+            ordenDeCarga.NumeroPedido = "";
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
 
@@ -59,8 +67,6 @@ namespace SustitucionMOAUtils.Services
 
             VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
 
-
-
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
@@ -75,23 +81,22 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-00	'OK'
             */
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, "");
+
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, ordenDeCarga.NumeroPedido);
             var result3 = consumer.OrdenCargaControlEstadoRequest("", "", "");
 
             switch (result)
             {
                 case "CC-00":
                     ordenDeCarga.TransporteExiste = true;
-                    ordenDeCarga.CorredorSeleccionado = true;
-                    ordenDeCarga.ContratoSAP = "11111";
                     return true;
 
                 case "CC-01":
-                    ordenDeCarga.TransporteExiste = false;
+                    ordenDeCarga.CorredorSeleccionado = false;
                     break;
 
                 case "CC-02":
-                    ordenDeCarga.CorredorSeleccionado = false;
+                    ordenDeCarga.TransporteExiste = false;
                     break;
 
                 case "CC-03":
@@ -99,14 +104,10 @@ namespace SustitucionMOAUtils.Services
 
                 case "CC-04":
                     ordenDeCarga.TransporteExiste = true;
-                    ordenDeCarga.CorredorSeleccionado = true;
-                    ordenDeCarga.ContratoSAP = "11111";
                     break;
 
                 case "CC-05":
                     ordenDeCarga.TransporteExiste = true;
-                    ordenDeCarga.CorredorSeleccionado = true;
-                    ordenDeCarga.ContratoSAP = "11111";
                     break;
             }
 
@@ -400,6 +401,8 @@ namespace SustitucionMOAUtils.Services
             //OV-00   'OK'
             var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
 
+
+            var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
             if (result == "OK")
             {
                 orden.InformadaSAP = true;
