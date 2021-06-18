@@ -343,7 +343,7 @@ namespace SustitucionMOAUtils.Services
                 if (infoDA.HayError)
                 {
                     if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
-                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT);
+                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT, true);
 
                         if (infoDACorredor.HayError)
                         {

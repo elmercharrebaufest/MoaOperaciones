@@ -30,19 +30,17 @@ namespace SustitucionMOAUtils.Services
         public void EnviarReporteCamposSustentablesTSA()
         {
 
-            //if (DateTime.Today.DayOfWeek != DayOfWeek.Tuesday && DateTime.Today.DayOfWeek != DayOfWeek.Friday)
-            //{
-            //    return;
-            //}
+            if (DateTime.Today.DayOfWeek != DayOfWeek.Tuesday && DateTime.Today.DayOfWeek != DayOfWeek.Friday)
+            {
+                return;
+            }
 
-            ///*Mail del Martes: Se va a enviar los campos registrados los Viernes, Sábado, Domingo y Lunes anteriores
-            //Mail del Viernes: Se va a enviar los campos registrados los Martes, Miércoles y Jueves anteriores */
+            /*Mail del Martes: Se va a enviar los campos registrados los Viernes, Sábado, Domingo y Lunes anteriores
+            Mail del Viernes: Se va a enviar los campos registrados los Martes, Miércoles y Jueves anteriores */
 
-            //var diasAtras = DateTime.Today.DayOfWeek == DayOfWeek.Tuesday ? 4 : 3;
+            var diasAtras = DateTime.Today.DayOfWeek == DayOfWeek.Tuesday ? 4 : 3;
 
-            //var dateToCompare = DateTime.Today.AddDays(-diasAtras);
-
-            var dateToCompare = DateTime.Today;
+            var dateToCompare = DateTime.Today.AddDays(-diasAtras);
 
             var camposAReportarPorCosecha = repositorio.ListarAgrupado<CampoProveedor, string, CampoReporteDTO>(
                 cp => cp.CampoCosecha.Cosecha.Nombre,
@@ -63,7 +61,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 , cp => cp.FechaCreacion.HasValue
                     && DbFunctions.TruncateTime(cp.FechaCreacion.Value) >= DbFunctions.TruncateTime(dateToCompare) 
-                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) <= DbFunctions.TruncateTime(DateTime.Today)
+                    && DbFunctions.TruncateTime(cp.FechaCreacion.Value) < DbFunctions.TruncateTime(DateTime.Today)
             );
 
             if (!camposAReportarPorCosecha.Any() || camposAReportarPorCosecha.All(list => !list.Any()))
@@ -107,13 +105,6 @@ namespace SustitucionMOAUtils.Services
                 outputMemStream.Position = 0;
 
                 archivoZip = new Attachment(outputMemStream, nombreArchivoZip);
-
-                //File.WriteAllBytes(@"C:\Temp\MO\archivo1.zip", outputMemStream.ToArray());
-                //File.WriteAllBytes(@"C:\Temp\MO\archivo2.zip", outputMemStream.ToArray());
-                ////File.WriteAllBytes(@"C:\Temp\MO\archivo3.zip", zipStream.ToArray());
-
-                ////outputMemStream.Flush();
-                ////
 
                 Attachment archivoExcel;
                 MemoryStream streamExcel = new MemoryStream();

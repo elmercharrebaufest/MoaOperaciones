@@ -17,6 +17,7 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SpinnerModule } from 'primeng/spinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { InformeComercialComponent } from '../alta-proveedores/informe-comercial/informe-comercial.component';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { InformeComercialComponent } from '../alta-proveedores/informe-comercial
     CalendarModule,
     ToggleButtonModule,
     SpinnerModule,
-    SelectButtonModule
+    SelectButtonModule,
+    OverlayPanelModule
   ],
     declarations: [
       MisConsultasComponent,
