@@ -333,7 +333,7 @@ namespace SustitucionMOAUtils.Services
             return dataAgroService.ValidarCUITProveedorGranos(ref usuario, proveedor);
         }
 
-        public ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT, bool corredor = false) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT);
+        public ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT, bool corredor = false) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT, corredor);
 
         public Usuario ObtenerUsuario(string mail, string granosFlag) => BuscarUsuarioPorMail(mail);
 
