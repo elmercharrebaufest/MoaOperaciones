@@ -38,7 +38,7 @@
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" ></cabecera>
                     </div>
                     <div  *ngSwitchCase="enumSolp.SolpSubposiciones" [@fadeInOut] >
-                        <subPosicion #cabecera  [(locale)]="es"  ></subPosicion>
+                        <subPosicion [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" ></subPosicion>
                     </div>
                     
                     <div *ngSwitchDefault [@fadeInOut] >
@@ -60,6 +60,7 @@
                     <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())" >{{pasoSiguiente().descripcion}}</button>
                     <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
                     <button class="btn btn-secondary botonAgregarPosicion" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
+                    <button class="btn btn-secondary botonAgregarPosicion" *ngIf="pasoActual.Codigo == enumSolp.SolpSubposiciones" (click)="navegar(pasoAnterior())" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                 </div>
             </div>
         </p-sidebar>

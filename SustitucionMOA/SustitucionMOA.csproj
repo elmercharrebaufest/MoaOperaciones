@@ -331,6 +331,7 @@
     <Content Include="src\app\compras\PliegoPasos\generacion1.component.js" />
     <Content Include="src\app\compras\PliegoPasos\generacion2.component.html" />
     <Content Include="src\app\compras\PliegoPasos\generacion2.component.js" />
+    <Content Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.html" />
     <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
     <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.js" />
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />
@@ -1005,10 +1006,14 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion2.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicionViewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\adjuntos-Especificaciones.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\especificacionesViewModel.ts" />

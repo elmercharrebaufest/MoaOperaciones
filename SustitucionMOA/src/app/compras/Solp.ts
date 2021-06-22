@@ -6,6 +6,7 @@ import { forEach } from "@angular/router/src/utils/collection";
 import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
 import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 import { FormGroup } from "@angular/forms";
+import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
 
 export class Solp {
     public id: number;
@@ -135,7 +136,7 @@ export class PosicionSolp {
     public rubroMecanico: boolean;
     public rubroIngenieria: boolean;
     public rubroConsultoria: boolean;
-    public tipoImputacion: boolean;
+    public tipoImputacion: string;
 
     public proveedoresValidos: string[] = [];
     public proveedoresInvalidos: string[] = [];
@@ -143,9 +144,13 @@ export class PosicionSolp {
 
     // Moneda
     public selectMonedaCompras: any;
+    public monedaSeleccionada: any={};
     public totalPosicion: number;
 
     public posicionValida: boolean;
+
+    //subPosiciones
+    listadoSubPosiciones :  Array<SubPosicionViewModel>;
 
     constructor(numeroPosicion) {
         this.id = uuid.v4();
@@ -153,6 +158,9 @@ export class PosicionSolp {
         this.numeroPosicion = numeroPosicion;
         this.fechaEntregaServicio = new Date();
         this.fechaDeLiberacion = new Date();
+        this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
+        //agrega un fila por defecto
+        this.listadoSubPosiciones.push(new SubPosicionViewModel(0));
     }
 }
 
