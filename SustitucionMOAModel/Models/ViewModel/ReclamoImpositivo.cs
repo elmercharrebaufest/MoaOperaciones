@@ -14,6 +14,7 @@ namespace SustitucionMOAModel.Models.ViewModel
         public string Vinculo { get; set; }
         public string Cuit { get; set; }
         public List<Reclamo> Reclamos { get; set; } = new List<Reclamo>();
+        public string Lugar { get; set; }
     }
 
     public class Reclamo

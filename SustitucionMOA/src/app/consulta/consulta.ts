@@ -71,6 +71,7 @@ export class ReclamoImpositivo{
     Cuit;
     Vinculo;
     Reclamos: Array<Reclamo>;
+    Lugar;
 }
 export interface Reclamo{
     Fecha;

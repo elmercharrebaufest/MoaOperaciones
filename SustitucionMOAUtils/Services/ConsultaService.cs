@@ -631,9 +631,11 @@ namespace SustitucionMOAUtils.Services
             iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
             iTextSharp.text.Font _standardFontBold = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
 
-            doc.Add(new Paragraph("Lugar y fecha: \n\nSeñores: \n\nMolinos Agro S.A \n ____________________________________________________________________________\n"));
 
-            var parrafo = string.Format("\n{0} (DNI  N°{1}),  en mi carácter de {2} de {3},  CUIT N° {4}, por la presente manifiesto en carácter de declaración jurada, que no hemos computado  ni  computaremos  como  pago  a  cuenta  en  las  respectivas  declaraciones  juradas  del  Impuesto sobre los Ingresos Brutos, las retenciones efectuadas por Molinos Agro S.A. de acuerdo con el siguiente detalle:"
+            var parrafo0 = string.Format("Lugar y fecha: {0}, {1} \n\nSeñores: \n\nMolinos Agro S.A \n ____________________________________________________________________________\n", reclamoImpositivo.Lugar, DateTime.Now);
+            doc.Add(new Paragraph(parrafo0));
+
+            var parrafo = string.Format("\nEl  que  suscribe, {0} (DNI  N°{1}),  en mi carácter de {2}  (apoderado, representante legal, etc.) de {3},  CUIT N° {4}, por la presente manifiesto en carácter de declaración jurada, que no hemos computado  ni  computaremos  como  pago  a  cuenta  en  las  respectivas  declaraciones  juradas  del  Impuesto sobre los Ingresos Brutos, las retenciones efectuadas por Molinos Agro S.A. de acuerdo con el siguiente detalle:"
                 , reclamoImpositivo.RazonSocialProveedor, reclamoImpositivo.Dni, reclamoImpositivo.Vinculo, reclamoImpositivo.RazonSocialEmpresa, reclamoImpositivo.Cuit);
             // Escribimos el encabezamiento en el documento
             doc.Add(new Paragraph(parrafo));
@@ -688,7 +690,7 @@ namespace SustitucionMOAUtils.Services
             // Finalmente, añadimos la tabla al documento PDF y cerramos el documento
             doc.Add(tblTabla);
 
-            doc.Add(new Paragraph("\n\n__________________\nFirma y aclaración \n"));
+            doc.Add(new Paragraph("\n\n\n__________________\nFirma y aclaración \n"));
             doc.Add(new Paragraph("(Certificada por Banco o Escribano)", _standardFontBold));
             doc.Add(Chunk.NEWLINE);
 
