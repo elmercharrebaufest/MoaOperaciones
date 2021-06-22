@@ -457,6 +457,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
             );
 
         document.getElementById("hidemyModalOperando").click();
+        this.mensajeComponent.setSuccessMsg("Proveedor habilitado")
     }
 
     validarNoGranosOperando(){
