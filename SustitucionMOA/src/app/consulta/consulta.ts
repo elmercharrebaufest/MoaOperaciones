@@ -66,3 +66,17 @@ export class Comentario{
     Recordado: any;
     FechaRecordado: any;
 }
+export class ReclamoImpositivo{
+    Dni;
+    RazonSocialEmpresa;
+    RazonSocialProveedor;
+    Cuit;
+    Vinculo;
+    Reclamos: Array<Reclamo>;
+    Lugar;
+}
+export interface Reclamo{
+    Fecha;
+    Certificado;
+    Importe;
+}

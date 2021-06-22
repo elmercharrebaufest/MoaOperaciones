@@ -1,8 +1,11 @@
-﻿using SustitucionMOAAssets;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -623,6 +626,95 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public string GenerarReclamoImpositivoPdf(ReclamoImpositivo reclamoImpositivo)
+        {
+            // Creamos el documento con el tamaño de página tradicional
+            Document doc = new Document(PageSize.LETTER);
+            // Indicamos donde vamos a guardar el documento
+            var ruta = string.Format("{0}/{1}", rutaArchivosConsulta, "ReclamoImpositivo.pdf");
+            PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(ruta, FileMode.Create));
+
+            // Le colocamos el título y el autor
+            // **Nota: Esto no será visible en el documento
+            doc.AddTitle("Reclamo Impositivo");
+            doc.AddCreator(reclamoImpositivo.RazonSocialProveedor);
+
+            // Abrimos el archivo
+            doc.Open();
+
+            // Creamos el tipo de Font que vamos utilizar
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font _standardFontBold = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+
+
+            var parrafo0 = string.Format("Lugar y fecha: {0}, {1} \n\nSeñores: \n\nMolinos Agro S.A \n ____________________________________________________________________________\n", reclamoImpositivo.Lugar, DateTime.Now);
+            doc.Add(new Paragraph(parrafo0));
+
+            var parrafo = string.Format("\nEl  que  suscribe, {0} (DNI  N°{1}),  en mi carácter de {2}  (apoderado, representante legal, etc.) de {3},  CUIT N° {4}, por la presente manifiesto en carácter de declaración jurada, que no hemos computado  ni  computaremos  como  pago  a  cuenta  en  las  respectivas  declaraciones  juradas  del  Impuesto sobre los Ingresos Brutos, las retenciones efectuadas por Molinos Agro S.A. de acuerdo con el siguiente detalle:"
+                , reclamoImpositivo.RazonSocialProveedor, reclamoImpositivo.Dni, reclamoImpositivo.Vinculo, reclamoImpositivo.RazonSocialEmpresa, reclamoImpositivo.Cuit);
+            // Escribimos el encabezamiento en el documento
+            doc.Add(new Paragraph(parrafo));
+            doc.Add(Chunk.NEWLINE);
+
+            // Creamos una tabla que contendrá el nombre, apellido y país
+            // de nuestros visitante.
+            PdfPTable tblTabla = new PdfPTable(4);
+
+            // Configuramos el título de las columnas de la tabla
+            PdfPCell clNombre = new PdfPCell(new Phrase("", _standardFont));
+            clNombre.BorderWidth = 1;
+
+            PdfPCell clFecha = new PdfPCell(new Phrase("Fecha", _standardFont));
+            clFecha.BorderWidth = 1;
+
+            PdfPCell clImporte = new PdfPCell(new Phrase("Importe Retención", _standardFont));
+            clImporte.BorderWidth = 1;
+
+            PdfPCell clCertificado = new PdfPCell(new Phrase("Certificado n°", _standardFont));
+            clCertificado.BorderWidth = 1;
+
+            // Añadimos las celdas a la tabla
+            tblTabla.AddCell(clNombre);
+            tblTabla.AddCell(clFecha);
+            tblTabla.AddCell(clImporte);
+            tblTabla.AddCell(clCertificado);
+
+            // Llenamos la tabla con información
+            foreach (Reclamo reclamo in reclamoImpositivo.Reclamos){
+                clNombre = new PdfPCell(new Phrase(reclamoImpositivo.RazonSocialEmpresa, _standardFont));
+                clNombre.BorderWidth = 1;
+
+                reclamo.Fecha = reclamo.Fecha.Substring(0, 10);
+
+                clFecha = new PdfPCell(new Phrase(reclamo.Fecha, _standardFont));
+                clFecha.BorderWidth = 1;
+
+                clImporte = new PdfPCell(new Phrase(reclamo.Importe, _standardFont));
+                clImporte.BorderWidth = 1;
+
+                clCertificado = new PdfPCell(new Phrase(reclamo.Certificado, _standardFont));
+                clCertificado.BorderWidth = 1;
+
+                // Añadimos las celdas a la tabla
+                tblTabla.AddCell(clNombre);
+                tblTabla.AddCell(clFecha);
+                tblTabla.AddCell(clImporte);
+                tblTabla.AddCell(clCertificado);
+            }
+
+            // Finalmente, añadimos la tabla al documento PDF y cerramos el documento
+            doc.Add(tblTabla);
+
+            doc.Add(new Paragraph("\n\n\n__________________\nFirma y aclaración \n"));
+            doc.Add(new Paragraph("(Certificada por Banco o Escribano)", _standardFontBold));
+            doc.Add(Chunk.NEWLINE);
+
+            doc.Close();
+            writer.Close();
+
+            return ruta;
         }
 
         private string ArmarRutaCarpeta(Comentario comentario)
