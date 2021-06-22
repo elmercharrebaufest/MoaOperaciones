@@ -342,3 +342,29 @@
   font-family: Roboto Regular !important;
   font-weight:bold;
 }
+
+
+.marginButton {
+  margin-top: 10px;
+}
+
+.buttonTotalCompras
+{
+  background: var(--azul-moa) 0% 0% no-repeat padding-box;
+  background: #4D60A8 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  opacity: 1;
+
+  font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-bold) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-24) var(--unnamed-font-family-roboto);
+  letter-spacing: var(--unnamed-character-spacing-0);
+  color: var(--unnamed-color-ffffff);
+  text-align: left;
+  font: normal normal bold 16px/24px Roboto;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+  opacity: 1;
+}
+
+.alinearTitulo {
+  margin-left: -13px;
+}

@@ -31,6 +31,9 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
+import { TableModule } from 'primeng/table';
+import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
+
     
 @NgModule({
     imports: [
@@ -54,7 +57,8 @@ import { ChipsModule } from 'primeng/chips';
         DropdownModule,
         AutoCompleteModule,
         ReactiveFormsModule,
-        ChipsModule
+        ChipsModule,
+        TableModule
     ],
     declarations: [
         SolpComponent,
@@ -65,7 +69,8 @@ import { ChipsModule } from 'primeng/chips';
         EspecificacionesComponent,
         CotizacionComponent,
         DragAndDropDirective,
-        CabeceraComponent
+        CabeceraComponent,
+        SubPosicionComponent
     ],
     providers: [
         ComprasService,
