@@ -217,7 +217,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("Seleccione razón social vendedor");
                 return true;
             }
-            this.mensajeComponent.setErrorMsg("El campo proveedor esta vació.");
+            this.mensajeComponent.setErrorMsg("El campo proveedor esta vacio.");
             return true;
         }
         if (this.categoriaCount == 0) {
@@ -229,38 +229,38 @@ export class CrearConsultaComponent extends ListBaseComponent {
             return true;
         }
         if (this.asunto == "" || !this.asunto) {
-            this.mensajeComponent.setErrorMsg("El campo Asunto esta vació.");
+            this.mensajeComponent.setErrorMsg("El campo Asunto esta vacio.");
             return true;
         }
         if (this.nombre == "" || !this.nombre) {
-            this.mensajeComponent.setErrorMsg("El campo Nombre esta vació.");
+            this.mensajeComponent.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
         if (this.nuevoComentario == "" || !this.nuevoComentario) {
-            this.mensajeComponent.setErrorMsg("El campo Comentario esta vació.");
+            this.mensajeComponent.setErrorMsg("El campo Comentario esta vacio.");
             return true;
         }
         if ((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)) {
-            this.mensajeComponent.setErrorMsg("El campo Corredor esta vació.");
+            this.mensajeComponent.setErrorMsg("El campo Corredor esta vacio.");
             return true;
         }
         if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
 
             if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° Salida de pago esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° Salida de pago esta vacio.");
                 return true;
             }
             if (this.contrato == "" || !this.contrato) {
-                this.mensajeComponent.setErrorMsg("El campo Contrato esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Contrato esta vacio.");
                 return true;
             }
             if (this.impuesto == "" || !this.impuesto) {
-                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vacio.");
                 return true;
             }
             if (this.importe == "" || !this.importe) {
-                this.mensajeComponent.setErrorMsg("El campo Importe retención esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Importe retención esta vacio.");
                 return true;
             }
             if (this.fechaPago == "" || !this.fechaPago) {
@@ -275,32 +275,32 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo Cliente de pago esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
             }
             if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de factura esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de factura esta vacio.");
                 return true;
             }
             if (this.impuesto == "" || !this.impuesto) {
-                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vacio.");
                 return true;
             }
         }
         if ((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG')) {
             if (this.contrato == "" || !this.contrato) {
-                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.contrato == "" || !this.contrato) {
-                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
             if (this.bolsaEmisoraOblea == "" || !this.bolsaEmisoraOblea) {
-                this.mensajeComponent.setErrorMsg("El campo bolsa Emisora de Oblea esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
@@ -314,7 +314,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP') {
             if (this.impuesto == "" || !this.impuesto) {
-                this.mensajeComponent.setErrorMsg("El campo Impuesto esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto esta vacio.");
                 return true;
             }
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
@@ -336,7 +336,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
         if ((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)) {
             if (this.contrato == "" || !this.contrato) {
-                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
@@ -348,25 +348,25 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
         if (this.categoriaCode == 'COM') {
             if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'APP') {
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo Material esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'PES') {
             if (this.contrato == "" || !this.contrato) {
-                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if ((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')) {
             if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
                 return true;
             }
         }
@@ -378,17 +378,17 @@ export class CrearConsultaComponent extends ListBaseComponent {
         }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
             if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
                 return true;
             }
             if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo CCPP esta vació.");
+                this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
                 return true;
             }
         }
