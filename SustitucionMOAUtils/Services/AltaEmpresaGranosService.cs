@@ -867,6 +867,8 @@ namespace SustitucionMOAUtils.Services
 
 
             EnviarMailEdicionRequerida(proveedor, mensaje, null);
+
+            repositorio.GuardarCambios();
        
             return SuccessMsg.ValidacionPendienteOK;
         }
