@@ -1,0 +1,34 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">Gestionar API Key</div>
+        </div>
+        <!--End Title-->
+        <!-- Form-->
+        <div class="row myRow firstSection mySearch cargaDeDatos">
+            <div class="rounded shadow">
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm">
+                    <div class="col-xs-12 col-sm-6">
+                        API Key: 
+                        <div class="styled-select ">
+                            <input type="search" [(ngModel)]="apikey" readonly class="fourRounded" placeholder="" aria-controls="tableModal">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6" style="margin-top: 1.5em;">
+                        <button type="button" class="btn-custom btn-mediano btn-add animate align-left" (click)="generarApikey()">
+                            {{ apikey ? 'Generar Nuevo' : 'Generar' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <spinner-small></spinner-small>
+        </div>
+
+        <p-confirmDialog header="Confirmación" icon="pi pi-exclamation-circle" width="425" appendTo="body"></p-confirmDialog>
+
+        <!-- END form-->
+    </section>
+    <!--End CONTENT-->
+</div>

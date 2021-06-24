@@ -3444,6 +3444,8 @@ a.link-header[aria-expanded=false] span, div.link-header[aria-expanded=true] spa
 #ventaSustentable,
 #usuarios,
 #mis-consultas,
+#compras,
+#apikey,
 #faq {
     height: 35px;
 }
