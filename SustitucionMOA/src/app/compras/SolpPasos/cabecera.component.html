@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>    
-                <form [formGroup]="formularioActual">
+                <form [formGroup]="formularioActual" #formDirective="ngForm" >
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"> 
                             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 margenInput">
@@ -60,7 +60,7 @@
                                 </div>    
                                 <p-radioButton formControlName="servicio" (blur)="onBlur('servicio')"[ngModelOptions]="{standalone:true}" name="posiciones" value="servicio" label="Servicio (F)" [(ngModel)]="model.posicionActual.servicio" inputId="servicio"></p-radioButton>
                                 <div *ngIf="mostrarError('servicio')">
-                                    <p class="text-danger">campo obligatorio</p>
+                                    <p class="text-danger textoError">campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 margenInput">
@@ -73,7 +73,7 @@
                                     <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}" name="imputacion" value="ordenDeInversion" label="Orden de inversión (F)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton></div>
                                     <div><p-radioButton formControlName="tipoImputacion"  [ngModelOptions]="{standalone:true}"  name="imputacion" value="siniestroBeneficio" label="Siniestro / Centro de beneficio (Y)" [(ngModel)]="model.posicionActual.tipoImputacion" inputId="servicio"></p-radioButton></div>
                                     <div *ngIf="mostrarError('tipoImputacion')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div> 
                                 </div>
                             </div> 
@@ -83,7 +83,7 @@
                                 </div> 
                                 <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.textoGenerico" name="textoGenerico" formControlName="textoGenerico" id="textoGenerico" placeholder="Ingrese nombre de la posicion" maxlength="40" rows="1"/> 
                                 <div *ngIf="mostrarError('textoGenerico')">
-                                    <p class="text-danger">campo obligatorio</p>
+                                    <p class="text-danger textoError">campo obligatorio</p>
                                 </div> 
                             </div>
                         </div>   
@@ -105,7 +105,7 @@
                                     <p-calendar formControlName="fechaEntregaServicio"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>    
                                 </div>
                                 <div *ngIf="mostrarError('fechaEntregaServicio')">
-                                    <p class="text-danger">campo obligatorio</p>
+                                    <p class="text-danger textoError">campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
@@ -115,7 +115,7 @@
                                 <div class="styled-select">
                                     <p-calendar formControlName="fechaDeLiberacion"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaDeLiberacion" [locale]="locale" [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>   
                                     <div *ngIf="mostrarError('fechaDeLiberacion')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div> 
                                 </div>
                             </div>
@@ -151,7 +151,7 @@
                                     (onChange)="centroSeleccionado()"
                                     [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectCentroEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
                                 </div>
 
@@ -160,7 +160,7 @@
                                     <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.nombreEntrega" formControlName="nombreEntrega" name="nombreEntrega"  id="nombreEntrega" placeholder="Ingrese nombre" maxlength="40" rows="1"/> 
 
                                     <div *ngIf="mostrarError('nombreEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
 
                                 </div>
@@ -170,7 +170,7 @@
                                     <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.codigoPostalEntrega" formControlName="codigoPostalEntrega" name="codigoPostalEntrega"  id="codigoPostalEntrega" placeholder="Ingrese codigo postal" maxlength="40" rows="1"/> 
 
                                     <div *ngIf="mostrarError('codigoPostalEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +183,7 @@
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
                                     [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectAlmacenEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
                                 </div>
 
@@ -192,7 +192,7 @@
                                     <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.calleEntrega" formControlName="calleEntrega" name="calleEntrega"  id="calleEntrega" placeholder="Ingrese la calle" rows="1"/> 
 
                                     <div *ngIf="mostrarError('calleEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
                                 </div>
                             
@@ -207,7 +207,7 @@
                                     N&uacute;mero*
                                     <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.numeroEntrega" formControlName="numeroEntrega" name="numeroEntrega"  id="numeroEntrega" placeholder="" rows="1"/>  
                                     <div *ngIf="mostrarError('numeroEntrega')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div> 
                                 </div>
                             </div>
@@ -227,7 +227,7 @@
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
                                     [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectGrupoCompras')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
                                 </div>
 
@@ -238,7 +238,7 @@
                                     dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
                                     [filter]="true" filterBy="label"></p-dropdown>
                                     <div *ngIf="mostrarError('selectArticuloCompras')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div>
                                 </div>
                             </div>
@@ -248,7 +248,7 @@
                                     Solicitante*                                    
                                     <input pInputText class="styled-select1 widthAutocomplete p-inputtext-lg" [(ngModel)]="model.posicionActual.selectSolicitanteCompras" formControlName="selectSolicitanteCompras" name="selectSolicitanteCompras"  id="selectSolicitanteCompras" placeholder="" rows="1"/>  
                                     <div *ngIf="mostrarError('selectSolicitanteCompras')">
-                                        <p class="text-danger">campo obligatorio</p>
+                                        <p class="text-danger textoError">campo obligatorio</p>
                                     </div> 
                                 </div>
                             </div>
@@ -322,7 +322,7 @@
                                     {{item.value.CodigoSap + " - " + item.value.Descripcion}}
                                 </ng-template></p-dropdown>
                                 <div *ngIf="mostrarError('selectMonedaCompras')">
-                                    <p class="text-danger">campo obligatorio</p>
+                                    <p class="text-danger textoError">campo obligatorio</p>
                                 </div>
                             </div>
                             <p *ngIf="totalPosicion" class="valorTotal">Valor Total: {{model.posicionActual.totalPosicion}}</p>

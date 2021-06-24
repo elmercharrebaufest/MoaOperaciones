@@ -368,3 +368,9 @@
 .alinearTitulo {
   margin-left: -13px;
 }
+
+.textoError{
+  font-size: 14px im;
+  font-weight:normal !important;
+  margin-top: 2px;
+}
