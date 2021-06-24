@@ -9,14 +9,14 @@
                 <div class="row myRow" style="padding-top: 2px;">
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 alinearTitulo">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-                            Nombre de obra *
+                            Nombre de pedido *
                             <div class="styled-select">
-                                <input formControlName="nombreDeObra" pInputText type="text"
-                                    (blur)="onBlur('nombreDeObra')" [(ngModel)]="model.nombreDeObra"
-                                    placeholder="Ingrese nombre de obra" aria-controls="tableModal">
+                                <input formControlName="nombreDePedido" pInputText type="text"
+                                    (blur)="onBlur('nombreDePedido')" [(ngModel)]="model.nombreDePedido"
+                                    placeholder="Ingrese nombre de obra o material" aria-controls="tableModal">
                             </div>
 
-                            <div *ngIf="mostrarError('nombreDeObra')">
+                            <div *ngIf="mostrarError('nombreDePedido')">
                                 <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 alinearTitulo">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputRight margenInput">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
-                                Fecha tentativa de entrega de oferta *
+                                Fecha tentativa de entrega de ofertas *
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -79,7 +79,7 @@
                             <div class="styled-select">
                                 <input [ngModelOptions]="{standalone:true}" name="campo6" type="search"
                                     [(ngModel)]="model.telefono" class="fourRounded"
-                                    placeholder="Ingrese numero de telefono" aria-controls="tableModal">
+                                    placeholder="Ingrese número de telefono" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>

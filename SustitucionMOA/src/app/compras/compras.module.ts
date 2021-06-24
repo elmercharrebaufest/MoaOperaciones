@@ -33,6 +33,7 @@ import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {TableModule} from 'primeng/table';
 
 
     
@@ -60,7 +61,8 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
         ReactiveFormsModule,
         ChipsModule,
         MultiSelectModule,
-        OverlayPanelModule
+        OverlayPanelModule,
+        TableModule
     ],
     declarations: [
         SolpComponent,

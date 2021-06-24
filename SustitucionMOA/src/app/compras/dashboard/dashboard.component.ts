@@ -9,7 +9,7 @@ import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from '../compras.service';
 import { SelectItem } from 'primeng/api';
 import { Solp } from '../Solp';
-import {OverlayPanelModule} from 'primeng/overlaypanel';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 
 
@@ -25,17 +25,17 @@ declare var $: any;
 })
 export class DashboardComponent extends ListBaseComponent {
 
-    @Input('locale') 
-    protected locale:any;
+    @Input('locale')
+    protected locale: any;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
 
-        
+
     }
 
-    estadoSolp: SelectItem[];
+    estadoSolpItem: SelectItem[];
     // selectEstadoSolp: any;
     selectEstadoSolp: string[] = [];
 
@@ -46,11 +46,17 @@ export class DashboardComponent extends ListBaseComponent {
 
     display: boolean = false;
 
+    tablaSolp: any[];
+
+    cols: any[];
+
+
+
     showDialog() {
         this.display = true;
     }
 
-    cards = [ 
+    cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp" },
         // { nombre: "Con documentos requerimientos", path: ""},
         // { nombre: "Sin documento", path: ""},
@@ -68,17 +74,19 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
+   
+
 
     ngOnInit() {
         this.navService.setSeccionList([]);
 
-        this.estadoSolp = [
-            {label: 'Creada', value: 'Creada'},
-            {label: 'Liberada', value: 'Liberada'},
-            {label: 'Parc. liberada', value: 'Parc. liberada'},
-            {label: 'Relac. a ped. compra', value: 'Relac. a ped. compra'},
-            {label: 'Finalizada', value: 'Finalizada'}
-        ];  
+        this.estadoSolpItem = [
+            { label: 'Creada', value: 'Creada' },
+            { label: 'Liberada', value: 'Liberada' },
+            { label: 'Parc. liberada', value: 'Parc. liberada' },
+            { label: 'Relac. a ped. compra', value: 'Relac. a ped. compra' },
+            { label: 'Finalizada', value: 'Finalizada' }
+        ];
 
         this.es = {
             firstDayOfWeek: 0,
@@ -90,15 +98,37 @@ export class DashboardComponent extends ListBaseComponent {
             today: 'Today',
             clear: 'Clear'
         };
-        
+
+        this.tablaSolp = [{
+            numeroSolp: "hola",
+            fechaCreacion: "hola",
+            estadoDoc: "hola",
+            estadoSolp: "hola",
+            tipoSolp: "hola"
+        },
+        {
+            numeroSolp: "dddd",
+            fechaCreacion: "ddd",
+            estadoDoc: "dddd",
+            estadoSolp: "hdddola",
+            tipoSolp: "hddddola"
+        },
+        {
+            numeroSolp: "hogggla",
+            fechaCreacion: "hggggola",
+            estadoDoc: "holggga",
+            estadoSolp: "hogggla",
+            tipoSolp: "hoggggla"
+        }
+        ];
+
     }
 
-    
 
-    
-    
-    
-    
-   
 }
-    
+
+
+
+
+
+

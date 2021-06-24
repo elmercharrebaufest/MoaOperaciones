@@ -11,7 +11,7 @@ export class Solp {
     public id: number;
 
     //paso 1
-    public nombreDeObra: string;
+    public nombreDePedido: string;
     public fiscalContrato: string;
     public telefono: string;
     public mail: string;

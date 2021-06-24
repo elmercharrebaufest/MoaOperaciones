@@ -121,7 +121,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     },
     {
         Codigo: EnumPasoSolp.PliegoCotizacion,
-        Nombre: 'Cotización y plazo de ejecución',
+        Nombre: 'Cotización y plazo de ejecución (solo servicios)',
         Activo: false,
         Completo: false,
         Iniciado: false,
@@ -329,7 +329,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             switch (paso.Codigo) {
                 case EnumPasoSolp.PliegoGeneracion1:
                     paso.Completo = this.listaStringCompleta([
-                        this.solpActual.nombreDeObra,
+                        this.solpActual.nombreDePedido,
                         this.solpActual.fiscalContrato,
                         this.solpActual.mail,
                         this.solpActual.fechaEntrega,

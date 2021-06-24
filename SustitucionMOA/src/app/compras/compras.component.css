@@ -351,3 +351,10 @@
 .text-danger {
   font-weight: 400;
 }
+
+::ng-deep .ui-multiselect, ::ng-deep .ui-multiselect-label, ::ng-deep .inputAltura {
+  max-height: 40px;
+  height: 40px;
+}
+
+

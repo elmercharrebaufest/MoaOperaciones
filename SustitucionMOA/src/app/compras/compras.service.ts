@@ -16,7 +16,7 @@ export class ComprasService extends BaseService {
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,
-            NombreDeObra: solp.nombreDeObra,
+            nombreDePedido: solp.nombreDePedido,
             FiscalContrato: solp.fiscalContrato,
             Telefono: solp.telefono,
             Email: solp.mail,

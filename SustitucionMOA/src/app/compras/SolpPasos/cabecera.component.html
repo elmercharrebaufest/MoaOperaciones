@@ -7,7 +7,7 @@
             <div class="row myRow" style="padding-top: 2px;">
                 <!-- Row Clase documento -->
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin: 40px 0px 30px 0px;">
                         <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                             Clase documento*
                             <div>
@@ -29,7 +29,7 @@
                 <hr>
                 <!-- Row posiciones -->
                 <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" style="margin-top: 20px;">
                         <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 margenInput posicionCompras">
                             Posiciones
                         </div> 
@@ -99,7 +99,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 margenInput">
                                 <div>
-                                    Fecha de entrega de servicio {{ mostrarAsterisco('fechaEntregaServicio') }}
+                                    Fecha de entrega {{ mostrarAsterisco('fechaEntregaServicio') }}
                                 </div>
                                 <div class="styled-select">
                                     <p-calendar formControlName="fechaEntregaServicio"  [ngModelOptions]="{standalone:true}" [(ngModel)]="model.posicionActual.fechaEntregaServicio" [locale]="locale" [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true" [minDate]="hoy"></p-calendar>    
