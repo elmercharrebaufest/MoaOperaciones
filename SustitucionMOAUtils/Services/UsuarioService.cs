@@ -348,5 +348,16 @@ namespace SustitucionMOAUtils.Services
 
             return ret;
         }
+
+        public string ObtenerNuevoApiKey(string usuario)
+        {
+            Entidades.Usuario usuarioEntity = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuario);
+            var apikey = SustitucionMOACrypting.CryptoServiceProvider.GetNewApiKey();
+
+            usuarioEntity.ApiKey = apikey;
+
+            repositorio.GuardarCambios();
+            return apikey;
+        }
     }
 }

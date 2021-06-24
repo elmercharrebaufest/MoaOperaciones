@@ -176,8 +176,11 @@ namespace SustitucionMOA.Controllers
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 string granosFlagAzure = ClaimsPrincipalExtension.GetClaimValue("extension_Tipodeproveedor");
 
+                string apikey = string.Empty;
+
                 Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
                 aceptoTyC = usuario.AceptoTyC;
+                apikey = usuario.ApiKey;
 
                 seccionesVisitadas = usuario.SeccionesVisitadas;
 
@@ -292,6 +295,7 @@ namespace SustitucionMOA.Controllers
                     redirectURL,
                     seccionesVisitadas,
                     aceptoTyC,
+                    apikey
                 }, JsonRequestBehavior.AllowGet);
 
             }
