@@ -12,7 +12,7 @@
                             d&iacute;as corridos
 
                             <div *ngIf="mostrarError('ejecucion')">
-                                <p class="text-danger textoError">campo obligatorio</p>
+                                <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
 
@@ -38,7 +38,7 @@
                                 [(model)]="model.jornadaLaboralDias"></weekday-select>
 
                             <div *ngIf="mostrarError('dias')">
-                                <p class="text-danger textoError">campo obligatorio</p>
+                                <p class="text-danger">campo obligatorio</p>
                             </div>
                         </div>
 
@@ -51,7 +51,7 @@
                                     icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                 <div *ngIf="mostrarError('comienzoJornadaLaboral')">
-                                    <p class="text-danger textoError">campo obligatorio</p>
+                                    <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="right: 10em;">
@@ -62,7 +62,7 @@
                                     icon="fa fa-clock-o" [timeOnly]="true"></p-calendar>
 
                                 <div *ngIf="mostrarError('terminoJornadaLaboral')">
-                                    <p class="text-danger textoError">campo obligatorio</p>
+                                    <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
                         </div>
