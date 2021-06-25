@@ -357,4 +357,18 @@
   height: 40px;
 }
 
+.botonFechaDashboard {
+  background-color: white;
+  color: #666666;
+  font-family: roboto regular;
+  border-color: #b7b0b0;
+  font-size: 14px;
+  text-align: justify;
+  padding-top: 10px;
+}
+
+::ng-deep .botonFechaDashboard:hover {
+  background-color: white; 
+  color: #666666;
+}
 

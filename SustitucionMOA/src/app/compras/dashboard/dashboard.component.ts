@@ -25,7 +25,6 @@ declare var $: any;
 })
 export class DashboardComponent extends ListBaseComponent {
 
-    @Input('locale')
     protected locale: any;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
@@ -88,7 +87,7 @@ export class DashboardComponent extends ListBaseComponent {
             { label: 'Finalizada', value: 'Finalizada' }
         ];
 
-        this.es = {
+        this.locale = {
             firstDayOfWeek: 0,
             dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
             dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
@@ -118,7 +117,11 @@ export class DashboardComponent extends ListBaseComponent {
             fechaCreacion: "hggggola",
             estadoDoc: "holggga",
             estadoSolp: "hogggla",
-            tipoSolp: "hoggggla"
+            tipoSolp: "hoggggla",
+            estadoDocCodigo: "Creado",
+            estadoSolpCodigo: "",
+            esSap: " ",
+            vincularPliego: " " 
         }
         ];
 

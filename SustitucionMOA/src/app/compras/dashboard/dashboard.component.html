@@ -23,10 +23,10 @@
             </div>
                 
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 1em; margin-bottom: 1em;">
+                <div class="row myRow col-xs-12 col-sm-12 col-md-12 col-lg-12 " style="margin-top: 1em; margin-bottom: 15px;">
 
-                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 alinearTitulo">
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-left: -46px;">
+                        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText (input)="tabla.filter($event.target.value,'numeroSolp', 'contains')" type="text"  placeholder="Buscar">
                         </div>
 
@@ -63,7 +63,7 @@
                         </div>
                         
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" type="text" pButton (click)="op.toggle($event, actualTarget)">Fecha <span class="pull-right glyphicon glyphicon-chevron-down"></span></button>
+                            <button class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura botonFechaDashboard " type="text" pButton (click)="op.toggle($event, actualTarget)">Fecha <span class="pull-right fa fa-angle-down" style="color: #666666; font-size: 14px;"></span></button>
                         </div>
                     </div>
 
@@ -102,9 +102,9 @@
     </section>
 
     <div>
-        <p-table #tabla [columns]="cols" [value]="tablaSolp">
+        <p-table #tabla [value]="tablaSolp">
             <ng-template pTemplate="header" let-columns>
-                <tr>
+                <tr style="background-color: #666666;">
                     <th></th>
                     <th [pSortableColumn]="numeroSolp">
                         Numero SOLP
@@ -136,23 +136,23 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td>
-                        <span><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"/></span>
+                        <span *ngIf="rowdata.estadoSolpCodigo != 'Liberado' "><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"/></span>
                         <span><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"/></span>
-                        <span><img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>        
+                        <span><img disabled class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>        
                     </td>
-                    <td [ngSwitch]="numeroSolp">
+                    <td>
                         {{rowData.numeroSolp}}
                     </td>
-                    <td [ngSwitch]="tablaSolp.fechaCreacion">
+                    <td>
                         {{rowData.fechaCreacion}}
                     </td>
-                    <td [ngSwitch]="text">
-                        {{rowData.estadoDoc}}
+                    <td>
+                       <span [style.color]="rowData.estadoSolpCodigo == 'Incompleto' ? 'naranja' : 'verde' ">{{rowData.estadoDoc}}</span>
                     </td>
-                    <td [ngSwitch]="text">
+                    <td>
                         {{rowData.estadoSolp}}
                     </td>
-                    <td [ngSwitch]="text">
+                    <td>
                         {{rowData.tipoSolp}}
                     </td>
                 </tr>
