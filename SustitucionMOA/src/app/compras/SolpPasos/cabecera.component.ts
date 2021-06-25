@@ -260,13 +260,13 @@ export class CabeceraComponent extends ListBaseComponent {
         }
 
 
-        this.model.posicionActual.nombreEntrega = this.model.posicionActual.selectCentroEntrega == undefined ? "" : (this.model.posicionActual.nombreEntrega
-            || this.model.posicionActual.selectCentroEntrega.Descripcion);
+        this.model.posicionActual.nombreEntrega =  this.model.posicionActual.nombreEntrega
+            || (this.model.posicionActual.selectCentroEntrega == undefined ? "" :this.model.posicionActual.selectCentroEntrega.Descripcion);
 
-        this.model.posicionActual.codigoPostalEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.codigoPostalEntrega || direccionCentro.Cp);
-        this.model.posicionActual.calleEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.calleEntrega || direccionCentro.Direccion);
-        this.model.posicionActual.numeroEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.numeroEntrega || direccionCentro.Numero);
-        this.model.posicionActual.paisEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.paisEntrega || direccionCentro.Pais);
+        this.model.posicionActual.codigoPostalEntrega =  this.model.posicionActual.codigoPostalEntrega || (direccionCentro == undefined ? "" :direccionCentro.Cp);
+        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || (direccionCentro == undefined ? "" :  direccionCentro.Direccion);
+        this.model.posicionActual.numeroEntrega =  this.model.posicionActual.numeroEntrega || (direccionCentro == undefined ? "" :direccionCentro.Numero);
+        this.model.posicionActual.paisEntrega =  this.model.posicionActual.paisEntrega || (direccionCentro == undefined ? "" : direccionCentro.Pais);
     }
 
     eliminarPosicion()
