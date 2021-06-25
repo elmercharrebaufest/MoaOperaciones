@@ -239,7 +239,7 @@
   } */
 
   .prototipo {
-    margin: 0px -1px 10px 0px !important;
+    margin: 0px -1px 12px 0px !important;
   }
 
   .alinearTitulo {
@@ -367,4 +367,8 @@
 
 .alinearTitulo {
   margin-left: -13px;
+}
+
+.separadorCompras {
+  margin-bottom: 15px;
 }

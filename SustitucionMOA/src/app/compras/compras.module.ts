@@ -32,7 +32,9 @@ import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
 import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
+import {ConfirmationService} from 'primeng/api';
 
     
 @NgModule({
@@ -58,7 +60,8 @@ import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosic
         AutoCompleteModule,
         ReactiveFormsModule,
         ChipsModule,
-        TableModule
+        TableModule,
+        ConfirmDialogModule
     ],
     declarations: [
         SolpComponent,
@@ -74,7 +77,8 @@ import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosic
     ],
     providers: [
         ComprasService,
-        ValidadorPasoSolpService
+        ValidadorPasoSolpService,
+        ConfirmationService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
