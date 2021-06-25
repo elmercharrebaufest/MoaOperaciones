@@ -35,8 +35,6 @@ import { TableModule } from 'primeng/table';
 import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
-import {TableModule} from 'primeng/table';
-
 
     
 @NgModule({
