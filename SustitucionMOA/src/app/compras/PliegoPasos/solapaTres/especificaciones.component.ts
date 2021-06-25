@@ -14,6 +14,7 @@ import Quill from 'quill';
 import { FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../enum-paso-solp';
+import { ConfirmationService } from 'primeng/api';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -44,7 +45,7 @@ export class EspecificacionesComponent extends ListBaseComponent {
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,
-        private validadorPasoSolpService: ValidadorPasoSolpService) {
+        private validadorPasoSolpService: ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.modulesEditor = {
@@ -94,11 +95,13 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
+        debugger
         var indice = this.viewModel.archivosAdjuntosNuevos.indexOf(archivo)
         this.viewModel.archivosAdjuntosNuevos.splice(indice, 1)
     }
 
     eliminarAdjuntoGuardado(archivo): void {
+        debugger
         var indice = this.viewModel.archivosGuardadosEspecificaciones.indexOf(archivo)
         this.viewModel.archivosGuardadosEspecificaciones.splice(indice, 1)
     }
@@ -204,6 +207,21 @@ export class EspecificacionesComponent extends ListBaseComponent {
             }, 0);
             return;
         }
+    }
+
+    
+    eliminarArchivo(esAdjuntoNuevo : boolean, archivo : any)
+    {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea eliminar el archivo?',
+            accept: () => {
+                esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
+            },
+            reject: () => {
+                
+            }
+        });
+
     }
 
 }
