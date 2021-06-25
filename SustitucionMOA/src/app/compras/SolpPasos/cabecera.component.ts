@@ -247,14 +247,23 @@ export class CabeceraComponent extends ListBaseComponent {
     }
 
     centroSeleccionado(){
-        this.almacenEntrega = this.combos.Almacen.filter(x=> x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
-        
-        let direccionCentro = this.combos.CentrosDireccion.find(x=> x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
-        this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega || this.model.posicionActual.selectCentroEntrega.Descripcion;
-        this.model.posicionActual.codigoPostalEntrega = this.model.posicionActual.codigoPostalEntrega || direccionCentro.Cp;
-        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || direccionCentro.Direccion;
-        this.model.posicionActual.numeroEntrega = this.model.posicionActual.numeroEntrega || direccionCentro.Numero;
-        this.model.posicionActual.paisEntrega = this.model.posicionActual.paisEntrega || direccionCentro.Pais;
+        let direccionCentro: any;
+        if (this.model.posicionActual.selectCentroEntrega == undefined) {
+            this.almacenEntrega = [];
+        }
+        else {
+            this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+            direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
+        }
+
+
+        this.model.posicionActual.nombreEntrega = this.model.posicionActual.selectCentroEntrega == undefined ? "" : (this.model.posicionActual.nombreEntrega
+            || this.model.posicionActual.selectCentroEntrega.Descripcion);
+
+        this.model.posicionActual.codigoPostalEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.codigoPostalEntrega || direccionCentro.Cp);
+        this.model.posicionActual.calleEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.calleEntrega || direccionCentro.Direccion);
+        this.model.posicionActual.numeroEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.numeroEntrega || direccionCentro.Numero);
+        this.model.posicionActual.paisEntrega = direccionCentro == undefined ? "" : (this.model.posicionActual.paisEntrega || direccionCentro.Pais);
     }
 
 }
