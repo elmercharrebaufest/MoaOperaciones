@@ -420,40 +420,34 @@ export class AltasComponent extends BaseComponent implements OnInit {
     }
 
     proveedorNoGranosOperando(){
-        debugger
         this.mensajeComponent.setMsgsEmpty();
         this.unsubscribe();
 
         if(this.validarNoGranosOperando()) return
-        
+        debugger
         this.subscription = this.altaEmpresaService
-            .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial)
-            .subscribe(
-                (result) => {
-                    this.spinnerSmallComponent.hideIt();
+        .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
+            result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
-                    } else if (
-                        result.error != undefined &&
-                        result.error != ""
-                    ) {
+                    } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.mensajeComponent.setMsgsEmpty();
-                        this.mensajeComponent.setSuccessMsg(result.info);
+                    }
+                    else {
                         document.getElementById("hidemyModalOperando").click();
+                        this.mensajeComponent.setSuccessMsg("Proveedor habilitado");
+                        this.empresaSeleccionada.EstadoAprobacionDescripcion = 'Alta aceptada';
+                        this.empresaSeleccionada.EstadoAprobacion = 0;
+
+                        //this.getEmpresa();
                     }
                 },
-                (error) => {
-                    this.spinnerSmallComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
+                error => {
+                    this.spinnerModal.hideIt();
                 }
             );
-
-        document.getElementById("hidemyModalOperando").click();
-        this.mensajeComponent.setSuccessMsg("Proveedor habilitado")
     }
 
     validarNoGranosOperando(){
