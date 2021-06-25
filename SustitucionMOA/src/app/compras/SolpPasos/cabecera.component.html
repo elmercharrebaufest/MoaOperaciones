@@ -313,8 +313,8 @@
                             <div class="margenInput">
                                 Moneda*   
                                 <p-dropdown formControlName="selectMonedaCompras"  [ngModelOptions]="{standalone:true}" [options]="monedaCompras" 
-                                [(ngModel)]="model.posicionActual.selectMonedaCompras"
-                                dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="true" placeholder="">
+                                [(ngModel)]="model.posicionActual.monedaSeleccionada"
+                                dataKey="Id" optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar">
                                 <ng-template let-item pTemplate="selectedItem">
                                     {{item.value.CodigoSap + " - " + item.value.Descripcion}}
                                 </ng-template>

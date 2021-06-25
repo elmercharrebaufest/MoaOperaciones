@@ -31,6 +31,8 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
+import { TableModule } from 'primeng/table';
+import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {TableModule} from 'primeng/table';
@@ -73,7 +75,8 @@ import {TableModule} from 'primeng/table';
         EspecificacionesComponent,
         CotizacionComponent,
         DragAndDropDirective,
-        CabeceraComponent
+        CabeceraComponent,
+        SubPosicionComponent
     ],
     providers: [
         ComprasService,
