@@ -358,6 +358,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
+            if ((this.comprobante == "" || !this.comprobante) && (this.contrato == "" || !this.contrato)) {
+                this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                return true;
+            }
         }
         if (this.categoriaCode == 'PES') {
             if (this.contrato == "" || !this.contrato) {

@@ -164,6 +164,8 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.causaConsultaId = this.causaConsulta.Id;
         }
 
+        debugger
+
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
                 result => {
@@ -384,7 +386,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos(false).subscribe(
+            this.subscription = this.service.getCombos(true).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

@@ -99,15 +99,14 @@ export class MisConsultasComponent extends ListBaseComponent {
             clear: 'Borrar'
         }
 
-        this.table.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
+        this.table.filterConstraints['DateRangeFilter'] = (value, filter): boolean => {
             if (filter[0] != null && filter[1] != null)
-                return value.getDate() >= filter[0].getDate() &&
-                    value.getDate() <= filter[1].getDate();
-            else if (filter[0] != null && filter[1] == null)
-                return value.getDate() >= filter[0].getDate()
+                return value >= filter[0] &&
+                    value <= filter[1];
+            else if (filter[0] != null && filter[1] == null){
+                return value >= filter[0];}
             else if (filter[0] == null && filter[1] != null)
-                return value.getDate() <= filter[1].getDate()
+                return value <= filter[1]
             else
                 return true;
         }
@@ -190,7 +189,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         return this.subcategoriasList;
     }
 
-    onFechaChange(dt, col) {
+    onFechaChange(dt: any, col: { selectedRange: string; field: any; fecha: any; }) {
         let desde = col.selectedRange == 'desde' || col.selectedRange == 'rango';
         let hasta = col.selectedRange == 'hasta' || col.selectedRange == 'rango';
 
@@ -211,7 +210,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     filtrarFecha(dt, field, desde, hasta) {
-        dt.filter([desde, hasta], field, 'dateRangeFilter');
+        dt.filter([desde, hasta], field, 'DateRangeFilter');
     }
 
     cambiarCalendar(dt, col) {
