@@ -23,5 +23,6 @@
     [InformadaSAP] BIT NULL, 
     [FechaEntregaGenerada] DATETIME NULL, 
     [NumeroPedido] VARCHAR(15) NULL, 
+    [ContratoIngresado] VARCHAR(15) NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
 )

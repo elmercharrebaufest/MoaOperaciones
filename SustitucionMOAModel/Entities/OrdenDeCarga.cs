@@ -37,6 +37,8 @@ namespace SustitucionMOAModel.Entities
 
         public EstadoOrdenDeCarga Estado { get; set; }
 
+        public string ContratoIngresado { get; set; }
+
         public string ContratoSAP { get; set; }
 
         public bool CorredorSeleccionado { get; set; }
