@@ -194,14 +194,14 @@ namespace SustitucionMOAUtils.Services
                 RazonSocialCorredor = c.RazonSocialCorredor,
                 CodigoProveedor = c.CodigoProveedor,
                 RazonSocialProveedor = c.RazonSocialProveedor,
-                CategoriaId = c.Categoria_Id,
+                CategoriaId = getIdCategoria(c.Categoria.Code, c.Categoria_Id),
                 Categoria = new CategoriaDto
                 {
                     Id = c.Categoria.Id,
                     Code = c.Categoria.Code,
                     Nombre = c.Categoria.Nombre
                 },
-                SubCategoriaId = c.SubCategoria_Id != null ? c.SubCategoria_Id : 0,
+                SubCategoriaId = c.SubCategoria_Id != null ? getIdSubcategoria(c.SubCategoria.Code, c.SubCategoria_Id) : 0,
                 SubCategoria = c.SubCategoria != null ? new SubCategoriaDto
                 {
                     Id = c.SubCategoria.Id,
@@ -294,6 +294,46 @@ namespace SustitucionMOAUtils.Services
             return dato;
         }
 
+        private int? getIdSubcategoria(string code, int? id)
+        {
+            List<string> exclude = new List<string> { "NRORPD","NRORPC","NRORFD","PROFFD","SERVFD","BONFD","CDGFD",
+                "NRORFC","PROFFC","SERVFC","BONFC","CDGFC" };
+
+            if (exclude.Contains(code))
+            {
+                if (code.Contains("FD") || code.Contains("FC"))
+                {
+                    var categoria = repositorio.Obtener<Categoria>(c => c.Code == "FIN");
+                    code = code.Replace("FD", "").Replace("FC", "");
+                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code && sc.Categoria_Id == categoria.Id).Id;
+                }
+                else
+                {
+                    code = code.Replace("PD", "").Replace("PC", "");
+                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code).Id;
+                }
+            }
+
+            return id;
+        }
+
+        private int getIdCategoria(string code, int id = 0)
+        {
+            if (code.Contains("DIR"))
+            {
+                code = code.Replace("DIR", "");
+                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
+            }
+
+            if (code.Contains("COR"))
+            {
+                code = code.Replace("COR", "");
+                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
+            }
+            
+            return id;
+        }
+
         public string RecordarComentario(int consultaId)
         {
             try
@@ -378,6 +418,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
+            var esInterno = usuario.TienePermiso("CONSULTA ABM");
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
             
             ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes)
@@ -408,7 +449,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoConsulta = new EstadoConsultaDto 
                         {
                             Id = x.EstadoConsulta.Id,
-                            Descripcion = x.EstadoConsulta.Descripcion,
+                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestion" : x.EstadoConsulta.Descripcion,
                             Color = x.EstadoConsulta.Color,
                             Code = x.EstadoConsulta.Code
                         },
@@ -456,11 +497,12 @@ namespace SustitucionMOAUtils.Services
         public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId)
         {
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
+            SubCategoria subCategoria = new SubCategoria() { };
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
 
             if (subcategoriaId.HasValue && subcategoriaId != 0)
             {
-                var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subcategoriaId);
+                subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subcategoriaId);
                 if (subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
             }
 
@@ -468,19 +510,51 @@ namespace SustitucionMOAUtils.Services
             if (categoria == null) throw new InfoCustomException("No existe la categoria");
 
             var consulta = GetConsulta(consultaId);
-
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
             consulta.EstadoConsulta_Id = estadoConsultaId;
-            if(subcategoriaId != 0) 
+            if (subcategoriaId != 0)
             {
                 consulta.SubCategoria_Id = subcategoriaId;
             }
 
-            if (causaConsultaId.HasValue && causaConsultaId != 0) 
+            if (causaConsultaId.HasValue && causaConsultaId != 0)
             {
                 var causaConsulta = repositorio.Obtener<CausaConsulta>(cc => cc.Id == causaConsultaId);
-                if(causaConsulta == null) throw new InfoCustomException("No existe la causa de consulta");
+                if (causaConsulta == null) throw new InfoCustomException("No existe la causa de consulta");
                 consulta.Detalle.CausaConsulta_Id = causaConsultaId;
+            }
+
+            if (categoria.Code == "FIN")
+            {
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    var subcategoriaCode = subCategoria.Code;
+                    subcategoriaCode = subcategoriaCode = subcategoriaCode.Contains("FC") ? subcategoriaCode : subcategoriaCode.Contains("PC") ? subcategoriaCode.Replace("PC", "FC") : subcategoriaCode + "FC";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    var subcategoriaCode = subCategoria.Code;
+                    subcategoriaCode = subcategoriaCode.Contains("FD") ? subcategoriaCode : subcategoriaCode.Contains("PD") ? subcategoriaCode.Replace("PD", "FD") : subcategoriaCode + "FD";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
+            }
+
+            if (categoria.Code == "PAR")
+            {
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
             }
 
             repositorio.GuardarCambios();

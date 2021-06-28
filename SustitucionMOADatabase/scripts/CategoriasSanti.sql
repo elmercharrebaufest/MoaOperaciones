@@ -63,7 +63,7 @@ END
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FINDIR')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre)
-	VALUES ('FINDIR', 'final Directo')
+	VALUES ('FINDIR', 'Final Directo')
 
 	SET @idCategoria = SCOPE_IDENTITY()
 
@@ -86,7 +86,7 @@ END
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FINCOR')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre)
-	VALUES ('FINCOR', 'final Corredor')
+	VALUES ('FINCOR', 'Final Corredor')
 
 	SET @idCategoria = SCOPE_IDENTITY()
 
