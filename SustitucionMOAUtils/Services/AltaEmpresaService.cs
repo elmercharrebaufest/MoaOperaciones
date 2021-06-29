@@ -583,15 +583,17 @@ namespace SustitucionMOAUtils.Services
 
             //obtengo el mensaje del ultimo edicion requerido
             var ultimaRequerido = proveedor.HistorialAprobaciones.LastOrDefault(x => x.EstadoAprobacion == EstadoAprobacion.EdicionRequerida);
-            string mensajeNotificacion = ultimaRequerido != null ? ultimaRequerido.Observacion : "Seguimos esperando la documentación solicitada ";
+            string mensajeNotificacion = ultimaRequerido != null ? ultimaRequerido.ObservacionParaProveedor : "Seguimos esperando la documentación solicitada ";
 
             NotificarProveedor(EstadoAprobacion.EdicionRequerida, mensajeNotificacion, proveedor);
+
             proveedor.HistorialAprobaciones.Add(
                 new ProveedorHistorialAprobacion
                 {
                     Fecha = DateTime.Now,
                     EstadoAprobacion = EstadoAprobacion.EdicionRequerida,
-                    Observacion = mensajeNotificacion,
+                    Observacion = ultimaRequerido.Observacion,
+                    ObservacionParaProveedor = mensajeNotificacion,
                     Proveedor_Id = proveedorId,
                     Usuario_Id = usuarioID
                 }

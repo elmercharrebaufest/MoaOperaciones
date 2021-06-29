@@ -54,7 +54,7 @@ BEGIN
 	VALUES('SERV', 'Servicios', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('BON', 'Bonificaciones', @idCategoria)
+	VALUES('BON', 'Bonificaciones y rebajas', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
@@ -77,7 +77,7 @@ BEGIN
 	VALUES('SERV', 'Servicios', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('BON', 'Bonificaciones', @idCategoria)
+	VALUES('BON', 'Bonificaciones y rebajas', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
@@ -100,7 +100,7 @@ BEGIN
 	VALUES('SERV', 'Servicios', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('BON', 'Bonificaciones', @idCategoria)
+	VALUES('BON', 'Bonificaciones y rebajas', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
