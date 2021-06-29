@@ -10,6 +10,7 @@ import { ComprasService } from '../compras.service';
 import { SelectItem } from 'primeng/api';
 import { Solp } from '../Solp';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module';
 
 
 
@@ -99,33 +100,55 @@ export class DashboardComponent extends ListBaseComponent {
         };
 
         this.tablaSolp = [{
-            numeroSolp: "hola",
-            fechaCreacion: "hola",
-            estadoDoc: "hola",
-            estadoSolp: "hola",
-            tipoSolp: "hola"
+            numeroSolp: "32173821744",
+            fechaCreacion: "27/04/2021",
+            estadoDoc: "Finalizado",
+            estadoSolp: "Liberada",
+            tipoSolp: "C/Doc. Pliego",
+            estadoDocCodigo: "Finalizada",
+            estadoSolpCodigo: "Liberado",
+            esSap: "",
+            vincularPliego: "" 
         },
         {
-            numeroSolp: "dddd",
-            fechaCreacion: "ddd",
-            estadoDoc: "dddd",
-            estadoSolp: "hdddola",
-            tipoSolp: "hddddola"
-        },
-        {
-            numeroSolp: "hogggla",
-            fechaCreacion: "hggggola",
-            estadoDoc: "holggga",
-            estadoSolp: "hogggla",
-            tipoSolp: "hoggggla",
-            estadoDocCodigo: "Creado",
-            estadoSolpCodigo: "",
-            esSap: " ",
-            vincularPliego: " " 
+            numeroSolp: "372872",
+            fechaCreacion: "17/12/2021",
+            estadoDoc: "Incompleto",
+            estadoSolp: "Finalizada",
+            tipoSolp: "Sin Doc.",
+            estadoDocCodigo: "Incompleto",
+            estadoSolpCodigo: "Finalizada",
+            esSap: "Si",
+            vincularPliego: "" 
         }
         ];
 
     }
+
+    // estadoDoc: 
+                // Creada, { Finalizada }
+                // Incompleta, { - }    
+                // Finalizado { Creada, Liberada, Parcialmente Liberada, Relac. a pedido compra, Finalizada }
+
+
+    // estadoSolp: 
+                // Creada, 
+                // Liberada, 
+                // Parcialmente Liberada, 
+                // Relac. a pedido compra, 
+                // Finalizada
+
+
+    // tipo: 
+                // C/Doc. Pliego, 
+                // C/doc. Req, 
+                // Sin Doc, 
+                // Emerg., 
+                // Adicional, 
+                // Generar pliego
+
+
+
 
 
 }

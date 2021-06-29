@@ -121,7 +121,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     },
     {
         Codigo: EnumPasoSolp.PliegoCotizacion,
-        Nombre: 'Cotización y plazo de ejecución (solo servicios)',
+        Nombre: 'Cotización y plazo de ejecución',
         Activo: false,
         Completo: false,
         Iniciado: false,

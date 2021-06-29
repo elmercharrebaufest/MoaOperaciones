@@ -27,7 +27,7 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText (input)="tabla.filter($event.target.value,'numeroSolp', 'contains')" type="text"  placeholder="Buscar">
+                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText (input)="tablaSolp.filter($event.target.value,'numeroSolp', 'contains')" type="text"  placeholder="Buscar">
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
@@ -46,8 +46,8 @@
                                 </div>
                                 <div >
                                     <div>
-                                        <p-calendar [(ngModel)]="desdeDashboard" [locale]="es" dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
-                                        <p-calendar [(ngModel)]="hastaDashboard" [locale]="es" dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
+                                        <p-calendar [(ngModel)]="desdeDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
+                                        <p-calendar [(ngModel)]="hastaDashboard" [locale]="locale" dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
                                     </div>    
 
                                 </div>
@@ -81,30 +81,23 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <p-radioButton name="dashboard1" value="SAP" label="SAP" [(ngModel)]="sapDashboard" inputId="sapDashboard"></p-radioButton>
+                                <p-radioButton name="dashboard1" value="SAP" label="SAP" [(ngModel)]="sapDashboard" inputId="sapDashboard"></p-radioButton>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                            <p-radioButton name="dashboard1" value="Mantenimiento" label="Mantenimiento" [(ngModel)]="mantenimientoDashboard" inputId="mantenimientoDashboard"></p-radioButton>
-                        </div>
+                                <p-radioButton name="dashboard1" value="Mantenimiento" label="Mantenimiento" [(ngModel)]="mantenimientoDashboard" inputId="mantenimientoDashboard"></p-radioButton>
+                            </div>
                         </div>
                     </div>    
                 </div>
 
             </div>
- 
-                 
-
         </div>
-
-        
-
-
     </section>
 
     <div>
         <p-table #tabla [value]="tablaSolp">
             <ng-template pTemplate="header" let-columns>
-                <tr style="background-color: #666666;">
+                <tr>
                     <th></th>
                     <th [pSortableColumn]="numeroSolp">
                         Numero SOLP
@@ -130,15 +123,63 @@
                         Tipo Solp
                         <p-sortIcon [field]="tipoSolp" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
+                    <th [pSortableColumn]="vincularPliego">
+                        Vincular Pliego
+                        <p-sortIcon [field]="vincularPliego" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                    </th>
                 </tr>
             </ng-template>
-    
+
+
+            <!-- estadoDoc: 
+                // Creada, { Finalizada }
+                // Incompleta, { - }    
+                // Finalizado { Creada, Liberada, Parcialmente Liberada, Relac. a pedido compra, Finalizada }
+
+
+            estadoSolp: 
+                // Creada, 
+                // Liberada, 
+                // Parcialmente Liberada, 
+                // Relac. a pedido compra, 
+                // Finalizada
+
+
+            tipo: 
+                // C/Doc. Pliego, 
+                // C/doc. Req, 
+                // Sin Doc, 
+                // Emerg., 
+                // Adicional, 
+                // Generar pliego -->
+
+            <!-- icono borrar:
+                    Incompleta, { - }
+                    Finalizado { Creada, Parcialmente Liberada, Relac. a pedido compra, Finalizada }  -->
+
+            <!-- icono editar:
+                Incompleta, { - }    
+                Finalizado { Creada, Parcialmente Liberada, Relac. a pedido compra, Finalizada } -->
+
+            <!-- icono descargar:  
+                    Finalizado { Creada, Liberada, Parcialmente Liberada, Relac. a pedido compra, Finalizada } -->   
+
+            <!-- icono sap:
+                    Creada, { Finalizada } -->
+              
+                    
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td>
-                        <span *ngIf="rowdata.estadoSolpCodigo != 'Liberado' "><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"/></span>
-                        <span><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"/></span>
-                        <span><img disabled class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>        
+                        <div class="col-md-2">
+                            <span *ngIf="rowData.estadoSolpCodigo != 'Liberado' "><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash"/></span>
+                        </div>
+                        <div class="col-md-2">
+                            <span *ngIf="rowData.estadoSolpCodigo != 'Liberado' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"/></span>
+                        </div>
+                        <div class="col-md-2">
+                            <span *ngIf="rowData.estadoSolpCodigo != 'Incompleto' "><img disabled class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>  
+                        </div>       
                     </td>
                     <td>
                         {{rowData.numeroSolp}}
@@ -147,13 +188,16 @@
                         {{rowData.fechaCreacion}}
                     </td>
                     <td>
-                       <span [style.color]="rowData.estadoSolpCodigo == 'Incompleto' ? 'naranja' : 'verde' ">{{rowData.estadoDoc}}</span>
+                       <span [style.color]="rowData.estadoDocCodigo == 'Incompleto' ? 'orange' : 'green' ">{{rowData.estadoDoc}}</span>
                     </td>
                     <td>
                         {{rowData.estadoSolp}}
                     </td>
                     <td>
                         {{rowData.tipoSolp}}
+                    </td>
+                    <td>
+                        {{rowData.vincularPliego}}
                     </td>
                 </tr>
             </ng-template>
