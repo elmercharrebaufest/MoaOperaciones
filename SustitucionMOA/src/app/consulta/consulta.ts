@@ -7,7 +7,9 @@ export interface Consulta {
     CategoriaId;
     SubCategoriaId?;
     Asunto;
+    Material;
     EstadoConsultaId;
+    Material_Id;
     FechaCreacion;
     FechaUltimaModificacion;
     UsuarioId;
