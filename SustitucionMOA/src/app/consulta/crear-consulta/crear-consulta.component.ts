@@ -215,7 +215,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
             if(this.esCorredor){
-                this.mensajeComponent.setErrorMsg("Seleccione razón social vendedor");
+                this.mensajeComponent.setErrorMsg("Vendedor no asociado a su perfil de corredor. Intente nuevamente");
                 return true;
             }
             this.mensajeComponent.setErrorMsg("El campo proveedor esta vacio.");

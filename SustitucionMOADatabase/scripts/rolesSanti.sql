@@ -17,20 +17,49 @@
 	insert into Rol values ('OTRO', 'OTROS', 1)
 
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PARDIR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PARDIR'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PARCOR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PARCOR'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FINDIR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FINDIR'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FINCOR'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FINCOR'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'CAL'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'CAL'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'COM'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'COM'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'COMP'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'COMP'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'APP'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'APP'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PES'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PES'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PAG'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PAG'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FWEB'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FWEB'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'MATBA'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'MATBA'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PROVGC'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'PROVGC'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FLECONSULTA'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'FLECONSULTA'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
+
 	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'OTRO'), (select Id from PermisoPorRol where Permiso = 'CONSULTA ABM'))
+	insert into RolPermisoPorRol values ((select Id from Rol where codigo = 'OTRO'), (select Id from PermisoPorRol where Permiso = 'CONTACTO MAIL'))
 
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'PARDIR'), (select Id from Categoria where Code = 'PARDIR'))
 	insert into CategoriaRol values ((select Id from Rol where Codigo = 'FINDIR'), (select Id from Categoria where Code = 'FINDIR'))
