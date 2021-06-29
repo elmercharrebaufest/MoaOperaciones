@@ -15,8 +15,10 @@ import { SelectItem } from 'primeng/components/common/selectitem';
 import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo} from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Material } from '../../common/models/material';
 
 declare var $: any;
+
 
 @Component({
     selector: 'crear-consulta',
@@ -50,7 +52,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
-
+    private selectUndefinedOptionValue: any;
     mensajeError: string;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
@@ -104,6 +106,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     impuesto: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
+    listaMateriales: Array<Material> = [];
+    material_Id: any;
 
     fechaPagoDP: any;
     visibleButton: boolean = true;
@@ -136,6 +140,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+
+        this.obtenerMateriales();
     }
 
     ngAfterViewInit(): void {
@@ -210,6 +216,29 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.proveedorSelected = proveedor;
         this.proveedorId = proveedor.proveedorId;
     }
+
+    obtenerMateriales() {
+
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
+        this.subscription = this.service.obtenerMateriales().subscribe(
+          (result) => {
+            let obj = JSON.parse(result);
+            // this.listaCampanias = new Array();
+            obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
+              let mat = new Material();
+              mat.Id = element.MaterialId;
+              mat.Descripcion = element.Descripcion;
+              mat.CampaniaActual = element.CampaniaActual;
+              mat.CampaniaIdActual = element.CampaniaIdActual;
+              this.listaMateriales.push(mat);
+    
+            });
+          },
+          (error) => {
+            this.mensajeError = error.message;
+          }
+        );
+      }
 
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
@@ -358,6 +387,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
+            else{
+                this.listaMateriales.forEach(x => {
+                    if(x.Descripcion == this.comprobanteExtra){
+                        this.material_Id = x.Id;
+                    }
+                });
+            }
+
             if ((this.comprobante == "" || !this.comprobante) && (this.contrato == "" || !this.contrato)) {
                 this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
                 return true;
@@ -435,7 +472,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
         this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material_Id
         }
 
         this.consulta = {
