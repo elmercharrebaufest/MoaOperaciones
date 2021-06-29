@@ -29,14 +29,11 @@ namespace SustitucionMOAExternalAPI.Handlers
             if (existeCabeceraApiKey && listaCabeceras.Any())
             {
                 List<string> permisos = authManager.ObtenerPermisos(listaCabeceras.First());
+                string usuario = authManager.ObtenerUsuario(listaCabeceras.First());
 
-                if(permisos != null && permisos.Count > 0)
+                if(permisos != null && permisos.Count > 0 && !string.IsNullOrEmpty(usuario))
                 {
-                    var config = GlobalConfiguration.Configuration;
-                    var controllerSelector = new DefaultHttpControllerSelector(config);
-                    var controller = controllerSelector.SelectController(request);
-
-                    var principal = new GenericPrincipal(new GenericIdentity("Auth_" + controller.ControllerName), permisos.ToArray());
+                    var principal = new GenericPrincipal(new GenericIdentity(usuario), permisos.ToArray());
                     AutorizarAccesoApi(principal);
                 }
             }

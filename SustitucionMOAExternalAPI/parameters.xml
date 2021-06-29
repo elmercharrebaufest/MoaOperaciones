@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<parameters>
+	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IServicioRepositorio']
+                           /@address" />
+	</parameter>
+
+	<parameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IServicioComandos']
+                           /@address" />
+	</parameter>
+</parameters>
+
