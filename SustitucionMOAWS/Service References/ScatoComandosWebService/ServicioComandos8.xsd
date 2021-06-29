@@ -81,6 +81,7 @@
       <xs:element minOccurs="0" name="LocalidadId" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="MailBarreras" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="MailVencimientoCAI" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MinutosEsperaCircular" nillable="true" type="xs:int" />
       <xs:element minOccurs="0" name="ModificaAlmacenEnPesada" type="xs:boolean" />
       <xs:element minOccurs="0" name="ModificaPinchazosPorCalada" type="xs:boolean" />
       <xs:element minOccurs="0" name="NumeroCAI" nillable="true" type="xs:int" />
@@ -176,6 +177,88 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="CoordinadorPuertoDto" nillable="true" type="tns:CoordinadorPuertoDto" />
+  <xs:complexType name="ArrayOfCartaPorteOtrosPuertosDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CartaPorteOtrosPuertosDto" nillable="true" type="tns:CartaPorteOtrosPuertosDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCartaPorteOtrosPuertosDto" nillable="true" type="tns:ArrayOfCartaPorteOtrosPuertosDto" />
+  <xs:complexType name="CartaPorteOtrosPuertosDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CEE" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CTG" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Caracteristicas" nillable="true" type="tns:ArrayOfCaracteristicasCartaPorteOtrosPuertosDto" />
+      <xs:element minOccurs="0" name="ChoferCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ChoferRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CorredorCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CorredorRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DescuentosKgsCalidad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DescuentosKgsHumedad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DescuentosKgsSecada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinatarioCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinatarioRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoPB" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoPN" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoPT" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinoRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DocumentoExternoId" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="EntregadorCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EntregadorRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Establecimiento" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaArribo" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaCarga" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaCreacion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaDescarga" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaUltimaModificacion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaVencimiento" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FotoCpBase64" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FotoCpNombreArchivo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IntermediarioCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IntermediarioRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MaterialId" type="xs:int" />
+      <xs:element minOccurs="0" name="MermaTotal" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NetoConvenido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NumeroCartaPorte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Planta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaCP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaCodigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaLocalidad" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaPB" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaPN" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaPT" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcedenciaProvincia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProductoCodigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProductoCosecha" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProductoDescripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemitenteCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RemitenteRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TitularCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TitularRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TransporteCuit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TransporteRazonSocial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TrasportePatente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UsuarioCreacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UsuarioUltimaModificacion" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CartaPorteOtrosPuertosDto" nillable="true" type="tns:CartaPorteOtrosPuertosDto" />
+  <xs:complexType name="ArrayOfCaracteristicasCartaPorteOtrosPuertosDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CaracteristicasCartaPorteOtrosPuertosDto" nillable="true" type="tns:CaracteristicasCartaPorteOtrosPuertosDto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCaracteristicasCartaPorteOtrosPuertosDto" nillable="true" type="tns:ArrayOfCaracteristicasCartaPorteOtrosPuertosDto" />
+  <xs:complexType name="CaracteristicasCartaPorteOtrosPuertosDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CartaPorteOtrosPuertosId" type="xs:int" />
+      <xs:element minOccurs="0" name="CodigoExterno" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Valor" type="xs:decimal" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CaracteristicasCartaPorteOtrosPuertosDto" nillable="true" type="tns:CaracteristicasCartaPorteOtrosPuertosDto" />
   <xs:complexType name="EstibaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Apellido" nillable="true" type="xs:string" />
@@ -216,6 +299,8 @@
       <xs:element minOccurs="0" name="EmpresaFumigadora" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Enviado" type="xs:boolean" />
       <xs:element minOccurs="0" name="Estiba" nillable="true" type="tns:EstibaDto" />
+      <xs:element minOccurs="0" name="FechaDeCreacion" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaDeModificacion" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="FilePathPlano" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="FilePathSecuencia" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Fumigacion" type="xs:boolean" />
@@ -224,6 +309,7 @@
       <xs:element minOccurs="0" name="PlanoDeCargaArchivoPlanoNombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PlanoDeCargaArchivoSecuenciaNombre" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="PlanoDeCargaBodegas" nillable="true" type="tns:ArrayOfPlanoDeCargaBodegaDto" />
+      <xs:element minOccurs="0" name="Usuario" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="PlanoDeCargaDto" nillable="true" type="tns:PlanoDeCargaDto" />
@@ -295,6 +381,24 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="DestinoDto" nillable="true" type="tns:DestinoDto" />
+  <xs:complexType name="ImpEtiquetaPuertoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Bodega" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cargador" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Control" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Destino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fecha" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaCreacion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Kg" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Mercaderia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NumeroLote" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Usuario" nillable="true" type="tns:UsuarioDto" />
+      <xs:element minOccurs="0" name="Usuario_Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Vapor" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ImpEtiquetaPuertoDto" nillable="true" type="tns:ImpEtiquetaPuertoDto" />
   <xs:complexType name="ContingenciaDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="Activado" type="xs:boolean" />
@@ -592,6 +696,18 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ValoresPagarConMercadoPagoDto" nillable="true" type="tns:ValoresPagarConMercadoPagoDto" />
+  <xs:complexType name="EstadoPuertoDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AlturaDelRio" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Calado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaAlturaRio" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaCalado" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaUbicacion" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Ubicacion" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="EstadoPuertoDto" nillable="true" type="tns:EstadoPuertoDto" />
   <xs:complexType name="IngresoDeDatosDeExportacionDto">
     <xs:sequence>
       <xs:element minOccurs="0" name="FiltrarPorTarjeta" type="xs:boolean" />
