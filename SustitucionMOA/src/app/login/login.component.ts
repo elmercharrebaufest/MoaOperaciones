@@ -29,6 +29,7 @@ export class LoginCommonComponent extends BaseComponent {
         sessionStorage.setItem("tipoUsuario", result.tipoUsuario);
         sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
         sessionStorage.setItem("permisos", JSON.stringify(result.permisos));
+        sessionStorage.setItem("apikey", result.apikey);
         this.sessionDataService.setNombre(result.nombre);
         this.sessionDataService.setUsername(result.username);
         this.sessionDataService.setProveedor(result.proveedor);
@@ -36,6 +37,7 @@ export class LoginCommonComponent extends BaseComponent {
         this.sessionDataService.setNoticias(result.noticias);
         this.sessionDataService.setPermisos(result.permisos);
         this.sessionDataService.setGranosFlag(result.granosFlag);
+        this.sessionDataService.setApikey(result.apikey);
 
         if (result.esNuevoUsuario) {
             if (result.granosFlag == "A") {

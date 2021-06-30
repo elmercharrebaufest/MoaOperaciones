@@ -16,7 +16,7 @@ namespace SustitucionMOAExternalAPI
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                routeTemplate: "external/api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
         }
