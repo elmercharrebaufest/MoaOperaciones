@@ -59,8 +59,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.AutorizarMercadoPago))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.DevolverMercadoPago))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.GuardarPlanoDeCarga))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarATAPuerto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarCoordinadorPuerto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarEmbarque))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.CrearEstadoPuerto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarEstiba))]
@@ -1860,38 +1858,10 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
     public partial class LeerNumeroCartaPorte : SustitucionMOAWS.ScatoComandosWebService.Comando {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool CalcularRecorteField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private byte[] CodigoBarrasCartaPorteField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int HeightField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NombreArchivoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int OffsetXField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int OffsetYField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int WidthField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool CalcularRecorte {
-            get {
-                return this.CalcularRecorteField;
-            }
-            set {
-                if ((this.CalcularRecorteField.Equals(value) != true)) {
-                    this.CalcularRecorteField = value;
-                    this.RaisePropertyChanged("CalcularRecorte");
-                }
-            }
-        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] CodigoBarrasCartaPorte {
@@ -1907,19 +1877,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Height {
-            get {
-                return this.HeightField;
-            }
-            set {
-                if ((this.HeightField.Equals(value) != true)) {
-                    this.HeightField = value;
-                    this.RaisePropertyChanged("Height");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public string NombreArchivo {
             get {
                 return this.NombreArchivoField;
@@ -1928,45 +1885,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((object.ReferenceEquals(this.NombreArchivoField, value) != true)) {
                     this.NombreArchivoField = value;
                     this.RaisePropertyChanged("NombreArchivo");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int OffsetX {
-            get {
-                return this.OffsetXField;
-            }
-            set {
-                if ((this.OffsetXField.Equals(value) != true)) {
-                    this.OffsetXField = value;
-                    this.RaisePropertyChanged("OffsetX");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int OffsetY {
-            get {
-                return this.OffsetYField;
-            }
-            set {
-                if ((this.OffsetYField.Equals(value) != true)) {
-                    this.OffsetYField = value;
-                    this.RaisePropertyChanged("OffsetY");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Width {
-            get {
-                return this.WidthField;
-            }
-            set {
-                if ((this.WidthField.Equals(value) != true)) {
-                    this.WidthField = value;
-                    this.RaisePropertyChanged("Width");
                 }
             }
         }
@@ -2052,52 +1970,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public SustitucionMOAWS.ScatoComandosWebService.PlanoDeCargaDto Dto {
-            get {
-                return this.DtoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DtoField, value) != true)) {
-                    this.DtoField = value;
-                    this.RaisePropertyChanged("Dto");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ModificarATAPuerto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos")]
-    [System.SerializableAttribute()]
-    public partial class ModificarATAPuerto : SustitucionMOAWS.ScatoComandosWebService.Comando {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.ATAPuertoDto DtoField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.ATAPuertoDto Dto {
-            get {
-                return this.DtoField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DtoField, value) != true)) {
-                    this.DtoField = value;
-                    this.RaisePropertyChanged("Dto");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ModificarCoordinadorPuerto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Comandos")]
-    [System.SerializableAttribute()]
-    public partial class ModificarCoordinadorPuerto : SustitucionMOAWS.ScatoComandosWebService.Comando {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.CoordinadorPuertoDto DtoField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.CoordinadorPuertoDto Dto {
             get {
                 return this.DtoField;
             }
@@ -4900,13 +4772,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private byte[] AttachmentField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] Attachment2Field;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string AttachmentNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AttachmentName2Field;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string CuerpoField;
@@ -4934,19 +4800,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] Attachment2 {
-            get {
-                return this.Attachment2Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.Attachment2Field, value) != true)) {
-                    this.Attachment2Field = value;
-                    this.RaisePropertyChanged("Attachment2");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public string AttachmentName {
             get {
                 return this.AttachmentNameField;
@@ -4955,19 +4808,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((object.ReferenceEquals(this.AttachmentNameField, value) != true)) {
                     this.AttachmentNameField = value;
                     this.RaisePropertyChanged("AttachmentName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string AttachmentName2 {
-            get {
-                return this.AttachmentName2Field;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AttachmentName2Field, value) != true)) {
-                    this.AttachmentName2Field = value;
-                    this.RaisePropertyChanged("AttachmentName2");
                 }
             }
         }
@@ -12756,8 +12596,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.AutorizarMercadoPago))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.DevolverMercadoPago))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.GuardarPlanoDeCarga))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarATAPuerto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarCoordinadorPuerto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarEmbarque))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.CrearEstadoPuerto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ModificarEstiba))]
@@ -13265,6 +13103,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.HttpPostedFileBase))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.TipoPinchazo))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.TipoPermiso))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.UbicacionBarco))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.TipoPesada))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.TipoCalle))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.CamaraFormatoDeArchivo))]
@@ -13344,6 +13183,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.LineUpDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.PlanoDeCargaDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.AgenteControlPrivadoDto[]))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.AgenteControlPrivadoDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.CargaComercialDto[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.CargaComercialDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.ExportadorDto))]
@@ -13356,8 +13196,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.EmbarqueDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.MaterialPuertoCantidadDto[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.MaterialPuertoCantidadDto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.TipoDeBuquePuertoDto))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.UbicacionDeBuquePuertoDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.LoteAuditoriaDto))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.MuestraEnvioACamaraAuditoriaDto[]))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(SustitucionMOAWS.ScatoComandosWebService.MuestraEnvioACamaraAuditoriaDto))]
@@ -20734,9 +20572,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         IngresoPlayaInterna = 303,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Entregadores = 304,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
         ListadoDeArribosAPlanta = 400,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
@@ -20930,9 +20765,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ReporteMuestrasAuditoria = 465,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        ReporteCpOtrosPuertos = 466,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PreLineUp = 600,
@@ -22438,7 +22270,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private bool SeguridadPortuariaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int UbicacionField;
+        private SustitucionMOAWS.ScatoComandosWebService.UbicacionBarco UbicacionField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -22646,7 +22478,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Ubicacion {
+        public SustitucionMOAWS.ScatoComandosWebService.UbicacionBarco Ubicacion {
             get {
                 return this.UbicacionField;
             }
@@ -22696,9 +22528,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private bool DefensasMovilesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string EmpresaFumigadoraField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool EnviadoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -22717,10 +22546,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private string FilePathSecuenciaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool FumigacionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
+        private System.Nullable<int> IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ObservacionesField;
@@ -22826,19 +22652,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string EmpresaFumigadora {
-            get {
-                return this.EmpresaFumigadoraField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.EmpresaFumigadoraField, value) != true)) {
-                    this.EmpresaFumigadoraField = value;
-                    this.RaisePropertyChanged("EmpresaFumigadora");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool Enviado {
             get {
                 return this.EnviadoField;
@@ -22917,20 +22730,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Fumigacion {
-            get {
-                return this.FumigacionField;
-            }
-            set {
-                if ((this.FumigacionField.Equals(value) != true)) {
-                    this.FumigacionField = value;
-                    this.RaisePropertyChanged("Fumigacion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
+        public System.Nullable<int> Id {
             get {
                 return this.IdField;
             }
@@ -23017,6 +22817,112 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
     }
     
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UbicacionBarco", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Enums")]
+    public enum UbicacionBarco : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        En_Viaje = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Recalada = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Subiendo = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Rada = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Muelle = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Zarpo = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Otra_Rada = 6,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Otro_Muelle = 7,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AgenteControlPrivadoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
+    [System.SerializableAttribute()]
+    public partial class AgenteControlPrivadoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ApellidoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NombreField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Apellido {
+            get {
+                return this.ApellidoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ApellidoField, value) != true)) {
+                    this.ApellidoField = value;
+                    this.RaisePropertyChanged("Apellido");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Nombre {
+            get {
+                return this.NombreField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
+                    this.NombreField = value;
+                    this.RaisePropertyChanged("Nombre");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CargaComercialDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
@@ -23027,13 +22933,13 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int CantidadField;
+        private System.Nullable<int> CantidadField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoComandosWebService.ExportadorDto ExportadorField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
+        private System.Nullable<int> IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoComandosWebService.MaterialPuertoDto MaterialPuertoField;
@@ -23049,7 +22955,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Cantidad {
+        public System.Nullable<int> Cantidad {
             get {
                 return this.CantidadField;
             }
@@ -23075,7 +22981,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
+        public System.Nullable<int> Id {
             get {
                 return this.IdField;
             }
@@ -23120,10 +23026,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int BodegaParcelField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int CantidadField;
+        private System.Nullable<int> CantidadField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string CondicionField;
@@ -23132,7 +23035,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private SustitucionMOAWS.ScatoComandosWebService.DestinoDto DestinoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
+        private System.Nullable<int> IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoComandosWebService.MaterialPuertoDto MaterialPuertoField;
@@ -23154,20 +23057,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int BodegaParcel {
-            get {
-                return this.BodegaParcelField;
-            }
-            set {
-                if ((this.BodegaParcelField.Equals(value) != true)) {
-                    this.BodegaParcelField = value;
-                    this.RaisePropertyChanged("BodegaParcel");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Cantidad {
+        public System.Nullable<int> Cantidad {
             get {
                 return this.CantidadField;
             }
@@ -23206,7 +23096,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
+        public System.Nullable<int> Id {
             get {
                 return this.IdField;
             }
@@ -23958,16 +23848,13 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.ATAPuertoDto ATAField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.AgenciaMaritimaPuertoDto AgenciasField;
+        private string AgenciaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int CentroIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.CoordinadorPuertoDto CoordinadoresField;
+        private string CoordinadorField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> FechaRecaladaField;
@@ -24015,13 +23902,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private string TipoBuqueField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.TipoDeBuquePuertoDto TipoDeBuqueField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int UbicacionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private SustitucionMOAWS.ScatoComandosWebService.UbicacionDeBuquePuertoDto UbicacionDeBuqueField;
+        private SustitucionMOAWS.ScatoComandosWebService.UbicacionBarco UbicacionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool VicentinField;
@@ -24037,27 +23918,14 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.ATAPuertoDto ATA {
+        public string Agencia {
             get {
-                return this.ATAField;
+                return this.AgenciaField;
             }
             set {
-                if ((object.ReferenceEquals(this.ATAField, value) != true)) {
-                    this.ATAField = value;
-                    this.RaisePropertyChanged("ATA");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.AgenciaMaritimaPuertoDto Agencias {
-            get {
-                return this.AgenciasField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AgenciasField, value) != true)) {
-                    this.AgenciasField = value;
-                    this.RaisePropertyChanged("Agencias");
+                if ((object.ReferenceEquals(this.AgenciaField, value) != true)) {
+                    this.AgenciaField = value;
+                    this.RaisePropertyChanged("Agencia");
                 }
             }
         }
@@ -24076,14 +23944,14 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.CoordinadorPuertoDto Coordinadores {
+        public string Coordinador {
             get {
-                return this.CoordinadoresField;
+                return this.CoordinadorField;
             }
             set {
-                if ((object.ReferenceEquals(this.CoordinadoresField, value) != true)) {
-                    this.CoordinadoresField = value;
-                    this.RaisePropertyChanged("Coordinadores");
+                if ((object.ReferenceEquals(this.CoordinadorField, value) != true)) {
+                    this.CoordinadorField = value;
+                    this.RaisePropertyChanged("Coordinador");
                 }
             }
         }
@@ -24284,20 +24152,7 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.TipoDeBuquePuertoDto TipoDeBuque {
-            get {
-                return this.TipoDeBuqueField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TipoDeBuqueField, value) != true)) {
-                    this.TipoDeBuqueField = value;
-                    this.RaisePropertyChanged("TipoDeBuque");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Ubicacion {
+        public SustitucionMOAWS.ScatoComandosWebService.UbicacionBarco Ubicacion {
             get {
                 return this.UbicacionField;
             }
@@ -24305,19 +24160,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((this.UbicacionField.Equals(value) != true)) {
                     this.UbicacionField = value;
                     this.RaisePropertyChanged("Ubicacion");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public SustitucionMOAWS.ScatoComandosWebService.UbicacionDeBuquePuertoDto UbicacionDeBuque {
-            get {
-                return this.UbicacionDeBuqueField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.UbicacionDeBuqueField, value) != true)) {
-                    this.UbicacionDeBuqueField = value;
-                    this.RaisePropertyChanged("UbicacionDeBuque");
                 }
             }
         }
@@ -24331,144 +24173,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((this.VicentinField.Equals(value) != true)) {
                     this.VicentinField = value;
                     this.RaisePropertyChanged("Vicentin");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TipoDeBuquePuertoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
-    [System.SerializableAttribute()]
-    public partial class TipoDeBuquePuertoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
-            get {
-                return this.IdField;
-            }
-            set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Nombre {
-            get {
-                return this.NombreField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
-                    this.NombreField = value;
-                    this.RaisePropertyChanged("Nombre");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UbicacionDeBuquePuertoDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
-    [System.SerializableAttribute()]
-    public partial class UbicacionDeBuquePuertoDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int OrdenField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Id {
-            get {
-                return this.IdField;
-            }
-            set {
-                if ((this.IdField.Equals(value) != true)) {
-                    this.IdField = value;
-                    this.RaisePropertyChanged("Id");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Nombre {
-            get {
-                return this.NombreField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreField, value) != true)) {
-                    this.NombreField = value;
-                    this.RaisePropertyChanged("Nombre");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Orden {
-            get {
-                return this.OrdenField;
-            }
-            set {
-                if ((this.OrdenField.Equals(value) != true)) {
-                    this.OrdenField = value;
-                    this.RaisePropertyChanged("Orden");
                 }
             }
         }
@@ -28068,34 +27772,16 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private string ArchivoRutaDestinoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool CalcularRecorteField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime FechaField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int HeightField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NombreArchivoOriginalField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NumeroDeDocumentoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int OffsetXField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int OffsetYField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoComandosWebService.TipoDocumentoIngreso TipoDocumentoIngresoField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int WidthField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -28147,19 +27833,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool CalcularRecorte {
-            get {
-                return this.CalcularRecorteField;
-            }
-            set {
-                if ((this.CalcularRecorteField.Equals(value) != true)) {
-                    this.CalcularRecorteField = value;
-                    this.RaisePropertyChanged("CalcularRecorte");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.DateTime Fecha {
             get {
                 return this.FechaField;
@@ -28168,19 +27841,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((this.FechaField.Equals(value) != true)) {
                     this.FechaField = value;
                     this.RaisePropertyChanged("Fecha");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Height {
-            get {
-                return this.HeightField;
-            }
-            set {
-                if ((this.HeightField.Equals(value) != true)) {
-                    this.HeightField = value;
-                    this.RaisePropertyChanged("Height");
                 }
             }
         }
@@ -28199,19 +27859,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string NombreArchivoOriginal {
-            get {
-                return this.NombreArchivoOriginalField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NombreArchivoOriginalField, value) != true)) {
-                    this.NombreArchivoOriginalField = value;
-                    this.RaisePropertyChanged("NombreArchivoOriginal");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public string NumeroDeDocumento {
             get {
                 return this.NumeroDeDocumentoField;
@@ -28225,32 +27872,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int OffsetX {
-            get {
-                return this.OffsetXField;
-            }
-            set {
-                if ((this.OffsetXField.Equals(value) != true)) {
-                    this.OffsetXField = value;
-                    this.RaisePropertyChanged("OffsetX");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int OffsetY {
-            get {
-                return this.OffsetYField;
-            }
-            set {
-                if ((this.OffsetYField.Equals(value) != true)) {
-                    this.OffsetYField = value;
-                    this.RaisePropertyChanged("OffsetY");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public SustitucionMOAWS.ScatoComandosWebService.TipoDocumentoIngreso TipoDocumentoIngreso {
             get {
                 return this.TipoDocumentoIngresoField;
@@ -28259,19 +27880,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((this.TipoDocumentoIngresoField.Equals(value) != true)) {
                     this.TipoDocumentoIngresoField = value;
                     this.RaisePropertyChanged("TipoDocumentoIngreso");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Width {
-            get {
-                return this.WidthField;
-            }
-            set {
-                if ((this.WidthField.Equals(value) != true)) {
-                    this.WidthField = value;
-                    this.RaisePropertyChanged("Width");
                 }
             }
         }
@@ -87983,9 +87591,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
         private string ActividadField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ExtensionField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string FechaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -88013,19 +87618,6 @@ namespace SustitucionMOAWS.ScatoComandosWebService {
                 if ((object.ReferenceEquals(this.ActividadField, value) != true)) {
                     this.ActividadField = value;
                     this.RaisePropertyChanged("Actividad");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Extension {
-            get {
-                return this.ExtensionField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ExtensionField, value) != true)) {
-                    this.ExtensionField = value;
-                    this.RaisePropertyChanged("Extension");
                 }
             }
         }
