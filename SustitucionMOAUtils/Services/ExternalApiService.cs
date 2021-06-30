@@ -45,5 +45,21 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public string GetUsuarioApiKey(string apikey)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.ApiKey == apikey);
+                if (usuario == null)
+                    return string.Empty;
+
+                return usuario.Mail;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
