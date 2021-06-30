@@ -345,21 +345,35 @@ namespace SustitucionMOAUtils.Services
                 infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
             }
 
+            //Para contemplar validar los archivos, tenemos que verificar el usuario del proveedor. Esto es necesario hacerlo así para cuando se hacen altas internas
+            var usuarioDeProveedor = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+
+            var tipoDeProveedor = "";
+
+            //Si le están haciendo el alta interna, y todavía no se registró el usuario, lo tenemos en cuenta
+            if (usuarioDeProveedor == null)
+            {
+                tipoDeProveedor = proveedor.TipoProveedor.Nombre;
+            }
+            else
+            {
+                tipoDeProveedor = usuarioDeProveedor.TipoUsuario.Nombre;
+            }
+
             Log.Info("ValidarEstadoSolicitud");
 
             ValidarEstadoSolicitud(proveedor);
 
-
             Log.Info("If para validar archivos. Tipo: " + proveedor.TipoProveedor.Nombre);
 
-            if (usuario.TipoUsuario.Nombre == "Corredor")
+            if (tipoDeProveedor == "Corredor")
             {
                 if (!ValidarArchivosSubidosCorredor(proveedor, infoProveedor))
                 {
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-            else if (usuario.TipoUsuario.Nombre == "No Granos")
+            else if (tipoDeProveedor == "No Granos")
             {
                 if (!ValidarArchivosSubidosNoGranos(proveedor, altaEmpresa))
                 {
@@ -373,7 +387,6 @@ namespace SustitucionMOAUtils.Services
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-
 
             if (!esGuardarYNotificar)
             {
