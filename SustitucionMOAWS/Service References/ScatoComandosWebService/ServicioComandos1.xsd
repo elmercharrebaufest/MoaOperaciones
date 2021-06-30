@@ -412,8 +412,13 @@
     <xs:complexContent mixed="false">
       <xs:extension base="tns:Comando">
         <xs:sequence>
+          <xs:element minOccurs="0" name="CalcularRecorte" type="xs:boolean" />
           <xs:element minOccurs="0" name="CodigoBarrasCartaPorte" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="Height" type="xs:int" />
           <xs:element minOccurs="0" name="NombreArchivo" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="OffsetX" type="xs:int" />
+          <xs:element minOccurs="0" name="OffsetY" type="xs:int" />
+          <xs:element minOccurs="0" name="Width" type="xs:int" />
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -1376,7 +1381,9 @@
       <xs:extension base="tns:Comando">
         <xs:sequence>
           <xs:element minOccurs="0" name="Attachment" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="Attachment2" nillable="true" type="xs:base64Binary" />
           <xs:element minOccurs="0" name="AttachmentName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="AttachmentName2" nillable="true" type="xs:string" />
           <xs:element minOccurs="0" name="Cuerpo" nillable="true" type="xs:string" />
           <xs:element xmlns:q77="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Destinatarios" nillable="true" type="q77:ArrayOfstring" />
           <xs:element minOccurs="0" name="Origen" nillable="true" type="xs:string" />

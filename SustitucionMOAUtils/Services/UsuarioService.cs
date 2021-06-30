@@ -153,7 +153,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY"
             };
 
             List<string> contacto = new List<string>
