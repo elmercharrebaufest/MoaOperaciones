@@ -27,7 +27,7 @@ export class ApikeyComponent extends BaseComponent implements OnInit {
 
     checkPermisos() { this.securityService.tienePermisoRedirect("APIKEY"); }
 
-    apikey: string;
+    apikey: string = '';
     
     setTabs() {
         this.setMenuSeccionTab("apikey", "Apikey");
