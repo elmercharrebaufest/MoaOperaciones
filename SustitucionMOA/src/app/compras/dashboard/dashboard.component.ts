@@ -100,17 +100,7 @@ export class DashboardComponent extends ListBaseComponent {
             clear: 'Clear'
         };
 
-        // this.tablaSolp = [{
-        //     numeroSolp: "32173821744",
-        //     fechaCreacion: "27/04/2021",
-        //     estadoDoc: "Finalizado",
-        //     estadoSolp: "Liberada",
-        //     tipoSolp: "C/Doc. Pliego",
-        //     estadoDocCodigo: "Finalizada",
-        //     estadoSolpCodigo: "Liberado",
-        //     esSap: "",
-        //     vincularPliego: "" 
-        // },
+        // this.tablaSolp = [
         // {
         //     numeroSolp: "372872",
         //     fechaCreacion: "17/12/2021",
@@ -141,6 +131,7 @@ export class DashboardComponent extends ListBaseComponent {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else { 
                             this.tablaSolp = result.data;
+                            debugger
                             console.log(this.tablaSolp)
                             this.tablaSolp.forEach(x => {
                                 x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));

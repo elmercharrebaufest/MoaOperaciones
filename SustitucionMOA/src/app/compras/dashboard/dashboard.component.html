@@ -27,9 +27,10 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-left: -46px;">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText (input)="tablaSolp.filter($event.target.value, 'NroSolp', 'contains')" type="text"  placeholder="Buscar">
+                            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText  type="text"  placeholder="Buscar">
                         </div>
 
+                        
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> 
                             <!-- <p-multiSelect [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" [selectionLimit]="1" [maxSelectedLabels]="1" defaultLabel="Estado SOLP" ></p-multiSelect> -->
                             <p-dropdown class="inputAltura" [options]="estadoSolpItem" [(ngModel)]="selectEstadoSolp" placeholder="Estado SOLP"></p-dropdown>
@@ -97,7 +98,7 @@
     </section>
 
     <div>
-        <p-table #tabla [value]="tablaSolp">
+        <p-table [value]="tablaSolp">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th></th>
@@ -111,14 +112,14 @@
                         <p-sortIcon [field]="FechaCreacion" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th [pSortableColumn]="ClaseDocumento">
+                    <th [pSortableColumn]="EstadoDocumento">
                         Estado Doc
-                        <p-sortIcon [field]="ClaseDocumento" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="EstadoDocumento" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th [pSortableColumn]="EstadoSolpSap_Id">
+                    <th [pSortableColumn]="EstadoSolpSap">
                         Estado Solp
-                        <p-sortIcon [field]="EstadoSolpSap_Id" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                        <p-sortIcon [field]="EstadoSolpSap" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
                     <th [pSortableColumn]="tipoSolp">
@@ -136,13 +137,13 @@
                 <tr (click)="traerSolpId(rowData.Id)">
                     <td>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.estadoSolpCodigo != 'Liberado' "><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="borrarSolp(rowData.Id)" /></span>
+                            <span *ngIf="rowData.EstadoSolpSap_Id != 'Liberado' "><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="borrarSolp(rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.estadoSolpCodigo != 'Liberado' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"/></span>
+                            <span *ngIf="rowData.EstadoSolpSap_Id != 'Liberado' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar"/></span>
                         </div>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.estadoSolpCodigo != 'Incompleto' "><img disabled class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>  
+                            <span *ngIf="rowData.EstadoSolpSap_Id != 'Incompleto' "><img disabled class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>  
                         </div>       
                     </td>
                     <td>
@@ -152,19 +153,18 @@
                         {{rowData.FechaCreacion | date:'dd/MM/yyyy'}}
                     </td>
                     <td>
-                       <span [style.color]="rowData.ClaseDocumento.Descripcion == 'Incompleto' ? 'orange' : 'green' ">
-                           {{rowData.ClaseDocumento.Descripcion}}
+                       <span [style.color]="rowData.EstadoDocumento.Color">
+                           {{rowData.EstadoDocumento.Descripcion}}
                         </span>
                     </td>
                     <td>
-                        {{rowData.EstadoSolpSap_Id}}
+                        {{ rowData.EstadoSolpSap.Descripcion || "" }}
                     </td>
                     <td>
-                        {{rowData.tipoSolp}}
+                        {{ rowData.tipoSolp || "" }}
                     </td>
                     <td>
-                        {{rowData.vincularPliego}}
-                        <button class="btn btn-success botonesComprasColor" *ngIf="">Vincular a Pliego</button>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="rowData.VincularPliego">Vincular a Pliego</button>
                     </td>
                 </tr>
             </ng-template>
