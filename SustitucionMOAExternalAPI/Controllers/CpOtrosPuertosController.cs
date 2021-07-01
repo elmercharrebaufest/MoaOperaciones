@@ -31,7 +31,7 @@ namespace SustitucionMOAExternalAPI.Controllers
                 var dtos = cps.Select(x => new CartaPorteOtrosPuertosDto()
                 {
                     NumeroCartaPorte = x.NroCartaPorte,
-                    CEE = x.CEE.ToString(), //cambiar a int
+                    CEE = x.CEE,
                     CTG = x.CTG.ToString(), //cambiar a int
                     ChoferCuit = x.Chofer?.CUIT,
                     ChoferRazonSocial = x.Chofer?.RazonSocial,
@@ -167,7 +167,7 @@ namespace SustitucionMOAExternalAPI.Controllers
         public DateTime FechaVencimiento { get; set; }
         public DateTime FechaArribo { get; set; }
         public DateTime FechaDescarga { get; set; }
-        public int CEE { get; set; }
+        public string CEE { get; set; }
         public int CTG { get; set; }
         public string Establecimiento { get; set; }
         public string Planta { get; set; }
