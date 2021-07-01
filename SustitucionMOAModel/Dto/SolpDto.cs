@@ -35,11 +35,28 @@ namespace SustitucionMOAModel.Dto
         public DateTime? JornadaLaboralHasta { get; set; }
         public int? ClaseDocumentoId { get; set; }
         public List<ArchivoDto> Adjuntos { get; set; }
+        public string NroSolp { get; set; }
+        public int? EstadoSolpSap_Id { get; set; }
+        public int? EstadoDocumento_Id { get; set; }
+        public DateTime FechaCreacion { get; set; }
+        public TablaSapDto ClaseDocumento { get; set; }
+
+
+
+
+        public SolpDto() {}
+
     }
 
     public class VisitaObraDto
     {
         public string Codigo { get; set; }
         public DateTime FechaHora { get; set; }
+
+        public VisitaObraDto() {}
     }
+
+
+
+
 }

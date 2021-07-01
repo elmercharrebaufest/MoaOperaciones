@@ -164,15 +164,6 @@
     border: 1px solid #C9C9C9 !important; 
   }
 
-  /* ::ng-deep .weekDayBtn .ui-inputtext {
-    width: 2.5em;
-    padding: 0.5em !important;
-  } */
-
-  /* ::ng-deep .weekDayBtn .ui-button-tex{
-    padding: 0.5em !important;
-  } */
-
   .styled-select1 {
     font-size: 1.5rem;
     font-weight: 400;
@@ -322,7 +313,8 @@
 .styled-select,
 ::ng-deep .ui-chkbox-label, .labelCompras,
 .styled-select1,
-.valorTotal {
+.valorTotal,
+.ui-widget {
   font-family: 'Roboto Regular' !important;
 }
 
@@ -369,11 +361,6 @@
   margin-left: -13px;
 }
 
-/* ::ng-deep  .ui-overlaypanel .overlayPanel .ng-trigger .ng-trigger-animation .ng-tns-c3-5 .ui-overlaypanel .ui-widget .ui-widget-content .ui-corner-all .ui-shadow .ng-star-inserted {
-  width: 500px !important;
-  height: 500px !important;
-} */
-
 .text-danger {
   font-weight: 400;
 }
@@ -381,7 +368,24 @@
 ::ng-deep .ui-multiselect, ::ng-deep .ui-multiselect-label, ::ng-deep .inputAltura {
   max-height: 40px;
   height: 40px;
+  color: #666666;
+  font-family: roboto regular;
+  border-color: #b7b0b0;
+  font-size: 14px;
 }
+
+::ng-deep .ui-dropdown, label.ui-dropdown-label  {
+  max-height: 40px !important;
+  height: 40px !important;
+  font-family: roboto regular !important;
+  font-size: 14px !important;
+  color: #666666 !important;
+  padding-top: 3px;
+}
+
+/* .ui-multiselect .ui-multiselect-label > p-multiSelect  {
+
+} */
 
 .botonFechaDashboard {
   background-color: white;
@@ -391,11 +395,26 @@
   font-size: 14px;
   text-align: justify;
   padding-top: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 ::ng-deep .botonFechaDashboard:hover {
-  background-color: white; 
-  color: #666666;
+  background-color: white !important; 
+  color: #666666 !important;
+  border-color: #666666 !important;
+}
+
+::ng-deep .ui-button:enabled:focus {
+  background-color: white !important; 
+  color: #666666 !important;
+  border-color: #666666 !important;
+}
+
+::ng-deep .ui-button:enabled:hover {
+  background-color: white !important; 
+  color: #666666 !important;
+  border-color: #666666 !important;
 }
 
 /* ::ng-deep .ui-table-wrapper .ng-star-inserted {
@@ -435,10 +454,8 @@
   display: none;
 } 
 
-/* .naranja {
-  color: #F0AD4E;
+::ng-deep .ui-overlaypanel .ui-overlaypanel-content {
+  width: 500px;
+  height: 170px;
 }
 
-.verde {
-  color: #5CB85C;
-} */

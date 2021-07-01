@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
+import { Http, Response, URLSearchParams } from '@angular/http';
 
 @Injectable()
 export class ComprasService extends BaseService {
@@ -10,6 +11,31 @@ export class ComprasService extends BaseService {
     public getCombos(): Observable<any> {
         return this.http
             .get('/api/compras/Combos', { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+
+    public getListarSolp(): Observable<any> {
+        return this.http
+            .get('/api/compras/ListarSolp', { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+
+
+    public borrarSolp(idSolp: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idSolp', idSolp.toString());
+        return this.http
+            .get('/api/compras/BorrarSolp', {  search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+    public traerSolpId(idSolp: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idSolp', idSolp.toString());
+        return this.http
+            .get('/api/compras/TraerSolpId', {  search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 

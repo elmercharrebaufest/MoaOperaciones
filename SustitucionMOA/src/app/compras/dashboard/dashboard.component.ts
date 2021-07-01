@@ -11,6 +11,7 @@ import { SelectItem } from 'primeng/api';
 import { Solp } from '../Solp';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module';
+import { formatDate } from '@angular/common';
 
 
 
@@ -99,56 +100,123 @@ export class DashboardComponent extends ListBaseComponent {
             clear: 'Clear'
         };
 
-        this.tablaSolp = [{
-            numeroSolp: "32173821744",
-            fechaCreacion: "27/04/2021",
-            estadoDoc: "Finalizado",
-            estadoSolp: "Liberada",
-            tipoSolp: "C/Doc. Pliego",
-            estadoDocCodigo: "Finalizada",
-            estadoSolpCodigo: "Liberado",
-            esSap: "",
-            vincularPliego: "" 
-        },
-        {
-            numeroSolp: "372872",
-            fechaCreacion: "17/12/2021",
-            estadoDoc: "Incompleto",
-            estadoSolp: "Finalizada",
-            tipoSolp: "Sin Doc.",
-            estadoDocCodigo: "Incompleto",
-            estadoSolpCodigo: "Finalizada",
-            esSap: "Si",
-            vincularPliego: "" 
-        }
-        ];
+        // this.tablaSolp = [{
+        //     numeroSolp: "32173821744",
+        //     fechaCreacion: "27/04/2021",
+        //     estadoDoc: "Finalizado",
+        //     estadoSolp: "Liberada",
+        //     tipoSolp: "C/Doc. Pliego",
+        //     estadoDocCodigo: "Finalizada",
+        //     estadoSolpCodigo: "Liberado",
+        //     esSap: "",
+        //     vincularPliego: "" 
+        // },
+        // {
+        //     numeroSolp: "372872",
+        //     fechaCreacion: "17/12/2021",
+        //     estadoDoc: "Incompleto",
+        //     estadoSolp: "Finalizada",
+        //     tipoSolp: "Sin Doc.",
+        //     estadoDocCodigo: "Incompleto",
+        //     estadoSolpCodigo: "Finalizada",
+        //     esSap: "Si",
+        //     vincularPliego: "" 
+        // }
+        // ];
+
+        this.getListarSolp();
+
 
     }
 
-    // estadoDoc: 
-                // Creada, { Finalizada }
-                // Incompleta, { - }    
-                // Finalizado { Creada, Liberada, Parcialmente Liberada, Relac. a pedido compra, Finalizada }
+    getListarSolp(){
+            try {
+                this.subscription = this.service.getListarSolp().subscribe(
+                    result => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else { 
+                            this.tablaSolp = result.data;
+                            console.log(this.tablaSolp)
+                            this.tablaSolp.forEach(x => {
+                                x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
+                                // x.FechaCreacion = formatDate(x.FechaCreacion)
+                            });
+                        }
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+    
+                );
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                return false; //<-- Prevent Refresh
+            }
+    
+            return false; //<-- Prevent Refresh
+        
+    }
 
+    borrarSolp(idSolp){
+        try {
+            this.subscription = this.service.borrarSolp(idSolp).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else { 
+                        this.getListarSolp();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
 
-    // estadoSolp: 
-                // Creada, 
-                // Liberada, 
-                // Parcialmente Liberada, 
-                // Relac. a pedido compra, 
-                // Finalizada
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
 
+        return false; //<-- Prevent Refresh
+    
+}
 
-    // tipo: 
-                // C/Doc. Pliego, 
-                // C/doc. Req, 
-                // Sin Doc, 
-                // Emerg., 
-                // Adicional, 
-                // Generar pliego
+    traerSolpId(idSolp){
+        try {
+            this.subscription = this.service.traerSolpId(idSolp).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else { 
+                       
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
 
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
 
+        return false; //<-- Prevent Refresh
 
+    }
 
 
 }
