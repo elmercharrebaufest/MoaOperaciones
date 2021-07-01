@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -230,5 +231,160 @@ namespace SustitucionMOAUtils.Services
         {
             return repositorio.Listar<CentroDireccion>().Select(x=> new CentroDireccionDto(x)).ToList();
         }
+
+
+        //Rocio
+
+        public List<SolpDto> ListarSolp(string mail) 
+        {
+            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mail);
+
+            if(usuario == null) 
+            {
+                throw new InfoCustomException("No se encontro el usuario");
+            }
+
+            var todasLasSolp = repositorio.Listar<Solp>(x => x.UsuarioCreacion_Id == usuario.Id && x.FechaBorrado == null)
+                .Select(x => new SolpDto
+                {
+
+                    UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                    Id = x.Id,
+                    NombreDeObra = x.Pliego.NombreObra,
+                    FiscalContrato = x.Pliego.FiscalContrato,
+                    Telefono = x.Pliego.Telefono,
+                    Email = x.Pliego.Email,
+                    FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
+                    SupervisorSector = x.Pliego.SupervisorSector,
+                    SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
+                    VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto
+                    {
+
+                        Codigo = a.Codigo,
+                        FechaHora = a.FechaHora ?? DateTime.MinValue
+
+                    }).ToList(),
+
+                    TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
+                    TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
+                    TieneObradores = x.Pliego.TieneObradores ?? false,
+                    TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
+                    TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
+                    TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
+                    TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
+                    FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
+                    ObservacionesGeneracion = x.Pliego.ObservacionesGeneracion,
+                    //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
+                    DiasEjecucion = x.Pliego.DiasEjecucion,
+                    ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
+                    //JornadaLaboral = x.Pliego.JornadaLaboralDias,
+                    JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
+                    JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
+                    ClaseDocumentoId = x.ClaseDocumento_Id,
+                    Adjuntos = x.Pliego.Archivos.Select(s => new ArchivoDto
+                    {
+
+                        Id = s.Id,
+                        FileKey = s.FileKey,
+                        Nombre = s.ObtenerNombre(s.Ruta),
+                        Ruta = s.Ruta
+
+                    }).ToList(),
+
+                    NroSolp = x.NroSolp,
+
+                });
+
+            return todasLasSolp.ToList();
+
+
+        }
+
+        public SolpDto TraerSolpId(int idSolp)
+        {
+            var x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
+
+            if (x == null)
+            {
+                throw new InfoCustomException("No se encontro la solp");
+            }
+
+           
+            var solpDevuelta = new SolpDto()
+            { 
+                    UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                    Id = x.Id,
+                    NombreDeObra = x.Pliego.NombreObra,
+                    FiscalContrato = x.Pliego.FiscalContrato,
+                    Telefono = x.Pliego.Telefono,
+                    Email = x.Pliego.Email,
+                    FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
+                    SupervisorSector = x.Pliego.SupervisorSector,
+                    SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
+                    VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto
+                    {
+
+                        Codigo = a.Codigo,
+                        FechaHora = a.FechaHora ?? DateTime.MinValue
+
+                    }).ToList(),
+
+                    TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
+                    TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
+                    TieneObradores = x.Pliego.TieneObradores ?? false,
+                    TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
+                    TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
+                    TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
+                    TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
+                    FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
+                    ObservacionesGeneracion = x.Pliego.ObservacionesGeneracion,
+                    //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
+                    DiasEjecucion = x.Pliego.DiasEjecucion,
+                    ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
+                    //JornadaLaboral = x.Pliego.JornadaLaboralDias,
+                    JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
+                    JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
+                    ClaseDocumento = new TablaSapDto(x.EstadoDocumento),
+                    Adjuntos = x.Pliego.Archivos.Select(s => new ArchivoDto
+                    {
+
+                        Id = s.Id,
+                        FileKey = s.FileKey,
+                        Nombre = s.ObtenerNombre(s.Ruta),
+                        Ruta = s.Ruta
+
+                    }).ToList(),
+                    NroSolp = x.NroSolp,
+                    EstadoSolpSap_Id = x.EstadoSolpSap_Id,
+                    EstadoDocumento_Id = x.EstadoDocumento_Id,
+                    FechaCreacion = x.FechaCreacion
+            };
+
+            return solpDevuelta;
+
+
+        }
+
+
+        public string BorrarSolp(int idSolp) 
+        {
+            var solpABorrar = repositorio.Obtener<Solp>(x => x.Id == idSolp);
+
+            if (solpABorrar == null) 
+            {
+                throw new InfoCustomException("No se encontro la Solp");
+            }
+
+            solpABorrar.FechaBorrado = DateTime.Now;
+            repositorio.GuardarCambios();
+
+            return "Se Borro Correctamente";
+          
+        }
+
     }
+
+
+
+
 }

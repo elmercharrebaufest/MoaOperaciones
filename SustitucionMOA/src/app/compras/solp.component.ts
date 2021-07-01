@@ -329,7 +329,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             switch (paso.Codigo) {
                 case EnumPasoSolp.PliegoGeneracion1:
                     paso.Completo = this.listaStringCompleta([
-                        this.solpActual.nombreDeObra,
+                        this.solpActual.nombreDePedido,
                         this.solpActual.fiscalContrato,
                         this.solpActual.mail,
                         this.solpActual.fechaEntrega,

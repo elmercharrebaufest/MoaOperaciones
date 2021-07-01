@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Dto
         public string Descripcion { get; set; }
         public int? IdPadre { get; set; }
 
-        public TablaSapDto()
+        public TablaSapDto(TablaEstado estadoDocumento)
         {
 
         }

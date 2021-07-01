@@ -12,7 +12,7 @@ export class Solp {
     public id: number;
 
     //paso 1
-    public nombreDeObra: string;
+    public nombreDePedido: string;
     public fiscalContrato: string;
     public telefono: string;
     public mail: string;
@@ -64,6 +64,10 @@ export class Solp {
     public cargoPasoCinco: boolean = false;
     public cargoPasoSeis: boolean = false;
 
+    // // dashboard
+    // public selectEstadoSolp: any;
+    // public fechaSolp: Date;
+    
 
     constructor() {
         this.posiciones = [];

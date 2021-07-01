@@ -54,12 +54,14 @@
                     <!-- <button class="btn btn-danger" (click)="salir()"><i class="fa fa-reply"></i>&nbsp; SALIR</button> -->
                 </div>
                 <div class="col-xs-6">
-                    <button class="btn btn-defaut btn-secondary" (click)="navegar(pasoAnterior())">{{pasoAnterior().descripcion}}</button>&nbsp;
-                    <button class="btn btn-primary" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
-                    <button class="btn btn-primary" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
-                    <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())" >{{pasoSiguiente().descripcion}}</button>
-                    <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
-                    <button class="btn btn-secondary botonAgregarPosicion" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
+                    
+                 
+                    <button class="btn btn-defaut btn-secondary botonesCompras" (click)="navegar(pasoAnterior())"><i class="fa fa-arrow-left"></i>&nbsp; {{pasoAnterior().descripcion}}</button>&nbsp;
+                    <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
+                    <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
+                    <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
+                    <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
+                    <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                     <button class="btn btn-secondary botonAgregarPosicion" *ngIf="pasoActual.Codigo == enumSolp.SolpSubposiciones" (click)="navegar(pasoAnterior())" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                 </div>
             </div>

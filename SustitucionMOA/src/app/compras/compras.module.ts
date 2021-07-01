@@ -35,6 +35,8 @@ import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
 import {ConfirmationService} from 'primeng/api';
+import {MultiSelectModule} from 'primeng/multiselect';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
 
     
 @NgModule({
@@ -60,6 +62,8 @@ import {ConfirmationService} from 'primeng/api';
         AutoCompleteModule,
         ReactiveFormsModule,
         ChipsModule,
+        MultiSelectModule,
+        OverlayPanelModule,
         TableModule,
         ConfirmDialogModule
     ],
