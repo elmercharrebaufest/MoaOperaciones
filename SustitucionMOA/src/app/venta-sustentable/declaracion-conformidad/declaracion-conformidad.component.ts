@@ -20,6 +20,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
 
+  @ViewChild("mensajeImpresion")
+  protected mensajeImpresionComponent: MensajeComponent;
+
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
 
@@ -87,6 +90,13 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   }
 
   imprimir() {
+    this.mensajeImpresionComponent.setMsgsEmpty();
+
+    if (this.razonSocialDeclaracion.length < 3) {
+      this.mensajeImpresionComponent.setErrorMsg("Falta completar la razón social.");
+      return false;
+    }
+
     this.blockUI.start('Generando declaración');
     try {
       this.subscription = this.service
