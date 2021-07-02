@@ -58,5 +58,10 @@ namespace SustitucionMOACrypting
             cryptoStream.Close();
             return Encoding.UTF8.GetString(plainTextBytes, 0, decryptedByteCount).TrimEnd("\0".ToCharArray());
         }
+
+        public static string GetNewApiKey()
+        {
+            return Encrypt(Guid.NewGuid().ToString());
+        }
     }
 }

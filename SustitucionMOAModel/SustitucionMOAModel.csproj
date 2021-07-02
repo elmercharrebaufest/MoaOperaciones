@@ -57,6 +57,7 @@
     <Compile Include="Dto\CamposSustentableReporte.cs" />
     <Compile Include="Dto\CampoSustentableExportBaseDTO.cs" />
     <Compile Include="Dto\CampoSustentableExportDTO.cs" />
+    <Compile Include="Dto\ComentarioRecordadoDto.cs" />
     <Compile Include="Dto\CentroDireccionDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Entities\CausaConsulta.cs" />
     <Compile Include="Entities\CentroDireccion.cs" />
     <Compile Include="Entities\Comentario.cs" />
+    <Compile Include="Entities\ComentarioRecordado.cs" />
     <Compile Include="Entities\ConflictoCampoSustentable.cs" />
     <Compile Include="Entities\Consulta.cs" />
     <Compile Include="Entities\ConsultaDetalle.cs" />
@@ -122,6 +124,7 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
+    <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />

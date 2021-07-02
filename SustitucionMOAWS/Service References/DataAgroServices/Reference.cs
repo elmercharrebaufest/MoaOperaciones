@@ -3563,10 +3563,10 @@ namespace SustitucionMOAWS.DataAgroServices {
         System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoSap> AnularContratoSAPAsync(SustitucionMOAWS.DataAgroServices.ContratoSAP contratoSAP);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial", ReplyAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialResponse")]
-        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit);
+        SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, bool? corredor);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/ValidarProveedorComercial", ReplyAction="http://tempuri.org/IDataAgroServices/ValidarProveedorComercialResponse")]
-        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit);
+        System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, bool? corredor);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IDataAgroServices/AltaContratoSAP", ReplyAction="http://tempuri.org/IDataAgroServices/AltaContratoSAPResponse")]
         SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP);
@@ -3704,12 +3704,12 @@ namespace SustitucionMOAWS.DataAgroServices {
             return base.Channel.AnularContratoSAPAsync(contratoSAP);
         }
         
-        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit) {
-            return base.Channel.ValidarProveedorComercial(cuit);
+        public SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial ValidarProveedorComercial(string cuit, bool? corredor) {
+            return base.Channel.ValidarProveedorComercial(cuit, corredor);
         }
         
-        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit) {
-            return base.Channel.ValidarProveedorComercialAsync(cuit);
+        public System.Threading.Tasks.Task<SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial> ValidarProveedorComercialAsync(string cuit, bool? corredor = false) {
+            return base.Channel.ValidarProveedorComercialAsync(cuit, corredor);
         }
         
         public SustitucionMOAWS.DataAgroServices.ResultadoSap AltaContratoSAP(SustitucionMOAWS.DataAgroServices.ContratoSAPDto contratoSAP) {

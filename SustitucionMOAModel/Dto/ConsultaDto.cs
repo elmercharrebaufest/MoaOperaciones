@@ -24,7 +24,8 @@ namespace SustitucionMOAModel.Dto
         public DateTime FechaUltimaModificacion { get; set; }
         public int UsuarioId { get; set; }
         public int UsuarioActualId { get; set; }
-
+        public string Material { get; set; }
+        public int? Material_Id { get; set; }
         //detalle
         public DateTime? Fecha { get; set; }
         public string ComprobanteNo { get; set; }

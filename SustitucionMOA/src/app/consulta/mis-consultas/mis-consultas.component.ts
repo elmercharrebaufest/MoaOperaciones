@@ -18,6 +18,7 @@ import { Table } from 'primeng/table';
 import { Categoria, Consulta, EstadoConsulta, Subcategoria } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
+import { Material } from '../../common/models/material';
 
 declare var $: any;
 
@@ -69,6 +70,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
     asunto: string;
+    listaMateriales: Array<Material> = [];
+    materialesList: SelectItem[];
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
@@ -99,15 +102,14 @@ export class MisConsultasComponent extends ListBaseComponent {
             clear: 'Borrar'
         }
 
-        this.table.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
-
+        this.table.filterConstraints['DateRangeFilter'] = (value, filter): boolean => {
             if (filter[0] != null && filter[1] != null)
-                return value.getDate() >= filter[0].getDate() &&
-                    value.getDate() <= filter[1].getDate();
-            else if (filter[0] != null && filter[1] == null)
-                return value.getDate() >= filter[0].getDate()
+                return value >= filter[0] &&
+                    value <= filter[1];
+            else if (filter[0] != null && filter[1] == null){
+                return value >= filter[0];}
             else if (filter[0] == null && filter[1] != null)
-                return value.getDate() <= filter[1].getDate()
+                return value <= filter[1]
             else
                 return true;
         }
@@ -123,6 +125,8 @@ export class MisConsultasComponent extends ListBaseComponent {
         else {
             this.navService.setSeccionList([new Seccion('/consulta/mis-consultas', 'consulta', 'Mis Consultas')]);
         }
+
+        this.obtenerMateriales();
     }
 
     addDays(date, days) {
@@ -140,6 +144,7 @@ export class MisConsultasComponent extends ListBaseComponent {
             { field: 'SubCategoria',            header: 'Subcategoria', filterType: 'custom',   visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre'},
             { field: 'Asunto',                  header: 'Asunto',       filterType: 'text',     visibleExternal: true,  width: 16, size: 0 },
             { field: 'EstadoConsulta',          header: 'Estado',       filterType: 'custom',   visibleExternal: true,  width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
+            { field: 'Material',                header: 'Material',     filterType: 'custom',   visibleExternal: true,  width: 10, size: 3, sortdropdown: 'Material' },
             { field: 'FechaCreacion',           header: 'Fecha Inicio', filterType: 'date',     visibleExternal: false, width: 12, size: 2, selectionMode : 'single' },
             { field: 'FechaUltimaModificacion', header: 'Ult. Modif.',  filterType: 'date',     visibleExternal: true,  width: 12, size: 3, selectionMode : 'single' },
             { field: 'DiasReclamo',             header: 'Días',         filterType: 'text',     visibleExternal: false, width: 6,  size: 4 },
@@ -190,7 +195,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         return this.subcategoriasList;
     }
 
-    onFechaChange(dt, col) {
+    onFechaChange(dt: any, col: { selectedRange: string; field: any; fecha: any; }) {
         let desde = col.selectedRange == 'desde' || col.selectedRange == 'rango';
         let hasta = col.selectedRange == 'hasta' || col.selectedRange == 'rango';
 
@@ -211,7 +216,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     filtrarFecha(dt, field, desde, hasta) {
-        dt.filter([desde, hasta], field, 'dateRangeFilter');
+        dt.filter([desde, hasta], field, 'DateRangeFilter');
     }
 
     cambiarCalendar(dt, col) {
@@ -223,6 +228,24 @@ export class MisConsultasComponent extends ListBaseComponent {
         else
             col.selectionMode = 'single';
     }
+    
+    obtenerMateriales() {
+
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
+        this.subscription = this.service.obtenerMateriales().subscribe(
+          (result) => {
+            let obj = JSON.parse(result);
+            // this.listaCampanias = new Array();
+            this.materialesList = [];
+            obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
+                this.materialesList.push({ label: element.Descripcion, value: element.MaterialId });
+            });
+          },
+          (error) => {
+            error.message;
+          }
+        );
+      }
 
     getCombos() {
         try {
@@ -324,6 +347,15 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     getIds(options) {
         return options.map(x => x.Id);
+    }
+
+    getLabel(option) {
+        this.materialesList.forEach(element => {
+            if(element.value == option){
+                console.log(element);
+                return element.label;
+            }
+        });
     }
 
     exportConsultas() {

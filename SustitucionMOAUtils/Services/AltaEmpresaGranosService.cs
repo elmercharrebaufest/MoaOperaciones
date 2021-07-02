@@ -304,7 +304,7 @@ namespace SustitucionMOAUtils.Services
 
         public Localidad GetLocalidad(int localidadId)
         {
-            if(localidadId <= 0)
+            if (localidadId <= 0)
             {
                 throw new InfoCustomException("Id de localidad invalido");
             }
@@ -315,7 +315,7 @@ namespace SustitucionMOAUtils.Services
 
             //localidad.Nombre = localidad.Nombre + " (" + localidad.Provincia.Nombre + ")";
 
-            return localidad;                    
+            return localidad;
         }
 
         public string ArmarRutaCarpeta(string fileKey, string rutaArchivosProveedores, Proveedor proveedor)
@@ -345,21 +345,35 @@ namespace SustitucionMOAUtils.Services
                 infoProveedor = ObtenerInfoProveedor(mailUsuario, proveedorId);
             }
 
+            //Para contemplar validar los archivos, tenemos que verificar el usuario del proveedor. Esto es necesario hacerlo así para cuando se hacen altas internas
+            var usuarioDeProveedor = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
+
+            var tipoDeProveedor = "";
+
+            //Si le están haciendo el alta interna, y todavía no se registró el usuario, lo tenemos en cuenta
+            if (usuarioDeProveedor == null)
+            {
+                tipoDeProveedor = proveedor.TipoProveedor.Nombre;
+            }
+            else
+            {
+                tipoDeProveedor = usuarioDeProveedor.TipoUsuario.Nombre;
+            }
+
             Log.Info("ValidarEstadoSolicitud");
 
             ValidarEstadoSolicitud(proveedor);
 
-
             Log.Info("If para validar archivos. Tipo: " + proveedor.TipoProveedor.Nombre);
 
-            if (usuario.TipoUsuario.Nombre == "Corredor")
+            if (tipoDeProveedor == "Corredor")
             {
                 if (!ValidarArchivosSubidosCorredor(proveedor, infoProveedor))
                 {
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-            else if (usuario.TipoUsuario.Nombre == "No Granos")
+            else if (tipoDeProveedor == "No Granos")
             {
                 if (!ValidarArchivosSubidosNoGranos(proveedor, altaEmpresa))
                 {
@@ -373,7 +387,6 @@ namespace SustitucionMOAUtils.Services
                     return ErrorMsg.ErrorCompleteCampo;
                 }
             }
-
 
             if (!esGuardarYNotificar)
             {
@@ -706,7 +719,7 @@ namespace SustitucionMOAUtils.Services
             Proveedor proveedor;
 
             proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedor();
-            
+
             var CUITProveedor = ReformatearCUIT(proveedor.CUIT);
 
             ResultadoValidarProveedorComercial result = dataAgroService.ObtenerValidarCUITProveedorGranos(proveedor.CUIT);
@@ -733,21 +746,25 @@ namespace SustitucionMOAUtils.Services
             altaEmpresa.VinculoConFuncionariosPublicos = proveedor.VinculoConFuncionariosPublicos;
 
             altaEmpresa.Empleados = proveedor.RelacionConEmpleados
-                                                .Select(a => new AltaEmpresaEmpleadosViewModel { 
-                                                    CargoProveedora = a.CargoProveedora, 
-                                                    NombreMolinos = a.NombreMolinos, 
-                                                    NombreProveedora = 
-                                                    a.NombreProveedora, 
-                                                    Vinculo = a.Vinculo })
+                                                .Select(a => new AltaEmpresaEmpleadosViewModel
+                                                {
+                                                    CargoProveedora = a.CargoProveedora,
+                                                    NombreMolinos = a.NombreMolinos,
+                                                    NombreProveedora =
+                                                    a.NombreProveedora,
+                                                    Vinculo = a.Vinculo
+                                                })
                                                 .ToList();
 
             altaEmpresa.Funcionarios = proveedor.RelacionConFuncionarios
-                                                .Select(a => new AltaEmpresaFuncionariosViewModel { 
-                                                    CargoFirma = a.CargoFirma, 
-                                                    CargoFuncionario = a.CargoFuncionario, 
-                                                    NombreFirma = a.NombreFirma, 
-                                                    NombreFuncionario = a.NombreFuncionario, 
-                                                    Vinculo = a.Vinculo })
+                                                .Select(a => new AltaEmpresaFuncionariosViewModel
+                                                {
+                                                    CargoFirma = a.CargoFirma,
+                                                    CargoFuncionario = a.CargoFuncionario,
+                                                    NombreFirma = a.NombreFirma,
+                                                    NombreFuncionario = a.NombreFuncionario,
+                                                    Vinculo = a.Vinculo
+                                                })
                                                 .ToList();
 
             altaEmpresa.IdIngresoBruto = proveedor.IdIngresoBruto;
@@ -833,6 +850,43 @@ namespace SustitucionMOAUtils.Services
             }
 
             return filePath;
+        }
+
+        public string NotificarSolicitud(string mailUsuario, int proveedorId)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+
+            var proveedor = proveedorId > 0 ? repositorio.Obtener<Proveedor>(proveedorId) : usuario.ObtenerProveedorPorId(proveedorId);
+
+            if (proveedor.TipoProveedor.Nombre != "Granos" || usuario.TipoUsuario.Nombre == "Corredor")
+            {
+                return ErrorMsg.ErrorSinPermiso;
+            }
+
+            string mensaje = "Alta en proceso. Ya puede ingresar a aceptar el código de conducta.";
+
+            if (proveedor.HistorialAprobaciones == null)
+            {
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+            }
+
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                    Observacion = "Notificado al proveedor",
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuario.Id
+                }
+            );
+
+
+            EnviarMailEdicionRequerida(proveedor, mensaje, null);
+
+            repositorio.GuardarCambios();
+       
+            return SuccessMsg.ValidacionPendienteOK;
         }
     }
 }

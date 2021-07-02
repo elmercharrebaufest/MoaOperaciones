@@ -69,6 +69,10 @@ export class LayoutComponent implements OnDestroy {
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeModalComponent;
 
+    //se porque al usuario comercial se le asigno el nuevo rol de 
+    //alta empresa granos y solo deberia acceder desde el listado
+    esUsuarioComercial : boolean = false;
+
     constructor(private service: LayoutService, private sessionDataService: SessionDataService,
         private navService: NavService, private loginGuard: LoginGuard, private router: Router,
         protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
@@ -359,6 +363,7 @@ export class LayoutComponent implements OnDestroy {
                 this.setMsjSuccess(successMsj);
             });
 
+         this.esUsuarioComercial = this.securityService.tienePermiso('ABM EMPRESAS');
     }
 
     ngAfterViewInit() {

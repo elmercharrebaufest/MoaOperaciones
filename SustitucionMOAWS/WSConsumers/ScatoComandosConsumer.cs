@@ -20,5 +20,14 @@ namespace SustitucionMOAWS.WSConsumers
                 CP = numeroCartaPorte
             });
         }
+
+        public Resultado CrearCpsOtrosPuertos(List<CartaPorteOtrosPuertosDto> cps, string usuario)
+        {
+            return servicioComandosClient.Ejecutar(new CrearCpOtrosPuertos
+            {
+                Dto = cps.ToArray(),
+                Usuario = usuario
+            });
+        }
     }
 }

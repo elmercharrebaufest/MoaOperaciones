@@ -7,7 +7,9 @@ export interface Consulta {
     CategoriaId;
     SubCategoriaId?;
     Asunto;
+    Material;
     EstadoConsultaId;
+    Material_Id;
     FechaCreacion;
     FechaUltimaModificacion;
     UsuarioId;
@@ -62,5 +64,21 @@ export interface Causa {
 export class Comentario{
     consulta_Id: any; 
     Detalle: any; 
-    Fecha: any
+    Fecha: any;
+    Recordado: any;
+    FechaRecordado: any;
+}
+export class ReclamoImpositivo{
+    Dni;
+    RazonSocialEmpresa;
+    RazonSocialProveedor;
+    Cuit;
+    Vinculo;
+    Reclamos: Array<Reclamo>;
+    Lugar;
+}
+export interface Reclamo{
+    Fecha;
+    Certificado;
+    Importe;
 }

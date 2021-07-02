@@ -12,11 +12,13 @@ import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.c
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo} from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { Material } from '../../common/models/material';
 
 declare var $: any;
+
 
 @Component({
     selector: 'crear-consulta',
@@ -50,7 +52,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
-
+    private selectUndefinedOptionValue: any;
     mensajeError: string;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
@@ -104,6 +106,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     impuesto: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
+    listaMateriales: Array<Material> = [];
+    material_Id: any;
 
     fechaPagoDP: any;
     visibleButton: boolean = true;
@@ -112,8 +116,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     asunto: string;
     cliente: any;
 
+    reclamoImpositivo: ReclamoImpositivo = new ReclamoImpositivo();
     fechaFactura: string;
-    prueba: any;
+
 
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
@@ -135,6 +140,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
+
+        this.obtenerMateriales();
     }
 
     ngAfterViewInit(): void {
@@ -187,7 +194,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
-                        this.proveedorId = result.proveedorId
+                        if(!this.esCorredor){
+                            this.proveedorId = result.proveedorId
+                        }
                     }
                 },
                 error => {
@@ -208,11 +217,34 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.proveedorId = proveedor.proveedorId;
     }
 
+    obtenerMateriales() {
+
+        //Sacamos lo de la lista de campaña, ya que ahora son independientes
+        this.subscription = this.service.obtenerMateriales().subscribe(
+          (result) => {
+            let obj = JSON.parse(result);
+            // this.listaCampanias = new Array();
+            obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
+              let mat = new Material();
+              mat.Id = element.MaterialId;
+              mat.Descripcion = element.Descripcion;
+              mat.CampaniaActual = element.CampaniaActual;
+              mat.CampaniaIdActual = element.CampaniaIdActual;
+              this.listaMateriales.push(mat);
+    
+            });
+          },
+          (error) => {
+            this.mensajeError = error.message;
+          }
+        );
+      }
+
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
             if(this.esCorredor){
-                this.mensajeComponent.setErrorMsg("Recuerde seleccionar un Proveedor.");
+                this.mensajeComponent.setErrorMsg("Vendedor no asociado a su perfil de corredor. Intente nuevamente");
                 return true;
             }
             this.mensajeComponent.setErrorMsg("El campo proveedor esta vacio.");
@@ -355,6 +387,18 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
+            else{
+                this.listaMateriales.forEach(x => {
+                    if(x.Descripcion == this.comprobanteExtra){
+                        this.material_Id = x.Id;
+                    }
+                });
+            }
+
+            if ((this.comprobante == "" || !this.comprobante) && (this.contrato == "" || !this.contrato)) {
+                this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                return true;
+            }
         }
         if (this.categoriaCode == 'PES') {
             if (this.contrato == "" || !this.contrato) {
@@ -428,7 +472,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
         this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material_Id
         }
 
         this.consulta = {
@@ -438,7 +482,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
 
-        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date()};
+        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date()};
 
         try {
             this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
@@ -531,5 +575,122 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.Avisos(this.categoriaCode)
     }
 
+    generarVariable() {
+        this.reclamoImpositivo.RazonSocialEmpresa = this.nombre;
+        this.reclamoImpositivo.Reclamos = [
+            {Fecha: "", Importe: "", Certificado:""}
+        ]
+    }
 
+    agregarReclamo() {
+        this.reclamoImpositivo.Reclamos.push({Fecha: "", Importe: "", Certificado:""});
+    }
+
+    eliminarReclamo(numeroReclamo: number) {
+        this.reclamoImpositivo.Reclamos.forEach((value,index)=>{
+            if(this.reclamoImpositivo.Reclamos.indexOf(value) == numeroReclamo) this.reclamoImpositivo.Reclamos.splice(index,1);
+        });
+    }
+
+    setFechaReclamo(numeroReclamo: number, event: Event){
+        this.reclamoImpositivo.Reclamos[numeroReclamo].Fecha = event
+    }
+
+    validarReclamo(){
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.reclamoImpositivo.RazonSocialProveedor == "" || !this.reclamoImpositivo.RazonSocialProveedor) {
+            this.mensajeComponent.setErrorMsg("El campo razón social proveedor esta vacío.");
+            return true;
+        }
+        if (this.reclamoImpositivo.Dni == "" || !this.reclamoImpositivo.Dni) {
+            this.mensajeComponent.setErrorMsg("El campo DNI esta vacío.");
+            return true;
+        }
+        if (this.reclamoImpositivo.Cuit == "" || !this.reclamoImpositivo.Cuit) {
+            this.mensajeComponent.setErrorMsg("El campo Cuit esta vacío.");
+            return true;
+        }
+        if (this.reclamoImpositivo.Vinculo == "" || !this.reclamoImpositivo.Vinculo) {
+            this.mensajeComponent.setErrorMsg("El campo vinculo esta vacío.");
+            return true;
+        }
+        this.reclamoImpositivo.Reclamos.forEach(reclamo => {
+            if(reclamo.Certificado == "" || !reclamo.Certificado){
+                this.mensajeComponent.setErrorMsg("El campo N° certificado esta vacío.");
+                return true;
+            }
+            if(reclamo.Fecha == "" || !reclamo.Fecha){
+                this.mensajeComponent.setErrorMsg("El campo fecha esta vacío.");
+                return true;
+            }
+            if(reclamo.Importe == "" || !reclamo.Importe){
+                this.mensajeComponent.setErrorMsg("El campo importe esta vacío.");
+                return true;
+            }
+        });
+
+        return false;
+    }
+
+    generarReclamoImpositivo(){
+        this.blockUI.start('Generando documento.');
+        this.spinnerComponent.showIt();
+
+        if (this.validarReclamo()) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            return;
+        }
+
+        try {
+            this.subscription = this.service.generarReclamoImpositivo(this.reclamoImpositivo).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        this.blockUI.stop();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                        this.blockUI.stop();
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                        this.blockUI.stop();
+                    } else {
+                        this.spinnerComponent.hideIt();
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+    }
 }

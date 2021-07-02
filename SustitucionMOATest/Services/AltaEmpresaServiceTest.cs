@@ -87,7 +87,7 @@ namespace SustitucionMOATest.Services
               });
 
             dataAgroServiceMock
-                .Setup(y => y.ObtenerValidarCUITProveedorGranos(It.IsAny<string>()))
+                .Setup(y => y.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>()))
                 .Returns(new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial());
 
 

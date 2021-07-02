@@ -164,6 +164,8 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.causaConsultaId = this.causaConsulta.Id;
         }
 
+        debugger
+
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
                 result => {
@@ -203,7 +205,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         this.mensajeComponent.setMsgsEmpty();
-        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date() };
+        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
         this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
             result => {
                 if (result.logout == true) {
@@ -384,7 +386,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos(false).subscribe(
+            this.subscription = this.service.getCombos(true).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -436,6 +438,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta = result;
                         this.consulta.Comentarios.forEach(x => {
                             x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
+                            if(x.ComentarioRecordados.length >= 1){
+                                x.ComentarioRecordados.forEach(cr => {
+                                    cr.FechaRecordado = new Date (this.getDateFromAspNetFormat(cr.FechaRecordado));
+                                });
+                            }
                         });
                         this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
                         this.consulta.Fecha = new Date (this.getDateFromAspNetFormat(this.consulta.Fecha));

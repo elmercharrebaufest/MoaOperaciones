@@ -16,7 +16,7 @@
         <!--Search-->
         <div class="myRow firstSection mySearch">
 
-            <button class="btn btn-custom btn-mediano btn-radius" *ngIf="isAuthorized('VER ALTAS GRANOS')"
+            <!-- <button class="btn btn-custom btn-mediano btn-radius" *ngIf="isAuthorized('VER ALTAS GRANOS')"
                 [ngClass]="{'btn-verde': idTipoProveedor === 2, 'btn-gris' : idTipoProveedor !== 2 }"
                 (click)="cambiarFiltroTipoProveedor(2)">
                 Directo Granos
@@ -25,7 +25,7 @@
                 [ngClass]="{'btn-verde': idTipoProveedor === 3, 'btn-gris' : idTipoProveedor !== 3 }"
                 (click)="cambiarFiltroTipoProveedor(3)">
                 No Granos
-            </button>
+            </button> -->
 
 
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
@@ -54,7 +54,7 @@
                     *ngIf="isAuthorized('VER ALTAS GRANOS') && isAuthorized('VER ALTAS NO GRANOS')">
                     Tipo proveedor:
                     <div class="styled-select ">
-                        <select [(ngModel)]="idTipoProveedor"  (ngModelChange)="onChangeProveedor()">
+                        <select [(ngModel)]="idTipoProveedor" (ngModelChange)="onChangeProveedor()">
                             <option value="0" selected>Todos</option>
                             <option value="2" selected>Granos</option>
                             <option value="3" selected>No granos</option>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-6  col-sm-4 col-md-5" *ngIf="idTipoProveedor== 3">
+                <div class="col-xs-6  col-sm-4 col-md-5">
                     Alta física:
                     <div class="styled-select ">
                         <select [(ngModel)]="contieneDocumentacionFisica">
@@ -218,7 +218,7 @@
                                 | customNumericFilter : 'IdTipoUsuario' : idTipoProveedor : 0
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
-                                | customFilterBoolean : 'ContieneDocumentacionFisica' : (contieneDocumentacionFisica == 0 ? null:  (contieneDocumentacionFisica != 2)) : (idTipoProveedor == 3)
+                                | customFilterBoolean : 'ContieneDocumentacionFisica' : (contieneDocumentacionFisica == 0 ? null:  (contieneDocumentacionFisica != 2)) : ((idTipoProveedor == 3) || (idTipoProveedor == 2) || (idTipoProveedor == 4) || (idTipoProveedor == 0))
                                 ; let odd = odd" role="row" [class.odd]="!odd" tabindex="0">
                                 <td>{{empresa.CodigoProveedor || "-"}}</td>
                                 <td>{{empresa.CUIT}}</td>
@@ -270,17 +270,27 @@
                                         Completar Alta
                                     </button>
 
+
                                     <button *ngIf="empresa.EstadoAprobacion === 3 || empresa.EstadoAprobacion === 11"
                                         type="button" style="width: 70px;font-size: 12px;"
                                         class="btn-custom btn-add btn-chico" (click)="VerificarEstadoDataAgro(empresa)">
                                         Verificar DataAgro
                                     </button>
 
-                                    <button *ngIf="(empresa.EstadoAprobacion === 11 || empresa.EstadoAprobacion === 15)  && isAuthorized('ALTA EMPRESA NO GRANOS') && empresa.IdTipoUsuario === 3"
+                                    <button *ngIf="empresa.EstadoAprobacion === 15  && isAuthorized('ALTA EMPRESA NO GRANOS') && empresa.IdTipoUsuario === 3"
                                         type="button" style="width: 70px;font-size: 12px;"
                                         class="btn-custom btn-add btn-chico" (click)="AbrilModalYaVenianOperando(empresa)">
-                                        Operando
+                                        Validar usuario
                                     </button>
+
+                                    <!-- Alta interna Granos-->
+                                    <button type="button"
+                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario != 3 && isAuthorized('NOTIFICAR ALTA INTERNA GRANOS')"
+                                        class="btn-custom btn-add btn-chico"
+                                        (click)="goToSeccionParam('/alta-empresa-granos',  empresa.Id)">
+                                        Alta Interna
+                                    </button>
+                                    <!-- Fin Granos-->
                                 </td>
                             </tr>
                         </tbody>
@@ -606,6 +616,13 @@
                                             </a>
                                         </span>
                                     </div>
+
+                                    <div class="form-group grey ">
+                                        Presento documentación física:
+                                        <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
+                                            [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
+                                            (ngModelChange)="onChangeDocumentacionFisica()">
+                                    </div>
                                 </mdb-step>
                             </div>
                         </mdb-stepper>
@@ -677,11 +694,10 @@
                                         'No'}} </label>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-5">
-                                    Presento documentación física:  
-                                    <input type="checkbox" style="margin-right: 5px;" id="AltaFisica"
-                                        placeholder=""
+                                    Presento documentación física:
+                                    <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
                                         [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
-                                        (ngModelChange)="onChangeDocumentacionFisica()"> 
+                                        (ngModelChange)="onChangeDocumentacionFisica()">
                                 </div>
                             </div>
                         </div>
@@ -1339,7 +1355,7 @@
             </div>
             <div class="modal-body" style="padding-top:0;">
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
-                    <div class="for myRow">
+                    <div class="for row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <p class="crearConsultaTitulos">Raz&oacute;n Social<span class="requerido">*</span></p>
                             <div class="styled-select">
@@ -1348,9 +1364,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="for myRow center">
+                    <div class="for row myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">CUIT<span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="empresaSeleccionada.CUIT" name="empresaSeleccionada.CUIT" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="for row myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">Mail<span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="empresaSeleccionada.Mail" name="empresaSeleccionada.Mail" class="fourRounded"
+                                    aria-controls="tableModal" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="for row myRow center">
                         <button type="button" class="btn-custom btn-mediano btn-add" (click)="proveedorNoGranosOperando()">
-                                Guardar
+                                Validar
                          </button>
                     </div>
                 </div>

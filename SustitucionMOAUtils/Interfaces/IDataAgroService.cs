@@ -14,7 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
         DataAgroAuthWSMOAResponse goToDataAgro(string proveedor, string nombre);
         bool ValidarCUITProveedorGranos(ref UsuarioGranos usuario, Proveedor proveedor);
         string ObtenerCBUProveedor(string CUITproveedor);
-        ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT);
+        ResultadoValidarProveedorComercial ObtenerValidarCUITProveedorGranos(string CUIT, bool? corredor = false);
         void ValidarNuevoProveedorMultifirma(ref Proveedor nuevoProveedor);
         string VerificarEstadoProveedor(int proveedorID, string usuarioMail);
         bool ProveedorApocrifo(string CUIT);
