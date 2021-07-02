@@ -57,8 +57,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   hectareasSoja: number;
   latitud: string;
   longitud: string;
-  CUIT: string = "00000000000";
-  CUITCorredor: string = "00000000000";
+  CUIT: string = "";
   file: any;
 
   operarComo: number = 1;
@@ -70,6 +69,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.navService.setSeccionList([]);
+    this.CUIT = "";
 
     this.proveedorId = this.getProveedorId(this.codigoProveedor);
 
@@ -114,9 +114,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
         } else {
 
           this.proveedorId = result.Id;
-          this.CUIT = result.CUIT;
-          this.declaracionComformidad.CUITDeclaracion = result.CUIT;
-          this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
+
+          if (!this.esCorredor) {
+            this.CUIT = result.CUIT;
+            this.declaracionComformidad.CUITDeclaracion = result.CUIT;
+            this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
+          }
 
           this.validarModalDeclaracion();
 
@@ -132,16 +135,17 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   onChangeCosecha() {
 
-    if (this.CUIT.length != 11) {
-      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-      setTimeout(() => {
-        this.cosechaId = 0;
-      }, 100);
-      return false
+    if (this.cosechaId > 0) {
+      if (this.CUIT == "" || this.CUIT.length != 11) {
+        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+        setTimeout(() => {
+          this.cosechaId = 0;
+        }, 100);
+        return false
+      }
+
+      this.validarModalDeclaracion();
     }
-
-    this.validarModalDeclaracion();
-
   }
 
   private validarModalDeclaracion() {
@@ -239,7 +243,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   verificarCUITIngresado() {
     this.declaracionComformidad.CUITDeclaracion = this.CUIT;
 
-    if (this.CUIT.length == 11 && this.cosechaId > 0) {
+    if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
       this.declaracionComformidad.verificarDeclaracion();
     }
   }
@@ -282,6 +286,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   validar() {
     this.mensajeComponent.setMsgsEmpty();
+
     if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
       this.mensajeComponent.setErrorMsg("Falta completar nombre del establecimiento.");
       return true;
@@ -292,9 +297,16 @@ export class AltaComponent extends BaseComponent implements OnInit {
       return true;
     }
 
-    if (this.CUIT.length != 11) {
-      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-      return false
+    if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+      if (!this.CUIT) {
+        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+        return true
+      }
+
+      if (this.CUIT.length != 11) {
+        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+        return true
+      }
     }
 
     if (!this.cosechaId || this.cosechaId <= 0) {
