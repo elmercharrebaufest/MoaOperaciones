@@ -275,7 +275,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.zona.push(el);
                     });
                     obj.Datos.Destino.forEach(element => {
-                        if (element.Id != 10) {
+                        if (element.Id != 9 && element.Id != 10 && element.Id != 13) {
                             let el = {
                                 Id: element.Id,
                                 Descripcion: element.Descripcion
