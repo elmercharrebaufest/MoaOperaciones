@@ -454,10 +454,10 @@
   display: none;
 } 
 
-::ng-deep .ui-overlaypanel .ui-overlaypanel-content {
+/* ::ng-deep .ui-overlaypanel .ui-overlaypanel-content {
   width: 500px;
   height: 170px;
-}
+} */
 
 .separadorCompras {
   margin-bottom: 15px;

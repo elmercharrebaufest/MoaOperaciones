@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Dto
         public int Orden { get; set; }
         public string Color { get; set; }
 
-
+        public TablaEstadoDto() { }
 
         public TablaEstadoDto(TablaEstado entity)
         {

@@ -88,6 +88,10 @@ namespace SustitucionMOA.Controllers
                     GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
                     GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
                     Moneda = service.ObtenerTablaSap(TablasSap.Moneda),
+                    EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
+
+                    EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),  //rocio
+
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -126,7 +130,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-
                 string userMail = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = service.ListarSolp(userMail) });
