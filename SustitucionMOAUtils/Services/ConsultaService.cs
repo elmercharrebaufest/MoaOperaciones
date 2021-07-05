@@ -5,6 +5,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
@@ -450,7 +451,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoConsulta = new EstadoConsultaDto 
                         {
                             Id = x.EstadoConsulta.Id,
-                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestion" : x.EstadoConsulta.Descripcion,
+                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
                             Color = x.EstadoConsulta.Color,
                             Code = x.EstadoConsulta.Code
                         },
@@ -664,6 +665,31 @@ namespace SustitucionMOAUtils.Services
             {
                 var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
                 return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<MaterialDto> ObtenerMaterial()
+        {
+            try
+            {
+                var subcategorias = repositorio.Listar<Material>().OrderBy(c => c.Nombre);
+                return subcategorias.Select(x => new MaterialDto
+                { 
+                    MaterialId = x.Id,
+                    Descripcion = x.Nombre
+                }).ToList();
             }
             catch (ValidationCustomException e)
             {

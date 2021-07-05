@@ -1,6 +1,7 @@
 ﻿using iTextSharp.text;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -26,5 +27,6 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerRutaArchivo(int archivoId);
         string RecordarComentario(int consultaId);
         string GenerarReclamoImpositivoPdf(ReclamoImpositivo reclamoImpositivo);
+        List<MaterialDto> ObtenerMaterial();
     }
 }

@@ -94,6 +94,7 @@
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
     <Compile Include="Entities\LogPesificacion.cs" />
+    <Compile Include="Entities\Material.cs" />
     <Compile Include="Entities\Notificacion.cs" />
     <Compile Include="Dto\ProveedorAltaDto.cs" />
     <Compile Include="Dto\RubroDto.cs" />

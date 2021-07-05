@@ -12,10 +12,9 @@ import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.c
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo} from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales} from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Material } from '../../common/models/material';
 
 declare var $: any;
 
@@ -93,7 +92,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     comprobanteExtra: any;
 
     caratula: any;
-    material: string;
     comentario: string;
     contrato: any;
     razonSocial: string;
@@ -106,7 +104,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
     impuesto: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
-    listaMateriales: Array<Material> = [];
+    listaMateriales: Materiales[];
+    material: Materiales;
     material_Id: any;
 
     fechaPagoDP: any;
@@ -140,8 +139,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
         $(".adjuntarArchivo").click(function () {
             $(".adjuntarArchivo1").click();
         });
-
-        this.obtenerMateriales();
     }
 
     ngAfterViewInit(): void {
@@ -197,6 +194,8 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         if(!this.esCorredor){
                             this.proveedorId = result.proveedorId
                         }
+                        this.listaMateriales = result.materiales;
+                        //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
                     }
                 },
                 error => {
@@ -217,28 +216,14 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.proveedorId = proveedor.proveedorId;
     }
 
-    obtenerMateriales() {
-
-        //Sacamos lo de la lista de campaña, ya que ahora son independientes
-        this.subscription = this.service.obtenerMateriales().subscribe(
-          (result) => {
-            let obj = JSON.parse(result);
-            // this.listaCampanias = new Array();
-            obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
-              let mat = new Material();
-              mat.Id = element.MaterialId;
-              mat.Descripcion = element.Descripcion;
-              mat.CampaniaActual = element.CampaniaActual;
-              mat.CampaniaIdActual = element.CampaniaIdActual;
-              this.listaMateriales.push(mat);
-    
-            });
-          },
-          (error) => {
-            this.mensajeError = error.message;
-          }
-        );
-      }
+    setMaterial(material){
+        debugger
+        this.listaMateriales.forEach(x => {
+            if(x.MaterialId == material){
+                this.comprobanteExtra = x.Descripcion;
+            }
+        })
+    }
 
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
@@ -387,13 +372,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
                 return true;
             }
-            else{
-                this.listaMateriales.forEach(x => {
-                    if(x.Descripcion == this.comprobanteExtra){
-                        this.material_Id = x.Id;
-                    }
-                });
-            }
 
             if ((this.comprobante == "" || !this.comprobante) && (this.contrato == "" || !this.contrato)) {
                 this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
@@ -472,7 +450,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
         this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material_Id
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material.MaterialId
         }
 
         this.consulta = {
