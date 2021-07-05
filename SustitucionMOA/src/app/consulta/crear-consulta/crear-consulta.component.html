@@ -348,8 +348,14 @@
                                 Material<span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
-                                <input type="search" [(ngModel)]="comprobanteExtra" name="comprobanteExtra"
-                                    class="fourRounded" aria-controls="tableModal" required>
+                                <select name="{{comprobanteExtra}}" [(ngModel)]="comprobanteExtra" class="dropdown-granos">
+                                    <option disabled hidden [value]="selectUndefinedOptionValue">
+                                        Grano
+                                    </option>
+                                    <option *ngFor="let material of listaMateriales" value="{{material.Descripcion}}">
+                                        {{material.Descripcion}}
+                                    </option>
+                                    </select>
                             </div>
                         </div>
 

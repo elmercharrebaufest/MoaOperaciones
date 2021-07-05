@@ -10,5 +10,6 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IExternalApiService
     {
         List<Rol> GetRolesApiKey(string apikey);
+        string GetUsuarioApiKey(string apikey);
     }
 }

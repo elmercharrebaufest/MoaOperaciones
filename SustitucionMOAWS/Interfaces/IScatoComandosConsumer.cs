@@ -11,5 +11,6 @@ namespace SustitucionMOAWS.Interfaces
     public interface IScatoComandosConsumer
     {
         ResultadoTickets ObtenerTicketPesada(string numeroCartaPorte);
+        Resultado CrearCpsOtrosPuertos(List<CartaPorteOtrosPuertosDto> cps, string usuario);
     }
 }

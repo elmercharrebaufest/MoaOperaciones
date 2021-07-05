@@ -91,6 +91,7 @@ export class VentaSustentableService extends BaseService {
     }
 
     verificarDeclaracion(proveedorId: number, cosechaId: number, CUIT: string) {
+
         let params: URLSearchParams = new URLSearchParams();
         params.set("proveedorId", proveedorId.toString());
         params.set("cosechaId", cosechaId.toString());

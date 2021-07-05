@@ -52,23 +52,34 @@ export class AltaComponent extends BaseComponent implements OnInit {
   sojaTotal: boolean;
 
   proveedorId: any;
+  proveedorIdCorredor: any;
   hectareasTotales: number;
   hectareasSoja: number;
   latitud: string;
   longitud: string;
-  CUIT: string;
+  CUIT: string = "";
   file: any;
 
+  operarComo: number = 1;
+
+  ingresarProveedorPorCUIT: boolean;
   proveedorSelected: any;
   esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
   codigoProveedor: string = sessionStorage.getItem("proveedor");
 
   ngOnInit() {
     this.navService.setSeccionList([]);
+    this.CUIT = "";
 
-    if (!this.esCorredor) {
-      this.proveedorId = this.getProveedorId(this.codigoProveedor);
+    this.proveedorId = this.getProveedorId(this.codigoProveedor);
+
+    this.ingresarProveedorPorCUIT = true;
+
+    if (this.esCorredor) {
+      this.ingresarProveedorPorCUIT = false;
     }
+
+    this.operarComo = 1;
 
     this.getCosechas();
   }
@@ -101,17 +112,16 @@ export class AltaComponent extends BaseComponent implements OnInit {
         } else if (result.info != undefined) {
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
-          this.proveedorId = result.Id;
-          this.CUIT = result.CUIT;
-          this.declaracionComformidad.CUITDeclaracion = result.CUIT;
-          this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
 
-          if (this.proveedorId > 0 && this.cosechaId > 0) {
-            this.declaracionComformidad.proveedorId = this.proveedorId;
-            this.declaracionComformidad.cosechaId = this.cosechaId;
-            this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
-            this.declaracionComformidad.verificarDeclaracion();
+          this.proveedorId = result.Id;
+
+          if (!this.esCorredor) {
+            this.CUIT = result.CUIT;
+            this.declaracionComformidad.CUITDeclaracion = result.CUIT;
+            this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
           }
+
+          this.validarModalDeclaracion();
 
           return result.Id;
         }
@@ -125,22 +135,43 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   onChangeCosecha() {
 
-    if (this.CUIT.length != 11) {
-      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-      setTimeout(() => {
-        this.cosechaId = 0;
-      }, 100);
-      return false
-    }
+    if (this.cosechaId > 0) {
+      if (this.CUIT == "" || this.CUIT.length != 11) {
+        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+        setTimeout(() => {
+          this.cosechaId = 0;
+        }, 100);
+        return false
+      }
 
-    if (this.proveedorId > 0 && this.cosechaId > 0) {
-      this.declaracionComformidad.proveedorId = this.proveedorId;
-      this.declaracionComformidad.cosechaId = this.cosechaId;
-      this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
-      this.declaracionComformidad.verificarDeclaracion();
+      this.validarModalDeclaracion();
     }
-
   }
+
+  private validarModalDeclaracion() {
+    if (this.cosechaId > 0) {
+      if (this.esCorredor) {
+
+        if (this.operarComo == 2) {
+          this.declaracionComformidad.CUIT = this.CUIT;
+        }
+
+        this.declaracionComformidad.proveedorId = this.proveedorId;
+        this.declaracionComformidad.cosechaId = this.cosechaId;
+        this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
+        this.declaracionComformidad.verificarDeclaracion();
+      }
+      else {
+        if (this.proveedorId > 0) {
+          this.declaracionComformidad.proveedorId = this.proveedorId;
+          this.declaracionComformidad.cosechaId = this.cosechaId;
+          this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
+          this.declaracionComformidad.verificarDeclaracion();
+        }
+      }
+    }
+  }
+
   campoProveedorAgregar() {
     this.blockUI.start('Informando campo sustentable.');
 
@@ -211,7 +242,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   verificarCUITIngresado() {
     this.declaracionComformidad.CUITDeclaracion = this.CUIT;
-    if (this.CUIT.length == 11 && this.cosechaId > 0) {
+
+    if (this.CUIT == "" || this.CUIT.length == 11 && this.cosechaId > 0) {
       this.declaracionComformidad.verificarDeclaracion();
     }
   }
@@ -254,6 +286,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   validar() {
     this.mensajeComponent.setMsgsEmpty();
+
     if (this.nombreEstablecimiento == "" || !this.nombreEstablecimiento) {
       this.mensajeComponent.setErrorMsg("Falta completar nombre del establecimiento.");
       return true;
@@ -264,9 +297,16 @@ export class AltaComponent extends BaseComponent implements OnInit {
       return true;
     }
 
-    if (this.CUIT.length != 11) {
-      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-      return false
+    if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+      if (!this.CUIT) {
+        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+        return true
+      }
+
+      if (this.CUIT.length != 11) {
+        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+        return true
+      }
     }
 
     if (!this.cosechaId || this.cosechaId <= 0) {
@@ -318,5 +358,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
   onResultadoDeclaracion(result: boolean) {
     if (!result)
       this.cosechaId = 0;
+  }
+
+  cambiarModoOperacion() {
+    this.ingresarProveedorPorCUIT = this.operarComo == 2;
   }
 }

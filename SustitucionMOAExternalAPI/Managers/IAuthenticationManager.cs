@@ -8,5 +8,6 @@ namespace SustitucionMOAExternalAPI.Managers
     public interface IAuthenticationManager
     {
         List<string> ObtenerPermisos(string apikey);
+        string ObtenerUsuario(string apikey);
     }
 }

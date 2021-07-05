@@ -180,7 +180,7 @@ namespace SustitucionMOA.Controllers
 
                 Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
                 aceptoTyC = usuario.AceptoTyC;
-                apikey = usuario.ApiKey;
+                apikey = usuario.ApiKey ?? string.Empty;
 
                 seccionesVisitadas = usuario.SeccionesVisitadas;
 

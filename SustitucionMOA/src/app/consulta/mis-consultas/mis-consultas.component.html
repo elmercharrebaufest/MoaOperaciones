@@ -65,6 +65,10 @@
                                             
                                             <p-multiSelect appendTo="body" *ngIf="col.field == 'SubCategoria'" [options]="subcategoriasList" defaultLabel="Todos"  [maxSelectedLabels]="1"
                                                 (onChange)="dt.filter($event.value, 'SubCategoriaId', 'in')" [style]="{'width.%': 100}"></p-multiSelect>
+
+                                            <p-multiSelect appendTo="body" *ngIf="col.field == 'Material'" [options]="materialesList" defaultLabel="Todos"  [maxSelectedLabels]="1"
+                                            (onChange)="dt.filter($event.value, 'Material_Id', 'in')" [style]="{'width.%': 100}">
+                                            </p-multiSelect>
                                         </div>
                                         <div *ngSwitchCase="'date'">
                                             <!--Filtro fechas-->
@@ -94,7 +98,14 @@
                                             <span *ngIf="col.field == 'EstadoConsulta'; else defaultField" [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
                                             {{rowData.EstadoConsulta.Descripcion}}</span>
 
-                                            <ng-template #defaultField>{{rowData[col.field].Nombre}}</ng-template>
+                                            <ng-template #defaultField>
+                                                <ng-container *ngIf="col.field == 'Material' else default">
+                                                    <span>{{rowData[col.field]}}</span>
+                                                </ng-container>
+                                            </ng-template>
+                                            <ng-template #default>
+                                                <span>{{rowData[col.field].Nombre}}</span>
+                                            </ng-template>
                                         </div>
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                     </td>
