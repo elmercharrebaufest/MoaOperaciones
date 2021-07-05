@@ -75,6 +75,7 @@ namespace SustitucionMOAUtils.Services
             proveedor.RazonDeEleccion = RazonDeEleccion;
             proveedor.FacturacionAnual = FacturacionAnual;
             proveedor.SolicitanteInterno = usuarioMail;
+            proveedor.ContieneDocumentacionFisica = true;
             proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
             proveedor.IngresoAPlanta = ingresoAPlanta;
             proveedor.AltaInterna = altaInterna;

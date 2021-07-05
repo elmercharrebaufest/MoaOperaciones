@@ -559,7 +559,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     Estado = proveedor.EstadoAprobacion,
                     EstadoDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
-                    Observaciones = proveedor.Observaciones.IsNullOrWhiteSpace() ? "" : proveedor.Observaciones
+                    Observaciones = proveedor.Observaciones.IsNullOrWhiteSpace() ? "" : proveedor.Observaciones,
+                    DocumentacionFisica = proveedor.ContieneDocumentacionFisica ?? false
                 };
 
                 return estadoAprobacionDto;

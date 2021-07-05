@@ -182,6 +182,11 @@ namespace SustitucionMOA.Controllers
                 {
                     data.EstadoDescripcion = "Solicitud de información";
                 }
+                if (!data.DocumentacionFisica)
+                {
+                    data.EstadoDescripcion = data.EstadoDescripcion + " - pendiente de envío documentación original";
+                }
+
                 return JsonCustom(new { data });
             }
             catch (InfoCustomException e)
