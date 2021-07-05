@@ -603,5 +603,40 @@ namespace SustitucionMOAUtils.Services
 
             return "Proveedor notificado correctamente";
         }
+
+        public string AgregarObservacion(int proveedorId, string observacion, string usuarioMail)
+        {
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            //Como del front estoy enviando la info en encoding URI tengo que decodificarlo.
+            observacion = Uri.UnescapeDataString(observacion);
+
+            if (proveedor == null)
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
+            }
+            if (proveedor.HistorialAprobaciones == null)
+            {
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+            }
+
+            int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
+            //En caso de no venir observación se coloca el nuevo estado para que pueda visualizarse al menos ese paso a nuevo estado
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    Observacion = observacion,
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuarioId,
+                    ObservacionParaProveedor = "-"
+                }
+            );
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.ObservacionAgregadaOK;
+        }
     }
 }
