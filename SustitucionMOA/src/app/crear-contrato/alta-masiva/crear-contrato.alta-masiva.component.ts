@@ -61,7 +61,7 @@ export class CrearContratoAltaMasivaComponent extends CrearContratoBaseComponent
                             } else {
                                 lista.push({ Id: 0, Filtro: "Seleccione un Acuerdo de la lista..." });
                                 for (var i = 0; i < contratos.length; i++) {
-                                    lista.push({ Id: contratos[i].Id, Filtro: `${contratos[i].Id} - ${contratos[i].Material} - ${contratos[i].RazonSocial} - ${contratos[i].Fecha} ${contratos[i].Precio > 0 ? "- Precio: " + contratos[i].Precio : ""} - Entrega: ${contratos[i].FechaDesde} - ${contratos[i].FechaHasta}`  });
+                                    lista.push({ Id: contratos[i].Id, Filtro: `${contratos[i].Id} - ${contratos[i].Material} - ${contratos[i].RazonSocial} - ${contratos[i].Fecha} ${contratos[i].Precio > 0 ? "- Precio: " + contratos[i].Moneda + " " + contratos[i].Precio  : ""} - Entrega: ${contratos[i].FechaDesde} - ${contratos[i].FechaHasta}`  });
                                 }
                             }
                             this.contratosAcuerdo = lista;
