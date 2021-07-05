@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -12,6 +12,8 @@ import { Solp } from '../Solp';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module';
 import { formatDate } from '@angular/common';
+import { SortEvent } from 'primeng/api';
+import { Table } from 'primeng/table';
 
 
 
@@ -28,14 +30,34 @@ declare var $: any;
 export class DashboardComponent extends ListBaseComponent {
 
     protected locale: any;
+    
+    @ViewChild("tabla")
+    protected tabla: Table;
+    
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
-
+        this.locale = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Today',
+            clear: 'Clear'
+        };
 
     }
 
+
+    // minDate: Date;
+    // maxDate: Date;
+    // invalidDates: Date[];
+    // rangeDates: Date[];
+    desdeDashboard: Date;
+    hastaDashboard: Date;
     estadoSolpItem: SelectItem[];
     // selectEstadoSolp: any;
     selectEstadoSolp: string[] = [];
@@ -51,6 +73,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cols: any[];
 
+    serviciosDashboard: any = "servicios"
 
 
     showDialog() {
@@ -81,36 +104,9 @@ export class DashboardComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
 
-        this.estadoSolpItem = [
-            { label: 'Creada', value: 'Creada' },
-            { label: 'Liberada', value: 'Liberada' },
-            { label: 'Parc. liberada', value: 'Parc. liberada' },
-            { label: 'Relac. a ped. compra', value: 'Relac. a ped. compra' },
-            { label: 'Finalizada', value: 'Finalizada' }
-        ];
+        
 
-        this.locale = {
-            firstDayOfWeek: 0,
-            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
-            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
-            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            today: 'Today',
-            clear: 'Clear'
-        };
-
-        // this.tablaSolp = [{
-        //     numeroSolp: "32173821744",
-        //     fechaCreacion: "27/04/2021",
-        //     estadoDoc: "Finalizado",
-        //     estadoSolp: "Liberada",
-        //     tipoSolp: "C/Doc. Pliego",
-        //     estadoDocCodigo: "Finalizada",
-        //     estadoSolpCodigo: "Liberado",
-        //     esSap: "",
-        //     vincularPliego: "" 
-        // },
+        // this.tablaSolp = [
         // {
         //     numeroSolp: "372872",
         //     fechaCreacion: "17/12/2021",
@@ -125,7 +121,27 @@ export class DashboardComponent extends ListBaseComponent {
         // ];
 
         this.getListarSolp();
+        this.desdeDashboard = new Date();
+        this.hastaDashboard = new Date();
 
+        
+    }
+
+    ngAfterViewInit(): void {
+        this.getCombos();
+
+        this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
+
+            if (filter[0] != null && filter[1] != null)
+                return value.getDate() >= filter[0].getDate() &&
+                    value.getDate() <= filter[1].getDate();
+            else if (filter[0] != null && filter[1] == null)
+                return value.getDate() >= filter[0].getDate()
+            else if (filter[0] == null && filter[1] != null)
+                return value.getDate() <= filter[1].getDate()
+            else
+                return true;
+        }
 
     }
 
@@ -218,6 +234,63 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
+    getCombos(){
+        try {
+            this.subscription = this.service.getCombos().subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else { 
+                        console.log(result);
+                        this.estadoSolpItem = [];
+                        result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
+                            label: cd.Descripcion, value: cd.Id
+                        }));
+                       
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+
+    }
+
+    setUltimoAnio(){
+        this.desdeDashboard = new Date();
+        this.desdeDashboard.setFullYear(this.desdeDashboard.getFullYear() -1);
+        this.hastaDashboard = new Date();
+    }
+
+    setUltimoMes(){
+        this.desdeDashboard = new Date();
+        this.desdeDashboard.setMonth(this.desdeDashboard.getMonth() -1);
+        this.hastaDashboard = new Date();
+    }
+
+    filtrarFecha(dt, field, desde, hasta) {
+        dt.filter([desde, hasta], field, 'dateRangeFilter');
+    }
+
+    filtrarPorFecha(){
+        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);
+    }
+
+    
+    
+
+    
 
 }
 

@@ -14,7 +14,6 @@ export class ComprasService extends BaseService {
             map(this.extractData));
     }
 
-
     public getListarSolp(): Observable<any> {
         return this.http
             .get('/api/compras/ListarSolp', { headers: this.headers }).pipe(

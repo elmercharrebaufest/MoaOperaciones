@@ -34,7 +34,7 @@ import { ChipsModule } from 'primeng/chips';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SubPosicionComponent } from './PliegoPasos/solapaSubposiciones/subPosicion.component';
-import {ConfirmationService} from 'primeng/api';
+import {ConfirmationService, SortEvent} from 'primeng/api';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 
@@ -66,6 +66,7 @@ import {OverlayPanelModule} from 'primeng/overlaypanel';
         OverlayPanelModule,
         TableModule,
         ConfirmDialogModule
+        
     ],
     declarations: [
         SolpComponent,

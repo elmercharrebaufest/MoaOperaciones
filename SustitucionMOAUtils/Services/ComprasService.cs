@@ -247,52 +247,15 @@ namespace SustitucionMOAUtils.Services
             var todasLasSolp = repositorio.Listar<Solp>(x => x.UsuarioCreacion_Id == usuario.Id && x.FechaBorrado == null)
                 .Select(x => new SolpDto
                 {
-
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
                     Id = x.Id,
-                    NombreDeObra = x.Pliego.NombreObra,
-                    FiscalContrato = x.Pliego.FiscalContrato,
-                    Telefono = x.Pliego.Telefono,
-                    Email = x.Pliego.Email,
-                    FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
-                    SupervisorSector = x.Pliego.SupervisorSector,
-                    SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
-                    VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto
-                    {
-
-                        Codigo = a.Codigo,
-                        FechaHora = a.FechaHora ?? DateTime.MinValue
-
-                    }).ToList(),
-
-                    TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
-                    TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
-                    TieneObradores = x.Pliego.TieneObradores ?? false,
-                    TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
-                    TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
-                    TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
-                    TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
-                    FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
-                    ObservacionesGeneracion = x.Pliego.ObservacionesGeneracion,
-                    //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
-                    DiasEjecucion = x.Pliego.DiasEjecucion,
-                    ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
-                    //JornadaLaboral = x.Pliego.JornadaLaboralDias,
-                    JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
-                    JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
-                    ClaseDocumentoId = x.ClaseDocumento_Id,
-                    Adjuntos = x.Pliego.Archivos.Select(s => new ArchivoDto
-                    {
-
-                        Id = s.Id,
-                        FileKey = s.FileKey,
-                        Nombre = s.ObtenerNombre(s.Ruta),
-                        Ruta = s.Ruta
-
-                    }).ToList(),
-
                     NroSolp = x.NroSolp,
-
+                    FechaCreacion = x.FechaCreacion,
+                    EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
+                    EstadoSolpSap_Id = x.EstadoSolpSap_Id,
+                    EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
+                    //TipoSolp
+                    VincularPliego = !x.Pliego_Id.HasValue,
                 });
 
             return todasLasSolp.ToList();
@@ -311,53 +274,62 @@ namespace SustitucionMOAUtils.Services
 
            
             var solpDevuelta = new SolpDto()
-            { 
-                    UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
-                    Id = x.Id,
-                    NombreDeObra = x.Pliego.NombreObra,
-                    FiscalContrato = x.Pliego.FiscalContrato,
-                    Telefono = x.Pliego.Telefono,
-                    Email = x.Pliego.Email,
-                    FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
-                    SupervisorSector = x.Pliego.SupervisorSector,
-                    SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
-                    VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto
-                    {
+            {
 
-                        Codigo = a.Codigo,
-                        FechaHora = a.FechaHora ?? DateTime.MinValue
+                UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
+                Id = x.Id,
+                NroSolp = x.NroSolp,
+                FechaCreacion = x.FechaCreacion,
+                EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
+                EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
+                //TipoSolp
+                VincularPliego = !x.Pliego_Id.HasValue,
 
-                    }).ToList(),
+                
+                NombreDeObra = x.Pliego.NombreObra,
+                FiscalContrato = x.Pliego.FiscalContrato,
+                Telefono = x.Pliego.Telefono,
+                Email = x.Pliego.Email,
+                FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
+                SupervisorSector = x.Pliego.SupervisorSector,
+                SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
+                VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto
+                {
 
-                    TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
-                    TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
-                    TieneObradores = x.Pliego.TieneObradores ?? false,
-                    TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
-                    TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
-                    TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
-                    TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
-                    FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
-                    ObservacionesGeneracion = x.Pliego.ObservacionesGeneracion,
-                    //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
-                    DiasEjecucion = x.Pliego.DiasEjecucion,
-                    ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
-                    //JornadaLaboral = x.Pliego.JornadaLaboralDias,
-                    JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
-                    JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
-                    ClaseDocumento = new TablaSapDto(x.EstadoDocumento),
-                    Adjuntos = x.Pliego.Archivos.Select(s => new ArchivoDto
-                    {
+                    Codigo = a.Codigo,
+                    FechaHora = a.FechaHora ?? DateTime.MinValue
 
-                        Id = s.Id,
-                        FileKey = s.FileKey,
-                        Nombre = s.ObtenerNombre(s.Ruta),
-                        Ruta = s.Ruta
+                }).ToList(),
 
-                    }).ToList(),
-                    NroSolp = x.NroSolp,
-                    EstadoSolpSap_Id = x.EstadoSolpSap_Id,
-                    EstadoDocumento_Id = x.EstadoDocumento_Id,
-                    FechaCreacion = x.FechaCreacion
+                TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
+                TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
+                TieneObradores = x.Pliego.TieneObradores ?? false,
+                TieneMedioElevacion = x.Pliego.TieneMedioElevacion ?? false,
+                TieneTecnicoSeguridad = x.Pliego.TieneTecnicoSeguridad ?? false,
+                TieneDescripcionTecnica = x.Pliego.TieneDescripcionTecnica ?? false,
+                TieneDocumentacionTecnica = x.Pliego.TieneDocumentacionTecnica ?? false,
+                FechaHoraLimiteConsulta = x.Pliego.FechaHoraLimiteConsulta,
+                ObservacionesGeneracion = x.Pliego.ObservacionesGeneracion,
+                //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
+                DiasEjecucion = x.Pliego.DiasEjecucion,
+                ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
+                //JornadaLaboral = x.Pliego.JornadaLaboralDias,
+                JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
+                JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
+                ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
+                Adjuntos = x.Pliego.Archivos.Select(s => new ArchivoDto
+                {
+
+                    Id = s.Id,
+                    FileKey = s.FileKey,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    Ruta = s.Ruta
+
+                }).ToList(),
+                    
+                EstadoSolpSap_Id = x.EstadoSolpSap_Id,
+                EstadoDocumento_Id = x.EstadoDocumento_Id,
+                   
             };
 
             return solpDevuelta;
@@ -382,7 +354,24 @@ namespace SustitucionMOAUtils.Services
           
         }
 
+        public List<TablaEstadoDto> ObtenerTablaEstado(string tabla)
+        {
+            var estados = repositorio.Listar<TablaEstado>(x => x.Tabla == tabla)
+                .Select(x => new TablaEstadoDto(x));
+                
+            return estados.ToList();
+
+        }
+
+
+
+
+
+
+
     }
+
+
 
 
 

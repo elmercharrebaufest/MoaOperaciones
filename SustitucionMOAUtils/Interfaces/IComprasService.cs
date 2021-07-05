@@ -19,6 +19,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<SolpDto> ListarSolp(string mail);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
+        List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
+
+
 
 
     }
