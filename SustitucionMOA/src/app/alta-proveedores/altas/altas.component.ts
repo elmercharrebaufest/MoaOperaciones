@@ -793,63 +793,24 @@ export class AltasComponent extends BaseComponent implements OnInit {
     exportExcel() {
         this.mensajeComponent.setMsgsEmpty();
         let informacionExportar: any;
-        switch (this.idTipoProveedor) {
-            case 2:
-            case 4: {
-                //granos
-                informacionExportar = this.data.map(info => {
-                    return {
-                        "Codigo": info.CodigoProveedor || "-",
-                        "CUIT": info.CUIT || "-",
-                        "Razon Social": info.RazonSocial || "-",
-                        "Mail": info.Mail,
-                        "Corredor": info.RazonSocialCorredor || "-",
-                        "Comercial": info.Comercial || "-",
-                        "SISA": info.SISAEstadoCuit || "-",
-                        "Estado Siper": info.EstadoSIPER,
-                        "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                        "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                        "Estado": info.EstadoAprobacionDescripcion
-                    }
-                })
-                break;
+
+        informacionExportar = this.data.map(info => {
+            return {
+                "Codigo": info.CodigoProveedor || "-",
+                "CUIT": info.CUIT || "-",
+                "Razon Social": info.RazonSocial || "-",
+                "Mail": info.Mail,
+                "Corredor": info.RazonSocialCorredor || "-",
+                "Comercial / Solicitante Interno": info.Comercial || "-",
+                "SISA": info.SISAEstadoCuit || "-",
+                "Estado Siper": info.EstadoSIPER,
+                "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Estado": info.EstadoAprobacionDescripcion,
+                "Presento documentación física": (info.ContieneDocumentacionFisica || false) ? "Si" : "No"
             }
-            case 3: {
-                //no granos; 
-                informacionExportar = this.data.map(info => {
-                    return {
-                        "Codigo": info.CodigoProveedor || "-",
-                        "CUIT": info.CUIT || "-",
-                        "Razon Social": info.RazonSocial || "-",
-                        "Mail": info.Mail,
-                        "Solicitante Interno": info.Comercial || "-",
-                        "Estado Siper": info.EstadoSIPER,
-                        "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                        "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                        "Estado": info.EstadoAprobacionDescripcion
-                    }
-                });
-                break;
-            }
-            default: {
-                informacionExportar = this.data.map(info => {
-                    return {
-                        "Codigo": info.CodigoProveedor || "-",
-                        "CUIT": info.CUIT || "-",
-                        "Razon Social": info.RazonSocial || "-",
-                        "Mail": info.Mail,
-                        "Corredor": info.RazonSocialCorredor || "-",
-                        "Comercial / Solicitante Interno": info.Comercial || "-",
-                        "SISA": info.SISAEstadoCuit || "-",
-                        "Estado Siper": info.EstadoSIPER,
-                        "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                        "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                        "Estado": info.EstadoAprobacionDescripcion
-                    }
-                });
-                break;
-            }
-        }
+        });
+
         if (informacionExportar.length == 0) {
             this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
             return
