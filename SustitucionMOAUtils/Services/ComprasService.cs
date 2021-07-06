@@ -328,7 +328,7 @@ namespace SustitucionMOAUtils.Services
                 }).ToList(),
                     
                 EstadoSolpSap_Id = x.EstadoSolpSap_Id,
-                EstadoDocumento_Id = x.EstadoDocumento_Id,
+                EstadoDocumento_Id = x.EstadoDocumento_Id
                    
             };
 
@@ -336,6 +336,7 @@ namespace SustitucionMOAUtils.Services
 
 
         }
+
 
 
         public string BorrarSolp(int idSolp) 

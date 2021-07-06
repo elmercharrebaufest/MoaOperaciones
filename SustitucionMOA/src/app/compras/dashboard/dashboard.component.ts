@@ -281,12 +281,10 @@ export class DashboardComponent extends ListBaseComponent {
 
     filtrarFecha(dt, field, desde, hasta) {
         dt.filter([desde, hasta], field, 'dateRangeFilter');
-        console.log(this.desdeDashboard, this.hastaDashboard);
     }
 
     filtrarPorFecha(){
-        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);
-        // console.log(this.desdeDashboard, this.hastaDashboard);
+        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);   
     }
 
     
