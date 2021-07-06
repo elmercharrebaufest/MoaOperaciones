@@ -133,12 +133,12 @@ export class DashboardComponent extends ListBaseComponent {
         this.tabla.filterConstraints['dateRangeFilter'] = (value, filter): boolean => {
 
             if (filter[0] != null && filter[1] != null)
-                return value.getDate() >= filter[0].getDate() &&
-                    value.getDate() <= filter[1].getDate();
+                return value >= filter[0] &&
+                    value <= filter[1];
             else if (filter[0] != null && filter[1] == null)
-                return value.getDate() >= filter[0].getDate()
+                return value >= filter[0]
             else if (filter[0] == null && filter[1] != null)
-                return value.getDate() <= filter[1].getDate()
+                return value <= filter[1].
             else
                 return true;
         }
@@ -284,7 +284,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     filtrarPorFecha(){
-        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);
+        this.filtrarFecha(this.tabla, "FechaCreacion", this.desdeDashboard, this.hastaDashboard);   
     }
 
     

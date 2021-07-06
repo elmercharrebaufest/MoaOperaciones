@@ -440,7 +440,14 @@
   border-radius: 4px;
   opacity: 1; */
 } 
+/* 
+::ng-deep #tabla.ui-sortable-column.ui-state-highlight  > tr > th {
+  background-color: #666666 !important;
+} */
 
+/* ::ng-deep #jornadaLaboral.errorDias div.ui-button.ui-togglebutton{
+  border: 1px solid #a80000 !important;
+} */
 
 /* ::ng-deep .ui-table .ui-table-tbody > tr > td {
   background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
@@ -450,14 +457,17 @@
   opacity: 1;
 }  */
 
+
+
 .datosSap {
   display: none;
 } 
 
-/* ::ng-deep .ui-overlaypanel .ui-overlaypanel-content {
-  width: 500px;
-  height: 170px;
+/* ::ng-deep #desdeHasta.div.ui-overlaypanel.ui-overlaypanel-content {
+  text-align: center;
+  margin-left: 10px;
 } */
+
 
 .separadorCompras {
   margin-bottom: 15px;

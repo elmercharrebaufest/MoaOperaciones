@@ -160,8 +160,6 @@ namespace SustitucionMOA.Controllers
             try
             {
 
-                string userMail = SessionPersister.getUsername();
-
                 if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
                 return JsonCustom(new { data = service.TraerSolpId(idSolp) });
