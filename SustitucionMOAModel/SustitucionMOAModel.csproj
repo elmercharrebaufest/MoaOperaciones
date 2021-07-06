@@ -92,6 +92,9 @@
     <Compile Include="Entities\Cosecha.cs" />
     <Compile Include="Entities\CampoSustentable.cs" />
     <Compile Include="Entities\DeclaracionCampoSustentable.cs" />
+    <Compile Include="Entities\EstadoIngresosBrutosCoeficienteUnificado.cs" />
+    <Compile Include="Entities\IngresosBrutosCoeficienteUnificadoDetalle.cs" />
+    <Compile Include="Entities\IngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Entities\LiquidacionInformada.cs" />
     <Compile Include="Entities\LogPesificacion.cs" />
     <Compile Include="Entities\Notificacion.cs" />
@@ -108,7 +111,10 @@
     <Compile Include="Entities\TablaEstado.cs" />
     <Compile Include="Entities\TablaGeneral.cs" />
     <Compile Include="Entities\TablaSap.cs" />
+    <Compile Include="Enums\SubCategorias.cs" />
     <Compile Include="Enums\ComprasEnums.cs" />
+    <Compile Include="Enums\Categorias.cs" />
+    <Compile Include="Enums\EnumEstadoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\EstadosConsulta.cs" />
     <Compile Include="Enums\IngresosBrutos.cs" />
     <Compile Include="Enums\OpcionesDeclaracionCampoSustentable.cs" />
