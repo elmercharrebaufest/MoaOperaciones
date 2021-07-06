@@ -168,4 +168,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[FK_dbo.ComentarioRecordado_dbo.Comentario_Comentario_Id]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="9156debd-f625-4672-8ed3-ea03c5df0554" ChangeDateTime="06/29/2021 16:44:25">
+    <Property Name="ElementName" Value="[dbo].[ImpuestoIngresosBrutosCoeficienteUnificadoDetalle].[Coeficiente]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ImpuestoIngresosBrutosCoeficienteUnificadoDetalle]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CoeficienteUnificado" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="784db30e-6745-4eb5-9e32-c8c0dc877038" ChangeDateTime="06/30/2021 12:36:02">
+    <Property Name="ElementName" Value="[dbo].[ImpuestoIngresosBrutosCoeficienteUnificado].[int]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ImpuestoIngresosBrutosCoeficienteUnificado]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Sede" />
+  </Operation>
 </Operations>
