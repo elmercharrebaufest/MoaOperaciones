@@ -274,7 +274,7 @@
                                 <div class="margenInput">
                                     Grupo de compras {{ mostrarAsterisco('selectGrupoCompras') }}
                                     <p-dropdown formControlName="selectGrupoCompras" [options]="grupoCompras"
-                                        [(ngModel)]="model.posicionActual.selectgrupoCompras" dataKey="Id"
+                                        [(ngModel)]="model.posicionActual.selectGrupoCompras" dataKey="Id"
                                         optionLabel="Descripcion" autoDisplayFirst="false" placeholder="Seleccionar"
                                         [filter]="true" filterBy="label" [showClear]="true"></p-dropdown>
                                     <div *ngIf="mostrarError('selectGrupoCompras')">
