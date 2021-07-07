@@ -193,7 +193,7 @@ namespace SustitucionMOATest.Services
               .Returns(proveedorOk);
 
 
-            dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>())).Returns(infoDataAgro);
+            dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>())).Returns(infoDataAgro);
 
             target = new AltaEmpresaGranosService(repositorioMock.Object, dataAgroServiceMock.Object);
 
@@ -302,7 +302,7 @@ namespace SustitucionMOATest.Services
               .Returns(proveedorOk);
 
 
-            dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>())).Returns(infoDataAgro);
+            dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>())).Returns(infoDataAgro);
             List<AltaEmpresaEmpleadosViewModel> Empleados = new List<AltaEmpresaEmpleadosViewModel>();
             Empleados.Add(new AltaEmpresaEmpleadosViewModel { Vinculo = "", CargoProveedora = "", NombreMolinos = "", NombreProveedora = "" });
             List<AltaEmpresaFuncionariosViewModel> Funcionarios = new List<AltaEmpresaFuncionariosViewModel>();

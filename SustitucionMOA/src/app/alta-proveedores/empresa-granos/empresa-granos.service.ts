@@ -340,4 +340,31 @@ export class EmpresaGranosService extends BaseService {
         return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { search: params, headers: this.headers }).pipe(
             map(this.extractData))   
     }
+
+    public registrarDocumentacionFisica(proveedorId: number , contieneDocumentacionFisica : boolean)
+    {
+        let params = {
+            proveedorId : proveedorId ,
+            contieneDocumentacionFisica : contieneDocumentacionFisica
+        }
+
+        return this.http.get('/api/AltaEmpresaNoGranos/RegistrarDocumentacionFisica', { search: params, headers: this.headers }).pipe(
+            map(this.extractData))   
+    }
+
+    notificarSolicitud( proveedorId: number): Observable<any> {
+        return this.http
+            .post("/api/AltaEmpresaGranos/NotificarSolicitud", {proveedorId : proveedorId})
+            .pipe(
+                timeoutWith(
+                    30000,
+                    throwError(
+                        new Error(
+                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                        )
+                    )
+                )
+            )
+            .pipe(map(this.extractData));
+    }
 }

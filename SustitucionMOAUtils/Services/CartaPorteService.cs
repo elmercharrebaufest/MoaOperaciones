@@ -41,7 +41,7 @@ namespace SustitucionMOAUtils.Services
                     filtroProducto = new DropdownContent(),
                     filtroVendedor = new DropdownContent(),
                     data = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas)
-                };
+                }; 
 
                 ValidarRespuesta(dataView.data);
 

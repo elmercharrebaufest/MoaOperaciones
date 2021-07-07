@@ -54,7 +54,7 @@ BEGIN
 	VALUES('SERV', 'Servicios', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('BON', 'Bonificaciones', @idCategoria)
+	VALUES('BON', 'Bonificaciones y rebajas', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
@@ -63,7 +63,7 @@ END
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FINDIR')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre)
-	VALUES ('FINDIR', 'final Directo')
+	VALUES ('FINDIR', 'Final Directo')
 
 	SET @idCategoria = SCOPE_IDENTITY()
 
@@ -77,7 +77,7 @@ BEGIN
 	VALUES('SERV', 'Servicios', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('BON', 'Bonificaciones', @idCategoria)
+	VALUES('BON', 'Bonificaciones y rebajas', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)
@@ -86,7 +86,7 @@ END
 IF NOT EXISTS(SELECT 1 FROM Categoria WHERE Code = 'FINCOR')
 BEGIN
 	INSERT INTO Categoria(Code, Nombre)
-	VALUES ('FINCOR', 'final Corredor')
+	VALUES ('FINCOR', 'Final Corredor')
 
 	SET @idCategoria = SCOPE_IDENTITY()
 
@@ -100,7 +100,7 @@ BEGIN
 	VALUES('SERV', 'Servicios', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
-	VALUES('BON', 'Bonificaciones', @idCategoria)
+	VALUES('BON', 'Bonificaciones y rebajas', @idCategoria)
 
 	INSERT INTO SubCategoria(Code, Nombre, Categoria_Id)
 	VALUES('CDG', 'Certificaciones de Granos', @idCategoria)

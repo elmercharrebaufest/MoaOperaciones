@@ -1,5 +1,6 @@
 import { WeekDay } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { forEach } from '@angular/router/src/utils/collection';
 import { WeekDayItem } from '../../models/weekDayItem';
 
@@ -7,17 +8,24 @@ import { WeekDayItem } from '../../models/weekDayItem';
 
 @Component({
     selector: 'weekday-select',
-    templateUrl: `weekday-select.component.html`
+    templateUrl: `weekday-select.component.html`,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => WeekdaySelectComponent),
+            multi: true
+        }
+    ]
 })
 
-export class WeekdaySelectComponent {
+export class WeekdaySelectComponent implements ControlValueAccessor {
 
     // @Output() change = new EventEmitter<Paso>();
 
     days: any[];
     _model: WeekDayItem[];
 
-    @Input("model") 
+    @Input("model")
     set model(value: WeekDayItem[]) {
         this._model = value;
 
@@ -27,15 +35,15 @@ export class WeekdaySelectComponent {
         });
 
 
-     }
-     
-     get model(): WeekDayItem[] {
+    }
+
+    get model(): WeekDayItem[] {
         // this.days.forEach(day => {
         //     var d = this._model.find(x => x.weekDay == day.weekDay);
         //     d.selected = day.selected;
         // });
-         return this._model;
-     }
+        return this._model;
+    }
 
 
 
@@ -87,13 +95,32 @@ export class WeekdaySelectComponent {
 
     }
 
-    handleChange(event, weekDay){
+    onChange: any = () => { };
+    onTouched: any = () => { };
+    writeValue(val: any): void {
+        this.model = val;
+        this.onChange(val);
+        this.onTouched()
+    }
+    registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+    registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    setDisabledState?(isDisabled: boolean): void {
+        throw new Error('Method not implemented.');
+    }
+
+    handleChange(event, weekDay) {
         var d = this._model.find(x => x.weekDay == weekDay);
         d.selected = event.checked;
+        this.onChange(this.model);
     }
 
 
-    ngOnInit(){
+    ngOnInit() {
     }
 
     ngAfterViewInit(): void {

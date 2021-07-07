@@ -65,9 +65,20 @@ export class ConsultaService extends BaseService {
                 map(this.extractData));
     }
 
-    public getCombos(): Observable<any> {
+    public recordarComentario(consultaId: any): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('consultaId', consultaId.toString());
         return this.http
-            .get('/api/consulta/Combos', { headers: this.headers }).pipe(
+            .get(`/api/Consulta/RecordarComentario`, { search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+    public getCombos(excluir: boolean): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('excluir', excluir.toString());
+
+        return this.http
+            .get('/api/consulta/Combos', { search: params, headers: this.headers }).pipe(
             map(this.extractData));
     }
 
@@ -76,8 +87,6 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/Consultas', { headers: this.headers }).pipe(
             map(this.extractData));
     }
-
-
 
     public getConsultaDetalle(idConsulta): Observable<any> {
         return this.http
@@ -159,6 +168,41 @@ export class ConsultaService extends BaseService {
         params.set("archivoId", archivoId.toString());
         return this.http
             .get("/api/consulta/DescargarArchivo", {
+                search: params,
+                headers: this.headers,
+            })
+            .pipe(map(this.extractData));
+    }
+
+    obtenerMateriales(): Observable<any> {
+        this.headers = new Headers();
+        this.headers.append("Content-Type", "application/json");
+        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+        this.headers.append("Cache-control", "no-cache");
+        this.headers.append("Cache-control", "no-store");
+        this.headers.append("Expires", "0");
+        this.headers.append("Pragma", "no-cache");
+
+        return this.http
+            .get("/api/AltaEmpresaGranos/GetMateriales", {
+                headers: this.headers,
+            })
+            .pipe(map(this.extractData));
+    }
+
+    generarReclamoImpositivo(reclamoImpositivo: any){
+        this.headers = new Headers();
+        this.headers.append("Content-Type", "application/json");
+        this.headers.append("Accept", "q=0.8;application/json;q=0.9");
+        this.headers.append("Cache-control", "no-cache");
+        this.headers.append("Cache-control", "no-store");
+        this.headers.append("Expires", "0");
+        this.headers.append("Pragma", "no-cache");
+        let params: URLSearchParams = new URLSearchParams();
+        let reclamoImpositivoJson = JSON.stringify(reclamoImpositivo);
+        params.set("reclamoImpositivoJson", reclamoImpositivoJson);
+        return this.http
+            .get("/api/consulta/GenerarReclamoImpositivoPdf", {
                 search: params,
                 headers: this.headers,
             })

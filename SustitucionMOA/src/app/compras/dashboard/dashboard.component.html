@@ -1,14 +1,14 @@
-<div class="content-wraper">
+<div class="content-wraper alinearAlturaMenuDashboard">
     <section class="container-fluid clearfix">
              <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "> <strong>¿Que tipo de SOLP quiere iniciar?</strong></div>
+            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP quiere iniciar?</strong></div>
         </div>
             <!--End title-->
         <div class="col-xs-12">
             <div class="row">
                 <!--Cards-->
-                <div class="col-md-4" *ngFor="let card of cards" (click)="goToSeccion(card.path)">
+                <div class="col-md-3" *ngFor="let card of cards" (click)="goToSeccion(card.path)">
                     <div class="card cardCompra">
                         <h3 class="cardText">{{card.nombre}}</h3>
                     </div>

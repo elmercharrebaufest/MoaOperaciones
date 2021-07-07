@@ -306,7 +306,7 @@
                     <label>La cantidad maxima de días de diferimiento es: {{maximoDiasDiferimiento}}</label>
                 </div>
                 <div class="form-group col-md-4" *ngIf="costoFinanciero != null">
-                    <label style="padding-top: 8px;">{{costoFinanciero}}</label>
+                    <label [innerHTML]="costoFinanciero"></label>
                 </div>
             </div>
             <div class="row">

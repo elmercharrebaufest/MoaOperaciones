@@ -193,6 +193,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public bool? Cesion { get; set; }
         public string ClasificacionContrato { get; set; }
         public string TipoAgenteCompra { get; set; }
+        public string UsuarioTercero { get; set; }
     }
     public class DescuentoBonificacionDto
     {

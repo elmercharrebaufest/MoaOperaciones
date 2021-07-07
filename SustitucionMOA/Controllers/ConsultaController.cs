@@ -9,6 +9,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -81,6 +82,58 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpGet]
+        public JsonResult RecordarComentario(int consultaId)
+        {
+            try
+            {
+                return JsonCustom(consultaService.RecordarComentario(consultaId));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        [HttpGet]
+        public JsonResult GenerarReclamoImpositivoPdf(string reclamoImpositivoJson)
+        {
+            try
+            {
+                var reclamoImpositivo = JsonConvert.DeserializeObject<ReclamoImpositivo>(reclamoImpositivoJson);
+                
+                string rutaArchivoSubido = consultaService.GenerarReclamoImpositivoPdf(reclamoImpositivo);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+                string fileName = Path.GetFileName(rutaArchivoSubido);
+
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
         [HttpPost]
         [Route("/{consultaId}/Comentario/{comentarioId}/Adjuntos")]
         public JsonResult Adjuntos(int consultaId, int comentarioId)
@@ -115,7 +168,7 @@ namespace SustitucionMOA.Controllers
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
                 var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
-                var categorias = consultaService.ObtenerCategorias();
+                var categorias = consultaService.ObtenerCategorias(false, usuarioActual);
                 var estados = consultaService.ObtenerEstados();
 
                 categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
@@ -229,9 +282,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 if (consultaId <= 0 || estadoConsultaId <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
-
                 consultaService.ActualizarEstadoConsulta(consultaId, estadoConsultaId);
-
                 return JsonCustom(new { });
             }
             catch (InfoCustomException e)
@@ -250,7 +301,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        public ActionResult Combos()
+        public ActionResult Combos(Boolean? excluir)
         {
             try
             {
@@ -258,10 +309,11 @@ namespace SustitucionMOA.Controllers
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
                 return JsonCustom(new { 
-                    categorias = consultaService.ObtenerCategorias(),
+                    categorias = consultaService.ObtenerCategorias(excluir, usuarioActual),
                     subcategorias = consultaService.ObtenerSubCategorias(),
                     estados = consultaService.ObtenerEstados(),
                     causas = consultaService.ObtenerCausas(),
+                    materiales = consultaService.ObtenerMaterial(),
                     isExternal = !obtenerTodos,
                     proveedorId = SessionPersister.ProveedorId
                 });;
@@ -311,6 +363,29 @@ namespace SustitucionMOA.Controllers
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTA_AMB)]
+        [HttpGet]
+        public ActionResult RecordatorioComentarioMail(int consulta_Id)
+        {
+            try
+            {
+                return JsonCustom(consultaService.EnviarMailRecordatorio(consulta_Id));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
@@ -55,6 +55,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
     }
+
+    @Input() consultaId: any;
     categoriaSelected: any;
     estados: EstadoConsulta[];
     categorias: Categoria[];
@@ -79,7 +81,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     consulta: Consulta;
     comentariosList: any;
     estadoConsulta: number;
-    consultaId: string;
     file: any;
     fecha: any;
     hora: any;
@@ -107,7 +108,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         this.jqueryOnInit();
-        this.getConsultaId();
         this.getDetalleConsulta();
         this.getCombos();
     }
@@ -117,6 +117,9 @@ export class DetalleConsultaComponent extends BaseComponent {
         setTimeout(() => {
             this.subcategoriasInicial();
             if (this.consulta.EstadoConsulta.Code == 'INI' && this.esInterno) {
+                this.cambiarEstadoPorCode("GES");
+            }
+            if(this.consulta.EstadoConsulta.Code == 'GESRTA' && this.esInterno){
                 this.cambiarEstadoPorCode("GES");
             }
         }, 500);
@@ -129,11 +132,6 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);
-    }
-
-    getConsultaId() {
-        const queryString = window.location.href;
-        this.consultaId = queryString.split('=')[1];
     }
 
     cargarArchivo(event: any) {
@@ -165,6 +163,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         if (this.causaConsulta != undefined) {
             this.causaConsultaId = this.causaConsulta.Id;
         }
+
+        debugger
 
         this.subscription = this.service.actualizarCombos(this.consultaId, this.estadoId, this.categoriaId, this.subcategoriaId
             , this.causaConsultaId).subscribe(
@@ -205,7 +205,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         this.mensajeComponent.setMsgsEmpty();
-        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date() };
+        let comentario: Comentario = { consulta_Id: this.consultaId, Detalle: this.detalle, Fecha: new Date(), Recordado: false, FechaRecordado: new Date() };
         this.subscription = this.service.agregarComentario(this.consultaId, comentario, this.listaArchivos).subscribe(
             result => {
                 if (result.logout == true) {
@@ -237,17 +237,20 @@ export class DetalleConsultaComponent extends BaseComponent {
     setDatosExtra(){
         this.datosExtra = 
         [
-            {Nombre: "Razon Social Corredor", Value: this.consulta.RazonSocialCorredor},
-            {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor},
-            {Nombre: "Razon Social Proveedor", Value: this.consulta.RazonSocialProveedor},
-            {Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor},
-            {Nombre: "Categoria", Value: this.consulta.Categoria.Nombre},
-            {Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre},
-            {Nombre: "N° de Contrato", Value: this.consulta.ContratoNo},
-            {Nombre: "Importe", Value: this.consulta.Importe},
-            {Nombre: "Impuesto", Value: this.consulta.Impuesto},
-            {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo},
-            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo}
+            {Nombre: "N° Consulta", Value: this.consulta.Id, NewLine: false},
+            {Nombre: "Mail Usuario", Value: this.consulta.Usuario.Mail, NewLine: false},
+            {Nombre: "CUIT Usuario", Value: this.consulta.Usuario.CUIT, NewLine: false},
+            {Nombre: "Razón Social Corredor", Value: this.consulta.RazonSocialCorredor, NewLine: false},
+            {Nombre: "Codigo Corredor", Value: this.consulta.CodigoCorredor, NewLine: false},
+            {Nombre: "Razón Social Proveedor", Value: this.consulta.RazonSocialProveedor, NewLine: false},
+            {Nombre: "Codigo Proveedor", Value: this.consulta.CodigoProveedor, NewLine: false},
+            {Nombre: "Categoria", Value: this.consulta.Categoria.Nombre, NewLine: false},
+            {Nombre: "SubCategoria", Value: this.consulta.SubCategoria.Nombre, NewLine: false},
+            {Nombre: "N° de Contrato", Value: this.consulta.ContratoNo, NewLine: true},
+            {Nombre: "Importe", Value: this.consulta.Importe, NewLine: false},
+            {Nombre: "Impuesto", Value: this.consulta.Impuesto, NewLine: false},
+            {Nombre: this.getNombreComprobante(), Value: this.consulta.ComprobanteNo, NewLine: true},
+            {Nombre: this.getNombreComprobanteExtra(), Value: this.consulta.OtroComprobanteNo, NewLine: true},
         ]
     }
 
@@ -320,6 +323,27 @@ export class DetalleConsultaComponent extends BaseComponent {
         return false;
     }
 
+    recordarComentario(){
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service.recordarComentario(this.consultaId).subscribe(
+            result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else{      
+                        this.mensajeComponent.setSuccessMsg(result);
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );   
+    }
+
     descargarArchivo(archivoId: number) {
         this.service.DescargarArchivo(archivoId)
             .subscribe(
@@ -362,7 +386,7 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     getCombos() {
         try {
-            this.subscription = this.service.getCombos().subscribe(
+            this.subscription = this.service.getCombos(true).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -414,6 +438,11 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta = result;
                         this.consulta.Comentarios.forEach(x => {
                             x.Fecha = new Date (this.getDateFromAspNetFormat(x.Fecha));
+                            if(x.ComentarioRecordados.length >= 1){
+                                x.ComentarioRecordados.forEach(cr => {
+                                    cr.FechaRecordado = new Date (this.getDateFromAspNetFormat(cr.FechaRecordado));
+                                });
+                            }
                         });
                         this.consulta.FechaCreacion = new Date (this.getDateFromAspNetFormat(this.consulta.FechaCreacion));
                         this.consulta.Fecha = new Date (this.getDateFromAspNetFormat(this.consulta.Fecha));

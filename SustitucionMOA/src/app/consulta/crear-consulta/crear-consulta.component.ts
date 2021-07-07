@@ -12,11 +12,12 @@ import { DropdownComponent } from './../../common/view-child/dropdown/dropdown.c
 import { SpinnerSmallComponent } from './../../common/view-child/spinner-small/spinner-small.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { SelectItem } from 'primeng/components/common/selectitem';
-import { Causa, Comentario, Categoria, Subcategoria, Consulta } from '../consulta';
+import { Causa, Comentario, Categoria, Subcategoria, Consulta, ReclamoImpositivo, Reclamo, Materiales} from '../consulta';
 import { InformeComercialComponent } from '../../alta-proveedores/informe-comercial/informe-comercial.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 declare var $: any;
+
 
 @Component({
     selector: 'crear-consulta',
@@ -50,7 +51,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
-
+    private selectUndefinedOptionValue: any;
     mensajeError: string;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
     proveedor: string;
@@ -91,7 +92,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
     comprobanteExtra: any;
 
     caratula: any;
-    material: string;
     comentario: string;
     contrato: any;
     razonSocial: string;
@@ -104,6 +104,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     impuesto: any;
     bolsaEmisoraOblea: string;
     files: FileList = null;
+    listaMateriales: Materiales[];
+    material: Materiales;
+    material_Id: any;
 
     fechaPagoDP: any;
     visibleButton: boolean = true;
@@ -112,8 +115,9 @@ export class CrearConsultaComponent extends ListBaseComponent {
     asunto: string;
     cliente: any;
 
+    reclamoImpositivo: ReclamoImpositivo = new ReclamoImpositivo();
     fechaFactura: string;
-    prueba: any;
+
 
     setTabs() {
         this.setMenuSeccionTab("consulta", "crear-consulta");
@@ -175,7 +179,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     getCombos() {
         this.unsubscribe();
         try {
-            this.subscription = this.service.getCombos().subscribe(
+            this.subscription = this.service.getCombos(true).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -187,7 +191,11 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.categorias = result.categorias;
                         this.subcategorias = result.subcategorias;
                         this.causas = result.causas;
-                        this.proveedorId = result.proveedorId
+                        if(!this.esCorredor){
+                            this.proveedorId = result.proveedorId
+                        }
+                        this.listaMateriales = result.materiales;
+                        //result.materiales.forEach(x => this.listaMateriales.push({ label: x.Descripcion, value: x.MaterialId }));
                     }
                 },
                 error => {
@@ -208,189 +216,201 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.proveedorId = proveedor.proveedorId;
     }
 
+    setMaterial(material){
+        debugger
+        this.listaMateriales.forEach(x => {
+            if(x.MaterialId == material){
+                this.comprobanteExtra = x.Descripcion;
+            }
+        })
+    }
+
     validarConsulta() {
         this.mensajeComponent.setMsgsEmpty();
         if (this.codigoProveedor == "" || !this.codigoProveedor) {
             if(this.esCorredor){
-                this.floatMsgService.setErrorMsg("Recuerde seleccionar un Proveedor.");
+                this.mensajeComponent.setErrorMsg("Vendedor no asociado a su perfil de corredor. Intente nuevamente");
                 return true;
             }
-            this.floatMsgService.setErrorMsg("El campo proveedor esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo proveedor esta vacio.");
             return true;
         }
         if (this.categoriaCount == 0) {
-            this.floatMsgService.setErrorMsg("Por favor seleccione una categoria.");
+            this.mensajeComponent.setErrorMsg("Por favor seleccione una categoria.");
             return true;
         }
         if (this.tieneSubcategorias && this.subcategoriaCount == 0) {
-            this.floatMsgService.setErrorMsg("Por favor seleccione una subcategoria.");
+            this.mensajeComponent.setErrorMsg("Por favor seleccione una subcategoria.");
             return true;
         }
         if (this.asunto == "" || !this.asunto) {
-            this.floatMsgService.setErrorMsg("El campo Asunto esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Asunto esta vacio.");
             return true;
         }
         if (this.nombre == "" || !this.nombre) {
-            this.floatMsgService.setErrorMsg("El campo Nombre esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Nombre esta vacio.");
             return true;
         }
         if (this.nuevoComentario == "" || !this.nuevoComentario) {
-            this.floatMsgService.setErrorMsg("El campo Comentario esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Comentario esta vacio.");
             return true;
         }
         if ((this.esCorredor && this.codigoCorredor == "") || (this.esCorredor && !this.codigoCorredor)) {
-            this.floatMsgService.setErrorMsg("El campo Corredor esta vacio.");
+            this.mensajeComponent.setErrorMsg("El campo Corredor esta vacio.");
             return true;
         }
         if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'RET') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
 
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° Salida de pago esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° Salida de pago esta vacio.");
                 return true;
             }
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo Contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Contrato esta vacio.");
                 return true;
             }
             if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto retenido esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vacio.");
                 return true;
             }
             if (this.importe == "" || !this.importe) {
-                this.floatMsgService.setErrorMsg("El campo Importe retención esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Importe retención esta vacio.");
                 return true;
             }
             if (this.fechaPago == "" || !this.fechaPago) {
-                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                this.mensajeComponent.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
         }
         if (this.categoriaCode == 'REI' && this.subcategoriaCode == 'PER') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.fechaPago == "" || !this.fechaPago) {
-                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                this.mensajeComponent.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.floatMsgService.setErrorMsg("El campo Cliente de pago esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Cliente de pago esta vacio.");
                 return true;
             }
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de factura esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de factura esta vacio.");
                 return true;
             }
             if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto retenido esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto retenido esta vacio.");
                 return true;
             }
         }
         if ((this.categoriaCode == 'BOL' && this.subcategoriaCode == 'CON') || (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'REG')) {
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'BOL' && this.subcategoriaCode == 'OPC') {
             this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
             if (this.bolsaEmisoraOblea == "" || !this.bolsaEmisoraOblea) {
-                this.floatMsgService.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo bolsa Emisora de Oblea esta vacio.");
                 return true;
             }
-            if (this.listaArchivos == null || this.listaArchivos.length < 2) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
+            if (this.listaArchivos == null || this.listaArchivos.length < 1) {
+                this.mensajeComponent.setErrorMsg("Falta adjuntar liquidación y la oblea emitida por bolsa");
                 return true;
             }
             if (this.fechaPago == "" || !this.fechaPago) {
-                this.floatMsgService.setErrorMsg("Falta seleccionar el campo fecha");
+                this.mensajeComponent.setErrorMsg("Falta seleccionar el campo fecha");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'IMP') {
             if (this.impuesto == "" || !this.impuesto) {
-                this.floatMsgService.setErrorMsg("El campo Impuesto esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Impuesto esta vacio.");
                 return true;
             }
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar constancia");
+                this.mensajeComponent.setErrorMsg("Falta adjuntar constancia");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'INF') {
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar Informe Comercial");
+                this.mensajeComponent.setErrorMsg("Falta adjuntar Informe Comercial");
                 return true;
             }
         }
         if (this.categoriaCode == 'ACT' && this.subcategoriaCode == 'CAP') {
             if (this.listaArchivos == null || this.listaArchivos.length < 1) {
-                this.floatMsgService.setErrorMsg("Falta adjuntar Carta presentacón");
+                this.mensajeComponent.setErrorMsg("Falta adjuntar Carta presentacón");
                 return true;
             }
         }
         if ((this.categoriaCode == 'PAR' && this.subcategoriaCode == 'NROR') || (this.categoriaCode == 'FIN' && this.subcategoriaCode)) {
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
-                return true;
-            }
-            if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° COE esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'CAL') {
             if ((this.contrato == "" || !this.contrato) && (this.comprobante == "" || !this.comprobante)) {
-                this.floatMsgService.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
+                this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
                 return true;
             }
         }
         if (this.categoriaCode == 'COM') {
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'APP') {
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.floatMsgService.setErrorMsg("El campo Material esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo Material esta vacio.");
+                return true;
+            }
+
+            if ((this.comprobante == "" || !this.comprobante) && (this.contrato == "" || !this.contrato)) {
+                this.mensajeComponent.setErrorMsg("Debe completar Campo N° de contrato o CCPP.");
                 return true;
             }
         }
         if (this.categoriaCode == 'PES') {
             if (this.contrato == "" || !this.contrato) {
-                this.floatMsgService.setErrorMsg("El campo N° de contrato esta vacio.");
-                return true;
-            }
-        }
-        if ((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')) {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de Factura esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de contrato esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL') {
             if ((this.comprobante == "" || !this.comprobante) && (this.comprobanteExtra == "" || !this.comprobanteExtra)) {
-                this.floatMsgService.setErrorMsg("Debe completar Campo carátula o CCPP.");
+                this.mensajeComponent.setErrorMsg("Debe completar Campo carátula o CCPP.");
                 return true;
             }
         }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'PDF') {
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
                 return true;
             }
         }
         if (this.categoriaCode == 'FLET' && this.subcategoriaCode == 'CCP') {
             if (this.comprobanteExtra == "" || !this.comprobanteExtra) {
-                this.floatMsgService.setErrorMsg("El campo N° de Proforma esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo N° de Proforma esta vacio.");
                 return true;
             }
             if (this.comprobante == "" || !this.comprobante) {
-                this.floatMsgService.setErrorMsg("El campo CCPP esta vacio.");
+                this.mensajeComponent.setErrorMsg("El campo CCPP esta vacio.");
+                return true;
+            }
+        }
+        if (this.categoriaCode == 'PAG') {
+            this.fechaPago = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
+            if ((this.comprobanteExtra == "" || !this.comprobanteExtra) && (this.comprobante == "" || !this.comprobante)
+            && (this.contrato == "" || !this.contrato) && (this.fechaPago == "" || !this.fechaPago)) {
+                this.mensajeComponent.setErrorMsg("Debe completar uno de los campos obligatorios.");
                 return true;
             }
         }
@@ -400,6 +420,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
+        debugger
         if (this.esCorredor) {
             if(this.proveedorSelected)
             {
@@ -424,7 +445,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
         this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material? this.material.MaterialId : null
         }
 
         this.consulta = {
@@ -434,7 +455,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
             SubCategoria_Id: this.subcategoria.Id, Asunto: this.asunto
         }
 
-        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date()};
+        let comentario: Comentario = {consulta_Id: 0, Detalle: this.nuevoComentario, Fecha: new Date(), Recordado: false, FechaRecordado: new Date()};
 
         try {
             this.subscription = this.service.AgregarConsulta(this.consulta, comentario, this.listaArchivos).subscribe(
@@ -502,10 +523,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     Avisos(categoriaCode) {
         this.mensajeComponent.setMsgsEmpty();
-        if (categoriaCode == "PROVG") {
-            this.mensajeComponent.setInfoMsg("Texto a definir");
-            return true;
-        }
         if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
             this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
             return true;
@@ -527,5 +544,122 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.Avisos(this.categoriaCode)
     }
 
+    generarVariable() {
+        this.reclamoImpositivo.RazonSocialEmpresa = this.nombre;
+        this.reclamoImpositivo.Reclamos = [
+            {Fecha: "", Importe: "", Certificado:""}
+        ]
+    }
 
+    agregarReclamo() {
+        this.reclamoImpositivo.Reclamos.push({Fecha: "", Importe: "", Certificado:""});
+    }
+
+    eliminarReclamo(numeroReclamo: number) {
+        this.reclamoImpositivo.Reclamos.forEach((value,index)=>{
+            if(this.reclamoImpositivo.Reclamos.indexOf(value) == numeroReclamo) this.reclamoImpositivo.Reclamos.splice(index,1);
+        });
+    }
+
+    setFechaReclamo(numeroReclamo: number, event: Event){
+        this.reclamoImpositivo.Reclamos[numeroReclamo].Fecha = event
+    }
+
+    validarReclamo(){
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.reclamoImpositivo.RazonSocialProveedor == "" || !this.reclamoImpositivo.RazonSocialProveedor) {
+            this.mensajeComponent.setErrorMsg("El campo razón social proveedor esta vacío.");
+            return true;
+        }
+        if (this.reclamoImpositivo.Dni == "" || !this.reclamoImpositivo.Dni) {
+            this.mensajeComponent.setErrorMsg("El campo DNI esta vacío.");
+            return true;
+        }
+        if (this.reclamoImpositivo.Cuit == "" || !this.reclamoImpositivo.Cuit) {
+            this.mensajeComponent.setErrorMsg("El campo Cuit esta vacío.");
+            return true;
+        }
+        if (this.reclamoImpositivo.Vinculo == "" || !this.reclamoImpositivo.Vinculo) {
+            this.mensajeComponent.setErrorMsg("El campo vinculo esta vacío.");
+            return true;
+        }
+        this.reclamoImpositivo.Reclamos.forEach(reclamo => {
+            if(reclamo.Certificado == "" || !reclamo.Certificado){
+                this.mensajeComponent.setErrorMsg("El campo N° certificado esta vacío.");
+                return true;
+            }
+            if(reclamo.Fecha == "" || !reclamo.Fecha){
+                this.mensajeComponent.setErrorMsg("El campo fecha esta vacío.");
+                return true;
+            }
+            if(reclamo.Importe == "" || !reclamo.Importe){
+                this.mensajeComponent.setErrorMsg("El campo importe esta vacío.");
+                return true;
+            }
+        });
+
+        return false;
+    }
+
+    generarReclamoImpositivo(){
+        this.blockUI.start('Generando documento.');
+        this.spinnerComponent.showIt();
+
+        if (this.validarReclamo()) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+            return;
+        }
+
+        try {
+            this.subscription = this.service.generarReclamoImpositivo(this.reclamoImpositivo).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                        this.blockUI.stop();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                        this.blockUI.stop();
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                        this.blockUI.stop();
+                    } else {
+                        this.spinnerComponent.hideIt();
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+    }
 }

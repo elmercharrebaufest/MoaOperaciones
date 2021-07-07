@@ -104,7 +104,7 @@ namespace SustitucionMOAUtils.Services
                 .Select(v => new Vendedor()
                 {
                     descVendedor = v.RazonSocial,
-                    estado = "Alta interna Pendiente.",
+                    estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Alta interna Pendiente" : "Pendiente de envío documentación original",
                     estadoMoa = v.EstadoAprobacionDescripcion,
                     idVendedor = v.CodigoProveedor
                 });
@@ -343,7 +343,7 @@ namespace SustitucionMOAUtils.Services
                 if (infoDA.HayError)
                 {
                     if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
-                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT);
+                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT, true);
 
                         if (infoDACorredor.HayError)
                         {

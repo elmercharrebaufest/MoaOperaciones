@@ -1,8 +1,12 @@
-﻿using SustitucionMOAAssets;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.DataAgro;
+using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -14,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -58,7 +63,7 @@ namespace SustitucionMOAUtils.Services
             }
             if (!esInterno && consulta.EstadoConsulta.Code == "DOC")
             {
-                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GES");
+                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GESRTA");
                 ActualizarEstadoConsulta(consultaId, estado.Id);
             }
 
@@ -110,10 +115,14 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    var subcategoriaCode = subcatecategoria.Code + "FC";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
                 else
                 {
-                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id; ;
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    var subcategoriaCode = subcatecategoria.Code + "FD";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
             }
 
@@ -122,14 +131,20 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                    var subcategoriaCode = subcatecategoria.Code + "PC";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
                 else
                 {
                     consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                    var subcategoriaCode = subcatecategoria.Code  + "PD";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
             }
 
             comentario.Usuario_Id = consulta.Usuario_Id;
+
+            comentario.ComentarioRecordado = new List<ComentarioRecordado>();
 
             if (consulta.Comentarios == null)
             {
@@ -179,14 +194,14 @@ namespace SustitucionMOAUtils.Services
                 RazonSocialCorredor = c.RazonSocialCorredor,
                 CodigoProveedor = c.CodigoProveedor,
                 RazonSocialProveedor = c.RazonSocialProveedor,
-                CategoriaId = c.Categoria_Id,
+                CategoriaId = getIdCategoria(c.Categoria.Code, c.Categoria_Id),
                 Categoria = new CategoriaDto
                 {
                     Id = c.Categoria.Id,
                     Code = c.Categoria.Code,
                     Nombre = c.Categoria.Nombre
                 },
-                SubCategoriaId = c.SubCategoria_Id != null ? c.SubCategoria_Id : 0,
+                SubCategoriaId = c.SubCategoria_Id != null ? getIdSubcategoria(c.SubCategoria.Code, c.SubCategoria_Id) : 0,
                 SubCategoria = c.SubCategoria != null ? new SubCategoriaDto
                 {
                     Id = c.SubCategoria.Id,
@@ -213,9 +228,9 @@ namespace SustitucionMOAUtils.Services
                     Mail = c.Usuario.Mail
                 },
                 Fecha = c.Detalle != null ? c.Detalle.Fecha : null,
-                ComprobanteNo = c.Detalle != null ? c.Detalle.ComprobanteNo : "",
-                OtroComprobanteNo = c.Detalle != null ? c.Detalle.OtroComprobanteNo : "",
-                ContratoNo = c.Detalle != null ? c.Detalle.ContratoNo : "",
+                ComprobanteNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.ComprobanteNo) : "",
+                OtroComprobanteNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.OtroComprobanteNo) : "",
+                ContratoNo = c.Detalle != null ? FormatearStringNewLine(c.Detalle.ContratoNo) : "",
                 Importe = c.Detalle != null ? c.Detalle.Importe : null,
                 Impuesto = c.Detalle != null ? c.Detalle.Impuesto : null,
                 BolsaEmisoraOblea = c.Detalle != null ? c.Detalle.BolsaEmisoraOblea : "",
@@ -233,6 +248,8 @@ namespace SustitucionMOAUtils.Services
                 Detalle = x.Detalle,
                 Fecha = x.Fecha,
                 UsuarioId = x.Usuario_Id,
+                Recordado = x.Recordado,
+                FechaRecordado = x.FechaRecordado,
                 Usuario = new UsuarioDto()
                 {
                     Id = x.Usuario.Id,
@@ -246,10 +263,103 @@ namespace SustitucionMOAUtils.Services
                     Ruta = a.Ruta,
                     FileKey = a.FileKey,
                     Nombre = a.ObtenerNombre(a.Ruta),
-                }).ToList() 
+                }).ToList(),
+                ComentarioRecordados = x.ComentarioRecordado.Select(cr => new ComentarioRecordadoDto()
+                { 
+                    Id = cr.Id,
+                    FechaRecordado = cr.FechaRecordado
+                }).ToList()
             }).ToList();
 
             return ret;
+        }
+
+        private string FormatearStringNewLine(string dato)
+        {
+            if(dato == null)
+            {
+                return dato;
+            }
+
+            if (dato.Contains("/") || dato.Contains(",") || dato.Contains(" ") || dato.Contains(";"))
+            {
+                dato = dato.Replace(",", "<br>");
+                dato = dato.Replace("/", "<br>");
+                dato = dato.Replace(";", "<br>");
+                dato = dato.Replace(" ", "<br>");
+
+                dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");
+            }
+
+            return dato;
+        }
+
+        private int? getIdSubcategoria(string code, int? id)
+        {
+            List<string> exclude = new List<string> { "NRORPD","NRORPC","NRORFD","PROFFD","SERVFD","BONFD","CDGFD",
+                "NRORFC","PROFFC","SERVFC","BONFC","CDGFC" };
+
+            if (exclude.Contains(code))
+            {
+                if (code.Contains("FD") || code.Contains("FC"))
+                {
+                    var categoria = repositorio.Obtener<Categoria>(c => c.Code == "FIN");
+                    code = code.Replace("FD", "").Replace("FC", "");
+                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code && sc.Categoria_Id == categoria.Id).Id;
+                }
+                else
+                {
+                    code = code.Replace("PD", "").Replace("PC", "");
+                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code).Id;
+                }
+            }
+
+            return id;
+        }
+
+        private int getIdCategoria(string code, int id = 0)
+        {
+            if (code.Contains("DIR"))
+            {
+                code = code.Replace("DIR", "");
+                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
+            }
+
+            if (code.Contains("COR"))
+            {
+                code = code.Replace("COR", "");
+                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
+            }
+            
+            return id;
+        }
+
+        public string RecordarComentario(int consultaId)
+        {
+            try
+            {
+                var consulta = repositorio.Obtener<Consulta>(c => c.Id == consultaId);
+                var copia = new List<string>();
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                string asunto = "Molinos Agro - Recordatorio: Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
+
+                consulta.FechaUltimaModificacion = DateTime.Now;
+
+                var comentarioRecordado = new ComentarioRecordado() { Id = -1, FechaRecordado = DateTime.Now };
+
+                consulta.Comentarios.Last().Recordado = true;
+                consulta.Comentarios.Last().ComentarioRecordado.Add(comentarioRecordado);
+                repositorio.GuardarCambios();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+
+            return "Enviado Correctamente";
         }
 
         private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)
@@ -258,13 +368,34 @@ namespace SustitucionMOAUtils.Services
             {
                 var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
                 var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-");
-                string asunto = "Molinos Agro - Respuesta a su consulta" + consulta.Asunto;
+                string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
 
                 EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
+            }
+        }
+
+        public string EnviarMailRecordatorio(int consultaId)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                Consulta consulta = GetConsulta(consultaId);
+
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-");
+                string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, null, null, null, null);
+
+                return "Mail enviado correctamente.";
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return "Error al enviar el Mail.";
             }
         }
 
@@ -287,6 +418,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
+            var esInterno = usuario.TienePermiso("CONSULTA ABM");
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
             
             ret = repositorio.Listar<Consulta>(x=> (obtenerTodos && categorias.Contains(x.Categoria.Id)) || x.Usuario_Id == usuarioId , includes: includes)
@@ -314,10 +446,12 @@ namespace SustitucionMOAUtils.Services
                             CategoriaId = x.SubCategoria.Categoria_Id
                         } : new SubCategoriaDto { Nombre = "" },
                     EstadoConsultaId = x.EstadoConsulta_Id,
+                    Material_Id = x.Detalle.Material_Id,
+                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
                     EstadoConsulta = new EstadoConsultaDto 
                         {
                             Id = x.EstadoConsulta.Id,
-                            Descripcion = x.EstadoConsulta.Descripcion,
+                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
                             Color = x.EstadoConsulta.Color,
                             Code = x.EstadoConsulta.Code
                         },
@@ -365,11 +499,12 @@ namespace SustitucionMOAUtils.Services
         public string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId)
         {
             var categoria = repositorio.Obtener<Categoria>(c => c.Id == categoriaId);
+            SubCategoria subCategoria = new SubCategoria() { };
             var estado = repositorio.Obtener<EstadoConsulta>(c => c.Id == estadoConsultaId);
 
             if (subcategoriaId.HasValue && subcategoriaId != 0)
             {
-                var subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subcategoriaId);
+                subCategoria = repositorio.Obtener<SubCategoria>(c => c.Id == subcategoriaId);
                 if (subCategoria == null) throw new InfoCustomException("No existe la subcategoria");
             }
 
@@ -377,19 +512,51 @@ namespace SustitucionMOAUtils.Services
             if (categoria == null) throw new InfoCustomException("No existe la categoria");
 
             var consulta = GetConsulta(consultaId);
-
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == consulta.Usuario_Id);
             consulta.Categoria_Id = categoriaId;
             consulta.EstadoConsulta_Id = estadoConsultaId;
-            if(subcategoriaId != 0) 
+            if (subcategoriaId != 0)
             {
                 consulta.SubCategoria_Id = subcategoriaId;
             }
 
-            if (causaConsultaId.HasValue && causaConsultaId != 0) 
+            if (causaConsultaId.HasValue && causaConsultaId != 0)
             {
                 var causaConsulta = repositorio.Obtener<CausaConsulta>(cc => cc.Id == causaConsultaId);
-                if(causaConsulta == null) throw new InfoCustomException("No existe la causa de consulta");
+                if (causaConsulta == null) throw new InfoCustomException("No existe la causa de consulta");
                 consulta.Detalle.CausaConsulta_Id = causaConsultaId;
+            }
+
+            if (categoria.Code == "FIN")
+            {
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    var subcategoriaCode = subCategoria.Code;
+                    subcategoriaCode = subcategoriaCode = subcategoriaCode.Contains("FC") ? subcategoriaCode : subcategoriaCode.Contains("PC") ? subcategoriaCode.Replace("PC", "FC") : subcategoriaCode + "FC";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    var subcategoriaCode = subCategoria.Code;
+                    subcategoriaCode = subcategoriaCode.Contains("FD") ? subcategoriaCode : subcategoriaCode.Contains("PD") ? subcategoriaCode.Replace("PD", "FD") : subcategoriaCode + "FD";
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
+            }
+
+            if (categoria.Code == "PAR")
+            {
+                if (usuario.TipoUsuario.NombreCorto == "CORR")
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
+                else
+                {
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                    consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
+                }
             }
 
             repositorio.GuardarCambios();
@@ -440,12 +607,32 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias()
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
         {
             try
             {
-                List<string> exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
-                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code));
+                List<string> exclude = new List<string>() { };
+                List<Categoria> categorias = new List<Categoria>() { };
+
+                if (excluir.HasValue && excluir == true)
+                {
+                    exclude = new List<string>() { "PARDIR", "PARCOR", "FINDIR", "FINCOR" };
+                }
+                else
+                {
+                    exclude = new List<string>() { };
+                }
+
+                if (usuario.NuevoUsuario)
+                {
+                    var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
+                    categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }
+                else
+                {
+                    categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }
+
                 return categorias.Select(x =>new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
@@ -487,8 +674,33 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var subcategorias = repositorio.Listar<SubCategoria>();
+                var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
                 return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<MaterialDto> ObtenerMaterial()
+        {
+            try
+            {
+                var subcategorias = repositorio.Listar<Material>().OrderBy(c => c.Nombre);
+                return subcategorias.Select(x => new MaterialDto
+                { 
+                    MaterialId = x.Id,
+                    Descripcion = x.Nombre
+                }).ToList();
             }
             catch (ValidationCustomException e)
             {
@@ -523,6 +735,95 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
+        }
+
+        public string GenerarReclamoImpositivoPdf(ReclamoImpositivo reclamoImpositivo)
+        {
+            // Creamos el documento con el tamaño de página tradicional
+            Document doc = new Document(PageSize.LETTER);
+            // Indicamos donde vamos a guardar el documento
+            var ruta = string.Format("{0}/{1}", rutaArchivosConsulta, "ReclamoImpositivo.pdf");
+            PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(ruta, FileMode.Create));
+
+            // Le colocamos el título y el autor
+            // **Nota: Esto no será visible en el documento
+            doc.AddTitle("Reclamo Impositivo");
+            doc.AddCreator(reclamoImpositivo.RazonSocialProveedor);
+
+            // Abrimos el archivo
+            doc.Open();
+
+            // Creamos el tipo de Font que vamos utilizar
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+            iTextSharp.text.Font _standardFontBold = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+
+
+            var parrafo0 = string.Format("Lugar y fecha: {0}, {1} \n\nSeñores: \n\nMolinos Agro S.A \n ____________________________________________________________________________\n", reclamoImpositivo.Lugar, DateTime.Now);
+            doc.Add(new Paragraph(parrafo0));
+
+            var parrafo = string.Format("\nEl  que  suscribe, {0} (DNI  N°{1}),  en mi carácter de {2}  (apoderado, representante legal, etc.) de {3},  CUIT N° {4}, por la presente manifiesto en carácter de declaración jurada, que no hemos computado  ni  computaremos  como  pago  a  cuenta  en  las  respectivas  declaraciones  juradas  del  Impuesto sobre los Ingresos Brutos, las retenciones efectuadas por Molinos Agro S.A. de acuerdo con el siguiente detalle:"
+                , reclamoImpositivo.RazonSocialProveedor, reclamoImpositivo.Dni, reclamoImpositivo.Vinculo, reclamoImpositivo.RazonSocialEmpresa, reclamoImpositivo.Cuit);
+            // Escribimos el encabezamiento en el documento
+            doc.Add(new Paragraph(parrafo));
+            doc.Add(Chunk.NEWLINE);
+
+            // Creamos una tabla que contendrá el nombre, apellido y país
+            // de nuestros visitante.
+            PdfPTable tblTabla = new PdfPTable(4);
+
+            // Configuramos el título de las columnas de la tabla
+            PdfPCell clNombre = new PdfPCell(new Phrase("", _standardFont));
+            clNombre.BorderWidth = 1;
+
+            PdfPCell clFecha = new PdfPCell(new Phrase("Fecha", _standardFont));
+            clFecha.BorderWidth = 1;
+
+            PdfPCell clImporte = new PdfPCell(new Phrase("Importe Retención", _standardFont));
+            clImporte.BorderWidth = 1;
+
+            PdfPCell clCertificado = new PdfPCell(new Phrase("Certificado n°", _standardFont));
+            clCertificado.BorderWidth = 1;
+
+            // Añadimos las celdas a la tabla
+            tblTabla.AddCell(clNombre);
+            tblTabla.AddCell(clFecha);
+            tblTabla.AddCell(clImporte);
+            tblTabla.AddCell(clCertificado);
+
+            // Llenamos la tabla con información
+            foreach (Reclamo reclamo in reclamoImpositivo.Reclamos){
+                clNombre = new PdfPCell(new Phrase(reclamoImpositivo.RazonSocialEmpresa, _standardFont));
+                clNombre.BorderWidth = 1;
+
+                reclamo.Fecha = reclamo.Fecha.Substring(0, 10);
+
+                clFecha = new PdfPCell(new Phrase(reclamo.Fecha, _standardFont));
+                clFecha.BorderWidth = 1;
+
+                clImporte = new PdfPCell(new Phrase(reclamo.Importe, _standardFont));
+                clImporte.BorderWidth = 1;
+
+                clCertificado = new PdfPCell(new Phrase(reclamo.Certificado, _standardFont));
+                clCertificado.BorderWidth = 1;
+
+                // Añadimos las celdas a la tabla
+                tblTabla.AddCell(clNombre);
+                tblTabla.AddCell(clFecha);
+                tblTabla.AddCell(clImporte);
+                tblTabla.AddCell(clCertificado);
+            }
+
+            // Finalmente, añadimos la tabla al documento PDF y cerramos el documento
+            doc.Add(tblTabla);
+
+            doc.Add(new Paragraph("\n\n\n__________________\nFirma y aclaración \n"));
+            doc.Add(new Paragraph("(Certificada por Banco o Escribano)", _standardFontBold));
+            doc.Add(Chunk.NEWLINE);
+
+            doc.Close();
+            writer.Close();
+
+            return ruta;
         }
 
         private string ArmarRutaCarpeta(Comentario comentario)

@@ -120,7 +120,16 @@
                             <td [ngClass]="{'estadoRechazado': campo.ToneladasAprobadas === 0,
                                             'estadoAprobado': campo.ToneladasAprobadas > 0,
                                             'estadoEnGestion': campo.ToneladasAprobadas === -1}">{{campo.Estado}}</td>
-                            <td>{{campo.MotivoRechazo || ''}}</td>
+
+                            <td style="text-align: center;">
+                                <span *ngIf="(campo.MotivoRechazo || '').length < 50">
+                                    {{campo.MotivoRechazo || ''}}
+                                </span>
+                                <span *ngIf="(campo.MotivoRechazo || '').length >= 50" class="fa fa-info-circle"
+                                    toggle="tooltip" title="{{campo.MotivoRechazo || ''}}"></span>
+
+
+                            </td>
                             <td>{{campo.HectareasTotales}}</td>
                             <td>{{campo.HectareasSoja}}</td>
                             <td>{{campo.ToneladasAprobadas == -1 ? 0: campo.ToneladasAprobadas }}</td>

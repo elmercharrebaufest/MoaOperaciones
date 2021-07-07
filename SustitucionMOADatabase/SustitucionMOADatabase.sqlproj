@@ -116,12 +116,28 @@
     <Build Include="DBO\Tables\ConflictoCampoSustentable.sql" />
     <None Include="scripts\CreacionRolSolp.sql" />
     <None Include="scripts\CreacionRolApiKey.sql" />
+    <None Include="scripts\UpdateAltaFisicaProveedores.sql" />
+    <Build Include="DBO\Tables\Pliego.sql" />
+    <Build Include="DBO\Tables\TablaSap.sql" />
+    <Build Include="DBO\Tables\CentroDireccion.sql" />
+    <Build Include="DBO\Tables\TablaEstado.sql" />
+    <Build Include="DBO\Tables\TablaGeneral.sql" />
+    <Build Include="DBO\Tables\Solp.sql" />
+    <Build Include="DBO\Tables\SolpPosicion.sql" />
+    <Build Include="DBO\Tables\SolpProveedor.sql" />
+    <Build Include="DBO\Tables\SolpSubposicion.sql" />
+    <Build Include="DBO\Tables\PliegoArchivo.sql" />
+    <Build Include="DBO\Tables\PliegoVisita.sql" />
+    <None Include="scripts\PermisoAltaInternaGranos.sql" />
+    <Build Include="DBO\Tables\ComentarioRecordado.sql" />
+    <Build Include="DBO\Tables\Material.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
     <None Include="DatabasePublishPreProd.xml" />
     <None Include="scripts\Rol_NuevoNoGranos.sql" />
     <None Include="SustitucionMOADatabase.publish.xml" />
+    <None Include="scripts\CargaInicialSolp.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SustitucionMOADatabase.refactorlog" />

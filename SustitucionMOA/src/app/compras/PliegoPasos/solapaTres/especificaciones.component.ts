@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../common/services/SessionDataService';
@@ -6,10 +6,16 @@ import { SecurityService } from '../../../common/services/SecurityService';
 import { NavService } from '../../../common/services/NavService';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
-import { SolpService } from '../../solp.service'
+import { ComprasService } from '../../compras.service'
 import { Solp } from '../../Solp';
 import { EspecificacionesViewModel } from './especificacionesViewModel';
+import ImageResize from 'quill-image-resize-module';
+import Quill from 'quill';
+import { FormBuilder, FormGroup, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../../validadorPasoSolpService';
+import { EnumPasoSolp } from '../../enum-paso-solp';
 
+Quill.register('modules/imageResize', ImageResize);
 
 declare var $: any;
 
@@ -29,9 +35,30 @@ export class EspecificacionesComponent extends ListBaseComponent {
     //variables auxiliares de text rich
     posicionDeInicioInsert: number = 0;
     public viewModel: EspecificacionesViewModel;
+    modulesEditor = {};
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    formularioEspecificaciones: FormGroup;
+
+    @Output() onEstCompleto = new EventEmitter<any>();
+
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router, private formBuilder: FormBuilder,
+        private validadorPasoSolpService: ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+
+        this.modulesEditor = {
+            imageResize: true
+        }
+    }
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formularioEspecificaciones && this.formularioEspecificaciones.controls) {
+            return (this.formularioEspecificaciones.controls[nombreCampo].invalid || (this.formularioEspecificaciones.controls[nombreCampo].errors && this.formularioEspecificaciones.controls[nombreCampo].errors.required))
+                && (this.formularioEspecificaciones.controls[nombreCampo].dirty || this.formularioEspecificaciones.controls[nombreCampo].touched)
+        }
+
+        return false;
     }
 
     setTabs() {
@@ -40,113 +67,77 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-
-        //borrar cuando se implemente servicio de carga de datos
         this.viewModel = this.model.especificacionesViewModel;
-        this.viewModel.archivosGuardadosEspecificaciones = [
-            {
-                id: 0,
-                nombreArchivo: "Archivo 1",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 1,
-                nombreArchivo: "Archivo 2",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 2,
-                nombreArchivo: "Archivo 3",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 3,
-                nombreArchivo: "Archivo 4",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            },
-            {
-                id: 5,
-                nombreArchivo: "Archivo 5",
-                rutaDeAcceso: "C:/Imagen/archivo"
-            }
-        ]
 
+        //declaro las validaciones para los campos
+        this.formularioEspecificaciones = this.formBuilder.group({
+            observacion: new FormControl(this.viewModel.valorPorDefecto, [this.validatorObservaciones(this.viewModel.valorPorDefecto)]),
+        });
+
+        this.validadorPasoSolpService.formulario = this.formularioEspecificaciones
+        if (this.model.cargoPasoTres) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoTres = true;
     }
 
+    validatorObservaciones(valorPorFecto: string): any {
+        return (control: AbstractControl): ValidationErrors | null => {
+            if (control.value == undefined || control.value == "" || control.value == valorPorFecto) {
+                return { 'requerid': true };
+            }
+            return null;
+        };
+    }
+
+
     //elimno el archivo, llamar al servicio de eliminacion
-    eliminarAdjunto(archivo): void {
+    eliminarAdjuntoNuevo(archivo): void {
+        var indice = this.viewModel.archivosAdjuntosNuevos.indexOf(archivo)
+        this.viewModel.archivosAdjuntosNuevos.splice(indice, 1)
+    }
+
+    eliminarAdjuntoGuardado(archivo): void {
         var indice = this.viewModel.archivosGuardadosEspecificaciones.indexOf(archivo)
         this.viewModel.archivosGuardadosEspecificaciones.splice(indice, 1)
     }
 
+
     descargarArchivo(archivo): void {
-        //cuando el servicio este disponible descomentar la logica
-        // this.service.DescargarArchivo(archivoId)
-        //     .subscribe(
-        //         (result) => {
-        //             if (result.logout == true) {
-        //                 this.sessionDataService.logout();
-        //             }
-        //             else {
-        //                 var byteArray = new Uint8Array(result.FileContents);
-        //                 var blob = new Blob([byteArray], {
-        //                     type: "application/octet-stream",
-        //                 });
+        debugger
+        var a = this.viewModel;
+        if (archivo.id != undefined) {
 
-        //                 if (window.navigator.msSaveOrOpenBlob) {
-        //                     // IE11
-        //                     window.navigator.msSaveOrOpenBlob(
-        //                         blob,
-        //                         result.FileDownloadName
-        //                     );
-        //                 } else {
-        //                     var url = window.URL.createObjectURL(blob);
-        //                     var link = document.createElement("a");
-        //                     document.body.appendChild(link);
-        //                     link.href = url;
-        //                     link.download = result.FileDownloadName;
-        //                     link.click();
-        //                     setTimeout(function () {
-        //                         window.URL.revokeObjectURL(url);
-        //                     }, 0);
-        //                     return false;
-        //                 }
-        //             }
-        //         },
-        //         (error) => {
-        //             this.spinnerSmallComponent.hideIt();
-        //             this.mensajeComponent.setErrorMsg(error.message);
-        //         }
-        //     )
-       
-        var blob = new Blob(['Hello, world!'], {type: 'text/plain'});
+            this.service.DescargarArchivo(archivo.id)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
 
-        if (window.navigator.msSaveOrOpenBlob) {
-            // IE11
-            window.navigator.msSaveOrOpenBlob(
-                blob,
-                "Test"
-            );
-        } else {
-            var url = window.URL.createObjectURL(blob);
-            var link = document.createElement("a");
-            document.body.appendChild(link);
-            link.href = url;
-            link.download = "Test";
-            link.click();
-            setTimeout(function () {
-                window.URL.revokeObjectURL(url);
-            }, 0);
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                    },
+                    (error) => {
+                        this.spinnerSmallComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                )
+        }
+        else {
+            this.downloadArchivoLocal(archivo, archivo.name);
+
         }
     }
 
     uploadHandler(filesUploaad: any): void {
-        this.viewModel.archivosAdjuntos = filesUploaad;
-    }
-
-    clearFile(evento:any): void{
-        var indice = this.viewModel.archivosAdjuntos["files"].indexOf(evento.file);
-        this.viewModel.archivosAdjuntos["files"].splice(indice, 1)
+        this.viewModel.archivosAdjuntosNuevos = filesUploaad["files"];
     }
 
     selectionChange(event): void {
@@ -156,7 +147,7 @@ export class EspecificacionesComponent extends ListBaseComponent {
     }
 
     fileChange(file): void {
-        if (this.posicionDeInicioInsert != undefined) {
+        if (this.posicionDeInicioInsert != undefined && this.viewModel.observaciones.length > this.posicionDeInicioInsert) {
             var textoInicial = this.viewModel.observaciones.substring(0, this.posicionDeInicioInsert + 1);
             var textoFinal = this.viewModel.observaciones.substring(this.posicionDeInicioInsert + 1, this.viewModel.observaciones.length);
             this.viewModel.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
@@ -182,11 +173,36 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
             if (contar) {
                 posicion--;
-
             }
 
             if (posicion == 0)
                 return i;
+        }
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({ codigo: EnumPasoSolp.PliegoEspecificacion, esPasoInvalido: this.validadorPasoSolpService.esPasoInvalido() });
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(
+                blob,
+                nombreArchivo
+            );
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
         }
     }
 
