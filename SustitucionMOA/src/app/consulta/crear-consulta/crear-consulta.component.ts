@@ -384,12 +384,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
                 return true;
             }
         }
-        if ((this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'VENC') || (this.categoriaCode == 'PROVG' && this.subcategoriaCode == 'POTR')) {
-            if (this.comprobante == "" || !this.comprobante) {
-                this.mensajeComponent.setErrorMsg("El campo N° de Factura esta vacio.");
-                return true;
-            }
-        }
         if (this.categoriaCode == 'MATBA' && this.subcategoriaCode == 'CAL') {
             if ((this.comprobante == "" || !this.comprobante) && (this.comprobanteExtra == "" || !this.comprobanteExtra)) {
                 this.mensajeComponent.setErrorMsg("Debe completar Campo carátula o CCPP.");
@@ -426,6 +420,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         this.blockUI.start('Generando Consulta');
         this.spinnerComponent.showIt();
 
+        debugger
         if (this.esCorredor) {
             if(this.proveedorSelected)
             {
@@ -450,7 +445,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
         } 
     
         this.Detalle = {Consulta_Id: 0, Fecha: this.fecha, ComprobanteNo: this.comprobante, OtroComprobanteNo: this.comprobanteExtra, 
-            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material.MaterialId
+            ContratoNo: this.contrato, Importe: this.importe, Impuesto: this.impuesto, BolsaEmisoraOblea: this.bolsaEmisoraOblea, Material_Id: this.material? this.material.MaterialId : null
         }
 
         this.consulta = {
@@ -528,10 +523,6 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     Avisos(categoriaCode) {
         this.mensajeComponent.setMsgsEmpty();
-        if (categoriaCode == "PROVG") {
-            this.mensajeComponent.setInfoMsg("Texto a definir");
-            return true;
-        }
         if (categoriaCode == "BOL" && this.subcategoriaCode == "OPC") {
             this.mensajeComponent.setInfoMsg("Recuerde Adjuntar liquidación y la oblea emitida por bolsa");
             return true;

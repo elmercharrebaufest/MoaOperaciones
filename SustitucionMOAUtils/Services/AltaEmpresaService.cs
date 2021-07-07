@@ -76,6 +76,7 @@ namespace SustitucionMOAUtils.Services
                             AltaInterna = proveedor.AltaInterna,
                             IngresoAPlanta = proveedor.IngresoAPlanta,
                             UltimaEdicion = proveedor.HistorialAprobaciones?.OrderByDescending(x => x.Fecha).FirstOrDefault()?.Fecha,
+                            FechaAltaAceptada = getFechaAltaAceptada(proveedor.HistorialAprobaciones.ToList()),
                             HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                             {
                                 Id = a.Id,
@@ -141,6 +142,20 @@ namespace SustitucionMOAUtils.Services
             {
                 throw ex;
             }
+        }
+
+        public DateTime? getFechaAltaAceptada(List<ProveedorHistorialAprobacion> proveedorHistorial)
+        {
+            DateTime? fecha = null;
+
+            proveedorHistorial.ForEach(x => { 
+                if(x.EstadoAprobacion == EstadoAprobacion.Aprobado)
+                {
+                    fecha = x.Fecha;
+                }
+            });
+
+            return fecha;
         }
 
         public string GuardarSIPER(int proveedorId, string estadoSIPER)

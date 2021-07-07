@@ -73,6 +73,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 var ret = new UsuarioDto(usuario);
                 ret.Permisos = usuario.ObtenerPermisos();
+                ret.NuevoUsuario = usuario.EsNuevoUsuario();
 
                 return ret;
             }

@@ -168,7 +168,7 @@ namespace SustitucionMOA.Controllers
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
                 var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
-                var categorias = consultaService.ObtenerCategorias(false);
+                var categorias = consultaService.ObtenerCategorias(false, usuarioActual);
                 var estados = consultaService.ObtenerEstados();
 
                 categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
@@ -309,7 +309,7 @@ namespace SustitucionMOA.Controllers
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
                 return JsonCustom(new { 
-                    categorias = consultaService.ObtenerCategorias(excluir),
+                    categorias = consultaService.ObtenerCategorias(excluir, usuarioActual),
                     subcategorias = consultaService.ObtenerSubCategorias(),
                     estados = consultaService.ObtenerEstados(),
                     causas = consultaService.ObtenerCausas(),

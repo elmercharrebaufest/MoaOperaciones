@@ -607,11 +607,12 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir)
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
         {
             try
             {
                 List<string> exclude = new List<string>() { };
+                List<Categoria> categorias = new List<Categoria>() { };
 
                 if (excluir.HasValue && excluir == true)
                 {
@@ -621,7 +622,17 @@ namespace SustitucionMOAUtils.Services
                 {
                     exclude = new List<string>() { };
                 }
-                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre);
+
+                if (usuario.NuevoUsuario)
+                {
+                    var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
+                    categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }
+                else
+                {
+                    categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }
+
                 return categorias.Select(x =>new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)

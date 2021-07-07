@@ -104,7 +104,7 @@ namespace SustitucionMOAUtils.Services
                 .Select(v => new Vendedor()
                 {
                     descVendedor = v.RazonSocial,
-                    estado = "Alta interna Pendiente.",
+                    estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Alta interna Pendiente" : "Pendiente de envío documentación original",
                     estadoMoa = v.EstadoAprobacionDescripcion,
                     idVendedor = v.CodigoProveedor
                 });
