@@ -842,7 +842,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 "Estado Siper": info.EstadoSIPER,
                 "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
                 "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
-                "Fecha Alta": info.FechaAltaAceptada != undefined ?  formatDate(info.FechaAltaAceptada.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Fecha alta aceptada": info.FechaAltaAceptada != undefined ?  formatDate(info.FechaAltaAceptada.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
                 "Estado": info.EstadoAprobacionDescripcion,
                 "Presento documentación física": (info.ContieneDocumentacionFisica || false) ? "Si" : "No"
             }
