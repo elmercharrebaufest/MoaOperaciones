@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../common/shared.module';
-import { SolpService } from './solp.service';
+import { ComprasService } from './compras.service';
 import { Generacion2Component } from './PliegoPasos/generacion2.component';
 import { Generacion1Component } from './PliegoPasos/generacion1.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -17,12 +17,21 @@ import { SidebarModule } from 'primeng/sidebar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CotizacionComponent } from './PliegoPasos/cotizacion.component';
 import { DragAndDropDirective } from '../directivas/drag-and-drop.directive';
-import {KeyFilterModule} from 'primeng/keyfilter';
+import { KeyFilterModule } from 'primeng/keyfilter';
 import { EspecificacionesComponent } from './PliegoPasos/solapaTres/especificaciones.component'
-import {FileUploadModule} from 'primeng/fileupload';
+import { FileUploadModule } from 'primeng/fileupload';
 import { QuillModule } from 'ngx-quill'
-
-
+import { CabeceraComponent } from './SolpPasos/cabecera.component';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ValidadorPasoSolpService } from './validadorPasoSolpService';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
+import { ToastModule } from 'primeng/toast';
+import { ChipsModule } from 'primeng/chips';
+    
 @NgModule({
     imports: [
         CommonModule,
@@ -37,7 +46,15 @@ import { QuillModule } from 'ngx-quill'
         CheckboxModule,
         KeyFilterModule,
         FileUploadModule,
-        QuillModule.forRoot()
+        QuillModule.forRoot(),
+        MessagesModule,
+        MessageModule,
+        ToastModule,
+        RadioButtonModule,
+        DropdownModule,
+        AutoCompleteModule,
+        ReactiveFormsModule,
+        ChipsModule
     ],
     declarations: [
         SolpComponent,
@@ -47,10 +64,12 @@ import { QuillModule } from 'ngx-quill'
         PliegoPreviewComponent,
         EspecificacionesComponent,
         CotizacionComponent,
-        DragAndDropDirective
+        DragAndDropDirective,
+        CabeceraComponent
     ],
     providers: [
-        SolpService
+        ComprasService,
+        ValidadorPasoSolpService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

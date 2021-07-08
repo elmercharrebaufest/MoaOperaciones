@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Dto
         public EstadoAprobacion Estado { get; set; }
         public string EstadoDescripcion { get; set; }
         public string Observaciones { get; set; }
-
+        public bool DocumentacionFisica { get; set; } 
         public override bool Equals(object obj)
         {
             return obj is EstadoAprobacionDto dto &&

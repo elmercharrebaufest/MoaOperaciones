@@ -33,6 +33,7 @@
     "angular-in-memory-web-api": "^0.6.1",
     "angular-ng-autocomplete": "^2.0.1",
     "angular2-recaptcha": "^1.1.0",
+    "base64-arraybuffer": "^0.1.5",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "jquery": "^3.5.1",
@@ -46,16 +47,18 @@
     "ngx-mask": "^6.5.18",
     "ngx-modal": "0.0.29",
     "ngx-pagination": "^3.0.3",
-    "ngx-quill": "^7.3.9",
+    "ngx-quill": "7.3.9",
     "ngx-smart-modal": "^7.4.1",
     "node-xlsx": "^0.11.2",
     "primeicons": "^1.0.0-beta.9",
     "primeng": "^6.1.7",
-    "quill": "^1.3.7",
+    "quill": "1.3.7",
+    "quill-image-resize-module": "3.0.0",
     "reflect-metadata": "^0.1.8",
     "rxjs": "6.6.0",
     "rxjs-compat": "^6.6.0",
     "systemjs": "^0.19.47",
+    "tiff.js": "1.0.0",
     "uuid": "^8.3.2",
     "web-animations-js": "^2.3.1",
     "xlsx": "^0.11.10",
@@ -84,5 +87,12 @@
     "typescript": "^2.2.0",
     "webdriver-manager": "10.2.5"
   },
-  "repository": {}
+  "repository": {},
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false,
+    "tiff": false,
+    "crypto": false
+  }
 }

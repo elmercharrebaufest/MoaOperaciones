@@ -6,7 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { SolpService } from './../solp.service';
+import { ComprasService } from '../compras.service';
 
 
 declare var $: any;
@@ -15,12 +15,12 @@ declare var $: any;
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
     styleUrls: ['../compras.component.css'],
-    providers: [SolpService]
+    providers: [ComprasService]
 
 })
 export class DashboardComponent extends ListBaseComponent {
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 

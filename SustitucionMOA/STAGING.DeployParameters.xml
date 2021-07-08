@@ -13,6 +13,8 @@
 	<setParameter name="EsLocal Config" value="false" />
 
 	<setParameter name="SpaUrl Config" value="https://moaoperaciones.com.ar/web" />
+	
+	<setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
 
 	<setParameter name="ida:RedirectUri Config" value="https://moaoperaciones.com.ar" />
 	<setParameter name="ida:Tenant Config" value="moagro.onmicrosoft.com" />

@@ -182,6 +182,11 @@ namespace SustitucionMOA.Controllers
                 {
                     data.EstadoDescripcion = "Solicitud de información";
                 }
+                if (!data.DocumentacionFisica)
+                {
+                    data.EstadoDescripcion = data.EstadoDescripcion + " - pendiente de envío documentación original";
+                }
+
                 return JsonCustom(new { data });
             }
             catch (InfoCustomException e)
@@ -224,7 +229,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = altaEmpresaService.SolicitarInformacion(empresaId) });
+                return JsonCustom(new { data = altaEmpresaService.SolicitarInformacion(empresaId, ClaimsPrincipalExtension.GetClaimValue("emails")) });
             }
             catch (InfoCustomException e)
             {
@@ -240,5 +245,29 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        [HttpPost]
+        public JsonResult AgregarObservacion(int empresaId, string observacion)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.AgregarObservacion(empresaId, observacion, ClaimsPrincipalExtension.GetClaimValue("emails")) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

@@ -25,11 +25,11 @@ namespace SustitucionMOAUtils.Interfaces
 
         string HabilitarUsuario(string usuarioMail, int proveedorID, string observacion);
 
-        void EnviarMailAuditoria(AltaEmpresaViewModel altaEmpresa, Proveedor proveedor);
-
         string GuardarSIPER(int proveedorId, string estadoSIPER);
 
-        string SolicitarInformacion(int proveedorId);
+        string SolicitarInformacion(int proveedorId, string usuarioMail);
+
+        string AgregarObservacion(int proveedorId, string observacion, string usuarioMail);
 
     }
 }

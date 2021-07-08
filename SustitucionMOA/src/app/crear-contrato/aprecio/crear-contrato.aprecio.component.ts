@@ -2,6 +2,8 @@
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
 import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
+import localeEsAr from '@angular/common/locales/es-AR';
+import { DatePipe, registerLocaleData } from '@angular/common';
 
 declare var $: any;
 
@@ -16,6 +18,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     contrato: ContratoAPrecio = new ContratoAPrecio();
 
     ngOnInit() {
+        registerLocaleData(localeEsAr, 'es-AR');
+
         super.ngOnInit();
         this.contrato.TipoNegocioId = 2;
         this.contrato.Id = this.id;
@@ -216,8 +220,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
                     let precioNeto = precio + costo;
 
-                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
-
+                    //let fecha = new Date();
+                    //let diasp = Number(this.contrato.DiasPesificado);
+                    //fecha.setDate(fecha.getDate() + diasp);
+                    //var datePipe = new DatePipe('es-AR');
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto) /*+ "<br> Fecha: " + datePipe.transform(fecha, 'dd/MM/yyyy')*/;
                 }
             }
 

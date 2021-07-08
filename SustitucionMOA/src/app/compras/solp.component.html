@@ -1,9 +1,9 @@
-<div class="content-wraper">
+<div class="content-wraper alinearAlturaMenu">
     <!-- CONTENT-->
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "> <strong>¿Que tipo de SOLP quiere iniciar?</strong></div>
+            <div class="col-xs-12 col-sm-10 "> <strong>¿Qu&eacute; tipo de SOLP quiere iniciar?</strong></div>
         </div>
         <!--End Title-->
         <!-- Form-->
@@ -12,29 +12,33 @@
                 <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
             </div>
         </div>
-
+        <spinner></spinner>
+        <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <div class="row myRow mySearch" style="margin-bottom: 4em;">
             <div class="col-xs-12 col-md-12 rounded shadow animate">
-                <div class="col-xs-12 col-md-12 headerCompras">
+                <div class="col-xs-12 col-md-12 headerCompras" #headerCompras>
                     <strong>Paso {{pasoActual.Numero}}:</strong> {{pasoActual.Nombre}}
                 </div>
-                <hr>
+                <hr class="prototipo">
                 <!-- contenido -->
                 <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
-                    <div *ngSwitchCase="'PliegoGeneracion1'" [@fadeInOut] >
-                        <generacion1 [(model)]="solpActual" [(locale)]="es"></generacion1>
+                    <div *ngSwitchCase="enumSolp.PliegoGeneracion1" [@fadeInOut] >
+                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></generacion1>
                     </div>
-                    <div  *ngSwitchCase="'PliegoGeneracion2'" [@fadeInOut] >
-                        <generacion2 [(model)]="solpActual" [(locale)]="es"></generacion2>
+                    <div  *ngSwitchCase="enumSolp.PliegoGeneracion2" [@fadeInOut] >
+                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></generacion2>
                     </div>
-                    <div  *ngSwitchCase="'PliegoEspecificacion'" [@fadeInOut] >
-                        <especificaciones [(model)]="solpActual" [(locale)]="es"></especificaciones>
+                    <div  *ngSwitchCase="enumSolp.PliegoEspecificacion" [@fadeInOut] >
+                        <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></especificaciones>
+                    </div>
+                    <div  *ngSwitchCase="enumSolp.PliegoCotizacion" [@fadeInOut] >
+                        <cotizacion [(model)]="solpActual" [(locale)]="es" (onEstCompleto)="actualizarEstadoSolp($event)"></cotizacion>
+                    </div>
+                    <div  *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut] >
+                        <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" ></cabecera>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut] >
                         Paso en construccion
-                    </div>
-                    <div  *ngSwitchCase="'PliegoCotizacion'" [@fadeInOut] >
-                        <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
                     </div>
                 </div>                
             </div>
@@ -46,11 +50,12 @@
                     <!-- <button class="btn btn-danger" (click)="salir()"><i class="fa fa-reply"></i>&nbsp; SALIR</button> -->
                 </div>
                 <div class="col-xs-6">
-                    <button class="btn btn-defaut btn-secondary" (click)="navegar(pasoAnterior())">{{pasoAnterior().descripcion}}</button>&nbsp;
-                    <button class="btn btn-primary" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
-                    <button class="btn btn-primary" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
-                    <button class="btn btn-defaut btn-secondary" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())" >{{pasoSiguiente().descripcion}}</button>
-                    <button class="btn btn-success" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
+                    <button class="btn btn-defaut btn-secondary botonesCompras" (click)="navegar(pasoAnterior())"><i class="fa fa-arrow-left"></i>&nbsp; {{pasoAnterior().descripcion}}</button>&nbsp;
+                    <button class="btn btn-primary botonesComprasColor" (click)="guardarCambios()" >GUARDAR</button>&nbsp;
+                    <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="mostrarPreview = false">PREVIEW</button>&nbsp;
+                    <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
+                    <button class="btn btn-success botonesCompras" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
+                    <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                 </div>
             </div>
         </p-sidebar>
