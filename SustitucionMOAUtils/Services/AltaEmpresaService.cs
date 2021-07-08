@@ -76,7 +76,7 @@ namespace SustitucionMOAUtils.Services
                             AltaInterna = proveedor.AltaInterna,
                             IngresoAPlanta = proveedor.IngresoAPlanta,
                             UltimaEdicion = proveedor.HistorialAprobaciones?.OrderByDescending(x => x.Fecha).FirstOrDefault()?.Fecha,
-                            FechaAltaAceptada = proveedor.HistorialAprobaciones?.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado).OrderBy(x => x.Fecha).LastOrDefault()?.Fecha,
+                            FechaAltaAceptada = proveedor.HistorialAprobaciones?.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado || x.Observacion == "Alta aceptada").OrderBy(x => x.Fecha).LastOrDefault()?.Fecha,
                             HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                             {
                                 Id = a.Id,
