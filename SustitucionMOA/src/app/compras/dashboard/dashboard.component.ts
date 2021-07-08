@@ -64,7 +64,7 @@ export class DashboardComponent extends ListBaseComponent {
     display: boolean = false;
     tablaSolp: any[];
     cols: any[];
-    serviciosDashboard: any = "servicios"
+    serviciosDashboard: any = "Servicios"
     solp: Solp = new Solp();
 
     showDialog() {
@@ -107,6 +107,7 @@ export class DashboardComponent extends ListBaseComponent {
         // this.tablaSolp = [
         // {
         //     numeroSolp: "372872",
+        //     nombreDePedido: ""
         //     fechaCreacion: "17/12/2021",
         //     estadoDoc: "Incompleto",
         //     estadoSolp: "Finalizada",

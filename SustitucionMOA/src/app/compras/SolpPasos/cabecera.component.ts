@@ -58,6 +58,8 @@ export class CabeceraComponent extends ListBaseComponent {
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
 
+    // servicio: any = "Servicio (F)"
+
     proveedoresAutocomplete: any;
     camposObligatorios: any[] = [
         { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
