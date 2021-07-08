@@ -158,10 +158,8 @@ export class DashboardComponent extends ListBaseComponent {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else { 
                             this.tablaSolp = result.data;
-                            console.log(this.tablaSolp)
                             this.tablaSolp.forEach(x => {
                                 x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
-                                // x.FechaCreacion = formatDate(x.FechaCreacion)
                             });
                         }
                     },
@@ -273,11 +271,11 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    editarPosicion() {
+    editarPosicion(id) {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea editar la SOLP?',
             accept: () => {
-                this.goToSeccionParam('/compras/solp', 'rowData.Id');
+                this.goToSeccionParam('/compras/solp', id);
             },
             reject: () => {
             }

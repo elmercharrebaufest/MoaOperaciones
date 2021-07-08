@@ -347,18 +347,9 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        //Rocio
-
-        public List<SolpDto> ListarSolp(string mail) 
+        public List<SolpDto> ListarSolp() 
         {
-            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mail);
-
-            if(usuario == null) 
-            {
-                throw new InfoCustomException("No se encontro el usuario");
-            }
-
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.UsuarioCreacion_Id == usuario.Id && x.FechaBorrado == null)
+            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),

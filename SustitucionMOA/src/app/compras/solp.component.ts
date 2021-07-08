@@ -240,6 +240,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     traerSolpId(idSolp){
         try {
+            this.blockUI.start('Cargando...');
+            this.spinnerComponent.showIt();
+
             this.subscription = this.service.traerSolpId(idSolp).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -250,9 +253,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.cargarSolpActual(result.data);
+
+                        this.spinnerComponent.hideIt();
+                        this.blockUI.stop();
                 }
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                 }
                 
             });
@@ -305,7 +313,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 nombreArchivo: x.Nombre
             }
         }),
-        this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas; 
+        this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto; 
 
         // Paso 4
         this.solpActual.jornadaLaboralDias.forEach(k => {

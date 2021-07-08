@@ -141,13 +141,13 @@
             </ng-template>
                     
             <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr (click)="traerSolpId(rowData.Id)">
+                <tr>
                     <td>
                         <div class="col-md-2">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada'"><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicion(rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="editarPosicion()"/></span>
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="editarPosicion(rowData.Id)"/></span>
                         </div>
                         <!-- <div class="col-md-2">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != null" ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>  
