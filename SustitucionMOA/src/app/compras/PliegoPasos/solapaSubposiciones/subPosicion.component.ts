@@ -127,7 +127,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         }
     }
 
-    eliminarPosicion()
+    eliminarSubPosicion()
     {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la subposición?',

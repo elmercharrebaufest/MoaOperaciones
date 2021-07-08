@@ -58,6 +58,7 @@ export class CabeceraComponent extends ListBaseComponent {
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
 
+
     proveedoresAutocomplete: any;
     camposObligatorios: any[] = [
         { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
@@ -158,7 +159,26 @@ export class CabeceraComponent extends ListBaseComponent {
         }
 
         this.model.cargoPasoCinco = true;
+
+        // document.getElementById("proveedoresValidos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
+
+        // document.getElementById("proveedoresInvalidos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
+
+        // document.getElementById("proveedoresNoSugeridos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
         
+ 
     }
 
     setControlesObligatorios(claseDocumento){
@@ -250,7 +270,7 @@ export class CabeceraComponent extends ListBaseComponent {
         this.model.posicionActual.paisEntrega =  this.model.posicionActual.paisEntrega || (direccionCentro == undefined ? "" : direccionCentro.Pais);
     }
 
-    eliminarPosicion()
+    eliminarPosicionCabecera()
     {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',

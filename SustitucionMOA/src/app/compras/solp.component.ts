@@ -423,7 +423,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.navService.navegarSeccion('/compras');
     }
 
-    eliminarPosicion() {
+    cancelarSolp() {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea volver a la pantalla principal?',
             accept: () => {
