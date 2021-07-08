@@ -44,15 +44,15 @@
                              >
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th style="width: 5%;"><img (click)="eliminarSubposiciones()"
+                                    <th style="width: 5%;"><img (click)="eliminarPosicion()"
                                             src="../../../../../Content/images/icons/trash.svg" alt="trash"
                                             style="padding: 8px;" class="pointer" /></th>
                                     <th style="width: 7%;" data-toggle="tooltip" title="Sub Posiciones">SubPos</th>
                                     <th style="width: 9%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
                                     <th style="width: 30%;">Tarea a sub contratar</th>
                                     <th style="width: 9%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
-                                    <th style="width: 9%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
-                                    <th style="width: 8%;" data-toggle="tooltip" title="Unidad de Medida">UM</th>
+                                    <th style="width: 8%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
+                                    <th style="width: 10%;" data-toggle="tooltip" title="Unidad de Medida">UM</th>
                                     <th style="width: 10%;">Precio bruto</th>
                                     <th style="width: 7%;">{{tituloColumnaTipoDeImputacion}}</th>
                                 </tr>
@@ -62,7 +62,7 @@
                                     <td style="width: 5%;">
                                         <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
                                     </td>
-                                    <td style="width: 5%;">
+                                    <td style="width: 7%;">
                                         {{posicion.subPosicion}}
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 9%;">
@@ -76,7 +76,7 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 40%;">
+                                    <td [pEditableColumn]="posicion" style="width: 30%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <input type="text" [(ngModel)]="posicion.tareaSubcontratar"
@@ -98,7 +98,7 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 6%;">
+                                    <td [pEditableColumn]="posicion" style="width: 8%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <input type="text" pKeyFilter="num"  [(ngModel)]="posicion.cuentaTd"
@@ -109,7 +109,7 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 8%;">
+                                    <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true"></p-dropdown>
@@ -164,3 +164,12 @@
     </section>
     <!--End CONTENT-->
 </div>
+
+<!-- Modal eliminacion de subposicion-->
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal eliminacion de subposicion-->

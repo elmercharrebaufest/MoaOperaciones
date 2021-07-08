@@ -364,6 +364,7 @@ namespace SustitucionMOAUtils.Services
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
                     Id = x.Id,
                     NroSolp = x.NroSolp,
+                    NombreDeObra = x.Pliego?.NombreObra,
                     FechaCreacion = x.FechaCreacion,
                     EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
                     EstadoSolpSapId = x.EstadoSolpSap_Id,

@@ -104,7 +104,7 @@ export class PosicionSolp {
     public id: any;
     public numeroPosicion: number;
 
-    public servicio: boolean;
+    public servicio: boolean = true;
     public centroDeCosto: boolean;
     public ordenDeOt: boolean;
     public ordenDeInversion: boolean;
@@ -165,6 +165,7 @@ export class PosicionSolp {
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
         //agrega un fila por defecto
         this.listadoSubPosiciones.push(new SubPosicionViewModel(0));
+        this.servicio = true;
     }
 }
 
