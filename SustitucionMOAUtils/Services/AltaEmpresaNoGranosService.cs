@@ -431,7 +431,7 @@ namespace SustitucionMOAUtils.Services
                 new ProveedorHistorialAprobacion
                    {
                        Fecha = DateTime.Now,
-                       EstadoAprobacion = EstadoAprobacion.EdicionRequerida,
+                       EstadoAprobacion = proveedor.EstadoAprobacion,
                        Observacion = string.Format("Documentación física: {0}", contieneDocumentacionFisica ? "Presentada" : "Faltante") ,
                        Proveedor_Id = proveedorId,
                        Usuario_Id = usuario.Id
