@@ -144,10 +144,10 @@
                 <tr (click)="traerSolpId(rowData.Id)">
                     <td>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="borrarSolp(rowData.Id)" /></span>
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada'"><img class="pointer" src="./Content/images/icons/trash.svg" alt="trash" (click)="eliminarPosicion(rowData.Id)" /></span>
                         </div>
                         <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)"/></span>
+                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="editarPosicion()"/></span>
                         </div>
                         <!-- <div class="col-md-2">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != null" ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>  
@@ -182,3 +182,11 @@
     </div>   
 </div>
 
+<!-- Modal eliminacion de SOLP-->
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal eliminacion de SOLP-->

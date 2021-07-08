@@ -14,7 +14,7 @@ import { SecurityService } from '../common/services/SecurityService';
 import { FloatMsgService } from '../common/services/FloatMsgService';
 import { ModalService } from '../common/services/ModalService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Message } from 'primeng/components/common/api';
+import { ConfirmationService, Message } from 'primeng/components/common/api';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { SelectItem } from 'primeng/api';
 import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
@@ -151,7 +151,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }];
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        private messageService: MessageService, private route:ActivatedRoute) {
+        private messageService: MessageService, private route:ActivatedRoute, private confirmationService: ConfirmationService) {
         super(navService, securytiService, floatMsgService, modalService);
 
     }
@@ -415,6 +415,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     salir() {
         this.navService.navegarSeccion('/compras');
+    }
+
+    eliminarPosicion() {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea volver a la pantalla principal?',
+            accept: () => {
+                this.salir()
+            },
+            reject: () => {  
+            }
+        });
     }
 
     guardarCambios(){

@@ -7,7 +7,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from '../compras.service';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { Solp } from '../Solp';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module';
@@ -34,8 +34,10 @@ export class DashboardComponent extends ListBaseComponent {
     @ViewChild("tabla")
     protected tabla: Table;
     
+    @Input('model') 
+    protected model:Solp;
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.locale = {
@@ -203,7 +205,7 @@ export class DashboardComponent extends ListBaseComponent {
 
         return false; //<-- Prevent Refresh
     
-}
+    }
 
    
 
@@ -260,14 +262,30 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     
-    
+    eliminarPosicion(idSolp) {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea eliminar la SOLP?',
+            accept: () => {
+                this.borrarSolp(idSolp)
+            },
+            reject: () => {
+            }
+        });
+    }
 
-    
+    editarPosicion() {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea editar la SOLP?',
+            accept: () => {
+                this.goToSeccionParam('/compras/solp', 'rowData.Id');
+            },
+            reject: () => {
+            }
+        });
+    }
+
 
 }
-
-
-
 
 
 

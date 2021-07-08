@@ -12,6 +12,7 @@ import { Solp } from '../../Solp';
 import { SubPosicionViewModel } from './subPosicionViewModel';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion'
 import { EnumColumnaSubPosicion } from '../../enum-columna-subPosiciones'
+import { ConfirmationService } from 'primeng/api';
 
 
 @Component({
@@ -49,7 +50,7 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router
+        protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,  private confirmationService: ConfirmationService
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
@@ -124,6 +125,20 @@ export class SubPosicionComponent extends ListBaseComponent {
             this.listadoPosicionActul = subPosicionesAgregadas;
             this.calcularTotalSubPosicion();
         }
+    }
+
+    eliminarPosicion()
+    {
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea eliminar la subposición?',
+            accept: () => {
+                this.eliminarSubposiciones()
+            },
+            reject: () => {
+                
+            }
+        });
+
     }
 
     onPaste(evento: any, indexColumna: number, rowIndex: number): void {
