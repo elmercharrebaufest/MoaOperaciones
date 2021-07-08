@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouteReuseStrategy } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { SecurityService } from './../../common/services/SecurityService';
@@ -52,29 +52,20 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
 
-    // minDate: Date;
-    // maxDate: Date;
-    // invalidDates: Date[];
-    // rangeDates: Date[];
+   
     desdeDashboard: Date;
     hastaDashboard: Date;
     estadoSolpItem: SelectItem[];
-    // selectEstadoSolp: any;
     selectEstadoSolp: string[] = [];
-
     buscarDashboard: string;
     fechaSolp: any;
     hoy: Date = new Date();
     es: any;
-
     display: boolean = false;
-
     tablaSolp: any[];
-
     cols: any[];
-
     serviciosDashboard: any = "servicios"
-
+    solp: Solp = new Solp();
 
     showDialog() {
         this.display = true;
@@ -98,7 +89,14 @@ export class DashboardComponent extends ListBaseComponent {
         return false;
     }
 
-   
+    goToSeccionParam(path: string, param: any) {
+        $("#mySidenav").css({ 'right': '-270px' });
+        $("#myMenuClose").css({ 'display': 'none' });
+        $("#myMenuOpen").css({ 'display': 'block' });
+        $("#coverAll").fadeOut();
+        this.navService.navegarSeccionParam(path, param);
+        return false;
+    }
 
 
     ngOnInit() {
@@ -206,33 +204,7 @@ export class DashboardComponent extends ListBaseComponent {
     
 }
 
-    traerSolpId(idSolp){
-        try {
-            this.subscription = this.service.traerSolpId(idSolp).subscribe(
-                result => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else { 
-                       
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                }
-
-            );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false; //<-- Prevent Refresh
-
-    }
+   
 
     getCombos(){
         try {
@@ -245,7 +217,6 @@ export class DashboardComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else { 
-                        console.log(result);
                         this.estadoSolpItem = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id

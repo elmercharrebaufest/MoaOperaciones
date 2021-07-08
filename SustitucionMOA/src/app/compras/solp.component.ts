@@ -21,6 +21,7 @@ import { CampoObligatorioViewModel } from './campo-obligatorio-viewModel';
 import { FacturaComponent } from '../factura/factura.component';
 import { EnumPasoSolp } from './enum-paso-solp';
 import { CabeceraComponent } from './SolpPasos/cabecera.component';
+import { ActivatedRoute, Params } from '@angular/router';
 
 
 
@@ -82,6 +83,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     enumSolp: typeof EnumPasoSolp = EnumPasoSolp;
     combos: any;
+    solpId: number = 0;
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -148,7 +150,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }];
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        private messageService: MessageService) {
+        private messageService: MessageService, private route:ActivatedRoute) {
         super(navService, securytiService, floatMsgService, modalService);
 
     }
@@ -221,10 +223,156 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
             
             this.getCombos();
+
+            if(this.route.params){
+                this.route.params.forEach((params: Params) => {
+                    if (params["id"] > 0) this.solpId = params["id"];
+                });
+
+                if(this.solpId > 0){
+                this.traerSolpId(this.solpId);
+                }
+            }
         }
     }
 
 
+    traerSolpId(idSolp){
+        try {
+            this.subscription = this.service.traerSolpId(idSolp).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.cargarSolpActual(result.data);
+                }
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+                
+            });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+            }
+ 
+            return false; //<-- Prevent Refresh
+
+    } 
+
+    cargarSolpActual(solp){
+
+        // Paso 1
+        this.solpActual.id = solp.Id;
+        this.solpActual.nombreDePedido = solp.NombreDeObra || '';
+        this.solpActual.fiscalContrato = solp.FiscalContrato || '';
+        this.solpActual.telefono = solp.Telefono || '';
+        this.solpActual.mail = solp.Email || '';
+        this.solpActual.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+        this.solpActual.horaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
+
+        // Paso 2
+        this.solpActual.supervisorSector = solp.SupervisorSector || '';
+        this.solpActual.supervisorTrabajo = solp.SupervisorTrabajo || '';
+        this.solpActual.listaVisitas = solp.VisitasObraMasiva.map(x=> { 
+            return {
+                id: x.Codigo, 
+                visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
+                visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
+            } || '';
+        });
+        this.solpActual.visitaDeObraMasiva = solp.TieneVisitaObraMasiva;
+        this.solpActual.visitaDeObra = solp.TieneVisitaObra;
+        this.solpActual.obradores = solp.TieneObradores;
+        this.solpActual.modoElevacion = solp.TieneMedioElevacion;
+        this.solpActual.tecnicoSeguridad = solp.TieneTecnicoSeguridad;
+        this.solpActual.descripcionTecnica = solp.TieneDescripcionTecnica;        
+        this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
+        this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
+        this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta)); 
+        
+
+        // Paso 3
+        // this.solpActual.Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => {
+        //     return {
+        //         id: x.Id
+        //     }
+        // }),
+        // this.solpActual.especificacionesViewModel.observaciones = solp.ObservacionesGeneracion; 
+        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
+        // this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x=> {
+        //     return {
+        //         id: x.Id,
+        //         nombreArchivo: x.Nombre
+        //     }
+        // });
+        
+        // Paso 4
+        this.solpActual.jornadaLaboralDias.forEach(k => {
+            k.selected = solp.JornadaLaboral.includes(k.weekDay);
+        });           
+        this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));  
+        this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta)); 
+        this.solpActual.ejecucion = solp.DiasEjecucion || '';
+        this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
+
+        // Paso 5
+        this.solpActual.posiciones = solp.Posiciones ? solp.Posiciones.map(x=> {
+            return {
+                id: x.Codigo,
+                textoGenerico: x.TextoGenerico,
+                plazoDeEntrega: x.PlazoEntrega,
+                fechaEntregaServicio: new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio)),
+                fechaDeLiberacion: new Date(this.getDateFromAspNetFormat(x.FechaLiberacion)),
+                concluido: x.EsConcluido,
+                indiceFijacion: x.EsFijacion,
+                selectCentroEntrega: x.Centro,
+                selectAlmacenEntrega: x.Almacen,
+                nombreEntrega: x.NombreEntrega,
+                calleEntrega: x.CalleEntrega,
+                numeroEntrega: x.NumeroEntrega,
+                codigoPostalEntrega: x.CpEntrega,
+                paisEntrega: x.PaisEntrega,
+                selectSolicitanteCompras: x.Solicitante,
+                necesidadCompras: x.NroNecesidad,
+                selectGrupoCompras: x.GrupoCompras,
+                selectArticuloCompras: x.GrupoArticulo,                               
+                selectMonedaCompras: x.Moneda,
+                tipoImputacion: x.TipoImputacion,
+
+                // CodigosProveedores: `ELECTRICO:${x.rubroElectrico}|CIVIL:${x.rubroCivil}|CONSULTORIA:${x.rubroConsultoria}|INGENIERIA:${x.rubroIngenieria}|MECANICO:${x.rubroMecanico}`,
+                // TipoPosicion: { Codigo: 'SERVICIO' },
+
+                listadoSubPosiciones: x.Subposiciones.map(sp => {
+                    return {
+                        id: sp.Codigo,
+                        subPosicion: sp.Numero,
+                        codigoServicio: sp.CodigoServicioSap,
+                        tareaSubcontratar: sp.Tarea,
+                        cuentaMayor: sp.CuentaMayor,
+                        cuentaTd: sp.Cantidad,
+                        unidadSeleccionada: sp.Unidad,
+                        tipoImputacion: sp.TipoImputacionValor
+                    }
+                }),
+
+                Proveedores: [
+                    ...x.proveedoresValidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'VALIDO'} } }),
+                    ...x.proveedoresNoSugeridos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'NOSUGERIDO'} } }),
+                    ...x.proveedoresInvalidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'INVALIDO'} } })
+                ]
+            }
+                            
+        }) : null;
+
+
+
+        
+    }
 
     cambioPaso(paso) {
         this.pasos.forEach((p, i) => {

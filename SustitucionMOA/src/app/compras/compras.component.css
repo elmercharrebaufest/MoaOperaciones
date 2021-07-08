@@ -206,28 +206,7 @@
     overflow: hidden;
   }
 
-  /* ::ng-deep .ui-autocomplete-token {
-    background-color: #E6E6E6 !important;
-    color: #1A1A1A !important;
-    font-size: 14px !important;
-    font-family: "Roboto Condensed", Arial, sans-serif !important;
-  }
-
-  ::ng-deep .ui-state-active > span {
-    background-color: #E6E6E6 !important;
-    color: #1A1A1A !important;
-
-  } */
-  
   /* fin Estilo paso 5 Cabecera */
-
-  /* .estiloCompras {
-    color: #666666;
-    text-align: left;
-    letter-spacing: 0;
-    font-size: 16px !important;
-    font-family: Roboto Regular !important;
-  } */
 
   .prototipo {
     margin: 0px -1px 12px 0px !important;
@@ -383,9 +362,19 @@
   padding-top: 3px;
 }
 
-/* .ui-multiselect .ui-multiselect-label > p-multiSelect  {
+::ng-deep .ui-multiselect .ui-multiselect-label {
+  color: #666666 !important;
+  margin-top: 2px !important;
+}
 
-} */
+::ng-deep .ui-table .ui-sortable-column.ui-state-highlight {
+  background-color: #666666 !important;
+}
+
+::ng-deep .ui-overlaypanel .ui-overlaypanel-close {
+  background-color: #666666 !important;
+  color: white !important;
+}
 
 .botonFechaDashboard {
   background-color: white;
@@ -417,14 +406,13 @@
   border-color: #666666 !important;
 }
 
-/* ::ng-deep .ui-table-wrapper .ng-star-inserted {
-  
-  
-}  */
-
 ::ng-deep .ui-table .ui-table-tbody > tr > td {
   background: inherit;
   border: none !important;
+}
+
+::ng-deep .ui-table .ui-table-thead > tr > th {
+  background-color: #666666 !important;
 }
 
 ::ng-deep .ui-table .ui-table-thead > tr > th {
@@ -434,42 +422,16 @@
   background-color: #666666 !important;
   margin-bottom: 10px;
 
-  /* background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 11px #00000029;
-  border-radius: 4px;
-  opacity: 1; */
+ 
 } 
-/* 
-::ng-deep #tabla.ui-sortable-column.ui-state-highlight  > tr > th {
-  background-color: #666666 !important;
-} */
-
-/* ::ng-deep #jornadaLaboral.errorDias div.ui-button.ui-togglebutton{
-  border: 1px solid #a80000 !important;
-} */
-
-/* ::ng-deep .ui-table .ui-table-tbody > tr > td {
-  background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
-  background: #FFFFFF 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 11px #00000029;
-  border-radius: 4px;
-  opacity: 1;
-}  */
-
-
 
 .datosSap {
   display: none;
-} 
-
-/* ::ng-deep #desdeHasta.div.ui-overlaypanel.ui-overlaypanel-content {
-  text-align: center;
-  margin-left: 10px;
-} */
-
+}
 
 .separadorCompras {
   margin-bottom: 15px;
 }
+
+
 

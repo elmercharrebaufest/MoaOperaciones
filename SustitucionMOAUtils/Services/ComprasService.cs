@@ -364,7 +364,7 @@ namespace SustitucionMOAUtils.Services
                     NroSolp = x.NroSolp,
                     FechaCreacion = x.FechaCreacion,
                     EstadoDocumento = new TablaEstadoDto(x.EstadoDocumento),
-                    EstadoSolpSap_Id = x.EstadoSolpSap_Id,
+                    EstadoSolpSapId = x.EstadoSolpSap_Id,
                     EstadoSolpSap = x.EstadoSolpSap != null ? new TablaSapDto(x.EstadoSolpSap) : new TablaSapDto(),
                     //TipoSolp
                     VincularPliego = !x.Pliego_Id.HasValue,
@@ -377,14 +377,24 @@ namespace SustitucionMOAUtils.Services
 
         public SolpDto TraerSolpId(int idSolp)
         {
-            var x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
+
+            var includes = new List<Expression<Func<Solp, object>>>();
+            includes.Add(u => u.Pliego);
+            includes.Add(u => u.Pliego.VisitasMasivas);
+            includes.Add(u => u.Pliego.Archivos);
+            includes.Add(u => u.Posiciones);
+            includes.Add(u => u.Posiciones.Select(y => y.Subposiciones));
+            includes.Add(u => u.UsuarioCreacion);
+            includes.Add(u => u.UsuarioModificacion);
+
+            var x = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
 
             if (x == null)
             {
                 throw new InfoCustomException("No se encontro la solp");
             }
 
-           
+
             var solpDevuelta = new SolpDto()
             {
 
@@ -397,7 +407,7 @@ namespace SustitucionMOAUtils.Services
                 //TipoSolp
                 VincularPliego = !x.Pliego_Id.HasValue,
 
-                
+
                 NombreDeObra = x.Pliego.NombreObra,
                 FiscalContrato = x.Pliego.FiscalContrato,
                 Telefono = x.Pliego.Telefono,
@@ -405,14 +415,7 @@ namespace SustitucionMOAUtils.Services
                 FechaHoraEntrega = x.Pliego.FechaHoraEntrega,
                 SupervisorSector = x.Pliego.SupervisorSector,
                 SupervisorTrabajo = x.Pliego.SupervisorTrabajo,
-                VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto
-                {
-
-                    Codigo = a.Codigo,
-                    FechaHora = a.FechaHora ?? DateTime.MinValue
-
-                }).ToList(),
-
+                VisitasObraMasiva = x.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
                 TieneVisitaObra = x.Pliego.TieneVisitaObra ?? false,
                 TieneVisitaObraMasiva = x.Pliego.TieneVisitaObraMasiva ?? false,
                 TieneObradores = x.Pliego.TieneObradores ?? false,
@@ -425,7 +428,7 @@ namespace SustitucionMOAUtils.Services
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
                 DiasEjecucion = x.Pliego.DiasEjecucion,
                 ObservacionesCotizacion = x.Pliego.ObservacionesCotizacion,
-                //JornadaLaboral = x.Pliego.JornadaLaboralDias,
+                JornadaLaboral = x.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(), 
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
@@ -439,8 +442,8 @@ namespace SustitucionMOAUtils.Services
 
                 }).ToList(),
                     
-                EstadoSolpSap_Id = x.EstadoSolpSap_Id,
-                EstadoDocumento_Id = x.EstadoDocumento_Id
+                EstadoSolpSapId = x.EstadoSolpSap_Id,
+                EstadoDocumentoId = x.EstadoDocumento_Id
                    
             };
 
