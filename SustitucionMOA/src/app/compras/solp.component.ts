@@ -283,7 +283,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 id: x.Codigo, 
                 visitaDeObraFecha: new Date(this.getDateFromAspNetFormat(x.FechaHora)),
                 visitaDeObraHora: new Date(this.getDateFromAspNetFormat(x.FechaHora))
-            }
+            } || '';
         });
         this.solpActual.visitaDeObraMasiva = solp.TieneVisitaObraMasiva;
         this.solpActual.visitaDeObra = solp.TieneVisitaObra;
@@ -294,11 +294,16 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
         this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta)); 
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion || '';
+        
 
         // Paso 3
-        // Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=>x.id),
-        // this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || '';                
+        // this.solpActual.Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => {
+        //     return {
+        //         id: x.Id
+        //     }
+        // }),
+        // this.solpActual.especificacionesViewModel.observaciones = solp.ObservacionesGeneracion; 
+        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
         // this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x=> {
         //     return {
         //         id: x.Id,
@@ -313,7 +318,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.comienzoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralDesde));  
         this.solpActual.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta)); 
         this.solpActual.ejecucion = solp.DiasEjecucion || '';
-        this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion || '';
+        this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
         this.solpActual.posiciones = solp.Posiciones ? solp.Posiciones.map(x=> {

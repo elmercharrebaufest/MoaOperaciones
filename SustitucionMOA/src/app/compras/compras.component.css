@@ -362,9 +362,19 @@
   padding-top: 3px;
 }
 
-/* .ui-multiselect .ui-multiselect-label > p-multiSelect  {
+::ng-deep .ui-multiselect .ui-multiselect-label {
+  color: #666666 !important;
+  margin-top: 2px !important;
+}
 
-} */
+::ng-deep .ui-table .ui-sortable-column.ui-state-highlight {
+  background-color: #666666 !important;
+}
+
+::ng-deep .ui-overlaypanel .ui-overlaypanel-close {
+  background-color: #666666 !important;
+  color: white !important;
+}
 
 .botonFechaDashboard {
   background-color: white;
@@ -399,6 +409,10 @@
 ::ng-deep .ui-table .ui-table-tbody > tr > td {
   background: inherit;
   border: none !important;
+}
+
+::ng-deep .ui-table .ui-table-thead > tr > th {
+  background-color: #666666 !important;
 }
 
 ::ng-deep .ui-table .ui-table-thead > tr > th {
