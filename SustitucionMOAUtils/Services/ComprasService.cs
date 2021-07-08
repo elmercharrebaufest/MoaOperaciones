@@ -68,6 +68,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
 
                 solpEntity.Pliego = new Pliego();
+                solpEntity.Posiciones = new List<SolpPosicion>();
                 pliegoEntity = solpEntity.Pliego;
 
                 repositorio.Agregar(solpEntity);
@@ -75,7 +76,8 @@ namespace SustitucionMOAUtils.Services
              
             if (solpEntity != null)
             {
-                solpEntity.ClaseDocumento_Id = solp.ClaseDocumentoId;
+                if(solp.ClaseDocumento != null)
+                    solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
 
                 pliegoEntity.NombreObra = solp.NombreDeObra;
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
@@ -141,6 +143,116 @@ namespace SustitucionMOAUtils.Services
                 if (pliegoEntity.Archivos == null)
                 {
                     pliegoEntity.Archivos = new List<Archivo>();
+                }
+
+                if(solpEntity.Posiciones == null)
+                {
+                    solpEntity.Posiciones = new List<SolpPosicion>();
+                }
+
+                if(solp.Posiciones != null)
+                {
+                    //posiciones nuevas y actualizadas
+                    foreach (var pos in solp.Posiciones.Where(x=> !solpEntity.Posiciones.Any(y=> y.TextoGenerico == x.TextoGenerico)))
+                    {
+                        SolpPosicion posEntity = null;
+
+                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.TextoGenerico == pos.TextoGenerico);
+
+                        if (posEntity == null)
+                            posEntity = new SolpPosicion();
+
+                        posEntity.TextoGenerico = pos.TextoGenerico;
+                        posEntity.CodigosProveedores = pos.CodigosProveedores;
+                        posEntity.EsConcluido = pos.EsConcluido;
+                        posEntity.EsFijacion = pos.EsFijacion;
+                        posEntity.FechaEntregaServicio = pos.FechaEntregaServicio;
+                        posEntity.FechaLiberacion = pos.FechaLiberacion;
+                        posEntity.NroNecesidad = pos.NroNecesidad;
+
+                        posEntity.CalleEntrega = pos.CalleEntrega;
+                        posEntity.NombreEntrega = pos.NombreEntrega;
+                        posEntity.CpEntrega = pos.CpEntrega;
+                        posEntity.NumeroEntrega = pos.NumeroEntrega;
+                        posEntity.PaisEntrega = pos.PaisEntrega;
+                        posEntity.PlazoEntrega = pos.PlazoEntrega;
+                        posEntity.Solicitante = pos.Solicitante;
+                        
+                        if(pos.TipoPosicion != null)
+                            posEntity.TipoPosicion = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoPosicionSolp && x.Codigo == pos.TipoPosicion.Codigo);
+
+                        if (pos.TipoImputacion != null)
+                            posEntity.TipoImputacion = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoImputacionSolp && x.Codigo == pos.TipoImputacion.Codigo);
+
+                        if (pos.Almacen != null)
+                            posEntity.Almacen = repositorio.Obtener<TablaSap>(x=>x.Tabla == TablasSap.Almacen && x.Codigo == pos.Almacen.Codigo);
+
+                        if (pos.Centro != null)
+                            posEntity.Centro = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Centro && x.Codigo == pos.Centro.Codigo);
+
+                        if (pos.GrupoCompras != null)
+                            posEntity.GrupoCompras = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoCompras && x.Codigo == pos.GrupoCompras.Codigo);
+
+                        if (pos.GrupoArticulo != null)
+                            posEntity.GrupoArticulo = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoArticulo && x.Codigo == pos.GrupoArticulo.Codigo);
+
+                        if (pos.Subposiciones != null)
+                        {
+                            if (posEntity.Subposiciones == null)
+                                posEntity.Subposiciones = new List<SolpSubposicion>();
+
+                            foreach (var subpos in pos.Subposiciones)
+                            {
+                                SolpSubposicion subposEntity = null;
+
+                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero);
+
+                                if (subposEntity == null)
+                                    subposEntity = new SolpSubposicion();
+
+                                subposEntity.Cantidad = subpos.Cantidad;
+                                subposEntity.CentroCosto = subpos.TipoImputacionValor; //cambiar campo en base
+                                subposEntity.CuentaMayor = subpos.CuentaMayor;
+                                subposEntity.Numero = subpos.Numero;
+                                subposEntity.PrecioBruto = subpos.PrecioBruto;
+                                subposEntity.Tarea = subpos.Tarea;
+
+                                if (subpos.Unidad != null)
+                                    subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
+
+                                if(subpos.CodigoServicioSap != null)
+                                    subposEntity.CodigoServicioSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CodigoServicioSap && x.Codigo == subpos.Unidad.Codigo);
+
+                                posEntity.Subposiciones.Add(subposEntity);
+                            }
+                        }
+
+                        if(pos.Proveedores != null)
+                        {
+                            if(posEntity.Proveedores == null)
+                                posEntity.Proveedores = new List<SolpProveedor>();
+
+                            foreach (var prov in pos.Proveedores)
+                            {
+                                SolpProveedor provEntity = null;
+
+                                provEntity = posEntity.Proveedores.FirstOrDefault(x=>x.RazonSocial == prov.RazonSocial);
+
+                                if (provEntity == null)
+                                    provEntity = new SolpProveedor();
+
+                                provEntity.RazonSocial = prov.RazonSocial;
+                                //pendiente otros campos
+
+                                if(prov.TipoFiltroProveedorSolp != null)
+                                    provEntity.TipoFiltroProveedorSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoFiltroSolpProveedor && x.Codigo == prov.TipoFiltroProveedorSolp.Codigo);
+
+                                posEntity.Proveedores.Add(provEntity);
+                            }
+                        }
+                    }
+
+                    //posiciones eliminadas
                 }
             }
 

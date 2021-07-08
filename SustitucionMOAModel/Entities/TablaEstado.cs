@@ -17,5 +17,6 @@ namespace SustitucionMOAModel.Entities
         public int Orden { get; set; }
         public string Color { get; set; }
 
+    }
     
 }
