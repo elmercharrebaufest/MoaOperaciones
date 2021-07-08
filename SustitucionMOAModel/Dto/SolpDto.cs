@@ -252,7 +252,6 @@ namespace SustitucionMOAModel.Dto
                 this.ProveedorId = entity.Proveedor_Id;
                 this.RazonSocial = entity.RazonSocial;
                 this.TipoFiltroProveedorSolpId = entity.TipoFiltroProveedorSolp_Id;
-                this.Proveedor = new ProveedorDto(entity.Proveedor);
                 this.TipoFiltroProveedorSolp = new TablaGeneralDto(entity.TipoFiltroProveedorSolp);
             }
         }

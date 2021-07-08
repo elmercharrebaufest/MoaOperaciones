@@ -22,6 +22,7 @@ import { FacturaComponent } from '../factura/factura.component';
 import { EnumPasoSolp } from './enum-paso-solp';
 import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { ActivatedRoute, Params } from '@angular/router';
+import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
 
 
 
@@ -294,23 +295,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
         this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta)); 
-        
+        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
 
         // Paso 3
-        // this.solpActual.Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => {
-        //     return {
-        //         id: x.Id
-        //     }
-        // }),
-        // this.solpActual.especificacionesViewModel.observaciones = solp.ObservacionesGeneracion; 
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
-        // this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x=> {
-        //     return {
-        //         id: x.Id,
-        //         nombreArchivo: x.Nombre
-        //     }
-        // });
-        
+        this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
+        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x => {
+            return {
+                id: x.Id,
+                nombreArchivo: x.Nombre
+            }
+        }),
+        this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas; 
+
         // Paso 4
         this.solpActual.jornadaLaboralDias.forEach(k => {
             k.selected = solp.JornadaLaboral.includes(k.weekDay);
@@ -321,57 +317,55 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
-        this.solpActual.posiciones = solp.Posiciones ? solp.Posiciones.map(x=> {
-            return {
-                id: x.Codigo,
-                textoGenerico: x.TextoGenerico,
-                plazoDeEntrega: x.PlazoEntrega,
-                fechaEntregaServicio: new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio)),
-                fechaDeLiberacion: new Date(this.getDateFromAspNetFormat(x.FechaLiberacion)),
-                concluido: x.EsConcluido,
-                indiceFijacion: x.EsFijacion,
-                selectCentroEntrega: x.Centro,
-                selectAlmacenEntrega: x.Almacen,
-                nombreEntrega: x.NombreEntrega,
-                calleEntrega: x.CalleEntrega,
-                numeroEntrega: x.NumeroEntrega,
-                codigoPostalEntrega: x.CpEntrega,
-                paisEntrega: x.PaisEntrega,
-                selectSolicitanteCompras: x.Solicitante,
-                necesidadCompras: x.NroNecesidad,
-                selectGrupoCompras: x.GrupoCompras,
-                selectArticuloCompras: x.GrupoArticulo,                               
-                selectMonedaCompras: x.Moneda,
-                tipoImputacion: x.TipoImputacion,
+        if(solp.Posiciones){
+            this.solpActual.posiciones = solp.Posiciones.map(x=> {
+                return {
+                    id: x.Codigo,
+                    textoGenerico: x.TextoGenerico,
+                    plazoDeEntrega: x.PlazoEntrega,
+                    fechaEntregaServicio: new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio)),
+                    fechaDeLiberacion: new Date(this.getDateFromAspNetFormat(x.FechaLiberacion)),
+                    concluido: x.EsConcluido,
+                    indiceFijacion: x.EsFijacion,
+                    selectCentroEntrega: x.Centro,
+                    selectAlmacenEntrega: x.Almacen,
+                    nombreEntrega: x.NombreEntrega,
+                    calleEntrega: x.CalleEntrega,
+                    numeroEntrega: x.NumeroEntrega,
+                    codigoPostalEntrega: x.CpEntrega,
+                    paisEntrega: x.PaisEntrega,
+                    selectSolicitanteCompras: x.Solicitante,
+                    necesidadCompras: x.NroNecesidad,
+                    selectGrupoCompras: x.GrupoCompras,
+                    selectArticuloCompras: x.GrupoArticulo,                               
+                    selectMonedaCompras: x.Moneda,
+                    tipoImputacion: x.TipoImputacion && x.TipoImputacion.Codigo,
+                    rubroElectrico: x.CodigosProveedores.includes('ELECTRICO'),
+                    rubroConsultoria: x.CodigosProveedores.includes('CONSULTORIA'),
+                    rubroCivil: x.CodigosProveedores.includes('CIVIL'),
+                    rubroIngenieria: x.CodigosProveedores.includes('INGENIERIA'),
+                    rubroMecanico: x.CodigosProveedores.includes('MECANICO'),
 
-                // CodigosProveedores: `ELECTRICO:${x.rubroElectrico}|CIVIL:${x.rubroCivil}|CONSULTORIA:${x.rubroConsultoria}|INGENIERIA:${x.rubroIngenieria}|MECANICO:${x.rubroMecanico}`,
-                // TipoPosicion: { Codigo: 'SERVICIO' },
-
-                listadoSubPosiciones: x.Subposiciones.map(sp => {
-                    return {
-                        id: sp.Codigo,
-                        subPosicion: sp.Numero,
-                        codigoServicio: sp.CodigoServicioSap,
-                        tareaSubcontratar: sp.Tarea,
-                        cuentaMayor: sp.CuentaMayor,
-                        cuentaTd: sp.Cantidad,
-                        unidadSeleccionada: sp.Unidad,
-                        tipoImputacion: sp.TipoImputacionValor
-                    }
-                }),
-
-                Proveedores: [
-                    ...x.proveedoresValidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'VALIDO'} } }),
-                    ...x.proveedoresNoSugeridos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'NOSUGERIDO'} } }),
-                    ...x.proveedoresInvalidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'INVALIDO'} } })
-                ]
-            }
-                            
-        }) : null;
-
-
-
-        
+                    proveedoresValidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO'),
+                    proveedoresNoSugeridos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO'),
+                    proveedoresInvalidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO'),
+                    // TipoPosicion: { Codigo: 'SERVICIO' },
+    
+                    listadoSubPosiciones: x.Subposiciones ? x.Subposiciones.map(sp => {
+                        return {
+                            id: sp.Codigo,
+                            subPosicion: sp.Numero,
+                            codigoServicio: sp.CodigoServicioSap,
+                            tareaSubcontratar: sp.Tarea,
+                            cuentaMayor: sp.CuentaMayor,
+                            cuentaTd: sp.Cantidad,
+                            unidadSeleccionada: sp.Unidad,
+                            tipoImputacion: sp.TipoImputacionValor
+                        }
+                    }) : []
+                }
+            });
+        }
     }
 
     cambioPaso(paso) {
@@ -459,11 +453,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                 }
 
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
     }

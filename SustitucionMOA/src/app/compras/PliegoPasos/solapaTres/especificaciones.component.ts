@@ -95,21 +95,17 @@ export class EspecificacionesComponent extends ListBaseComponent {
 
     //elimno el archivo, llamar al servicio de eliminacion
     eliminarAdjuntoNuevo(archivo): void {
-        debugger
         var indice = this.viewModel.archivosAdjuntosNuevos.indexOf(archivo)
         this.viewModel.archivosAdjuntosNuevos.splice(indice, 1)
     }
 
     eliminarAdjuntoGuardado(archivo): void {
-        debugger
         var indice = this.viewModel.archivosGuardadosEspecificaciones.indexOf(archivo)
         this.viewModel.archivosGuardadosEspecificaciones.splice(indice, 1)
     }
 
 
     descargarArchivo(archivo): void {
-        debugger
-        var a = this.viewModel;
         if (archivo.id != undefined) {
 
             this.service.DescargarArchivo(archivo.id)
