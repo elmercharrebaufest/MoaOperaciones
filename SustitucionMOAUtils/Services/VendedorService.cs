@@ -104,7 +104,7 @@ namespace SustitucionMOAUtils.Services
                 .Select(v => new Vendedor()
                 {
                     descVendedor = v.RazonSocial,
-                    estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Alta interna Pendiente" : "Pendiente de envío documentación original",
+                    estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true)? "Alta interna Pendiente" : "Pendiente de envío documentación original",
                     estadoMoa = v.EstadoAprobacionDescripcion,
                     idVendedor = v.CodigoProveedor
                 });
@@ -273,7 +273,8 @@ namespace SustitucionMOAUtils.Services
                             RazonSocial = proveedor.RazonSocial ?? "",
                             FechaSolicitud = proveedor.FechaSolicitud,
                             Comercial = proveedor.Comercial,
-                            EstadoSIPER = proveedor.EstadoSIPER
+                            EstadoSIPER = proveedor.EstadoSIPER,
+                            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
                         })
                 );
             }
@@ -301,7 +302,8 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     FechaSolicitud = proveedor.FechaSolicitud,
                     Comercial = proveedor.Comercial,
-                    EstadoSIPER = proveedor.EstadoSIPER
+                    EstadoSIPER = proveedor.EstadoSIPER,
+                    ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
                 }
                 ).ToList());
             }

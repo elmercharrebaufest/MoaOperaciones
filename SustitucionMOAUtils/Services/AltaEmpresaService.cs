@@ -70,13 +70,13 @@ namespace SustitucionMOAUtils.Services
                             Observaciones = proveedor.Observaciones,
                             RazonSocial = proveedor.RazonSocial ?? "",
                             RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
-                            FechaSolicitud = proveedor.FechaSolicitud,
+                            FechaSolicitud = proveedor.HistorialAprobaciones?.Where(e => e.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente).OrderBy(x => x.Fecha).FirstOrDefault()?.Fecha,
                             Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
                             EstadoSIPER = proveedor.EstadoSIPER,
                             AltaInterna = proveedor.AltaInterna,
                             IngresoAPlanta = proveedor.IngresoAPlanta,
                             UltimaEdicion = proveedor.HistorialAprobaciones?.OrderByDescending(x => x.Fecha).FirstOrDefault()?.Fecha,
-                            FechaAltaAceptada = proveedor.HistorialAprobaciones?.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado).LastOrDefault()?.Fecha,
+                            FechaAltaAceptada = proveedor.HistorialAprobaciones?.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado).OrderBy(x => x.Fecha).LastOrDefault()?.Fecha,
                             HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                             {
                                 Id = a.Id,
@@ -85,7 +85,7 @@ namespace SustitucionMOAUtils.Services
                                 Observacion = a.Observacion,
                                 Usuario = a.Usuario.Mail,
                                 ObservacionParaProveedor = a.ObservacionParaProveedor
-                            }).ToList(),
+                            }).OrderBy(c => c.Fecha).ToList(),
                             IdTipoUsuario = proveedor.TipoProveedor.Id,
                             CBU = proveedor.CBU,
                             CondicionDePago = proveedor.CondicionDePago,

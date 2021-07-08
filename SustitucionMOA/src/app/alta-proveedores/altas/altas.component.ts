@@ -832,9 +832,9 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
         informacionExportar = this.data.map(info => {
             return {
-                "Codigo": info.CodigoProveedor || "-",
+                "Código": info.CodigoProveedor || "-",
                 "CUIT": info.CUIT || "-",
-                "Razon Social": info.RazonSocial || "-",
+                "Razón Social": info.RazonSocial || "-",
                 "Mail": info.Mail,
                 "Corredor": info.RazonSocialCorredor || "-",
                 "Comercial / Solicitante Interno": info.Comercial || "-",
