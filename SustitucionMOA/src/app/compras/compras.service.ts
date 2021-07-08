@@ -65,50 +65,51 @@ export class ComprasService extends BaseService {
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=>x.id),
-            // Posiciones: solp.posiciones.map(x=> {
-            //     return {
-            //         Codigo: x.id,
-            //         TextoGenerico: x.textoGenerico,
-            //         PlazoEntrega: x.plazoDeEntrega,
-            //         FechaEntregaServicio: x.fechaEntregaServicio,
-            //         FechaLiberacion: x.fechaDeLiberacion,
-            //         EsConcluido: x.concluido,
-            //         EsFijacion: x.indiceFijacion,
-            //         Centro: { Codigo: x.selectCentroEntrega.Codigo },
-            //         Almacen: { Codigo: x.selectAlmacenEntrega.Codigo },
-            //         NombreEntrega: x.nombreEntrega,
-            //         CalleEntrega: x.calleEntrega,
-            //         NumeroEntrega: x.numeroEntrega,
-            //         CpEntrega: x.codigoPostalEntrega,
-            //         PaisEntrega: x.paisEntrega,
-            //         GrupoCompras: { Codigo: x.selectGrupoCompras.Codigo },
-            //         Solicitante: x.selectSolicitanteCompras,
-            //         NroNecesidad: x.necesidadCompras,
-            //         GrupoArticulo: { Codigo: x.selectArticuloCompras.Codigo },
-            //         CodigosProveedores: `ELECTRICO:${x.rubroElectrico}|CIVIL:${x.rubroCivil}|CONSULTORIA:${x.rubroConsultoria}|INGENIERIA:${x.rubroIngenieria}|MECANICO:${x.rubroMecanico}`,
-            //         Moneda: { Codigo: x.selectMonedaCompras.Codigo },
-            //         TipoImputacion: { Codigo: x.tipoImputacion },
-            //         TipoPosicion: { Codigo: 'SERVICIO' },
+            ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento &&solp.selectClaseDocumento.Codigo),
+            Posiciones: solp.posiciones.filter(x=>x.textoGenerico).map(x=> {
+                return {
+                    Codigo: x.id,
+                    TextoGenerico: x.textoGenerico,
+                    PlazoEntrega: x.plazoDeEntrega,
+                    FechaEntregaServicio: x.fechaEntregaServicio,
+                    FechaLiberacion: x.fechaDeLiberacion,
+                    EsConcluido: x.concluido,
+                    EsFijacion: x.indiceFijacion,
+                    Centro: this.getObjetoCodigo(x.selectCentroEntrega && x.selectCentroEntrega.Codigo),
+                    Almacen: this.getObjetoCodigo(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Codigo),
+                    NombreEntrega: x.nombreEntrega,
+                    CalleEntrega: x.calleEntrega,
+                    NumeroEntrega: x.numeroEntrega,
+                    CpEntrega: x.codigoPostalEntrega,
+                    PaisEntrega: x.paisEntrega,
+                    GrupoCompras: this.getObjetoCodigo(x.selectGrupoCompras && x.selectGrupoCompras.Codigo),
+                    Solicitante: x.selectSolicitanteCompras,
+                    NroNecesidad: x.necesidadCompras,
+                    GrupoArticulo: this.getObjetoCodigo(x.selectArticuloCompras && x.selectArticuloCompras.Codigo),
+                    CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
+                    Moneda: this.getObjetoCodigo(x.selectMonedaCompras && x.selectMonedaCompras.Codigo),
+                    TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
+                    TipoPosicion: this.getObjetoCodigo('SERVICIO'),
 
-            //         Subposiciones: x.listadoSubPosiciones.map(sp => {
-            //             return {
-            //                 Codigo: sp.id,
-            //                 Numero: sp.subPosicion,
-            //                 CodigoServicioSap: { Codigo: sp.codigoServicio },
-            //                 Tarea: sp.tareaSubcontratar,
-            //                 CuentaMayor: sp.cuentaMayor,
-            //                 Cantidad: sp.cuentaTd,
-            //                 Unidad: { Codigo: sp.unidadSeleccionada.Codigo },
-            //                 TipoImputacionValor: sp.tipoImputacion
-            //             }
-            //         }),
-            //         Proveedores: [
-            //             ...x.proveedoresValidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'VALIDO'} } }),
-            //             ...x.proveedoresNoSugeridos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'NOSUGERIDO'} } }),
-            //             ...x.proveedoresInvalidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'INVALIDO'} } })
-            //         ]
-            //     }
-            // })
+                    Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.map(sp => {
+                        return {
+                            Codigo: sp.id,
+                            Numero: sp.subPosicion,
+                            CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio),
+                            Tarea: sp.tareaSubcontratar,
+                            CuentaMayor: sp.cuentaMayor,
+                            Cantidad: sp.cuentaTd,
+                            Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
+                            TipoImputacionValor: sp.tipoImputacion
+                        }
+                    }) : null,
+                    Proveedores: [
+                        ...this.getProveedores(x.proveedoresValidos, 'VALIDO'),
+                        ...this.getProveedores(x.proveedoresNoSugeridos, 'NOSUGERIDO'),
+                        ...this.getProveedores(x.proveedoresInvalidos, 'INVALIDO')
+                    ]
+                }
+            })
         });
 
         var payload = new FormData();
@@ -131,6 +132,32 @@ export class ComprasService extends BaseService {
 
     getFechaHora(fecha: Date, hora: Date){
         return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDay(), hora.getHours(), hora.getMinutes(), hora.getSeconds(), 0);
+    }
+
+    getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico){
+        let list = [];
+
+        if(electrico) list.push('ELECTRICO');
+        if(consultoria) list.push('CONSULTORIA');
+        if(civil) list.push('CIVIL');
+        if(ingenieria) list.push('INGENIERIA');
+        if(mecanico) list.push('MECANICO');
+
+        return list.join(',');
+    }
+
+    getProveedores(proveedores, codigo){
+        if(proveedores)
+            return proveedores.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp:  this.getObjetoCodigo(codigo) } });
+        
+        return [];
+    }
+
+    getObjetoCodigo(codigo){
+        if(codigo)
+            return { Codigo: codigo }
+        
+        return null;
     }
 
     DescargarArchivo(archivoId: number): Observable<any> {

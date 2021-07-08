@@ -142,51 +142,54 @@ namespace SustitucionMOAModel.Dto
 
         public SolpPosicionDto(SolpPosicion entity)
         {
-            this.Codigo = entity.Id.ToString();
-            this.TipoPosicionId = entity.TipoPosicion_Id;
-            this.TipoImputacionId = entity.TipoImputacion_Id;
-            this.TextoGenerico = entity.TextoGenerico;
-            this.FechaEntregaServicio = entity.FechaEntregaServicio;
-            this.FechaLiberacion = entity.FechaLiberacion;
-            this.PlazoEntrega = entity.PlazoEntrega;
-            this.EsConcluido = entity.EsConcluido;
-            this.EsFijacion = entity.EsFijacion;
-            this.CentroId = entity.Centro_Id;
-            this.AlmacenId = entity.Almacen_Id;
-            this.NombreEntrega = entity.NombreEntrega;
-            this.CalleEntrega = entity.CalleEntrega;
-            this.NumeroEntrega = entity.NumeroEntrega;
-            this.CpEntrega = entity.CpEntrega;
-            this.PaisEntrega = entity.PaisEntrega;
-            this.GrupoComprasId = entity.GrupoCompras_Id;
-            this.Solicitante = entity.Solicitante;
-            this.NroNecesidad = entity.NroNecesidad;
-            this.GrupoArticuloId = entity.GrupoArticulo_Id;
-            this.CodigosProveedores = entity.CodigosProveedores;
-            this.MonedaId = entity.Moneda_Id;
-            this.TipoPosicion = new TablaGeneralDto(entity.TipoPosicion);
-            this.TipoImputacion = new TablaGeneralDto(entity.TipoImputacion);
-            this.Centro = new TablaSapDto(entity.Centro);
-            this.Almacen = new TablaSapDto(entity.Almacen);
-            this.GrupoCompras = new TablaSapDto(entity.GrupoCompras);
-            this.GrupoArticulo = new TablaSapDto(entity.GrupoArticulo);
-            this.Moneda = new TablaSapDto(entity.Moneda);
-            this.Subposiciones = new List<SolpSubposicionDto>();
-            this.Proveedores = new List<SolpProveedorDto>();
-
-            if (entity.Subposiciones != null) 
+            if(entity != null)
             {
-                foreach (var subpos in entity.Subposiciones) 
+                this.Codigo = entity.Id.ToString();
+                this.TipoPosicionId = entity.TipoPosicion_Id;
+                this.TipoImputacionId = entity.TipoImputacion_Id;
+                this.TextoGenerico = entity.TextoGenerico;
+                this.FechaEntregaServicio = entity.FechaEntregaServicio;
+                this.FechaLiberacion = entity.FechaLiberacion;
+                this.PlazoEntrega = entity.PlazoEntrega;
+                this.EsConcluido = entity.EsConcluido;
+                this.EsFijacion = entity.EsFijacion;
+                this.CentroId = entity.Centro_Id;
+                this.AlmacenId = entity.Almacen_Id;
+                this.NombreEntrega = entity.NombreEntrega;
+                this.CalleEntrega = entity.CalleEntrega;
+                this.NumeroEntrega = entity.NumeroEntrega;
+                this.CpEntrega = entity.CpEntrega;
+                this.PaisEntrega = entity.PaisEntrega;
+                this.GrupoComprasId = entity.GrupoCompras_Id;
+                this.Solicitante = entity.Solicitante;
+                this.NroNecesidad = entity.NroNecesidad;
+                this.GrupoArticuloId = entity.GrupoArticulo_Id;
+                this.CodigosProveedores = entity.CodigosProveedores;
+                this.MonedaId = entity.Moneda_Id;
+                this.TipoPosicion = new TablaGeneralDto(entity.TipoPosicion);
+                this.TipoImputacion = new TablaGeneralDto(entity.TipoImputacion);
+                this.Centro = new TablaSapDto(entity.Centro);
+                this.Almacen = new TablaSapDto(entity.Almacen);
+                this.GrupoCompras = new TablaSapDto(entity.GrupoCompras);
+                this.GrupoArticulo = new TablaSapDto(entity.GrupoArticulo);
+                this.Moneda = new TablaSapDto(entity.Moneda);
+                this.Subposiciones = new List<SolpSubposicionDto>();
+                this.Proveedores = new List<SolpProveedorDto>();
+
+                if (entity.Subposiciones != null)
                 {
-                    this.Subposiciones.Add(new SolpSubposicionDto(subpos));
+                    foreach (var subpos in entity.Subposiciones)
+                    {
+                        this.Subposiciones.Add(new SolpSubposicionDto(subpos));
+                    }
                 }
-            }
 
-            if (entity.Proveedores != null)
-            {
-                foreach (var proveedor in entity.Proveedores)
+                if (entity.Proveedores != null)
                 {
-                    this.Proveedores.Add(new SolpProveedorDto(proveedor));
+                    foreach (var proveedor in entity.Proveedores)
+                    {
+                        this.Proveedores.Add(new SolpProveedorDto(proveedor));
+                    }
                 }
             }
         }
@@ -205,7 +208,6 @@ namespace SustitucionMOAModel.Dto
         public decimal? PrecioBruto { get; set; }
         public string TipoImputacionValor { get; set; }
 
-        public SolpPosicionDto SolpPosicion { get; set; }
         public TablaSapDto CodigoServicioSap { get; set; }
         public TablaSapDto Unidad { get; set; }
 
@@ -213,18 +215,20 @@ namespace SustitucionMOAModel.Dto
 
         public SolpSubposicionDto(SolpSubposicion entity)
         {
-            this.Codigo = entity.Id.ToString();
-            this.Numero = entity.Numero;
-            this.CodigoServicioSapId = entity.CodigoServicioSap_Id;
-            this.Tarea = entity.Tarea;
-            this.CuentaMayor = entity.CuentaMayor;
-            this.Cantidad = entity.Cantidad;
-            this.UnidadId = entity.Unidad_Id;
-            this.PrecioBruto = entity.PrecioBruto;
-            this.TipoImputacionValor = entity.SolpPosicion.TipoImputacion.Descripcion;
-            this.SolpPosicion = new SolpPosicionDto(entity.SolpPosicion);
-            this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
-            this.Unidad = new TablaSapDto(entity.Unidad);
+            if(entity != null)
+            {
+                this.Codigo = entity.Id.ToString();
+                this.Numero = entity.Numero;
+                this.CodigoServicioSapId = entity.CodigoServicioSap_Id;
+                this.Tarea = entity.Tarea;
+                this.CuentaMayor = entity.CuentaMayor;
+                this.Cantidad = entity.Cantidad;
+                this.UnidadId = entity.Unidad_Id;
+                this.PrecioBruto = entity.PrecioBruto;
+                this.TipoImputacionValor = entity.CentroCosto; //se corregira luego el campo en base
+                this.CodigoServicioSap = new TablaSapDto(entity.CodigoServicioSap);
+                this.Unidad = new TablaSapDto(entity.Unidad);
+            }
         }
     }
 
@@ -242,12 +246,15 @@ namespace SustitucionMOAModel.Dto
 
         public SolpProveedorDto(SolpProveedor entity)
         {
-            this.Codigo = entity.Id.ToString();
-            this.ProveedorId = entity.Proveedor_Id;
-            this.RazonSocial = entity.RazonSocial;
-            this.TipoFiltroProveedorSolpId = entity.TipoFiltroProveedorSolp_Id;
-            this.Proveedor = new ProveedorDto(entity.Proveedor);
-            this.TipoFiltroProveedorSolp = new TablaGeneralDto(entity.TipoFiltroProveedorSolp);
+            if(entity != null)
+            {
+                this.Codigo = entity.Id.ToString();
+                this.ProveedorId = entity.Proveedor_Id;
+                this.RazonSocial = entity.RazonSocial;
+                this.TipoFiltroProveedorSolpId = entity.TipoFiltroProveedorSolp_Id;
+                this.Proveedor = new ProveedorDto(entity.Proveedor);
+                this.TipoFiltroProveedorSolp = new TablaGeneralDto(entity.TipoFiltroProveedorSolp);
+            }
         }
     }
 }

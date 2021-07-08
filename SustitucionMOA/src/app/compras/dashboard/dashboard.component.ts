@@ -72,7 +72,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     cards = [
-        { nombre: "Con documento de pliego", path: "/compras/solp" },
+        { nombre: "Con documento de pliego", path: "/compras/solp/0" },
         // { nombre: "Con documentos requerimientos", path: ""},
         // { nombre: "Sin documento", path: ""},
         // { nombre: "Emergencia", path: ""},

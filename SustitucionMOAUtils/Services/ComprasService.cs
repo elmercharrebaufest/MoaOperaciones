@@ -250,6 +250,8 @@ namespace SustitucionMOAUtils.Services
                                 posEntity.Proveedores.Add(provEntity);
                             }
                         }
+
+                        solpEntity.Posiciones.Add(posEntity);
                     }
 
                     //posiciones eliminadas
@@ -432,19 +434,18 @@ namespace SustitucionMOAUtils.Services
                 JornadaLaboralDesde = x.Pliego.JornadaLaboralHorasDesde,
                 JornadaLaboralHasta = x.Pliego.JornadaLaboralHorasHasta,
                 ClaseDocumento = x.ClaseDocumento != null ? new TablaSapDto(x.ClaseDocumento) : new TablaSapDto(),
-                Adjuntos = x.Pliego.Archivos.Select(s => new ArchivoDto
+                Adjuntos = x.Pliego.Archivos.Where(a=>a.FileKey == FileKeys.AdjuntoSolp).Select(s => new ArchivoDto
                 {
-
                     Id = s.Id,
-                    FileKey = s.FileKey,
-                    Nombre = s.ObtenerNombre(s.Ruta),
-                    Ruta = s.Ruta
-
+                    Nombre = s.ObtenerNombre(s.Ruta)
                 }).ToList(),
+
+                EspecificacionesTecnicas = x.Pliego.Archivos.FirstOrDefault(a=>a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
                     
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
-                EstadoDocumentoId = x.EstadoDocumento_Id
-                   
+                EstadoDocumentoId = x.EstadoDocumento_Id,
+
+                Posiciones = x.Posiciones.Select(p=>new SolpPosicionDto(p)).ToList()                   
             };
 
             return solpDevuelta;

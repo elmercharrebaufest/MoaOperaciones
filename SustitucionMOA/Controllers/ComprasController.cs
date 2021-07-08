@@ -159,10 +159,14 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-
                 if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
-                return JsonCustom(new { data = service.TraerSolpId(idSolp) });
+                var solp = service.TraerSolpId(idSolp);
+                
+                if(!string.IsNullOrEmpty(solp.EspecificacionesTecnicas))
+                    solp.EspecificacionesTecnicas = System.IO.File.ReadAllText(solp.EspecificacionesTecnicas);
+
+                return JsonCustom(new { data = solp });
             }
             catch (InfoCustomException e)
             {

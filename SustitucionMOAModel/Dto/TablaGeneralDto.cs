@@ -21,12 +21,15 @@ namespace SustitucionMOAModel.Dto
 
         public TablaSapDto(TablaSap entity)
         {
-            this.Id = entity.Id;
-            this.Tabla = entity.Tabla;
-            this.Codigo = entity.Codigo;
-            this.CodigoSap = entity.CodigoSap;
-            this.Descripcion = entity.Descripcion;
-            this.IdPadre = entity.Padre_Id;
+            if(entity != null)
+            {
+                this.Id = entity.Id;
+                this.Tabla = entity.Tabla;
+                this.Codigo = entity.Codigo;
+                this.CodigoSap = entity.CodigoSap;
+                this.Descripcion = entity.Descripcion;
+                this.IdPadre = entity.Padre_Id;
+            }
         }
     }
 }
