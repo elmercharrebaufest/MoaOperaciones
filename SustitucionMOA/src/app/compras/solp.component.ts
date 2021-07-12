@@ -425,6 +425,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     cancelarSolp() {
         this.confirmationService.confirm({
+            key: 'cancelarSolp',
             message: '¿Está seguro que desea volver a la pantalla principal?',
             accept: () => {
                 this.salir()

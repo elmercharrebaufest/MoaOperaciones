@@ -48,7 +48,7 @@
                             </p-dropdown>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-7 col-lg-7 margenInput" style="text-align: right;">
-                            <button class="btn btn-danger" (click)="eliminarPosicionCabecera()"><img  src="./Content/images/icons/trashWhite.svg" alt="trashWhite"/> Eliminar posici&oacute;n</button>
+                            <button class="btn btn-danger" (click)="eliminarPosicion()"><img  src="./Content/images/icons/trashWhite.svg" alt="trashWhite"/> Eliminar posici&oacute;n</button>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                                     Tipo de posici&oacute;n*
                                 </div>
                                 <p-radioButton formControlName="servicio" (blur)="onBlur('servicio')"
-                                    [ngModelOptions]="{standalone:true}" name="posiciones" value="Servicio (F)"
+                                    [ngModelOptions]="{standalone:true}" name="posiciones" value="servicio"
                                     label="Servicio (F)" [(ngModel)]="model.posicionActual.servicio" inputId="servicio">
                                 </p-radioButton>
                                 <div *ngIf="mostrarError('servicio')">

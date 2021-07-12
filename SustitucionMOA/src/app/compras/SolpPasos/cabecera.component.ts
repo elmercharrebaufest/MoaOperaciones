@@ -58,7 +58,6 @@ export class CabeceraComponent extends ListBaseComponent {
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
 
-
     proveedoresAutocomplete: any;
     camposObligatorios: any[] = [
         { campo: 'servicio',                    esObligatorio: true,    esFijo: true },
@@ -270,7 +269,7 @@ export class CabeceraComponent extends ListBaseComponent {
         this.model.posicionActual.paisEntrega =  this.model.posicionActual.paisEntrega || (direccionCentro == undefined ? "" : direccionCentro.Pais);
     }
 
-    eliminarPosicionCabecera()
+    eliminarPosicion()
     {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',
