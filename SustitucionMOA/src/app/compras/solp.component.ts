@@ -23,6 +23,7 @@ import { EnumPasoSolp } from './enum-paso-solp';
 import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
+import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
 
 
 
@@ -325,9 +326,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
-        if(solp.Posiciones){
-            this.solpActual.posiciones = solp.Posiciones.map(x=> {
-                return {
+        if(solp.Posiciones && solp.Posiciones.length > 0){
+            let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
+            
+            let posActual = this.solpActual.posicionActual;
+
+            solp.Posiciones.forEach(x => {
+                posActual = {...posActual,
                     id: x.Codigo,
                     textoGenerico: x.TextoGenerico,
                     plazoDeEntrega: x.PlazoEntrega,
@@ -354,24 +359,34 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     rubroIngenieria: x.CodigosProveedores.includes('INGENIERIA'),
                     rubroMecanico: x.CodigosProveedores.includes('MECANICO'),
 
-                    proveedoresValidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO'),
-                    proveedoresNoSugeridos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO'),
-                    proveedoresInvalidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO'),
-                    // TipoPosicion: { Codigo: 'SERVICIO' },
-    
-                    listadoSubPosiciones: x.Subposiciones ? x.Subposiciones.map(sp => {
-                        return {
+                    proveedoresValidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial),
+                    proveedoresNoSugeridos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial),
+                    proveedoresInvalidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial)
+                };
+
+                if(x.Subposiciones){
+                    posActual.listadoSubPosiciones = [];
+                    let i = 0;
+
+                    x.Subposiciones.forEach(sp => {
+                        let subpos = new SubPosicionViewModel(i);
+                        subpos = {...subpos,
                             id: sp.Codigo,
-                            subPosicion: sp.Numero,
                             codigoServicio: sp.CodigoServicioSap,
                             tareaSubcontratar: sp.Tarea,
                             cuentaMayor: sp.CuentaMayor,
                             cuentaTd: sp.Cantidad,
                             unidadSeleccionada: sp.Unidad,
                             tipoImputacion: sp.TipoImputacionValor
-                        }
-                    }) : []
+                        };
+
+                        this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
+                        i++;
+                    });
                 }
+                
+                if(ultimaPos.Codigo != x.Codigo)
+                    this.solpActual.agregarNuevaPosicion();
             });
         }
     }

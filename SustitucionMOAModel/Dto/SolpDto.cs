@@ -144,7 +144,7 @@ namespace SustitucionMOAModel.Dto
         {
             if(entity != null)
             {
-                this.Codigo = entity.Id.ToString();
+                this.Codigo = entity.Codigo;
                 this.TipoPosicionId = entity.TipoPosicion_Id;
                 this.TipoImputacionId = entity.TipoImputacion_Id;
                 this.TextoGenerico = entity.TextoGenerico;
@@ -217,7 +217,7 @@ namespace SustitucionMOAModel.Dto
         {
             if(entity != null)
             {
-                this.Codigo = entity.Id.ToString();
+                this.Codigo = entity.Codigo;
                 this.Numero = entity.Numero;
                 this.CodigoServicioSapId = entity.CodigoServicioSap_Id;
                 this.Tarea = entity.Tarea;

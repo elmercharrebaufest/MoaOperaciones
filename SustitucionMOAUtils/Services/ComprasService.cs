@@ -162,6 +162,7 @@ namespace SustitucionMOAUtils.Services
                         if (posEntity == null)
                             posEntity = new SolpPosicion();
 
+                        posEntity.Codigo = pos.Codigo;
                         posEntity.TextoGenerico = pos.TextoGenerico;
                         posEntity.CodigosProveedores = pos.CodigosProveedores;
                         posEntity.EsConcluido = pos.EsConcluido;
@@ -210,6 +211,7 @@ namespace SustitucionMOAUtils.Services
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
 
+                                subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
                                 subposEntity.CentroCosto = subpos.TipoImputacionValor; //cambiar campo en base
                                 subposEntity.CuentaMayor = subpos.CuentaMayor;
