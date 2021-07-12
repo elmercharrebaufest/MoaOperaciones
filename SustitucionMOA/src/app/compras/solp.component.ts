@@ -587,5 +587,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         return false; //<-- Prevent Refresh
     }
+
 }
 

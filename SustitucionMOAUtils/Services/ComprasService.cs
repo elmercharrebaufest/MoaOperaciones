@@ -13,6 +13,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using System.Net;
+using System.Net.Mail;
+
 
 namespace SustitucionMOAUtils.Services
 {
@@ -481,12 +487,35 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+        public byte[] GenerarSolpPdf(int idSolp)
+        {
+            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html");
+
+            var templateString = System.IO.File.ReadAllText(templateFilePath);
+
+            StringReader sr = new StringReader(templateString);
+
+            Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+            HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
+                pdfDoc.Open();
+
+                htmlparser.Parse(sr);
+                pdfDoc.Close();
+
+                byte[] bytes = memoryStream.ToArray();
+                memoryStream.Close();
+
+                return bytes;
+            }
 
 
 
 
 
-
+        }    
     }
 
 
