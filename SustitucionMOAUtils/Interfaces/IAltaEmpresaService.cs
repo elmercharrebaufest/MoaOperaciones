@@ -29,5 +29,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         string SolicitarInformacion(int proveedorId, string usuarioMail);
 
+        string AgregarObservacion(int proveedorId, string observacion, string usuarioMail);
+
     }
 }

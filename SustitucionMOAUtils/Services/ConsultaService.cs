@@ -5,6 +5,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
@@ -450,7 +451,7 @@ namespace SustitucionMOAUtils.Services
                     EstadoConsulta = new EstadoConsultaDto 
                         {
                             Id = x.EstadoConsulta.Id,
-                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestion" : x.EstadoConsulta.Descripcion,
+                            Descripcion = esInterno? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
                             Color = x.EstadoConsulta.Color,
                             Code = x.EstadoConsulta.Code
                         },
@@ -606,11 +607,12 @@ namespace SustitucionMOAUtils.Services
             return errores.Any() ? string.Join(".", errores) : SuccessMsg.ArchivoSubidoOK;
         }
 
-        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir)
+        public List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario)
         {
             try
             {
                 List<string> exclude = new List<string>() { };
+                List<Categoria> categorias = new List<Categoria>() { };
 
                 if (excluir.HasValue && excluir == true)
                 {
@@ -620,7 +622,17 @@ namespace SustitucionMOAUtils.Services
                 {
                     exclude = new List<string>() { };
                 }
-                var categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre);
+
+                if (usuario.NuevoUsuario)
+                {
+                    var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
+                    categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }
+                else
+                {
+                    categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                }
+
                 return categorias.Select(x =>new CategoriaDto(x)).ToList();
             }
             catch (ValidationCustomException e)
@@ -664,6 +676,31 @@ namespace SustitucionMOAUtils.Services
             {
                 var subcategorias = repositorio.Listar<SubCategoria>().OrderBy(c => c.Nombre);
                 return subcategorias.Select(x => new SubCategoriaDto(x)).ToList();
+            }
+            catch (ValidationCustomException e)
+            {
+                throw e;
+            }
+            catch (InfoCustomException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+            }
+        }
+
+        public List<MaterialDto> ObtenerMaterial()
+        {
+            try
+            {
+                var subcategorias = repositorio.Listar<Material>().OrderBy(c => c.Nombre);
+                return subcategorias.Select(x => new MaterialDto
+                { 
+                    MaterialId = x.Id,
+                    Descripcion = x.Nombre
+                }).ToList();
             }
             catch (ValidationCustomException e)
             {

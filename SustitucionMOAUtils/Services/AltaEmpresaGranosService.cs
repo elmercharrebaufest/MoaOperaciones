@@ -531,7 +531,9 @@ namespace SustitucionMOAUtils.Services
                     Vinculofuncionarios.AppendLine($"<tr><td>{funcionario.NombreFirma}</td><td>{funcionario.CargoFirma}</td><td>{funcionario.NombreFuncionario}</td><td>{funcionario.CargoFuncionario}</td><td>{funcionario.Vinculo}</td></tr>");
                 }
 
-                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.RazonSocial, vinculoEmpleadoMolinos, Vinculofuncionarios);
+                var cuit = ReformatearCUIT(proveedor.CUIT);
+
+                var cuerpo = string.Format(cuerpoTemplate, proveedor.FechaSolicitud, proveedor.TipoProveedor.Nombre, proveedor.RazonSocial, cuit, vinculoEmpleadoMolinos, Vinculofuncionarios);
                 var Destinatario = ConfigurationManager.AppSettings["EmailToAuditoria"];
 
                 EmailSender.EnviarMail(new List<string> { Destinatario }, asunto, cuerpo, null, null, null, null);

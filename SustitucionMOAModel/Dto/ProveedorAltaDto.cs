@@ -47,6 +47,7 @@ namespace SustitucionMOAModel.Dto
         public string RazonDeEleccion { get; set; }
         public long? FacturacionAnual { get; set; }
         public string SolicitanteInterno { get; set; }
+        public DateTime? FechaAltaAceptada { get; set; }
 
         public string Rubro { get; set; }
         public bool? RequiereVerificacionCompras { get; set; }
