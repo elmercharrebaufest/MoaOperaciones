@@ -19,10 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -331,7 +331,6 @@
     <Content Include="src\app\compras\PliegoPasos\cotizacion.component.html" />
     <Content Include="src\app\compras\PliegoPasos\generacion1.component.html" />
     <Content Include="src\app\compras\PliegoPasos\generacion2.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\generacion2.component.js" />
     <Content Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.html" />
     <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />
