@@ -260,7 +260,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     
-    eliminarPosicion(idSolp) {
+    eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la SOLP?',
             accept: () => {
@@ -271,16 +271,16 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    editarPosicion(id) {
-        this.confirmationService.confirm({
-            message: '¿Está seguro que desea editar la SOLP?',
-            accept: () => {
-                this.goToSeccionParam('/compras/solp', id);
-            },
-            reject: () => {
-            }
-        });
-    }
+    // editarPosicion() {
+    //     this.confirmationService.confirm({
+    //         message: '¿Está seguro que desea editar la SOLP?',
+    //         accept: () => {
+    //             this.goToSeccionParam('/compras/solp', 'rowData.Id');
+    //         },
+    //         reject: () => {
+    //         }
+    //     });
+    // }
 
 
 }

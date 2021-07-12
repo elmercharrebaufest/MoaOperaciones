@@ -158,7 +158,26 @@ export class CabeceraComponent extends ListBaseComponent {
         }
 
         this.model.cargoPasoCinco = true;
+
+        // document.getElementById("proveedoresValidos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
+
+        // document.getElementById("proveedoresInvalidos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
+
+        // document.getElementById("proveedoresNoSugeridos").addEventListener('keydown', function (e) {
+        //     if (e.which == 9) {
+        //         e.preventDefault();
+        //     }
+        // });
         
+ 
     }
 
     setControlesObligatorios(claseDocumento){
