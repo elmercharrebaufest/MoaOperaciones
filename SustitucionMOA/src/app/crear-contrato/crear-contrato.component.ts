@@ -79,6 +79,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     monedasTodas: any = new Array();
     destinos: any = new Array();
     campanias: any = new Array();
+    sustentables: any = new Array();
     campaniasTodas: any = new Array();
     zona: any = new Array();
     bolsasSelect: any = new Array();
@@ -421,7 +422,23 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                             }
                             this.campanias.push(el);
                         });
-
+                        this.sustentables = new Array();
+                        JSON.parse(obj.TraerHabilitarSustentable).forEach(element => {
+                            if (element.TipoNegocioId == contrato.TipoNegocioId) {
+                                let el = {
+                                    Id: element.Id,
+                                    Precio: element.Precio,
+                                    MonedaId: element.MonedaId,
+                                    DesdeVigencia: new Date(parseInt(element.DesdeVigencia.substr(6))),
+                                    HastaVigencia: new Date(parseInt(element.HastaVigencia.substr(6))),
+                                    TipoNegocio: element.TipoNegocio,
+                                    TipoNegocioId: element.TipoNegocioId,
+                                    HastaEntrega: new Date(parseInt(element.HastaEntrega.substr(6))),
+                                    DesdeEntrega: new Date(parseInt(element.DesdeEntrega.substr(6))),
+                                }
+                                this.sustentables.push(el);
+                            }
+                        });
                         this.pagosDiferidos = new Array();
                         if (obj.TraerPagosDiferido) {
                             JSON.parse(obj.TraerPagosDiferido).forEach(element => {

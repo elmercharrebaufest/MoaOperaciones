@@ -41,9 +41,7 @@ namespace SustitucionMOAModel.Models.DataAgro
         public int ProveedorCreadorId { get; set; }
         public int StandardDeCalidadId { get; set; }
         public int? CondicionFijacionId { get; set; }
-        public int? CantidadCamiones { get; set; }
-        public int? ImporteSustentable { get; set; }
-        public string MonedaSustentable { get; set; }
+        public int? CantidadCamiones { get; set; }       
         public bool? EstablecimientoPropio { get; set; }
         public bool? Consignatario { get; set; }
         public bool? PlanCanje { get; set; }
@@ -61,5 +59,9 @@ namespace SustitucionMOAModel.Models.DataAgro
         public string ContratoCorredor { get; set; }
         public string ContratoVendedor { get; set; }
         public string UsuarioTercero { get; set; }
+
+        public decimal? ImporteSustentable { get; set; }
+        public string MonedaSustentableId { get; set; }
+        public bool? Sustentable { get; set; }
     }
 }
