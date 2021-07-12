@@ -73,6 +73,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             consulta.Comentarios.Add(comentario);
+            consulta.FechaUltimaModificacion = DateTime.Now;
             repositorio.GuardarCambios();
 
             if (files.Count > 0)
@@ -558,6 +559,8 @@ namespace SustitucionMOAUtils.Services
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Categoria_Id == consulta.Categoria_Id).Id;
                 }
             }
+
+            consulta.FechaUltimaModificacion = DateTime.Now;
 
             repositorio.GuardarCambios();
 
