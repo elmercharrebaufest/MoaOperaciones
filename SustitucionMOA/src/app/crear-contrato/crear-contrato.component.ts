@@ -106,7 +106,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     ObservacionTercero: string = "";
     pagosDiferidos: any = new Array();
     maximoDiasDiferimiento: number = 0;
-    costoFinanciero: string ;
+    costoFinanciero: string;
     placeholderDolarizado: string = this.placeHoldeDolarizado();
     ngOnInit() {
 
@@ -135,7 +135,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
         let mm = String(today.getMonth() + 1); //January is 0!
         let yyyy = today.getFullYear();
         let text = dd + '/' + mm + '/' + yyyy;
-        return "ej: " + text ;
+        return "ej: " + text;
     }
 
     negocioHabilitado(contrato) {
@@ -770,6 +770,11 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
             //entregadesde hasta
             contrato.FechaDesde = precio.DesdeEntrega;
             contrato.FechaHasta = precio.HastaEntrega;
+            if (precio.DestinoId == null) {
+                contrato.DestinoId = 1;
+            } else {
+                contrato.DestinoId = precio.DestinoId;
+            }
             this.fechaInicio = contrato.FechaDesde.toLocaleDateString('en-GB');
             this.fechaFin = contrato.FechaHasta.toLocaleDateString('en-GB');
             $("#noCursor").val(contrato.FechaDesde.toLocaleDateString("en-GB"));

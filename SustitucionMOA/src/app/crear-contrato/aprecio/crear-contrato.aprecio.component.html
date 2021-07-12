@@ -461,7 +461,7 @@
                 <h4 class="modal-title" id="myModalLabel">Seleccione el precio disponible</h4>
             </div>
             <div class="modal-body modal-notificacion">
-                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-ampliacion-table" id="preciosMateriales">
+                <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate" id="preciosMateriales">
                     <thead>
                         <tr role="row">
                             <td><b>Material</b></td>
@@ -469,6 +469,8 @@
                             <td><b>Precio</b></td>
                             <td><b>Entrega Desde</b></td>
                             <td><b>Entrega Hasta</b></td>
+                            <td><b>Destino</b></td>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -478,6 +480,8 @@
                             <td>{{item.Precio}}</td>
                             <td>{{item.DesdeEntrega | date: 'dd/MM/yyyy'}}</td>
                             <td>{{item.HastaEntrega | date: 'dd/MM/yyyy'}}</td>
+                            <td>{{item.Destino}}</td>
+
                         </tr>
                     </tbody>
                 </table>
