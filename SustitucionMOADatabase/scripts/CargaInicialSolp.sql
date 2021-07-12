@@ -50,5 +50,24 @@ BEGIN
 	VALUES('EstadoSolpSap', 'FINALIZADA', 'FINALIZADA', 'Finalizada', null)
 END
 
+-- Tabla TipoFiltroSolpProveedor
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoFiltroSolpProveedor' and Codigo = 'VALIDO')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoFiltroSolpProveedor','VALIDO','',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoFiltroSolpProveedor' and Codigo = 'NOSUGERIDO')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoFiltroSolpProveedor','NOSUGERIDO','',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoFiltroSolpProveedor' and Codigo = 'INVALIDO')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoFiltroSolpProveedor','INVALIDO','',null)
+END
 
 COMMIT TRAN
