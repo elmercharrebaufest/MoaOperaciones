@@ -33,7 +33,7 @@ export class Generacion1Component extends ListBaseComponent  {
     //validaciones
     formulario: FormGroup;
 
-    nombreDeObra: string = "";
+    nombreDePedido: string = "";
     solpPaso1Result: any;
     fechaEntrega: any;
     horaEntrega: any;
@@ -55,7 +55,7 @@ export class Generacion1Component extends ListBaseComponent  {
 
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
-            nombreDeObra: new FormControl({value : ""}, Validators.compose([Validators.required])),
+            nombreDePedido: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
             mail: new FormControl('', [Validators.required, Validators.email])
         });

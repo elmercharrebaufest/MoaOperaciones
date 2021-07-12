@@ -27,6 +27,7 @@ namespace SustitucionMOAModel.Enums
     public static class TablasGenerales
     {
         public const string TipoImputacionSolp = "TipoImputacionSolp";
+        public const string TipoPosicionSolp = "TipoPosicionSolp";
         public const string TipoFiltroSolpProveedor = "TipoFiltroSolpProveedor";
         public const string CamposObligatoriosCabeceraSolp = "CamposObligatoriosCabeceraSolp";
     }

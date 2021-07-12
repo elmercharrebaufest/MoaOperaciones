@@ -12,6 +12,7 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
+        public string Codigo { get; set; }
         public int Solp_Id { get; set; }
         public DateTime? FechaBaja { get; set; }
         public int? TipoPosicion_Id { get; set; }

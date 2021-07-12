@@ -6,12 +6,13 @@ import { forEach } from "@angular/router/src/utils/collection";
 import { EspecificacionesViewModel } from "./PliegoPasos/solapaTres/especificacionesViewModel";
 import { CampoObligatorioViewModel } from "./campo-obligatorio-viewModel";
 import { FormGroup } from "@angular/forms";
+import { SubPosicionViewModel } from "./PliegoPasos/solapaSubposiciones/subPosicionViewModel";
 
 export class Solp {
     public id: number;
 
     //paso 1
-    public nombreDeObra: string;
+    public nombreDePedido: string;
     public fiscalContrato: string;
     public telefono: string;
     public mail: string;
@@ -63,6 +64,10 @@ export class Solp {
     public cargoPasoCinco: boolean = false;
     public cargoPasoSeis: boolean = false;
 
+    // // dashboard
+    // public selectEstadoSolp: any;
+    // public fechaSolp: Date;
+    
 
     constructor() {
         this.posiciones = [];
@@ -99,7 +104,7 @@ export class PosicionSolp {
     public id: any;
     public numeroPosicion: number;
 
-    public servicio: boolean;
+    public servicio: boolean = true;
     public centroDeCosto: boolean;
     public ordenDeOt: boolean;
     public ordenDeInversion: boolean;
@@ -135,7 +140,7 @@ export class PosicionSolp {
     public rubroMecanico: boolean;
     public rubroIngenieria: boolean;
     public rubroConsultoria: boolean;
-    public tipoImputacion: boolean;
+    public tipoImputacion: string;
 
     public proveedoresValidos: string[] = [];
     public proveedoresInvalidos: string[] = [];
@@ -143,9 +148,13 @@ export class PosicionSolp {
 
     // Moneda
     public selectMonedaCompras: any;
+    public monedaSeleccionada: any={};
     public totalPosicion: number;
 
     public posicionValida: boolean;
+
+    //subPosiciones
+    listadoSubPosiciones :  Array<SubPosicionViewModel>;
 
     constructor(numeroPosicion) {
         this.id = uuid.v4();
@@ -153,6 +162,10 @@ export class PosicionSolp {
         this.numeroPosicion = numeroPosicion;
         this.fechaEntregaServicio = new Date();
         this.fechaDeLiberacion = new Date();
+        this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
+        //agrega un fila por defecto
+        this.listadoSubPosiciones.push(new SubPosicionViewModel(0));
+        this.servicio = true;
     }
 }
 

@@ -61,6 +61,11 @@ export interface Causa {
     Nombre;
 }
 
+export interface Materiales {
+    MaterialId;
+    Descripcion;
+}
+
 export class Comentario{
     consulta_Id: any; 
     Detalle: any; 

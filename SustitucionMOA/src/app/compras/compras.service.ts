@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './Solp';
+import { Http, Response, URLSearchParams } from '@angular/http';
 
 @Injectable()
 export class ComprasService extends BaseService {
@@ -13,10 +14,34 @@ export class ComprasService extends BaseService {
             map(this.extractData));
     }
 
+    public getListarSolp(): Observable<any> {
+        return this.http
+            .get('/api/compras/ListarSolp', { headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+
+
+    public borrarSolp(idSolp: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idSolp', idSolp.toString());
+        return this.http
+            .get('/api/compras/BorrarSolp', {  search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
+    public traerSolpId(idSolp: number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idSolp', idSolp.toString());
+        return this.http
+            .get('/api/compras/TraerSolpId', {  search: params, headers: this.headers }).pipe(
+            map(this.extractData));
+    }
+
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
             Id: solp.id,
-            NombreDeObra: solp.nombreDeObra,
+            NombreDeObra: solp.nombreDePedido,
             FiscalContrato: solp.fiscalContrato,
             Telefono: solp.telefono,
             Email: solp.mail,
@@ -39,8 +64,54 @@ export class ComprasService extends BaseService {
             JornadaLaboral: solp.jornadaLaboralDias.filter(x=>x.selected).map(x=>x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
-            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=>x.id)
+            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=> { return {Id: x.id} }),
+            ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento &&solp.selectClaseDocumento.Codigo),
+            Posiciones: solp.posiciones.filter(x=>x.textoGenerico).map(x=> {
+                return {
+                    Codigo: x.id,
+                    TextoGenerico: x.textoGenerico,
+                    PlazoEntrega: x.plazoDeEntrega,
+                    FechaEntregaServicio: x.fechaEntregaServicio,
+                    FechaLiberacion: x.fechaDeLiberacion,
+                    EsConcluido: x.concluido,
+                    EsFijacion: x.indiceFijacion,
+                    Centro: this.getObjetoCodigo(x.selectCentroEntrega && x.selectCentroEntrega.Codigo),
+                    Almacen: this.getObjetoCodigo(x.selectAlmacenEntrega && x.selectAlmacenEntrega.Codigo),
+                    NombreEntrega: x.nombreEntrega,
+                    CalleEntrega: x.calleEntrega,
+                    NumeroEntrega: x.numeroEntrega,
+                    CpEntrega: x.codigoPostalEntrega,
+                    PaisEntrega: x.paisEntrega,
+                    GrupoCompras: this.getObjetoCodigo(x.selectGrupoCompras && x.selectGrupoCompras.Codigo),
+                    Solicitante: x.selectSolicitanteCompras,
+                    NroNecesidad: x.necesidadCompras,
+                    GrupoArticulo: this.getObjetoCodigo(x.selectArticuloCompras && x.selectArticuloCompras.Codigo),
+                    CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
+                    Moneda: this.getObjetoCodigo(x.selectMonedaCompras && x.selectMonedaCompras.Codigo),
+                    TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
+                    TipoPosicion: this.getObjetoCodigo('SERVICIO'),
+
+                    Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.map(sp => {
+                        return {
+                            Codigo: sp.id,
+                            Numero: sp.subPosicion,
+                            CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
+                            Tarea: sp.tareaSubcontratar,
+                            CuentaMayor: sp.cuentaMayor,
+                            Cantidad: sp.cuentaTd,
+                            Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
+                            TipoImputacionValor: sp.tipoImputacion
+                        }
+                    }) : null,
+                    Proveedores: [
+                        ...this.getProveedores(x.proveedoresValidos, 'VALIDO'),
+                        ...this.getProveedores(x.proveedoresNoSugeridos, 'NOSUGERIDO'),
+                        ...this.getProveedores(x.proveedoresInvalidos, 'INVALIDO')
+                    ]
+                }
+            })
         });
+
         var payload = new FormData();
 
         var archivos = solp.especificacionesViewModel.archivosAdjuntosNuevos;
@@ -61,6 +132,32 @@ export class ComprasService extends BaseService {
 
     getFechaHora(fecha: Date, hora: Date){
         return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDay(), hora.getHours(), hora.getMinutes(), hora.getSeconds(), 0);
+    }
+
+    getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico){
+        let list = [];
+
+        if(electrico) list.push('ELECTRICO');
+        if(consultoria) list.push('CONSULTORIA');
+        if(civil) list.push('CIVIL');
+        if(ingenieria) list.push('INGENIERIA');
+        if(mecanico) list.push('MECANICO');
+
+        return list.join(',');
+    }
+
+    getProveedores(proveedores, codigo){
+        if(proveedores)
+            return proveedores.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp:  this.getObjetoCodigo(codigo) } });
+        
+        return [];
+    }
+
+    getObjetoCodigo(codigo){
+        if(codigo)
+            return { Codigo: codigo }
+        
+        return null;
     }
 
     DescargarArchivo(archivoId: number): Observable<any> {

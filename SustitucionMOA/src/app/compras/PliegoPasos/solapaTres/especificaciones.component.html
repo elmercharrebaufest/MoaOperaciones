@@ -34,7 +34,8 @@
                             <div class="row col-xs-3 justify-content-start"
                                 *ngFor="let archivo of viewModel.archivosGuardadosEspecificaciones">
                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                    (click)="eliminarAdjuntoGuardado(archivo)" style="width: 26px;" />
+                                    (click)="eliminarArchivo(false,archivo)" style="width: 26px;" />
+                                    
                                 <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                     {{archivo.nombreArchivo}}</a>
                             </div>
@@ -43,7 +44,7 @@
                             <div class="row col-xs-3 justify-content-start"
                                 *ngFor="let archivo of this.viewModel.archivosAdjuntosNuevos">
                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                    (click)="eliminarAdjuntoNuevo(archivo)" style="width: 26px;" />
+                                    (click)="eliminarArchivo(true,archivo)" style="width: 26px;" />
                                 <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
                                     {{archivo.name}}</a>
                             </div>
@@ -119,3 +120,12 @@
         </div>
     </div>
 </form>
+
+<!-- Modal eliminacion de posicion-->
+<p-confirmDialog #dialogo header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialogo.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal eliminacion de posicion-->

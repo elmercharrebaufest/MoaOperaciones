@@ -1,6 +1,7 @@
 ﻿CREATE TABLE [dbo].[SolpSubposicion]
 (
 	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Codigo] [nvarchar](max) NULL,
 	[SolpPosicion_Id] [int] NOT NULL,
 	[Numero] [int] NOT NULL,
 	[CodigoServicioSap_Id] [int] NULL,

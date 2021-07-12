@@ -88,12 +88,21 @@ namespace SustitucionMOA.Controllers
 
                 if (informeComercial.NuevosCampos != null)
                 {
-                    foreach (var nuevosCampos in informeComercial.NuevosCampos)
+                   /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
                     {
                         informeComercial.Materiales.Add(new ParamInformeComercialMaterial
                         {
                             MaterialId = nuevosCampos.MaterialId,
                             Toneladas = nuevosCampos.Toneladas
+                        });
+                    }*/
+
+                    foreach (var nuevosCampos in informeComercial.NuevosCampos.GroupBy(x => x.MaterialId))
+                    {
+                        informeComercial.Materiales.Add(new ParamInformeComercialMaterial
+                        {
+                            MaterialId = nuevosCampos.First().MaterialId,
+                            Toneladas = nuevosCampos.Sum(x => x.Toneladas)
                         });
                     }
                 }

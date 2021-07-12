@@ -16,6 +16,13 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        
+        List<SolpDto> ListarSolp();
+        string BorrarSolp(int idSolp);
+        SolpDto TraerSolpId(int idSolp);
+        List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
+
+
+
+
     }
 }

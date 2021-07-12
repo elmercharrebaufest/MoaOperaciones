@@ -23,13 +23,16 @@ namespace SustitucionMOAModel.Dto
 
         public TablaGeneralDto(TablaGeneral entity)
         {
-            this.Id = entity.Id;
-            this.Tabla = entity.Tabla;
-            this.Codigo = entity.Codigo;
-            this.Descripcion = entity.Descripcion;
-            this.IdPadre = entity.Padre_Id;
-            if(entity.Padre != null)
-                this.Padre = new TablaGeneralDto(entity.Padre);
+            if(entity != null){
+                this.Id = entity.Id;
+                this.Tabla = entity.Tabla;
+                this.Codigo = entity.Codigo;
+                this.Descripcion = entity.Descripcion;
+                this.IdPadre = entity.Padre_Id;
+                if (entity.Padre != null)
+                    this.Padre = new TablaGeneralDto(entity.Padre);
+            }
+            
         }
     }
 }

@@ -8,7 +8,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { ComprasService } from './../compras.service'
 import { PosicionSolp, Solp } from './../Solp';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import {FormBuilder, FormControl, Validators } from '@angular/forms';
@@ -32,7 +32,10 @@ export class CabeceraComponent extends ListBaseComponent {
     @Input('locale') 
     protected locale:any;
 
-    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router, private validadorPasoSolpService : ValidadorPasoSolpService) {
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+          protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router, 
+          private validadorPasoSolpService : ValidadorPasoSolpService, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
     }
@@ -247,14 +250,38 @@ export class CabeceraComponent extends ListBaseComponent {
     }
 
     centroSeleccionado(){
-        this.almacenEntrega = this.combos.Almacen.filter(x=> x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
-        
-        let direccionCentro = this.combos.CentrosDireccion.find(x=> x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
-        this.model.posicionActual.nombreEntrega = this.model.posicionActual.nombreEntrega || this.model.posicionActual.selectCentroEntrega.Descripcion;
-        this.model.posicionActual.codigoPostalEntrega = this.model.posicionActual.codigoPostalEntrega || direccionCentro.Cp;
-        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || direccionCentro.Direccion;
-        this.model.posicionActual.numeroEntrega = this.model.posicionActual.numeroEntrega || direccionCentro.Numero;
-        this.model.posicionActual.paisEntrega = this.model.posicionActual.paisEntrega || direccionCentro.Pais;
+        let direccionCentro: any;
+        if (this.model.posicionActual.selectCentroEntrega == undefined) {
+            this.almacenEntrega = [];
+        }
+        else {
+            this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+            direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
+        }
+
+
+        this.model.posicionActual.nombreEntrega =  this.model.posicionActual.nombreEntrega
+            || (this.model.posicionActual.selectCentroEntrega == undefined ? "" :this.model.posicionActual.selectCentroEntrega.Descripcion);
+
+        this.model.posicionActual.codigoPostalEntrega =  this.model.posicionActual.codigoPostalEntrega || (direccionCentro == undefined ? "" :direccionCentro.Cp);
+        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || (direccionCentro == undefined ? "" :  direccionCentro.Direccion);
+        this.model.posicionActual.numeroEntrega =  this.model.posicionActual.numeroEntrega || (direccionCentro == undefined ? "" :direccionCentro.Numero);
+        this.model.posicionActual.paisEntrega =  this.model.posicionActual.paisEntrega || (direccionCentro == undefined ? "" : direccionCentro.Pais);
+    }
+
+    eliminarPosicion()
+    {
+        console.log("eliminar");
+        this.confirmationService.confirm({
+            message: '¿Está seguro que desea eliminar la posición?',
+            accept: () => {
+                this.model.eliminarPosicion()
+            },
+            reject: () => {
+                
+            }
+        });
+
     }
 
 }
