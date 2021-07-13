@@ -484,11 +484,17 @@ namespace SustitucionMOAUtils.Services
         public byte[] GenerarSolpPdf(int idSolp)
         {
             var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html");
-
             var templateString = System.IO.File.ReadAllText(templateFilePath);
 
-            StringReader sr = new StringReader(templateString);
+            var solpValores = new Dictionary<string, string>();
 
+            //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
+            solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, "Ejemplo de nombre de obra");
+
+            templateString = CombineTemplateValues(templateString, solpValores);
+
+            #region Generacion del pdf
+            StringReader sr = new StringReader(templateString);
             Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
             HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
             using (MemoryStream memoryStream = new MemoryStream())
@@ -504,8 +510,9 @@ namespace SustitucionMOAUtils.Services
 
                 return bytes;
             }
+            #endregion
         }
-        
+
         private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
         {
             StringBuilder ret = new StringBuilder();
