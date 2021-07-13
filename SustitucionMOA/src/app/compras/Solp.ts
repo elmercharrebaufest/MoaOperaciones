@@ -155,7 +155,19 @@ export class PosicionSolp {
     // Moneda
     public selectMonedaCompras: any;
     public monedaSeleccionada: any={};
-    public totalPosicion: number;
+    public totalPosicion() {
+
+        if(this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0){
+            let total = 0;
+            this.listadoSubPosiciones.forEach(x=>{
+                total += (x.precioBruto || 0)*(parseInt(x.cuentaTd) || 0);
+            });
+
+            return total;
+        }
+
+        return 0;
+    }
 
     public posicionValida: boolean;
 

@@ -160,11 +160,11 @@ namespace SustitucionMOAUtils.Services
                 if(solp.Posiciones != null)
                 {
                     //posiciones nuevas y actualizadas
-                    foreach (var pos in solp.Posiciones.Where(x=> !solpEntity.Posiciones.Any(y=> y.TextoGenerico == x.TextoGenerico)))
+                    foreach (var pos in solp.Posiciones)
                     {
                         SolpPosicion posEntity = null;
 
-                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.TextoGenerico == pos.TextoGenerico);
+                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
 
                         if (posEntity == null)
                             posEntity = new SolpPosicion();
@@ -204,6 +204,9 @@ namespace SustitucionMOAUtils.Services
                         if (pos.GrupoArticulo != null)
                             posEntity.GrupoArticulo = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoArticulo && x.Codigo == pos.GrupoArticulo.Codigo);
 
+                        if (pos.Moneda != null)
+                            posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
+
                         if (pos.Subposiciones != null)
                         {
                             if (posEntity.Subposiciones == null)
@@ -213,7 +216,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 SolpSubposicion subposEntity = null;
 
-                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero);
+                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
