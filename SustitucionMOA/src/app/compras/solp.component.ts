@@ -326,43 +326,44 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
+        this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
+
         if(solp.Posiciones && solp.Posiciones.length > 0){
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
             
             let posActual = this.solpActual.posicionActual;
 
             solp.Posiciones.forEach(x => {
-                posActual = {...posActual,
-                    id: x.Codigo,
-                    textoGenerico: x.TextoGenerico,
-                    plazoDeEntrega: x.PlazoEntrega,
-                    fechaEntregaServicio: new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio)),
-                    fechaDeLiberacion: new Date(this.getDateFromAspNetFormat(x.FechaLiberacion)),
-                    concluido: x.EsConcluido,
-                    indiceFijacion: x.EsFijacion,
-                    selectCentroEntrega: x.Centro,
-                    selectAlmacenEntrega: x.Almacen,
-                    nombreEntrega: x.NombreEntrega,
-                    calleEntrega: x.CalleEntrega,
-                    numeroEntrega: x.NumeroEntrega,
-                    codigoPostalEntrega: x.CpEntrega,
-                    paisEntrega: x.PaisEntrega,
-                    selectSolicitanteCompras: x.Solicitante,
-                    necesidadCompras: x.NroNecesidad,
-                    selectGrupoCompras: x.GrupoCompras,
-                    selectArticuloCompras: x.GrupoArticulo,                               
-                    selectMonedaCompras: x.Moneda,
-                    tipoImputacion: x.TipoImputacion && x.TipoImputacion.Codigo,
-                    rubroElectrico: x.CodigosProveedores.includes('ELECTRICO'),
-                    rubroConsultoria: x.CodigosProveedores.includes('CONSULTORIA'),
-                    rubroCivil: x.CodigosProveedores.includes('CIVIL'),
-                    rubroIngenieria: x.CodigosProveedores.includes('INGENIERIA'),
-                    rubroMecanico: x.CodigosProveedores.includes('MECANICO'),
+                posActual.id = x.Codigo;
+                posActual.textoGenerico = x.TextoGenerico;
+                posActual.plazoDeEntrega = x.PlazoEntrega;
+                posActual.fechaEntregaServicio = new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio));
+                posActual.fechaDeLiberacion = new Date(this.getDateFromAspNetFormat(x.FechaLiberacion));
+                posActual.concluido = x.EsConcluido;
+                posActual.indiceFijacion = x.EsFijacion;
+                posActual.selectCentroEntrega = x.Centro;
+                posActual.selectAlmacenEntrega = x.Almacen;
+                posActual.nombreEntrega = x.NombreEntrega;
+                posActual.calleEntrega = x.CalleEntrega;
+                posActual.numeroEntrega = x.NumeroEntrega;
+                posActual.codigoPostalEntrega = x.CpEntrega;
+                posActual.paisEntrega = x.PaisEntrega;
+                posActual.selectSolicitanteCompras = x.Solicitante;
+                posActual.necesidadCompras = x.NroNecesidad;
+                posActual.selectGrupoCompras = x.GrupoCompras;
+                posActual.selectArticuloCompras = x.GrupoArticulo;                               
+                posActual.selectMonedaCompras = x.Moneda;
+                posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
+                posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
+                posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
+                posActual.rubroConsultoria = x.CodigosProveedores.includes('CONSULTORIA');
+                posActual.rubroCivil = x.CodigosProveedores.includes('CIVIL');
+                posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
+                posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
 
-                    proveedoresValidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial),
-                    proveedoresNoSugeridos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial),
-                    proveedoresInvalidos: x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial)
-                };
+                posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
+                posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
+                posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
 
                 if(x.Subposiciones){
                     posActual.listadoSubPosiciones = [];
@@ -370,15 +371,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                     x.Subposiciones.forEach(sp => {
                         let subpos = new SubPosicionViewModel(i);
-                        subpos = {...subpos,
-                            id: sp.Codigo,
-                            codigoServicio: sp.CodigoServicioSap,
-                            tareaSubcontratar: sp.Tarea,
-                            cuentaMayor: sp.CuentaMayor,
-                            cuentaTd: sp.Cantidad,
-                            unidadSeleccionada: sp.Unidad,
-                            tipoImputacion: sp.TipoImputacionValor
-                        };
+
+                        subpos.id = sp.Codigo;
+                        subpos.codigoServicio = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratar = sp.Tarea;
+                        subpos.cuentaMayor = sp.CuentaMayor;
+                        subpos.cuentaTd = sp.Cantidad;
+                        subpos.unidadSeleccionada = sp.Unidad;
+                        subpos.tipoImputacion = sp.TipoImputacionValor;
 
                         this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
                         i++;
@@ -388,6 +388,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 if(ultimaPos.Codigo != x.Codigo)
                     this.solpActual.agregarNuevaPosicion();
             });
+
+            this.solpActual.setearPosicionPorDefecto();
         }
     }
 

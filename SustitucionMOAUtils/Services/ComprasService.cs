@@ -10,6 +10,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -475,16 +476,30 @@ namespace SustitucionMOAUtils.Services
         }
 
 
+        private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
+        {
+            StringBuilder ret = new StringBuilder();
 
+            foreach (var section in templateStr.Split(token.ToCharArray()))
+            {
+                var value = values.Keys.Contains(section) ? values[section] : section;
+                ret.Append(value);
+            }
 
-
-
-
+            return ret.ToString();
+        }
     }
 
+    public static class SolpTemplateKeys
+    {
+        public const string FECHA_LIBERACION = "FECHA_LIBERACION";
+        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
+        public const string NOMBRE_OBRA = "NOMBRE_OBRA";
+        public const string NRO_SOLP = "NRO_SOLP";
+        public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
+        public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
 
-
-
-
-
+        public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
+        public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+    }
 }

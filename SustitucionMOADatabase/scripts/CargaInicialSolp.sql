@@ -70,4 +70,44 @@ BEGIN
 	VALUES('TipoFiltroSolpProveedor','INVALIDO','',null)
 END
 
+-- Tabla TipoPosicionSolp
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoPosicionSolp','SERVICIO','',null)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'MATERIALES')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoPosicionSolp','MATERIALES','',null)
+END
+
+-- Tabla TipoImputacionSolp
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'centroDeCosto')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoImputacionSolp','centroDeCosto','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'ordenDeOt')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoImputacionSolp','ordenDeOt','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'ordenDeInversion')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoImputacionSolp','ordenDeInversion','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaGeneral WHERE Tabla = 'TipoImputacionSolp' and Codigo = 'siniestroBeneficio')
+BEGIN
+	INSERT INTO TablaGeneral(Tabla, Codigo, Descripcion, Padre_id)
+	VALUES('TipoImputacionSolp','siniestroBeneficio','',(SELECT Id FROM TablaGeneral WHERE Tabla = 'TipoPosicionSolp' and Codigo = 'SERVICIO'))
+END
+
 COMMIT TRAN
