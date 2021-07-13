@@ -79,7 +79,7 @@ export class ComprasService extends BaseService {
             JornadaLaboral: solp.jornadaLaboralDias.filter(x=>x.selected).map(x=>x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
-            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=>x.id),
+            Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x=> { return {Id: x.id} }),
             ClaseDocumento: this.getObjetoCodigo(solp.selectClaseDocumento &&solp.selectClaseDocumento.Codigo),
             Posiciones: solp.posiciones.filter(x=>x.textoGenerico).map(x=> {
                 return {
@@ -110,7 +110,7 @@ export class ComprasService extends BaseService {
                         return {
                             Codigo: sp.id,
                             Numero: sp.subPosicion,
-                            CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio),
+                            CodigoServicioSap: this.getObjetoCodigo(sp.codigoServicio && sp.codigoServicio.Codigo),
                             Tarea: sp.tareaSubcontratar,
                             CuentaMayor: sp.cuentaMayor,
                             Cantidad: sp.cuentaTd,

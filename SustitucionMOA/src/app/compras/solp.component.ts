@@ -22,6 +22,8 @@ import { FacturaComponent } from '../factura/factura.component';
 import { EnumPasoSolp } from './enum-paso-solp';
 import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { ActivatedRoute, Params } from '@angular/router';
+import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
+import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
 
 
 
@@ -239,6 +241,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     traerSolpId(idSolp){
         try {
+            this.blockUI.start('Cargando...');
+            this.spinnerComponent.showIt();
+
             this.subscription = this.service.traerSolpId(idSolp).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -249,9 +254,14 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.cargarSolpActual(result.data);
+
+                        this.spinnerComponent.hideIt();
+                        this.blockUI.stop();
                 }
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                 }
                 
             });
@@ -294,23 +304,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.entregaDocumentacion = solp.TieneDocumentacionTecnica;          
         this.solpActual.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
         this.solpActual.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta)); 
-        
+        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
 
         // Paso 3
-        // this.solpActual.Adjuntos: solp.especificacionesViewModel.archivosGuardadosEspecificaciones.map(x => {
-        //     return {
-        //         id: x.Id
-        //     }
-        // }),
-        // this.solpActual.especificacionesViewModel.observaciones = solp.ObservacionesGeneracion; 
-        this.solpActual.observacionesGeneracion = solp.ObservacionesGeneracion;             
-        // this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x=> {
-        //     return {
-        //         id: x.Id,
-        //         nombreArchivo: x.Nombre
-        //     }
-        // });
-        
+        this.solpActual.especificacionesViewModel = new EspecificacionesViewModel();
+        this.solpActual.especificacionesViewModel.archivosGuardadosEspecificaciones = solp.Adjuntos.map(x => {
+            return {
+                id: x.Id,
+                nombreArchivo: x.Nombre
+            }
+        }),
+        this.solpActual.especificacionesViewModel.observaciones = solp.EspecificacionesTecnicas || this.solpActual.especificacionesViewModel.valorPorDefecto; 
+
         // Paso 4
         this.solpActual.jornadaLaboralDias.forEach(k => {
             k.selected = solp.JornadaLaboral.includes(k.weekDay);
@@ -321,57 +326,71 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.observacionesCotizacion = solp.ObservacionesCotizacion;
 
         // Paso 5
-        this.solpActual.posiciones = solp.Posiciones ? solp.Posiciones.map(x=> {
-            return {
-                id: x.Codigo,
-                textoGenerico: x.TextoGenerico,
-                plazoDeEntrega: x.PlazoEntrega,
-                fechaEntregaServicio: new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio)),
-                fechaDeLiberacion: new Date(this.getDateFromAspNetFormat(x.FechaLiberacion)),
-                concluido: x.EsConcluido,
-                indiceFijacion: x.EsFijacion,
-                selectCentroEntrega: x.Centro,
-                selectAlmacenEntrega: x.Almacen,
-                nombreEntrega: x.NombreEntrega,
-                calleEntrega: x.CalleEntrega,
-                numeroEntrega: x.NumeroEntrega,
-                codigoPostalEntrega: x.CpEntrega,
-                paisEntrega: x.PaisEntrega,
-                selectSolicitanteCompras: x.Solicitante,
-                necesidadCompras: x.NroNecesidad,
-                selectGrupoCompras: x.GrupoCompras,
-                selectArticuloCompras: x.GrupoArticulo,                               
-                selectMonedaCompras: x.Moneda,
-                tipoImputacion: x.TipoImputacion,
+        this.solpActual.selectClaseDocumento = solp.ClaseDocumento;
 
-                // CodigosProveedores: `ELECTRICO:${x.rubroElectrico}|CIVIL:${x.rubroCivil}|CONSULTORIA:${x.rubroConsultoria}|INGENIERIA:${x.rubroIngenieria}|MECANICO:${x.rubroMecanico}`,
-                // TipoPosicion: { Codigo: 'SERVICIO' },
+        if(solp.Posiciones && solp.Posiciones.length > 0){
+            let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
+            
+            let posActual = this.solpActual.posicionActual;
 
-                listadoSubPosiciones: x.Subposiciones.map(sp => {
-                    return {
-                        id: sp.Codigo,
-                        subPosicion: sp.Numero,
-                        codigoServicio: sp.CodigoServicioSap,
-                        tareaSubcontratar: sp.Tarea,
-                        cuentaMayor: sp.CuentaMayor,
-                        cuentaTd: sp.Cantidad,
-                        unidadSeleccionada: sp.Unidad,
-                        tipoImputacion: sp.TipoImputacionValor
-                    }
-                }),
+            solp.Posiciones.forEach(x => {
+                posActual.id = x.Codigo;
+                posActual.textoGenerico = x.TextoGenerico;
+                posActual.plazoDeEntrega = x.PlazoEntrega;
+                posActual.fechaEntregaServicio = new Date(this.getDateFromAspNetFormat(x.FechaEntregaServicio));
+                posActual.fechaDeLiberacion = new Date(this.getDateFromAspNetFormat(x.FechaLiberacion));
+                posActual.concluido = x.EsConcluido;
+                posActual.indiceFijacion = x.EsFijacion;
+                posActual.selectCentroEntrega = x.Centro;
+                posActual.selectAlmacenEntrega = x.Almacen;
+                posActual.nombreEntrega = x.NombreEntrega;
+                posActual.calleEntrega = x.CalleEntrega;
+                posActual.numeroEntrega = x.NumeroEntrega;
+                posActual.codigoPostalEntrega = x.CpEntrega;
+                posActual.paisEntrega = x.PaisEntrega;
+                posActual.selectSolicitanteCompras = x.Solicitante;
+                posActual.necesidadCompras = x.NroNecesidad;
+                posActual.selectGrupoCompras = x.GrupoCompras;
+                posActual.selectArticuloCompras = x.GrupoArticulo;                               
+                posActual.selectMonedaCompras = x.Moneda;
+                posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
+                posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
+                posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
+                posActual.rubroConsultoria = x.CodigosProveedores.includes('CONSULTORIA');
+                posActual.rubroCivil = x.CodigosProveedores.includes('CIVIL');
+                posActual.rubroIngenieria = x.CodigosProveedores.includes('INGENIERIA');
+                posActual.rubroMecanico = x.CodigosProveedores.includes('MECANICO');
 
-                Proveedores: [
-                    ...x.proveedoresValidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'VALIDO'} } }),
-                    ...x.proveedoresNoSugeridos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'NOSUGERIDO'} } }),
-                    ...x.proveedoresInvalidos.map(p => { return { RazonSocial: p, TipoFiltroProveedorSolp: { Codigo: 'INVALIDO'} } })
-                ]
-            }
-                            
-        }) : null;
+                posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
+                posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
+                posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
 
+                if(x.Subposiciones){
+                    posActual.listadoSubPosiciones = [];
+                    let i = 0;
 
+                    x.Subposiciones.forEach(sp => {
+                        let subpos = new SubPosicionViewModel(i);
 
-        
+                        subpos.id = sp.Codigo;
+                        subpos.codigoServicio = sp.CodigoServicioSap;
+                        subpos.tareaSubcontratar = sp.Tarea;
+                        subpos.cuentaMayor = sp.CuentaMayor;
+                        subpos.cuentaTd = sp.Cantidad;
+                        subpos.unidadSeleccionada = sp.Unidad;
+                        subpos.tipoImputacion = sp.TipoImputacionValor;
+
+                        this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
+                        i++;
+                    });
+                }
+                
+                if(ultimaPos.Codigo != x.Codigo)
+                    this.solpActual.agregarNuevaPosicion();
+            });
+
+            this.solpActual.setearPosicionPorDefecto();
+        }
     }
 
     cambioPaso(paso) {
@@ -471,11 +490,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                 }
 
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
     }

@@ -59,8 +59,8 @@
                                 <div>
                                     Tipo de posici&oacute;n*
                                 </div>
-                                <p-radioButton formControlName="servicio" (blur)="onBlur('servicio')"
-                                    [ngModelOptions]="{standalone:true}" name="posiciones" value="servicio"
+                                <p-radioButton formControlName="servicio"
+                                    [ngModelOptions]="{standalone:true}" name="posiciones" value="SERVICIO"
                                     label="Servicio (F)" [(ngModel)]="model.posicionActual.servicio" inputId="servicio">
                                 </p-radioButton>
                                 <div *ngIf="mostrarError('servicio')">

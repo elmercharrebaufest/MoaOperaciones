@@ -158,10 +158,8 @@ export class DashboardComponent extends ListBaseComponent {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else { 
                             this.tablaSolp = result.data;
-                            console.log(this.tablaSolp)
                             this.tablaSolp.forEach(x => {
                                 x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
-                                // x.FechaCreacion = formatDate(x.FechaCreacion)
                             });
                         }
                     },

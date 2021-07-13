@@ -70,12 +70,13 @@ namespace SustitucionMOAUtils.Services
                             Observaciones = proveedor.Observaciones,
                             RazonSocial = proveedor.RazonSocial ?? "",
                             RazonSocialCorredor = proveedor.TipoProveedor.NombreCorto == "NG" ? "No granos" : (proveedor.ProveedorCorredor != null ? proveedor.ProveedorCorredor.RazonSocial : ""),
-                            FechaSolicitud = proveedor.FechaSolicitud,
+                            FechaSolicitud = proveedor.HistorialAprobaciones?.Where(e => e.EstadoAprobacion == EstadoAprobacion.AprobacionPendiente).OrderBy(x => x.Fecha).FirstOrDefault()?.Fecha,
                             Comercial = proveedor.TipoProveedor.NombreCorto == "NG" ? proveedor.SolicitanteInterno : proveedor.Comercial,
                             EstadoSIPER = proveedor.EstadoSIPER,
                             AltaInterna = proveedor.AltaInterna,
                             IngresoAPlanta = proveedor.IngresoAPlanta,
                             UltimaEdicion = proveedor.HistorialAprobaciones?.OrderByDescending(x => x.Fecha).FirstOrDefault()?.Fecha,
+                            FechaAltaAceptada = proveedor.HistorialAprobaciones?.Where(x => x.EstadoAprobacion == EstadoAprobacion.Aprobado || x.Observacion == "Alta aceptada").OrderBy(x => x.Fecha).LastOrDefault()?.Fecha,
                             HistorialAprobaciones = proveedor.HistorialAprobaciones?.Select(a => new ProveedorHistorialAprobacionDto
                             {
                                 Id = a.Id,
@@ -84,7 +85,7 @@ namespace SustitucionMOAUtils.Services
                                 Observacion = a.Observacion,
                                 Usuario = a.Usuario.Mail,
                                 ObservacionParaProveedor = a.ObservacionParaProveedor
-                            }).ToList(),
+                            }).OrderBy(c => c.Fecha).ToList(),
                             IdTipoUsuario = proveedor.TipoProveedor.Id,
                             CBU = proveedor.CBU,
                             CondicionDePago = proveedor.CondicionDePago,
@@ -559,7 +560,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     Estado = proveedor.EstadoAprobacion,
                     EstadoDescripcion = proveedor.EstadoAprobacion.ToFriendlyString(),
-                    Observaciones = proveedor.Observaciones.IsNullOrWhiteSpace() ? "" : proveedor.Observaciones
+                    Observaciones = proveedor.Observaciones.IsNullOrWhiteSpace() ? "" : proveedor.Observaciones,
+                    DocumentacionFisica = proveedor.ContieneDocumentacionFisica ?? false
                 };
 
                 return estadoAprobacionDto;
@@ -602,6 +604,41 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return "Proveedor notificado correctamente";
+        }
+
+        public string AgregarObservacion(int proveedorId, string observacion, string usuarioMail)
+        {
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+
+            //Como del front estoy enviando la info en encoding URI tengo que decodificarlo.
+            observacion = Uri.UnescapeDataString(observacion);
+
+            if (proveedor == null)
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "Empresas"));
+            }
+            if (proveedor.HistorialAprobaciones == null)
+            {
+                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
+            }
+
+            int usuarioId = repositorio.Obtener<Usuario, int>(u => u.Mail == usuarioMail, x => x.Id);
+            //En caso de no venir observación se coloca el nuevo estado para que pueda visualizarse al menos ese paso a nuevo estado
+            proveedor.HistorialAprobaciones.Add(
+                new ProveedorHistorialAprobacion
+                {
+                    Fecha = DateTime.Now,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
+                    Observacion = observacion,
+                    Proveedor_Id = proveedorId,
+                    Usuario_Id = usuarioId,
+                    ObservacionParaProveedor = "-"
+                }
+            );
+
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.ObservacionAgregadaOK;
         }
     }
 }

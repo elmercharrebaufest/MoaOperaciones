@@ -10,6 +10,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -168,6 +169,7 @@ namespace SustitucionMOAUtils.Services
                         if (posEntity == null)
                             posEntity = new SolpPosicion();
 
+                        posEntity.Codigo = pos.Codigo;
                         posEntity.TextoGenerico = pos.TextoGenerico;
                         posEntity.CodigosProveedores = pos.CodigosProveedores;
                         posEntity.EsConcluido = pos.EsConcluido;
@@ -216,6 +218,7 @@ namespace SustitucionMOAUtils.Services
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
 
+                                subposEntity.Codigo = subpos.Codigo;
                                 subposEntity.Cantidad = subpos.Cantidad;
                                 subposEntity.CentroCosto = subpos.TipoImputacionValor; //cambiar campo en base
                                 subposEntity.CuentaMayor = subpos.CuentaMayor;
@@ -353,18 +356,9 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        //Rocio
-
-        public List<SolpDto> ListarSolp(string mail) 
+        public List<SolpDto> ListarSolp() 
         {
-            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mail);
-
-            if(usuario == null) 
-            {
-                throw new InfoCustomException("No se encontro el usuario");
-            }
-
-            var todasLasSolp = repositorio.Listar<Solp>(x => x.UsuarioCreacion_Id == usuario.Id && x.FechaBorrado == null)
+            var todasLasSolp = repositorio.Listar<Solp>(x => x.FechaBorrado == null)
                 .Select(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto(x.UsuarioCreacion),
@@ -510,17 +504,32 @@ namespace SustitucionMOAUtils.Services
 
                 return bytes;
             }
+        }
+        
+        private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
+        {
+            StringBuilder ret = new StringBuilder();
 
+            foreach (var section in templateStr.Split(token.ToCharArray()))
+            {
+                var value = values.Keys.Contains(section) ? values[section] : section;
+                ret.Append(value);
+            }
 
-
-
-
-        }    
+            return ret.ToString();
+        }
     }
 
+    public static class SolpTemplateKeys
+    {
+        public const string FECHA_LIBERACION = "FECHA_LIBERACION";
+        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
+        public const string NOMBRE_OBRA = "NOMBRE_OBRA";
+        public const string NRO_SOLP = "NRO_SOLP";
+        public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
+        public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
 
-
-
-
-
+        public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
+        public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+    }
 }

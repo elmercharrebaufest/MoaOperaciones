@@ -131,9 +131,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = SessionPersister.getUsername();
-
-                return JsonCustom(new { data = service.ListarSolp(userMail) });
+                return JsonCustom(new { data = service.ListarSolp() });
             }
             catch (InfoCustomException e)
             {
@@ -163,9 +161,11 @@ namespace SustitucionMOA.Controllers
                 if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
                 var solp = service.TraerSolpId(idSolp);
-                
-                if(!string.IsNullOrEmpty(solp.EspecificacionesTecnicas))
+
+                if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
                     solp.EspecificacionesTecnicas = System.IO.File.ReadAllText(solp.EspecificacionesTecnicas);
+                else
+                    solp.EspecificacionesTecnicas = null;
 
                 return JsonCustom(new { data = solp });
             }

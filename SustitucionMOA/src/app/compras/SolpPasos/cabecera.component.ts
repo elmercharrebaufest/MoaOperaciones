@@ -271,6 +271,7 @@ export class CabeceraComponent extends ListBaseComponent {
 
     eliminarPosicion()
     {
+        console.log("eliminar");
         this.confirmationService.confirm({
             message: '¿Está seguro que desea eliminar la posición?',
             accept: () => {
