@@ -492,7 +492,30 @@ namespace SustitucionMOAUtils.Services
             var solpValores = new Dictionary<string, string>();
 
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
+            solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, "20/02/2021");
             solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, "Ejemplo de nombre de obra");
+            solpValores.Add(SolpTemplateKeys.NRO_SOLP, "ID 33333");
+            solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, "Alberto Hache");
+            solpValores.Add(SolpTemplateKeys.TELEFONO, "12345678");
+
+            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, "23/03/2021");
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, "Miguel sanchez");
+
+            //ESPECIFICACION TECNICA DE TAREAS
+            solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, "Especificacion tecnica de la obra");
+
+            //COTIZACION Y PLAZO DE EJECUCION
+            solpValores.Add(SolpTemplateKeys.PLAZO_EJECUCION, "30 DIAS CORRIDOS");
+            solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, "LUNES A VIERNES");
+            solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, "10 A 16");
+
+            //ANEXO 1
+            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, "Cosas cositas");
+
+            //ADJUNTOS
+            solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "Adjuntos");
+
+
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
@@ -533,11 +556,19 @@ namespace SustitucionMOAUtils.Services
     public static class SolpTemplateKeys
     {
         public const string FECHA_LIBERACION = "FECHA_LIBERACION";
-        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
+
         public const string NOMBRE_OBRA = "NOMBRE_OBRA";
         public const string NRO_SOLP = "NRO_SOLP";
+        public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
+        public const string TELEFONO = "TELEFONO";
+
+        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
         public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
         public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
+
+        public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
+        public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
+        public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
 
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
