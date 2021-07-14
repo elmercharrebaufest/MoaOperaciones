@@ -50,11 +50,11 @@
                                     <th style="width: 7%;" data-toggle="tooltip" title="Sub Posiciones">SubPos</th>
                                     <th style="width: 9%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
                                     <th style="width: 30%;">Tarea a sub contratar</th>
-                                    <th style="width: 9%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
                                     <th style="width: 8%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
                                     <th style="width: 10%;" data-toggle="tooltip" title="Unidad de Medida">UM</th>
                                     <th style="width: 10%;">Precio bruto</th>
-                                    <th style="width: 7%;">{{tituloColumnaTipoDeImputacion}}</th>
+                                    <th style="width: 9%;" data-toggle="tooltip" title="Cuenta de mayor">Cta. de mayor</th>
+                                    <th style="width: 9%;">{{tituloColumnaTipoDeImputacion}}</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
@@ -84,17 +84,6 @@
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.tareaSubcontratar}}
-                                            </ng-template>
-                                        </p-cellEditor>
-                                    </td>
-                                    <td [pEditableColumn]="posicion" style="width: 9%;">
-                                        <p-cellEditor>
-                                            <ng-template pTemplate="input">
-                                                <input type="text" pKeyFilter="int"  [(ngModel)]="posicion.cuentaMayor"
-                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)">
-                                            </ng-template>
-                                            <ng-template pTemplate="output">
-                                                {{posicion.cuentaMayor}}
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
@@ -134,7 +123,18 @@
                                             </ng-template>
                                         </p-cellEditor>
                                     </td>
-                                    <td [pEditableColumn]="posicion" style="width: 7%;">
+                                    <td [pEditableColumn]="posicion" style="width: 9%;">
+                                        <p-cellEditor>
+                                            <ng-template pTemplate="input">
+                                                <input type="text" pKeyFilter="int"  [(ngModel)]="posicion.cuentaMayor"
+                                                    (paste)="onPaste($event,enumColumnaSubPosicion.CuentaMayor,rowIndex)">
+                                            </ng-template>
+                                            <ng-template pTemplate="output">
+                                                {{posicion.cuentaMayor}}
+                                            </ng-template>
+                                        </p-cellEditor>
+                                    </td>
+                                    <td [pEditableColumn]="posicion" style="width: 9%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
                                                 <input type="text" [(ngModel)]="posicion.tipoImputacion"

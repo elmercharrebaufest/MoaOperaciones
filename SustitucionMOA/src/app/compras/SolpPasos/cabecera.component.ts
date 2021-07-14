@@ -69,7 +69,7 @@ export class CabeceraComponent extends ListBaseComponent {
         { campo: 'textoGenerico',               esObligatorio: true,    esFijo: true },
         { campo: 'fechaEntregaServicio',        esObligatorio: false,    esFijo: false },
         { campo: 'fechaDeLiberacion',           esObligatorio: false,    esFijo: false },
-        { campo: 'plazoDeEntrega',              esObligatorio: false,   esFijo: true },
+        { campo: 'plazoDeEntrega',              esObligatorio: true,   esFijo: true },
         { campo: 'concluido',                   esObligatorio: false,   esFijo: true },
         { campo: 'indiceFijacion',              esObligatorio: false,   esFijo: true },
         { campo: 'selectCentroEntrega',         esObligatorio: false,    esFijo: false },
