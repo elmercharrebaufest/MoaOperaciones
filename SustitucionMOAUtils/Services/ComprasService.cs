@@ -218,11 +218,22 @@ namespace SustitucionMOAUtils.Services
                         if (pos.Moneda != null)
                             posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
 
+                        if (posEntity.Subposiciones == null)
+                            posEntity.Subposiciones = new List<SolpSubposicion>();
+
+                        //subposiciones eliminadas 
+                        if (posEntity.Subposiciones.Count > 0)
+                        {
+                            var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
+
+                            foreach (var subpos in subposEliminadas)
+                            {
+                                repositorio.Remover(subpos);
+                            }
+                        }
+
                         if (pos.Subposiciones != null)
                         {
-                            if (posEntity.Subposiciones == null)
-                                posEntity.Subposiciones = new List<SolpSubposicion>();
-
                             foreach (var subpos in pos.Subposiciones)
                             {
                                 SolpSubposicion subposEntity = null;

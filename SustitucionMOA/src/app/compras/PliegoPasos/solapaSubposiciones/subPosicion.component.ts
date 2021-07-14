@@ -44,9 +44,6 @@ export class SubPosicionComponent extends ListBaseComponent {
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;
 
-    //cambiar por el objeto que venga del back
-    unidades : any[] = [{id: 1 , nombre: "metros"},{id: 1 , nombre: "centrimetros"}]
-
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, private formBuilder: FormBuilder, protected router: Router,  private confirmationService: ConfirmationService
@@ -69,8 +66,6 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.validarDatosMinimosPosicionActual();
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
-
-        this.unidades = this.combos.Unidades;
     }
 
     validarDatosMinimosPosicionActual(): void {
@@ -136,7 +131,6 @@ export class SubPosicionComponent extends ListBaseComponent {
                 
             }
         });
-
     }
 
     onPaste(evento: any, indexColumna: number, rowIndex: number): void {
@@ -186,8 +180,8 @@ export class SubPosicionComponent extends ListBaseComponent {
                     fila[columna.nombre] = Number.isNaN(valorDecimal) ?  undefined:valorDecimal;
                     break;
                 case "combo":
-                    let seleccion = this.unidades.find( x => x.nombre.toLowerCase() == columnas[index].toLowerCase())
-                    fila["unidadSeleccionada"]  = seleccion;
+                    let seleccion = this.combos.Unidades.find( x => x.Codigo.toLowerCase() == columnas[index].toLowerCase()) || {};
+                    fila.unidadSeleccionada = seleccion;
                     break;
                 default:
                     fila[columna.nombre] = columnas[index];
@@ -199,16 +193,12 @@ export class SubPosicionComponent extends ListBaseComponent {
             listado.push(fila);
             listado.push(new SubPosicionViewModel(this.listadoPosicionActul.length));
         }
-
     }
-
 
     calcularTotalSubPosicion() {
         this.total = 0;
         this.listadoPosicionActul.forEach(posicion => {
             this.total = this.total + (+posicion.precioBruto);
         });
-
     }
-
 }
