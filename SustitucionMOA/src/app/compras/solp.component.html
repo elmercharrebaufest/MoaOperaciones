@@ -63,7 +63,7 @@
                     <!-- <asp: Button ID = "btn_PDFEmail"  runat = "server"  Text = "Convertir HTML a PDF y enviar correo electrónico con un archivo adjunto"  OnClick = "btn_PDFEmail_Click"  />  -->
 
                     <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
-                    <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" >{{pasoSiguiente().descripcion}}</button>
+                    <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" disabled style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     <button class="btn btn-secondary botonAgregarPosicion botonesCompras" *ngIf="pasoActual.Codigo == 'SolpCabecera'" (click)="agregarPosicion(headerCompras)" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                     <button class="btn btn-secondary botonAgregarPosicion" *ngIf="pasoActual.Codigo == enumSolp.SolpSubposiciones" (click)="navegar(pasoAnterior())" ><i class="fa fa-plus"></i>&nbsp; Agregar posicion</button>
                 </div>
