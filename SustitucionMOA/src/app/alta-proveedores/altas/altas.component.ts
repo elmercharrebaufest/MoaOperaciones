@@ -14,6 +14,8 @@ import { Empresa } from './Empresa';
 import { Archivo } from '../../common/models/archivo';
 import { RelacionConEmpleados } from '../../common/models//RelacionConEmpleados';
 import { RelacionConFuncionarios } from '../../common/models/relacionConFuncionarios';
+import { formatDate } from '@angular/common';
+import * as XLSX from 'xlsx';
 declare var $: any;
 
 
@@ -36,7 +38,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     @ViewChild("spinnerModal")
     protected spinnerModal: SpinnerSmallComponent;
-
 
     constructor(protected altaEmpresaService: AltaEmpresaService, protected service: EmpresaGranosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securytiService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securytiService, floatMsgService, modalService);
@@ -76,12 +77,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
     razonSocial: string = "";
     codigoCliente: string;
 
-    ngOnInit(): void {
-        if (this.isAuthorized('VER ALTAS GRANOS'))
-            this.idTipoProveedor = 2;
-        else
-            this.idTipoProveedor = 3;
 
+    contieneDocumentacionFisica: number = 0;
+
+    ngOnInit(): void {
         this.getEstados();
         this.navService.setSeccionList([]);
         $('[data-toggle="tooltip"]').tooltip();
@@ -111,6 +110,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
                         setTimeout(function () {
                             $('[data-toggle="popover"]').popover({ trigger: 'focus', delay: { "hide": 3000 } });
+
                         }, 100);
                     }
                 },
@@ -158,7 +158,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.data = null;
         try {
             this.unsubscribe();
-            this.subscription = this.altaEmpresaService.getEstados(this.idTipoProveedor).subscribe(
+            this.subscription = this.altaEmpresaService.getEstados().subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -172,7 +172,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         let estadosFinales = result.finales;
                         let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
                         this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
-                        this.selectedEstado = "";
                         this.getEmpresa();
                     }
                 },
@@ -287,6 +286,43 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.altaEmpresaService.setEstadoAprobacion(this.empresaSeleccionada.Id, estadoId, this.observaciones, this.observacionesProveedor, this.empresaSeleccionada.EstadoSIPER, this.razonSocial, this.codigoCliente).subscribe(
+                result => {
+                    this.getEmpresa();
+                    this.spinnerModal.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                    }
+
+                    this.observaciones = "";
+                    this.observacionesProveedor = "";
+                    this.mensajeError = "";
+                    document.getElementById("hidemyModal").click();
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.spinnerModal.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    agregarObservacion() {
+        this.spinnerModal.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        try {
+            this.altaEmpresaService.agregarObservacion(this.empresaSeleccionada.Id, this.observaciones).subscribe(
                 result => {
                     this.getEmpresa();
                     this.spinnerModal.hideIt();
@@ -434,6 +470,52 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.obtenerArchivosSubidos(empresa.Mail, empresa.Id);
         document.getElementById("openModalHiddenButton").click();
         return false;
+    }
+
+    AbrilModalYaVenianOperando(empresa: any) {
+        this.empresaSeleccionada = empresa;
+        document.getElementById("openModalVieneOperando").click();
+    }
+
+    proveedorNoGranosOperando() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.unsubscribe();
+
+        if (this.validarNoGranosOperando()) return
+        debugger
+        this.subscription = this.altaEmpresaService
+            .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else {
+                        document.getElementById("hidemyModalOperando").click();
+                        this.mensajeComponent.setSuccessMsg("Proveedor habilitado");
+                        this.empresaSeleccionada.EstadoAprobacionDescripcion = 'Alta aceptada';
+                        this.empresaSeleccionada.EstadoAprobacion = 0;
+
+                        //this.getEmpresa();
+                    }
+                },
+                error => {
+                    this.spinnerModal.hideIt();
+                }
+            );
+    }
+
+    validarNoGranosOperando() {
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.empresaSeleccionada.RazonSocial == '' || !this.empresaSeleccionada.RazonSocial) {
+            this.mensajeComponent.setErrorMsg("Falta Completar la razón social.");
+            return true
+        }
+
+        return false
     }
 
     obtenerArchivosSubidos(mail: string, proveedorId: number) {
@@ -755,9 +837,94 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
 
     cambiarFiltroTipoProveedor(tipoProveedor: number) {
-        console.log("Cambiarlo:", tipoProveedor)
         this.idTipoProveedor = tipoProveedor;
 
         this.getEstados();
     }
+
+
+    //exportacion a Excel
+    exportExcel() {
+        this.mensajeComponent.setMsgsEmpty();
+        let informacionExportar: any;
+
+        informacionExportar = this.data.map(info => {
+            return {
+                "Código": info.CodigoProveedor || "-",
+                "CUIT": info.CUIT || "-",
+                "Razón Social": info.RazonSocial || "-",
+                "Mail": info.Mail,
+                "Corredor": info.RazonSocialCorredor || "-",
+                "Comercial / Solicitante Interno": info.Comercial || "-",
+                "SISA": info.SISAEstadoCuit || "-",
+                "Estado Siper": info.EstadoSIPER,
+                "Ultima Edición": info.UltimaEdicion != undefined ? formatDate(info.UltimaEdicion.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Fecha Solicitud": info.FechaSolicitud != undefined ? formatDate(info.FechaSolicitud.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Fecha alta aceptada": info.FechaAltaAceptada != undefined ?  formatDate(info.FechaAltaAceptada.slice(6, -2), "dd/MM/yyyy", "en-EN") : "",
+                "Estado": info.EstadoAprobacionDescripcion,
+                "Presento documentación física": (info.ContieneDocumentacionFisica || false) ? "Si" : "No"
+            }
+        });
+
+        if (informacionExportar.length == 0) {
+            this.mensajeComponent.setInfoMsg("No existen datos para exportar.");
+            return
+        }
+
+        this.DownloadJsonData(informacionExportar, "AltaProveedores");
+    }
+
+    DownloadJsonData(JSONData: any, FileTitle: string) {
+
+        //crea la estructura inicial del archivo
+        let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(JSONData);
+        let workbook: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Alta de proveedores');
+
+        //escribe el file para ser descargado
+        const excelBuffer: any = XLSX.writeFile(workbook, FileTitle + '.xlsx');
+    }
+
+    onChangeProveedor() {
+        this.contieneDocumentacionFisica = 0;
+    }
+
+    onChangeDocumentacionFisica() {
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty();
+        if (this.facturacionAnual == null) {
+            this.facturacionAnual = 0;
+        }
+
+        try {
+            this.service.registrarDocumentacionFisica(this.empresaSeleccionada.Id,
+                this.empresaSeleccionada.ContieneDocumentacionFisica
+            ).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                        this.getEmpresa();
+                    } else {
+                        setTimeout(() => {
+                            this.pantallaEditarAlta = false;
+                        }, 1000);
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+
+        }
+
+    }
+
 }

@@ -69,6 +69,10 @@ export class LayoutComponent implements OnDestroy {
     @ViewChild("mensajeModal")
     protected mensajeModalComponent: MensajeModalComponent;
 
+    //se porque al usuario comercial se le asigno el nuevo rol de 
+    //alta empresa granos y solo deberia acceder desde el listado
+    esUsuarioComercial : boolean = false;
+
     constructor(private service: LayoutService, private sessionDataService: SessionDataService,
         private navService: NavService, private loginGuard: LoginGuard, private router: Router,
         protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
@@ -218,17 +222,22 @@ export class LayoutComponent implements OnDestroy {
                         break;
                     case 'A Precio':
                         this.auxiliarSeccionesVisitadas = 'A Precio';
-                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
-                        this.textoTooltip2 = '';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga Contrato A PRECIO Corredor - MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS - Carga Contrato a Precio - Moaoperaciones.mp4" target="_blank">click aqui</a>.';
                         break;
                     case 'A Fijar':
                         this.auxiliarSeccionesVisitadas = 'A Fijar';
-                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
-                        this.textoTooltip2 = '';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga Contrato A FIJAR Corredor - MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS%20-%20Carga%20Contrato%20A%20Fijar%20-%20Moaoperaciones.mp4" target="_blank">click aqui</a>.';
                         break;
                     case 'Fijacion':
                         this.auxiliarSeccionesVisitadas = 'Fijacion';
-                        this.textoTooltip = 'Selecciona el material para iniciar la carga.';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Fijaci%C3%B3n%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
+                        this.textoTooltip2 = 'Instructivo Directo: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/DIRECTOS%20-%20Carga%20Fijaci%C3%B3n%20-%20Moaoperaciones.mp4" target="_blank">click aqui</a>.';
+                        break;
+                    case 'Alta Masiva':
+                        this.auxiliarSeccionesVisitadas = 'Alta Masiva';
+                        this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Masiva%20Contratos%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
                         this.textoTooltip2 = '';
                         break;
                     default:
@@ -354,6 +363,7 @@ export class LayoutComponent implements OnDestroy {
                 this.setMsjSuccess(successMsj);
             });
 
+         this.esUsuarioComercial = this.securityService.tienePermiso('ABM EMPRESAS');
     }
 
     ngAfterViewInit() {

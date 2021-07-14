@@ -73,6 +73,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 var ret = new UsuarioDto(usuario);
                 ret.Permisos = usuario.ObtenerPermisos();
+                ret.NuevoUsuario = usuario.EsNuevoUsuario();
 
                 return ret;
             }
@@ -153,7 +154,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<string> interno = new List<string>
             {
-                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP"
+                "ADM", "OPE", "APRO", "COMPRAS", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP", "APIKEY"
             };
 
             List<string> contacto = new List<string>
@@ -260,6 +261,22 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Rol> GetRolesApiKey(string apikey)
+        {
+            try
+            {
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.ApiKey == apikey);
+                if (usuario == null)
+                    return new List<Rol>();
+
+                return usuario.Roles.ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public List<ProveedorDto> GetVendedoresUsuario(string usuarioMail)
         {
             return vendedorService.GetVendedores(usuarioMail);
@@ -331,6 +348,17 @@ namespace SustitucionMOAUtils.Services
             var ret = new ProveedorDto(proveedor);
 
             return ret;
+        }
+
+        public string ObtenerNuevoApiKey(string usuario)
+        {
+            Entidades.Usuario usuarioEntity = repositorio.Obtener<Entidades.Usuario>(u => u.Mail == usuario);
+            var apikey = SustitucionMOACrypting.CryptoServiceProvider.GetNewApiKey();
+
+            usuarioEntity.ApiKey = apikey;
+
+            repositorio.GuardarCambios();
+            return apikey;
         }
     }
 }

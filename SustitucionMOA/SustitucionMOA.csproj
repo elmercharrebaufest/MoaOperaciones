@@ -19,10 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -69,6 +69,9 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Kendo.DynamicLinq, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kendo.DynamicLinq.1.1.2.0\lib\net40\Kendo.DynamicLinq.dll</HintPath>
@@ -241,11 +244,15 @@
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />
     <Content Include="Content\images\icons\contract.svg" />
+    <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
+    <Content Include="Content\images\icons\editar.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
-    <Content Include="Content\images\icons\trash.png" />
+    <Content Include="Content\images\icons\trash.svg" />
+    <Content Include="Content\images\icons\trashRed.svg" />
+    <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -322,6 +329,17 @@
     <Content Include="src\app\common\view-child\mensaje\mensaje.component.html" />
     <Content Include="src\app\common\view-child\spinner-small\spinner-small.component.html" />
     <Content Include="src\app\common\view-child\spinner\spinner.component.html" />
+    <Content Include="src\app\compras\compras.component.css" />
+    <Content Include="src\app\compras\dashboard\dashboard.component.html" />
+    <Content Include="src\app\compras\PliegoPasos\cotizacion.component.html" />
+    <Content Include="src\app\compras\PliegoPasos\generacion1.component.html" />
+    <Content Include="src\app\compras\PliegoPasos\generacion2.component.html" />
+    <Content Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.html" />
+    <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
+    <Content Include="src\app\compras\preview\pliego.preview.component.html" />
+    <Content Include="src\app\compras\solp.component.html" />
+    <Content Include="src\app\compras\SolpPasos\cabecera.component.html" />
+    <Content Include="src\app\compras\SolpPasos\subposiciones.component.html" />
     <Content Include="src\app\consulta\crear-consulta\crear-consulta.component.html" />
     <Content Include="src\app\consulta\detalle\consulta-detalle.component.html" />
     <Content Include="src\app\consulta\mis-consultas\mis-consultas.component.html" />
@@ -838,6 +856,8 @@
     <Content Include="Content\css\fonts\primeicons.woff" />
     <Content Include="Documentacion\Criterios de Retención MOA.pdf" />
     <Content Include="Documentacion\GMP MOA.pdf" />
+    <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - CORREDOR.pdf" />
+    <Content Include="Documentacion\INSTRUCTIVO CARGA DE CONTRATO - DIRECTO.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -856,6 +876,7 @@
     <Content Include="Template\ReporteConflictosCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Template\AvisoAuditoria.html" />
     <Content Include="Template\ReporteLiquidacionesInformadas.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -914,6 +935,7 @@
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
     <Compile Include="Controllers\AltaEmpresaNoGranosController.cs" />
+    <Compile Include="Controllers\ComprasController.cs" />
     <Compile Include="Controllers\ConsultaController.cs" />
     <Compile Include="Controllers\CampoSustentableController.cs" />
     <Compile Include="Controllers\CrearContratoController.cs" />
@@ -977,6 +999,28 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
+    <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-columna-subPosiciones.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-paso-solp.ts" />
+    <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\cotizacion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion1.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\generacion2.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicionViewModel.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\adjuntos-Especificaciones.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\PliegoPasos\solapaTres\especificacionesViewModel.ts" />
+    <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\Solp.ts" />
+    <TypeScriptCompile Include="src\app\compras\SolpPasos\cabecera.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\SolpPasos\subposiciones.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
@@ -985,7 +1029,6 @@
     <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
-    <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.service.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.spec.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.service.spec.ts" />

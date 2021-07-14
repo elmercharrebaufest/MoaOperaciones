@@ -65,20 +65,28 @@
                                             
                                             <p-multiSelect appendTo="body" *ngIf="col.field == 'SubCategoria'" [options]="subcategoriasList" defaultLabel="Todos"  [maxSelectedLabels]="1"
                                                 (onChange)="dt.filter($event.value, 'SubCategoriaId', 'in')" [style]="{'width.%': 100}"></p-multiSelect>
+
+                                            <p-multiSelect appendTo="body" *ngIf="col.field == 'Material'" [options]="materialesList" defaultLabel="Todos"  [maxSelectedLabels]="1"
+                                            (onChange)="dt.filter($event.value, 'Material_Id', 'in')" [style]="{'width.%': 100}">
+                                            </p-multiSelect>
                                         </div>
                                         <div *ngSwitchCase="'date'">
+                                            <!--Filtro fechas-->
                                             <p-dropdown [options]="datesRange" [(ngModel)]="col.selectedRange" (onChange)="cambiarCalendar(dt, col)" [style]="{'width.%': 90}"></p-dropdown>
                                             <!-- <p-selectButton [options]="datesRange" [(ngModel)]="col.selectedRange" multiple="multiple" (onChange)="cambiarCalendar(dt, col)" [style]="{'width.%': 90}"></p-selectButton> -->
                                             <p-calendar appendTo="body" [(ngModel)]="col.fecha" [locale]="es" [showIcon]="true" dateFormat="dd/mm/yy" [readonlyInput]="true" inputStyleClass="filters-calendar-table"
-                                            [(selectionMode)]="col.selectionMode" (onClose)="onFechaRangeChange(dt, col)" (onSelect)="onFechaChange(dt, col)"  [monthNavigator]="true" [selectOtherMonths]="true" 
-                                            ></p-calendar>
+                                            [(selectionMode)]="col.selectionMode" (onClose)="onFechaRangeChange(dt, col)" (onSelect)="onFechaChange(dt, col)"  [monthNavigator]="true" [selectOtherMonths]="true">
+                                                <p-footer class="center" *ngIf="col.selectionMode == 'range'">
+                                                    <button pButton (click)="onFechaRangeChange(dt, col)" type="button" label="Filtrar" class="ui-button-raised ui-button-secondary"></button>
+                                                </p-footer>
+                                            </p-calendar>
                                         </div>
                                     </th>
                                     <th style="width: 4rem"></th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
-                                <tr>
+                                <tr style="word-wrap: break-word;">
                                     <td style="width: 3rem; padding: 0">
                                         <a style="cursor: pointer;" [pRowToggler]="rowData">
                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -90,12 +98,19 @@
                                             <span *ngIf="col.field == 'EstadoConsulta'; else defaultField" [ngStyle]="{'color': rowData.EstadoConsulta.Color}">
                                             {{rowData.EstadoConsulta.Descripcion}}</span>
 
-                                            <ng-template #defaultField>{{rowData[col.field].Nombre}}</ng-template>
+                                            <ng-template #defaultField>
+                                                <ng-container *ngIf="col.field == 'Material' else default">
+                                                    <span>{{rowData[col.field]}}</span>
+                                                </ng-container>
+                                            </ng-template>
+                                            <ng-template #default>
+                                                <span>{{rowData[col.field].Nombre}}</span>
+                                            </ng-template>
                                         </div>
                                         <span *ngSwitchCase="'date'" >{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                     </td>
                                     <td style="text-align: center; width: 5rem; padding: 0">
-                                        <a [routerLink]="['/consulta/detalle', { idConsulta:rowData.Id } ]"><button pButton type="button" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button></a>
+                                        <button pButton type="button" (click)="openModal(rowData.Id, rowData.Asunto)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-comments-o"></button>
                                     </td>
                                 </tr>
                             </ng-template>
@@ -233,6 +248,9 @@
                                                     <div class="ui-g-6">
                                                         <b>Liquidaci&oacute;n :</b> {{rowData.ComprobanteNo}}
                                                     </div>
+                                                    <div>
+                                                        <b>Id :</b> {{rowData.comprobanteExtra}}
+                                                    </div>
                                                 </div>
                                                 <div class="ui-g" *ngIf="rowData.Categoria.Code == 'MATBA' && 
                                                                         rowData.SubCategoria.Code == 'CAL'">
@@ -272,4 +290,29 @@
         <!-- END tables-->
     </section>
     <!--End CONTENT-->
+</div>
+
+<button type="button" id="openModalHiddenButton" style="display: none;"
+                                        data-toggle="modal" data-target="#myModal">MODAL</button>
+
+<!--Modal-->
+
+<div class="modal fade col-md-12 col-xs-12 col-sm-12 misConsultas" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false"
+    style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog WidhtModalConsultasInterno" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
+                    (click)=resetVariables()>
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    {{consultaId}} - {{asunto}}
+                </h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;" *ngIf="mostrarDetalle">
+                <consulta-detalle [consultaId]="consultaId"></consulta-detalle>
+            </div>
+        </div>
+    </div>
 </div>

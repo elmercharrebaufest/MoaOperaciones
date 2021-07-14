@@ -667,10 +667,18 @@
                 </div>
                 <div class="step-actions enviar">
 
-                    <!--  MISMO BOTON QUE EL DE LA LINEA 720 -->
-                    <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                        data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                    <input type="submit" (click)="onSubmit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                    <!--  MISMO BOTON QUE EL DE LA LINEA 720 *ngIf="!esAltaInternaGranos"-->
+                    <button *ngIf="esGuardarYNotificar" type="button" id="openModalNotificacion" data-toggle="modal"
+                        style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                    <input *ngIf="esGuardarYNotificar" type="submit" (click)="onSubmit()"
+                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+
+                    <!--Granos-->
+                    <!-- empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) -->
+                    <!--si viene de listado de altas pendientes -->
+                    <input type="submit" *ngIf="!esGuardarYNotificar" (click)="onNotificar()"
+                        class="btn-custom btn-guardar btn-mediano" value="Notificar">
+                    <!--Fin altas pendientes -->
                 </div>
             </div>
         </div>
@@ -719,25 +727,26 @@
                         onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
+                    <h4 class="modal-title" *ngIf="granosFlag == 'NG'" id="myModalLabel">SOLICITUD ENVIADA CON ÉXITO
+                    </h4>
+                    <h4 *ngIf="granosFlag != 'NG'" class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
                 </div>
-                <div class="modal-body modal-notificacion" 
-                *ngIf="granosSelected == 'NG'; else elseBlock">
-                    <label>(Datos Maestros, Molinos Agro, Uruguay 4075 (1644) Victoria, Bs As)</label><br />
+                <div class="modal-body modal-notificacion" *ngIf="granosFlag == 'NG'; else elseBlock">
                     <label>¡Su solicitud fue enviada con éxito!</label><br />
-                    <br>
                     <label>¡Muchas gracias!</label><br />
                 </div>
                 <ng-template #elseBlock>
                     <label>¡Su solicitud fue enviada con éxito!</label><br />
-                    <label style="color: red;">ENVIAR ESTA DOCUMENTACION EN ORIGINAL PARA QUE SU ALTA SEA DEFINITIVA</label><br />
+                    <label style="color: red;">ENVIAR ESTA DOCUMENTACION EN ORIGINAL PARA QUE SU ALTA SEA
+                        DEFINITIVA</label><br />
                     <label>(Datos Maestros, Molinos Agro, Uruguay 4075 (1644) Victoria, Bs As)</label><br />
                     <br>
                     <label>¡Muchas gracias!</label><br />
                 </ng-template>
 
                 <div class="modal-footer">
-                    <button (click)="redirigirAEstado()" class="btn-custom btn-guardar btn-grande centerbtn">Aceptar</button>
+                    <button (click)="redirigirAEstado()"
+                        class="btn-custom btn-guardar btn-grande centerbtn">Aceptar</button>
                 </div>
             </div>
         </div>

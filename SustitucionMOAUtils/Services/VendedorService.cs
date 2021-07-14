@@ -101,13 +101,17 @@ namespace SustitucionMOAUtils.Services
             }
 
             var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado && !v.CodigoProveedor.Contains("C"))
-                .Select(v => new Vendedor() 
-                { 
-                    descVendedor = v.RazonSocial, 
-                    estado = "Alta interna Pendiente.",
-                    estadoMoa = v.EstadoAprobacionDescripcion,
-                    idVendedor = v.CodigoProveedor 
+                .Select(v => new Vendedor()
+                {
+                    descVendedor = v.RazonSocial,
+                    estado = "-",
+                    //estado = (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true)? "Alta definitiva aceptada" : "Pendiente de envío documentación original",
+                    estadoMoa = v.EstadoAprobacion == EstadoAprobacion.Aprobado ? (
+                        (v.ContieneDocumentacionFisica.HasValue && v.ContieneDocumentacionFisica == true) ? "Alta definitiva aceptada" 
+                        : "Pendiente de envío documentación original") : v.EstadoAprobacionDescripcion,
+                    idVendedor = v.CodigoProveedor
                 });
+            response.vendedores.AddRange(vendedoresAprobados);
 
             response.vendedores = response.vendedores.Distinct().ToList();
             return response;
@@ -272,7 +276,8 @@ namespace SustitucionMOAUtils.Services
                             RazonSocial = proveedor.RazonSocial ?? "",
                             FechaSolicitud = proveedor.FechaSolicitud,
                             Comercial = proveedor.Comercial,
-                            EstadoSIPER = proveedor.EstadoSIPER
+                            EstadoSIPER = proveedor.EstadoSIPER,
+                            ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
                         })
                 );
             }
@@ -300,7 +305,8 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedor.RazonSocial ?? "",
                     FechaSolicitud = proveedor.FechaSolicitud,
                     Comercial = proveedor.Comercial,
-                    EstadoSIPER = proveedor.EstadoSIPER
+                    EstadoSIPER = proveedor.EstadoSIPER,
+                    ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
                 }
                 ).ToList());
             }
@@ -342,7 +348,7 @@ namespace SustitucionMOAUtils.Services
                 if (infoDA.HayError)
                 {
                     if (infoDA.ListaErrores[0].Message == "El cuit no tiene ninguno comercial asociado") {
-                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT);
+                        var infoDACorredor = dataAgroService.ObtenerValidarCUITProveedorGranos(usuario.ObtenerCorredor().CUIT, true);
 
                         if (infoDACorredor.HayError)
                         {

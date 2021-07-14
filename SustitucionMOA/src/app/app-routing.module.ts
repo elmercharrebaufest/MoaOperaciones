@@ -19,8 +19,7 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
-import { SolpComponent } from "./compras/solp.component";
-import { DashboardComponent } from './compras/dashboard/dashboard.component' 
+import { ApikeyComponent } from "./apikey/apikey.component";
 
 
 const appRoutes: Routes = [
@@ -153,6 +152,7 @@ const appRoutes: Routes = [
       },
       { path: "logPesificacion",  loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
       { path: "compras", loadChildren:"./compras/compras.module#ComprasModule" },
+      { path: "apikey", component: ApikeyComponent },
     ],
   },
   { path: "**", component: HomeComponent },

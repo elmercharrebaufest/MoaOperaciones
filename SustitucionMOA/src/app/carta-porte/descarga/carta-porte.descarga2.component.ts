@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CartaPorteBaseComponent } from './../carta-porte.component';
 import { CartaPorteService, CartaPorteDescargaService } from './../carta-porte2.service';
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -6,6 +6,10 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import baseParse from 'base64-arraybuffer';
+
+declare var Tiff: any;
+
 
 @Component({
     selector: 'app-carta-porte-descarga',
@@ -13,7 +17,6 @@ import { ModalService } from './../../common/services/ModalService';
     providers: [{ provide: CartaPorteService, useClass: CartaPorteDescargaService }]
 })
 export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
-
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
 
@@ -125,7 +128,12 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
                 } else if (result.info != undefined) {
                     this.floatMsgService.setInfoMsg(result.info);
                 } else {
-                    this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    if (result[0].EsArchivoTiff) {
+                        this.fotoSrc = this.loadFileTiff(result[0].Foto);
+                    }
+                    else {
+                        this.fotoSrc = 'data:image/png;base64,' + result[0].Foto;
+                    }
                     this.cartaPorteDescarga = cartaDePorteNumero;
                     document.getElementById("openModalHiddenButton").click();
                     return true;
@@ -144,6 +152,12 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
 
     isAllChecked() {
         return this.data.cartasPorte.every((_: { state: any; }) => _.state);
+    }
+
+    loadFileTiff(imagen: any): string {
+        let imganenBuffer = baseParse.decode(imagen); //convierto el byte[] aun array buffer
+        let archivoTiff = new Tiff({ buffer: imganenBuffer });
+        return archivoTiff.toDataURL(); //obtiene un texto plano png del archivo a mostrar
     }
 }
 

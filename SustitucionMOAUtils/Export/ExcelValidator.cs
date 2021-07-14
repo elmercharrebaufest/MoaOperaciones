@@ -56,12 +56,12 @@ namespace SustitucionMOAUtils.Export
             var ret = new ExcelValidatorItemResult();
             ret.Item = item;
             
-            if (item.Required && item.Type != ExcelValidationColumnType.Bool && (cell == null || string.IsNullOrEmpty(cell.ToString())))
+            if (item.Required && item.Type != ExcelValidationColumnType.Bool && (cell == null || string.IsNullOrEmpty(cell.ToString().Trim())))
             {
                 ret.Errors.Add(string.Format("El campo {0} es obligatorio", item.Name));
                 return ret;
             }
-            if (!item.Required && string.IsNullOrEmpty(cell.ToString()))
+            if (!item.Required && string.IsNullOrEmpty(cell.ToString().Trim()))
             {
                 return ret;
             }
@@ -69,40 +69,40 @@ namespace SustitucionMOAUtils.Export
             {
                 case ExcelValidationColumnType.Int:
                     int n;
-                    if (!int.TryParse(cell.ToString(), out n))
+                    if (!int.TryParse(cell.ToString().Trim(), out n))
                     {
                         ret.Errors.Add(string.Format("El campo {0} debe ser un número", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.Long:
                     long l;
-                    if (!long.TryParse(cell.ToString(), out l))
+                    if (!long.TryParse(cell.ToString().Trim(), out l))
                     {
                         ret.Errors.Add(string.Format("El campo {0} debe ser un número", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.Decimal:
                     decimal d;
-                    if (!decimal.TryParse(cell.ToString(), out d))
+                    if (!decimal.TryParse(cell.ToString().Trim(), out d))
                     {
                         ret.Errors.Add(string.Format("El campo {0} debe ser un número decimal", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.List:
-                    if (item.Options != null && !item.Options.Contains(cell.ToString().ToLower()))
+                    if (item.Options != null && !item.Options.Contains(cell.ToString().Trim().ToLower()))
                     {
                         ret.Errors.Add(string.Format("El campo {0} debe ser uno de los siguientes valores: {1}", item.Name, string.Join(", ", item.Options.ToArray())));
                     }
                     break;
                 case ExcelValidationColumnType.Date:
                     DateTime dt;
-                    if (!DateTime.TryParse(cell.ToString(), out dt))
+                    if (!DateTime.TryParse(cell.ToString().Trim(), out dt))
                     {
                         ret.Errors.Add(string.Format("El campo {0} debe ser una fecha válida", item.Name));
                     }
                     break;
                 case ExcelValidationColumnType.Bool:
-                    var b = cell.ToString();
+                    var b = cell.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(b) && b.ToUpper() != "X")
                     {

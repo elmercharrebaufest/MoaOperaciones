@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
@@ -102,7 +103,8 @@ namespace SustitucionMOATest.Controllers
                 Id = 1,
                 Mail = "mail@mail.com",
                 Proveedores = new List<Proveedor> { proveedor },
-                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } },
+                TipoUsuario = new TipoUsuario { NombreCorto = "G"} 
             };
 
             var categoria = new Categoria
@@ -182,7 +184,6 @@ namespace SustitucionMOATest.Controllers
             Assert.NotNull(resultado.Data);
             Assert.AreEqual(expectedJson, resultJson);
         }
-
         /*
         [Test]
         public void PostComentario()
@@ -203,7 +204,8 @@ namespace SustitucionMOATest.Controllers
                 Id = 1,
                 Mail = "mail@mail.com",
                 Proveedores = new List<Proveedor> { proveedor },
-                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } }
+                Roles = new List<Rol> { new Rol { Nombre = "GRANOS", Codigo = "GRAN" } },
+                TipoUsuario = new TipoUsuario { NombreCorto = "G"}
             };
 
             var categoria = new Categoria
@@ -263,16 +265,23 @@ namespace SustitucionMOATest.Controllers
                 Consulta = consultaMock,
                 Archivos = null,
                 Usuario = usuario,
+                FechaRecordado = DateTime.Now,
+                Recordado = false
             };
 
             var comentarioDto = new ComentarioDto(comentario);
 
-            consultaServiceMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<Comentario>())).Returns(comentarioDto);
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+                 .Returns(usuario);
+
+            consultaServiceMock.Setup(x => x.AgregarComentario(It.IsAny<int>(), It.IsAny<Comentario>(), It.IsAny<HttpFileCollectionBase>())).Returns(comentarioDto);
+            var comentarioJson = JsonConvert.SerializeObject(comentario).ToString();
+
 
             target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(comentarioDto);
 
-            resultado = target.Comentarios(mockedConsultaId, comentario);
+            resultado = target.Comentarios(mockedConsultaId, comentarioJson);
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 
             Assert.NotNull(resultado);
@@ -280,6 +289,7 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedJson, resultJson);
         }
 
+        
         [Test]
         public void PostComentarioConIdConsultaInvalido()
         {
@@ -361,46 +371,6 @@ namespace SustitucionMOATest.Controllers
         }
 
         [Test]
-        public void PatchRecategorizarConsultaConIdConsultaInexistente()
-        {
-            var mockedConsultaId = 1;
-            var mockedCategoriaId = 1;
-            var mockedSubCategoriaId = 1;
-
-            consultaServiceMock.Setup(x => x.RecategorizarConsulta(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new InfoCustomException("No existe la consulta"));
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            expectedJson = JsonConvert.SerializeObject(new { info = "No existe la consulta" });
-
-            resultado = target.Recategorizar(mockedConsultaId, mockedCategoriaId, mockedSubCategoriaId);
-            resultJson = JsonConvert.SerializeObject(resultado.Data);
-
-            Assert.NotNull(resultado);
-            Assert.NotNull(resultado.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
-
-        [Test]
-        public void PatchRecategorizarConsultaConIdCategoriaInexistente()
-        {
-            var mockedConsultaId = 1;
-            var mockedCategoriaId = 1;
-            var mockedSubCategoriaId = 1;
-
-            consultaServiceMock.Setup(x => x.RecategorizarConsulta(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Throws(new InfoCustomException("No existe la categoria"));
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            expectedJson = JsonConvert.SerializeObject(new { info = "No existe la categoria" });
-
-            resultado = target.Recategorizar(mockedConsultaId, mockedCategoriaId, mockedSubCategoriaId);
-            resultJson = JsonConvert.SerializeObject(resultado.Data);
-
-            Assert.NotNull(resultado);
-            Assert.NotNull(resultado.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
-
-        [Test]
         public void PatchEstadoConsulta()
         {
             var mockedConsultaId = 1;
@@ -444,44 +414,6 @@ namespace SustitucionMOATest.Controllers
 
             target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
-
-            resultado = target.ActualizarEstado(mockedConsultaId, mockedCategoriaId);
-            resultJson = JsonConvert.SerializeObject(resultado.Data);
-
-            Assert.NotNull(resultado);
-            Assert.NotNull(resultado.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
-
-        [Test]
-        public void PatchEstadoConsultaConIdConsultaInexistente()
-        {
-            var mockedConsultaId = 1;
-            var mockedCategoriaId = 1;
-
-            consultaServiceMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Throws(new InfoCustomException("No existe la consulta"));
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            expectedJson = JsonConvert.SerializeObject(new { info = "No existe la consulta" });
-
-            resultado = target.ActualizarEstado(mockedConsultaId, mockedCategoriaId);
-            resultJson = JsonConvert.SerializeObject(resultado.Data);
-
-            Assert.NotNull(resultado);
-            Assert.NotNull(resultado.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
-
-        [Test]
-        public void PatchEstadoConsultaConIdEstadoInexistente()
-        {
-            var mockedConsultaId = 1;
-            var mockedCategoriaId = 1;
-
-            consultaServiceMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Throws(new InfoCustomException("No existe el estado"));
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            expectedJson = JsonConvert.SerializeObject(new { info = "No existe el estado" });
 
             resultado = target.ActualizarEstado(mockedConsultaId, mockedCategoriaId);
             resultJson = JsonConvert.SerializeObject(resultado.Data);
@@ -541,49 +473,6 @@ namespace SustitucionMOATest.Controllers
             target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
-
-            resultado = target.Adjuntos(mockedConsultaId, mockedComentarioId);
-            resultJson = JsonConvert.SerializeObject(resultado.Data);
-
-            Assert.NotNull(resultado);
-            Assert.NotNull(resultado.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
-
-        [Test]
-        public void PostAdjuntoComentarioConIdComentarioInexistente()
-        {
-            var mockedConsultaId = 1;
-            var mockedComentarioId = 1;
-            var cantidadArchivosMocked = 1;
-            HttpFileCollectionBase files;
-
-            consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HttpFileCollectionBase>())).Throws(new InfoCustomException("No existe el comentario"));
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            cargarFiles(cantidadArchivosMocked);
-            expectedJson = JsonConvert.SerializeObject(new { info = "No existe el comentario" });
-
-            resultado = target.Adjuntos(mockedConsultaId, mockedComentarioId);
-            resultJson = JsonConvert.SerializeObject(resultado.Data);
-
-            Assert.NotNull(resultado);
-            Assert.NotNull(resultado.Data);
-            Assert.AreEqual(expectedJson, resultJson);
-        }
-
-        [Test]
-        public void PostAdjuntoArchivoComentarioConIdConsultaDiferente()
-        {
-            var mockedConsultaId = 2;
-            var mockedComentarioId = 1;
-            var cantidadArchivosMocked = 1;
-
-            consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HttpFileCollectionBase>())).Throws(new InfoCustomException("El comentario no corresponde a la consulta especificada"));
-
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object);
-            cargarFiles(cantidadArchivosMocked);
-            expectedJson = JsonConvert.SerializeObject(new { info = "El comentario no corresponde a la consulta especificada" });
 
             resultado = target.Adjuntos(mockedConsultaId, mockedComentarioId);
             resultJson = JsonConvert.SerializeObject(resultado.Data);

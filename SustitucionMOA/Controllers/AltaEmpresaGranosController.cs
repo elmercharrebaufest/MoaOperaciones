@@ -88,12 +88,21 @@ namespace SustitucionMOA.Controllers
 
                 if (informeComercial.NuevosCampos != null)
                 {
-                    foreach (var nuevosCampos in informeComercial.NuevosCampos)
+                   /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
                     {
                         informeComercial.Materiales.Add(new ParamInformeComercialMaterial
                         {
                             MaterialId = nuevosCampos.MaterialId,
                             Toneladas = nuevosCampos.Toneladas
+                        });
+                    }*/
+
+                    foreach (var nuevosCampos in informeComercial.NuevosCampos.GroupBy(x => x.MaterialId))
+                    {
+                        informeComercial.Materiales.Add(new ParamInformeComercialMaterial
+                        {
+                            MaterialId = nuevosCampos.First().MaterialId,
+                            Toneladas = nuevosCampos.Sum(x => x.Toneladas)
                         });
                     }
                 }
@@ -587,6 +596,35 @@ namespace SustitucionMOA.Controllers
                 }
                 AltaEmpresaViewModel result = altaEmpresaService.CargarSolicitudUsuario(mail, proveedorId);
                 return JsonCustom(result);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult NotificarSolicitud(int proveedorId)
+        {
+            try
+            {
+                string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                return JsonCustom(altaEmpresaService.NotificarSolicitud(mail, proveedorId));
             }
             catch (InfoCustomException e)
             {

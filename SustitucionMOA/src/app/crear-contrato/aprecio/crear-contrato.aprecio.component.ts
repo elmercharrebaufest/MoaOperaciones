@@ -2,6 +2,8 @@
 import { CrearContratoBaseComponent } from './../crear-contrato.component';
 import { CrearContratoService, CrearContratoAPrecioService } from './../crear-contrato.service';
 import { ContratoAPrecio } from "../../common/models/contratoAPrecio";
+import localeEsAr from '@angular/common/locales/es-AR';
+import { DatePipe, registerLocaleData } from '@angular/common';
 
 declare var $: any;
 
@@ -16,6 +18,8 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     contrato: ContratoAPrecio = new ContratoAPrecio();
 
     ngOnInit() {
+        registerLocaleData(localeEsAr, 'es-AR');
+
         super.ngOnInit();
         this.contrato.TipoNegocioId = 2;
         this.contrato.Id = this.id;
@@ -216,8 +220,11 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
 
                     let precioNeto = precio + costo;
 
-                    this.costoFinanciero = "Precio Neto: " + (precioNeto);
-
+                    //let fecha = new Date();
+                    //let diasp = Number(this.contrato.DiasPesificado);
+                    //fecha.setDate(fecha.getDate() + diasp);
+                    //var datePipe = new DatePipe('es-AR');
+                    this.costoFinanciero = "Precio Neto: " + (precioNeto) /*+ "<br> Fecha: " + datePipe.transform(fecha, 'dd/MM/yyyy')*/;
                 }
             }
 
@@ -498,6 +505,7 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
     }
 
     changeMoneda(event) {
+        console.log("asdsad");
         this.contrato.PagoDiferidoTercero = false;
         this.contrato.DolarizadoTercero = false;
         if (this.contrato.MonedaId != "" && this.contrato.MonedaId != undefined && this.contrato.MonedaId != null) {
@@ -538,5 +546,42 @@ export class CrearContratoAPrecioComponent extends CrearContratoBaseComponent {
         return this.contrato.MaterialId == 3;
     }
 
+    isSustentableHabilitado(): boolean {
+        let dateParts = $("#noCursor2").val().split("/");
+        let entrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+        let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega <= entrega && a.HastaEntrega >= entrega);
+        if (sustentables.length == 1 && this.contrato.SustentableTercero == true && this.isSoja()) {
+            this.contrato.ImporteSustentable = sustentables[0].Precio;
+            this.contrato.MonedaSustentableId = sustentables[0].MonedaId;
+            this.contrato.Sustentable = true;
+            this.ObservacionSustentableTercero = sustentables[0].Precio + " " + sustentables[0].MonedaId
+        } 
+        return sustentables.length == 1 && this.isSoja();
+    }
 
+    changeSustentable(event) {
+
+        if (this.contrato.SustentableTercero == true) {
+            let dateParts = $("#noCursor2").val().split("/");
+            let entrega = new Date(parseInt(dateParts[2]), parseInt(dateParts[1]) - 1, parseInt(dateParts[0]));
+            let sustentables = this.sustentables.filter(a => a.TipoNegocioId == this.contrato.TipoNegocioId && a.DesdeEntrega <= entrega && a.HastaEntrega >= entrega);
+            if (sustentables.length == 1) {
+                this.contrato.ImporteSustentable = sustentables[0].Precio;
+                this.contrato.MonedaSustentableId = sustentables[0].MonedaId;
+                this.contrato.Sustentable = true;
+                this.ObservacionSustentableTercero = sustentables[0].Precio + " " + sustentables[0].MonedaId
+            } else {
+                this.contrato.ImporteSustentable = null;
+                this.contrato.MonedaSustentableId = null;
+                this.contrato.Sustentable = false;
+                this.contrato.SustentableTercero = false;
+                console.log("no esta haibltiado sustentable.")
+            }
+        } else {
+            this.contrato.ImporteSustentable = null;
+            this.contrato.MonedaSustentableId = null;
+            this.contrato.Sustentable = false;
+        }
+    }
+       
 }

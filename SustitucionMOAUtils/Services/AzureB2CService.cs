@@ -186,7 +186,7 @@ namespace SustitucionMOAUtils.Services
 
         public bool RegistrarUsuarioCorredor(ref Usuario usuario)
         {
-            var infoProveedor = ObtenerInfoProveedorDA(usuario.CUITRegistro);
+            var infoProveedor = ObtenerInfoProveedorDA(usuario.CUITRegistro, true);
 
             Proveedor proveedor = new Proveedor
             {
@@ -372,7 +372,7 @@ namespace SustitucionMOAUtils.Services
             return dataAgroService.ValidarCUITProveedorGranos(ref usuario, proveedor);
         }
 
-        public ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT);
+        public ResultadoValidarProveedorComercial ObtenerInfoProveedorDA(string CUIT, bool corredor = false) => dataAgroService.ObtenerValidarCUITProveedorGranos(CUIT, corredor);
 
         public Usuario ObtenerUsuario(string mail, string granosFlag) => BuscarUsuarioPorMail(mail);
 

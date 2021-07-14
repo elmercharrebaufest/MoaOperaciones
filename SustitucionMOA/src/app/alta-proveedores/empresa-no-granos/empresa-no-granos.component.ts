@@ -20,6 +20,7 @@ import { RelacionConEmpleados } from "../../common/models//RelacionConEmpleados"
 import { RelacionConFuncionarios } from "../../common/models/relacionConFuncionarios";
 import { forEach } from "@angular/router/src/utils/collection";
 import { CartaPresentacion } from "../../common/models/cartaPresentacion";
+import * as $ from 'jquery';
 
 @Component({
     selector: "app-empresa-no-granos",
@@ -82,6 +83,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
 
     esGuardarYNotificar: boolean = false;
     Comentarios: string = "";
+
+    empresaSeleccionada: any;
 
     constructor(
         protected service: EmpresaNoGranosService,

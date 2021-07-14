@@ -261,7 +261,7 @@
         </div>
         <!-- End Search-->
         <!-- Tables-->
-        <p class="mySearch" style="padding:0;margin:0;"><b style="color: red;font-size: 31px;bottom: -9px;position: relative;">*</b>Los precio pizarra se conocerán al día hábil siguiente.</p>
+        <p class="mySearch" style="padding:0;margin:0;"><b style="color: red;font-size: 31px;bottom: -9px;position: relative;">*</b>Los precio pizarra se conocerán al día hábil siguiente. <label style="float:right;"><input type="checkbox" checked="checked"  (change)="onCheckboxChange($event)"  > Actualizacion Automatica</label></p>
         <div class="row myRow">
             <div class="clearfix myTables">
 
@@ -286,6 +286,15 @@
                                         <span>
                                             <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaOperacion' && orderDirection > 0 }"></i>
                                             <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'FechaOperacion' && orderDirection < 0 }"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                                <th tabindex="0" rowspan="1" colspan="1" style="" (click)="orderColumnBy('Contrato')">
+                                    Contrato
+                                    <div>
+                                        <span>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection > 0 }"></i>
+                                            <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Contrato' && orderDirection < 0 }"></i>
                                         </span>
                                     </div>
                                 </th>
@@ -493,6 +502,7 @@
                                     </span>
                                 </td>
                                 <td>{{contratoInfo.FechaOperacion | date: 'dd/MM/yyyy'}}</td>
+                                <td>{{contratoInfo.Contrato}}</td>
                                 <td>{{contratoInfo.Cuit}}</td>
                                 <td>{{contratoInfo.Proveedor}}</td>
                                 <td *ngIf="isVisibleProveedor()">{{contratoInfo.Corredor}}</td>

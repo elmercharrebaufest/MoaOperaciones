@@ -128,5 +128,9 @@
         /*LOG PESIFICACIONES*/
         public const string CONSULTA_LOG_PESIFICACIONES = "GUARDADO Y CONSULTA DE LOG PESIFICACIONES";
 
+        /* COMPRAS SOLP */
+        public const string ABM_SOLP = "ABM SOLP";
+        /*Alta interna Granos*/
+        public const string NOTIFICAR_ALTA_INTERNA_GRANOS = "NOTIFICAR ALTA INTERNA GRANOS";
     }
 }

@@ -1,4 +1,4 @@
-﻿import { CommonModule } from '@angular/common';
+﻿import { CommonModule, WeekDay } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -32,7 +32,9 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NumericDirective } from './directive/numeric.directive';
 import { AutocompleteLocalidadComponent } from './shared-components/autocomplete-localidad/autocomplete-localidad.component'
 import { StepperComponent } from './view-child/stepper/stepper.component';
-import { NgxMaskModule } from 'ngx-mask';
+import {ToggleButtonModule} from 'primeng/togglebutton';
+import { WeekdaySelectComponent } from './view-child/weekday-select/weekday-select.component';
+import { CustomFilterBoolean } from "./pipes/customFilterBoolean";
 
 @NgModule({
     imports: [CommonModule, FormsModule, Ng2AutoCompleteModule,
@@ -41,19 +43,17 @@ import { NgxMaskModule } from 'ngx-mask';
         MultiSelectModule,
         SpinnerModule,
         AutoCompleteModule,
-        NgxMaskModule.forRoot()
-        ],
+        ToggleButtonModule
+    ],
     declarations: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         AutocompleteLocalidadComponent, SeleccionarProveedorComponent, InformeComercialComponent,
-        CartaPresentacionComponent, NumericDirective, StepperComponent],
+        CartaPresentacionComponent, NumericDirective, StepperComponent, WeekdaySelectComponent,CustomFilterBoolean],
     exports: [FiltroFechaComponent, DropdownComponent, MensajeComponent, MensajeModalComponent, SpinnerComponent, SpinnerSmallComponent, CustomFilter, CustomFilterOr, CustomFilterContain, CustomNumericFilter, OrderedColumn, ShortenStringPipe, BaseComponent, ListBaseComponent, ArchivoPipe,
         CommonModule, FormsModule, InformeComercialComponent,
         CartaPresentacionComponent, SeleccionarProveedorComponent, Ng2AutoCompleteModule,
         AutocompleteLibModule,
         CommonModule, FormsModule, AutocompleteLocalidadComponent, NumericDirective,
-        StepperComponent,
-        NgxMaskModule
-        ],
+        StepperComponent, WeekdaySelectComponent,CustomFilterBoolean],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class SharedModule { }

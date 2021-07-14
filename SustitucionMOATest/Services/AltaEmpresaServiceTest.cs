@@ -87,7 +87,7 @@ namespace SustitucionMOATest.Services
               });
 
             dataAgroServiceMock
-                .Setup(y => y.ObtenerValidarCUITProveedorGranos(It.IsAny<string>()))
+                .Setup(y => y.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>()))
                 .Returns(new SustitucionMOAWS.DataAgroServices.ResultadoValidarProveedorComercial());
 
 
@@ -196,6 +196,38 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
 
             Assert.AreEqual(expected, result);
+        }
+
+
+        [Test()]
+        public void AgregarObservacionTest()
+        {
+            var mailUsuario = "usuario@mail.com";
+            var proveedorId = 1;
+            var observacion = "Buen dia!";
+            var expected = SuccessMsg.ObservacionAgregadaOK;
+
+            var proveedor = new Proveedor { Id = proveedorId, EstadoAprobacion = EstadoAprobacion.Aprobado, Observaciones = "Test" };
+
+            var usuario = new Usuario { Mail = mailUsuario, Proveedores = new List<Proveedor> { proveedor } };
+
+            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()))
+               .Returns(usuario);
+
+            repositorioMock
+                   .Setup(y => y.Obtener<Proveedor>(It.IsAny<int>()))
+                   .Returns(proveedor);
+
+            var result = target.AgregarObservacion(proveedorId, observacion, mailUsuario);
+
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
+
+            repositorioMock.Verify(x => x.Obtener<Proveedor>(It.IsAny<int>()), Times.Once);
+
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+
+            Assert.AreEqual(expected, result);
+            Assert.AreEqual(1, proveedor.HistorialAprobaciones.Count);
         }
     }
 }

@@ -331,6 +331,15 @@ namespace SustitucionMOAAssets {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to La observación se ha guardado correctamente..
+        /// </summary>
+        public static string ObservacionAgregadaOK {
+            get {
+                return ResourceManager.GetString("ObservacionAgregadaOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Se le enviará un mail con una nueva contraseña.
         /// </summary>
         public static string OlvideContraniaOk {

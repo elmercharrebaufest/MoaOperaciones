@@ -44,11 +44,6 @@ namespace SustitucionMOAUtils.Services
             var listadoArchivos = GenerarListadoArchivos(resultado);
             byte[] archivoResultado = listadoArchivos.FirstOrDefault(a => a.Nombre.Contains("zip")).Datos;
 
-            if (archivoResultado.Length < 50)
-            {
-                throw new ValidationCustomException("No hay documentos para la carta de porte ingresada.");
-            }
-
             if (consultaTicketPesada.Mail != null)
             {
                 if (consultaTicketPesada.Mail.Length > 0)

@@ -49,13 +49,9 @@ export class AltaEmpresaService extends BaseService {
 
 
 
-    public getEstados(idTipoProveedor): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-
-        params.set('idTipoProveedor', idTipoProveedor.toString());
-
+    public getEstados(): Observable<any> {
         return this.http
-            .get('/api/AltaEmpresa/getEstados', { search: params, headers: this.headers }).pipe(
+            .get('/api/AltaEmpresa/getEstados', { headers: this.headers }).pipe(
                 map(this.extractData));
     }
 
@@ -94,4 +90,21 @@ export class AltaEmpresaService extends BaseService {
                 map(this.extractData));
     }
 
+    public proveedorNoGranosOperando(proveedorId: number, razonSocial: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('proveedorId', proveedorId.toString())
+        params.set('razonSocial', razonSocial)
+        return this.http
+            .get('/api/AltaEmpresaNoGranos/HabilitarNoGranosOperando', { search: params, headers: this.headers })
+            .pipe(map(this.extractData))
+    }
+
+
+    public agregarObservacion(empresaId: number, observacion: string): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('empresaId', empresaId.toString());
+        params.set('observacion', encodeURIComponent(observacion));
+        return this.http
+            .post('/api/AltaEmpresa/AgregarObservacion', params, this.headersPost).map(this.extractData);
+    }
 }

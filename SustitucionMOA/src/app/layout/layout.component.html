@@ -209,7 +209,7 @@
             <div class="UserBar clearfix">
                 <nav>
                     <ul class="nav">
-                        <li class="">
+                        <li class="" *ngIf="isAuthorized('CONSULTAR DATOS FISCALES'); else mostrarUsuario">
                             <div class="user-info-container">
                                 <a (click)="goToSeccion('/dato-fiscal/situacion-fiscal')" href="#" class="user-name"
                                     *ngIf="isAuthorized('CONSULTAR DATOS FISCALES')">
@@ -221,6 +221,15 @@
                                 <span class="user-code">C&oacute;digo de proveedor {{proveedor}} </span>
                             </div>
                         </li>
+                        <ng-template #mostrarUsuario>
+                            <li>
+                                <div class="user-info-container">
+                                    <span class="user-name">
+                                        <strong>{{username}}</strong>
+                                    </span>
+                                </div>
+                            </li>
+                        </ng-template>
                         <!-- <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
                                 (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
                                     class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
@@ -404,11 +413,11 @@
                                 *ngIf="(isAuthorized('PESIFICACION') || isAuthorized('VER PESIFICACIONES')) && isGranosSelected()">
                                 <a (click)="goToSeccion('/pesificacion')" href="#"> Pesificaci&oacute;n</a>
                             </div>
-                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                            <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/crear-contrato/cargarnegocio')" href="#"> Carga de
                                     negocios</a>
                             </div>
-                            <div *ngIf="isAuthorized('CONSULTAR CONTRATOS') && isGranosSelected()">
+                            <div *ngIf="isAuthorized('CREAR CONTRATOS') && isGranosSelected()">
                                 <a (click)="goToSeccion('/reporte/contrato')" href="#">Reporte de mis cargas</a>
                             </div>
                             <div>
@@ -448,7 +457,7 @@
                                 </a>
                             </div>
                             <div
-                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES') && !esUsuarioComercial">
                                 <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
@@ -491,12 +500,12 @@
                             Contacto
                         </a>
                     </div>
-                </div>-->
+                </div>
 
 
                 <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
                 <div class="panel panel-default"
-                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA')">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse"
                             (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
@@ -508,6 +517,14 @@
                     *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
+                            href="#" data-parent="#accordionMenu">
+                            <!--data-toggle="tab">-->Contacto
+                        </a>
+                    </div>
+                </div>
+                <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
+                    <div class="panel-heading seccion" role="tab" id="contacto">
+                        <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/contacto')"
                             href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
@@ -526,7 +543,8 @@
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
                             href="#collapseU" aria-expanded="false" aria-controls="collapseU">
-                            Administraci&oacute;n <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            Administraci&oacute;n <span class="glyphicon glyphicon-chevron-down"
+                                aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
@@ -567,11 +585,31 @@
                             Compras <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
-                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel" *ngIf="isAuthorized('ABM SOLP')">
+                    <div id="collapseCompras" class="collapse" aria-labelledby="compras" role="tabpanel"
+                        *ngIf="isAuthorized('ABM SOLP')">
                         <div class="panel-body">
                             <div>
                                 <a (click)="goToSeccion('/compras/dashboard')" href="#">
                                     DASHBOARD
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
+                    <div class="panel-heading seccion" role="tab" id="apikey" *ngIf="isAuthorized('APIKEY')">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseApikey" aria-expanded="false" aria-controls="collapseApikey">
+                            API <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseApikey" class="collapse" aria-labelledby="apikey" role="tabpanel"
+                        *ngIf="isAuthorized('APIKEY')">
+                        <div class="panel-body">
+                            <div>
+                                <a (click)="goToSeccion('/apikey')" href="#">
+                                    Gestionar ApiKey
                                 </a>
                             </div>
                         </div>
@@ -666,9 +704,9 @@
                 <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i
                         class="glyphicon glyphicon-remove"></i></button>
                 <br>
-                {{this.textoTooltip}}
+                <label [innerHTML]="textoTooltip"></label>
                 <br>
-                {{this.textoTooltip2}}
+                <label [innerHTML]="textoTooltip2"></label>
             </span>
         </div>
     </div>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -6,9 +6,15 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
-import { SolpService } from './../solp.service'
+import { ComprasService } from '../compras.service'
 import { Solp } from './../Solp';
 import * as uuid from 'uuid';
+import  ImageResize  from 'quill-image-resize-module';
+import Quill from 'quill';
+import {FormBuilder, FormGroup, FormControl,Validators } from '@angular/forms';
+import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
+Quill.register('modules/imageResize', ImageResize);
+import { EnumPasoSolp } from '../enum-paso-solp';
 
 
 
@@ -19,7 +25,7 @@ declare var $: any;
     templateUrl: `generacion2.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class Generacion2Component extends ListBaseComponent {
+export class Generacion2Component extends ListBaseComponent  {
 
     @Input('model') 
     protected model:Solp;
@@ -27,12 +33,24 @@ export class Generacion2Component extends ListBaseComponent {
     @Input('locale') 
     protected locale:any;
 
+    modulesEditor = {};
 
-  
+    //validaciones
+    formulario2 : FormGroup;
 
-    constructor(protected service: SolpService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
+    @Output() onEstCompleto = new EventEmitter<any>();
+
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, 
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, 
+        protected modalService: ModalService, protected route: ActivatedRoute, 
+        protected router: Router, private formBuilder: FormBuilder,
+        private validadorPasoSolpService : ValidadorPasoSolpService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+        this.modulesEditor = {
+            imageResize: true
+        }
     }
+    
 
 
     solpPaso2Result: any;
@@ -42,7 +60,7 @@ export class Generacion2Component extends ListBaseComponent {
     visitaDeObraFecha: any;
     fechaLimiteHora: any;
     fechaLimiteFecha: any;
-
+    hoy: Date = new Date();
 
     //variables auxiliares de text rich
     posicionDeInicioInsert: number = 0;
@@ -58,29 +76,20 @@ export class Generacion2Component extends ListBaseComponent {
 
     }
 
-    listaVisitas: any[] = [
-        {
-            id: uuid.v4(),
-            visitaDeObraFecha: "",
-            visitaDeObraHora: ""
-        }
-    ];
-
     agregarNuevaVisita() {
-        this.listaVisitas.push(
+        this.model.listaVisitas.push (
             {
                 id: uuid.v4(),
-                visitaDeObraFecha: "",
-                visitaDeObraHora: ""
+                visitaDeObraFecha: new Date(),
+                visitaDeObraHora: new Date(1,1,1,10,0,0,0)
             }
         )
-
     };
 
     eliminarVisita(id) {
-        this.listaVisitas = this.listaVisitas.filter(x => x.id != id);
+        this.model.listaVisitas = this.model.listaVisitas.filter(x => x.id != id);
 
-        if (this.listaVisitas.length == 0) {
+        if (this.model.listaVisitas.length == 0) {
             this.agregarNuevaVisita();
         }
 
@@ -93,28 +102,39 @@ export class Generacion2Component extends ListBaseComponent {
 
     ngOnInit() {
         this.setTabs();
-        this.model.fechaLimiteHora = new Date(1,1,1,10,0,0,0);
-        this.model.fechaLimiteFecha = new Date(2021,1,1);
+        
+         //declaro las validaciones para los campos
+         this.formulario2 = this.formBuilder.group({
+            supervisorTrabajo: new FormControl ('', Validators.required),
+            supervisorSector: new FormControl ('', Validators.required),
+          });
+
+          this.validadorPasoSolpService.formulario = this.formulario2;
+          if (this.model.cargoPasoDos) {
+            this.validadorPasoSolpService.aplicarValidaciones();
+        }
+
+        this.model.cargoPasoDos = true;
         
     }
 
     selectionChange(event) {
 
-        if (event.range && this.model.observaciones) {
-            this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observaciones);
+        if (event.range && this.model.observacionesGeneracion) {
+            this.posicionDeInicioInsert = this.ObtenerPosicionInsert(event.range.index, this.model.observacionesGeneracion);
         }
     }
 
     fileChange(file) {
-        if (this.posicionDeInicioInsert != undefined) {
-            var textoInicial = this.model.observaciones.substring(0, this.posicionDeInicioInsert + 1);
-            var textoFinal = this.model.observaciones.substring(this.posicionDeInicioInsert + 1, this.model.observaciones.length);
-            this.model.observaciones = textoInicial + '<img src=' + file + '>' + textoFinal;
+        if (this.posicionDeInicioInsert != undefined && this.model.observacionesGeneracion.length > this.posicionDeInicioInsert) {
+            var textoInicial = this.model.observacionesGeneracion.substring(0, this.posicionDeInicioInsert + 1);
+            var textoFinal = this.model.observacionesGeneracion.substring(this.posicionDeInicioInsert + 1, this.model.observacionesGeneracion.length);
+            this.model.observacionesGeneracion = textoInicial + '<img src=' + file + '>' + textoFinal;
             this.posicionDeInicioInsert = undefined;
         }
         else {
 
-            this.model.observaciones = this.model.observaciones + '<img src=' + file + '>';
+            this.model.observacionesGeneracion = '<img src=' + file + '>';
         }
     }
 
@@ -139,6 +159,28 @@ export class Generacion2Component extends ListBaseComponent {
             if (posicion == 0)
                 return i;
         }
+    }
+
+    mostrarError(nombreCampo: string): boolean {
+        if (this.formulario2 && this.formulario2.controls) {
+            return (this.formulario2.controls[nombreCampo].invalid || (this.formulario2.controls[nombreCampo].errors && this.formulario2.controls[nombreCampo].errors.required))
+                && (this.formulario2.controls[nombreCampo].dirty || this.formulario2.controls[nombreCampo].touched)
+        }
+
+        return false;
+    }
+
+    
+    ngOnDestroy()
+    {
+        super.ngOnDestroy();
+        this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion2, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
+    }
+
+    
+    onBlur(control: string)
+    {
+        this.validadorPasoSolpService.onBlurDirty(control);
     }
 
 }

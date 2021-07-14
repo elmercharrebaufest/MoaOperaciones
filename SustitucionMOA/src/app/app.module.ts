@@ -60,6 +60,10 @@ import { ConsultaService } from "./consulta/consulta.service";
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
 import { ComprasModule } from "./compras/compras.module";
+import { ApikeyComponent } from "./apikey/apikey.component";
+import { ApikeyService } from "./apikey/apikey.service";
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   imports: [
@@ -77,6 +81,7 @@ import { ComprasModule } from "./compras/compras.module";
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
     ComprasModule,
+    ConfirmDialogModule
   ],
   declarations: [
     AppComponent,
@@ -101,7 +106,8 @@ import { ComprasModule } from "./compras/compras.module";
     FaqComponent,
     TicketPesadaComponent,
     ConsultaBaseComponent,
-    VentaSustentableBaseComponent],
+    VentaSustentableBaseComponent,
+    ApikeyComponent],
   providers: [
     DatePipe,
     SessionDataService,
@@ -120,7 +126,9 @@ import { ComprasModule } from "./compras/compras.module";
     EstadoSolicitudService,
     NotificacionesService,
     TicketPesadaService,
-    ConsultaService
+    ConsultaService,
+    ConfirmationService,
+    ApikeyService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
