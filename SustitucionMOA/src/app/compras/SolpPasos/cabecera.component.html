@@ -150,8 +150,8 @@
                                 </div>
                             </div>
                             <div class="styled-select1 col-xs-6 col-sm-12 col-md-3 col-lg-3 ejecucionCompras">
-                                <span class="ejecucionCompras">Plazo de entrega previsto *&nbsp;</span>
-                                <input [ngModelOptions]="{standalone:true}" pInputText type="text" pKeyFilter="pnum"
+                                <span class="ejecucionCompras">Plazo de entrega previsto {{ mostrarAsterisco('plazoDeEntrega') }}&nbsp;</span>
+                                <input formControlName="plazoDeEntrega" pInputText type="text" pKeyFilter="pnum"
                                     [(ngModel)]="model.posicionActual.plazoDeEntrega" class="fourRounded widthInputDias"
                                     aria-controls="tableModal" placeholder="" />
                                 <div *ngIf="mostrarError('plazoDeEntrega')">
