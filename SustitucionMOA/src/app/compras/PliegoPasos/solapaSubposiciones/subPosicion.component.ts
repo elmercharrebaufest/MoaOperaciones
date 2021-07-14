@@ -39,8 +39,7 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
-    columnasGrilla: any = [{ nombre: "codigoServicio", tipo: "numerico" }, { nombre: "tareaSubcontratar", tipo: "string" }, { nombre: "cuentaMayor", tipo: "numerico" }, { nombre: "cuentaTd", tipo: "numerico" },
-    { nombre: "unidadMedida", tipo: "combo" }, { nombre: "precioBruto", tipo: "decimal" }, { nombre: "tipoImputacion", tipo: "numerico" }];
+    columnasGrilla: any = [{ nombre: "codigoServicio", tipo: "numerico" }, { nombre: "tareaSubcontratar", tipo: "string" }, { nombre: "cuentaTd", tipo: "numerico" }, { nombre: "unidadMedida", tipo: "combo" }, { nombre: "precioBruto", tipo: "decimal" }, { nombre: "cuentaMayor", tipo: "numerico" }, { nombre: "tipoImputacion", tipo: "numerico" }];
 
     //variable para verificar si la posicion no fue dada de alta con los datos minimos
     posicionInvalida: boolean = false;

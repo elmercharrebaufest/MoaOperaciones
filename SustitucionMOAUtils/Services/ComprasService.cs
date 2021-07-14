@@ -488,10 +488,12 @@ namespace SustitucionMOAUtils.Services
 
             var solpValores = new Dictionary<string, string>();
 
+            var solp = TraerSolpId(idSolp);
+
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
-            solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, "20/02/2021");
-            solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, "Ejemplo de nombre de obra");
-            solpValores.Add(SolpTemplateKeys.NRO_SOLP, "ID 33333");
+            solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, "20/02/2021"); //crear campo fecha de liberacion en tabla
+            solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, solp.NombreDeObra);
+            solpValores.Add(SolpTemplateKeys.NRO_SOLP, solp.NroSolp);
             solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, "Alberto Hache");
             solpValores.Add(SolpTemplateKeys.TELEFONO, "12345678");
 
@@ -499,25 +501,35 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, "Miguel sanchez");
 
             //ESPECIFICACION TECNICA DE TAREAS
-            solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, "Especificacion tecnica de la obra");
+            if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
+            {
+                solp.EspecificacionesTecnicas = System.IO.File.ReadAllText(solp.EspecificacionesTecnicas);
+                solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, solp.EspecificacionesTecnicas);
+            }
+            else 
+            {
+                solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, " ");
+            }
 
             //COTIZACION Y PLAZO DE EJECUCION
-            solpValores.Add(SolpTemplateKeys.PLAZO_EJECUCION, "30 DIAS CORRIDOS");
-            solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, "LUNES A VIERNES");
-            solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, "10 A 16");
+            solpValores.Add(SolpTemplateKeys.PLAZO_EJECUCION, solp.DiasEjecucion?.ToString());
+
+
+            solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, solp.JornadaLaboral.Count().ToString());
+            solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, solp.JornadaLaboralDesde.ToString() + " a " + solp.JornadaLaboralHasta.ToString());
 
             //ANEXO 1
             solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, "Cosas cositas");
 
             //ADJUNTOS
-            solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "Adjuntos");
+            solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
 
 
             templateString = CombineTemplateValues(templateString, solpValores);
 
             #region Generacion del pdf
             StringReader sr = new StringReader(templateString);
-            Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+            Document pdfDoc = new Document(PageSize.A4, 30f, 30f, 30f, 40f);
             HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
             using (MemoryStream memoryStream = new MemoryStream())
             {
