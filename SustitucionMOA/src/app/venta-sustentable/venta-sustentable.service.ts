@@ -41,7 +41,7 @@ export class VentaSustentableService extends BaseService {
         payload.append('archivoKmz', archivoKmz);
         payload.append('campoProveedorJson', camp);
         return this.http
-            .put('/api/CampoSustentable/CampoProveedorEditar', payload, this.headersPost).pipe(
+            .post('/api/CampoSustentable/CampoProveedorEditar', payload, this.headersPost).pipe(
                 map(this.extractData));
     }
 

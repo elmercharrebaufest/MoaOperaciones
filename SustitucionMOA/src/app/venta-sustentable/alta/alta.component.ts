@@ -136,12 +136,14 @@ export class AltaComponent extends BaseComponent implements OnInit {
   onChangeCosecha() {
 
     if (this.cosechaId > 0) {
-      if (this.CUIT == "" || this.CUIT.length != 11) {
-        this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
-        setTimeout(() => {
-          this.cosechaId = 0;
-        }, 100);
-        return false
+      if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+        if (this.CUIT == "" || this.CUIT.length != 11) {
+          this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
+          setTimeout(() => {
+            this.cosechaId = 0;
+          }, 100);
+          return false
+        }
       }
 
       this.validarModalDeclaracion();
@@ -361,6 +363,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   }
 
   cambiarModoOperacion() {
+    this.CUIT = "";
     this.ingresarProveedorPorCUIT = this.operarComo == 2;
   }
 }
