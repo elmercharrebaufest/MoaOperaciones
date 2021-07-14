@@ -513,7 +513,6 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "Adjuntos");
 
 
-
             templateString = CombineTemplateValues(templateString, solpValores);
 
             #region Generacion del pdf
