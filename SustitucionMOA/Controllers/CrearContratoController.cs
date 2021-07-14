@@ -139,7 +139,7 @@ namespace SustitucionMOA.Controllers
                 }
                 contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAPrecio.ComercialCreadorId = null;
-                contratoAPrecio.MonedaSustentable = "USDM ";
+                contratoAPrecio.MonedaSustentableId = "USDM ";
                 contratoAPrecio.ContratoSAP = "";
                 contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
                 contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
@@ -186,7 +186,7 @@ namespace SustitucionMOA.Controllers
                 }
                 contratoAFijar.ProveedorCreadorId = (int)proveedor.IdDataAgro;
                 contratoAFijar.ComercialCreadorId = null;
-                contratoAFijar.MonedaSustentable = "USDM ";
+                contratoAFijar.MonedaSustentableId = "USDM ";
                 contratoAFijar.ContratoSAP = "";
                 contratoAFijar.CantidadCamiones = contratoAFijar.CantidadCamiones == 0 ? null : contratoAFijar.CantidadCamiones;
                 contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
@@ -301,7 +301,8 @@ namespace SustitucionMOA.Controllers
                 string HabilitarCampana = crearContratoService.HabilitarCampaña(material);
                 string TraerPrecioMoa = crearContratoService.TraerPrecioMoa(material, tiponegocio);
                 string TraerPagosDiferido = crearContratoService.TraerPagosDiferido(material, tiponegocio);
-                var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido };
+                string TraerHabilitarSustentable = crearContratoService.TraerHabilitarSustentable();
+                var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido, TraerHabilitarSustentable };
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
