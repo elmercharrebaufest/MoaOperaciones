@@ -157,7 +157,18 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.Posiciones = new List<SolpPosicion>();
                 }
 
-                if(solp.Posiciones != null)
+                //posiciones eliminadas
+                if (solpEntity.Posiciones.Count > 0)
+                {
+                    var posEliminadas = solpEntity.Posiciones.Where(x => !x.FechaBaja.HasValue).Where(x => solp.Posiciones == null || !solp.Posiciones.Any(y => y.Codigo == x.Codigo));
+                    
+                    foreach (var pos in posEliminadas)
+                    {
+                        pos.FechaBaja = DateTime.Now;
+                    }
+                }
+
+                if (solp.Posiciones != null)
                 {
                     //posiciones nuevas y actualizadas
                     foreach (var pos in solp.Posiciones)
@@ -266,7 +277,6 @@ namespace SustitucionMOAUtils.Services
                         solpEntity.Posiciones.Add(posEntity);
                     }
 
-                    //posiciones eliminadas
                 }
             }
 
@@ -449,7 +459,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
 
-                Posiciones = x.Posiciones.Select(p=>new SolpPosicionDto(p)).ToList()                   
+                Posiciones = x.Posiciones.Where(p=> !p.FechaBaja.HasValue).Select(p=>new SolpPosicionDto(p)).ToList()                   
             };
 
             return solpDevuelta;
