@@ -87,7 +87,7 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <p-checkbox class="checkboxFechas" [(ngModel)]="sapDashboard" binary="true" label="SAP"></p-checkbox>
+                                <p-checkbox class="checkboxFechas" [(ngModel)]="sapDashboard" binary="true" label="SAP" (onChange)="tabla.filter($event.value, 'VincularPliego', 'in')"></p-checkbox>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <p-checkbox class="checkboxFechas" [(ngModel)]="mantenimientoDashboard" binary="true" label="Mantenimiento"></p-checkbox>
@@ -104,37 +104,37 @@
         <p-table #tabla [value]="tablaSolp" [globalFilterFields]="['NroSolp']" sortMode="multiple">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th data-toggle="tooltip" title="Acciones SOLP"></th>
-                    <th [pSortableColumn]="'NroSolp'"  data-toggle="tooltip" title="Numero SOLP">
+                    <th class="clearfix" data-toggle="tooltip" title="Acciones SOLP"></th>
+                    <th class="clearfix" [pSortableColumn]="'NroSolp'"  data-toggle="tooltip" title="Numero SOLP">
                         Numero SOLP
                         <p-sortIcon [field]="'NroSolp'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
 
-                    <th [pSortableColumn]="'NombreDeObra'"  data-toggle="tooltip" title="Nombre de pedido">
+                    <th class="clearfix" [pSortableColumn]="'NombreDeObra'"  data-toggle="tooltip" title="Nombre de pedido">
                         Nombre de pedido
                         <p-sortIcon [field]="'NombreDeObra'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th [pSortableColumn]="'FechaCreacion'"  data-toggle="tooltip" title="Fecha de creacion de SOLP">
+                    <th class="clearfix" [pSortableColumn]="'FechaCreacion'"  data-toggle="tooltip" title="Fecha de creacion de SOLP">
                         Fecha creacíon
                         <p-sortIcon [field]="'FechaCreacion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th [pSortableColumn]="'EstadoDocumento'"  data-toggle="tooltip" title="Estado de documento">
+                    <th class="clearfix" [pSortableColumn]="'EstadoDocumento'"  data-toggle="tooltip" title="Estado de documento">
                         Estado Doc
                         <p-sortIcon [field]="'EstadoDocumento.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th [pSortableColumn]="'EstadoSolpSap'"  data-toggle="tooltip" title="Estado SOLP">
+                    <th class="clearfix" [pSortableColumn]="'EstadoSolpSap'"  data-toggle="tooltip" title="Estado SOLP">
                         Estado Solp
                         <p-sortIcon [field]="'EstadoSolpSap.Descripcion'" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                     </th>
     
-                    <th data-toggle="tooltip" title="Tipo de  SOLP">
+                    <th class="clearfix" data-toggle="tooltip" title="Tipo de  SOLP">
                         Tipo
                         <!-- <p-sortIcon [field]="tipoSolp" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon> -->
                     </th>
-                    <th data-toggle="tooltip" title="Vincular a pliego">
+                    <th class="clearfix" data-toggle="tooltip" title="Vincular a pliego">
                         Vincular Pliego
                     </th>
                 </tr>
@@ -149,9 +149,9 @@
                         <div class="col-md-2">
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)"/></span>
                         </div>
-                        <!-- <div class="col-md-2">
-                            <span *ngIf="rowData.EstadoSolpSap.Descripcion != null" ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"/></span>  
-                        </div>        -->
+                        <div class="col-md-2">
+                            <span ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarPdf(rowData.Id)"/></span>  
+                        </div>       
                     </td>
                     <td>
                         {{rowData.NroSolp}}

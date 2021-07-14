@@ -71,8 +71,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
 
-        //cuando este el endpoint de unidades actualizar el correspondiente
-        this.unidades = this.combos.Moneda;
+        this.unidades = this.combos.Unidades;
     }
 
     validarDatosMinimosPosicionActual(): void {

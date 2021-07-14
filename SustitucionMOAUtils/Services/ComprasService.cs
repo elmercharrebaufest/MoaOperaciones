@@ -10,9 +10,16 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using System.Net;
+using System.Net.Mail;
+
 
 namespace SustitucionMOAUtils.Services
 {
@@ -153,11 +160,11 @@ namespace SustitucionMOAUtils.Services
                 if(solp.Posiciones != null)
                 {
                     //posiciones nuevas y actualizadas
-                    foreach (var pos in solp.Posiciones.Where(x=> !solpEntity.Posiciones.Any(y=> y.TextoGenerico == x.TextoGenerico)))
+                    foreach (var pos in solp.Posiciones)
                     {
                         SolpPosicion posEntity = null;
 
-                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.TextoGenerico == pos.TextoGenerico);
+                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
 
                         if (posEntity == null)
                             posEntity = new SolpPosicion();
@@ -197,6 +204,9 @@ namespace SustitucionMOAUtils.Services
                         if (pos.GrupoArticulo != null)
                             posEntity.GrupoArticulo = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoArticulo && x.Codigo == pos.GrupoArticulo.Codigo);
 
+                        if (pos.Moneda != null)
+                            posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
+
                         if (pos.Subposiciones != null)
                         {
                             if (posEntity.Subposiciones == null)
@@ -206,7 +216,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 SolpSubposicion subposEntity = null;
 
-                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero);
+                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
@@ -474,17 +484,93 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+        public byte[] GenerarSolpPdf(int idSolp)
+        {
+            var templateFilePath = Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, "Templates/PliegoSolpTemplate.html");
+            var templateString = System.IO.File.ReadAllText(templateFilePath);
+
+            var solpValores = new Dictionary<string, string>();
+
+            //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
+            solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, "20/02/2021");
+            solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, "Ejemplo de nombre de obra");
+            solpValores.Add(SolpTemplateKeys.NRO_SOLP, "ID 33333");
+            solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, "Alberto Hache");
+            solpValores.Add(SolpTemplateKeys.TELEFONO, "12345678");
+
+            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, "23/03/2021");
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, "Miguel sanchez");
+
+            //ESPECIFICACION TECNICA DE TAREAS
+            solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, "Especificacion tecnica de la obra");
+
+            //COTIZACION Y PLAZO DE EJECUCION
+            solpValores.Add(SolpTemplateKeys.PLAZO_EJECUCION, "30 DIAS CORRIDOS");
+            solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, "LUNES A VIERNES");
+            solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, "10 A 16");
+
+            //ANEXO 1
+            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, "Cosas cositas");
+
+            //ADJUNTOS
+            solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "Adjuntos");
 
 
 
+            templateString = CombineTemplateValues(templateString, solpValores);
 
+            #region Generacion del pdf
+            StringReader sr = new StringReader(templateString);
+            Document pdfDoc = new Document(PageSize.A4, 10f, 10f, 10f, 0f);
+            HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
+                pdfDoc.Open();
 
+                htmlparser.Parse(sr);
+                pdfDoc.Close();
 
+                byte[] bytes = memoryStream.ToArray();
+                memoryStream.Close();
+
+                return bytes;
+            }
+            #endregion
+        }
+
+        private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
+        {
+            StringBuilder ret = new StringBuilder();
+
+            foreach (var section in templateStr.Split(token.ToCharArray()))
+            {
+                var value = values.Keys.Contains(section) ? values[section] : section;
+                ret.Append(value);
+            }
+
+            return ret.ToString();
+        }
     }
 
+    public static class SolpTemplateKeys
+    {
+        public const string FECHA_LIBERACION = "FECHA_LIBERACION";
 
+        public const string NOMBRE_OBRA = "NOMBRE_OBRA";
+        public const string NRO_SOLP = "NRO_SOLP";
+        public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
+        public const string TELEFONO = "TELEFONO";
 
+        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
+        public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
+        public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
 
+        public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
+        public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
+        public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
 
-
+        public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
+        public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+    }
 }

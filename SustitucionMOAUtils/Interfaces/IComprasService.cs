@@ -20,6 +20,7 @@ namespace SustitucionMOAUtils.Interfaces
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
+        byte[] GenerarSolpPdf(int idSolp);
 
 
 

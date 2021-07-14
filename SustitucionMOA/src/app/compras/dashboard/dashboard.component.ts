@@ -271,19 +271,58 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    // editarPosicion() {
-    //     this.confirmationService.confirm({
-    //         message: '¿Está seguro que desea editar la SOLP?',
-    //         accept: () => {
-    //             this.goToSeccionParam('/compras/solp', 'rowData.Id');
-    //         },
-    //         reject: () => {
-    //         }
-    //     });
-    // }
+        descargarPdf(idSolp): void {
+            if (idSolp != undefined) {
 
+                this.service.getPdf(idSolp)
+                    .subscribe(
+                        (result) => {
+                            if (result.logout == true) {
+                                this.sessionDataService.logout();
+                            }
+                            else {
+                                var byteArray = new Uint8Array(result.FileContents);
+                                var blob = new Blob([byteArray], {
+                                    type: "application/octet-stream",
+                                });
+
+                                this.downloadArchivoLocal(blob, result.FileDownloadName);
+                            }
+                        },
+                        (error) => {
+                            this.spinnerSmallComponent.hideIt();
+                            this.mensajeComponent.setErrorMsg(error.message);
+                        }
+                    )
+            }
+
+        }
+
+        private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
+            if (window.navigator.msSaveOrOpenBlob) {
+                // IE11
+                window.navigator.msSaveOrOpenBlob(
+                    blob,
+                    nombreArchivo
+                );
+            } else {
+                var url = window.URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.href = url;
+                link.download = nombreArchivo;
+                link.click();
+                setTimeout(function () {
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+                return;
+            }
+        }
 
 }
+
+
+
 
 
 

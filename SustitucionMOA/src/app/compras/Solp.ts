@@ -96,6 +96,12 @@ export class Solp {
     posicionesValidas(){
         return !this.posiciones.find(x=>!x.posicionValida);
     }
+
+    setearPosicionPorDefecto(){
+        if(this.posiciones && this.posiciones.length > 0){
+            this.posicionActual = this.posiciones[0];
+        }
+    }
 }
 
 
@@ -104,7 +110,7 @@ export class PosicionSolp {
     public id: any;
     public numeroPosicion: number;
 
-    public servicio: boolean = true;
+    public servicio: string;
     public centroDeCosto: boolean;
     public ordenDeOt: boolean;
     public ordenDeInversion: boolean;
@@ -149,7 +155,19 @@ export class PosicionSolp {
     // Moneda
     public selectMonedaCompras: any;
     public monedaSeleccionada: any={};
-    public totalPosicion: number;
+    public totalPosicion() {
+
+        if(this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0){
+            let total = 0;
+            this.listadoSubPosiciones.forEach(x=>{
+                total += (x.precioBruto || 0)*(parseInt(x.cuentaTd) || 0);
+            });
+
+            return total;
+        }
+
+        return 0;
+    }
 
     public posicionValida: boolean;
 
@@ -165,7 +183,7 @@ export class PosicionSolp {
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
         //agrega un fila por defecto
         this.listadoSubPosiciones.push(new SubPosicionViewModel(0));
-        this.servicio = true;
+        this.servicio = 'SERVICIO';
     }
 }
 

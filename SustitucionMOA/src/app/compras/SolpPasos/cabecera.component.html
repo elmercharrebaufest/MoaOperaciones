@@ -59,8 +59,8 @@
                                 <div>
                                     Tipo de posici&oacute;n*
                                 </div>
-                                <p-radioButton formControlName="servicio" (blur)="onBlur('servicio')"
-                                    [ngModelOptions]="{standalone:true}" name="posiciones" value="servicio"
+                                <p-radioButton formControlName="servicio"
+                                    [ngModelOptions]="{standalone:true}" name="posiciones" value="SERVICIO"
                                     label="Servicio (F)" [(ngModel)]="model.posicionActual.servicio" inputId="servicio">
                                 </p-radioButton>
                                 <div *ngIf="mostrarError('servicio')">
@@ -418,8 +418,8 @@
                                     <p class="text-danger">campo obligatorio</p>
                                 </div>
                             </div>
-                            <p *ngIf="totalPosicion" class="valorTotal">Valor Total:
-                                {{model.posicionActual.totalPosicion}}</p>
+                            <p *ngIf="model.posicionActual.totalPosicion()" class="valorTotal">Valor Total:
+                                {{model.posicionActual.totalPosicion()}}</p>
                         </div>
                     </div>
                     <!-- End Row tipo de moneda -->
