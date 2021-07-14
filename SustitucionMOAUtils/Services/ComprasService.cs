@@ -157,14 +157,25 @@ namespace SustitucionMOAUtils.Services
                     solpEntity.Posiciones = new List<SolpPosicion>();
                 }
 
-                if(solp.Posiciones != null)
+                //posiciones eliminadas
+                if (solpEntity.Posiciones.Count > 0)
+                {
+                    var posEliminadas = solpEntity.Posiciones.Where(x => !x.FechaBaja.HasValue).Where(x => solp.Posiciones == null || !solp.Posiciones.Any(y => y.Codigo == x.Codigo));
+                    
+                    foreach (var pos in posEliminadas)
+                    {
+                        pos.FechaBaja = DateTime.Now;
+                    }
+                }
+
+                if (solp.Posiciones != null)
                 {
                     //posiciones nuevas y actualizadas
-                    foreach (var pos in solp.Posiciones.Where(x=> !solpEntity.Posiciones.Any(y=> y.TextoGenerico == x.TextoGenerico)))
+                    foreach (var pos in solp.Posiciones)
                     {
                         SolpPosicion posEntity = null;
 
-                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.TextoGenerico == pos.TextoGenerico);
+                        posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
 
                         if (posEntity == null)
                             posEntity = new SolpPosicion();
@@ -204,6 +215,9 @@ namespace SustitucionMOAUtils.Services
                         if (pos.GrupoArticulo != null)
                             posEntity.GrupoArticulo = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoArticulo && x.Codigo == pos.GrupoArticulo.Codigo);
 
+                        if (pos.Moneda != null)
+                            posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
+
                         if (pos.Subposiciones != null)
                         {
                             if (posEntity.Subposiciones == null)
@@ -213,7 +227,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 SolpSubposicion subposEntity = null;
 
-                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero);
+                                subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo);
 
                                 if (subposEntity == null)
                                     subposEntity = new SolpSubposicion();
@@ -263,7 +277,6 @@ namespace SustitucionMOAUtils.Services
                         solpEntity.Posiciones.Add(posEntity);
                     }
 
-                    //posiciones eliminadas
                 }
             }
 
@@ -446,7 +459,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoSolpSapId = x.EstadoSolpSap_Id,
                 EstadoDocumentoId = x.EstadoDocumento_Id,
 
-                Posiciones = x.Posiciones.Select(p=>new SolpPosicionDto(p)).ToList()                   
+                Posiciones = x.Posiciones.Where(p=> !p.FechaBaja.HasValue).Select(p=>new SolpPosicionDto(p)).ToList()                   
             };
 
             return solpDevuelta;

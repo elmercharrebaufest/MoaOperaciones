@@ -89,6 +89,7 @@ namespace SustitucionMOA.Controllers
                     GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
                     GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
                     Moneda = service.ObtenerTablaSap(TablasSap.Moneda),
+                    Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
                     EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
 
                     EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),  //rocio

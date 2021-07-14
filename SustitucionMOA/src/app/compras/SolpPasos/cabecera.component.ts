@@ -157,6 +157,8 @@ export class CabeceraComponent extends ListBaseComponent {
             this.validadorPasoSolpService.aplicarValidaciones();
         }
 
+        this.centroSeleccionado();
+
         this.model.cargoPasoCinco = true;
 
         // document.getElementById("proveedoresValidos").addEventListener('keydown', function (e) {

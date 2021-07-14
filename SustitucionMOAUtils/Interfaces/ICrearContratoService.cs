@@ -35,5 +35,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<GrabarContratoResult> CrearContratoMasivo(List<BasicoContrato> contratos);
         string ConfiguracionBolsaAutomatica();
         byte[] ExcelModeloAltaMasiva();
+        string TraerHabilitarSustentable();
     }
 }

@@ -101,10 +101,11 @@
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true"></p-dropdown>
+                                                <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown>
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true"></p-dropdown>
+                                                {{posicion.unidadSeleccionada.Descripcion}}
+                                                <!-- <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown> -->
                                             </ng-template>
                                            
                                         </p-cellEditor>

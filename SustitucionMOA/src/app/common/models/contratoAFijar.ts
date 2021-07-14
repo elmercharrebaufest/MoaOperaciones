@@ -40,6 +40,9 @@
     public ContratoCorredor: string;
     public ContratoVendedor: string;
     public CantidadCamiones: number;
+    public ImporteSustentable: number;
+    public MonedaSustentableId: number;
+    public Sustentable: boolean;
 
     constructor() {
         this.TipoNegocioId = 1;

@@ -19,10 +19,10 @@
     <AssemblyName>SustitucionMOA</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>58280</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -244,12 +244,15 @@
     <Content Include="Content\images\header\logo.png" />
     <Content Include="Content\images\header\logo_.png" />
     <Content Include="Content\images\icons\contract.svg" />
+    <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
+    <Content Include="Content\images\icons\editar.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
+    <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -331,7 +334,6 @@
     <Content Include="src\app\compras\PliegoPasos\cotizacion.component.html" />
     <Content Include="src\app\compras\PliegoPasos\generacion1.component.html" />
     <Content Include="src\app\compras\PliegoPasos\generacion2.component.html" />
-    <Content Include="src\app\compras\PliegoPasos\generacion2.component.js" />
     <Content Include="src\app\compras\PliegoPasos\solapaSubposiciones\subPosicion.component.html" />
     <Content Include="src\app\compras\PliegoPasos\solapaTres\especificaciones.component.html" />
     <Content Include="src\app\compras\preview\pliego.preview.component.html" />

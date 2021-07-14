@@ -352,7 +352,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 posActual.necesidadCompras = x.NroNecesidad;
                 posActual.selectGrupoCompras = x.GrupoCompras;
                 posActual.selectArticuloCompras = x.GrupoArticulo;                               
-                posActual.selectMonedaCompras = x.Moneda;
+                posActual.monedaSeleccionada = x.Moneda;
                 posActual.servicio = x.TipoPosicion && x.TipoPosicion.Codigo;
                 posActual.tipoImputacion = x.TipoImputacion && x.TipoImputacion.Codigo;
                 posActual.rubroElectrico = x.CodigosProveedores.includes('ELECTRICO');
@@ -373,12 +373,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         let subpos = new SubPosicionViewModel(i);
 
                         subpos.id = sp.Codigo;
-                        subpos.codigoServicio = sp.CodigoServicioSap;
+                        subpos.codigoServicio = (sp.CodigoServicioSap && sp.CodigoServicioSap.Descripcion) || '';
                         subpos.tareaSubcontratar = sp.Tarea;
                         subpos.cuentaMayor = sp.CuentaMayor;
                         subpos.cuentaTd = sp.Cantidad;
                         subpos.unidadSeleccionada = sp.Unidad;
                         subpos.tipoImputacion = sp.TipoImputacionValor;
+                        subpos.precioBruto = sp.PrecioBruto;
 
                         this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
                         i++;

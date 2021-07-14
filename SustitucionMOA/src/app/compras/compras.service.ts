@@ -102,7 +102,7 @@ export class ComprasService extends BaseService {
                     NroNecesidad: x.necesidadCompras,
                     GrupoArticulo: this.getObjetoCodigo(x.selectArticuloCompras && x.selectArticuloCompras.Codigo),
                     CodigosProveedores: this.getCodigosProveedores(x.rubroElectrico, x.rubroConsultoria, x.rubroCivil, x.rubroIngenieria, x.rubroMecanico),
-                    Moneda: this.getObjetoCodigo(x.selectMonedaCompras && x.selectMonedaCompras.Codigo),
+                    Moneda: this.getObjetoCodigo(x.monedaSeleccionada && x.monedaSeleccionada.Codigo),
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
 
@@ -114,6 +114,7 @@ export class ComprasService extends BaseService {
                             Tarea: sp.tareaSubcontratar,
                             CuentaMayor: sp.cuentaMayor,
                             Cantidad: sp.cuentaTd,
+                            PrecioBruto: sp.precioBruto,
                             Unidad: this.getObjetoCodigo(sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo),
                             TipoImputacionValor: sp.tipoImputacion
                         }
