@@ -101,7 +101,7 @@
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-dropdown [options]="unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown>
+                                                <p-dropdown [options]="combos.Unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown>
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.unidadSeleccionada.Descripcion}}
@@ -118,7 +118,7 @@
                                                     (change)="calcularTotalSubPosicion()">
                                             </ng-template>
                                             <ng-template pTemplate="output">
-                                                {{model.posicionActual.monedaSeleccionada?.Codigo == 'ARP'? "$" : "US $"}}
+                                                {{model.posicionActual.monedaSeleccionada?.Codigo}}
                                                 {{posicion.precioBruto}}
                                             </ng-template>
                                         </p-cellEditor>
@@ -156,7 +156,7 @@
                 <div class="row">
                     <div class="margenInput col-xs-10 col-sm-10 col-md-10 col-lg-10"></div>
                     <div class="margenInput col-xs-2 col-sm-2 col-md-2 col-lg-2 ">
-                        <button class="btn marginButton buttonTotalCompras" >Valor Total:  {{model.posicionActual.monedaSeleccionada?.Codigo == 'ARP'? "$" : "US $"}} {{total}}  {{model.posicionActual.monedaSeleccionada?.Codigo}}</button>
+                        <button class="btn marginButton buttonTotalCompras" >Valor Total:  {{model.posicionActual.monedaSeleccionada?.Codigo}} {{model.posicionActual.totalPosicion()}}</button>
                     </div>
                 </div>
             </div>

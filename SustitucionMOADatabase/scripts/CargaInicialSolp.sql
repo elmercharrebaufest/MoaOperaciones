@@ -2260,5 +2260,711 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoCompras' and
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoCompras' and Codigo = '990') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoCompras', '990', '990', 'Transportes Granel', null) END
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.TablaSap WHERE Tabla = 'GrupoCompras' and Codigo = 'AUD') BEGIN INSERT INTO TablaSap(Tabla, Codigo, CodigoSap, Descripcion, Padre_id) VALUES('GrupoCompras', 'AUD', 'AUD', 'Auditoria', null) END
 
+-- clase documento
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZAC1') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZAC1','ZAC1','SolP Acopio Trigo',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZAC2') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZAC2','ZAC2','SolP Acopio S,G,A',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZD10') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZD10','ZD10','Solp Of Téc Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZS10') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZS10','ZS10','SolP Oficina Técnica',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD0') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD0','ZSD0','Solp Puerto Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD1') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD1','ZSD1','Solp Man Mec Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD2') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD2','ZSD2','Solp Logist. Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD3') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD3','ZSD3','Solp Man Elec. Direc',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD4') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD4','ZSD4','Solp SHYMA Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD5') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD5','ZSD5','Solp Calidad Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD6') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD6','ZSD6','Solp Serv. Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD7') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD7','ZSD7','Solp Prod. Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSD8') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSD8','ZSD8','Solp Proy. Directa',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP0') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP0','ZSP0','SolP Puerto',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP1') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP1','ZSP1','SolP Manten. Mecan.',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP2') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP2','ZSP2','SolP Logística',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP3') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP3','ZSP3','Solp Mto Eléctrico',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP4') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP4','ZSP4','Solp SHYMA',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP5') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP5','ZSP5','Solp Calidad',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP6') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP6','ZSP6','Solp Servicios',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP7') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP7','ZSP7','Solp Producción',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP8') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP8','ZSP8','SolP Proyectos',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSP9') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSP9','ZSP9','SolP Fermentación',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSPC') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSPC','ZSPC','SolP RRHH Servicio',NULL)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaSap WHERE Tabla = 'ClaseDocumento' AND Codigo = 'ZSPX') 
+BEGIN 
+	INSERT INTO TablaSap (Tabla, Codigo, CodigoSap, Descripcion, Padre_Id)
+	VALUES ('ClaseDocumento','ZSPX','ZSPX','SOLPED  sy f ',NULL)
+END
+
+-- CamposObligatoriosCabeceraSolp
+DECLARE @idPadre INT
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP1') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP1','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZAC1') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZAC1','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZAC2') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZAC2','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZS10') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZS10','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD0') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD0','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD1') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD1','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD2') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD2','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD3') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD3','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD4') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD4','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD5') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD5','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD6') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD6','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD7') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD7','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSD8') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSD8','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP0') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP0','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP3') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP3','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP4') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP4','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP5') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP5','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP6') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP6','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP7') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP7','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP8') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP8','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP9') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP9','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSP2') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSP2','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZSPC') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZSPC','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+END
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM TablaGeneral WHERE Tabla = 'CamposObligatoriosCabeceraSolp' AND Codigo = 'ZD10') 
+BEGIN 
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','ZD10','',NULL)
+	
+	SET @idPadre = SCOPE_IDENTITY()
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectCentroEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectAlmacenEntrega','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','selectGrupoCompras','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaEntregaServicio','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','fechaDeLiberacion','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','cuentaTd','', @idPadre)
+	
+	INSERT INTO TablaGeneral (Tabla, Codigo, Descripcion, Padre_Id)
+	VALUES ('CamposObligatoriosCabeceraSolp','unidadSeleccionada','', @idPadre)
+END
 
 COMMIT TRAN
