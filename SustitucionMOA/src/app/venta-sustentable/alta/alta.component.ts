@@ -58,6 +58,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   latitud: string;
   longitud: string;
   CUIT: string = "";
+  CUITInicial: string = "";
   file: any;
 
   operarComo: number = 1;
@@ -72,7 +73,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
     this.CUIT = "";
 
     this.proveedorId = this.getProveedorId(this.codigoProveedor);
+    this.CUITInicial = this.CUIT;
 
+    this.declaracionComformidad.esCorredor = this.esCorredor;
     this.ingresarProveedorPorCUIT = true;
 
     if (this.esCorredor) {
@@ -80,6 +83,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     this.operarComo = 1;
+    this.declaracionComformidad.operarComo = 1;
 
     this.getCosechas();
   }
@@ -97,6 +101,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
   onselect($event) {
     this.proveedorSelected = $event;
+    console.log("proveedor:", $event)
     //this.proveedorId = this.getProveedorId('0071116016');
     this.proveedorId = this.getProveedorId(this.proveedorSelected.idVendedor);
   }
@@ -115,11 +120,15 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
           this.proveedorId = result.Id;
 
-          if (!this.esCorredor) {
-            this.CUIT = result.CUIT;
-            this.declaracionComformidad.CUITDeclaracion = result.CUIT;
-            this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
+          //if (!this.esCorredor) {
+          this.CUIT = result.CUIT;
+          this.declaracionComformidad.CUITDeclaracion = result.CUIT;
+          this.declaracionComformidad.razonSocialDeclaracion = result.RazonSocial;
+
+          if (this.CUITInicial.length == 0) {
+            this.CUITInicial = this.CUIT;
           }
+          //}
 
           this.validarModalDeclaracion();
 
@@ -156,6 +165,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
         if (this.operarComo == 2) {
           this.declaracionComformidad.CUIT = this.CUIT;
+          this.declaracionComformidad.razonSocialDeclaracion = "";
         }
 
         this.declaracionComformidad.proveedorId = this.proveedorId;
@@ -165,6 +175,14 @@ export class AltaComponent extends BaseComponent implements OnInit {
       }
       else {
         if (this.proveedorId > 0) {
+
+          //Si cambió el CUIT le saco la razón social
+          if (this.CUITInicial != this.CUIT) {
+            console.log("Lo limpio")
+            console.log("this.CUITInicial:", this.CUITInicial)
+            console.log("this.CUIT:", this.CUIT)
+            this.declaracionComformidad.razonSocialDeclaracion = "";
+          }
           this.declaracionComformidad.proveedorId = this.proveedorId;
           this.declaracionComformidad.cosechaId = this.cosechaId;
           this.declaracionComformidad.nombreCosecha = this.cosechas.find(c => c.Id == this.cosechaId).Nombre;
@@ -365,5 +383,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
   cambiarModoOperacion() {
     this.CUIT = "";
     this.ingresarProveedorPorCUIT = this.operarComo == 2;
+    this.declaracionComformidad.operarComo = this.operarComo;
+
   }
 }
