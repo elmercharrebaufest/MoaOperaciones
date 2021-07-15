@@ -42,6 +42,8 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
   file: File
+  esCorredor: boolean = false;
+  operarComo: number = 1;
 
   @Input() proveedorId: number = 0;
   @Input() nombreCosecha: string = "";
@@ -92,9 +94,11 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   imprimir() {
     this.mensajeImpresionComponent.setMsgsEmpty();
 
-    if (this.razonSocialDeclaracion.length < 3) {
-      this.mensajeImpresionComponent.setErrorMsg("Falta completar la razón social.");
-      return false;
+    if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+      if (this.razonSocialDeclaracion.length < 3) {
+        this.mensajeImpresionComponent.setErrorMsg("Debe completar la razón social.");
+        return false;
+      }
     }
 
     this.blockUI.start('Generando declaración');
