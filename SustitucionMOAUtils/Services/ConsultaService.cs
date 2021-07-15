@@ -43,8 +43,9 @@ namespace SustitucionMOAUtils.Services
             if (estado == null) throw new InfoCustomException("No existe el estado");
 
             var consulta = GetConsulta(consultaId);
-
+            consulta.FechaUltimaModificacion = DateTime.Now;
             consulta.EstadoConsulta_Id = estadoConsultaId;
+
             repositorio.GuardarCambios();
         }
 
@@ -71,7 +72,7 @@ namespace SustitucionMOAUtils.Services
             {
                 comentario.Detalle = "";
             }
-
+            comentario.Fecha = DateTime.Now;
             consulta.Comentarios.Add(comentario);
             consulta.FechaUltimaModificacion = DateTime.Now;
             repositorio.GuardarCambios();

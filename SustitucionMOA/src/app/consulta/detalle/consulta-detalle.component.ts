@@ -482,6 +482,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         }
 
         if (this.subcategoriasList.length > 0) {
+            this.subcategoriaId = this.subcategoriasList[0].value;
             this.tieneSubcategorias = true;
         }
         else {

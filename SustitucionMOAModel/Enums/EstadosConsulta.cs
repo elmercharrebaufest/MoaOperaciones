@@ -27,7 +27,7 @@ namespace SustitucionMOAModel.Enums
                 case EstadosConsulta.EnGestion: return "ENG";
                 case EstadosConsulta.SolicitudInformacion: return "SOL";
                 case EstadosConsulta.Rechazado: return "REC";
-                case EstadosConsulta.Finalizado: return "FIN";
+                case EstadosConsulta.Finalizado: return "CER";
                 default:
                     return string.Empty;
             }
