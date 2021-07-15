@@ -74,6 +74,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     funcionarios: Array<RelacionConFuncionarios> = [];
     relacionConEmpleados: string = "";
     relacionConFuncionarios: string = "";
+    cuit: string = "";
 
     contieneDocumentacionFisica: number = 0;
 
@@ -464,7 +465,6 @@ export class AltasComponent extends BaseComponent implements OnInit {
         this.unsubscribe();
 
         if (this.validarNoGranosOperando()) return
-        debugger
         this.subscription = this.altaEmpresaService
             .proveedorNoGranosOperando(this.empresaSeleccionada.Id, this.empresaSeleccionada.RazonSocial).subscribe(
                 result => {
@@ -816,6 +816,26 @@ export class AltasComponent extends BaseComponent implements OnInit {
                 }
             );
     }
+
+    grabarAltaInternaGranos(){
+        this.mensajeComponent.setMsgsEmpty();
+            this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    }
+                    else {
+                        this.mensajeComponent.setSuccessMsg(result.info);
+                    }
+                },
+                error => {
+                }
+            );
+      }
 
 
     cambiarFiltroTipoProveedor(tipoProveedor: number) {

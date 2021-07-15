@@ -4,7 +4,10 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 "><strong>Altas de proveedores Pendientes</strong> </div>
-
+            <div class="col-xs-12 col-sm-2">
+                <button type="button" id="openModalAltaInternaGranos"
+                                        data-toggle="modal" data-target="#modalAltaInternaGranos">Alta interna granos</button>
+            </div>
             <div class="col-xs-12 col-sm-2">
                 <a (click)="exportExcel()" style="text-decoration:none!important">
                     <div class="btnSection animate align-right">Exportar <img src="Content/images/buttons/EXPORT.svg" />
@@ -1398,6 +1401,45 @@
                         <button type="button" class="btn-custom btn-mediano btn-add"
                             (click)="proveedorNoGranosOperando()">
                             Validar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Modal alta interna granos-->
+<div class="modal fade" id="modalAltaInternaGranos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document" style="width: 700px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
+                    id="hidemyModalOperando">
+                    <span aria-hidden="true" id="HideModalOperando">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Alta interna granos
+                </h4>
+            </div>
+            <div class="modal-body" style="padding-top:0;">
+                <div class="content-wraper" style="margin-top:0;padding-top:0">
+                    
+                    <div class="for row myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">CUIT<span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="cuit"
+                                    name="cuit" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="for row myRow center">
+                        <button type="button" class="btn-custom btn-mediano btn-add"
+                            (click)="grabarAltaInternaGranos()">
+                            Grabar
                         </button>
                     </div>
                 </div>

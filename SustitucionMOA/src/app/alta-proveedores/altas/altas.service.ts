@@ -104,4 +104,13 @@ export class AltaEmpresaService extends BaseService {
         return this.http
             .post('/api/AltaEmpresa/AgregarObservacion', params, this.headersPost).map(this.extractData);
     }
+
+    public grabarAltaInternaGranos(cuit: string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('cuit', cuit);
+
+        return this.http
+             .get('/api/AltaEmpresaGranos/GrabarNuevoProveedorGranos', { search: params, headers: this.headers }).pipe(
+                map(this.extractData));   
+    }
 }
