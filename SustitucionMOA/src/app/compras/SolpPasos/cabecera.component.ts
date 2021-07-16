@@ -55,6 +55,8 @@ export class CabeceraComponent extends ListBaseComponent {
     hoy: Date = new Date();
     selectPosicion: any; 
 
+    // solpActual: Solp;
+
     formularioPosicion: [FormGroup];
     formularioActual: FormGroup;
 
@@ -285,5 +287,9 @@ export class CabeceraComponent extends ListBaseComponent {
         });
 
     }
+
+    // agregarSolpCabecera(){
+        
+    // }
 
 }

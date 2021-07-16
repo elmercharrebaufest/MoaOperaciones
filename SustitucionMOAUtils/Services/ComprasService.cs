@@ -507,11 +507,11 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, "20/02/2021"); //crear campo fecha de liberacion en tabla
             solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, solp.NombreDeObra);
             solpValores.Add(SolpTemplateKeys.NRO_SOLP, solp.NroSolp);
-            solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, "Alberto Hache");
-            solpValores.Add(SolpTemplateKeys.TELEFONO, "12345678");
+            solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, solp.FiscalContrato);
+            solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
-            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, "23/03/2021");
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, "Miguel sanchez");
+            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString());
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.Id.ToString());
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -527,7 +527,6 @@ namespace SustitucionMOAUtils.Services
             //COTIZACION Y PLAZO DE EJECUCION
             solpValores.Add(SolpTemplateKeys.PLAZO_EJECUCION, solp.DiasEjecucion?.ToString());
 
-
             solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, solp.JornadaLaboral.Count().ToString());
             solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, solp.JornadaLaboralDesde.ToString() + " a " + solp.JornadaLaboralHasta.ToString());
 
@@ -537,17 +536,20 @@ namespace SustitucionMOAUtils.Services
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
 
-
-            templateString = CombineTemplateValues(templateString, solpValores);
+             templateString = CombineTemplateValues(templateString, solpValores);
 
             #region Generacion del pdf
             StringReader sr = new StringReader(templateString);
-            Document pdfDoc = new Document(PageSize.A4, 30f, 30f, 30f, 40f);
+            Document pdfDoc = new Document(PageSize.A4, 70f, 70f, 60f, 40f);  // izquierda, derecha, arriba, abajo
             HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
                 pdfDoc.Open();
+
+                Image image = Image.GetInstance(@"C:\Users\rorlando\Downloads\LogoMolinos.png");
+                image.SetAbsolutePosition(180, 700);
+                writer.DirectContent.AddImage(image, false);
 
                 htmlparser.Parse(sr);
                 pdfDoc.Close();
@@ -593,5 +595,6 @@ namespace SustitucionMOAUtils.Services
 
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+        
     }
 }

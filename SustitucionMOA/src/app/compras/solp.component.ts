@@ -391,6 +391,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             });
 
             this.solpActual.setearPosicionPorDefecto();
+            // this.cabecera.solpActual = this.solpActual;
         }
     }
 

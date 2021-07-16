@@ -1,1527 +1,1766 @@
-﻿<h1>Template</h1>
-<p style="color: red">Nombre de obra: ||NOMBRE_OBRA||</p>
+﻿<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br><br><br><br><br><br><br><br>
+</p>
 
 
-<div>
-    <img src="data:image/png;base64,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" />
-</div>
-
-
-    <p align=right style="margin-right: 0.01in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            San
-            Lorenzo,
-        </font>
-        <font face="Cambria, serif">
-            <span style="background: #ffff00">
-                ||FECHA_LIBERACION||.
-            </span>
-        </font>
-        <font face="Cambria, serif">
-        </font>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-
-
-    <p align="left" style="margin-right: -0.65in; margin-bottom: 0in">
-        <span dir="Ltr" style="float: left; width: 6.56in; height: 2.44in; border: 2.00pt solid #4f81bd; padding: 0.05in 0.1in; background: #ffffff">
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <br>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                </font>
-                <font color="#000000">
-                    <span style="background: #ffff00">
-                        <font face="Cambria, serif">
-                            <b>
-                                Nombre de obra:
-                            </b>
-                        </font>
-                    </span>
-                </font>
-                <font>
-                    <font face="Cambria, serif">
-                        <span>
-                            ||NOMBRE_OBRA||
-                        </span>
-                    </font>
-                </font>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <b>Solp: </b>
-                    </font>
-                </font>
-                <font>
-                    <font face="Cambria, serif">
-                        <span>
-                            ||NroSolp||
-                        </span>
-                    </font>
-                </font>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <b>
-                            FISCAL DE CONTRATO:
-                        </b>
-                    </font>
-                </font>
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                    </font>
-                </font>
-            </p>
-
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font>
-                    <font face="Cambria, serif">
-                        <span style="background: #ffff00">
-                            ||FISCAL_CONTRATO||
-                        </span>
-                    </font>
-                </font>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        Celular:
-                    </font>
-                </font>
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <span style="background: #ffff00">
-                            ||TELEFONO||
-                        </span>
-                    </font>
-                </font>
-            </p>
+<p align=right style="margin-right: 0.01in; margin-bottom: 0in;">
+    <font face="Cambria, serif">
+        San Lorenzo,
+    </font>
+    <font face="Cambria, serif">
+        <span style="background: #ffff00">
+            ||FECHA_LIBERACION||.
         </span>
-        <br>
-    </p>
+    </font>
+    <font face="Cambria, serif">
+    </font>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <span dir="Ltr" style="float: left; width: 6.57in; height: 2.29in; border: 2.00pt solid #4f81bd; padding: 0.05in 0.1in; background: #ffffff">
-            <p lang="es-AR" style="margin-bottom: 0in">
-                <br>
-            </p>
-            <p lang="es-AR" style="margin-bottom: 0in">
-                <br>
-            </p>
-            <p style="margin-bottom: 0in">
-                <font face="Cambria, serif">
-                    <span lang="es-AR">
-                        <b>
-                            Fecha de presentación de las ofertas:
-                        </b>
-                    </span>
-                </font>
-                <font face="Cambria, serif">
-                    <span lang="es-AR">
-                        <span style="background: #ffff00">
-                            ||FECHA_PRESENTACION||
-                        </span>
-                    </span>
-                </font>
-                <font face="Cambria, serif">
-                    <span lang="es-AR">
-                    </span>
-                </font>
-                <font face="Cambria, serif">
-                    <span lang="es-AR">
-                        <span style="background: #ffff00">
-                            (al menos 7 días semanas desde la fecha de emisión)
-                        </span>
-                    </span>
-                </font>
-            </p>
-            <p lang="es-AR" style="margin-bottom: 0in">
-                <br>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font face="Cambria, serif">
-                    <span lang="es-AR">
-                        <b>
-                            dirigir ofertas únicamente a por sobre cerrado a
-                        </b>
-                    </span>
-                </font><font face="Cambria, serif">
-                    <span lang="es-AR">
-                        :
-                    </span>
-                </font>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <span lang="es-AR">
+<table border="1">
+    <tr>
+        <th>
+            <p>
+                <span>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <br>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                        </font>
+                        <font color="#000000">
                             <span style="background: #ffff00">
-                                ||USUARIO_COMPRAS||
+                                <font face="Cambria, serif">
+                                    <b>
+                                        " ||NOMBRE_OBRA|| "
+                                    </b>
+                                </font>
                             </span>
-                        </span>
-                    </font>
-                </font>
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <span lang="es-AR">
-                            /Compras
-                        </span>
-                    </font>
-                </font>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <span lang="es-AR">
-                            Benielli 398
-                        </span>
-                    </font>
-                </font>
-            </p>
-            <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-                <font color="#000000">
-                    <font face="Cambria, serif">
-                        <span lang="es-AR">
-                            (2200) San Lorenzo
-                        </span>
-                    </font>
-                </font>
-            </p>
-            <p lang="es-AR" style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        </font>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <b>Solp: </b>
+                            </font>
+                        </font>
+                        <font>
+                            <font face="Cambria, serif">
+                                <span>
+                                    ||NroSolp||
+                                </span>
+                            </font>
+                        </font>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <b>
+                                    FISCAL DE CONTRATO:
+                                </b>
+                            </font>
+                        </font>
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                            </font>
+                        </font>
+                    </p>
+
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font>
+                            <font face="Cambria, serif">
+                                <span style="background: #ffff00">
+                                    ||FISCAL_CONTRATO||
+                                </span>
+                            </font>
+                        </font>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                Celular:
+                            </font>
+                        </font>
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <span style="background: #ffff00">
+                                    ||TELEFONO||
+                                </span>
+                            </font>
+                        </font>
+                    </p>
+                </span>
                 <br>
             </p>
-            <p style="margin-bottom: 0in">
-                <br>
+        </th>
+    </tr>
+</table>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br><br><br><br><br><br><br><br><br>
+</p>
+
+<table border="1">
+    <tr>
+        <th>
+            <p style="margin-right: -1in; margin-bottom: 0in; line-height: 150%">
+                <span>
+                    <p lang="es-AR" style="margin-bottom: 0in">
+                        <br>
+                    </p>
+                    <p lang="es-AR" style="margin-bottom: 0in">
+                        <br>
+                    </p>
+                    <p style="margin-bottom: 0in">
+                        <font face="Cambria, serif">
+                            <span lang="es-AR">
+                                <b>
+                                    Fecha de presentación de las ofertas:
+                                </b>
+                            </span>
+                        </font>
+                        <font face="Cambria, serif">
+                            <span lang="es-AR">
+                                <span style="background: #ffff00">
+                                    ||FECHA_PRESENTACION||
+                                </span>
+                            </span>
+                        </font>
+                        <font face="Cambria, serif">
+                            <span lang="es-AR">
+                            </span>
+                        </font>
+                        <font face="Cambria, serif">
+                            <span lang="es-AR">
+                                <span style="background: #ffff00">
+                                    (al menos 7 días semanas desde la fecha de emisión)
+                                </span>
+                            </span>
+                        </font>
+                    </p>
+                    <p lang="es-AR" style="margin-bottom: 0in">
+                        <br>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font face="Cambria, serif">
+                            <span lang="es-AR">
+                                <b>
+                                    Dirigir ofertas únicamente a por sobre cerrado a
+                                </b>
+                            </span>
+                        </font><font face="Cambria, serif">
+                            <span lang="es-AR">
+                                :
+                            </span>
+                        </font>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <span lang="es-AR">
+                                    <span style="background: #ffff00">
+                                        ||USUARIO_COMPRAS||
+                                    </span>
+                                </span>
+                            </font>
+                        </font>
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <span lang="es-AR">
+                                    /Compras
+                                </span>
+                            </font>
+                        </font>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <span lang="es-AR">
+                                    Benielli 398
+                                </span>
+                            </font>
+                        </font>
+                    </p>
+                    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <font color="#000000">
+                            <font face="Cambria, serif">
+                                <span lang="es-AR">
+                                    (2200) San Lorenzo
+                                </span>
+                            </font>
+                        </font>
+                    </p>
+                    <p lang="es-AR" style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+                        <br>
+                    </p>
+                    <p style="margin-bottom: 0in">
+                        <br>
+                    </p>
+                </span><br>
             </p>
-        </span><br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="text-indent: 0.75in; margin-bottom: 0in; page-break-before: always">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>ÍNDICE:</b>
-            </u>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            1-Objeto del pliego.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            2-Alcance de las prestaciones a cargo de MOA.
-        </font>
-    </p>
+        </th>
+    </tr>
+</table>
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</p>
 
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            3-Alcance de las prestaciones a cargo del contratista.
-        </font>
-    </p>
-    <p style="text-indent: 0.13in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            3.a-Consideraciones generales.
-        </font>
-    </p>
-    <p style="text-indent: 0.13in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            3.b-Consideraciones particulares.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            4-Cotización y plazo de ejecución o entrega.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            5-presentación de Ofertas.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in"><font face="Cambria, serif">6-Consultas.</font></p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            7-Inadmisibilidad de ofertas.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            8-Seguridad, Higiene, Medio Ambiente y buenas prácticas de Manufactura.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            9-Evaluación de proveedores.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in"><font face="Cambria, serif">10-Reclamos.</font></p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            11-Multa por atraso de obra.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            12-Requisitos para el ingreso a la planta.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-right: -0.75in; margin-bottom: 0in; page-break-before: always">
-        <font face="Cambria, serif">
-            <u>
-                <b>1-Objeto del pliego:</b>
-            </u>
-        </font>
-        <font face="Cambria, serif">
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>ÍNDICE:</b>
+        </u>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        1-Objeto del pliego.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        2-Alcance de las prestaciones a cargo de MOA.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        3-Alcance de las prestaciones a cargo del contratista.
+    </font>
+</p>
+<p style="text-indent: 0.13in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        3.a-Consideraciones generales.
+    </font>
+</p>
+<p style="text-indent: 0.13in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        3.b-Consideraciones particulares.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        4-Cotización y plazo de ejecución o entrega.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        5-presentación de Ofertas.
+    </font>
+</p>
+<p style="margin-bottom: 0in"><font face="Cambria, serif">6-Consultas.</font></p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        7-Inadmisibilidad de ofertas.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        8-Seguridad, Higiene, Medio Ambiente y buenas prácticas de Manufactura.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        9-Evaluación de proveedores.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        10-Reclamos.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        11-Multa por atraso de obra.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        12-Requisitos para el ingreso a la planta.
+    </font>
+</p>
+
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.75in; margin-bottom: 0in; page-break-before: always">
+    <font face="Cambria, serif">
+        <u>
+            <b>1-Objeto del pliego:</b>
+        </u>
+    </font>
+    <font face="Cambria, serif">
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <span lang="en-us">
+            Por medio del presente nos dirigimos a ustedes a efectos de invitarlos a
+            la presentación de una oferta para la ejecución del pliego de
+            acuerdo a especificaciones adjuntas.
+        </span>
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Arial, serif">
         <font face="Cambria, serif">
             <span lang="en-us">
-                Por medio del presente nos dirigimos a ustedes a efectos de invitarlos a
-                la presentación de una oferta para la ejecución del pliego de
-                acuerdo a especificaciones adjuntas.
+                El presente constituye una invitación a ofertar por parte de Molinos
+                Agro S.A. (en adelante MOA), quien se reserva la facultad de
+                contratar o no lo especificado. Así, ni la presentación de las
+                propuestas, ni el cumplimiento de los recaudos en ella previstos,
+                dará derecho o lugar a reclamo alguno contra MOA por parte de las
+                empresas invitadas a ofertar. MOA se reserva además el derecho a
+                declarar este pedido de ofertas desierto.
             </span>
         </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                2-Alcance de las prestaciones a cargo de MOLINOS AGRO S.A.:
+            </b>
+        </u>
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.01in; margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Lugar para obrador: MOA habilitará un
+        lugar dentro del predio destinado a obradores, si considera que la
+        presencia de un obrador en planta es indispensable para la ejecución
+        de la tarea y se gestionará el ingreso y egreso del mismo de acuerdo
+        al procedimiento. Además deberá exhibir la habilitación
+        correspondiente.
+    </font> En ese caso s
+    <font face="Cambria, serif">
+        e deberán prever vestuarios, comedores para el personal propio y
+        subcontratista, no pudiendo usar las instalaciones de MOA. Los mismos
+        responderán a convenios vigentes e indicados por MOA. La limpieza
+        del sector estará a su cargo. Estará obligado a retirar
+        diariamente del área de trabajo y obrador todo el material sobrante,
+        el cual será depositado en zonas que asigne MOA. , pudiendo aplicar
+        la DO  multas  si la orden indicada en el libro de obra para cumplir
+        con el orden y la seguridad, no es cumplida en el lapso indicado.
+    </font>
+    <font face="Cambria, serif">
+        <font size=2 style="font-size: 11pt">
+            Se dispondrá de elementos contra incendio de acuerdo a las normas
+            vigentes.
+        </font>
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Energía eléctrica: Será provista por
+        MOA en líneas de obradores existentes y preverá la distribución de
+        acuerdo a sus necesidades y las instrucciones que en ese aspecto
+        figuran en las Normas de Seguridad para Contratistas.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Las instalaciones, conductores, fichas
+        y/o elementos adicionales necesarios para compatibilizar la
+        instalación del contratista con el tablero de MOA serán a cargo y
+        costo del contratista. En el caso de ser necesaria la utilización de
+        equipamientos eléctricos de mayor potencia el contratista deberá
+        indicarlo.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Toda instalación y/o tablero de uso
+        durante el montaje deberá cumplir con lo indicado por MOA, este
+        poseerá como mínimo disyuntor y guarda motor, según especificación
+        de MOA.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El traslado de la energía hasta los
+        lugares de obra, se materializará colocando &quot;palmeras&quot; con
+        la separación necesaria para lograr que la catenaria supere los 5
+        metros de alto, o una altura mayor según la necesidad del
+        contratista.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Agua para obrador: Será provista por MOA
+        en su terreno, las características del agua provista por MOA es de
+        Servicios, no siendo la misma pOtable.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        La contratista será responsable de
+        proveer y distribuir a su personal de agua de tipo potable, dispuesta
+        en dispensers distribuidos en obrador y/o en las cercanías de la
+        realización de las obras. Es responsabilidad exclusiva del
+        contratista asegurar la calidad del agua que provea a su personal.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                3-Alcance de las prestaciones a cargo del contratista:
+            </b>
+        </u>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                3.a-Consideraciones generales:
+            </b>
+        </u>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        La oferta comprenderá todos los trabajos y rubros necesarios para
+        ejecutar y terminar de acuerdo a las reglas del buen arte, la
+        totalidad de los trabajos indicados en la solicitud de cotización,
+        de acuerdo a los planos que pudieran entregarse y a este pliego,
+        incluyendo también todos aquellos que sin estar expresamente
+        indicados fueran necesarios.
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font color="#000000">
+        <font color="#00000a">
+            <font face="Cambria, serif">
+                La ejecución de la ingeniería de detalle de la obra estará a cargo
+                del oferente y salvo que se aclare especialmente no entregará planos
+                de ingeniería básica o detalle ni planos generales, preliminares o
+                informativos. El relevamiento lo deberá realizar el oferente en base
+                a lo descrito en este pliego haciendo constar en su oferta cualquier
+                divergencia que considere oportuna, no pudiendo luego de adjudicada
+                la obra realizar reclamos basados en desconocimiento o interpretación
+                errónea de la misma.
+            </font>
+        </font>
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El contratista proveerá todos los
+        materiales, insumos, consumibles, elementos de protección personal,
+        equipos, medios de elevación necesarios para realizar los trabajos
+        solicitados, en los distintos ítems de la especificación de tareas
+        excepto los expresamente indicados como provisión de MOA.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Todos los materiales desmontados serán
+        llevados a los lugares indicados por MOA.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Todos los materiales provistos por MOA
+        serán retirados del almacén de acuerdo al procedimiento particular.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Deberá mantenerse la obra en su conjunto de manera limpia y ordenada y la empresa contratista entregara una
+        vez finalizada libre de residuos de cualquier naturaleza y en
+        condiciones de uso. No se recibirá el remito del trabajo terminado
+        hasta tanto no se cumplimenten estos requisitos, y el trabajo sea
+        inspeccionado y aprobado por personal de MOA, de acuerdo al
+        procedimiento Lista de Chequeo de orden y limpieza en final de obra.
+        Al finalizar el trabajo y para darlo por culminado, el fiscal de
+        contrato deberá realizar la evaluación final del mismo.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El contratista limpiará, acondicionará
+        y pintará todas las superficies reparadas según especificaciones y
+        normas internas de MOA.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in">
+    <font face="Cambria, serif">
+        El contratista deberá designar un representante técnico, quien deberá
+        contar con la aprobación de MOA.  La persona designada deberá ser
+        competente, capaz de recibir, cumplir y hacer cumplir las órdenes
+        y/o indicaciones  de la dirección de obra. La función del
+        representante técnico finalizará con la recepción definitiva de la
+        obra.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Todas las inspecciones que se deban
+        realizar según los distintos ítems, serán realizadas conjuntamente
+        con la supervisión de MOA.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Los oferentes deberán relevar
+        obligatoriamente la totalidad del trabajo a realizar, mediciones,
+        condiciones de trabajo, etc, en planta junto con supervisores de MOA
+        previo a la cotización.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Los oferentes suministrarán a su cargo
+        los equipos de montaje, herramientas, máquinas herramientas,
+        andamios y aparatos de izaje adecuados al trabajo a realizar en
+        condiciones confiables y con las certificaciones que se requieran en
+        normas de MOA. En caso de imperfecciones, dichos equipos y/o
+        herramientas deberán ser reemplazados sin objeción alguna.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Los oferentes suministrarán personal de
+        montaje que cumplimente los requerimientos legales y administrativos
+        definidos en el reglamento para contratistas vigente a la fecha. El
+        oferente deberá cumplir con todos los requisitos y normas
+        establecidos por MOA en todos los aspectos referidos a seguridad
+        industrial.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Cuando la obra justifique el uso de un obrador, el Contratista deberá
+        solicitar la Tarjeta de habilitación de uso de obradores en planta.
+        El obrador deberá cumplir con los requerimientos del Decreto 911/96
+        “Seguridad en la Construcción” y el Decreto 351/79 reglamentario
+        de la Ley de Seguridad Laboral 19.587. una vez finalizada la obra se
+        deberá presentar la tarjeta donde certifique el retiro del mismo
+        junto con el remito final del trabajo, estos serán requisitos
+        necesarios para comenzar el trámite de pago del servicio prestado.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El Contratista debe considerar en su provisión incluidos todos los
+        gastos necesarios para realización de las tareas incluyéndose los
+        viáticos (traslados, comidas, combustible, alojamiento), como todo
+        lo inherente para el ingreso a planta  (seguros, ART, estudios
+        médicos, etc.) requeridos por las Normas de Ingreso de Contratistas
+        de MOA anexados al presente.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        MOA deslinda cualquier responsabilidad por pérdida, robo o daño que se
+        produzca a los equipos o instalaciones del contratista, así como
+        también de todos los materiales y o elementos entregados para la
+        ejecución de la obra (partes de equipos o estructuras) hasta el
+        instante de la recepción provisoria de cada equipo.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El contratista confeccionará un parte diario que deberá ser presentado
+        diariamente para su rubricación al fiscal de contrato.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        La visita a la obra es obligatoria, se debe coordinar con el fiscal de
+        contrato que figura en la carátula.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Se deberá tener en cuenta que una vez adjudicada la Obra, todo el
+        personal que requiera ingresar a planta a realizar tareas,
+        incluyéndose las de relevamiento deberá cumplimentar todos los
+        requerimientos legales y administrativos definidos en el reglamento
+        para contratistas vigente a la fecha  como así también  todos los
+        aspectos referidos a Seguridad, Higiene y Medio Ambiente.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                3.b-Consideraciones particulares:
+            </b>
+        </u>
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <b>
+            3.b.1: Especificación técnica de tareas.
+        </b>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <span style="background: #ffff00">
+            ||ESPECIFICACION_TECNICA||
+            ||LISTADO_ADJUNTOS||
+        </span>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                4-Cotización y plazo de ejecución:
+            </b>
+        </u>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        La ejecución de todas las tareas será la que figure en la Orden de
+        Compra correspondiente, que en principio se estima en
+    </font>
+    <font face="Cambria, serif">
+        <span style="background: #ffff00">
+            ||PLAZO_EJECUCION|| dias corridos
+        </span>
+    </font><font face="Cambria, serif">
+        desde la emisión de la misma.
+    </font>
+    <font face="Cambria, serif">
+        <span style="background: #ffff00">
+            (o indicar la cantidad de días con que se cuenta a partir de tener el
+            equipo disponible, en una parada programada u que el trabajo depende
+            de otros).
+        </span>
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in">
+    <font face="Cambria, serif">
+        La jornada laboral normal se establece en principio
+    </font>
+    <font face="Cambria, serif">
+        <span style="background: #ffff00">
+            de ||DIAS_JORNADA_LABORAL|| de ||INICIO_FINAL_HS_JORNADA_LABORAL||hs,
+        </span>
+    </font>
+    <font face="Cambria, serif">
+        quedando la posibilidad de ampliarla o modificarla con el acuerdo del
+        fiscal de contrato.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in">
+    <font face="Cambria, serif">
+        La obra será contratada por el sistema de ajuste alzado, por lo cual se
+        consideran incluidos en el monto total del contrato o precio, todos
+        los trabajos y materiales que fueran necesarios para cumplir lo
+        especificado, aun aquellos que a pesar de no estar indicados
+        específicamente hagan a la correcta ejecución de la obra de acuerdo
+        a las reglas del buen arte.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        No está previsto ningún tipo de anticipo para el presente trabajo ni
+        avances parciales, por lo que se podrá facturar a la finalización
+        de las tareas con la conformidad del fiscal del contrato. En caso de
+        requerirlos, deberán estar aprobados por el comprador y figurar en
+        la orden de compra para que sean aceptados por MOA
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in">
+    <font face="Cambria, serif">
+        Con la presentación de las ofertas, el oferente entregará un plan de
+        trabajo detallando las tareas que lo componen en concordancia con los
+        ítems de la oferta o resumen de éstos para ser sometido a la
+        aprobación de MOA.
+    </font>
+</p>
+
+<p align=justify style="text-indent: 0.49in">
+    <font face="Cambria, serif">
+        Todos los días de lluvia y sus consecuencias deberán ser registrados por
+        el Contratista en el Libro de Notas de pedido, firmado por ambas
+        partes, quedando a criterio de la dirección de obra determinar si
+        corresponde.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in">
+    <font face="Cambria, serif">
+        El Contratista deberá considerar que dentro del plazo total se
+        consideran incluidos 4 días/mes de lluvias que no justificarán
+        ampliación de plazo, a partir de ahí se computará lo que
+        corresponda.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                5-presentación de Ofertas
+            </b>
+        </u>
+    </font><font face="Cambria, serif">:</font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Las ofertas se recibirán hasta las 12: 00 hs del día y en la dirección
+        especificados en la carátula, por sobre cerrado con membrete de la
+        empresa. Deben estar dirigidas a la persona de compras
+        correspondiente, mencionando el número de pliego.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
+    <br>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
+    <br>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
+    <font color="#000000">
+        <font face="Cambria, serif">
+            <u>
+                <b>
+                    6-Consultas:
+                </b>
+            </u>
+        </font>
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
+    <br>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
+    <font color="#000000">
+        <font face="Cambria, serif">
+            En el caso de
+            requerir los oferentes alguna aclaración sobre los documentos de la
+            licitación, deberán hacerlo por escrito
+        </font>
+        <font face="Cambria, serif">
+            y serán dirigidas a nombre de la persona de compras identificada en
+            la carátula.  Todas las consultas tendrán carácter de circular
+            aclaratoria, por lo que serán incorporadas al pliego como perfección
+            del contrato. Las mismas deben ser enviadas por mail a la dirección
+            de correo identificada en la carátula hasta dos días antes del
+            cierre de la cotización, para permitir el envío de una circular a
+            los demás oferentes en el caso de que MOA lo considere necesario.
+        </font>
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
+    <font color="#000000">
+        <font face="Cambria, serif">
+            <u>
+                <b>
+                    7-Inadmisibilidad de ofertas:
+                </b>
+            </u>
+        </font>
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
+    <br>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
+    <font color="#000000">
+        <font face="Cambria, serif">
+            Será causal de in
+            admisibilidad, la oferta presentada por aquellas empresas que
+            previamente no concurran a la planta a relevar las tareas a ser
+            desarrolladas
+        </font>
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
+    <font color="#000000">
+        <font face="Cambria, serif">
+            No se tomarán como
+            válidas aquellas ofertas en que el oferente no deje expresa
+            constancia de que acepta los términos y condiciones previamente
+            mencionados, como así también aquellos que hacen a la política de
+            la empresa.
+        </font>
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Arial, serif">
+        <font face="Cambria, serif">
+            MOA se reserva el derecho de declarar desierto este concurso, si así lo
+            considerara conveniente, eximiéndose de la obligación de presentar
+            justificación alguna a los oferentes.
+        </font>
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p align=justify style="margin-right: -0.26in; margin-bottom: 0in; line-height: 100%">
+    <font color="#000000">
+        <font face="Arial, serif">
+            <font color="#00000a">
+                <font face="Cambria, serif">
+                    <u>
+                        <b>
+                            8-Seguridad, Higiene, Medio Ambiente y buenas prácticas de Manufactura:
+                        </b>
+                    </u>
+                </font>
+            </font>
+        </font>
+    </font>
+</p>
+<p align=justify style="margin-right: -0.26in; margin-bottom: 0in; line-height: 100%">
+    <br>
+</p>
+<p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
+    <font color="#000000">
         <font face="Arial, serif">
             <font face="Cambria, serif">
                 <span lang="en-us">
-                    El presente constituye una invitación a ofertar por parte de Molinos
-                    Agro S.A. (en adelante MOA), quien se reserva la facultad de
-                    contratar o no lo especificado. Así, ni la presentación de las
-                    propuestas, ni el cumplimiento de los recaudos en ella previstos,
-                    dará derecho o lugar a reclamo alguno contra MOA por parte de las
-                    empresas invitadas a ofertar. MOA se reserva además el derecho a
-                    declarar este pedido de ofertas desierto.
+                    El contratista deberá cumplir y respetar la normativa vigente o aquella
+                    que pudiese surgir durante el desarrollo de éste contrato, ya sea a
+                    nivel nacional, provincial y/o municipal, como las internas de MOA en
+                    lo referente a Seguridad, Higiene, Medio Ambiente y buenas prácticas
+                    de Manufacturas.
                 </span>
             </font>
         </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    2-Alcance de las prestaciones a cargo de MOLINOS AGRO S.A.:
-                </b>
-            </u>
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.01in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Lugar para obrador: MOA habilitará un
-            lugar dentro del predio destinado a obradores, si considera que la
-            presencia de un obrador en planta es indispensable para la ejecución
-            de la tarea y se gestionará el ingreso y egreso del mismo de acuerdo
-            al procedimiento. Además deberá exhibir la habilitación
-            correspondiente.
-        </font> En ese caso s
-        <font face="Cambria, serif">
-            e deberán prever vestuarios, comedores para el personal propio y
-            subcontratista, no pudiendo usar las instalaciones de MOA. Los mismos
-            responderán a convenios vigentes e indicados por MOA. La limpieza
-            del sector estará a su cargo. Estará obligado a retirar
-            diariamente del área de trabajo y obrador todo el material sobrante,
-            el cual será depositado en zonas que asigne MOA. , pudiendo aplicar
-            la DO  multas  si la orden indicada en el libro de obra para cumplir
-            con el orden y la seguridad, no es cumplida en el lapso indicado.
-        </font>
-        <font face="Cambria, serif">
-            <font size=2 style="font-size: 11pt">
-                Se dispondrá de elementos contra incendio de acuerdo a las normas
-                vigentes.
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in; background: #ffffff">
+    <font face="Cambria, serif">
+        <span lang="en-us">
+            Deberá contar además,
+            con un servicio a cargo de un profesional en Seguridad e Higiene con
+            la matricula al día. Es obligación por parte del contratista
+            disponer la presencia permanente en el lugar de trabajo, de un
+            técnico en Seguridad e Higiene debidamente matriculado durante el
+            100% del tiempo que dure la realización de las tareas emergentes del
+            presente, registrando las visitas a planta y las observaciones
+            realizadas en un “Libro de Visitas de Responsables de SHyMA
+            (Seguridad, Higiene y Medio ambiente)” que a tal efecto se
+            encuentra en la portería de ingreso.
+        </span>
+    </font>
+    <font face="Cambria, serif">
+        En el caso que el técnico de seguridad no pueda estar el 100% del
+        tiempo se tendrán que suspender las tareas hasta que este vuelva a
+        su correspondiente puesto de trabajo.
+    </font>
+</p>
+<p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
+    <font color="#000000">
+        <font face="Arial, serif">
+            <font face="Cambria, serif">
+                <span lang="en-us">
+                    previo al comienzo de las tareas de montaje, el contratista deberá entregar
+                    completa la planilla de análisis de seguridad en el trabajo que se
+                    adjunta para ser sometida a la aprobación de MOA.
+                </span>
             </font>
         </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Energía eléctrica: Será provista por
-            MOA en líneas de obradores existentes y preverá la distribución de
-            acuerdo a sus necesidades y las instrucciones que en ese aspecto
-            figuran en las Normas de Seguridad para Contratistas.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Las instalaciones, conductores, fichas
-            y/o elementos adicionales necesarios para compatibilizar la
-            instalación del contratista con el tablero de MOA serán a cargo y
-            costo del contratista. En el caso de ser necesaria la utilización de
-            equipamientos eléctricos de mayor potencia el contratista deberá
-            indicarlo.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Toda instalación y/o tablero de uso
-            durante el montaje deberá cumplir con lo indicado por MOA, este
-            poseerá como mínimo disyuntor y guarda motor, según especificación
-            de MOA.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El traslado de la energía hasta los
-            lugares de obra, se materializará colocando &quot;palmeras&quot; con
-            la separación necesaria para lograr que la catenaria supere los 5
-            metros de alto, o una altura mayor según la necesidad del
-            contratista.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Agua para obrador: Será provista por MOA
-            en su terreno, las características del agua provista por MOA es de
-            Servicios, no siendo la misma pOtable.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            La contratista será responsable de
-            proveer y distribuir a su personal de agua de tipo potable, dispuesta
-            en dispensers distribuidos en obrador y/o en las cercanías de la
-            realización de las obras. Es responsabilidad exclusiva del
-            contratista asegurar la calidad del agua que provea a su personal.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-
-    <p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    3-Alcance de las prestaciones a cargo del contratista:
-                </b>
-            </u>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    3.a-Consideraciones generales:
-                </b>
-            </u>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            La oferta comprenderá todos los trabajos y rubros necesarios para
-            ejecutar y terminar de acuerdo a las reglas del buen arte, la
-            totalidad de los trabajos indicados en la solicitud de cotización,
-            de acuerdo a los planos que pudieran entregarse y a este pliego,
-            incluyendo también todos aquellos que sin estar expresamente
-            indicados fueran necesarios.
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font color="#000000">
-            <font color="#00000a">
-                <font face="Cambria, serif">
-                    La ejecución de la ingeniería de detalle de la obra estará a cargo
-                    del oferente y salvo que se aclare especialmente no entregará planos
-                    de ingeniería básica o detalle ni planos generales, preliminares o
-                    informativos. El relevamiento lo deberá realizar el oferente en base
-                    a lo descrito en este pliego haciendo constar en su oferta cualquier
-                    divergencia que considere oportuna, no pudiendo luego de adjudicada
-                    la obra realizar reclamos basados en desconocimiento o interpretación
-                    errónea de la misma.
-                </font>
+    </font>
+</p>
+<p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
+    <font color="#000000">
+        <font face="Arial, serif">
+            <font face="Cambria, serif">
+                <span lang="en-us">
+                    El contratista deberá, además, presentar un plan Anual de
+                    Capacitación, como también toda la documentación necesaria
+                    referente a capacitaciones que el departamento SHyMA considere
+                    necesario de acuerdo a los trabajos a realizar o los desvíos de
+                    seguridad que pudiesen ser observados.
+                </span>
             </font>
         </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El contratista proveerá todos los
-            materiales, insumos, consumibles, elementos de protección personal,
-            equipos, medios de elevación necesarios para realizar los trabajos
-            solicitados, en los distintos ítems de la especificación de tareas
-            excepto los expresamente indicados como provisión de MOA.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Todos los materiales desmontados serán
-            llevados a los lugares indicados por MOA.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Todos los materiales provistos por MOA
-            serán retirados del almacén de acuerdo al procedimiento particular.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Deberá mantenerse la obra en su conjunto de manera limpia y ordenada y la empresa contratista entregara una
-            vez finalizada libre de residuos de cualquier naturaleza y en
-            condiciones de uso. No se recibirá el remito del trabajo terminado
-            hasta tanto no se cumplimenten estos requisitos, y el trabajo sea
-            inspeccionado y aprobado por personal de MOA, de acuerdo al
-            procedimiento Lista de Chequeo de orden y limpieza en final de obra.
-            Al finalizar el trabajo y para darlo por culminado, el fiscal de
-            contrato deberá realizar la evaluación final del mismo.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El contratista limpiará, acondicionará
-            y pintará todas las superficies reparadas según especificaciones y
-            normas internas de MOA.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in">
-        <font face="Cambria, serif">
-            El contratista deberá designar un representante técnico, quien deberá
-            contar con la aprobación de MOA.  La persona designada deberá ser
-            competente, capaz de recibir, cumplir y hacer cumplir las órdenes
-            y/o indicaciones  de la dirección de obra. La función del
-            representante técnico finalizará con la recepción definitiva de la
-            obra.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Todas las inspecciones que se deban
-            realizar según los distintos ítems, serán realizadas conjuntamente
-            con la supervisión de MOA.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Los oferentes deberán relevar
-            obligatoriamente la totalidad del trabajo a realizar, mediciones,
-            condiciones de trabajo, etc, en planta junto con supervisores de MOA
-            previo a la cotización.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Los oferentes suministrarán a su cargo
-            los equipos de montaje, herramientas, máquinas herramientas,
-            andamios y aparatos de izaje adecuados al trabajo a realizar en
-            condiciones confiables y con las certificaciones que se requieran en
-            normas de MOA. En caso de imperfecciones, dichos equipos y/o
-            herramientas deberán ser reemplazados sin objeción alguna.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Los oferentes suministrarán personal de
-            montaje que cumplimente los requerimientos legales y administrativos
-            definidos en el reglamento para contratistas vigente a la fecha. El
-            oferente deberá cumplir con todos los requisitos y normas
-            establecidos por MOA en todos los aspectos referidos a seguridad
-            industrial.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Cuando la obra justifique el uso de un obrador, el Contratista deberá
-            solicitar la Tarjeta de habilitación de uso de obradores en planta.
-            El obrador deberá cumplir con los requerimientos del Decreto 911/96
-            “Seguridad en la Construcción” y el Decreto 351/79 reglamentario
-            de la Ley de Seguridad Laboral 19.587. una vez finalizada la obra se
-            deberá presentar la tarjeta donde certifique el retiro del mismo
-            junto con el remito final del trabajo, estos serán requisitos
-            necesarios para comenzar el trámite de pago del servicio prestado.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El Contratista debe considerar en su provisión incluidos todos los
-            gastos necesarios para realización de las tareas incluyéndose los
-            viáticos (traslados, comidas, combustible, alojamiento), como todo
-            lo inherente para el ingreso a planta  (seguros, ART, estudios
-            médicos, etc.) requeridos por las Normas de Ingreso de Contratistas
-            de MOA anexados al presente.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            MOA deslinda cualquier responsabilidad por pérdida, robo o daño que se
-            produzca a los equipos o instalaciones del contratista, así como
-            también de todos los materiales y o elementos entregados para la
-            ejecución de la obra (partes de equipos o estructuras) hasta el
-            instante de la recepción provisoria de cada equipo.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El contratista confeccionará un parte diario que deberá ser presentado
-            diariamente para su rubricación al fiscal de contrato.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            La visita a la obra es obligatoria, se debe coordinar con el fiscal de
-            contrato que figura en la carátula.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Se deberá tener en cuenta que una vez adjudicada la Obra, todo el
-            personal que requiera ingresar a planta a realizar tareas,
-            incluyéndose las de relevamiento deberá cumplimentar todos los
-            requerimientos legales y administrativos definidos en el reglamento
-            para contratistas vigente a la fecha  como así también  todos los
-            aspectos referidos a Seguridad, Higiene y Medio Ambiente.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-
-
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
+    </font>
+</p>
+<p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
+    <font color="#000000">
+        <font face="Arial, serif">
+            <font face="Cambria, serif">
+                Se adjunta archivo con
+            </font>
+            <font face="Cambria, serif">
                 <b>
-                    3.b-Consideraciones particulares:
+                    AST (Análisis de Seguridad en el trabajo)
                 </b>
-            </u>
+            </font>
+            <font face="Cambria, serif">
+            </font>
+            <font face="Cambria, serif">
+                <span lang="en-us">
+                    utilizado
+                </span>
+            </font>
+            <font face="Cambria, serif">
+                para tareas no rutinarias. El
+            </font><font face="Cambria, serif">
+                <b>
+                    AST
+                </b>
+            </font>
+            <font face="Cambria, serif">
+                es una herramienta que permite
+                evaluar previamente paso a paso durante el desarrollo de la tarea de
+                cuáles son los riesgos presentes, las acciones correctivas para esos
+                riesgos asociados; y que si, a pesar de todos los cuidados falla
+                algo, qué acción correctiva llevar a cabo. Es nuestro mapa de
+                seguridad para la realización del trabajo. En consecuencia el
+                oferente debe, capacitar, seguir y cumplir todas y cada una de las
+                recomendaciones en el indicadas.
+            </font>
         </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
-        <font face="Cambria, serif">
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in; background: #ffffff">
+    <font face="Cambria, serif">
+        por su alta potencialidad de accidentes
+        está terminantemente prohibido el uso de amoladora con disco de
+        corte.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in; background: #ffffff">
+    <font face="Cambria, serif">
+        La empresa contratista debe presentar  un
+        certificado expedido por su ART alegando que no se encuentran
+        alcanzados ante las resolución 01/05 (pYMES - 50) o 363/16 (p.E.S.E.
+        +50). Si que están alcanzadas por los programas de reducción de
+        accidentes no se habilitará el ingreso a planta.
+    </font>
+</p>
+<p lang="en-us" align=justify style="margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
             <b>
-                3.b.1: Especificación técnica de tareas.
+                9-Evaluación de proveedores:
             </b>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
+        </u>
+    </font>
+</p>
+<p align=justify style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Las tareas derivadas del presente pliego serán observadas por parte de
+        MOA y de acuerdo al procedimiento particular, siendo el resultado
+        vinculante a la ejecución y finalización del trabajo, como así
+        también a futuras adjudicaciones.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p align=justify style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                10-Reclamos:
+            </b>
+        </u>
+    </font>
+</p>
+<p align=justify style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        La presentación de la oferta implica por parte del oferente el perfecto
+        conocimiento de las obligaciones emergentes del presente, y
+        consecuentemente, implica la renuncia previa y absoluta a cualquier
+        reclamo posterior a la firma del contrato, basado en desconocimiento
+        o errores en los cálculos, planos u otros. Consecuentemente no se
+        admitirán reclamos por adicionales, mayores costos u otros.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Todo trabajo defectuoso, a juicio del fiscal del contrato deberá
+        corregirse por el contratista  no admitiéndose excusa de ninguna
+        especie. Hasta tanto los defectos no sean corregidos, MOA tendrá la
+        facultad de no liquidar ninguna certificación de obra, pudiendo
+        después de un tiempo prudencial, realizar la corrección a cuenta
+        del contratista si este no lo hubiera hecho.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Es obligación del contratista conocer la documentación a fondo y
+        comunicar con debida antelación los errores u omisiones, que
+        pudieran existir en los planos y/o documentación que se pudiese
+        haber entregado para subsanarlos a tiempo, por lo que queda
+        establecido que los materiales y/o jornales que puedan utilizarse
+        para este fin serán pagados por el contratista.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p><font face="Cambria, serif"><u><b>11-Multa por atraso de obra:</b></u></font></p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        La Contratista será penalizada económicamente si la entrega de las
+        instalaciones/bienes excede el plazo fijado por causas imputables al
+        proveedor y devengará en la aplicación de una multa de un (0,5) por
+        ciento diario acumulativo del monto total de la OC (máximo 10 % del
+        total de la OC).
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        Los trabajos adicionales al proyecto inicial no ampliarán el plazo de
+        obra/bien, por lo que el proveedor deberá incrementar su capacidad
+        operativa para afrontar los mismos. Independientemente de ello, en
+        caso de atrasos mayores a diez (10) días por causa imputable al
+        proveedor, MOA se reserva el derecho de cancelar el contrato y
+        convocar a otra empresa para concluir el trabajo responsabilizándose
+        la contratista por los mayores costos que eventualmente pudieren
+        surgir de
+    </font>
+    <font face="Cambria, serif">
+        tales
+    </font>
+    <font face="Cambria, serif">
+        circunstancias.
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                12-Requisitos para el ingreso a la planta:
+            </b>
+        </u>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Arial, serif">
         <font face="Cambria, serif">
-            <span style="background: #ffff00">
-                ||ESPECIFICACION_TECNICA||
-                ||LISTADO_ADJUNTOS||
-            </span>
+            El contratista deberá gestionar todas las habilitaciones
+            correspondientes para ingresar a las plantas de MOA a través de
+            AQUILES SISTEMAS DE INFORMACIÓN S.R.L. Inclusive la Ordenanza 97/80
+            REGISEPORT de prefectura Naval Argentina–. La cual establece que
+            todas las empresas que trabajan dentro de la jurisdicción de
+            prefectura Naval Argentina, deben estar habilitadas &nbsp;en el
+            registro creado para tal fin (tanto la empresa como su personal).
         </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Arial, serif">
+        <font face="Cambria, serif">
+            En caso de que la empresa contratista este bajo encuadre sindical uOCRA
+            deberá presentar constancia de vigente en INSTITUTO DE ESTADISTICA
+            Y&nbsp;REGISTRO DE LA INDUSTRIA DE LA CONSTRUCCION – IERIC. De no
+            corresponder su aplicación, deberá presentar una nota fundada
+            legalmente donde explique porque considera que no corresponde su
+            inscripción.
+        </font>
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Arial, serif">
+        <font face="Cambria, serif">
+            La nómina completa del personal del contratista deberá ser presentada
+            al departamento de Recursos Humanos de la compañía, conteniendo de
+            cada uno de los dependientes, nombre y apellido, domicilio, fecha de
+            nacimiento, DNI , categoría y número de cuil junto con la
+            respectiva alta en ART.
+        </font>
+    </font>
+</p>
+<p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El contratista será responsable por todos los accidentes personales y/o
+        daños materiales ocasionados durante la prestación del servicio,
+        imputables a negligencia, impericia, imprudencia o inobservancia de
+        los reglamentos del personal que ella provee. Es requisito
+        indispensable para el ingreso, cumplimentar con las normas de
+        seguridad e higiene que se encuentra en <A HREF="http://www.molinos.com.ar">www.molinos.com.ar</A>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=center style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</p>
+
+
+
+<p align=center style="margin-bottom: 0in; page-break-before: always">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                ANEXO 1
+            </b>
+        </u>
+    </font>
+</p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <font color="#000000">
         <font face="Cambria, serif">
             <u>
                 <b>
-                    4-Cotización y plazo de ejecución:
+                    DETALLE DE LA COTIZACIÓN:
                 </b>
             </u>
         </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            La ejecución de todas las tareas será la que figure en la Orden de
-            Compra correspondiente, que en principio se estima en
-        </font>
-        <font face="Cambria, serif">
-            <span style="background: #ffff00">
-                ||PLAZO_EJECUCION|| dias corridos
-            </span>
-        </font><font face="Cambria, serif">
-            desde la emisión de la misma.
-        </font>
-        <font face="Cambria, serif">
-            <span style="background: #ffff00">
-                (o indicar la cantidad de días con que se cuenta a partir de tener el
-                equipo disponible, en una parada programada u que el trabajo depende
-                de otros).
-            </span>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in">
-        <font face="Cambria, serif">
-            La jornada laboral normal se establece en principio
-        </font>
-        <font face="Cambria, serif">
-            <span style="background: #ffff00">
-                de ||DIAS_JORNADA_LABORAL|| de ||INICIO_FINAL_HS_JORNADA_LABORAL||hs,
-            </span>
-        </font>
-        <font face="Cambria, serif">
-            quedando la posibilidad de ampliarla o modificarla con el acuerdo del
-            fiscal de contrato.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in">
-        <font face="Cambria, serif">
-            La obra será contratada por el sistema de ajuste alzado, por lo cual se
-            consideran incluidos en el monto total del contrato o precio, todos
-            los trabajos y materiales que fueran necesarios para cumplir lo
-            especificado, aun aquellos que a pesar de no estar indicados
-            específicamente hagan a la correcta ejecución de la obra de acuerdo
-            a las reglas del buen arte.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            No está previsto ningún tipo de anticipo para el presente trabajo ni
-            avances parciales, por lo que se podrá facturar a la finalización
-            de las tareas con la conformidad del fiscal del contrato. En caso de
-            requerirlos, deberán estar aprobados por el comprador y figurar en
-            la orden de compra para que sean aceptados por MOA
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in">
-        <font face="Cambria, serif">
-            Con la presentación de las ofertas, el oferente entregará un plan de
-            trabajo detallando las tareas que lo componen en concordancia con los
-            ítems de la oferta o resumen de éstos para ser sometido a la
-            aprobación de MOA.
-        </font>
-    </p>
-
-    <p align=justify style="text-indent: 0.49in">
-        <font face="Cambria, serif">
-            Todos los días de lluvia y sus consecuencias deberán ser registrados por
-            el Contratista en el Libro de Notas de pedido, firmado por ambas
-            partes, quedando a criterio de la dirección de obra determinar si
-            corresponde.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in">
-        <font face="Cambria, serif">
-            El Contratista deberá considerar que dentro del plazo total se
-            consideran incluidos 4 días/mes de lluvias que no justificarán
-            ampliación de plazo, a partir de ahí se computará lo que
-            corresponda.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    5-presentación de Ofertas
-                </b>
-            </u>
-        </font><font face="Cambria, serif">:</font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Las ofertas se recibirán hasta las 12: 00 hs del día y en la dirección
-            especificados en la carátula, por sobre cerrado con membrete de la
-            empresa. Deben estar dirigidas a la persona de compras
-            correspondiente, mencionando el número de pliego.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.01in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
-        <font color="#000000">
-            <font face="Cambria, serif">
-                <u>
-                    <b>
-                        6-Consultas:
-                    </b>
-                </u>
-            </font>
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
-        <font color="#000000">
-            <font face="Cambria, serif">
-                En el caso de
-                requerir los oferentes alguna aclaración sobre los documentos de la
-                licitación, deberán hacerlo por escrito
-            </font>
-            <font face="Cambria, serif">
-                y serán dirigidas a nombre de la persona de compras identificada en
-                la carátula.  Todas las consultas tendrán carácter de circular
-                aclaratoria, por lo que serán incorporadas al pliego como perfección
-                del contrato. Las mismas deben ser enviadas por mail a la dirección
-                de correo identificada en la carátula hasta dos días antes del
-                cierre de la cotización, para permitir el envío de una circular a
-                los demás oferentes en el caso de que MOA lo considere necesario.
-            </font>
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in"><font face="Cambria, serif"><u><b>Oferente</b></u></font><font face="Cambria, serif">: ||NOMBRE_OBRA||</font></p>
+<p align=center style="margin-bottom: 0in">
+    <br>
+</p>
 
 
-    <p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
-        <font color="#000000">
-            <font face="Cambria, serif">
-                <u>
-                    <b>
-                        7-Inadmisibilidad de ofertas:
-                    </b>
-                </u>
-            </font>
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
-        <font color="#000000">
-            <font face="Cambria, serif">
-                Será causal de in
-                admisibilidad, la oferta presentada por aquellas empresas que
-                previamente no concurran a la planta a relevar las tareas a ser
-                desarrolladas
-            </font>
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in">
-        <font color="#000000">
-            <font face="Cambria, serif">
-                No se tomarán como
-                válidas aquellas ofertas en que el oferente no deje expresa
-                constancia de que acepta los términos y condiciones previamente
-                mencionados, como así también aquellos que hacen a la política de
-                la empresa.
-            </font>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Arial, serif">
-            <font face="Cambria, serif">
-                MOA se reserva el derecho de declarar desierto este concurso, si así lo
-                considerara conveniente, eximiéndose de la obligación de presentar
-                justificación alguna a los oferentes.
-            </font>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+<p>
+    ||TABLA_POSICIONES_SUBPOSICIONES||
+</p>
 
 
-    <p align=justify style="margin-right: -0.26in; margin-bottom: 0in; line-height: 100%">
-        <font color="#000000">
-            <font face="Arial, serif">
-                <font color="#00000a">
-                    <font face="Cambria, serif">
-                        <u>
-                            <b>
-                                8-Seguridad, Higiene, Medio Ambiente y buenas prácticas de Manufactura:
-                            </b>
-                        </u>
-                    </font>
-                </font>
-            </font>
-        </font>
-    </p>
-    <p align=justify style="margin-right: -0.26in; margin-bottom: 0in; line-height: 100%">
-        <br>
-    </p>
-    <p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
-        <font color="#000000">
-            <font face="Arial, serif">
-                <font face="Cambria, serif">
-                    <span lang="en-us">
-                        El contratista deberá cumplir y respetar la normativa vigente o aquella
-                        que pudiese surgir durante el desarrollo de éste contrato, ya sea a
-                        nivel nacional, provincial y/o municipal, como las internas de MOA en
-                        lo referente a Seguridad, Higiene, Medio Ambiente y buenas prácticas
-                        de Manufacturas.
-                    </span>
-                </font>
-            </font>
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in; background: #ffffff">
-        <font face="Cambria, serif">
-            <span lang="en-us">
-                Deberá contar además,
-                con un servicio a cargo de un profesional en Seguridad e Higiene con
-                la matricula al día. Es obligación por parte del contratista
-                disponer la presencia permanente en el lugar de trabajo, de un
-                técnico en Seguridad e Higiene debidamente matriculado durante el
-                100% del tiempo que dure la realización de las tareas emergentes del
-                presente, registrando las visitas a planta y las observaciones
-                realizadas en un “Libro de Visitas de Responsables de SHyMA
-                (Seguridad, Higiene y Medio ambiente)” que a tal efecto se
-                encuentra en la portería de ingreso.
-            </span>
-        </font>
-        <font face="Cambria, serif">
-            En el caso que el técnico de seguridad no pueda estar el 100% del
-            tiempo se tendrán que suspender las tareas hasta que este vuelva a
-            su correspondiente puesto de trabajo.
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
-        <font color="#000000">
-            <font face="Arial, serif">
-                <font face="Cambria, serif">
-                    <span lang="en-us">
-                        previo al comienzo de las tareas de montaje, el contratista deberá entregar
-                        completa la planilla de análisis de seguridad en el trabajo que se
-                        adjunta para ser sometida a la aprobación de MOA.
-                    </span>
-                </font>
-            </font>
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
-        <font color="#000000">
-            <font face="Arial, serif">
-                <font face="Cambria, serif">
-                    <span lang="en-us">
-                        El contratista deberá, además, presentar un plan Anual de
-                        Capacitación, como también toda la documentación necesaria
-                        referente a capacitaciones que el departamento SHyMA considere
-                        necesario de acuerdo a los trabajos a realizar o los desvíos de
-                        seguridad que pudiesen ser observados.
-                    </span>
-                </font>
-            </font>
-        </font>
-    </p>
-    <p align=justify style="margin-right: 0.02in; text-indent: 0.49in; margin-bottom: 0in; line-height: 100%">
-        <font color="#000000">
-            <font face="Arial, serif">
-                <font face="Cambria, serif">
-                    Se adjunta archivo con
-                </font>
-                <font face="Cambria, serif">
-                    <b>
-                        AST (Análisis de Seguridad en el trabajo)
-                    </b>
-                </font>
-                <font face="Cambria, serif">
-                </font>
-                <font face="Cambria, serif">
-                    <span lang="en-us">
-                        utilizado
-                    </span>
-                </font>
-                <font face="Cambria, serif">
-                    para tareas no rutinarias. El
-                </font><font face="Cambria, serif">
-                    <b>
-                        AST
-                    </b>
-                </font>
-                <font face="Cambria, serif">
-                    es una herramienta que permite
-                    evaluar previamente paso a paso durante el desarrollo de la tarea de
-                    cuáles son los riesgos presentes, las acciones correctivas para esos
-                    riesgos asociados; y que si, a pesar de todos los cuidados falla
-                    algo, qué acción correctiva llevar a cabo. Es nuestro mapa de
-                    seguridad para la realización del trabajo. En consecuencia el
-                    oferente debe, capacitar, seguir y cumplir todas y cada una de las
-                    recomendaciones en el indicadas.
-                </font>
-            </font>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in; background: #ffffff">
-        <font face="Cambria, serif">
-            por su alta potencialidad de accidentes
-            está terminantemente prohibido el uso de amoladora con disco de
-            corte.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in; background: #ffffff">
-        <font face="Cambria, serif">
-            La empresa contratista debe presentar  un
-            certificado expedido por su ART alegando que no se encuentran
-            alcanzados ante las resolución 01/05 (pYMES - 50) o 363/16 (p.E.S.E.
-            +50). Si que están alcanzadas por los programas de reducción de
-            accidentes no se habilitará el ingreso a planta.
-        </font>
-    </p>
-    <p lang="en-us" align=justify style="margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    9-Evaluación de proveedores:
-                </b>
-            </u>
-        </font>
-    </p>
-    <p align=justify style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Las tareas derivadas del presente pliego serán observadas por parte de
-            MOA y de acuerdo al procedimiento particular, siendo el resultado
-            vinculante a la ejecución y finalización del trabajo, como así
-            también a futuras adjudicaciones.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
-    <p align=justify style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    10-Reclamos:
-                </b>
-            </u>
-        </font>
-    </p>
-    <p align=justify style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            La presentación de la oferta implica por parte del oferente el perfecto
-            conocimiento de las obligaciones emergentes del presente, y
-            consecuentemente, implica la renuncia previa y absoluta a cualquier
-            reclamo posterior a la firma del contrato, basado en desconocimiento
-            o errores en los cálculos, planos u otros. Consecuentemente no se
-            admitirán reclamos por adicionales, mayores costos u otros.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Todo trabajo defectuoso, a juicio del fiscal del contrato deberá
-            corregirse por el contratista  no admitiéndose excusa de ninguna
-            especie. Hasta tanto los defectos no sean corregidos, MOA tendrá la
-            facultad de no liquidar ninguna certificación de obra, pudiendo
-            después de un tiempo prudencial, realizar la corrección a cuenta
-            del contratista si este no lo hubiera hecho.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Es obligación del contratista conocer la documentación a fondo y
-            comunicar con debida antelación los errores u omisiones, que
-            pudieran existir en los planos y/o documentación que se pudiese
-            haber entregado para subsanarlos a tiempo, por lo que queda
-            establecido que los materiales y/o jornales que puedan utilizarse
-            para este fin serán pagados por el contratista.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p><font face="Cambria, serif"><u><b>11-Multa por atraso de obra:</b></u></font></p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            La Contratista será penalizada económicamente si la entrega de las
-            instalaciones/bienes excede el plazo fijado por causas imputables al
-            proveedor y devengará en la aplicación de una multa de un (0,5) por
-            ciento diario acumulativo del monto total de la OC (máximo 10 % del
-            total de la OC).
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            Los trabajos adicionales al proyecto inicial no ampliarán el plazo de
-            obra/bien, por lo que el proveedor deberá incrementar su capacidad
-            operativa para afrontar los mismos. Independientemente de ello, en
-            caso de atrasos mayores a diez (10) días por causa imputable al
-            proveedor, MOA se reserva el derecho de cancelar el contrato y
-            convocar a otra empresa para concluir el trabajo responsabilizándose
-            la contratista por los mayores costos que eventualmente pudieren
-            surgir de
-        </font>
-        <font face="Cambria, serif">
-            tales
-        </font>
-        <font face="Cambria, serif">
-            circunstancias.
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    12-Requisitos para el ingreso a la planta:
-                </b>
-            </u>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Arial, serif">
-            <font face="Cambria, serif">
-                El contratista deberá gestionar todas las habilitaciones
-                correspondientes para ingresar a las plantas de MOA a través de
-                AQUILES SISTEMAS DE INFORMACIÓN S.R.L. Inclusive la Ordenanza 97/80
-                REGISEPORT de prefectura Naval Argentina–. La cual establece que
-                todas las empresas que trabajan dentro de la jurisdicción de
-                prefectura Naval Argentina, deben estar habilitadas &nbsp;en el
-                registro creado para tal fin (tanto la empresa como su personal).
-            </font>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Arial, serif">
-            <font face="Cambria, serif">
-                En caso de que la empresa contratista este bajo encuadre sindical uOCRA
-                deberá presentar constancia de vigente en INSTITUTO DE ESTADISTICA
-                Y&nbsp;REGISTRO DE LA INDUSTRIA DE LA CONSTRUCCION – IERIC. De no
-                corresponder su aplicación, deberá presentar una nota fundada
-                legalmente donde explique porque considera que no corresponde su
-                inscripción.
-            </font>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Arial, serif">
-            <font face="Cambria, serif">
-                La nómina completa del personal del contratista deberá ser presentada
-                al departamento de Recursos Humanos de la compañía, conteniendo de
-                cada uno de los dependientes, nombre y apellido, domicilio, fecha de
-                nacimiento, DNI , categoría y número de cuil junto con la
-                respectiva alta en ART.
-            </font>
-        </font>
-    </p>
-    <p align=justify style="text-indent: 0.49in; margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El contratista será responsable por todos los accidentes personales y/o
-            daños materiales ocasionados durante la prestación del servicio,
-            imputables a negligencia, impericia, imprudencia o inobservancia de
-            los reglamentos del personal que ella provee. Es requisito
-            indispensable para el ingreso, cumplimentar con las normas de
-            seguridad e higiene que se encuentra en <A HREF="http://www.molinos.com.ar">www.molinos.com.ar</A>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=center style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
-    <p align=center style="margin-bottom: 0in; page-break-before: always">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    ANEXO 1
-                </b>
-            </u>
-        </font>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <font color="#000000">
-            <font face="Cambria, serif">
-                <u>
-                    <b>
-                        DETALLE DE LA COTIZACIÓN:
-                    </b>
-                </u>
-            </font>
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in"><font face="Cambria, serif"><u><b>Oferente</b></u></font><font face="Cambria, serif">: ||NOMBRE_OBRA||</font></p>
-    <p align=center style="margin-bottom: 0in">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
-    <p>
-        ||TABLA_POSICIONES_SUBPOSICIONES||
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in; page-break-before: always">
-        <br>
-    </p>
-    <p align=center style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    ANEXO 2: Cronograma de Tareas (Diagrama Gantt)
-                </b>
-            </u>
-        </font>
-    </p>
-    <p align=center style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            A presentar por el oferente y sujeta a aprobación de MOA.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=center style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            <u>
-                <b>
-                    ANEXO 3: Grilla acuerdo UOCRA
-                </b>
-            </u>
-        </font>
-    </p>
-    <p align=center style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            A completar por el oferente en el caso de que proveedor tuviera que
-            realizar trabajos dentro del predio de MOA, según la estimación de
-            cantidad de horas y de operarios con los que se presupuesta la tarea.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
-    <p align=justify style="margin-bottom: 0in">
-        <font face="Cambria, serif">
-            El valor de las horas COpA no debe ser considerado en la oferta, se
-            tendrá en cuenta por separado y se liquidarán al finalizar la obra
-            o a fin de cada mes si esta se extiende entre dos o más meses, de
-            acuerdo al registro de ingreso de personas contratistas de la
-            portería de MOA.
-        </font>
-    </p>
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br<br><br><br><br><br><br><br><br><br>
+</p>
 
 
 
-    <table border="1">
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in; page-break-before: always">
+    <br>
+</p>
+<p align=center style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                ANEXO 2: Cronograma de Tareas (Diagrama Gantt)
+            </b>
+        </u>
+    </font>
+</p>
+<p align=center style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        A presentar por el oferente y sujeta a aprobación de MOA.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=center style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        <u>
+            <b>
+                ANEXO 3: Grilla acuerdo UOCRA
+            </b>
+        </u>
+    </font>
+</p>
+<p align=center style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        A completar por el oferente en el caso de que proveedor tuviera que
+        realizar trabajos dentro del predio de MOA, según la estimación de
+        cantidad de horas y de operarios con los que se presupuesta la tarea.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+<p align=justify style="margin-bottom: 0in">
+    <font face="Cambria, serif">
+        El valor de las horas COpA no debe ser considerado en la oferta, se
+        tendrá en cuenta por separado y se liquidarán al finalizar la obra
+        o a fin de cada mes si esta se extiende entre dos o más meses, de
+        acuerdo al registro de ingreso de personas contratistas de la
+        portería de MOA.
+    </font>
+</p>
+<p style="margin-bottom: 0in">
+    <br>
+</p>
 
-        <tr>
-            <td>
-                Detalle Hs
-            </td>
-            <td>
-                Normales
-            </td>
-            <td>
-                Nocturnas
-            </td>
-            <td>
-                Extras
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Cantidad de horas UOCRA
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
-    </table>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
-
-    <table border="1">
-        <tr>
-            <td>
-                Detalle personal Categorías
-            </td>
-            <td>
-                Cantidad
-            </td>
-            <td>
-                Nombres
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Oficial Especializado
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Oficial con Esp. 15%
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Oficial con Esp. 10%
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Oficial con Esp. 5%
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Oficial
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Medio Oficial
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Ayudante
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Técnico de Seguridad
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-            <td>
-                <p>&nbsp;</p>
-            </td>
-        </tr>
-    </table>
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
 
 
 
-    <p style="margin-bottom: 0in">
-        <br>
-    </p>
+<table border="1">
+
+    <tr>
+        <td>
+            Detalle Hs
+        </td>
+        <td>
+            Normales
+        </td>
+        <td>
+            Nocturnas
+        </td>
+        <td>
+            Extras
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Cantidad de horas UOCRA
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+
+</table>
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
+
+<table border="1">
+    <tr>
+        <td>
+            Detalle personal Categorías
+        </td>
+        <td>
+            Cantidad
+        </td>
+        <td>
+            Nombres
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Oficial Especializado
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Oficial con Esp. 15%
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Oficial con Esp. 10%
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Oficial con Esp. 5%
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Oficial
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Medio Oficial
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Ayudante
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Técnico de Seguridad
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+        <td>
+            <p>&nbsp;</p>
+        </td>
+    </tr>
+</table>
 
 
-    <p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
-        <br>
-    </p>
+
+<p style="margin-bottom: 0in">
+    <br>
+</p>
+
+
+<p style="margin-right: -0.65in; margin-bottom: 0in; line-height: 150%">
+    <br>
+</p>
