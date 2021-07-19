@@ -521,6 +521,10 @@ export class CrearConsultaComponent extends ListBaseComponent {
             this.mensajeComponent.setInfoMsg("Recuerde Adjuntar Constancia");
             return true;
         }
+        if (categoriaCode == "ACT" && this.subcategoriaCode == "CM05") {
+            this.mensajeComponent.setInfoMsg("Recuerde adjuntar el formulario CM05");
+            return true;
+        }
         this.mensajeComponent.setMsgsEmpty();
     }
 
