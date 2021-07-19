@@ -35,8 +35,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     corredores: Map<number, string>;
     corredorSeleccionado: number;
 
-    contratos: Map<number, string>;
-    contratoSeleccionado: number;
+    contratos: string[] = [];
+    contratoSeleccionado: string;
 
     corredorContratoList: CorredorContrato[] = [];
     corredorContratoSeleccionado: CorredorContrato;
@@ -231,44 +231,44 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
 
-    abrirModalCorredoresYContratos() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
+    // abrirModalCorredoresYContratos() {
+    //     this.mensajeComponent.setMsgsEmpty();
+    //     this.spinnerComponent.showIt();
+    //     this.unsubscribe();
 
-        try {
-            this.subscriptionDropDowns = this.service.obtenerContratosYCorredores(this.ordenDeCargaId).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.corredorContratoList = result.data;
-                        document.getElementById("openSeleccionarContratoYCorredor").click();
+    //     try {
+    //         this.subscriptionDropDowns = this.service.obtenerContratosYCorredores(this.ordenDeCargaId).subscribe(
+    //             result => {
+    //                 this.spinnerComponent.hideIt();
+    //                 if (result.logout == true) {
+    //                     this.sessionDataService.logout();
+    //                 } else if (result.error != undefined && result.error != "") {
+    //                     this.mensajeComponent.setErrorMsg(result.error);
+    //                 } else if (result.info != undefined) {
+    //                     this.mensajeComponent.setInfoMsg(result.info);
+    //                 } else {
+    //                     this.corredorContratoList = result.data;
+    //                     document.getElementById("openSeleccionarContratoYCorredor").click();
 
-                    }
-                },
-                error => {
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
+    //                 }
+    //             },
+    //             error => {
+    //                 this.mensajeComponent.setErrorMsg(error.message);
+    //             }
+    //         );
+    //     } catch (e) {
+    //         this.mensajeComponent.setErrorMsg(e);
+    //     }
+    // }
 
-    seleccionarContratoYCorredor() {
+    seleccionarContrato() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
         console.log(this.corredorSeleccionado);
-        console.log(this.corredorContratoSeleccionado);
+        console.log(this.contratoSeleccionado);
         try {
-            this.subscriptionDropDowns = this.service.seleccionarCorredorContrato(this.ordenDeCargaId, this.corredorContratoSeleccionado).subscribe(
+            this.subscriptionDropDowns = this.service.seleccionarContrato(this.ordenDeCargaId, this.contratoSeleccionado).subscribe(
                 result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -278,7 +278,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        document.getElementById("closeModalSeleccionarCorredor").click();
+                        document.getElementById("closemodalSeleccionarContrato").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
                     }
                 },

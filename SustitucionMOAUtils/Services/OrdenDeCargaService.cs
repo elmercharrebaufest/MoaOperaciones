@@ -37,15 +37,14 @@ namespace SustitucionMOAUtils.Services
             else
                 cliente = usuario.ObtenerProveedor();
 
-            //if (ordenDeCarga.Corredor.Trim() == "")
-            //{
-                ordenDeCarga.Corredor = "";
-            //}
-
             ordenDeCarga.ContratoSAP = "";
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
-            ordenDeCarga.Producto = "99709";
+            ordenDeCarga.Corredor = "";
+
+            var producto = repositorio.Obtener<Material>(1);
+
+            ordenDeCarga.Producto = producto;
             ordenDeCarga.NumeroPedido = "";
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
@@ -70,6 +69,34 @@ namespace SustitucionMOAUtils.Services
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
+        private void EnviarASAP(OrdenDeCarga orden, Proveedor cliente)
+        {
+            //OV-01   'Verificar Contrato, Material, Cliente'
+            //OV-02   'Verificar cantidad pendiente de Contratada'
+            //OV-03   'Pedido creado - Verificar Crédito de pedido'
+            //OV-00   'OK'
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoIngresado, orden.Corredor, orden.Cantidad, orden.Producto.CodigoSap, "", out string numeroPedido);
+
+            //var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
+            if (result == "OK")
+            {
+                orden.InformadaSAP = true;
+                orden.NumeroPedido = numeroPedido;
+
+                orden.ActualizarEstado();
+                repositorio.GuardarCambios();
+            }
+            else
+            {
+                if (result.Contains(','))
+                {
+                    orden.ContratosRespuesta = result;
+                    orden.ContratoSAP = "";
+                    orden.ActualizarEstado();
+                }
+            }
+        }
+
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente)
         {
 
@@ -82,7 +109,7 @@ namespace SustitucionMOAUtils.Services
             CC-00	'OK'
             */
 
-            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoSAP, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto, ordenDeCarga.NumeroPedido);
+            var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
             var result3 = consumer.OrdenCargaControlEstadoRequest("", "", "");
 
             switch (result)
@@ -144,6 +171,11 @@ namespace SustitucionMOAUtils.Services
                 }).ToList();
             }
 
+            if (listado == null || listado.Count == 0)
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
+            }
+
             return listado;
         }
 
@@ -187,7 +219,7 @@ namespace SustitucionMOAUtils.Services
                 PatenteAcoplado = orden.PatenteAcoplado,
                 RazonSocialCliente = cliente.RazonSocial,
                 Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})",
-                Producto = orden.Producto
+                Producto = orden.Producto.CodigoSap
             };
 
             return ordenDto;
@@ -270,11 +302,18 @@ namespace SustitucionMOAUtils.Services
             return SuccessMsg.OrdenDeCargaActualizada;
         }
 
-        public Dictionary<string, string> ObtenerContratos(int ordenId)
+        public List<string> ObtenerContratos(int ordenId)
         {
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            return ObtenerContratos(orden.CUITCliente);
+            if (string.IsNullOrEmpty(orden.ContratosRespuesta))
+            {
+                throw new ValidationCustomException("La orden no tiene contratos disponibles para seleccionar.");
+            }
+
+            var listadoContratos = orden.ContratosRespuesta.Split(',').ToList();
+
+            return listadoContratos;
         }
 
         public List<CorredorContratoDto> ObtenerContratosYCorredores(int ordenID)
@@ -393,25 +432,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void EnviarASAP(OrdenDeCarga orden, Proveedor cliente)
-        {
-            //OV-01   'Verificar Contrato, Material, Cliente'
-            //OV-02   'Verificar cantidad pendiente de Contratada'
-            //OV-03   'Pedido creado - Verificar Crédito de pedido'
-            //OV-00   'OK'
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto, "", out string numeroPedido);
-
-
-            var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
-            if (result == "OK")
-            {
-                orden.InformadaSAP = true;
-                orden.NumeroPedido = numeroPedido;
-
-                orden.ActualizarEstado();
-                repositorio.GuardarCambios();
-            }
-        }
+        
 
         #endregion
 

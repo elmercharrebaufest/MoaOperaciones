@@ -78,7 +78,7 @@
           <div class="formulario">
             <div class="containerBotones">
               <div class="col-xs-0 col-md-3">
-                <input type="button" (click)="abrirModalCorredoresYContratos()" *ngIf="mostrarBotonContratos"
+                <input type="button" (click)="abrirModalContratos()" *ngIf="mostrarBotonContratos"
                   class="btn-custom btn-add btn-mediano" value="Contratos">
               </div>
 
@@ -114,38 +114,38 @@
   <!--End CONTENT-->
 
 
-  <button type="button" style="display:none" id="openSeleccionarContratoYCorredor" data-toggle="modal"
-    data-target="#modalSeleccionarContratoYCorredor"></button>
+  <button type="button" style="display:none" id="openSeleccionarContrato" data-toggle="modal"
+    data-target="#modalSeleccionarContrato"></button>
   <!-- Modal -->
-  <div class="modal fade" id="modalSeleccionarContratoYCorredor" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+  <div class="modal fade" id="modalSeleccionarContrato" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="modalSeleccionarContratoYCorredorLabel">Seleccionar corredor</h4>
+          <h4 class="modal-title" id="modalSeleccionarContratoLabel">Seleccionar ctronato</h4>
         </div>
         <div class="modal-body">
-          <div class="row" *ngIf="corredorContratoList.length > 0">
-            <span *ngFor="let corredorContrato of corredorContratoList" class="col-xs-12 col-sm-12 col-md-12">
-              <input type="radio" name="corredorContrato" id="corredor_{{corredorContrato.Key}}"
-                [value]="corredorContrato" [(ngModel)]="corredorContratoSeleccionado">
+          <div class="row" *ngIf="contratos.length > 0">
+            <span *ngFor="let corredorContrato of contratos" class="col-xs-12 col-sm-12 col-md-12">
+              <input type="radio" name="corredorContrato" id="corredor_{{corredorContrato}}" [value]="corredorContrato"
+                [(ngModel)]="contratoSeleccionado">
               &nbsp;
-              <label for="corredor_{{corredorContrato.Key}}">{{corredorContrato.Corredor}} -
-                {{corredorContrato.Contrato}}
+              <label for="corredor_{{corredorContrato}}">
+                {{corredorContrato}}
               </label>
             </span>
           </div>
-          <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="corredorContratoList.length == 0">
+          <div class="row" class="col-xs-12 col-sm-12 col-md-12" *ngIf="contratos.length == 0">
             No se encontraron contratos
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-            id="closeModalSeleccionarContratoYCorredor" style="display: inline-flex;">Cancelar</button>
-          <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarContratoYCorredor()"
+            id="closemodalSeleccionarContrato" style="display: inline-flex;">Cancelar</button>
+          <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarContrato()"
             style="display: inline-flex;">
             Confirmar
           </button>

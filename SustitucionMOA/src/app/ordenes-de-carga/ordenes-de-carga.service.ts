@@ -22,14 +22,14 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/Get', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
     public getListado(): Observable<any> {
         return this.http
             .get('/api/OrdenDeCarga/GetListado')
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -44,7 +44,7 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .post('/api/OrdenDeCarga/Agregar', payload)
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -54,7 +54,7 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/AnularOrden', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -64,7 +64,7 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/NotificarTransporte', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -74,19 +74,19 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/ObtenerContratos', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
-    public obtenerContratosYCorredores(ordenId: Number): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('ordenId', ordenId.toString());
+    // public obtenerContratosYCorredores(ordenId: Number): Observable<any> {
+    //     let params: URLSearchParams = new URLSearchParams();
+    //     params.set('ordenId', ordenId.toString());
 
-        return this.http
-            .get('/api/OrdenDeCarga/ObtenerContratosYCorredores', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
-            .pipe(map(this.extractData));
-    }
+    //     return this.http
+    //         .get('/api/OrdenDeCarga/ObtenerContratosYCorredores', { search: params, headers: this.headers })
+    //         .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
+    //         .pipe(map(this.extractData));
+    // }
 
 
     public obtenerCorredores(ordenId: Number): Observable<any> {
@@ -95,19 +95,15 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/ObtenerCorredores', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
-    public seleccionarCorredorContrato(ordenId: Number, corredorContrato: CorredorContrato): Observable<any> {
-        let params: URLSearchParams = new URLSearchParams();
-        params.set('ordenId', ordenId.toString());
-        console.log("corredorContrato:", corredorContrato)
-
+    public seleccionarContrato(ordenId: Number, contrato: string): Observable<any> {
         let payload = new FormData();
         payload.append(
-            "corredorContratoJson",
-            JSON.stringify(corredorContrato)
+            "contratoSAP",
+            JSON.stringify(contrato)
         );
         payload.append(
             "ordenId",
@@ -115,8 +111,8 @@ export class OrdenesDeCargaService extends BaseService {
         );
 
         return this.http
-            .post('/api/OrdenDeCarga/SeleccionarCorredorContrato', payload)
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .post('/api/OrdenDeCarga/SeleccionarContrato', payload)
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -127,7 +123,7 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/SeleccionarCorredor', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -137,7 +133,7 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/VerificarSituacionCrediticia', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
 
@@ -147,7 +143,16 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .get('/api/OrdenDeCarga/VerificarTransporte', { search: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
+
+
+    public getMateriales(): Observable<any> {
+        return this.http
+            .get('/api/OrdenDeCarga/Materiales')
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
 }

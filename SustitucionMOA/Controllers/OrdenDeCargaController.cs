@@ -1,27 +1,23 @@
-﻿using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
-using SustitucionMOA.Utils;
+﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.DataAgroServices;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Web.Mvc;
 namespace SustitucionMOA.Controllers
 {
     public class OrdenDeCargaController : BaseController
     {
         readonly IOrdenDeCargaService ordenDeCargaService;
-        public OrdenDeCargaController(IOrdenDeCargaService ordenDeCargaService)
+        private readonly IConsultaService consultaService;
+
+        public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService)
         {
+            this.consultaService = consultaService;
             this.ordenDeCargaService = ordenDeCargaService;
         }
 
@@ -216,7 +212,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult SeleccionarContrato(int ordenId, string contratoSAP)
         {
             try
@@ -322,6 +318,29 @@ namespace SustitucionMOA.Controllers
                 var mailUsuario = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = ordenDeCargaService.VerificarTransporte(ordenId) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpGet]
+        public ActionResult Materiales()
+        {
+            try
+            {
+                return JsonCustom(new { data = consultaService.ObtenerMaterial() });
             }
             catch (InfoCustomException e)
             {

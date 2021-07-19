@@ -37,7 +37,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     listaMateriales: Material[];
 
-
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -66,19 +65,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     obtenerMateriales() {
         //Sacamos lo de la lista de campaña, ya que ahora son independientes
-        this.subscription = this.empresaGranosService.obtenerMateriales().subscribe(
+        this.subscription = this.service.getMateriales().subscribe(
             (result) => {
-                let obj = JSON.parse(result);
-                // this.listaCampanias = new Array();
-                obj.Datos.forEach((element: { MaterialId: number; Descripcion: string; CampaniaActual: string; CampaniaIdActual: number; }) => {
-                    let mat = new Material();
-                    mat.Id = element.MaterialId;
-                    mat.Descripcion = element.Descripcion;
-                    mat.CampaniaActual = element.CampaniaActual;
-                    mat.CampaniaIdActual = element.CampaniaIdActual;
-                    this.listaMateriales.push(mat);
-                });
-
+                this.listaMateriales = result.data;
             },
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
@@ -86,12 +75,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         );
     }
 
-
-
-
     validar() {
 
-        console.log("CUIT:", this.ordenDeCarga.CUITTercero.toString().length)
         if (this.ordenDeCarga.CUITTercero.toString().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de tercero válido.");
             return false;
@@ -134,11 +119,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
         if (this.ordenDeCarga.CUITTransporte.toString().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
-            return false;
-        }
-
-        if (this.ordenDeCarga.Producto.length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el producto.");
             return false;
         }
 

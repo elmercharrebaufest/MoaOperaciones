@@ -37,7 +37,23 @@
                 <input type="text" id="CUITCliente" [(ngModel)]="ordenDeCarga.CUITCliente" mask="00-00000000-0">
               </div>
             </div>
+            <div class="col-xs-12 col-md-6">
+              <div class="formulario-label">
+                Contrato:
+              </div>
 
+              <div class="styled-select">
+                <input type="text" [(ngModel)]="ordenDeCarga.ContratoIngresado" maxlength="25">
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <div class="formulario-label">
+
+              </div>
+
+              <div class="styled-select">
+              </div>
+            </div>
 
             <div class="col-xs-12 col-md-6">
               <div class="formulario-label">
@@ -118,11 +134,11 @@
               </div>
 
               <div class="styled-select">
-                <select name="product" [(ngModel)]="ordenDeCarga.Producto">
+                <select name="product" [(ngModel)]="ordenDeCarga.Producto_Id">
                   <option disabled hidden [value]="selectUndefinedOptionValue">
                     Grano
                   </option>
-                  <option *ngFor="let material of listaMateriales" value="{{material.Id}}">
+                  <option *ngFor="let material of listaMateriales" value="{{material.MaterialId}}">
                     {{material.Descripcion}}
                   </option>
                 </select>

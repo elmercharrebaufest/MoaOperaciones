@@ -9,7 +9,6 @@
     [CUITChofer] VARCHAR(15) NOT NULL, 
     [CUITTransporte] VARCHAR(15) NOT NULL, 
     [RazonSocialTransporte] VARCHAR(100) NOT NULL, 
-    [Producto] VARCHAR(50) NOT NULL, 
     [Cantidad] INT NOT NULL, 
     [Estado] INT NOT NULL, 
     [ContratoSAP] VARCHAR(15) NULL, 
@@ -24,5 +23,8 @@
     [FechaEntregaGenerada] DATETIME NULL, 
     [NumeroPedido] VARCHAR(15) NULL, 
     [ContratoIngresado] VARCHAR(15) NULL, 
+    [Producto_Id] INT NULL, 
+    [ContratosRespuesta] NVARCHAR(MAX) NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
+    CONSTRAINT [FK_OrdenDeCarga_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id), 
 )
