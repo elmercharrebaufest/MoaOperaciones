@@ -9,15 +9,18 @@ using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -26,13 +29,17 @@ namespace SustitucionMOAUtils.Services
     public class ConsultaService : IConsultaService
     {
         private readonly IRepositorio repositorio;
+        private readonly IAzureService azureService;
+        private readonly ITimeProvider timeProvider;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
 
-        public ConsultaService(IRepositorio repositorio)
+        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider)
         {
             this.repositorio = repositorio;
+            this.azureService = azureService;
+            this.timeProvider = timeProvider;
         }
 
         public void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
@@ -81,6 +88,7 @@ namespace SustitucionMOAUtils.Services
 
             return new ComentarioDto(comentario);
         }
+
         public ConsultaDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files)
         {
             consulta.Id = -1;
@@ -96,49 +104,49 @@ namespace SustitucionMOAUtils.Services
 
             if(usuario.TipoUsuario.NombreCorto != "CORR")
             {
-                if(categoria.Code == "ACT" && subcatecategoria.Code == "CAP")
+                if(categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CartaPresentacón)
                 {
                     throw new InfoCustomException("Tiene que ser corredor para consultar sobre Carta de Presentacion.");
                 }
             }
             else
             {
-                if (categoria.Code == "ACT" && subcatecategoria.Code == "INF")
+                if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.InformeComercial)
                 {
                     throw new InfoCustomException("Tiene que ser proveedor directo para consultar sobre Informe Comercial.");
                 }
             }
 
-            if (categoria.Code == "FIN")
+            if (categoria.Code == Categorias.Final)
             {
                 if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINCOR").Id;
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == Categorias.FinalCorredor).Id;
                     var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
                     subcategoriaCode = subcategoriaCode + "PC";
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
                 else
                 {
-                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "FINDIR").Id;
+                    consulta.Categoria_Id = consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == Categorias.FinalDirecto).Id;
                     var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
                     subcategoriaCode = subcategoriaCode + "FD";
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
             }
 
-            if (categoria.Code == "PAR")
+            if (categoria.Code == Categorias.Parcial)
             {
                 if (usuario.TipoUsuario.NombreCorto == "CORR")
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARCOR").Id;
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == Categorias.ParcialCorredor).Id;
                     var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
                     subcategoriaCode = subcategoriaCode + "PC";
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
                 }
                 else
                 {
-                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == "PARDIR").Id;
+                    consulta.Categoria_Id = repositorio.Obtener<Categoria>(c => c.Code == Categorias.ParcialDirecto).Id;
                     var subcategoriaCode = repositorio.Obtener<SubCategoria>(c => c.Id == consulta.SubCategoria_Id).Code;
                     subcategoriaCode = subcategoriaCode + "PD";
                     consulta.SubCategoria_Id = repositorio.Obtener<SubCategoria>(sc => sc.Code == subcategoriaCode).Id;
@@ -163,6 +171,12 @@ namespace SustitucionMOAUtils.Services
             {
                 Comentario primerComentario = repositorio.Obtener<Comentario>(c => c.Consulta_Id == consulta.Id);
                 AgregarAdjuntoComentario(consulta.Id, primerComentario.Id, files);
+
+                if (categoria.Code == Categorias.Actualizacion && subcatecategoria.Code == SubCategorias.CM05)
+                {
+                    ProcesarCM05(files);
+                }
+
             }
 
             return ObtenerConsulta(consulta.Id);
@@ -720,6 +734,103 @@ namespace SustitucionMOAUtils.Services
         private string ArmarRutaCarpeta(Comentario comentario)
         {
             return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
+        }
+
+        public void ProcesarCM05(HttpFileCollectionBase archivos)
+        {
+            bool existeArchivoConCoeficientes = false;
+            for (int i = 0; i < archivos.Count ; i++)
+            {
+                HttpPostedFileBase archivo = archivos[i];
+             
+                var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(archivo)).Result;
+
+                Thread.Sleep(2000);
+
+                var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
+
+                if(elementosLeidos.Any(str => str == "Determinación del Coeficiente Unificado"))
+                {
+                    ProcesarArchivoCoeficientesImpuestosIngresosBrutos(elementosLeidos);
+                    existeArchivoConCoeficientes = true;
+                    break;
+                }
+            }
+
+            if (!existeArchivoConCoeficientes)
+            {
+                throw new ValidationCustomException("No se pudieron obtener los coeficientes. Por favor, asegúrese de adjuntar el documento correspondiente.");
+            }
+        }
+
+        private void ProcesarArchivoCoeficientesImpuestosIngresosBrutos(IList<string> elementosLeidos)
+        {
+            int indiceDeterminacionDelCoeficienteUnificado = elementosLeidos.IndexOf("Determinación del Coeficiente Unificado");
+            string encabezadoFormulario = "OSIRIS";
+            int indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
+            List<string> info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
+
+            var ingresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificado
+            {
+                EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Pendiente,
+                CUIT = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0],
+                Anticipo = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0]),
+                Sede = Int32.Parse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0]),
+                FechaCarga = timeProvider.Now(),
+                FechaUltimaModificacion = timeProvider.Now()
+            };
+
+            List<IngresosBrutosCoeficienteUnificadoDetalle> ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
+
+            List<string> listadoCoeficientes = SacarHasta(elementosLeidos, "Coeficiente Unificado");
+
+            for (int i = 0; i < listadoCoeficientes.Count; i++)
+            {
+                int numeroJurisdiccion = Convert.ToInt32(listadoCoeficientes[i]);
+                string jurisdiccion = listadoCoeficientes[i + 1];
+
+                decimal coeficienteIngresos = -1;
+                bool hayFechaInicio = !decimal.TryParse(listadoCoeficientes[i + 2], out coeficienteIngresos);
+                DateTime? fechaInicio = hayFechaInicio ? DateTime.ParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null;
+
+                bool hayFechaCese = !decimal.TryParse(listadoCoeficientes[i + 3], out coeficienteIngresos);
+                DateTime? fechaCese = hayFechaCese ? DateTime.ParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture) : (DateTime?)null;
+
+                i += (hayFechaInicio ? hayFechaCese ? 4 : 3 : 2);
+
+                coeficienteIngresos = decimal.Parse(listadoCoeficientes[i++]);
+                decimal coeficienteGastos = decimal.Parse(listadoCoeficientes[i++]);
+                decimal coeficienteUnificado = decimal.Parse(listadoCoeficientes[i]);
+
+                IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
+                {
+                    NumeroJurisdiccion = numeroJurisdiccion,
+                    Jurisdiccion = jurisdiccion,
+                    FechaInicio = fechaInicio,
+                    FechaCese = fechaCese,
+                    CoeficienteIngresos = coeficienteIngresos,
+                    CoeficienteGastos = coeficienteGastos,
+                    CoeficienteUnificado = coeficienteUnificado,
+                    FechaUltimaModificacion = timeProvider.Now()
+                };
+
+                repositorio.Agregar(detalleGenerado);
+
+                ingresosBrutosCoeficienteUnificadoDetalles.Add(detalleGenerado);
+
+                if (ingresosBrutosCoeficienteUnificadoDetalles.Count >= 24)
+                    break;
+            }
+
+            ingresosBrutosCoeficienteUnificado.Detalle = ingresosBrutosCoeficienteUnificadoDetalles;
+
+            repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
+            repositorio.GuardarCambios();
+        }
+
+        private List<string> SacarHasta(IList<string> listaStrings, string elemento)
+        {
+            return listaStrings.Skip(1 + listaStrings.IndexOf(elemento)).ToList();
         }
     }
 }
