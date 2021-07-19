@@ -18,12 +18,14 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaCese { get; set; }
 
         public decimal CoeficienteIngresos { get; set; }
-        
+
         public decimal CoeficienteGastos { get; set; }
         
         public decimal CoeficienteUnificado { get; set; }
 
         public int IngresosBrutosCoeficienteUnificado_Id { get; set; }
+
+        public DateTime FechaUltimaModificacion { get; set; }
 
         [ForeignKey("IngresosBrutosCoeficienteUnificado_Id")]
         public virtual IngresosBrutosCoeficienteUnificado IngresosBrutosCoeficienteUnificado { get; set; }

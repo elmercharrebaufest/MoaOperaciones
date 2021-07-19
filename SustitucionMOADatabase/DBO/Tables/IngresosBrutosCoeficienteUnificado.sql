@@ -6,6 +6,7 @@
     [Cuit] NVARCHAR(30) NOT NULL, 
     [Sede] INT NOT NULL,
 	[FechaCarga] DATETIME NOT NULL, 
+    [FechaUltimaModificacion] DATETIME NOT NULL, 
     CONSTRAINT [PK_dbo.IngresosBrutosCoeficienteUnificado] PRIMARY KEY CLUSTERED
 	(
 		[Id] ASC

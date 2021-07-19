@@ -9,6 +9,7 @@
     [CoeficienteIngresos] DECIMAL(10, 4) NOT NULL, 
     [CoeficienteGastos] DECIMAL(10, 4) NOT NULL, 
     [CoeficienteUnificado] DECIMAL(10, 4) NOT NULL,
+    [FechaUltimaModificacion] DATETIME NOT NULL, 
 	CONSTRAINT [PK_dbo.IngresosBrutosCoeficienteUnificadoDetalle] PRIMARY KEY CLUSTERED 
     (
 		[Id] ASC
