@@ -527,7 +527,7 @@ namespace SustitucionMOAUtils.Services
             //COTIZACION Y PLAZO DE EJECUCION
             solpValores.Add(SolpTemplateKeys.PLAZO_EJECUCION, solp.DiasEjecucion?.ToString());
 
-            solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, solp.JornadaLaboral.Count().ToString());
+            solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, solp.JornadaLaboral.ToString());
             solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, solp.JornadaLaboralDesde.ToString() + " a " + solp.JornadaLaboralHasta.ToString());
 
             //ANEXO 1
