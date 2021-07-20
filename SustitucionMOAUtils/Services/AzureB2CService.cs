@@ -323,7 +323,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.GuardarCambios() == 1;
         }
 
-        public bool RegistrarUsuarioCliente( ref Usuario usuario)
+        public bool RegistrarUsuarioCliente(ref Usuario usuario)
         {
             var rolNuevoCliente = ObtenerRolPorCodigo("NUECLI");
 

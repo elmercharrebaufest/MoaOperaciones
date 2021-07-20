@@ -1,19 +1,22 @@
 .semaforo {
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  border: 1px solid;
-  display: inline-block;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    border: 1px solid;
+    display: inline-block;
 }
 
 .red {
-    background-color: red;
+    background-color: #ff6666;
+    border: 1px solid red;
 }
 
 .yellow {
-    background-color: yellow;
+    background-color: papayawhip;
+    border: 1px solid yellow;
 }
 
 .green {
-    background-color: green;
+    background-color: palegreen;
+    border: 1px solid greenyellow;
 }

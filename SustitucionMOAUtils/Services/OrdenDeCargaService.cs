@@ -32,17 +32,26 @@ namespace SustitucionMOAUtils.Services
             Proveedor cliente;
             ordenDeCarga.Estado = EstadoOrdenDeCarga.Pendiente;
 
+
+            if (usuario.EsCorredor())
+            {
+                var corredor = usuario.ObtenerCorredor();
+                ordenDeCarga.Corredor = corredor.CodigoProveedor;
+            }
+            else
+            {
+                ordenDeCarga.Corredor = "";
+            }
+
             if (ordenDeCarga.CUITCliente != "")
                 cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
             else
                 cliente = usuario.ObtenerProveedor();
 
-            ordenDeCarga.ContratoSAP = "";
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
-            ordenDeCarga.Corredor = "";
 
-            var producto = repositorio.Obtener<Material>(1);
+            var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
 
             ordenDeCarga.Producto = producto;
             ordenDeCarga.NumeroPedido = "";
@@ -57,19 +66,20 @@ namespace SustitucionMOAUtils.Services
 
             if (crearPedido)
             {
-                EnviarASAP(ordenDeCarga, cliente);
-            }
-            else
-            {
+                ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
 
-            }
+                var creadaEnSaP = CrearOrdenEnSAP(ordenDeCarga, cliente);
 
-            VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
+                if (creadaEnSaP)
+                {
+                    VerificarSituacionCrediticia(ordenDeCarga, notificar: true);
+                }
+            }
 
             return new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
-        private void EnviarASAP(OrdenDeCarga orden, Proveedor cliente)
+        private bool CrearOrdenEnSAP(OrdenDeCarga orden, Proveedor cliente)
         {
             //OV-01   'Verificar Contrato, Material, Cliente'
             //OV-02   'Verificar cantidad pendiente de Contratada'
@@ -85,21 +95,17 @@ namespace SustitucionMOAUtils.Services
 
                 orden.ActualizarEstado();
                 repositorio.GuardarCambios();
+
+                return true;
             }
             else
             {
-                if (result.Contains(','))
-                {
-                    orden.ContratosRespuesta = result;
-                    orden.ContratoSAP = "";
-                    orden.ActualizarEstado();
-                }
+                return false;
             }
         }
 
         private bool VerificarOrden(OrdenDeCarga ordenDeCarga, Proveedor cliente)
         {
-
             /* 
             CC-01	'Más de un contrato vigente para Cliente/Corredor'
             CC-02	'Transportista no dado de alta'
@@ -108,34 +114,43 @@ namespace SustitucionMOAUtils.Services
             CC-05	'Pedido entregado completamente'
             CC-00	'OK'
             */
-
             var result = consumer.ControlCargaRequest(cliente.CodigoProveedor, ordenDeCarga.ContratoIngresado, ordenDeCarga.Corredor, ordenDeCarga.CUITTransporte, ordenDeCarga.Producto.CodigoSap, ordenDeCarga.NumeroPedido);
-            var result3 = consumer.OrdenCargaControlEstadoRequest("", "", "");
 
-            switch (result)
+            if (result.Contains(','))
             {
-                case "CC-00":
-                    ordenDeCarga.TransporteExiste = true;
-                    return true;
+                ordenDeCarga.ContratosRespuesta = result;
+                ordenDeCarga.ContratoSAP = "";
+                ordenDeCarga.ActualizarEstado();
+            }
+            else
+            {
+                switch (result)
+                {
+                    case "CC-00":
+                        ordenDeCarga.TransporteExiste = true;
+                        ordenDeCarga.CorredorSeleccionado = true;
+                        ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+                        return true;
 
-                case "CC-01":
-                    ordenDeCarga.CorredorSeleccionado = false;
-                    break;
+                    case "CC-01":
+                        ordenDeCarga.CorredorSeleccionado = false;
+                        break;
 
-                case "CC-02":
-                    ordenDeCarga.TransporteExiste = false;
-                    break;
+                    case "CC-02":
+                        ordenDeCarga.TransporteExiste = false;
+                        break;
 
-                case "CC-03":
-                    throw new ValidationCustomException("El pedido informado no existe.");
+                    case "CC-03":
+                        throw new ValidationCustomException("El pedido informado no existe.");
 
-                case "CC-04":
-                    ordenDeCarga.TransporteExiste = true;
-                    break;
+                    case "CC-04":
+                        ordenDeCarga.TransporteExiste = true;
+                        ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
+                        break;
 
-                case "CC-05":
-                    ordenDeCarga.TransporteExiste = true;
-                    break;
+                    case "CC-05":
+                        throw new ValidationCustomException("El pedido ingresado ya fue entregado completamente.");
+                }
             }
 
             return false;
@@ -240,7 +255,6 @@ namespace SustitucionMOAUtils.Services
 
             return SuccessMsg.OrdenDeCargaAnulada;
         }
-
 
         #region Etapa1
         private void VerificarContrato(OrdenDeCarga orden)
@@ -373,7 +387,7 @@ namespace SustitucionMOAUtils.Services
 
         public string VerificarTransporte(OrdenDeCarga orden)
         {
-            orden.TransporteExiste = TransporteExiste(orden.CUITTransporte);
+            orden.TransporteExiste = TransporteExiste(orden);
 
             var resultadoVerificarOrden = VerificarOrden(orden, orden.Cliente);
 
@@ -389,9 +403,20 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool TransporteExiste(string CUIT)
+        private bool TransporteExiste(OrdenDeCarga orden)
         {
-            return false;
+            var cliente = orden.Cliente;
+
+            var respuestaVerificarOrden = VerificarOrden(orden, cliente);
+
+            if (respuestaVerificarOrden)
+            {
+                return true;
+            }
+            else
+            {
+                return orden.TransporteExiste;
+            }
         }
 
         public string NotificarTransporte(int ordenDeCargaId)
@@ -400,7 +425,7 @@ namespace SustitucionMOAUtils.Services
 
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenDeCargaId);
 
-            if (!TransporteExiste(orden.CUITTransporte))
+            if (!TransporteExiste(orden))
             {
                 string mailsMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
 
@@ -432,7 +457,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        
+
 
         #endregion
 
@@ -499,7 +524,7 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        private void GenerarEntregaSAP (OrdenDeCarga orden)
+        private void GenerarEntregaSAP(OrdenDeCarga orden)
         {
             var conductor = string.Concat(orden.ApellidoChofer, ", ", orden.NombreChofer);
 

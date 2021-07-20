@@ -144,7 +144,7 @@ namespace SustitucionMOATest.Services
 
 
 
-            var result = target.AgregarVendedor(mailUsuario, CUIT);
+            var result = target.AgregarVendedor(mailUsuario, CUIT, tipoProveedor);
 
 
             repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
@@ -208,7 +208,7 @@ namespace SustitucionMOATest.Services
 
 
 
-            var ex = Assert.Throws<ValidationCustomException>(() => target.AgregarVendedor(mailUsuario, CUIT));
+            var ex = Assert.Throws<ValidationCustomException>(() => target.AgregarVendedor(mailUsuario, CUIT, tipoProveedor));
 
             var expected = ErrorMsg.ErrorVendedorRepetido;
 

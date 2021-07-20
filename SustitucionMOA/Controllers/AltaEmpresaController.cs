@@ -50,6 +50,8 @@ namespace SustitucionMOA.Controllers
                         idTiposProveedor.Add(2);
                         //Corredor
                         idTiposProveedor.Add(4);
+                        //Cliente
+                        idTiposProveedor.Add(5);
                     }
 
                     if (SessionPersister.User.permisos.Contains("VER ALTAS NO GRANOS"))
