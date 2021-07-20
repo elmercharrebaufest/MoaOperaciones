@@ -597,6 +597,11 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
             }
 
+            if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.DDJJ) && (proveedor.AltaInterna.HasValue && proveedor.AltaInterna == true))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "DDJJ"));
+            }
+
             return true;
         }
 
@@ -660,17 +665,14 @@ namespace SustitucionMOAUtils.Services
 
         public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario)
         {
-            var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
-
-            if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
-
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
-
             if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
 
             if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
-
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
+
+            var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
+            if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
 
             var proveedorComercial = usuario.ObtenerProveedor();
 
@@ -682,7 +684,8 @@ namespace SustitucionMOAUtils.Services
                 CodigoProveedor = FormatearCodigoProveedor(cuit),
                 TipoProveedor = ObtenerTipoPorNombreCorto("G"),
                 FechaSolicitud = DateTime.Now,
-                Comercial = proveedorComercial.RazonSocial,
+                Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido),
+                AltaInterna = true
             };
 
             var hist = new ProveedorHistorialAprobacion
@@ -703,11 +706,10 @@ namespace SustitucionMOAUtils.Services
             
             repositorio.Agregar(proveedor);
 
-            //NO ESTOY SEGURO DE AGREGARSELO AL USUARIO. PREGUNTAR
             usuario.Proveedores.Add(proveedor);
             repositorio.GuardarCambios();
 
-            return "ok";
+            return SuccessMsg.AltaVendedorOK;
         }
 
         private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
@@ -793,7 +795,8 @@ namespace SustitucionMOAUtils.Services
                 ProveedorClasificacion = result.ProveedorClasificacion,
                 EstadoSISA = result.ProveedorSISAEstadoCuit,
                 ProveedorCUIT = CUITProveedor,
-                RazonSocial = proveedor.RazonSocial
+                RazonSocial = proveedor.RazonSocial,
+                AltaInterna = proveedor.AltaInterna ?? false,
             };
 
             return info;

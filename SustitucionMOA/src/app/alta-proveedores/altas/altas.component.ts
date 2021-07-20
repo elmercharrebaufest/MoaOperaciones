@@ -830,6 +830,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
                     }
                     else {
                         this.mensajeComponent.setSuccessMsg(result.info);
+                        this.getEmpresa();
+                        document.getElementById("hidemyModalAltaInterna").click();
                     }
                 },
                 error => {
