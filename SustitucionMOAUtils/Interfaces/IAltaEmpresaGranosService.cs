@@ -25,5 +25,6 @@ namespace SustitucionMOAUtils.Interfaces
         Task<string> ObtenerCampañasDataAgroAsync();
 
         string NotificarSolicitud(string mailUsuario, int proveedorId);
+        string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario);
     }
 }

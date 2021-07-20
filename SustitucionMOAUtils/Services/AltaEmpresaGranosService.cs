@@ -597,6 +597,11 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
             }
 
+            if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.DDJJ) && (proveedor.AltaInterna.HasValue && proveedor.AltaInterna == true))
+            {
+                throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "DDJJ"));
+            }
+
             return true;
         }
 
@@ -657,6 +662,64 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
+
+        public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario)
+        {
+            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
+            if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
+
+            if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
+            if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
+
+            var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
+            if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+
+            var proveedorComercial = usuario.ObtenerProveedor();
+
+            var proveedor = new Proveedor
+            {
+                CUIT = cuit,
+                Mail = usuario.Mail,
+                EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
+                CodigoProveedor = FormatearCodigoProveedor(cuit),
+                TipoProveedor = ObtenerTipoPorNombreCorto("G"),
+                FechaSolicitud = DateTime.Now,
+                Comercial = string.Concat(infoDA.ComercialNombres, " ", infoDA.ComercialApellido),
+                AltaInterna = true
+            };
+
+            var hist = new ProveedorHistorialAprobacion
+            {
+                Fecha = DateTime.Now,
+                Usuario_Id = usuario.Id,
+                EstadoAprobacion = proveedor.EstadoAprobacion,
+                Observacion = "Alta interna - Proveedor habilitado en DataAgro"
+            };
+
+            proveedor.RazonSocial = infoDA.ProveedorRazonSocial;
+            proveedor.IdComercialDataAgro = infoDA.ComercialId;
+            proveedor.IdDataAgro = infoDA.ProveedorId;
+            proveedor.Comercial = proveedorComercial.RazonSocial;
+            proveedor.IdDataAgro = infoDA.ProveedorId;
+
+            proveedor.HistorialAprobaciones.Add(hist);
+            
+            repositorio.Agregar(proveedor);
+
+            usuario.Proveedores.Add(proveedor);
+            repositorio.GuardarCambios();
+
+            return SuccessMsg.AltaVendedorOK;
+        }
+
+        private TipoUsuario ObtenerTipoPorNombreCorto(string nombreCorto) => repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == nombreCorto);
+
+        private string FormatearCodigoProveedor(string CUIT)
+        {
+            return string.Concat("00", CUIT.Substring(2, 8));
+        }
+
+
 
         public List<ArchivoDto> ObtenerArchivosSubidos(string mailUsuario, int proveedorId, bool esOperador)
         {
@@ -732,7 +795,8 @@ namespace SustitucionMOAUtils.Services
                 ProveedorClasificacion = result.ProveedorClasificacion,
                 EstadoSISA = result.ProveedorSISAEstadoCuit,
                 ProveedorCUIT = CUITProveedor,
-                RazonSocial = proveedor.RazonSocial
+                RazonSocial = proveedor.RazonSocial,
+                AltaInterna = proveedor.AltaInterna ?? false,
             };
 
             return info;

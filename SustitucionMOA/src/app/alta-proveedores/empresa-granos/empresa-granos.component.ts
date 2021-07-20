@@ -47,6 +47,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     proveedorCUIT: string = "";
     razonSocial: string = "";
     proveedorClasificacion: string = "";
+    altaInterna: boolean = false;
 
     nombreArchivoSeleccionado: string = "";
     fileKeySeleccionado: string = "";
@@ -109,7 +110,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     protected spinnerModal: SpinnerSmallComponent;
 
     checkPermisos() {
-        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS")
+        this.securityService.tienePermisoRedirect("ALTA EMPRESA GRANOS");
     }
 
     setTabs() {
@@ -199,6 +200,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.proveedorClasificacion = result.ProveedorClasificacion;
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
+                    this.altaInterna = result.AltaInterna
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -376,10 +378,14 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        debugger
                         this.mensajeComponent.setMsgsEmpty();
                         document
                             .getElementById("openModalNotificacion")
                             .click();
+                        if(this.altaInterna){
+                            this.goToSeccion('/altas');
+                        }
                     }
                 },
                 (error) => {
@@ -635,7 +641,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
-                        this.redirigirAEstado();
+                        this.redirigirAEstado();                            
                     }
                 },
                 (error) => {
