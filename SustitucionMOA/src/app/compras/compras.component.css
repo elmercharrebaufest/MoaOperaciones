@@ -410,7 +410,7 @@
 
 ::ng-deep .ui-table .ui-table-tbody > tr > td {
   background: inherit;
-  border: none !important;
+  /* border: none !important; */
 }
 
 ::ng-deep .ui-table .ui-table-thead > tr > th {
@@ -418,7 +418,7 @@
 }
 
 ::ng-deep .ui-table .ui-table-thead > tr > th {
-  border: none !important;
+  /* border: none !important; */
   font-weight: 16px !important;
   color: #ffffff !important;
   background-color: #666666 !important;
