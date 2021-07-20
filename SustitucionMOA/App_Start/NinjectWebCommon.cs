@@ -5,7 +5,9 @@ using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
 using SustitucionMOA.Jobs;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAUtils.Validadores;
@@ -107,6 +109,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<ILogPesificacionService>().To(typeof(LogPesificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IValidadorPesificacion>().To(typeof(ValidadorPesificacion)).InScope(ctx => OperationContext.Current);
 
+            kernel.Bind<ITimeProvider>().To(typeof(CurrentTimeProvider)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
