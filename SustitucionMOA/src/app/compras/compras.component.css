@@ -433,5 +433,10 @@
   margin-bottom: 15px;
 }
 
+::ng-deep .ui-autocomplete {
+  top: 0 !important;
+}
 
-
+::ng-deep .ui-autocomplete-input {
+  width: calc(100% - 33px) !important;
+}

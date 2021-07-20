@@ -253,14 +253,12 @@ export class CabeceraComponent extends ListBaseComponent {
 
     centroSeleccionado(){
         let direccionCentro: any;
-        if (this.model.posicionActual.selectCentroEntrega == undefined) {
-            this.almacenEntrega = [];
-        }
-        else {
-            this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+
+        if (this.model.posicionActual.selectCentroEntrega) {
             direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
         }
 
+        this.model.posicionActual.selectAlmacenEntrega = undefined;
 
         this.model.posicionActual.nombreEntrega =  this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" :this.model.posicionActual.selectCentroEntrega.Descripcion);
@@ -286,4 +284,22 @@ export class CabeceraComponent extends ListBaseComponent {
 
     }
 
+    buscarCombo(event, type){
+        switch (type) {
+            case 'CENTRO':
+                this.centroEntrega = this.combos.Centro.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+            case 'ALMACEN':
+                if (this.model.posicionActual.selectCentroEntrega == undefined) {
+                    this.almacenEntrega = [];
+                }
+                else {
+                    this.almacenEntrega = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id && 
+                        x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }
