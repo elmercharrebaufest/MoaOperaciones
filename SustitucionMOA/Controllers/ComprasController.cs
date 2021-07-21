@@ -244,7 +244,31 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult PreviewSolpPdf(int idSolp)
+        {
+            try
+            {
+                var file = service.GenerarSolpPdf(idSolp);
 
+                return JsonCustom(new {
+                    File = Convert.ToBase64String(file)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
     }
 }

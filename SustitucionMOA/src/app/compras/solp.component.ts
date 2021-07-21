@@ -79,6 +79,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
+    pdfPreview: any;
+    urlPdf: any;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
@@ -456,7 +458,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
     }
 
-    guardarCambios(){
+    guardarCambios(mostrarPreview = false){
         try {
             this.blockUI.start('Guardando...');
             this.spinnerComponent.showIt();
@@ -488,6 +490,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         });
                         
                         this.cambiosGuardados = true;
+
+                        if(mostrarPreview){
+                            this.mostrarPdf();
+                        }
                     }
                 },
                 error => {
@@ -613,5 +619,32 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    preview(){
+        this.guardarCambios(true);
+    }
+
+    mostrarPdf() {
+        if (this.solpActual.id != undefined) {
+            this.spinnerComponent.showIt();
+
+            this.service.getEncodedPdf(this.solpActual.id)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            this.pdfPreview = "data:application/pdf;base64," + result.File;
+                            this.mostrarPreview = true;
+                            this.spinnerComponent.hideIt();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        }
+    }
 }
 
