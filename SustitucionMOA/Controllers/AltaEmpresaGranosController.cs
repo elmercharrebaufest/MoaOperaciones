@@ -644,13 +644,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult NotificarSolicitud(int proveedorId)
+        public ActionResult NotificarSolicitud(int proveedorId, string datosJson)
         {
             try
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
-                return JsonCustom(altaEmpresaService.NotificarSolicitud(mail, proveedorId));
+                return JsonCustom(altaEmpresaService.NotificarSolicitud(mail, proveedorId, altaEmpresa));
             }
             catch (InfoCustomException e)
             {

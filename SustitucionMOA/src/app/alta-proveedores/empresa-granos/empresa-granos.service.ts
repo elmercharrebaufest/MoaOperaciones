@@ -352,9 +352,15 @@ export class EmpresaGranosService extends BaseService {
             map(this.extractData))   
     }
 
-    notificarSolicitud( proveedorId: number): Observable<any> {
+    notificarSolicitud( proveedorId: number, datos: any): Observable<any> {
+        let datosJson = JSON.stringify(datos);
+        var payload = new FormData();
+        
+        payload.append('datosJson', datosJson);
+        payload.append('proveedorId', proveedorId.toString());
+
         return this.http
-            .post("/api/AltaEmpresaGranos/NotificarSolicitud", {proveedorId : proveedorId})
+            .post("/api/AltaEmpresaGranos/NotificarSolicitud",  payload, this.headers)
             .pipe(
                 timeoutWith(
                     30000,

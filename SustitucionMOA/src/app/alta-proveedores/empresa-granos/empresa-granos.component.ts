@@ -378,14 +378,10 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        debugger
                         this.mensajeComponent.setMsgsEmpty();
                         document
                             .getElementById("openModalNotificacion")
                             .click();
-                        if(this.altaInterna){
-                            this.goToSeccion('/altas');
-                        }
                     }
                 },
                 (error) => {
@@ -624,9 +620,15 @@ export class EmpresaGranosComponent extends ListBaseComponent {
     onNotificar() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
+        var datos = {
+            Empleados: this.empleados,
+            Funcionarios: this.funcionarios,
+            VinculoConEmpleadosDeMolinos: this.relacionConEmpleadosChecked,
+            VinculoConFuncionariosPublicos: this.relacionConFuncionariosChecked,
+        };
         this.unsubscribe();
         this.subscription = this.service
-            .notificarSolicitud(this.proveedorId)
+            .notificarSolicitud(this.proveedorId, datos)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
@@ -641,7 +643,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setMsgsEmpty();
-                        this.redirigirAEstado();                            
+                        this.redirigirAEstado();               
                     }
                 },
                 (error) => {
