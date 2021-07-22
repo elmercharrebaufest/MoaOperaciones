@@ -36,6 +36,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     enumTipoImputacion: typeof EnumTipoImputacion = EnumTipoImputacion;
     enumColumnaSubPosicion: typeof EnumColumnaSubPosicion = EnumColumnaSubPosicion;
     total: number = 0;
+    unidades: any[];
 
     // array de columnas en la grilla
     // se utiliza esta array para luego cargar las posiciones dinamicamente segun la informacion del clipboard
@@ -200,6 +201,17 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.listadoPosicionActul.forEach(posicion => {
             this.total = this.total + (+posicion.precioBruto);
         });
+    }
+
+    buscarCombo(event, type){
+        switch (type) {
+            case 'UNIDAD MEDIDA':
+                this.unidades = this.combos.Unidades.filter(x=> x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;   
+                
+            default:
+                break;
+        }
     }
 
 }

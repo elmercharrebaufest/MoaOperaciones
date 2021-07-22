@@ -252,10 +252,6 @@ export class CabeceraComponent extends ListBaseComponent {
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;    
-            case 'UNIDAD SUBPOSICION':
-                this.combos = this.combos.Unidades.filter(x=> x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
-                break;   
-                
             default:
                 break;
         }
