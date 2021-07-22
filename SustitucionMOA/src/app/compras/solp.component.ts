@@ -79,6 +79,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
+    pdfPreview: any;
+    urlPdf: any;
     solpActual: Solp = new Solp();
     _pasoActual: Paso;
     es: any;
@@ -332,7 +334,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
             
             let posActual = this.solpActual.posicionActual;
-
+            let solpActual = this.solpActual;
+            
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
                 posActual.textoGenerico = x.TextoGenerico;
@@ -381,16 +384,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         subpos.tipoImputacion = sp.TipoImputacionValor;
                         subpos.precioBruto = sp.PrecioBruto;
 
-                        this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
+                        posActual.listadoSubPosiciones.push(subpos);
                         i++;
                     });
                 }
                 
-                if(ultimaPos.Codigo != x.Codigo)
-                    this.solpActual.agregarNuevaPosicion();
+                if(ultimaPos.Codigo != x.Codigo){
+                    solpActual.agregarNuevaPosicion();
+                    posActual = solpActual.posicionActual;
+                }
             });
 
             this.solpActual.setearPosicionPorDefecto();
+            // this.cabecera.solpActual = this.solpActual;
         }
     }
 
@@ -455,7 +461,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
     }
 
-    guardarCambios(){
+    guardarCambios(mostrarPreview = false){
         try {
             this.blockUI.start('Guardando...');
             this.spinnerComponent.showIt();
@@ -474,7 +480,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                        this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        if(!mostrarPreview){
+                            this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
                         
                         this.solpActual.id = result.Id;
@@ -487,6 +495,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         });
                         
                         this.cambiosGuardados = true;
+
+                        if(mostrarPreview){
+                            this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
+                            this.mostrarPreview = true;
+                        }
                     }
                 },
                 error => {
@@ -612,5 +625,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    preview(){
+        this.guardarCambios(true);
+    }
 }
 

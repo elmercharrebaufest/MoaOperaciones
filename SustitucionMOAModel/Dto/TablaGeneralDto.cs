@@ -16,7 +16,6 @@ namespace SustitucionMOAModel.Dto
         public string Descripcion { get; set; }
         public int? IdPadre { get; set; }
 
-
         public TablaSapDto() { }
 
         public TablaSapDto(TablaSap entity)
@@ -29,6 +28,14 @@ namespace SustitucionMOAModel.Dto
                 this.CodigoSap = entity.CodigoSap;
                 this.Descripcion = entity.Descripcion;
                 this.IdPadre = entity.Padre_Id;
+            }
+        }
+
+        public string CodigoDescripcion
+        {
+            get
+            {
+                return string.Format("{0} {1} {2}", this.CodigoSap, !string.IsNullOrEmpty(this.Descripcion) && !string.IsNullOrEmpty(this.CodigoSap) ? "-" : string.Empty, this.Descripcion);
             }
         }
     }

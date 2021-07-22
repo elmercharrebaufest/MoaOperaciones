@@ -35,8 +35,10 @@ namespace SustitucionMOA.Controllers
             {
                 var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
                 solp.UsuarioActual = ObtenerUsuarioActual();
+                var result = service.GuardarSolp(solp, Request.Files);
+                result.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Id.Value));
 
-                return JsonCustom(service.GuardarSolp(solp, Request.Files));
+                return JsonCustom(result);
             }
             catch (InfoCustomException e)
             {
@@ -243,8 +245,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
     }
 }

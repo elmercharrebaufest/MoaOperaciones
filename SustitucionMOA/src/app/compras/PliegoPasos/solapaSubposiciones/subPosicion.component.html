@@ -26,6 +26,7 @@
                                 </ng-template>
                             </p-dropdown>
 
+                           
                         </div>
 
                     </div>
@@ -101,7 +102,16 @@
                                     <td [pEditableColumn]="posicion" style="width: 10%;">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <p-dropdown [options]="combos.Unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown>
+                                                <!-- <p-dropdown [options]="combos.Unidades" [(ngModel)]="posicion.unidadSeleccionada" placeholder="Seleccione" optionLabel="Descripcion" [showClear]="true" appendTo="body"></p-dropdown> -->
+
+
+                                                <p-autoComplete [(ngModel)]="posicion.unidadSeleccionada" [suggestions]="unidades" 
+                                                dataKey="Id" ariaLabel="Descripcion" field="Descripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningúna unidad encontrada"
+                                                [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" 
+                                                (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')" (onFocus)=" $event.target.select()" >
+                                                </p-autoComplete>    
+
+
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 {{posicion.unidadSeleccionada.Descripcion}}
