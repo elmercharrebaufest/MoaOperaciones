@@ -600,7 +600,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //ANEXO 1
-            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, "Cosas cositas");
+            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, "Informacion pendiente");
 
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
