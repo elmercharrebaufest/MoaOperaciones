@@ -14,6 +14,7 @@ import { ValidadorPasoSolpService } from '../validadorPasoSolpService';
 import {FormBuilder, FormControl, Validators } from '@angular/forms';
 import { EnumPasoSolp } from '../enum-paso-solp';
 
+
 declare var $: any;
 
 @Component({
@@ -31,6 +32,8 @@ export class CabeceraComponent extends ListBaseComponent {
 
     @Input('locale') 
     protected locale:any;
+
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
          protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -249,7 +252,9 @@ export class CabeceraComponent extends ListBaseComponent {
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;    
-                
+            case 'UNIDAD SUBPOSICION':
+                this.combos = this.combos.Unidades.filter(x=> x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;   
                 
             default:
                 break;
