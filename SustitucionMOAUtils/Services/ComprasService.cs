@@ -524,14 +524,14 @@ namespace SustitucionMOAUtils.Services
             var solp = TraerSolpId(idSolp);
 
             //aca va la asignacion de valores de la solp que se van a reemplazar en el documento
-            solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, "20/02/2021"); //crear campo fecha de liberacion en tabla
+            solpValores.Add(SolpTemplateKeys.FECHA_LIBERACION, ""); //crear campo fecha de liberacion en tabla
             solpValores.Add(SolpTemplateKeys.NOMBRE_OBRA, solp.NombreDeObra);
             solpValores.Add(SolpTemplateKeys.NRO_SOLP, solp.NroSolp);
             solpValores.Add(SolpTemplateKeys.FISCAL_CONTRATO, solp.FiscalContrato);
             solpValores.Add(SolpTemplateKeys.TELEFONO, solp.Telefono);
 
-            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString());
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.Id.ToString());
+            solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioActual.Mail);
 
             //ESPECIFICACION TECNICA DE TAREAS
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
@@ -600,7 +600,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //ANEXO 1
-            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, "Informacion pendiente");
+            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, " ");
 
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
