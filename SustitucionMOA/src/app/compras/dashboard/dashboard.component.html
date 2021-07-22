@@ -16,7 +16,7 @@
                 <!--End Cards-->
             </div>
         </div>
-
+        <spinner></spinner>
         <div>
             <div class="row titleSection" >
                 <div class="col-xs-12 col-sm-10" style="margin-top: 60px;"> <strong>Estado de solicitudes</strong></div>
@@ -78,7 +78,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 inputAltura" style="margin-top: 10px;">
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="color: rgb(209, 199, 199)">
-                                <p-radioButton name="dashboard" value="Materiales" label="Materiales" [(ngModel)]="materialesDashboard" inputId="materialesDashboard" disabled></p-radioButton>
+                                <p-radioButton name="dashboard" value="Materiales" label="Materiales" inputId="materialesDashboard" disabled></p-radioButton>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                 <p-radioButton name="dashboard" value="Servicios" label="Servicios" [(ngModel)]="serviciosDashboard" inputId="serviciosDashboard"></p-radioButton>
@@ -87,10 +87,10 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="border-left: 1px solid black;">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <p-checkbox class="checkboxFechas" [(ngModel)]="sapDashboard" binary="true" label="SAP" (onChange)="tabla.filter($event.value, 'VincularPliego', 'in')"></p-checkbox>
+                                <p-checkbox class="checkboxFechas" binary="true" label="SAP" (onChange)="tabla.filter($event.value, 'VincularPliego', 'in')"></p-checkbox>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p-checkbox class="checkboxFechas" [(ngModel)]="mantenimientoDashboard" binary="true" label="Mantenimiento"></p-checkbox>
+                                <p-checkbox class="checkboxFechas" binary="true" label="Mantenimiento"></p-checkbox>
                             </div>
                         </div>
                     </div>    
@@ -150,7 +150,7 @@
                             <span *ngIf="rowData.EstadoSolpSap.Descripcion != 'Liberada' "><img class="pointer" src="./Content/images/icons/editar.svg" alt="editar" (click)="goToSeccionParam('/compras/solp', rowData.Id)"/></span>
                         </div>
                         <div class="col-md-2">
-                            <span ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarPdf(rowData.Id)"/></span>  
+                            <!-- <span ><img  class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarPdf(rowData.Id)"/></span>   -->
                         </div>       
                     </td>
                     <td>
