@@ -537,7 +537,7 @@ namespace SustitucionMOAUtils.Services
             if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
             {
                 solp.EspecificacionesTecnicas = System.IO.File.ReadAllText(solp.EspecificacionesTecnicas);
-                solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, solp.EspecificacionesTecnicas);
+                solpValores.Add(SolpTemplateKeys.ESPECIFICACION_TECNICA, solp.EspecificacionesTecnicas.Replace("<br>", "<br />"));
             }
             else 
             {

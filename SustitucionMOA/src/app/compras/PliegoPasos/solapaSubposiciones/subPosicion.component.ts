@@ -201,4 +201,14 @@ export class SubPosicionComponent extends ListBaseComponent {
             this.total = this.total + (+posicion.precioBruto);
         });
     }
+
+    // buscarCombo(event, type){
+    //     switch (type) {
+    //         case 'POSICIONES':
+    //             this.model.posiciones = this.listadoPosicionActul.filter(x=> x.CodigoPosicion.toLowerCase().includes(event.query.toLowerCase()));
+    //             break;    
+    //         default:
+    //             break;
+    //     }
+    // }
 }

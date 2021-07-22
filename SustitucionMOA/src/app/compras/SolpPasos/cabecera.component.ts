@@ -300,8 +300,30 @@ export class CabeceraComponent extends ListBaseComponent {
                         x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 }
                 break;
+            case 'GRUPO COMPRAS':
+                this.grupoCompras = this.combos.GrupoCompras.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+            case 'ARTICULO COMPRAS':
+                this.articuloCompras = this.combos.GrupoArticulo.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;
+            case 'MONEDA COMPRAS':
+                this.monedaCompras = this.combos.Moneda.filter(x=> x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+                break;    
+                
+                
             default:
                 break;
         }
     }
+
+    agregarPosicion(el: HTMLElement){
+        this.validarPosicionActual();
+        this.model.agregarNuevaPosicion();
+        el.scrollIntoView();
+    }
+
+    // scrollTo(el: HTMLElement){
+    //     el.scrollIntoView();
+    // }
+
 }
