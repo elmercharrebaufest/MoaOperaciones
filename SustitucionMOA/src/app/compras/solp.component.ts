@@ -334,7 +334,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
             let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
             
             let posActual = this.solpActual.posicionActual;
-
+            let solpActual = this.solpActual;
+            
             solp.Posiciones.forEach(x => {
                 posActual.id = x.Codigo;
                 posActual.textoGenerico = x.TextoGenerico;
@@ -383,13 +384,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         subpos.tipoImputacion = sp.TipoImputacionValor;
                         subpos.precioBruto = sp.PrecioBruto;
 
-                        this.solpActual.posicionActual.listadoSubPosiciones.push(subpos);
+                        posActual.listadoSubPosiciones.push(subpos);
                         i++;
                     });
                 }
                 
-                if(ultimaPos.Codigo != x.Codigo)
-                    this.solpActual.agregarNuevaPosicion();
+                if(ultimaPos.Codigo != x.Codigo){
+                    solpActual.agregarNuevaPosicion();
+                    posActual = solpActual.posicionActual;
+                }
             });
 
             this.solpActual.setearPosicionPorDefecto();
