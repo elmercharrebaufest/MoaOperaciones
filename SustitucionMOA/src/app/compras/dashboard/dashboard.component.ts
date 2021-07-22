@@ -14,6 +14,7 @@ import { CrearContratoModule } from '../../crear-contrato/crear-contrato.module'
 import { formatDate } from '@angular/common';
 import { SortEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 
 
 
@@ -36,6 +37,9 @@ export class DashboardComponent extends ListBaseComponent {
     
     @Input('model') 
     protected model:Solp;
+
+    @ViewChild(SpinnerComponent)
+    protected spinnerComponent: SpinnerComponent;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -104,23 +108,6 @@ export class DashboardComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
 
-        
-
-        // this.tablaSolp = [
-        // {
-        //     numeroSolp: "372872",
-        //     nombreDePedido: ""
-        //     fechaCreacion: "17/12/2021",
-        //     estadoDoc: "Incompleto",
-        //     estadoSolp: "Finalizada",
-        //     tipoSolp: "Sin Doc.",
-        //     estadoDocCodigo: "Incompleto",
-        //     estadoSolpCodigo: "Finalizada",
-        //     esSap: "Si",
-        //     vincularPliego: "" 
-        // }
-        // ];
-
         this.getListarSolp();
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
@@ -148,6 +135,8 @@ export class DashboardComponent extends ListBaseComponent {
 
     getListarSolp(){
             try {
+                this.spinnerComponent.showIt();
+
                 this.subscription = this.service.getListarSolp().subscribe(
                     result => {
                         if (result.logout == true) {
@@ -161,10 +150,12 @@ export class DashboardComponent extends ListBaseComponent {
                             this.tablaSolp.forEach(x => {
                                 x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             });
+                            this.spinnerComponent.hideIt();
                         }
                     },
                     error => {
                         this.floatMsgService.setErrorMsg(error.message);
+                        this.spinnerComponent.hideIt();
                     }
     
                 );
