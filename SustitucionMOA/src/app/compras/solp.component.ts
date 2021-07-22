@@ -477,7 +477,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else {
                         this.spinnerComponent.hideIt();
                         this.blockUI.stop();
-                        this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        if(!mostrarPreview){
+                            this.messageService.add({severity:'success', detail:'Los datos se guardaron correctamente'});
+                        }
                         // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
                         
                         this.solpActual.id = result.Id;
@@ -492,7 +494,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.cambiosGuardados = true;
 
                         if(mostrarPreview){
-                            this.mostrarPdf();
+                            this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
+                            this.mostrarPreview = true;
                         }
                     }
                 },
@@ -621,30 +624,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     preview(){
         this.guardarCambios(true);
-    }
-
-    mostrarPdf() {
-        if (this.solpActual.id != undefined) {
-            this.spinnerComponent.showIt();
-
-            this.service.getEncodedPdf(this.solpActual.id)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            this.pdfPreview = "data:application/pdf;base64," + result.File;
-                            this.mostrarPreview = true;
-                            this.spinnerComponent.hideIt();
-                        }
-                    },
-                    (error) => {
-                        this.spinnerComponent.hideIt();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                );
-        }
     }
 }
 

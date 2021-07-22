@@ -35,8 +35,10 @@ namespace SustitucionMOA.Controllers
             {
                 var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
                 solp.UsuarioActual = ObtenerUsuarioActual();
+                var result = service.GuardarSolp(solp, Request.Files);
+                result.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Id.Value));
 
-                return JsonCustom(service.GuardarSolp(solp, Request.Files));
+                return JsonCustom(result);
             }
             catch (InfoCustomException e)
             {
@@ -243,32 +245,5 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
-        [HttpGet]
-        public JsonResult PreviewSolpPdf(int idSolp)
-        {
-            try
-            {
-                var file = service.GenerarSolpPdf(idSolp);
-
-                return JsonCustom(new {
-                    File = Convert.ToBase64String(file)
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
     }
 }
