@@ -613,5 +613,22 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    // abrirCodigoConducta(siempre: boolean) {
+    //     if (this.codigoConductaVisto == false || siempre) {
+    //         this.codigoConductaVisto = true;
+    //         var filePath =
+    //             location.origin +
+    //             "/Documentacion/CodigoDeConductaParaProveedoresMOA.pdf";
+    //         console.log(filePath);
+    //         var url =
+    //             location.origin +
+    //             "/officetohtml/popup.html?filePath=" +
+    //             filePath;
+    //         this.tryDoctype = url;
+    //         document.getElementById("iframeConducta").setAttribute("src", url);
+    //         document.getElementById("openModalconductaModal").click();
+    //     }
+    // }
+
 }
 

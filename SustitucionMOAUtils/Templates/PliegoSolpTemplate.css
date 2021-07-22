@@ -1,0 +1,48 @@
+﻿body
+{
+    font-family: Cambria;
+    font-size: 14px;
+    text-align: justify;
+}
+
+.tablaPrimeraPagina
+{
+    border: 2px solid #4f81bd;
+    width: 600px;
+    height: 150px;
+
+}
+
+.fechaLugar 
+{
+    padding-top: 150px;
+    padding-bottom: 10px;
+    text-align: right;
+}
+
+.margenPrimeraTabla 
+{
+    margin-left: 10px;
+}
+
+.titulos 
+{
+    text-decoration: underline;
+}
+
+p 
+{
+    text-indent: 1em;
+    text-align: left;
+}
+
+.anexos 
+{
+    text-align: center;
+}
+
+th 
+{
+    text-align: center;
+}
+
