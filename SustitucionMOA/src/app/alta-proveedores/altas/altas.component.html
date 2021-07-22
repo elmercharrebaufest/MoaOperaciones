@@ -636,6 +636,23 @@
                                             (ngModelChange)="onChangeDocumentacionFisica()">
                                     </div>
                                 </mdb-step>
+                                <mdb-step name="Step 3" label="Documentación Impositiva" *ngIf="empresaSeleccionada.AltaInterna && empresaSeleccionada.IdTipoUsuario == 2">
+                                    <h3>DDJJ</h3>
+                                    <div class="form-group grey ">
+                                        <label>DDJJ</label>&nbsp;
+                                        <label style="color:red;"
+                                            *ngIf="(listaArchivos | archivosFilterPipe:'DDJJ').length === 0">
+                                            Sin Adjuntar
+                                        </label>
+
+                                        <span
+                                            *ngFor="let archivo of listaArchivos | archivosFilterPipe:'DDJJ'">
+                                            <a (click)="descargarArchivo(archivo)">
+                                                {{archivo.Nombre}}
+                                            </a>
+                                        </span>
+                                    </div> 
+                                </mdb-step>
                             </div>
                         </mdb-stepper>
                     </div>
