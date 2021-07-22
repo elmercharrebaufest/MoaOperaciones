@@ -98,47 +98,6 @@ export class CabeceraComponent extends ListBaseComponent {
     
     @Output() onEstCompleto = new EventEmitter<any>();
 
-    
-    // Funcion que crea el chips y setea el evento
-    // onKeyUp(event: KeyboardEvent, texts: string[]) {
-    //   if (event.key == "Enter") {
-    //    let tokenInput = event.srcElement as any;
-    //    if (tokenInput.value) {
-    //     texts.push(tokenInput.value);
-    //     tokenInput.value = "";
-    //    }
-    //   }
-    // }  
-
-    
-    // onKeyUp(event: KeyboardEvent, texts: string[]) {
-    //     debugger
-    //     var charCode = event.which || event.keyCode;
-        
-    //     if (event.key == "Enter" || event.key == "Tab" ) {
-    //       if(event.key == "Tab" && this.proveedoresAutocomplete){
-    //         texts.push(this.proveedoresAutocomplete);
-    //         this.proveedoresAutocomplete = "";
-    //         let tokenInput = event.srcElement as any;
-    //         tokenInput.value = "";
-    //       } 
-    //       else {
-    //         let tokenInput = event.srcElement as any;
-    //             if (tokenInput.value) {
-    //                 texts.push(tokenInput.value);
-    //                 tokenInput.value = "";
-    //             }
-    //         }    
-    //     }
-    // }
-
-    // // Funcion que hace la lista para el autocomplete
-    // search(event){
-    //     let query = event.query;
-    //     this.resultadoProveedores = [];
-    // }
-
-
     setTabs() {
         this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
@@ -161,26 +120,7 @@ export class CabeceraComponent extends ListBaseComponent {
 
         this.centroSeleccionado();
 
-        this.model.cargoPasoCinco = true;
-
-        // document.getElementById("proveedoresValidos").addEventListener('keydown', function (e) {
-        //     if (e.which == 9) {
-        //         e.preventDefault();
-        //     }
-        // });
-
-        // document.getElementById("proveedoresInvalidos").addEventListener('keydown', function (e) {
-        //     if (e.which == 9) {
-        //         e.preventDefault();
-        //     }
-        // });
-
-        // document.getElementById("proveedoresNoSugeridos").addEventListener('keydown', function (e) {
-        //     if (e.which == 9) {
-        //         e.preventDefault();
-        //     }
-        // });
-        
+        this.model.cargoPasoCinco = true;        
  
     }
 
