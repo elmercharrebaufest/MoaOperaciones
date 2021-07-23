@@ -599,38 +599,31 @@ namespace SustitucionMOAUtils.Services
                 solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, " ");
             }
 
-            //ANEXO 1
-            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, " ");
+            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td></td></tr>";
+            StringBuilder subposiciones = new StringBuilder();
+
+            solp.Posiciones.ForEach(pos =>
+            {
+                pos.Subposiciones.ForEach(subpos =>
+                {
+                    subposiciones.AppendLine(string.Format(templateSubposiciones,
+                        pos.TextoGenerico,
+                        subpos.Numero,
+                        subpos.CodigoServicioSap?.Codigo,
+                        subpos.Tarea,
+                        subpos.Cantidad,
+                        subpos.Unidad?.Descripcion
+                        ));
+
+                });
+            });
+
+            solpValores.Add(SolpTemplateKeys.TABLA_POSICIONES_SUBPOSICIONES, subposiciones.ToString());
 
             //ADJUNTOS
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
 
              templateString = CombineTemplateValues(templateString, solpValores);
-
-            #region Generacion del pdf
-            //StringReader sr = new StringReader(templateString);
-            //Document pdfDoc = new Document(PageSize.A4, 70f, 70f, 60f, 40f);  // izquierda, derecha, arriba, abajo
-            //HTMLWorker htmlparser = new HTMLWorker(pdfDoc);
-
-
-            //using (MemoryStream memoryStream = new MemoryStream())
-            //{
-            //    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, memoryStream);
-            //    pdfDoc.Open();
-
-            //    Image image = Image.GetInstance(@"C:\Users\rorlando\Downloads\LogoMolinos.png");
-            //    image.SetAbsolutePosition(180, 700);
-            //    writer.DirectContent.AddImage(image, false);
-
-            //    htmlparser.Parse(sr);
-            //    pdfDoc.Close();
-
-            //    byte[] bytes = memoryStream.ToArray();
-            //    memoryStream.Close();
-
-            //    return bytes;
-            //}
-            #endregion
 
             return ConvertHtmlToPdf(templateString, templateCssString);
         }
@@ -751,7 +744,6 @@ namespace SustitucionMOAUtils.Services
 
         public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
         public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
-        
     }
 
 

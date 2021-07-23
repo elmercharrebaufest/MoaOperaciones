@@ -637,10 +637,32 @@
         <p class="titulos">
             Oferente: ||NOMBRE_OBRA||
         </p>
-
-        <p>
-            ||TABLA_POSICIONES_SUBPOSICIONES||
-        </p>
+       
+        <table class="tablaPosiciones">
+            <thead>
+                <tr>
+                    <th colspan="7">DETALLE</th>
+                </tr>
+                <tr>
+                    <th>Item</th>
+                    <th>Subposición</th>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Precio Bruto</th>
+                </tr>
+            </thead>
+            <tbody>
+                ||TABLA_POSICIONES_SUBPOSICIONES||
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right">TOTAL</td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
 
     <div style="page-break-before:always">&nbsp;</div>
@@ -674,8 +696,8 @@
             portería de MOA.
         </p>
 
-        <div>
-            <table border="1">
+        <div class="tablaPosiciones">
+            <table class="tablaPosiciones">
                 <tr>
                     <th style="width: 25%">
                         Detalle Hs
@@ -705,7 +727,7 @@
             </table>
         </div>
         <div style="padding-top: 30px;">
-            <table border="1">
+            <table class="tablaPosiciones">
                 <tr>
                     <th style="width: 31%">
                         Detalle personal Categorías

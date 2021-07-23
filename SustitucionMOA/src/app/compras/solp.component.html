@@ -64,7 +64,7 @@
                     </div>     
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
                         <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
-                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizar()" disabled style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizarSolp()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>   
                     <div class="col-xs-1 col-md-1">
                     </div>    
@@ -104,3 +104,11 @@
 </p-confirmDialog>
 <!--fin modal cancelar SOLP-->
 
+<!-- Modal finalizar SOLP-->
+<p-confirmDialog #dialog key="finalizarSolp" header="¡Felicitaciones!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialog.reject()"></button>
+        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialog.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+<!--fin modal cancelar SOLP-->
