@@ -154,7 +154,7 @@ export class PosicionSolp {
 
     // Moneda
     public selectMonedaCompras: any;
-    public monedaSeleccionada: any={};
+    public monedaSeleccionada: any;
     public totalPosicion() {
 
         if(this.listadoSubPosiciones && this.listadoSubPosiciones.length > 0){

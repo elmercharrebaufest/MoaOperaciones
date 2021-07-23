@@ -169,15 +169,14 @@ export class CabeceraComponent extends ListBaseComponent {
     }
 
     mostrarError(nombreCampo: string): boolean {
-        if (this.formularioActual && this.formularioActual.controls) {
-            let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
-            if(campoObligatorio){
-                let control = this.formularioActual.controls[nombreCampo];
-                return (control.invalid || (control.errors && control.errors.required))
-                    && (control.dirty || control.touched)
+            if (this.formularioActual && this.formularioActual.controls) {
+                let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
+                if(campoObligatorio){
+                    let control = this.formularioActual.controls[nombreCampo];
+                    return (control.invalid || (control.errors && control.errors.required))
+                        && (control.dirty || control.touched)
+                }
             }
-        }
-
         return false;
     }
 
@@ -203,7 +202,7 @@ export class CabeceraComponent extends ListBaseComponent {
             direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
         }
 
-        this.model.posicionActual.selectAlmacenEntrega = undefined;
+        // this.model.posicionActual.selectAlmacenEntrega = undefined;
 
         this.model.posicionActual.nombreEntrega =  this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" :this.model.posicionActual.selectCentroEntrega.Descripcion);

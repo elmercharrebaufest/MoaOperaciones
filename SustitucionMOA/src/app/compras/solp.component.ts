@@ -553,6 +553,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case EnumPasoSolp.SolpCabecera:
+                    debugger
+                    this.solpActual.posicionActual.selectMonedaCompras = "x"; 
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
@@ -567,6 +569,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.selectArticuloCompras,
                         this.solpActual.posicionActual.selectMonedaCompras
                     ]);
+                    
                     break;
                     case EnumPasoSolp.SolpSubposiciones:
                         paso.Completo = this.listaStringCompleta([
