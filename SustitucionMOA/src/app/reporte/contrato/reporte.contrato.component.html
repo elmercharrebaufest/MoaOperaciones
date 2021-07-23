@@ -520,7 +520,7 @@
                                 <td>{{contratoInfo.Clasificacion}}</td>
                                 <td>{{contratoInfo.Localidad}}</td>
                                 <td>{{contratoInfo.Consignatario == true ? "Si":"No"}}</td>
-                                <td>{{contratoInfo.PagoDiferidoTercero}}</td>
+                                <td>{{contratoInfo.PagoDiferidoTercero == "Si" ? (contratoInfo.ImporteFinanciero | number:'1.0-2':'es') + " (" + contratoInfo.Dias_Pesificado + " días)" : "No"}}</td>
                                 <td>{{contratoInfo.DolarizadoTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.CalidadTercero == true ? "Si":"No"}}</td>
                                 <td>{{contratoInfo.SustentableTercero == true ? "Si":"No"}}</td>
