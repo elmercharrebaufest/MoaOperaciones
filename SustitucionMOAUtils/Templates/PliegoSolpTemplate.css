@@ -46,3 +46,12 @@ th
     text-align: center;
 }
 
+table.tablaPosiciones {
+    width: 100%;
+}
+
+table.tablaPosiciones,
+.tablaPosiciones td,
+.tablaPosiciones tr {
+    border: 1px solid black;
+}

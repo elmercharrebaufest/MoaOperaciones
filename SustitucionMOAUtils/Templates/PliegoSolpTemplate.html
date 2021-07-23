@@ -638,9 +638,31 @@
             Oferente: ||NOMBRE_OBRA||
         </p>
 
-        <p>
-            ||TABLA_POSICIONES_SUBPOSICIONES||
-        </p>
+        <table class="tablaPosiciones">
+            <thead>
+                <tr>
+                    <th colspan="7">DETALLE</th>
+                </tr>
+                <tr>
+                    <th>Item</th>
+                    <th>Subposición</th>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Precio Bruto</th>
+                </tr>
+            </thead>
+            <tbody>
+                ||TABLA_POSICIONES_SUBPOSICIONES||
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">TOTAL</td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
 
     <div style="page-break-before:always">&nbsp;</div>
