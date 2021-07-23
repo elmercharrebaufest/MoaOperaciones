@@ -226,8 +226,8 @@ export class CabeceraComponent extends ListBaseComponent {
                 
             }
         });
-
     }
+    
 
     buscarCombo(event, type){
         switch (type) {

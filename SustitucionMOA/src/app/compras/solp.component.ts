@@ -628,5 +628,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
     preview(){
         this.guardarCambios(true);
     }
+
+    finalizarSolp() {
+        this.confirmationService.confirm({
+            key: 'finalizarSolp',
+            message: 'Ha cargado con éxito una solicitud de pedido en SAP y se ha enviado para su liberación',
+            accept: () => {
+                this.finalizar()
+            },
+            reject: () => {  
+            }
+        });
+    }
+
 }
 

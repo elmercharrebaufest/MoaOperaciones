@@ -439,12 +439,6 @@
                         <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
                             <div class="margenInput">
                                 Moneda*
-                                <!-- <p-dropdown formControlName="selectMonedaCompras" [ngModelOptions]="{standalone:true}"
-                                    [options]="monedaCompras" [(ngModel)]="model.posicionActual.monedaSeleccionada"
-                                    dataKey="Id" optionLabel="CodigoDescripcion" autoDisplayFirst="false"
-                                    placeholder="Seleccionar" [showClear]="true">
-                                </p-dropdown> -->
-
                                 <p-autoComplete formControlName="selectMonedaCompras" [(ngModel)]="model.posicionActual.monedaSeleccionada" [suggestions]="monedaCompras" 
                                 dataKey="Id" ariaLabel="CodigoDescripcion" field="CodigoDescripcion" appendTo="body" [autoHighlight]="true" emptyMessage="Ningúna moneda encontrada"
                                 [minLength]="1" placeholder="Seleccionar" [dropdown]="true" [forceSelection]="true" 
@@ -455,7 +449,8 @@
                                 </div>
                             </div>
                             <p *ngIf="model.posicionActual.totalPosicion()" class="valorTotal">Valor Total:
-                                {{model.posicionActual.totalPosicion()}}</p>
+                                {{model.posicionActual.totalPosicion()}}
+                            </p>
                         </div>
                     </div>
                     <!-- End Row tipo de moneda -->
@@ -480,3 +475,5 @@
     </p-footer>
 </p-confirmDialog>
 <!--fin modal eliminacion de posicion-->
+
+
