@@ -50,8 +50,22 @@ table.tablaPosiciones {
     width: 100%;
 }
 
-table.tablaPosiciones,
+/*table.tablaPosiciones,
 .tablaPosiciones td,
 .tablaPosiciones tr {
     border: 1px solid black;
+}*/
+
+.tablaPosiciones,
+.tablaPosiciones td,
+.tablaPosiciones th,
+.tablaPosiciones tr,
+.tablaPosiciones table {
+    border: 1px solid black;
+    border-collapse: collapse;
 }
+
+/*table, td, th {
+    border: 1px none black;
+    border-collapse: collapse;
+}*/

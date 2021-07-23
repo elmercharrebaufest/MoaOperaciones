@@ -72,7 +72,7 @@ export class CabeceraComponent extends ListBaseComponent {
         { campo: 'siniestroBeneficio',          esObligatorio: false,   esFijo: true },
         { campo: 'tipoImputacion',              esObligatorio: true,    esFijo: true },
         { campo: 'textoGenerico',               esObligatorio: true,    esFijo: true },
-        { campo: 'fechaEntregaServicio',        esObligatorio: false,    esFijo: false },
+        { campo: 'fechaEntregaServicio',        esObligatorio: true,    esFijo: false },
         { campo: 'fechaDeLiberacion',           esObligatorio: false,    esFijo: false },
         { campo: 'plazoDeEntrega',              esObligatorio: true,   esFijo: true },
         { campo: 'concluido',                   esObligatorio: false,   esFijo: true },
@@ -263,8 +263,7 @@ export class CabeceraComponent extends ListBaseComponent {
         el.scrollIntoView();
     }
 
-    // scrollTo(el: HTMLElement){
-    //     el.scrollIntoView();
-    // }
+  
+    
 
 }
