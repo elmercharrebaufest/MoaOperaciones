@@ -72,7 +72,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -98,7 +98,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -232,7 +232,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -295,7 +295,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
@@ -366,7 +366,7 @@ export class EmpresaGranosService extends BaseService {
                     30000,
                     throwError(
                         new Error(
-                            "Se exedio el tiempo de espera, por favor intentelo mas tarde"
+                            "Se excedió el tiempo de espera, por favor inténtelo más tarde "
                         )
                     )
                 )
