@@ -145,7 +145,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     },
     {
         Codigo: EnumPasoSolp.SolpSubposiciones,
-        Nombre: 'Subposiciones',
+        Nombre: 'Servicios',
         Activo: false,
         Completo: false,
         Iniciado: false,
@@ -227,7 +227,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
             
             this.solpActual.centroPorDefecto = 1029;
-            this.solpActual.monedaPorDefecto = "ARS - PESOS";
+            this.solpActual.monedaPorDefecto = "ARP";
 
             this.getCombos();
 
@@ -556,8 +556,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case EnumPasoSolp.SolpCabecera:
-                    debugger
-                    // this.solpActual.posicionActual.selectMonedaCompras = "x"; 
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
