@@ -21,6 +21,7 @@ import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-g
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
 import { SolpComponent } from "./compras/solp.component";
 import { DashboardComponent } from './compras/dashboard/dashboard.component' 
+import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 
 
 const appRoutes: Routes = [
@@ -136,7 +137,7 @@ const appRoutes: Routes = [
       { path: "notificaciones", component: ListadoNotificacionesComponent },
       { path: "notificaciones/alta", component: AltaNotificacionesComponent },
       { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
-
+      { path: "gestionCM05", component: GestionCM05Component },
       {
         path: "faq",
         component: FaqComponent

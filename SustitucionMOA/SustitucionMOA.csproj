@@ -344,6 +344,8 @@
     <Content Include="src\app\crear-contrato\cargarnegocio\crear-contrato.cargarnegocio.component.html" />
     <Content Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.html" />
     <Content Include="src\app\faq\faq.component.html" />
+    <Content Include="src\app\gestionCM05\gestionCM05.component.css" />
+    <Content Include="src\app\gestionCM05\gestionCM05.component.html" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.html" />
     <Content Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.css" />
@@ -939,6 +941,7 @@
     <Compile Include="Controllers\ContratoController.cs" />
     <Compile Include="Controllers\CuentaCorrienteController.cs" />
     <Compile Include="Controllers\DataAgroController.cs" />
+    <Compile Include="Controllers\GestionImpuestosController.cs" />
     <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
@@ -1026,6 +1029,9 @@
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.component.ts" />
+    <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />

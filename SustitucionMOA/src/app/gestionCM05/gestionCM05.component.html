@@ -1,0 +1,137 @@
+﻿<div class="content-wraper">
+    <section class="container-fluid clearfix">
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Gestión de CM05</strong></div>
+        </div>
+        <div>
+            <p-table [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="15">
+                <ng-template pTemplate="caption">
+                    Listado de Cabeceras
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th class="th-detalle">Id</th>
+                        <th class="th-detalle">CUIT</th>
+                        <th class="th-detalle">Anticipo</th>
+                        <th class="th-detalle">Sede</th>
+                        <th class="th-detalle">Fecha Carga</th>
+                        <th class="th-detalle">Última modificación</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr (click)="onCabeceraClick(rowData)">
+                        <td class="td-detalle">
+                            {{rowData.Id}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.CUIT}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.Anticipo}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.Sede}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.FechaCarga | date:'dd/MM/yyyy hh:mm:ss'}}
+                        </td>
+                        <td class="td-detalle">
+                            {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </section>
+</div>
+
+<p-dialog header="Cabecera detalles" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="1000" appendTo="body">
+    <div *ngIf="cabecera">
+        <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row">
+            <ng-template pTemplate="caption">
+                Listado de Detalles
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="th-detalle">Jurisdicción</th>
+                    <th class="th-detalle">Nro. Jurisdicción</th>
+                    <th class="th-detalle">Fecha Inicio</th>
+                    <th class="th-detalle">Fecha Cese</th>
+                    <th class="th-detalle">Coef. Ingresos</th>
+                    <th class="th-detalle">Coef. Gastos</th>
+                    <th class="th-detalle">Coef. Unificado</th>
+                    <th class="th-detalle">Última modificación</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
+                <tr [pEditableRow]="detalle">
+                    <td class="td-detalle">
+                        {{rowData.Jurisdiccion}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.NumeroJurisdiccion}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.FechaCese | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.CoeficienteIngresos}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.CoeficienteGastos}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.CoeficienteUnificado}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <!--<p-table [columns]="detalleCols" [value]="detalles">
+            <ng-template pTemplate="caption">
+                Listado de Detalles
+            </ng-template>
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="th-detalle">Jurisdiccin</th>
+                    <th class="th-detalle">Fecha Inicio</th>
+                    <th class="th-detalle">Fecha Cese</th>
+                    <th class="th-detalle">Coef. Ingresos</th>
+                    <th class="th-detalle">Coef. Gastos</th>
+                    <th class="th-detalle">Coef. Unificado</th>
+                    <th class="th-detalle">Última modificación</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td class="td-detalle">
+                        {{rowData.Jurisdiccion}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.FechaCese | date:'dd/MM/yyyy'}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.CoeficienteIngresos}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.CoeficienteGastos}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.CoeficienteUnificado}}
+                    </td>
+                    <td class="td-detalle">
+                        {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>-->
+    </div>
+</p-dialog>

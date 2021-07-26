@@ -59,6 +59,12 @@ import { ConsultaService } from "./consulta/consulta.service";
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
 import { ComprasModule } from "./compras/compras.module";
+import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
+import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
+import { TableModule } from "primeng/table";
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { PaginatorModule } from 'primeng/paginator';
 
 
 @NgModule({
@@ -76,7 +82,11 @@ import { ComprasModule } from "./compras/compras.module";
     LogPesificacionModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
-    ComprasModule
+    ComprasModule,
+    TableModule,
+    DialogModule,
+    ButtonModule,
+    PaginatorModule,
   ],
   declarations: [
     AppComponent,
@@ -100,7 +110,9 @@ import { ComprasModule } from "./compras/compras.module";
     FaqComponent,
     TicketPesadaComponent,
     ConsultaBaseComponent,
-    VentaSustentableBaseComponent],
+    VentaSustentableBaseComponent,
+    GestionCM05Component,
+    ],
   providers: [
     DatePipe,
     SessionDataService,
@@ -119,7 +131,8 @@ import { ComprasModule } from "./compras/compras.module";
     EstadoSolicitudService,
     NotificacionesService,
     TicketPesadaService,
-    ConsultaService
+    ConsultaService,
+    GestionCM05Service
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
