@@ -69,7 +69,8 @@
             </div>
 
 
-            <div class="col-xs-12 col-sm-12 col-md-12" *ngIf="razonSocial == ''">
+            <div class="col-xs-12 col-sm-12 col-md-12"
+              *ngIf="!this.esCorredor || (this.esCorredor && this.operarComo == 2)">
               Razon Social de titular de Carta de Porte:
               <div class="styled-select" style="width: 300px;">
                 <input type="text" name="razonSocialDeclaracion" [(ngModel)]="razonSocialDeclaracion">

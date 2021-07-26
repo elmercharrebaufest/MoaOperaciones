@@ -46,7 +46,7 @@ namespace SustitucionMOAModel.Dto
         public int? DiasReclamo { 
             get {
                 if (this.EstadoConsulta != null && this.EstadoConsulta.Code == EstadosConsulta.Finalizado.Code())
-                    return null;
+                    return (FechaUltimaModificacion - FechaCreacion).Days;
 
                 return (DateTime.Now - FechaCreacion).Days;
             } 
