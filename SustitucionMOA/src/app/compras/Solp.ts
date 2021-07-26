@@ -52,7 +52,7 @@ export class Solp {
     public selectClaseDocumento: any
 
     public posiciones: PosicionSolp[];
-    posicionActual: PosicionSolp;
+    public posicionActual: PosicionSolp;
     // fin cabecera
 
 
@@ -64,6 +64,10 @@ export class Solp {
     public cargoPasoCinco: boolean = false;
     public cargoPasoSeis: boolean = false;
 
+    public centroPorDefecto: any;
+    public monedaPorDefecto: any;
+    
+
     // // dashboard
     // public selectEstadoSolp: any;
     // public fechaSolp: Date;
@@ -72,10 +76,11 @@ export class Solp {
     constructor() {
         this.posiciones = [];
         this.agregarNuevaPosicion();
+
     }
 
     agregarNuevaPosicion() {
-        this.posiciones = [...this.posiciones, new PosicionSolp(this.posiciones.length + 1)]
+        this.posiciones = [...this.posiciones, new PosicionSolp(this.posiciones.length + 1, this.fiscalContrato)]
         this.posicionActual = this.posiciones[this.posiciones.length - 1];
     }
 
@@ -127,7 +132,10 @@ export class PosicionSolp {
     // direccion de entrega
     public selectCentroEntrega: any;
     public selectAlmacenEntrega: any;
+    public centroPorDefecto: any;
+    public monedaPorDefecto: any;
 
+    
     public nombreEntrega: string;
     public calleEntrega: string;
     public numeroEntrega: string;
@@ -174,7 +182,7 @@ export class PosicionSolp {
     //subPosiciones
     listadoSubPosiciones :  Array<SubPosicionViewModel>;
 
-    constructor(numeroPosicion) {
+    constructor(numeroPosicion, fiscalContrato) {
         this.id = uuid.v4();
         this.plazoDeEntrega = "0";
         this.numeroPosicion = numeroPosicion;
@@ -184,6 +192,7 @@ export class PosicionSolp {
         //agrega un fila por defecto
         this.listadoSubPosiciones.push(new SubPosicionViewModel(0));
         this.servicio = 'SERVICIO';
+        this.selectSolicitanteCompras = fiscalContrato;
     }
 }
 

@@ -48,7 +48,7 @@
                                     <th style="width: 5%;"><img (click)="eliminarSubPosicion()"
                                             src="../../../../../Content/images/icons/trash.svg" alt="trash"
                                             style="padding: 8px;" class="pointer" /></th>
-                                    <th style="width: 7%;" data-toggle="tooltip" title="Sub Posiciones">SubPos</th>
+                                    <th style="width: 8%;" data-toggle="tooltip" title="Sub Posiciones">Servicios</th>
                                     <th style="width: 9%;" data-toggle="tooltip" title="Código de Servicio">Cód. Servicio</th>
                                     <th style="width: 30%;">Tarea a sub contratar</th>
                                     <th style="width: 8%;" data-toggle="tooltip" title="Cantidad">Ctd.</th>
@@ -63,7 +63,7 @@
                                     <td style="width: 5%;">
                                         <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox>
                                     </td>
-                                    <td style="width: 7%;">
+                                    <td style="width: 8%;">
                                         {{posicion.subPosicion}}
                                     </td>
                                     <td [pEditableColumn]="posicion" style="width: 9%;">

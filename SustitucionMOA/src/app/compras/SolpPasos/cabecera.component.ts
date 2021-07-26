@@ -105,6 +105,7 @@ export class CabeceraComponent extends ListBaseComponent {
         this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
 
+
     ngOnInit() {
         this.setTabs();
 
@@ -114,6 +115,8 @@ export class CabeceraComponent extends ListBaseComponent {
         this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
 
+    
+
         this.setControlesObligatorios(this.model.selectClaseDocumento || this.claseDocumento[0]);
         this.validadorPasoSolpService.formulario = this.formularioActual;
         
@@ -122,6 +125,7 @@ export class CabeceraComponent extends ListBaseComponent {
         }
 
         this.centroSeleccionado();
+        // this.monedaSeleccionada();
 
         this.model.cargoPasoCinco = true;        
  
@@ -195,12 +199,25 @@ export class CabeceraComponent extends ListBaseComponent {
         this.model.posicionActual.posicionValida = !this.validadorPasoSolpService.esPasoInvalido();
     }
 
+
+    // monedaSeleccionada(){
+    //     let moneda: any;
+
+    //     if (this.model.posicionActual.selectMonedaCompras) {
+    //         moneda = this.combos.Moneda.find(x => x.CodigoSap == this.model.posicionActual.selectMonedaCompras.CodigoSap);
+    //     } else if(this.model.monedaPorDefecto){
+    //         this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x=>x.Codigo == this.model.monedaPorDefecto)
+    //     };
+    // }
+
     centroSeleccionado(){
         let direccionCentro: any;
 
         if (this.model.posicionActual.selectCentroEntrega) {
             direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
-        }
+        } else if(this.model.centroPorDefecto){
+            this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x=>x.Codigo == this.model.centroPorDefecto)
+        };
 
         // this.model.posicionActual.selectAlmacenEntrega = undefined;
 
@@ -261,8 +278,4 @@ export class CabeceraComponent extends ListBaseComponent {
         this.model.agregarNuevaPosicion();
         el.scrollIntoView();
     }
-
-  
-    
-
 }
