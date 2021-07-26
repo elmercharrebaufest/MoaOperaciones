@@ -61,6 +61,8 @@
     <Compile Include="Dto\CentroDireccionDto.cs" />
     <Compile Include="Dto\EstadoDeclaracionSustentableDto.cs" />
     <Compile Include="Dto\CausaConsultaDto.cs" />
+    <Compile Include="Dto\IngresosBrutosCoeficienteUnificadoDetalleDto.cs" />
+    <Compile Include="Dto\IngresosBrutosCoeficienteUnificadoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaMasicoDto.cs" />
     <Compile Include="Dto\LogPesificacion\FiltroDeBusquedaDto.cs" />
     <Compile Include="Dto\LogPesificacion\LogPesificacionDto.cs" />
