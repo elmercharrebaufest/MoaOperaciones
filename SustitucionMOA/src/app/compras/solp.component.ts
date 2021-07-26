@@ -226,6 +226,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
             
+            this.solpActual.centroPorDefecto = 1029;
+            this.solpActual.monedaPorDefecto = "ARS - PESOS";
+
             this.getCombos();
 
             if(this.route.params){
@@ -553,6 +556,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     ]);
                     break;
                 case EnumPasoSolp.SolpCabecera:
+                    debugger
+                    // this.solpActual.posicionActual.selectMonedaCompras = "x"; 
                     paso.Completo = this.listaStringCompleta([
                         this.solpActual.selectClaseDocumento,
                         this.solpActual.posicionActual.servicio,
@@ -567,6 +572,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.selectArticuloCompras,
                         this.solpActual.posicionActual.selectMonedaCompras
                     ]);
+                    
                     break;
                     case EnumPasoSolp.SolpSubposiciones:
                         paso.Completo = this.listaStringCompleta([
