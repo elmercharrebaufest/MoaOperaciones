@@ -25,6 +25,7 @@
     [ContratoIngresado] VARCHAR(15) NULL, 
     [Producto_Id] INT NULL, 
     [ContratosRespuesta] NVARCHAR(MAX) NULL, 
+    [NumeroEntrega] NVARCHAR(MAX) NULL, 
     CONSTRAINT [FK_OrdenDeCarga_Proveedor] FOREIGN KEY (Cliente_Id) REFERENCES Proveedor(Id), 
     CONSTRAINT [FK_OrdenDeCarga_Material] FOREIGN KEY (Producto_Id) REFERENCES Material(Id), 
 )

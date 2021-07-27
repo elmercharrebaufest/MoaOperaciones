@@ -13,7 +13,7 @@ namespace SustitucionMOAModel.Entities
         public int Cliente_Id { get; set; }
 
         [ForeignKey("Cliente_Id")]
-        public virtual Proveedor Cliente { get; set;  }
+        public virtual Proveedor Cliente { get; set; }
 
         public DateTime FechaCarga { get; set; }
 
@@ -62,25 +62,28 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime? FechaEntregaGenerada { get; set; }
 
+        public string NumeroEntrega { get; set; }
+
         public string NumeroPedido { get; set; }
 
         public string ContratosRespuesta { get; set; }
 
 
-        public void ActualizarEstado ()
+        public void ActualizarEstado()
         {
-            if(string.IsNullOrEmpty(ContratoSAP) || !TransporteExiste || !CorredorSeleccionado)
+            if (Estado != EstadoOrdenDeCarga.Entregada)
             {
-                Estado = EstadoOrdenDeCarga.Pendiente;
-            }
-            else
-            {
-                if (InformadaSAP)
+                if (string.IsNullOrEmpty(ContratoSAP) || !TransporteExiste)
                 {
-                    Estado = EstadoOrdenDeCarga.Confirmado;
+                    Estado = EstadoOrdenDeCarga.Pendiente;
                 }
                 else
-                { 
+                {
+                    if (InformadaSAP)
+                    {
+                        Estado = EstadoOrdenDeCarga.Confirmado;
+                    }
+
                     if (!AprobadoCredito)
                     {
                         Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;

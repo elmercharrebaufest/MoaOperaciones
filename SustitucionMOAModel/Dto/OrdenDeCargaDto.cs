@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,46 @@ namespace SustitucionMOAModel.Dto
         public string DescripcionEstado { get; set; }
 
         public string ColorSemaforo { get; set; }
+        public string Material { get; set; }
+        public string Cliente { get; set; }
+        public string Corredor { get; set; }
+        public string Contrato { get; set; }
+        public string Pedido { get; set; }
+        public string Entrega { get; set; }
+    }
+
+    public class OrdenDeCargaEditarDto
+    {
+        public OrdenDeCargaEditarDto(OrdenDeCarga orden)
+        {
+            Id = orden.Id;
+            CUITCliente = orden.CUITCliente;
+            NombreChofer = orden.NombreChofer;
+            ApellidoChofer = orden.ApellidoChofer;
+            CUITChofer = orden.CUITChofer;
+            PatenteAcoplado = orden.PatenteAcoplado;
+            ChasisAcoplado = orden.ChasisAcoplado;
+            RazonSocialTransporte = orden.RazonSocialTransporte;
+            CUITTransporte = orden.CUITTransporte;
+            Producto_Id = orden.Producto_Id;
+            Observacion = orden.Observacion;
+            ContratoIngresado = orden.ContratoIngresado;
+            Cantidad = orden.Cantidad;
+        }
+
+        public int Id { get; set; }
+        public string CUITCliente { get; set; }
+        public string NombreChofer { get; set; }
+        public string ApellidoChofer { get; set; }
+        public string CUITChofer { get; set; }
+        public string PatenteAcoplado { get; set; }
+        public string ChasisAcoplado { get; set; }
+        public string RazonSocialTransporte { get; set; }
+        public string CUITTransporte { get; set; }
+        public int Producto_Id { get; set; }
+        public string Observacion { get; set; }
+        public string ContratoIngresado { get; set; }
+        public int Cantidad { get; set; }
 
     }
 
@@ -56,6 +97,8 @@ namespace SustitucionMOAModel.Dto
 
         public string FechaEntregaGenerada { get; set; }
         public string Producto { get; set; }
+
+        public int Estado { get; set; }
 
         public override bool Equals(object obj)
         {

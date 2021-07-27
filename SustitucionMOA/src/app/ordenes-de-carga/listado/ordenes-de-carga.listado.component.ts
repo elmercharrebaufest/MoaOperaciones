@@ -9,23 +9,25 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { OrdenesDeCargaService } from '../ordenes-de-carga.service';
 
 @Component({
-  selector: 'app-ordenes-de-carga.listado',
-  templateUrl: './ordenes-de-carga.listado.component.html',
-  styleUrls: ['./ordenes-de-carga.listado.component.css']
+    selector: 'app-ordenes-de-carga.listado',
+    templateUrl: './ordenes-de-carga.listado.component.html',
+    styleUrls: ['./ordenes-de-carga.listado.component.css']
 })
 export class OrdenesDeCargaListado extends ListBaseComponent {
 
-     constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
-   ngOnInit() {
-      this.setTabs();
-      this.checkPermisos();
-      this.navService.setSeccionList([]);
-      this.getListado();
+    esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+
+    ngOnInit() {
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList([]);
+        this.getListado();
     }
-  
+
     getListado() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();

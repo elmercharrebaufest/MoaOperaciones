@@ -38,5 +38,28 @@ namespace SustitucionMOAModel.Enums
                     return "white";
             }
         }
+
+        public static string ToFriendlyString(this EstadoOrdenDeCarga me)
+        {
+            switch (me)
+            {
+                case EstadoOrdenDeCarga.Pendiente:
+                    return "Pendiente";
+                case EstadoOrdenDeCarga.Vencida:
+                    return "Vencida";
+                case EstadoOrdenDeCarga.Confirmado:
+                    return "Confirmada";
+                case EstadoOrdenDeCarga.PendienteAprobacionCredito:
+                    return "Pendiente aprobación crédito";
+                case EstadoOrdenDeCarga.EntregaPendiente:
+                    return "Entrega pendiente"; 
+                case EstadoOrdenDeCarga.EntregaGenerada:
+                    return "Entrega generada";
+                case EstadoOrdenDeCarga.Entregada:
+                    return "Entregada";
+                default:
+                    return "Sin estado";
+            }
+        }
     }
 }

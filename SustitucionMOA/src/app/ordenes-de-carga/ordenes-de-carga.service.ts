@@ -26,6 +26,16 @@ export class OrdenesDeCargaService extends BaseService {
             .pipe(map(this.extractData));
     }
 
+    public getEditarOrdenDeCarga(ordenDeCargaId: Number): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('ordenDeCargaId', ordenDeCargaId.toString());
+
+        return this.http
+            .get('/api/OrdenDeCarga/GetEditar', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
     public getListado(): Observable<any> {
         return this.http
             .get('/api/OrdenDeCarga/GetListado')
@@ -44,6 +54,21 @@ export class OrdenesDeCargaService extends BaseService {
 
         return this.http
             .post('/api/OrdenDeCarga/Agregar', payload)
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
+    }
+
+    public editar(ordenDeCarga: OrdenDeCarga): Observable<any> {
+        let payload = new FormData();
+        console.log(ordenDeCarga)
+        payload.append(
+            "ordenDeCargaJson",
+            JSON.stringify(ordenDeCarga)
+        );
+        console.log("payload:", payload)
+
+        return this.http
+            .post('/api/OrdenDeCarga/Editar', payload)
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))))
             .pipe(map(this.extractData));
     }
@@ -103,7 +128,7 @@ export class OrdenesDeCargaService extends BaseService {
         let payload = new FormData();
         payload.append(
             "contratoSAP",
-            JSON.stringify(contrato)
+            contrato
         );
         payload.append(
             "ordenId",

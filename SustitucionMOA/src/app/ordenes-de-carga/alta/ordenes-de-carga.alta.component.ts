@@ -36,6 +36,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
     private selectUndefinedOptionValue: any;
 
     listaMateriales: Material[];
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -77,47 +78,42 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     validar() {
 
-        if (this.ordenDeCarga.CUITTercero.toString().length != 11) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de tercero válido.");
-            return false;
-        }
-
-        if (this.ordenDeCarga.CUITCliente.toString().length != 11) {
+        if (this.ordenDeCarga.CUITCliente.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de cliente válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.NombreChofer.length < 2) {
+        if (this.ordenDeCarga.NombreChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
 
-        if (this.ordenDeCarga.ApellidoChofer.length < 2) {
+        if (this.ordenDeCarga.ApellidoChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
 
-        if (this.ordenDeCarga.CUITChofer.toString().length != 11) {
+        if (this.ordenDeCarga.CUITChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de chofer válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.PatenteAcoplado.length < 6) {
+        if (this.ordenDeCarga.PatenteAcoplado.trim().length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
             return false;
         }
 
-        if (this.ordenDeCarga.ChasisAcoplado.length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válida.");
+        if (this.ordenDeCarga.ChasisAcoplado.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
             return false;
         }
 
-        if (this.ordenDeCarga.RazonSocialTransporte.length < 2) {
+        if (this.ordenDeCarga.RazonSocialTransporte.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
             return false;
         }
 
-        if (this.ordenDeCarga.CUITTransporte.toString().length != 11) {
+        if (this.ordenDeCarga.CUITTransporte.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
             return false;
         }
@@ -131,7 +127,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
 
     obtenerOrdenDeCarga() {
         try {
-            this.subscriptionDropDowns = this.service.getOrdenDeCarga(this.ordenDeCargaId).subscribe(
+            this.subscriptionDropDowns = this.service.getEditarOrdenDeCarga(this.ordenDeCargaId).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -140,7 +136,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.ordenDeCargaId = result.data;
+                        this.ordenDeCarga = result.data;
                     }
                 },
                 error => {
@@ -162,37 +158,73 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit {
         this.spinnerComponent.showIt();
         this.unsubscribe();
 
-        this.subscription = this.service
-            .agregar(this.ordenDeCarga)
-            .subscribe(
-                (result) => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (
-                        result.error != undefined &&
-                        result.error != ""
-                    ) {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.mensajeComponent.setMsgsEmpty();
+        if (this.ordenDeCargaId > 0) {
+            this.subscription = this.service
+                .editar(this.ordenDeCarga)
+                .subscribe(
+                    (result) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.mensajeComponent.setMsgsEmpty();
 
-                        this.mensajeSuccess = result.data.Mensaje;
+                            this.mensajeSuccess = result.data.Mensaje;
 
-                        this.ordenDeCargaId = result.data.IdEntidad;
+                            this.ordenDeCargaId = result.data.IdEntidad;
 
-                        document
-                            .getElementById("openModalNotificacion")
-                            .click();
+                            document
+                                .getElementById("openModalNotificacion")
+                                .click();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
                     }
-                },
-                (error) => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
+                );
+
+        }
+        else {
+            this.subscription = this.service
+                .agregar(this.ordenDeCarga)
+                .subscribe(
+                    (result) => {
+                        this.spinnerComponent.hideIt();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (
+                            result.error != undefined &&
+                            result.error != ""
+                        ) {
+                            this.mensajeComponent.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.mensajeComponent.setInfoMsg(result.info);
+                        } else {
+                            this.mensajeComponent.setMsgsEmpty();
+
+                            this.mensajeSuccess = result.data.Mensaje;
+
+                            this.ordenDeCargaId = result.data.IdEntidad;
+
+                            document
+                                .getElementById("openModalNotificacion")
+                                .click();
+                        }
+                    },
+                    (error) => {
+                        this.spinnerComponent.hideIt();
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    }
+                );
+        }
     }
 
     aceptar() {

@@ -74,7 +74,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
-        if (this.ordenDeCarga.ContratoSAP === "" || this.ordenDeCarga.Corredor === "") {
+        if (this.ordenDeCarga.ContratoSAP === "") {
             this.mostrarBotonContratos = true;
         }
 
@@ -90,7 +90,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
             this.mostrarBotonAnular = true;
         }
-
     }
 
     obtenerOrdenDeCarga() {
@@ -265,7 +264,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        console.log(this.corredorSeleccionado);
         console.log(this.contratoSeleccionado);
         try {
             this.subscriptionDropDowns = this.service.seleccionarContrato(this.ordenDeCargaId, this.contratoSeleccionado).subscribe(
@@ -278,6 +276,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
+                        this.ordenDeCarga.ContratoSAP = this.contratoSeleccionado;
+                        this.mostrarBotonContratos = false;
                         document.getElementById("closemodalSeleccionarContrato").click();
                         this.mensajeComponent.setSuccessMsg(result.data);
                     }
@@ -290,6 +290,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
+
 
 
     abrirModalContratos() {
@@ -308,9 +310,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        console.log(result.data)
                         this.contratos = result.data;
-                        console.log(this.contratos)
                         document.getElementById("openSeleccionarContrato").click();
 
                     }
@@ -324,4 +324,43 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
+    abrirModalAnular() {
+        document.getElementById("openAnularOrden").click();
+    }
+
+    anularOrden() {
+        this.mensajeComponent.setMsgsEmpty();
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.subscriptionDropDowns = this.service.anular(this.ordenDeCargaId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        document.getElementById("closemodalAnularOrden").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+
+                        this.navService.navegarSeccion(
+                            "/ordenes-de-carga"
+                        );
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    editarOrden() {
+        this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+    }
 }

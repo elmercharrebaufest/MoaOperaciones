@@ -278,6 +278,7 @@ namespace SustitucionMOAUtils.Services
                             Comercial = proveedor.Comercial,
                             EstadoSIPER = proveedor.EstadoSIPER,
                             ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                            IdTipoProveedor = proveedor.TipoProveedor.Id
                         })
                 );
             }
@@ -307,6 +308,7 @@ namespace SustitucionMOAUtils.Services
                     Comercial = proveedor.Comercial,
                     EstadoSIPER = proveedor.EstadoSIPER,
                     ContieneDocumentacionFisica = proveedor.ContieneDocumentacionFisica,
+                    IdTipoProveedor = proveedor.TipoProveedor.Id
                 }
                 ).ToList());
             }

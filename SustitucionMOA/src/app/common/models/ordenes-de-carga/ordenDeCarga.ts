@@ -1,6 +1,7 @@
 import { EstadoOrdenDeCarga } from "./estadoOrdenDeCarga";
 
 export class OrdenDeCarga {
+    Id: number;
     CUITTercero: number;
     CUITCliente: number;
     NombreChofer: string;

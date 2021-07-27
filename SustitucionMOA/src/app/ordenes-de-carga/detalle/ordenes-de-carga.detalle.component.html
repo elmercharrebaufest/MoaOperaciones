@@ -12,11 +12,19 @@
     <!--Title-->
     <div class="row titleSection">
       <div class="col-xs-12 col-sm-10 ">
-        <strong> Orden de carga #{{ordenDeCarga.Id}}</strong>
-        <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
+        <strong> Orden de carga #{{ordenDeCarga.Id}}
+          <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
         <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
-        <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
-        </div>
+          <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
+          </div>
+        </strong>
+      </div>
+      <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
+          id="modalToggleButton">
+          Editar
+        </button>
       </div>
     </div>
     <!--End Title-->
@@ -77,29 +85,28 @@
           </div>
           <div class="formulario">
             <div class="containerBotones">
-              <div class="col-xs-0 col-md-3">
-                <input type="button" (click)="abrirModalContratos()" *ngIf="mostrarBotonContratos"
-                  class="btn-custom btn-add btn-mediano" value="Contratos">
+              <div class="col-xs-0 col-md-6" *ngIf="mostrarBotonContratos">
+                <input type="button" (click)="abrirModalContratos()" class="btn-custom btn-add btn-mediano"
+                  value="Contratos">
               </div>
 
-              <div class="col-xs-5 col-md-4">
-                <input type="button" (click)="notificarTransporte()" *ngIf="mostrarBotonNotificarTransporte"
-                  class="btn-custom btn-add btn-grande" value="Notificar Transporte">
+              <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonNotificarTransporte">
+                <input type="button" (click)="notificarTransporte()" class="btn-custom btn-add btn-grande"
+                  value="Notificar Transporte">
               </div>
 
-              <div class="col-xs-5 col-md-4">
-                <input type="button" (click)="verificarTransporte()" *ngIf="mostrarBotonVerificarTransporte"
-                  class="btn-custom btn-add btn-grande" value="Verificar Transporte">
+              <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonVerificarTransporte">
+                <input type="button" (click)="verificarTransporte()" class="btn-custom btn-add btn-grande"
+                  value="Verificar Transporte">
               </div>
-              <div class="col-xs-5 col-md-4">
-                <input type="button" (click)="verificarSituacionCrediticia()"
-                  *ngIf="mostrarBotonVerificarSituacionCrediticia" class="btn-custom btn-add btn-grande"
+              <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonVerificarSituacionCrediticia">
+                <input type="button" (click)="verificarSituacionCrediticia()" class="btn-custom btn-add btn-grande"
                   value="Verificar credito">
               </div>
 
-              <div class="col-xs-5 col-md-4">
-                <input type="button" (click)="anular()" *ngIf="mostrarBotonAnular"
-                  class="btn-custom btn-add btn-mediano" value="Anular">
+              <div class="col-xs-5 col-md-6" *ngIf="mostrarBotonAnular">
+                <input type="button" (click)="abrirModalAnular()" class="btn-custom btn-remove btn-mediano"
+                  value="Anular">
               </div>
             </div>
           </div>
@@ -124,7 +131,7 @@
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
-          <h4 class="modal-title" id="modalSeleccionarContratoLabel">Seleccionar ctronato</h4>
+          <h4 class="modal-title" id="modalSeleccionarContratoLabel">Seleccionar contrato</h4>
         </div>
         <div class="modal-body">
           <div class="row" *ngIf="contratos.length > 0">
@@ -147,6 +154,37 @@
           <button type="button" class="btn-custom btn-add btn-chico" (click)="seleccionarContrato()"
             style="display: inline-flex;">
             Confirmar
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" style="display:none" id="openAnularOrden" data-toggle="modal"
+    data-target="#modalAnularOrden"></button>
+  <!-- Modal -->
+  <div class="modal fade" id="modalAnularOrden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="modalAnularOrden">Seleccionar contrato</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row" class="col-xs-12 col-sm-12 col-md-12">
+            ¿Está seguro de que desea anular la orden de carga?
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top:none;">
+          <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closemodalAnularOrden"
+            style="display: inline-flex;">Cancelar</button>
+          <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
+            style="display: inline-flex;">
+            Anular orden
           </button>
 
         </div>

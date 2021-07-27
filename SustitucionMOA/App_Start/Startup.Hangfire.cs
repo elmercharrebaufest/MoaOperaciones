@@ -27,8 +27,6 @@ namespace SustitucionMOA
                 j => j.Execute(),
                 "30 6 * * *", tz);
 
-
-
             RecurringJob.AddOrUpdate<Jobs.IVerificarTransporteOrdenesDeCargaJob>(
                 "VerificarTransporteOrdenesDeCargaJob",
                 j => j.Execute(),

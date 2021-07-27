@@ -40,30 +40,67 @@
           role="grid" aria-describedby="tableModal_info"
           style="width: 100%; padding:10px 0; background: white !important;">
           <thead>
-            <tr role="row">
+            <tr role="row" *ngIf="esInterno">
               <th>Id</th>
-              <th>CUIT cliente</th>
+              <th>Cliente</th>
+              <th>Corredor</th>
+              <th>Contrato</th>
+              <th>Pedido</th>
+              <th>Entrega</th>
               <th>Estado</th>
-              <th>Semaforo</th>
-              <th>Semaforo</th>
+              <th>Material</th>
+              <th></th>
+              <th>
+                Detalle
+              </th>
+            </tr>
+            <tr role="row" *ngIf="!esInterno">
+              <th>Id</th>
+              <th>Contrato</th>
+              <th>Pedido</th>
+              <th>Entrega</th>
+              <th>Estado</th>
+              <th>Material</th>
               <th>
                 Detalle
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody *ngIf="esInterno">
             <tr *ngFor="let ordenDeCarga of data 
                                 | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
                                 | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                 ; let odd = odd" role="row" [class.odd]="!odd">
               <td>{{ordenDeCarga.Id}}</td>
-              <td>{{ordenDeCarga.CUITCliente}}</td>
+              <td>{{ordenDeCarga.Cliente}}</td>
+              <td>{{ordenDeCarga.Corredor}}</td>
+              <td>{{ordenDeCarga.Contrato}}</td>
+              <td>{{ordenDeCarga.Pedido}}</td>
+              <td>{{ordenDeCarga.Entrega}}</td>
               <td>{{ordenDeCarga.DescripcionEstado}}</td>
-              <td>{{ordenDeCarga.ColorSemaforo}}</td>
+              <td>{{ordenDeCarga.Material}}</td>
               <td>
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">
                 </div>
               </td>
+              <td>
+                <a class="cursor" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
+                  Ver
+                </a>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="!esInterno">
+            <tr *ngFor="let ordenDeCarga of data 
+                                          | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
+                                          | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
+                                          ; let odd = odd" role="row" [class.odd]="!odd">
+              <td>{{ordenDeCarga.Id}}</td>
+              <td>{{ordenDeCarga.Contrato}}</td>
+              <td>{{ordenDeCarga.Pedido}}</td>
+              <td>{{ordenDeCarga.Entrega}}</td>
+              <td>{{ordenDeCarga.DescripcionEstado}}</td>
+              <td>{{ordenDeCarga.Material}}</td>
               <td>
                 <a class="cursor" (click)="goToSeccionParam('/ordenes-de-carga/detalle/', ordenDeCarga.Id)">
                   Ver
