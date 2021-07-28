@@ -218,6 +218,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
             }
 
         );
+        this.blockUI.stop();
         return false;
     }
 
@@ -532,6 +533,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
 
         );
 
+        this.blockUI.stop();
         return false;
     }
 
@@ -958,6 +960,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.cuitProveedorSeleccionado = obj.Cuit;
                         this.negocioHabilitado(contrato);
                     }
+                    //Este tengo que borrar
                     //this.blockUI.stop();
                 }
             },
@@ -968,6 +971,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
             }
 
         );
+        this.blockUI.stop();
         return false;
     };
 
