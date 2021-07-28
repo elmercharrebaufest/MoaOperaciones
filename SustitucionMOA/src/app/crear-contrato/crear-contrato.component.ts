@@ -960,7 +960,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.cuitProveedorSeleccionado = obj.Cuit;
                         this.negocioHabilitado(contrato);
                     }
-                    this.blockUI.stop();
+                    //Este tengo que borrar
+                    //this.blockUI.stop();
                 }
             },
             error => {
