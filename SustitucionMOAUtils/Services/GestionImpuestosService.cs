@@ -70,32 +70,39 @@ namespace SustitucionMOAUtils.Services
             x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
         }
 
-        public string EditarDetalles(IngresosBrutosCoeficienteUnificadoDetalle coeficientes)
+        public string EditarDetalles(IngresosBrutosCoeficienteUnificadoDetalleDto coeficientes)
         {
             var coeficienteEditar = repositorio.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(x => x.Id == coeficientes.Id);
 
-            if(coeficienteEditar == null) throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "coeficiente unificado"));
+            if(coeficienteEditar == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "coeficiente unificado"));
 
-            coeficienteEditar.FechaUltimaModificacion = DateTime.Now;
             coeficienteEditar.CoeficienteGastos = coeficientes.CoeficienteGastos;
             coeficienteEditar.CoeficienteIngresos = coeficientes.CoeficienteIngresos;
             coeficienteEditar.CoeficienteUnificado = coeficientes.CoeficienteUnificado;
             coeficienteEditar.FechaCese = coeficientes.FechaCese;
             coeficienteEditar.FechaInicio = coeficientes.FechaInicio;
             coeficienteEditar.NumeroJurisdiccion = coeficientes.NumeroJurisdiccion;
-            coeficienteEditar.IngresosBrutosCoeficienteUnificado = coeficientes.IngresosBrutosCoeficienteUnificado;
+            coeficienteEditar.FechaUltimaModificacion = timeProvider.Now();
 
             repositorio.GuardarCambios();
 
             return (SuccessMsg.CommodityActualizacionOK);
         }
         
-        public void AutorizarCabecera(int idCabecera)
+        public string AutorizarCabecera(int idCabecera)
         {
             var cabecera = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
+
+            if (cabecera == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "cabecera cm05"));
+
             cabecera.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado;
             cabecera.FechaUltimaModificacion = timeProvider.Now();
+
             repositorio.GuardarCambios();
+
+            return (SuccessMsg.CommodityActualizacionOK);
         }
     }
 }

@@ -72,9 +72,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                gestionImpuestosService.AutorizarCabecera(idCabecera);
-
-                return JsonCustom(new { });
+                return JsonCustom(gestionImpuestosService.AutorizarCabecera(idCabecera));
             }
             catch (InfoCustomException e)
             {
@@ -95,7 +93,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var detalle = JsonConvert.DeserializeObject<IngresosBrutosCoeficienteUnificadoDetalle>(detalleJson);
+                var detalle = JsonConvert.DeserializeObject<IngresosBrutosCoeficienteUnificadoDetalleDto>(detalleJson);
 
                 return JsonCustom(gestionImpuestosService.EditarDetalles(detalle));
             }

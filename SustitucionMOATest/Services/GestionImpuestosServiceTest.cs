@@ -49,10 +49,13 @@ namespace SustitucionMOATest.Services
             };
 
             this.repositorioMock
-                .Setup(repo => repo.Listar<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>>(),null,0,null,DirOrden.Asc))
-                .Returns<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>, Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>, int, string, DirOrden> 
-                    ((proy, filtro, maxResultados, orden, dirOrden) => );
-                 target.ListarCabeceras();
+                .Setup(repo => repo.Listar(It.IsAny<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>>(), null, 0, null, DirOrden.Asc))
+                .Returns<Expression<Func<IngresosBrutosCoeficienteUnificado, IngresosBrutosCoeficienteUnificadoDto>>, Expression<Func<IngresosBrutosCoeficienteUnificado, bool>>, int, string, DirOrden>
+                    ((proy, filtro, maxResultados, orden, dirOrden) => 
+                    cabeceras.Where(x => filtro.Compile().Invoke(x))
+                             .Select(x => proy.Compile().Invoke(x)).ToList());
+
+             target.ListarCabeceras();
         }
     }
 }
