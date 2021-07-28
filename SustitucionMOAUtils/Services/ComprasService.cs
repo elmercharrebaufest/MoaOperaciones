@@ -256,6 +256,7 @@ namespace SustitucionMOAUtils.Services
                                 subposEntity.Numero = subpos.Numero;
                                 subposEntity.PrecioBruto = subpos.PrecioBruto;
                                 subposEntity.Tarea = subpos.Tarea;
+                    
 
                                 if (subpos.Unidad != null)
                                     subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
@@ -601,7 +602,7 @@ namespace SustitucionMOAUtils.Services
                 solpValores.Add(SolpTemplateKeys.INICIO_FINAL_HS_JORNADA_LABORAL, " ");
             }
 
-            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td></td></tr>";
+            string templateSubposiciones = "<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td></td><td></td></tr>";
             StringBuilder subposiciones = new StringBuilder();
 
             solp.Posiciones.ForEach(pos =>
