@@ -21,5 +21,6 @@ namespace SustitucionMOAModel.Dto
         public decimal CoeficienteUnificado { get; set; }
 
         public DateTime FechaUltimaModificacion { get; set; }
+        public bool Editar { get; set; }
     }
 }

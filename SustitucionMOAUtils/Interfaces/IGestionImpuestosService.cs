@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -10,5 +11,6 @@ namespace SustitucionMOAUtils.Interfaces
         IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera);
 
         void AutorizarCabecera(int idCabecera);
+        string EditarDetalles(IngresosBrutosCoeficienteUnificadoDetalle coeficientes);
     }
 }

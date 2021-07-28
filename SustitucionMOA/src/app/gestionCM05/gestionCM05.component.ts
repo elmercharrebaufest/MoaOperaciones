@@ -98,4 +98,84 @@ export class GestionCM05Component extends ListBaseComponent {
         this.detalles = null;
         this.displayDialog = false;
     }
+
+    editarRow(rowData){
+        rowData.Editar = true;
+    }
+
+    guardarRow(rowData){
+        try {
+            if(this.validarRow(rowData)){
+                return
+            }
+
+            this.subscription = this.service.editarRow(rowData).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        rowData.Editar = false;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false; //<-- Prevent Refresh
+    }
+
+    validarRow(rowData){
+        this.messageService.clear();
+        var regexNumerosEnteros = /^[0-9]*$/
+        var regexNumerosDecimales = /^[0-9,.]*$/
+
+        if(rowData.NumeroJurisdiccion == null || rowData.NumeroJurisdiccion == ""){
+            this.messageService.add({severity:'error', summary:'Nro. Jurisdicción', detail:'Esta vacio.'});
+            return
+        }
+        if(!(regexNumerosEnteros.test(rowData.NumeroJurisdiccion))){
+            this.messageService.add({severity:'error', summary:'Nro. Jurisdicción', detail:'Debe ser un numero entero.'});
+            return
+        }
+
+        if(!(regexNumerosDecimales.test(rowData.CoeficienteIngresos))){
+            this.messageService.add({severity:'error', summary:'Coef. Ingresos', detail:'Debe ser un numero entero o decimal.'});
+            return
+        }/*
+        if(rowData.CoeficienteIngresos == null || rowData.CoeficienteIngresos == ""){
+            this.messageService.add({severity:'error', summary:'Coef. Ingresos', detail:'Esta vacio.'});
+            return
+        }*/
+
+        if(!(regexNumerosDecimales.test(rowData.CoeficienteGastos))){
+            this.messageService.add({severity:'error', summary:'Coef. Gastos', detail:'Debe ser un numero entero o decimal.'});
+            return
+        }/*
+        if(rowData.CoeficienteGastos == null || rowData.CoeficienteGastos == ""){
+            this.messageService.add({severity:'error', summary:'Coef. Gastos', detail:'Esta vacio.'});
+            return
+        }*/
+
+        if(!(regexNumerosDecimales.test(rowData.CoeficienteUnificado))){
+            this.messageService.add({severity:'error', summary:'Coef. Unificado', detail:'Debe ser un numero entero o decimal.'});
+            return
+        }
+        /*
+        if(rowData.CoeficienteUnificado == null || rowData.CoeficienteUnificado == ""){
+            this.messageService.add({severity:'error', summary:'Coef. Unificado', detail:'Esta vacio.'});
+            return
+        }*/
+
+        return false
+    }
 }
