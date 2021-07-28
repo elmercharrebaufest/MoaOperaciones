@@ -1198,7 +1198,7 @@ namespace SustitucionMOA.Controllers
 
             if(usuario == null)
             {
-                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "usuario", usuario));
+                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "usuario", userMail));
             }
 
             var esAdmin = usuario.EsAdmin();
