@@ -29,10 +29,12 @@ namespace SustitucionMOAUtils.Services
     public class GestionImpuestosService : IGestionImpuestosService
     {
         private readonly IRepositorio repositorio;
+        private readonly ITimeProvider timeProvider;
 
-        public GestionImpuestosService(IRepositorio repositorio)
+        public GestionImpuestosService(IRepositorio repositorio, ITimeProvider timeProvider)
         {
             this.repositorio = repositorio;
+            this.timeProvider = timeProvider;
         }
 
         public IList<IngresosBrutosCoeficienteUnificadoDto> ListarCabeceras()
@@ -48,6 +50,7 @@ namespace SustitucionMOAUtils.Services
                 Sede = x.Sede
             });
         }
+        
         public IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera)
         {
             return repositorio.Listar<IngresosBrutosCoeficienteUnificadoDetalle, IngresosBrutosCoeficienteUnificadoDetalleDto>(
@@ -64,6 +67,14 @@ namespace SustitucionMOAUtils.Services
                 FechaUltimaModificacion = x.FechaUltimaModificacion,
             },
             x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
+        }
+        
+        public void AutorizarCabecera(int idCabecera)
+        {
+            var cabecera = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
+            cabecera.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado;
+            cabecera.FechaUltimaModificacion = timeProvider.Now();
+            repositorio.GuardarCambios();
         }
     }
 }

@@ -8,5 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
         IList<IngresosBrutosCoeficienteUnificadoDto> ListarCabeceras();
         
         IList<IngresosBrutosCoeficienteUnificadoDetalleDto> ListarDetalles(int idCabecera);
+
+        void AutorizarCabecera(int idCabecera);
     }
 }
