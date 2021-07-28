@@ -532,7 +532,6 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
 
         );
 
-        this.blockUI.stop();
         return false;
     }
 
