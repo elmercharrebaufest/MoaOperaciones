@@ -1,8 +1,22 @@
-﻿body
-{
+﻿body {
     font-family: Cambria;
     font-size: 14px;
     text-align: justify;
+    margin: 0;
+    margin-bottom: 40px;
+}
+
+html {
+    min-height: 100%;
+    position: relative;
+}
+.footer {
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    color: white;
 }
 
 .tablaPrimeraPagina

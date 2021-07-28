@@ -125,7 +125,7 @@ export class CabeceraComponent extends ListBaseComponent {
         }
 
         this.centroSeleccionado();
-        // this.monedaSeleccionada();
+        this.monedaSeleccionada();
 
         this.model.cargoPasoCinco = true;        
  
@@ -200,15 +200,14 @@ export class CabeceraComponent extends ListBaseComponent {
     }
 
 
-    // monedaSeleccionada(){
-    //     let moneda: any;
-
-    //     if (this.model.posicionActual.selectMonedaCompras) {
-    //         moneda = this.combos.Moneda.find(x => x.CodigoSap == this.model.posicionActual.selectMonedaCompras.CodigoSap);
-    //     } else if(this.model.monedaPorDefecto){
-    //         this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x=>x.Codigo == this.model.monedaPorDefecto)
-    //     };
-    // }
+    monedaSeleccionada(){
+        let moneda: any;
+        if (this.model.posicionActual.monedaSeleccionada) {
+            moneda = this.combos.Moneda.find(x => x.CodigoSap == this.model.posicionActual.monedaSeleccionada.CodigoSap);
+        } else if(this.model.monedaPorDefecto){
+            this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x=>x.Codigo == this.model.monedaPorDefecto)
+        };
+    }
 
     centroSeleccionado(){
         let direccionCentro: any;
