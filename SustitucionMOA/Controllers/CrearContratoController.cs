@@ -1196,7 +1196,16 @@ namespace SustitucionMOA.Controllers
             string vendedor = SessionPersister.Proveedor;
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
-            if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
+
+            if(usuario == null)
+            {
+                throw new ValidationCustomException("Usuario null");
+            }
+
+            var esAdmin = usuario.EsAdmin();
+            var tienePermisos = usuario.TienePermiso("ELEGIR TODOS VENDEDORES");
+
+            if (!esAdmin && !tienePermisos)
             {
                 if (!usuario.TieneProveedor(vendedor))
                 {
