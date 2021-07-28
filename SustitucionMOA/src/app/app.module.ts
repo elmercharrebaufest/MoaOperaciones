@@ -64,8 +64,9 @@ import { GestionCM05Service } from "./gestionCM05/gestionCM05.service";
 import { TableModule } from "primeng/table";
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import {CalendarModule} from 'primeng/calendar';
 import { PaginatorModule } from 'primeng/paginator';
-
+import {ToastModule} from 'primeng/toast';
 
 @NgModule({
   imports: [
@@ -87,6 +88,8 @@ import { PaginatorModule } from 'primeng/paginator';
     DialogModule,
     ButtonModule,
     PaginatorModule,
+    CalendarModule,
+    ToastModule
   ],
   declarations: [
     AppComponent,

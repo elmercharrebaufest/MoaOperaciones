@@ -17,4 +17,5 @@ export interface DetalleCM05 {
     CoeficienteGastos;
     CoeficienteUnificado;
     FechaUltimaModificacion;
+    Editar?;
 };

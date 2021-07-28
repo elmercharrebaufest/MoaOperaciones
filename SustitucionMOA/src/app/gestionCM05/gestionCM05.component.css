@@ -8,3 +8,15 @@
     font-size: 9px;
     width: min-content;
 }
+
+input {
+    width: 100%;    
+}
+
+::ng-deep .ui-calendar input{
+    width: 100%;
+}
+
+::ng-deep .ui-datepicker{
+    width: 450%;
+}

@@ -62,8 +62,29 @@ namespace SustitucionMOAUtils.Services
                 CoeficienteGastos = x.CoeficienteGastos,
                 CoeficienteUnificado = x.CoeficienteUnificado,
                 FechaUltimaModificacion = x.FechaUltimaModificacion,
+                Editar = false
             },
             x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
+        }
+
+        public string EditarDetalles(IngresosBrutosCoeficienteUnificadoDetalle coeficientes)
+        {
+            var coeficienteEditar = repositorio.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(x => x.Id == coeficientes.Id);
+
+            if(coeficienteEditar == null) throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "coeficiente unificado"));
+
+            coeficienteEditar.FechaUltimaModificacion = DateTime.Now;
+            coeficienteEditar.CoeficienteGastos = coeficientes.CoeficienteGastos;
+            coeficienteEditar.CoeficienteIngresos = coeficientes.CoeficienteIngresos;
+            coeficienteEditar.CoeficienteUnificado = coeficientes.CoeficienteUnificado;
+            coeficienteEditar.FechaCese = coeficientes.FechaCese;
+            coeficienteEditar.FechaInicio = coeficientes.FechaInicio;
+            coeficienteEditar.NumeroJurisdiccion = coeficientes.NumeroJurisdiccion;
+            coeficienteEditar.IngresosBrutosCoeficienteUnificado = coeficientes.IngresosBrutosCoeficienteUnificado;
+
+            repositorio.GuardarCambios();
+
+            return (SuccessMsg.CommodityActualizacionOK);
         }
     }
 }

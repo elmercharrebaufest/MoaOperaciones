@@ -35,5 +35,28 @@ namespace SustitucionMOA.Controllers
         {
             return JsonCustom(gestionImpuestosService.ListarDetalles(idCabecera));
         }
+
+        public JsonResult Editar(string detalleJson)
+        {
+            try
+            {
+                var detalle = JsonConvert.DeserializeObject<IngresosBrutosCoeficienteUnificadoDetalle>(detalleJson);
+
+                return JsonCustom(gestionImpuestosService.EditarDetalles(detalle));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

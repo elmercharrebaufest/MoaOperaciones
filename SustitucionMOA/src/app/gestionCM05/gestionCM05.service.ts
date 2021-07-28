@@ -17,4 +17,14 @@ export class GestionCM05Service extends BaseService {
             .get('/api/GestionImpuestos/ListarDetalles?idCabecera=' + idCabecera, { headers: this.headers })
             .pipe(map(this.extractData));
     }
+
+    public editarRow(rowdata){
+        let detalleJson = JSON.stringify(rowdata);
+        var payload = new FormData();
+
+        payload.append('detalleJson', detalleJson);
+
+        return this.http
+            .post('/api/GestionImpuestos/Editar', payload, this.headers).map(this.extractData);
+    }
 }
