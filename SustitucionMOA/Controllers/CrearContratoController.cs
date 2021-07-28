@@ -1199,13 +1199,13 @@ namespace SustitucionMOA.Controllers
 
             if(usuario == null)
             {
-                throw new ValidationCustomException("Usuario null");
+                throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "usuario", usuario));
             }
 
             var esAdmin = usuario.EsAdmin();
-            var tienePermisos = usuario.TienePermiso("ELEGIR TODOS VENDEDORES");
+            var tienePermiso = usuario.TienePermiso("ELEGIR TODOS VENDEDORES");
 
-            if (!esAdmin && !tienePermisos)
+            if (!esAdmin && !tienePermiso)
             {
                 if (!usuario.TieneProveedor(vendedor))
                 {
