@@ -103,6 +103,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
     this.blockUI.start('Generando declaración');
     try {
+
       this.subscription = this.service
         .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales, this.CUITDeclaracion, this.razonSocialDeclaracion)
         .subscribe(
@@ -137,9 +138,12 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
             }
           },
           () => {
+            this.floatMessage.setErrorMsg("Ocurrió un error generando la declaración")
             this.blockUI.stop();
           }
-        );
+        ).add(() => {
+          this.blockUI.stop();
+        });;
     }
     catch (e) {
       this.floatMsgService.setErrorMsg(e);
