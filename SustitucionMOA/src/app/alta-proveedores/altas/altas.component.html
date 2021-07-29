@@ -1268,24 +1268,27 @@
 
                 <div class="row infoClienteContainer"
                     *ngIf="empresaSeleccionada.EstadoAprobacion == 8 && isAuthorized('ABM EMPRESAS APROBADOR')">
-                    <label class="observaciones col-xs-12 col-md-12" style="float:left; padding-left:
-                        10px;padding-right: 10px;">
+                    <label class="observaciones col-xs-12 col-md-12" style="justify-content: left;
+    display: flex;">
                         Información cliente
                     </label>
 
                     <div style="display: flex;">
-                        <div class=" form-group grey col-xs-12 col-md-3">
+                        <div class="form-group roundedInfo grey col-xs-12 col-md-2">
                             Razon Social
                         </div>
-                        <div class="col-xs-12 col-md-3">
+                        <div class="col-xs-12 col-md-2">
                             <input type="text" class="form-control" [value]="" [(ngModel)]="razonSocial" />
                         </div>
 
-                        <div class="col-xs-12 col-md-3">
+                        <div class="form-group roundedInfo grey col-xs-12 col-md-2">
                             Codigo SAP
                         </div>
-                        <div class="form-group grey col-xs-12 col-md-3">
+                        <div class="form-group grey col-xs-12 col-md-2">
                             <input type="text" class="form-control" [value]="" [(ngModel)]="codigoCliente" />
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+
                         </div>
                     </div>
                 </div>

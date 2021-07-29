@@ -48,6 +48,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarBotonVerificarSituacionCrediticia: boolean = false;
     mostrarBotonAnular: boolean = false;
 
+    esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -74,21 +77,23 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return;
         }
 
-        if (this.ordenDeCarga.ContratoSAP === "") {
-            this.mostrarBotonContratos = true;
-        }
+        if (this.esInterno) {
+            if (this.ordenDeCarga.ContratoSAP === "-") {
+                this.mostrarBotonContratos = true;
+            }
 
-        if (!this.ordenDeCarga.TransporteExiste) {
-            this.mostrarBotonNotificarTransporte = true;
-            this.mostrarBotonVerificarTransporte = true;
-        }
+            if (!this.ordenDeCarga.TransporteExiste) {
+                this.mostrarBotonNotificarTransporte = true;
+                this.mostrarBotonVerificarTransporte = true;
+            }
 
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
-            this.mostrarBotonVerificarSituacionCrediticia = true;
-        }
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito) {
+                this.mostrarBotonVerificarSituacionCrediticia = true;
+            }
 
-        if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
-            this.mostrarBotonAnular = true;
+            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente) {
+                this.mostrarBotonAnular = true;
+            }
         }
     }
 
@@ -160,6 +165,9 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.mostrarBotonNotificarTransporte = false;
+                        this.mostrarBotonVerificarTransporte = false;
+
                     }
                 },
                 error => {

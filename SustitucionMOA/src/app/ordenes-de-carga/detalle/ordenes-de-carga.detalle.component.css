@@ -7,3 +7,7 @@
 .containerBotones > div {
     padding-bottom: 10px;
 }
+
+.semaforo {
+    margin-bottom: -5px;
+}

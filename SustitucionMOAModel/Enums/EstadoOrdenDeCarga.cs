@@ -26,6 +26,7 @@ namespace SustitucionMOAModel.Enums
             {
                 case EstadoOrdenDeCarga.Pendiente:
                 case EstadoOrdenDeCarga.Vencida:
+                case EstadoOrdenDeCarga.Anulada:
                     return "red";
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.PendienteAprobacionCredito:
@@ -57,6 +58,29 @@ namespace SustitucionMOAModel.Enums
                     return "Entrega generada";
                 case EstadoOrdenDeCarga.Entregada:
                     return "Entregada";
+                case EstadoOrdenDeCarga.Anulada:
+                    return "Anulada";
+                default:
+                    return "Sin estado";
+            }
+        }
+
+        public static string ToUserFriendlyString(this EstadoOrdenDeCarga me)
+        {
+            switch (me)
+            {
+                case EstadoOrdenDeCarga.Vencida:
+                    return "Vencida";
+                case EstadoOrdenDeCarga.Pendiente:
+                case EstadoOrdenDeCarga.Confirmado:
+                case EstadoOrdenDeCarga.PendienteAprobacionCredito:
+                case EstadoOrdenDeCarga.EntregaPendiente:
+                case EstadoOrdenDeCarga.EntregaGenerada:
+                    return "Pendiente de carga";
+                case EstadoOrdenDeCarga.Entregada:
+                    return "Completada";
+                case EstadoOrdenDeCarga.Anulada:
+                    return "Anulada";
                 default:
                     return "Sin estado";
             }

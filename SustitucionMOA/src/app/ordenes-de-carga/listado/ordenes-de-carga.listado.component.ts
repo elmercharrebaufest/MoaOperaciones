@@ -20,6 +20,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent {
     }
 
     esInterno: boolean = this.isAuthorized('VER TODAS ORDENES DE CARGA');
+    esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
 
     ngOnInit() {
         this.setTabs();

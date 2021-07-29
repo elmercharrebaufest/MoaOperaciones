@@ -11,11 +11,8 @@ namespace SustitucionMOAModel.Dto
     public class OrdenDeCargaDto
     {
         public int Id { get; set; }
-
         public string CUITCliente { get; set; }
-
         public string DescripcionEstado { get; set; }
-
         public string ColorSemaforo { get; set; }
         public string Material { get; set; }
         public string Cliente { get; set; }
@@ -42,6 +39,7 @@ namespace SustitucionMOAModel.Dto
             Observacion = orden.Observacion;
             ContratoIngresado = orden.ContratoIngresado;
             Cantidad = orden.Cantidad;
+            NumeroPedidoIngresado = orden.NumeroPedidoIngresado;
         }
 
         public int Id { get; set; }
@@ -57,48 +55,38 @@ namespace SustitucionMOAModel.Dto
         public string Observacion { get; set; }
         public string ContratoIngresado { get; set; }
         public int Cantidad { get; set; }
+        public string NumeroPedidoIngresado { get; set; }
 
     }
 
     public class OrdenDeCargaDetalleDto
     {
-
         public int Id { get; set; }
         public string CUITCliente { get; set; }
         public string RazonSocialCliente { get; set; }
         public string DescripcionEstado { get; set; }
         public string ColorSemaforo { get; set; }
-
         public string Chofer { get; set; }
-
         public string FechaCarga { get; set; }
-
         public string Transporte { get; set; }
-
         public int Cantidad { get; set; }
-
         public string Observacion { get; set; }
-
         public string ContratoSAP { get; set; }
-
         public bool CorredorSeleccionado { get; set; }
-
         public string Corredor { get; set; }
-
         public bool TransporteExiste { get; set; }
-
         public string PatenteAcoplado { get; set; }
-
         public string ChasisAcoplado { get; set; }
-
         public bool AprobadoCredito { get; set; }
-
         public bool InformadaSAP { get; set; }
-
         public string FechaEntregaGenerada { get; set; }
         public string Producto { get; set; }
-
         public int Estado { get; set; }
+        public string NumeroPedido { get; set; }
+        public string NumeroEntrega { get; set; }
+        public string ContratoIngresado { get; set; }
+        public string Cliente { get; set; }
+        public string DescripcionEstadoUsuarioFinal { get; set; }
 
         public override bool Equals(object obj)
         {

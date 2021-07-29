@@ -19,6 +19,7 @@ export class OrdenDeCarga {
     Corredor: string;
     TransporteExiste: boolean;
     ContratoIngresado: string;
+    NumeroPedidoIngresado: string;
 
     constructor() {
     }
@@ -26,7 +27,6 @@ export class OrdenDeCarga {
 
     llenar() {
         this.CUITCliente = 20266044993;
-        this.CUITTercero = 20391666689;
         this.NombreChofer = "Martin";
         this.ApellidoChofer = "Pfeiffer";
         this.CUITChofer = 20391666687;
@@ -36,7 +36,7 @@ export class OrdenDeCarga {
         this.CUITTransporte = 20086452597;
         this.Producto_Id = 1;
         this.Cantidad = 30000;
-        this.Observacion = "Vamo lo redó";
+        this.Observacion = "Comentarios";
         this.ContratoIngresado = "33012251";
     }
 }

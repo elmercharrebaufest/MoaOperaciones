@@ -4,7 +4,8 @@
     <!--Title-->
     <div class="row titleSection">
       <div class="col-xs-12 col-sm-10 ">
-        <strong> Nueva orden de carga</strong>
+        <strong *ngIf="ordenDeCargaId == 0"> Nueva orden de carga</strong>
+        <strong *ngIf="ordenDeCargaId > 0"> Editar orden de carga #{{ordenDeCargaId}}</strong>
         <!-- <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
         <strong *ngIf="notificacion.Id > 0">Editar notificación</strong> -->
       </div>
@@ -43,7 +44,7 @@
               </div>
 
               <div class="styled-select">
-                <input type="text" maxlength="25">
+                <input type="text" [(ngModel)]="ordenDeCarga.NumeroPedidoIngresado" maxlength="25">
               </div>
             </div>
             <div class="col-xs-12 col-md-6">

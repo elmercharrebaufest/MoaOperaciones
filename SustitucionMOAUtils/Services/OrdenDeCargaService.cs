@@ -36,16 +36,18 @@ namespace SustitucionMOAUtils.Services
             {
                 var corredor = usuario.ObtenerCorredor();
                 ordenDeCarga.Corredor = corredor.CodigoProveedor;
+                cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
             }
             else
             {
                 ordenDeCarga.Corredor = "";
+                cliente = usuario.ObtenerProveedor();
             }
 
-            if (ordenDeCarga.CUITCliente != "")
-                cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
-            else
-                cliente = usuario.ObtenerProveedor();
+            //if (ordenDeCarga.CUITCliente != "")
+            //    cliente = usuario.ObtenerProveedorPorCUIT(ordenDeCarga.CUITCliente);
+            //else
+            //    cliente = usuario.ObtenerProveedor();
 
             ordenDeCarga.FechaCarga = DateTime.Now;
             ordenDeCarga.Cliente_Id = cliente.Id;
@@ -53,7 +55,7 @@ namespace SustitucionMOAUtils.Services
             var producto = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
 
             ordenDeCarga.Producto = producto;
-            ordenDeCarga.NumeroPedido = "";
+            ordenDeCarga.NumeroPedido = string.IsNullOrEmpty(ordenDeCarga.NumeroPedidoIngresado) ? "" : ordenDeCarga.NumeroPedidoIngresado;
             ordenDeCarga.ContratoSAP = ordenDeCarga.ContratoIngresado;
 
             ordenDeCarga.Cantidad = int.Parse(ConfigurationManager.AppSettings["CantidadOrdenDeCarga"]);
@@ -87,17 +89,44 @@ namespace SustitucionMOAUtils.Services
 
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
 
-            ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
-            ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
-            ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
-            ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
-            ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
-            ordenEditar.RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte;
-            ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
-            ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+            if (ordenEditar.FechaEntregaGenerada != null)
+            {
+                ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
+                ordenEditar.ApellidoChofer = ordenDeCarga.ApellidoChofer;
+                ordenEditar.CUITChofer = ordenDeCarga.CUITChofer;
+                ordenEditar.PatenteAcoplado = ordenDeCarga.PatenteAcoplado;
+                ordenEditar.ChasisAcoplado = ordenDeCarga.ChasisAcoplado;
+            }
+
+            if (!ordenEditar.TransporteExiste)
+            {
+                ordenEditar.RazonSocialTransporte = ordenDeCarga.RazonSocialTransporte;
+                ordenEditar.CUITTransporte = ordenDeCarga.CUITTransporte;
+            }
+
+            if (!ordenEditar.InformadaSAP)
+            {
+                ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
+                ordenEditar.Cantidad = ordenDeCarga.Cantidad;
+                ordenEditar.Producto_Id = ordenDeCarga.Producto_Id;
+                ordenEditar.NumeroPedidoIngresado = ordenDeCarga.NumeroPedidoIngresado;
+
+                var crearPedido = VerificarOrden(ordenEditar, ordenEditar.Cliente);
+
+                if (crearPedido)
+                {
+                    ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
+
+                    var creadaEnSaP = CrearOrdenEnSAP(ordenEditar, ordenEditar.Cliente);
+
+                    if (creadaEnSaP)
+                    {
+                        VerificarSituacionCrediticia(ordenEditar, notificar: true);
+                    }
+                }
+            }
+
             ordenEditar.Observacion = ordenDeCarga.Observacion;
-            ordenEditar.ContratoIngresado = ordenDeCarga.ContratoIngresado;
-            ordenEditar.Cantidad = ordenDeCarga.Cantidad;
 
             repositorio.GuardarCambios();
 
@@ -110,10 +139,10 @@ namespace SustitucionMOAUtils.Services
             //OV-02   'Verificar cantidad pendiente de Contratada'
             //OV-03   'Pedido creado - Verificar Crédito de pedido'
             //OV-00   'OK'
-            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto.CodigoSap, "", out string numeroPedido);
+            var result = consumer.CrearOrdenRequest(cliente.CodigoProveedor, orden.ContratoSAP, orden.Corredor, orden.Cantidad, orden.Producto.CodigoSap, orden.NumeroPedidoIngresado, out string numeroPedido);
 
             //var result2 = consumer.OrdenCargaEntregadaRequest(orden.CUITChofer, orden.Cantidad, orden.NombreChofer, orden.PatenteAcoplado, orden.ChasisAcoplado, "", "DNI", orden.CUITTransporte, out string mensaje);
-            if (result == "OK" || result == "OV-03")
+            if (result == "OV-00" || result == "OV-03")
             {
                 orden.InformadaSAP = true;
                 orden.NumeroPedido = numeroPedido;
@@ -220,7 +249,7 @@ namespace SustitucionMOAUtils.Services
                     Pedido = x.NumeroPedido ?? "-",
                     Entrega = x.NumeroEntrega ?? "-",
                     Material = x.Producto.Nombre,
-                    DescripcionEstado = x.Estado.ToFriendlyString(),
+                    DescripcionEstado = x.Estado.ToUserFriendlyString(),
                 }).ToList();
             }
 
@@ -256,16 +285,19 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = orden.Id,
                 CUITCliente = orden.CUITCliente,
-                DescripcionEstado = orden.Estado.ToString(),
+                DescripcionEstado = orden.Estado.ToFriendlyString(),
                 ColorSemaforo = orden.Estado.ObtenerSemaforo(),
+                ContratoIngresado = orden.ContratoIngresado,
+                Cliente = orden.Cliente.CodigoProveedor,
                 AprobadoCredito = orden.AprobadoCredito,
                 Cantidad = orden.Cantidad,
                 ChasisAcoplado = orden.ChasisAcoplado,
                 Chofer = $"{orden.ApellidoChofer}, {orden.NombreChofer} ({orden.CUITChofer})",
-                ContratoSAP = orden.ContratoSAP ?? "",
+                ContratoSAP = string.IsNullOrEmpty(orden.ContratoSAP) ? "-" : orden.ContratoSAP,
                 Corredor = orden.Corredor,
                 CorredorSeleccionado = orden.CorredorSeleccionado,
                 Estado = (int)orden.Estado,
+                DescripcionEstadoUsuarioFinal = orden.Estado.ToUserFriendlyString(),
                 FechaCarga = orden.FechaCarga.ToString("dd/MM/yyyy hh:mm"),
                 FechaEntregaGenerada = orden.FechaEntregaGenerada?.ToString("dd/MM/yyyy hh:mm"),
                 InformadaSAP = orden.InformadaSAP,
@@ -274,7 +306,9 @@ namespace SustitucionMOAUtils.Services
                 RazonSocialCliente = cliente.RazonSocial,
                 Transporte = $"{orden.RazonSocialTransporte} ({orden.CUITTransporte})",
                 TransporteExiste = orden.TransporteExiste,
-                Producto = orden.Producto.CodigoSap
+                Producto = orden.Producto.Nombre,
+                NumeroEntrega = string.IsNullOrEmpty(orden.NumeroEntrega) ? "-" : orden.NumeroEntrega,
+                NumeroPedido = string.IsNullOrEmpty(orden.NumeroPedido) ? "-" : orden.NumeroPedido
             };
 
             return ordenDto;
@@ -532,13 +566,22 @@ namespace SustitucionMOAUtils.Services
 
                 if (!orden.AprobadoCredito)
                 {
-                    if (notificar)
+                    if (notificar && false)
                     {
                         NotificarSituacionCrediticia(orden);
                     }
 
                     orden.ActualizarEstado();
-                    return "Verifique el crédito del pedido";
+
+                    if (notificar)
+                    {
+                        return "Verifique el crédito del pedido";
+                    }
+                    else
+                    {
+                        throw new InfoCustomException("Verifique el crédito del pedido.");
+                    }
+
                 }
                 else
                 {
@@ -549,7 +592,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                return "La orden está pendiente de aprobación de crédito.";
+                return "La orden no está pendiente de aprobación de crédito.";
             }
         }
 
@@ -586,7 +629,7 @@ namespace SustitucionMOAUtils.Services
         {
             orden.TransporteExiste = TransporteExiste(orden);
 
-            if (orden.TransporteExiste)
+            if (!orden.TransporteExiste)
             {
                 throw new ValidationCustomException("No existe el transportista");
             }
