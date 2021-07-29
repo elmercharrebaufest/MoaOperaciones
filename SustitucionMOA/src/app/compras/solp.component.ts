@@ -145,7 +145,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     },
     {
         Codigo: EnumPasoSolp.SolpSubposiciones,
-        Nombre: 'Subposiciones',
+        Nombre: 'Servicios',
         Activo: false,
         Completo: false,
         Iniciado: false,
@@ -226,6 +226,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.solpActual.ejecucion = "30";
             this.solpActual.observacionesCotizacion = "Indicar la cantidad de dias con que se cuenta a partir de tener el equipo disponible, en una parada programada u que el trabajo depende de otros";
             
+            this.solpActual.centroPorDefecto = 1029;
+            this.solpActual.monedaPorDefecto = "ARP";
+
             this.getCombos();
 
             if(this.route.params){
@@ -370,7 +373,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                 if(x.Subposiciones){
                     posActual.listadoSubPosiciones = [];
-                    let i = 0;
+                    let i = 1;
 
                     x.Subposiciones.forEach(sp => {
                         let subpos = new SubPosicionViewModel(i);
@@ -383,6 +386,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         subpos.unidadSeleccionada = sp.Unidad;
                         subpos.tipoImputacion = sp.TipoImputacionValor;
                         subpos.precioBruto = sp.PrecioBruto;
+                        subpos.subPosicion = sp.Numero;
 
                         posActual.listadoSubPosiciones.push(subpos);
                         i++;
@@ -567,6 +571,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.solpActual.posicionActual.selectArticuloCompras,
                         this.solpActual.posicionActual.selectMonedaCompras
                     ]);
+                    
                     break;
                     case EnumPasoSolp.SolpSubposiciones:
                         paso.Completo = this.listaStringCompleta([

@@ -64,6 +64,10 @@ export class SubPosicionComponent extends ListBaseComponent {
         this.listadoPosicionActul = primeraPosicion.listadoSubPosiciones;
         this.model.posicionActual = primeraPosicion;
 
+        if(this.listadoPosicionActul.length == 0){
+            this.nuevaPosicion(null);
+        }
+
         this.validarDatosMinimosPosicionActual();
         this.calcularTotalSubPosicion();
         this.actualizarTipoDeImputacion();
@@ -103,10 +107,14 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     nuevaPosicion(rowSeleccionada: any): void {
-        let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
-        if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
-            ultimoRegistroEnListado.seleccionado = true;
-            this.listadoPosicionActul.push(new SubPosicionViewModel(this.listadoPosicionActul.length));
+        if(rowSeleccionada){
+            let ultimoRegistroEnListado = this.listadoPosicionActul[this.listadoPosicionActul.length - 1]
+            if (ultimoRegistroEnListado.id == rowSeleccionada.data.id) {
+                ultimoRegistroEnListado.seleccionado = true;
+                this.listadoPosicionActul.push(new SubPosicionViewModel(ultimoRegistroEnListado.subPosicion + 1));
+            }
+        }else{
+            this.listadoPosicionActul.push(new SubPosicionViewModel(1));
         }
     }
 
@@ -114,7 +122,7 @@ export class SubPosicionComponent extends ListBaseComponent {
         if (this.listadoPosicionActul.length > 1) {
             let subPosicionesAgregadas = this.listadoPosicionActul.filter(x => !x.eliminar);
             subPosicionesAgregadas.forEach((element, index, array) => {
-                element.subPosicion = index;
+                element.subPosicion = index + 1;
             });
             this.listadoPosicionActul = subPosicionesAgregadas;
             this.calcularTotalSubPosicion();
@@ -197,7 +205,7 @@ export class SubPosicionComponent extends ListBaseComponent {
     }
 
     calcularTotalSubPosicion() {
-        this.total = 0;
+        this.total = 1;
         this.listadoPosicionActul.forEach(posicion => {
             this.total = this.total + (+posicion.precioBruto);
         });

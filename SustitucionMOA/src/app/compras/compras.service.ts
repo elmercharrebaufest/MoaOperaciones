@@ -122,7 +122,15 @@ export class ComprasService extends BaseService {
                     TipoImputacion: this.getObjetoCodigo(x.tipoImputacion),
                     TipoPosicion: this.getObjetoCodigo('SERVICIO'),
 
-                    Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.map(sp => {
+                    Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
+                        return !!(sp.codigoServicio || 
+                                sp.tareaSubcontratar || 
+                                sp.cuentaMayor || 
+                                sp.cuentaTd || 
+                                sp.precioBruto > 0 || 
+                                (sp.unidadSeleccionada && sp.unidadSeleccionada.Codigo) ||
+                                sp.tipoImputacion);
+                    }).map(sp => {
                         return {
                             Codigo: sp.id,
                             Numero: sp.subPosicion,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { SessionDataService } from './../../common/services/SessionDataService';
@@ -22,7 +22,7 @@ declare var $: any;
     templateUrl: `cabecera.component.html`,
     styleUrls: ['../compras.component.css'],
 })
-export class CabeceraComponent extends ListBaseComponent {
+export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     @Input('combos') 
     protected combos:any;
@@ -105,6 +105,7 @@ export class CabeceraComponent extends ListBaseComponent {
         this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
 
+
     ngOnInit() {
         this.setTabs();
 
@@ -113,6 +114,8 @@ export class CabeceraComponent extends ListBaseComponent {
         this.grupoCompras = this.combos.GrupoCompras;
         this.articuloCompras = this.combos.GrupoArticulo;
         this.monedaCompras = this.combos.Moneda;
+
+    
 
         this.setControlesObligatorios(this.model.selectClaseDocumento || this.claseDocumento[0]);
         this.validadorPasoSolpService.formulario = this.formularioActual;
@@ -123,8 +126,13 @@ export class CabeceraComponent extends ListBaseComponent {
 
         this.centroSeleccionado();
 
+        if(this.model.monedaPorDefecto)
+            this.model.posicionActual.monedaSeleccionada = this.combos.Moneda.find(x=>x.Codigo == this.model.monedaPorDefecto)
+
+        if(!this.model.posicionActual.selectSolicitanteCompras)
+            this.model.posicionActual.selectSolicitanteCompras = this.model.fiscalContrato;
+
         this.model.cargoPasoCinco = true;        
- 
     }
 
     setControlesObligatorios(claseDocumento){
@@ -169,15 +177,14 @@ export class CabeceraComponent extends ListBaseComponent {
     }
 
     mostrarError(nombreCampo: string): boolean {
-        if (this.formularioActual && this.formularioActual.controls) {
-            let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
-            if(campoObligatorio){
-                let control = this.formularioActual.controls[nombreCampo];
-                return (control.invalid || (control.errors && control.errors.required))
-                    && (control.dirty || control.touched)
+            if (this.formularioActual && this.formularioActual.controls) {
+                let campoObligatorio = this.camposObligatorios.find(x=>x.campo == nombreCampo);
+                if(campoObligatorio){
+                    let control = this.formularioActual.controls[nombreCampo];
+                    return (control.invalid || (control.errors && control.errors.required))
+                        && (control.dirty || control.touched)
+                }
             }
-        }
-
         return false;
     }
 
@@ -199,19 +206,23 @@ export class CabeceraComponent extends ListBaseComponent {
     centroSeleccionado(){
         let direccionCentro: any;
 
+        if(!this.model.posicionActual.selectCentroEntrega && this.model.centroPorDefecto){
+            this.model.posicionActual.selectCentroEntrega = this.combos.Centro.find(x=>x.Codigo == this.model.centroPorDefecto);
+        }
+
         if (this.model.posicionActual.selectCentroEntrega) {
             direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
         }
 
-        this.model.posicionActual.selectAlmacenEntrega = undefined;
-
         this.model.posicionActual.nombreEntrega =  this.model.posicionActual.nombreEntrega
             || (this.model.posicionActual.selectCentroEntrega == undefined ? "" :this.model.posicionActual.selectCentroEntrega.Descripcion);
 
-        this.model.posicionActual.codigoPostalEntrega =  this.model.posicionActual.codigoPostalEntrega || (direccionCentro == undefined ? "" :direccionCentro.Cp);
-        this.model.posicionActual.calleEntrega = this.model.posicionActual.calleEntrega || (direccionCentro == undefined ? "" :  direccionCentro.Direccion);
-        this.model.posicionActual.numeroEntrega =  this.model.posicionActual.numeroEntrega || (direccionCentro == undefined ? "" :direccionCentro.Numero);
-        this.model.posicionActual.paisEntrega =  this.model.posicionActual.paisEntrega || (direccionCentro == undefined ? "" : direccionCentro.Pais);
+        if(direccionCentro !== undefined){
+            this.model.posicionActual.codigoPostalEntrega = direccionCentro.Cp;
+            this.model.posicionActual.calleEntrega = direccionCentro.Direccion;
+            this.model.posicionActual.numeroEntrega =  direccionCentro.Numero;
+            this.model.posicionActual.paisEntrega =  direccionCentro.Pais;
+        }
     }
 
     eliminarPosicion()
@@ -262,8 +273,4 @@ export class CabeceraComponent extends ListBaseComponent {
         this.model.agregarNuevaPosicion();
         el.scrollIntoView();
     }
-
-  
-    
-
 }
