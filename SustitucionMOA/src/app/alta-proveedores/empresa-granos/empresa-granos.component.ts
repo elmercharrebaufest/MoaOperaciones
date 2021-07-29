@@ -79,6 +79,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     esGuardarYNotificar: boolean = false;
     esUsuarioComercial: boolean = false;
+    puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
 
     constructor(
         protected service: EmpresaGranosService,

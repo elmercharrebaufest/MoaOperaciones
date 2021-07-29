@@ -7,7 +7,7 @@
 
             <div>
                 <div class="col-xs-12 col-sm-6">
-                    <div class="step-container shadow" name="Step 1" label="Informe comercial" *ngIf="!esCorredor || !esGuardarYNotificar">
+                    <div class="step-container shadow" name="Step 1" label="Informe comercial" *ngIf="!esCorredor || puedeAltaInterna">
                         <div class="col-xs-12 col-md-12 step-container-header">
                             Informe comercial
                         </div>
@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    <div class="step-container shadow" name="Step 1" label="Carta de presentación" *ngIf="esCorredor && esGuardarYNotificar">
+                    <div class="step-container shadow" name="Step 1" label="Carta de presentación" *ngIf="esCorredor && !puedeAltaInterna">
                         <div class="col-xs-12 col-md-12 step-container-header">
                             Carta de presentación
                         </div>
@@ -696,15 +696,15 @@
                 <div class="step-actions enviar">
 
                     <!--  MISMO BOTON QUE EL DE LA LINEA 720 *ngIf="!esAltaInternaGranos"-->
-                    <button *ngIf="esGuardarYNotificar" type="button" id="openModalNotificacion" data-toggle="modal"
+                    <button *ngIf="!puedeAltaInterna" type="button" id="openModalNotificacion" data-toggle="modal"
                         style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                    <input *ngIf="esGuardarYNotificar" type="submit" (click)="onSubmit()"
+                    <input *ngIf="!puedeAltaInterna" type="submit" (click)="onSubmit()"
                         class="btn-custom btn-guardar btn-mediano" value="Enviar">
 
                     <!--Granos-->
                     <!-- empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) -->
                     <!--si viene de listado de altas pendientes-->
-                    <input type="submit" *ngIf="!esGuardarYNotificar" (click)="onNotificar()"
+                    <input type="submit" *ngIf="puedeAltaInterna" (click)="onNotificar()"
                         class="btn-custom btn-guardar btn-mediano" value="Enviar">
 
                     <!--

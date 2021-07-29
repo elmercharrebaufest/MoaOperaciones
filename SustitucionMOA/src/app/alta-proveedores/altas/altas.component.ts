@@ -78,6 +78,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
     cuitComercial: string = "";
 
     contieneDocumentacionFisica: number = 0;
+    puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
 
     ngOnInit(): void {
         this.getEstados();
