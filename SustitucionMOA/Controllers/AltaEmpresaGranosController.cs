@@ -140,7 +140,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult GrabarNuevoProveedorGranos(string cuit)
+        public ActionResult GrabarNuevoProveedorGranos(string cuit, string cuitComercial)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail)
+                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail, cuitComercial)
                 });
             }
             catch (InfoCustomException e)
@@ -644,14 +644,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult NotificarSolicitud(int proveedorId, string datosJson)
+        public ActionResult SolicitudAltaInterna(int proveedorId, string datosJson)
         {
             try
             {
                 string mail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 var altaEmpresa = JsonConvert.DeserializeObject<AltaEmpresaViewModel>(datosJson);
 
-                return JsonCustom(altaEmpresaService.NotificarSolicitud(mail, proveedorId, altaEmpresa));
+                return JsonCustom(altaEmpresaService.SolicitudAltaInterna(mail, proveedorId, altaEmpresa));
             }
             catch (InfoCustomException e)
             {

@@ -628,7 +628,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         };
         this.unsubscribe();
         this.subscription = this.service
-            .notificarSolicitud(this.proveedorId, datos)
+            .SolicitudAltaInterna(this.proveedorId, datos)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();

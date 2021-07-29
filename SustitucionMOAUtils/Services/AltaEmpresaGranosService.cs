@@ -663,7 +663,7 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
-        public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario)
+        public string GrabarProveedorAltaInternaGranos(string cuit, string mailUsuario, string cuitComercial)
         {
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
             if (usuario == null) throw new InfoCustomException(InfoMsg.ElementoNoExiste);
@@ -673,6 +673,8 @@ namespace SustitucionMOAUtils.Services
 
             var infoDA = dataAgroService.ObtenerValidarCUITProveedorGranos(cuit, false);
             if (infoDA.HayError) throw new ValidationCustomException(infoDA.ListaErrores[0].Message);
+
+            var infoDAComercial = dataAgroService.ObtenerValidarCUITProveedorGranos(cuitComercial);
 
             var proveedorComercial = usuario.ObtenerProveedor();
 
@@ -918,7 +920,7 @@ namespace SustitucionMOAUtils.Services
             return filePath;
         }
 
-        public string NotificarSolicitud(string mailUsuario, int proveedorId, AltaEmpresaViewModel altaEmpresa)
+        public string SolicitudAltaInterna(string mailUsuario, int proveedorId, AltaEmpresaViewModel altaEmpresa)
         {
             InfoProveedorDataAgroDto infoProveedor = null;
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
