@@ -204,10 +204,10 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
 
                     if (this.retirados == false || contrato.Id > 0) {
                         this.obteneDatosContrato(contrato);
+                        this.blockUI.stop();
                     } else {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg("Negocio no disponible");
-
                     }
                 }
             },
@@ -216,7 +216,6 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                 this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
             }
-
         );
         return false;
     }
@@ -365,6 +364,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.blockUI.stop();
                         if (this.id == 0) {
                             this.obtenerDatosCompraNet(contrato, "");
+                            this.blockUI.stop();
                         } else {
                             this.habilitaciones(contrato);
                         }
@@ -521,6 +521,8 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
                         this.obtenerFijacionesAutomaticas(contrato.MaterialId, "");
                     }
                     this.SeleccionAutomaticaBolsa(contrato);
+
+                    this.blockUI.stop();
                 }
 
             },
