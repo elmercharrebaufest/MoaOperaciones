@@ -373,7 +373,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                 if(x.Subposiciones){
                     posActual.listadoSubPosiciones = [];
-                    let i = 0;
+                    let i = 1;
 
                     x.Subposiciones.forEach(sp => {
                         let subpos = new SubPosicionViewModel(i);
@@ -386,6 +386,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         subpos.unidadSeleccionada = sp.Unidad;
                         subpos.tipoImputacion = sp.TipoImputacionValor;
                         subpos.precioBruto = sp.PrecioBruto;
+                        subpos.subPosicion = sp.Numero;
 
                         posActual.listadoSubPosiciones.push(subpos);
                         i++;

@@ -190,7 +190,7 @@ export class PosicionSolp {
         this.fechaDeLiberacion = new Date();
         this.listadoSubPosiciones = new Array<SubPosicionViewModel>();
         //agrega un fila por defecto
-        this.listadoSubPosiciones.push(new SubPosicionViewModel(0));
+        this.listadoSubPosiciones.push(new SubPosicionViewModel(1));
         this.servicio = 'SERVICIO';
         this.selectSolicitanteCompras = fiscalContrato;
     }
