@@ -1196,15 +1196,7 @@ namespace SustitucionMOA.Controllers
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-            if(usuario == null)
-            {
-                throw new Exception(String.Format(InfoMsg.ElementoNoExiste, "usuario", userMail));
-            }
-
-            var esAdmin = usuario.EsAdmin();
-            var tienePermiso = usuario.TienePermiso("ELEGIR TODOS VENDEDORES");
-
-            if (!esAdmin && !tienePermiso)
+            if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
             {
                 if (!usuario.TieneProveedor(vendedor))
                 {
