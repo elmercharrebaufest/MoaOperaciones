@@ -64,7 +64,7 @@
                     </div>     
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
                         <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
-                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizarSolp()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>   
                     <div class="col-xs-1 col-md-1">
                     </div>    
@@ -104,11 +104,40 @@
 </p-confirmDialog>
 <!--fin modal cancelar SOLP-->
 
-<!-- Modal finalizar SOLP-->
-<p-confirmDialog #dialog key="finalizarSolp" header="¡Felicitaciones!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+
+<div>
+    <p-dialog [(visible)]="display">
+        <p-header>
+            ¡Último paso!
+        </p-header>
+        <p>La fecha de entrega de oferta será:</p>
+        <p-dropdown></p-dropdown>
+        <p><b>¿Desea editar las fechas?</b></p>
+        <p-footer>
+            <button type="button" pButton  label="EDITAR FECHA" class="ui-button-info" (click)="editarFechas()"></button>
+            <button type="button" pButton  label="FINALIZAR" class="ui-button-success" (click)="finalizar()"></button>
+        </p-footer>
+    </p-dialog>
+</div>
+
+<!-- Modal ultimo paso SOLP--> -->
+<!-- <p-confirmDialog #dialo key="ultimoPasoSolp" header="¡Último paso!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialog.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialog.accept()"></button>
+        <button type="button" pButton  label="VOLVER" class="ui-button-info" (click)="dialo.reject()"></button>
+        <button type="button" pButton  label="SÍ, CONFIRMAR" class="ui-button-success" (click)="dialo.accept()"></button>
+
+
     </p-footer>
-</p-confirmDialog>
-<!--fin modal cancelar SOLP-->
+</p-confirmDialog> -->
+<!--fin modal cancelar SOLP -->
+
+
+<!-- Modal finalizar SOLP-->
+<!-- <p-confirmDialog #dialog key="finalizarSolp" header="¡Felicitaciones!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Descargar SOLP" class="ui-button-success" (click)="dialog.descargarPdf(Id)"></button>
+        <button type="button" pButton  label="Volver a la home" class="ui-button-info" (click)="dialog.reject()"></button>
+
+    </p-footer>
+</p-confirmDialog> -->
+<!--fin modal cancelar SOLP -->

@@ -24,6 +24,9 @@ import { CabeceraComponent } from './SolpPasos/cabecera.component';
 import { ActivatedRoute, Params } from '@angular/router';
 import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificacionesViewModel';
 import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import {DialogModule} from 'primeng/dialog';
+
 
 
 
@@ -76,6 +79,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     @ViewChild(CabeceraComponent)
     protected cabecera: CabeceraComponent;
+
+    @ViewChild(DashboardComponent)
+    protected dashboard: DashboardComponent;
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
@@ -449,21 +455,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    salir() {
-        this.navService.navegarSeccion('/compras');
-    }
-
-    cancelarSolp() {
-        this.confirmationService.confirm({
-            key: 'cancelarSolp',
-            message: '¿Está seguro que desea volver a la pantalla principal?',
-            accept: () => {
-                this.salir()
-            },
-            reject: () => {  
-            }
-        });
-    }
+    
 
     guardarCambios(mostrarPreview = false){
         try {
@@ -521,9 +513,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
     }
 
-    finalizar() {
-
-    }
+    
 
     actualizarPasoCompleto(paso: Paso) {
         if (paso) {
@@ -634,17 +624,62 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.guardarCambios(true);
     }
 
-    finalizarSolp() {
+    salir() {
+        this.navService.navegarSeccion('/compras');
+    }
+
+    cancelarSolp() {
         this.confirmationService.confirm({
-            key: 'finalizarSolp',
-            message: 'Ha cargado con éxito una solicitud de pedido en SAP y se ha enviado para su liberación',
+            key: 'cancelarSolp',
+            message: '¿Está seguro que desea volver a la pantalla principal?',
             accept: () => {
-                this.finalizar()
+                this.salir();
             },
             reject: () => {  
             }
         });
     }
+
+    // finalizar() {
+
+    // }
+
+    // finalizarSolp() {
+    //     this.confirmationService.confirm({
+    //         key: 'finalizarSolp',
+    //         message: 'Ha cargado con éxito una solicitud de pedido en SAP y se ha enviado para su liberación',
+    //         accept: () => {
+    //             this.dashboard.descargarPdf(this.solpId);
+    //             this.finalizar();
+    //         },
+    //         reject: () => {
+    //             this.salir();  
+    //         }
+    //     });
+    // }
+
+
+    ultimoPasoSolp() {
+        this.confirmationService.confirm({
+                    key: 'ultimoPasoSolp',
+                    message: 'Está a punto de enviar a SOLP sin documento a xxxx ¿Desea continuar?', 
+                    accept: () => {
+            
+                    },
+                    reject: () => {
+                        this.salir();  
+                    }
+                });
+
+    }
+
+    display: boolean = false;
+
+    showDialog() {
+        this.display = true;
+    }
+
+
 
 }
 
