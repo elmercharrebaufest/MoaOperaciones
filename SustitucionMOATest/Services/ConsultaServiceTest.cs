@@ -49,7 +49,7 @@ namespace SustitucionMOATest.Services
             var archivo3 = new Mock<HttpPostedFileBase>();
 
             archivos.Setup(x => x.Count).Returns(3);
-            
+
             archivos.Setup(x => x[0]).Returns(archivo1.Object);
             azureServiceMock.Setup(az => az.AnalizarImagenAsync(archivo1.Object)).ReturnsAsync("1");
 
@@ -97,6 +97,8 @@ namespace SustitucionMOATest.Services
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("1"), Times.Once);
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("2"), Times.Once);
             azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("3"), Times.Never);
+
+            repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Once);
 
             Assert.AreEqual(3, ingresosBrutosCoeficienteUnificadoDetallesInsertados.Count);
 
@@ -180,12 +182,13 @@ namespace SustitucionMOATest.Services
                 azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync(It.IsAny<string>()), Times.Exactly(2));
                 azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("1"), Times.Once);
                 azureServiceMock.Verify(x => x.ObtenerResultadoOCRAsync("2"), Times.Once);
+
+                repositorioMock.Verify(repo => repo.GuardarCambios(), Times.Never);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Assert.Fail("Debió lanzar una ValidationCustomException");
             }
-
-            }
         }
+    }
 }

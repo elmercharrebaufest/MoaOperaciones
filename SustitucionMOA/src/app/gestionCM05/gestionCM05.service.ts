@@ -27,4 +27,26 @@ export class GestionCM05Service extends BaseService {
         return this.http
             .post('/api/GestionImpuestos/Editar', payload, this.headers).map(this.extractData);
     }
+
+    public autorizarCabecera(idCabecera)
+    {
+        return this.http
+            .get('/api/GestionImpuestos/AutorizarCabecera?idCabecera=' + idCabecera, { headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+
+    public autorizarCabecera2(idCabecera): Observable<any> {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('idCabecera', idCabecera.toString());
+        return this.http
+            .get(`/api/GestionImpuestos/AutorizarCabecera`, { search: params, headers: this.headers })
+            .pipe(map(this.extractData));
+    }
+    //public recordarComentario(consultaId: any): Observable<any> {
+    //    let params: URLSearchParams = new URLSearchParams();
+    //    params.set('consultaId', consultaId.toString());
+    //    return this.http
+    //        .get(`/api/Consulta/RecordarComentario`, { search: params, headers: this.headers }).pipe(
+    //            map(this.extractData));
+    //}
 }

@@ -277,3 +277,4 @@ SustitucionMOADatabase/SustitucionMOADatabase.jfm
 /SustitucionMOA/src/**/*.map
 /SustitucionMOA/package-lock.json
 /.vscode/launch.json
+/SustitucionMOA/src/app/cars

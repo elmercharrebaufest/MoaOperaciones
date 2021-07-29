@@ -1,6 +1,7 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { CabeceraCM05, DetalleCM05 } from './gestionCM05';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
+import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
 import { GestionCM05Service } from './gestionCM05.service';
 import { NavService } from '../common/services/NavService';
 import { SessionDataService } from '../common/services/SessionDataService';
@@ -30,6 +31,8 @@ export class GestionCM05Component extends ListBaseComponent {
     detalleCols: any[];
     detalles: DetalleCM05[];
 
+    estados: SelectItem[];
+
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
                 protected sessionDataService: SessionDataService,
@@ -43,6 +46,13 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.estados = [
+            { label: 'Todos', value: -1 },
+            { label: 'Pendiente', value: 0 },
+            { label: 'Autorizado', value: 1 },
+            { label: 'Completado', value: 2 },
+        ];
+
         this.service.listarCabeceras().subscribe(result => {
             this.cabeceras = result;
             this.cabeceras.forEach(x => {
@@ -52,28 +62,30 @@ export class GestionCM05Component extends ListBaseComponent {
         });
 
         this.cabeceraCols = [
-            { field: 'Id', header: 'Id', filterType: 'text' },
-            { field: 'CUIT', header: 'CUIT', filterType: 'text' },
-            { field: 'Anticipo', header: 'Anticipo', filterType: 'text' },
-            { field: 'Sede', header: 'Sede', filterType: 'text' },
-            { field: 'FechaCarga', header: 'Fecha carga', filterType: 'date' },
-            { field: 'FechaUltimaModificacion', header: 'Última modificación', filterType: 'date' },
+            { field: 'Id', header: 'Id' },
+            { field: 'Estado', header: 'Estado' },
+            { field: 'CUIT', header: 'CUIT' },
+            { field: 'Anticipo', header: 'Anticipo' },
+            { field: 'Sede', header: 'Sede' },
+            { field: 'FechaCarga', header: 'Fecha carga' },
+            { field: 'FechaUltimaModificacion', header: 'Última modificación' },
         ];
 
         this.detalleCols = [
-            { field: 'Jurisdiccion', header: 'Jurisdicción', filterType: 'text' },
-            { field: 'FechaInicio', header: 'Fecha inicio', filterType: 'date' },
-            { field: 'FechaCese', header: 'Fecha cese', filterType: 'date' },
-            { field: 'CoeficienteIngresos', header: 'Coef. ingresos', filterType: 'text' },
-            { field: 'CoeficienteGastos', header: 'Coef. gastos', filterType: 'text' },
-            { field: 'CoeficienteUnificado', header: 'Coef. unificado', filterType: 'text' },
-            { field: 'FechaUltimaModificacion', header: 'Última modificación', filterType: 'date' },
+            { field: 'Jurisdiccion', header: 'Jurisdicción', },
+            { field: 'FechaInicio', header: 'Fecha inicio', },
+            { field: 'FechaCese', header: 'Fecha cese', },
+            { field: 'CoeficienteIngresos', header: 'Coef. ingresos', },
+            { field: 'CoeficienteGastos', header: 'Coef. gastos', },
+            { field: 'CoeficienteUnificado', header: 'Coef. unificado', },
+            { field: 'FechaUltimaModificacion', header: 'Última modificación', },
         ];
     }
 
     onCabeceraClick(data) {
         this.cabecera = {
             Id: data.Id,
+            Estado: data.Estado,
             Anticipo: data.Anticipo,
             CUIT: data.CUIT,
             Sede: data.Sede,
@@ -92,7 +104,7 @@ export class GestionCM05Component extends ListBaseComponent {
             this.displayDialog = true;
         }, 400);
     }
-
+     
     close() {
         this.cabecera = null;
         this.detalles = null;
@@ -177,5 +189,10 @@ export class GestionCM05Component extends ListBaseComponent {
         }*/
 
         return false
+    }
+
+    autorizarCabecera() {
+        debugger;
+        this.service.autorizarCabecera2(this.cabecera.Id);
     }
 }
