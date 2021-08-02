@@ -37,7 +37,15 @@ namespace SustitucionMOA.Controllers
                 var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
                 solp.UsuarioActual = ObtenerUsuarioActual();
                 var result = service.GuardarSolp(solp, Request.Files);
-                result.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Id.Value));
+
+                try
+                {
+                    result.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Id.Value));
+                }
+                catch
+                {
+                    result.Pdf = string.Empty;
+                }
 
                 return JsonCustom(result);
             }
