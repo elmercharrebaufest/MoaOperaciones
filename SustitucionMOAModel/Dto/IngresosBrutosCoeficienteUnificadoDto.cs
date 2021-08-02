@@ -6,6 +6,8 @@ namespace SustitucionMOAModel.Dto
     {
         public int Id { get; set; }
 
+        public int EstadoId { get; set; }
+
         public string CUIT { get; set; }
 
         public int Anticipo { get; set; }

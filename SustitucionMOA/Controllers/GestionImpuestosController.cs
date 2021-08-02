@@ -95,7 +95,7 @@ namespace SustitucionMOA.Controllers
             {
                 var detalle = JsonConvert.DeserializeObject<IngresosBrutosCoeficienteUnificadoDetalleDto>(detalleJson);
 
-                return JsonCustom(gestionImpuestosService.EditarDetalles(detalle));
+                return JsonCustom(gestionImpuestosService.EditarIngresosBrutosCoeficienteUnificadoDetalle(detalle));
             }
             catch (InfoCustomException e)
             {

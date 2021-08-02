@@ -6,6 +6,8 @@ namespace SustitucionMOAModel.Dto
     {
         public int Id { get; set; }
 
+        public int IdCabecera { get; set; }
+
         public int NumeroJurisdiccion { get; set; }
 
         public string Jurisdiccion { get; set; }
@@ -21,6 +23,5 @@ namespace SustitucionMOAModel.Dto
         public decimal CoeficienteUnificado { get; set; }
 
         public DateTime FechaUltimaModificacion { get; set; }
-        public bool Editar { get; set; }
     }
 }

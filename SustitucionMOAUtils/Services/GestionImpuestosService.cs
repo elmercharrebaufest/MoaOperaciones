@@ -43,6 +43,7 @@ namespace SustitucionMOAUtils.Services
             x => new IngresosBrutosCoeficienteUnificadoDto
             {
                 Id = x.Id,
+                EstadoId = x.EstadoIngresosBrutosCoeficienteUnificado.Id,
                 Anticipo = x.Anticipo,
                 CUIT = x.CUIT,
                 FechaCarga = x.FechaCarga,
@@ -57,6 +58,7 @@ namespace SustitucionMOAUtils.Services
             x => new IngresosBrutosCoeficienteUnificadoDetalleDto
             {
                 Id = x.Id,
+                IdCabecera = x.IngresosBrutosCoeficienteUnificado_Id,
                 Jurisdiccion = x.Jurisdiccion,
                 NumeroJurisdiccion = x.NumeroJurisdiccion,
                 FechaCese = x.FechaCese,
@@ -64,30 +66,30 @@ namespace SustitucionMOAUtils.Services
                 CoeficienteIngresos = x.CoeficienteIngresos,
                 CoeficienteGastos = x.CoeficienteGastos,
                 CoeficienteUnificado = x.CoeficienteUnificado,
-                FechaUltimaModificacion = x.FechaUltimaModificacion,
-                Editar = false
+                FechaUltimaModificacion = x.FechaUltimaModificacion
             },
             x => x.IngresosBrutosCoeficienteUnificado_Id == idCabecera);
         }
 
-        public string EditarDetalles(IngresosBrutosCoeficienteUnificadoDetalleDto coeficientes)
+        public string EditarIngresosBrutosCoeficienteUnificadoDetalle(IngresosBrutosCoeficienteUnificadoDetalleDto ingresosBrutosCoeficienteUnificadoDetalleDto)
         {
-            var coeficienteEditar = repositorio.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(x => x.Id == coeficientes.Id);
+            var ingresosBrutosCoeficienteUnificadoDetalle = repositorio.Obtener<IngresosBrutosCoeficienteUnificadoDetalle>(ingresosBrutosCoeficienteUnificadoDetalleDto.Id);
 
-            if(coeficienteEditar == null)
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "coeficiente unificado"));
+            if(ingresosBrutosCoeficienteUnificadoDetalle == null)
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de detalles de coeficientes unificados"));
 
-            coeficienteEditar.CoeficienteGastos = coeficientes.CoeficienteGastos;
-            coeficienteEditar.CoeficienteIngresos = coeficientes.CoeficienteIngresos;
-            coeficienteEditar.CoeficienteUnificado = coeficientes.CoeficienteUnificado;
-            coeficienteEditar.FechaCese = coeficientes.FechaCese;
-            coeficienteEditar.FechaInicio = coeficientes.FechaInicio;
-            coeficienteEditar.NumeroJurisdiccion = coeficientes.NumeroJurisdiccion;
-            coeficienteEditar.FechaUltimaModificacion = timeProvider.Now();
+            ingresosBrutosCoeficienteUnificadoDetalle.CoeficienteGastos = ingresosBrutosCoeficienteUnificadoDetalleDto.CoeficienteGastos;
+            ingresosBrutosCoeficienteUnificadoDetalle.CoeficienteIngresos = ingresosBrutosCoeficienteUnificadoDetalleDto.CoeficienteIngresos;
+            ingresosBrutosCoeficienteUnificadoDetalle.CoeficienteUnificado = ingresosBrutosCoeficienteUnificadoDetalleDto.CoeficienteUnificado;
+            ingresosBrutosCoeficienteUnificadoDetalle.FechaCese = ingresosBrutosCoeficienteUnificadoDetalleDto.FechaCese;
+            ingresosBrutosCoeficienteUnificadoDetalle.FechaInicio = ingresosBrutosCoeficienteUnificadoDetalleDto.FechaInicio;
+            ingresosBrutosCoeficienteUnificadoDetalle.NumeroJurisdiccion = ingresosBrutosCoeficienteUnificadoDetalleDto.NumeroJurisdiccion;
+            ingresosBrutosCoeficienteUnificadoDetalle.Jurisdiccion = ingresosBrutosCoeficienteUnificadoDetalleDto.Jurisdiccion;
+            ingresosBrutosCoeficienteUnificadoDetalle.FechaUltimaModificacion = timeProvider.Now();
 
             repositorio.GuardarCambios();
 
-            return (SuccessMsg.CommodityActualizacionOK);
+            return (SuccessMsg.IngresosBrutosCoeficienteUnificadoDetalleActualizadoOK);
         }
         
         public string AutorizarCabecera(int idCabecera)
@@ -95,14 +97,14 @@ namespace SustitucionMOAUtils.Services
             var cabecera = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(idCabecera);
 
             if (cabecera == null)
-                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "cabecera cm05"));
+                throw new InfoCustomException(String.Format(InfoMsg.SinRegistros, "registros de cabecera de coeficientes unificados"));
 
             cabecera.EstadoIngresosBrutosCoeficienteUnificado_Id = (int)EnumEstadoIngresosBrutosCoeficienteUnificado.Autorizado;
             cabecera.FechaUltimaModificacion = timeProvider.Now();
 
             repositorio.GuardarCambios();
 
-            return (SuccessMsg.CommodityActualizacionOK);
+            return (SuccessMsg.IngresosBrutosCoeficienteUnificadoAutorizado);
         }
     }
 }
