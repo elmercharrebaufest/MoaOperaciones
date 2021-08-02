@@ -47,6 +47,7 @@ namespace SustitucionMOAModel.Dto
 
         public List<SolpPosicionDto> Posiciones { get; set; }
         public string Pdf { get; set; }
+        public bool Finalizar { get; set; }
 
         public SolpDto() {}
         public SolpDto(Solp entity) 
