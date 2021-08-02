@@ -232,7 +232,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
 
-                            foreach (var subpos in subposEliminadas)
+                            foreach (var subpos in subposEliminadas.ToList())
                             {
                                 repositorio.Remover(subpos);
                             }
@@ -268,11 +268,22 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if(pos.Proveedores != null)
-                        {
-                            if(posEntity.Proveedores == null)
-                                posEntity.Proveedores = new List<SolpProveedor>();
+                        if (posEntity.Proveedores == null)
+                            posEntity.Proveedores = new List<SolpProveedor>();
 
+                        //proveedores eliminados 
+                        if (posEntity.Proveedores.Count > 0)
+                        {
+                            var provEliminados = posEntity.Proveedores.Where(x => pos.Proveedores == null || !pos.Proveedores.Any(y => y.RazonSocial == x.RazonSocial));
+
+                            foreach (var prov in provEliminados.ToList())
+                            {
+                                repositorio.Remover(prov);
+                            }
+                        }
+
+                        if (pos.Proveedores != null)
+                        {
                             foreach (var prov in pos.Proveedores)
                             {
                                 SolpProveedor provEntity = null;

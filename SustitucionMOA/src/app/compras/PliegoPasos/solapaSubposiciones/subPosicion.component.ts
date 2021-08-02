@@ -120,11 +120,13 @@ export class SubPosicionComponent extends ListBaseComponent {
 
     eliminarSubposiciones(): void {
         if (this.listadoPosicionActul.length > 1) {
+            
             let subPosicionesAgregadas = this.listadoPosicionActul.filter(x => !x.eliminar);
             subPosicionesAgregadas.forEach((element, index, array) => {
                 element.subPosicion = index + 1;
             });
             this.listadoPosicionActul = subPosicionesAgregadas;
+            this.model.posicionActual.listadoSubPosiciones = this.listadoPosicionActul;
             this.calcularTotalSubPosicion();
         }
     }
