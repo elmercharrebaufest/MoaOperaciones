@@ -15,7 +15,7 @@ import { formatDate } from '@angular/common';
 import { SortEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 
@@ -34,6 +34,8 @@ export class DashboardComponent extends ListBaseComponent {
     
     @ViewChild("tabla")
     protected tabla: Table;
+
+    @BlockUI() blockUI: NgBlockUI;
     
     @Input('model') 
     protected model:Solp;
@@ -262,9 +264,51 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
+    generarZipPliego(idSolp){
+        this.blockUI.start('Generando ')
+        this.service.descargarZipPliego(idSolp)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.spinnerSmallComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
     descargarPdf(idSolp): void {
         if (idSolp != undefined) {
-
             this.service.getPdf(idSolp)
                 .subscribe(
                     (result) => {
@@ -286,7 +330,6 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                 )
         }
-
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
