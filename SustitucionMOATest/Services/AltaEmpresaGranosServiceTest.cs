@@ -241,7 +241,7 @@ namespace SustitucionMOATest.Services
 
             dataAgroServiceMock.Setup(s => s.ObtenerValidarCUITProveedorGranos(It.IsAny<string>(), It.IsAny<bool>())).Returns(infoDataAgro);
 
-            var result = target.NotificarSolicitud(mailUsuario, proveedorId, altaempresaMock);
+            var result = target.SolicitudAltaInterna(mailUsuario, proveedorId, altaempresaMock);
             var expected = SuccessMsg.ValidacionPendienteOK;
 
             Assert.AreEqual(expected, result);

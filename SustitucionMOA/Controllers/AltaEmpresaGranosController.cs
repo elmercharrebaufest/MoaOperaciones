@@ -140,7 +140,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult GrabarNuevoProveedorGranos(string cuit, string cuitComercial)
+        public ActionResult GrabarNuevoProveedorGranos(string cuit)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail, cuitComercial)
+                    data = altaEmpresaService.GrabarProveedorAltaInternaGranos(cuit, userMail)
                 });
             }
             catch (InfoCustomException e)
