@@ -821,7 +821,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
 
     grabarAltaInternaGranos(){
         this.mensajeComponent.setMsgsEmpty();
-            this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit, this.cuitComercial).subscribe(
+            this.subscription = this.altaEmpresaService.grabarAltaInternaGranos(this.cuit).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
