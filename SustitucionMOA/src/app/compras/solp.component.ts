@@ -26,6 +26,7 @@ import { EspecificacionesViewModel } from './PliegoPasos/solapaTres/especificaci
 import { SubPosicionViewModel } from './PliegoPasos/solapaSubposiciones/subPosicionViewModel';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {DialogModule} from 'primeng/dialog';
+import { FormGroup } from '@angular/forms';
 
 
 
@@ -94,6 +95,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     enumSolp: typeof EnumPasoSolp = EnumPasoSolp;
     combos: any;
     solpId: number = 0;
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -246,6 +248,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.traerSolpId(this.solpId);
                 }
             }
+
+            
         }
     }
 
@@ -457,7 +461,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     
 
-    guardarCambios(mostrarPreview = false){
+    guardarCambios(mostrarPreview = false, finalizar = false){
         try {
             this.blockUI.start('Guardando...');
             this.spinnerComponent.showIt();
