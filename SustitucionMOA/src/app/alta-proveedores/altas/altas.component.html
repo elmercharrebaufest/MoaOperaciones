@@ -12,7 +12,7 @@
                             </div>
                         </a>
                     </div>
-                    <div *ngIf="isAuthorized('ABM EMPRESAS')" class="col-xs-12 col-sm-6 col-md-6" style="display: flex; justify-content: flex-end;">
+                    <div *ngIf="puedeAltaInterna" class="col-xs-12 col-sm-6 col-md-6" style="display: flex; justify-content: flex-end;">
                         <button id="openModalAltaInternaGranos" data-toggle="modal" data-target="#modalAltaInternaGranos" type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
                         id="modalToggleButton">
                             Alta interna granos
@@ -268,7 +268,7 @@
                                         data-toggle="modal" data-target="#ModalVieneOperando"></button>
 
                                     <button type="button"
-                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && isAuthorized('ALTA EMPRESA NO GRANOS')"
+                                        *ngIf="(empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) && empresa.IdTipoUsuario === 3 && empresa.AltaInterna && puedeAltaInterna"
                                         class="btn-custom btn-add btn-chico" (click)="altaInterna(empresa)">
                                         Alta interna
                                     </button>
@@ -1451,10 +1451,19 @@
                     
                     <div class="for row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12">
-                            <p class="crearConsultaTitulos">CUIT<span class="requerido">*</span></p>
+                            <p class="crearConsultaTitulos">CUIT vendedor<span class="requerido">*</span></p>
                             <div class="styled-select">
                                 <input type="text" class="form-control" placeholder="CUIT" mask="00-00000000-0"
                                     [(ngModel)]="cuit" maxlength="13" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="for row myRow">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">CUIT comercial<span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="text" class="form-control" placeholder="CUIT" mask="00-00000000-0"
+                                    [(ngModel)]="cuitComercial" maxlength="13" />
                             </div>
                         </div>
                     </div>

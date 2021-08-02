@@ -79,6 +79,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     esGuardarYNotificar: boolean = false;
     esUsuarioComercial: boolean = false;
+    puedeAltaInterna: boolean = this.isAuthorized('ALTA INTERNA GRANOS');
 
     constructor(
         protected service: EmpresaGranosService,
@@ -628,7 +629,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
         };
         this.unsubscribe();
         this.subscription = this.service
-            .notificarSolicitud(this.proveedorId, datos)
+            .SolicitudAltaInterna(this.proveedorId, datos)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
