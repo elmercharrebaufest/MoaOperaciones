@@ -140,6 +140,10 @@
     right: 13px;
   }
 
+  .inputRightModal {
+    right: 40px;
+  }
+
   ::ng-deep .weekDayBtn .ui-togglebutton {
     text-align: center !important;
     border-radius: 50% !important;
@@ -368,6 +372,12 @@
   color: #666666 !important;
   margin-top: 2px !important;
 }
+
+::ng-deep .ui-multiselect  {
+  display:flow-root !important;
+}
+
+
 
 ::ng-deep .ui-table .ui-sortable-column.ui-state-highlight {
   background-color: #666666 !important;

@@ -64,7 +64,7 @@
                     </div>     
                     <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
                         <button class="btn btn-defaut btn-secondary botonesCompras" *ngIf="pasoSiguiente().paso" (click)="navegar(pasoSiguiente())">{{pasoSiguiente().descripcion}} &nbsp;<i class="fa fa-arrow-right"></i></button>
-                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="finalizarSolp()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
+                        <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="showDialog()" style="cursor: auto;">{{pasoSiguiente().descripcion}}</button>
                     </div>   
                     <div class="col-xs-1 col-md-1">
                     </div>    
@@ -104,11 +104,131 @@
 </p-confirmDialog>
 <!--fin modal cancelar SOLP-->
 
-<!-- Modal finalizar SOLP-->
-<p-confirmDialog #dialog key="finalizarSolp" header="¡Felicitaciones!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+
+<div>
+    <p-dialog [(visible)]="display" [width]="800">
+        <p-header>
+            ¡Último paso!
+        </p-header>
+    
+        <div>
+            <p><b>¿Desea editar las fechas?</b></p>
+        </div>
+        <div class="col-md-12">
+
+            <div class="col-md-12 row myRow">
+                <div class="col-md-6">
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha tentativa de entrega de ofertas:
+                        </div>
+                        <div class="col-md-6"  style="margin-right: 1em;">
+                            <p-calendar [locale]="es" class="styled-select"
+                                [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                                [minDate]="hoy" [(ngModel)]="solpActual.fechaEntrega"></p-calendar>
+                        </div>
+                        <div class="col-md-5">
+                            <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body" disabled="false" [(ngModel)]="solpActual.horaEntrega"
+                            icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha límite de consulta:
+                        </div>
+                        <div class="col-md-6"  style="margin-right: 1em;">
+                            <p-calendar [locale]="es" class="styled-select"
+                            [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                            [minDate]="hoy" [(ngModel)]="solpActual.fechaLimiteFecha"></p-calendar>
+                        </div>
+                        <div class="col-md-5">
+                            <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body"
+                            icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true" [(ngModel)]="solpActual.fechaLimiteHora"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-12 row myRow">
+                <div class="col-md-6">        
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha de entrega previsto: 
+                        </div>
+                        <!-- //mayor fecha de entrega de todas las posiciones. -->
+                        <div class="col-md-6" style="margin-right: 1em;">
+                            <p-calendar [locale]="es" class="styled-select" 
+                                [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                                [minDate]="hoy" [(ngModel)]="solpActual.posicionActual.fechaEntregaServicio"></p-calendar>
+
+                        </div>  
+                        <div class="col-md-5">    
+                            <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body"
+                            icon="fa fa-clock-o" [timeOnly]="true" disabled="false" [readonlyInput]="true" [(ngModel)]="solpActual.fechaEntrega"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 row myRow">
+                <div class="col-md-6">    
+                    <div class="col-md-12 inputRightModal margenInput">
+                        <div class="col-md-12">
+                            Fecha visita de obra masiva:
+                        </div>
+                        <div class="col-md-12">
+                            <p-dropdown [options]="solpActual.listaVisitas" dataKey="Id"
+                            optionLabel="solpActual.listaVisitas" autoDisplayFirst="true" placeholder="Seleccionar"
+                            [showClear]="true" [filter]="true"
+                            filterBy="label"></p-dropdown>
+
+                            <!-- <div class="col-md-12 inputRightModal margenInput">
+                                <div class="col-md-12">
+                                    Fecha límite de consulta:
+                                </div>
+                                <div class="col-md-6"  style="margin-right: 1em;">
+                                    <p-calendar [locale]="es" class="styled-select"
+                                    [showIcon]="true" dateFormat="dd-M-yy" appendTo="body" [readonlyInput]="true"
+                                    [minDate]="hoy" [(ngModel)]="visitaMasiva"></p-calendar>
+                                </div>
+                                <div class="col-md-5">
+                                    <p-calendar [locale]="es" [showIcon]="true" class="styled-select" appendTo="body"
+                                    icon="fa fa-clock-o" [timeOnly]="true" [readonlyInput]="true"></p-calendar>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>   
+            </div> 
+        </div>
+        <p-footer>
+            <button type="button" pButton  label="CANCELAR" class="ui-button-info" (click)="cancelarSolp()"></button>
+            <button type="button" pButton  label="FINALIZAR" class="ui-button-success" (click)="finalizar()"></button>
+        </p-footer>
+    </p-dialog>
+</div>
+
+<!-- Modal ultimo paso SOLP--> -->
+<!-- <p-confirmDialog #dialo key="ultimoPasoSolp" header="¡Último paso!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info" (click)="dialog.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success" (click)="dialog.accept()"></button>
+        <button type="button" pButton  label="VOLVER" class="ui-button-info" (click)="dialo.reject()"></button>
+        <button type="button" pButton  label="SÍ, CONFIRMAR" class="ui-button-success" (click)="dialo.accept()"></button>
+
+
     </p-footer>
-</p-confirmDialog>
-<!--fin modal cancelar SOLP-->
+</p-confirmDialog> -->
+<!--fin modal cancelar SOLP -->
+
+
+<!-- Modal finalizar SOLP-->
+<!-- <p-confirmDialog #dialog key="finalizarSolp" header="¡Felicitaciones!" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+    <p-footer>
+        <button type="button" pButton  label="Descargar SOLP" class="ui-button-success" (click)="dialog.descargarPdf(Id)"></button>
+        <button type="button" pButton  label="Volver a la home" class="ui-button-info" (click)="dialog.reject()"></button>
+
+    </p-footer>
+</p-confirmDialog> -->
+<!--fin modal cancelar SOLP -->

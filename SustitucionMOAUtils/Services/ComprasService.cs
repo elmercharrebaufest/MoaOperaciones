@@ -26,6 +26,8 @@ using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.html;
 using Image = iTextSharp.text.Image;
+using SustitucionMOAAssets;
+using System.IO.Compression;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -232,7 +234,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             var subposEliminadas = posEntity.Subposiciones.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo));
 
-                            foreach (var subpos in subposEliminadas)
+                            foreach (var subpos in subposEliminadas.ToList())
                             {
                                 repositorio.Remover(subpos);
                             }
@@ -268,11 +270,22 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if(pos.Proveedores != null)
-                        {
-                            if(posEntity.Proveedores == null)
-                                posEntity.Proveedores = new List<SolpProveedor>();
+                        if (posEntity.Proveedores == null)
+                            posEntity.Proveedores = new List<SolpProveedor>();
 
+                        //proveedores eliminados 
+                        if (posEntity.Proveedores.Count > 0)
+                        {
+                            var provEliminados = posEntity.Proveedores.Where(x => pos.Proveedores == null || !pos.Proveedores.Any(y => y.RazonSocial == x.RazonSocial));
+
+                            foreach (var prov in provEliminados.ToList())
+                            {
+                                repositorio.Remover(prov);
+                            }
+                        }
+
+                        if (pos.Proveedores != null)
+                        {
                             foreach (var prov in pos.Proveedores)
                             {
                                 SolpProveedor provEntity = null;
@@ -715,20 +728,57 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
-        private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
+        public string GenerarZipPliego(int idSolp, string pathBase)
         {
-            StringBuilder ret = new StringBuilder();
+            var solp = repositorio.Obtener<Solp>(idSolp);
 
-            foreach (var section in templateStr.Split(token.ToCharArray()))
+            var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+            var pdfFilePath = $"{pathBase}/{pdfFilename}";
+            File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
+
+            if(solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp))
             {
-                var value = values.Keys.Contains(section) ? values[section] : section;
-                ret.Append(value);
-            }
+                var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.zip";
+                var filePath = $"{pathBase}/{zipFilename}";
 
-            return ret.ToString();
+                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                    {
+                        foreach (var archivoSubido in solp.Pliego.Archivos)
+                        {
+                            if (File.Exists(archivoSubido.Ruta) && archivoSubido.FileKey == FileKeys.AdjuntoSolp)
+                            {
+                                string fileName = Path.GetFileName(archivoSubido.Ruta);
+                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                            }
+                        }
+
+                        archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
+
+                    }
+                }
+
+                return filePath;
+            }
+            
+            return pdfFilePath;
         }
-    }
+
+         private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
+         {
+             StringBuilder ret = new StringBuilder();
+
+             foreach (var section in templateStr.Split(token.ToCharArray()))
+             {
+                 var value = values.Keys.Contains(section) ? values[section] : section;
+                 ret.Append(value);
+             }
+
+             return ret.ToString();
+         }
+        }
 
     public static class SolpTemplateKeys
     {

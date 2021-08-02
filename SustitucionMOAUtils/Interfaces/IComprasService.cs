@@ -22,7 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
 
-
+        string GenerarZipPliego(int idSolp, string pathBase);
 
 
     }
