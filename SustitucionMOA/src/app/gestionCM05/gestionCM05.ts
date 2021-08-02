@@ -11,7 +11,8 @@ enum EstadoCabeceraCM05 {
 
 export interface CabeceraCM05 {
     Id;
-    Estado: EstadoCabeceraCM05;
+    Estado;
+    EstadoId;
     CUIT;
     Anticipo;
     Sede;

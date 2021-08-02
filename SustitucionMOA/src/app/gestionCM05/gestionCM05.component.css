@@ -1,12 +1,38 @@
-﻿.th-detalle {
-    font-size: 9px;
-    justify-content: center;
+﻿.th-cabecera {
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 10px;
+}
+
+.td-cabecera {
+    text-align: center;
+    font-size: 10px;
     width: min-content;
 }
 
+.spanFiltroMultiSelect {
+    width: 100%;
+    font-size: 10px !important;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.th-detalle {
+    text-align: center;
+    text-transform: capitalize;
+    width: auto;
+}
+
 .td-detalle {
-    font-size: 9px;
-    width: min-content;
+    font-size: 10px;
+    width: auto;
+}
+
+.headerDetalle {
+    font-size:14px;
+    padding-right:0.5em;
+    text-align:center;
+    vertical-align:central;
 }
 
 input {
@@ -17,6 +43,21 @@ input {
     width: 100%;
 }
 
-::ng-deep .ui-datepicker{
+::ng-deep .ui-datepicker {
     width: 450%;
+}
+
+::ng-deep .ui-multiselect .ui-multiselect-label-container {
+    font-size: 10px;
+}
+::ng-deep .ui-multiselect {
+    width: 100%;
+}
+
+::ng-deep .ui-dialog .ui-dialog-footer{
+    height: 50px;
+}
+
+ng-multiselect-dropdown /deep/ .multiselect-dropdown > .dropdown-btn {
+    font-size: 12px !important;
 }

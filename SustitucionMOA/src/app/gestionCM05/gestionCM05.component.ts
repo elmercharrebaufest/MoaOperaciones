@@ -25,13 +25,18 @@ export class GestionCM05Component extends ListBaseComponent {
     cabeceraCols: any[];
     cabeceras: CabeceraCM05[];
 
-    cabecera: CabeceraCM05;
     selectedCabecera: CabeceraCM05;
 
     detalleCols: any[];
     detalles: DetalleCM05[];
 
     estados: SelectItem[];
+
+    detalleEditando: DetalleCM05;
+    detalleEditandoBackup: DetalleCM05;
+    editandoDetalle: boolean;
+
+    cabeceraText: string;
 
     constructor(protected service: GestionCM05Service,
                 protected navService: NavService,
@@ -46,16 +51,18 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.cabeceraText = 'Leyenda loca';
+
         this.estados = [
-            { label: 'Todos', value: -1 },
-            { label: 'Pendiente', value: 0 },
-            { label: 'Autorizado', value: 1 },
-            { label: 'Completado', value: 2 },
+            { label: 'Pendiente',  value: 'Pendiente',   },
+            { label: 'Autorizado', value: 'Autorizado', },
+            { label: 'Completado', value: 'Completado', },
         ];
 
         this.service.listarCabeceras().subscribe(result => {
             this.cabeceras = result;
             this.cabeceras.forEach(x => {
+                x.Estado = x.EstadoId == 1 ? 'Pendiente' : x.EstadoId == 2 ? 'Autorizado' : x.EstadoId == 3 ? 'Completado' : '';
                 x.FechaCarga = x.FechaCarga == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCarga));
                 x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
             });
@@ -64,6 +71,7 @@ export class GestionCM05Component extends ListBaseComponent {
         this.cabeceraCols = [
             { field: 'Id', header: 'Id' },
             { field: 'Estado', header: 'Estado' },
+            { field: 'Estado_Id', header: 'Estado_Id' },
             { field: 'CUIT', header: 'CUIT' },
             { field: 'Anticipo', header: 'Anticipo' },
             { field: 'Sede', header: 'Sede' },
@@ -83,16 +91,17 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     onCabeceraClick(data) {
-        this.cabecera = {
+        this.selectedCabecera = {
             Id: data.Id,
             Estado: data.Estado,
+            EstadoId: data.EstadoId,
             Anticipo: data.Anticipo,
             CUIT: data.CUIT,
             Sede: data.Sede,
             FechaCarga: data.FechaCarga,
             FechaUltimaModificacion: data.FechaUltimaModificacion,
         };
-        this.service.listarDetalles(this.cabecera.Id).subscribe(result => {
+        this.service.listarDetalles(this.selectedCabecera.Id).subscribe(result => {
             this.detalles = result;
             this.detalles.forEach(x => {
                 x.FechaCese = x.FechaCese == undefined ? null : new Date(this.getDateFromAspNetFormat(x.FechaCese));
@@ -102,17 +111,19 @@ export class GestionCM05Component extends ListBaseComponent {
         });
         setTimeout(() => {
             this.displayDialog = true;
-        }, 400);
+        }, 600);
     }
      
     close() {
-        this.cabecera = null;
+        this.selectedCabecera = null;
         this.detalles = null;
         this.displayDialog = false;
     }
 
-    editarRow(rowData){
+    editarRow(rowData) {
         rowData.Editar = true;
+        this.editandoDetalle = true;
+        this.detalleEditando = { ...rowData };
     }
 
     guardarRow(rowData){
@@ -131,6 +142,9 @@ export class GestionCM05Component extends ListBaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         rowData.Editar = false;
+                        this.editandoDetalle = false;
+                        this.detalleEditando = null;
+                        this.detalleEditandoBackup = null;
                     }
                 },
                 error => {
@@ -144,6 +158,22 @@ export class GestionCM05Component extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    cancelarGuardarRow(rowData) {
+        rowData.Id = this.detalleEditando.Id;
+        rowData.Jurisdiccion = this.detalleEditando.Jurisdiccion;
+        rowData.NumeroJurisdiccion = this.detalleEditando.NumeroJurisdiccion;
+        rowData.FechaInicio = this.detalleEditando.FechaInicio;
+        rowData.FechaCese = this.detalleEditando.FechaCese;
+        rowData.CoeficienteIngresos = this.detalleEditando.CoeficienteIngresos;
+        rowData.CoeficienteGastos = this.detalleEditando.CoeficienteGastos;
+        rowData.CoeficienteUnificado = this.detalleEditando.CoeficienteUnificado;
+        rowData.FechaUltimaModificacion = this.detalleEditando.FechaUltimaModificacion;
+
+        rowData.Editar = false;
+        this.editandoDetalle = false;
+        this.detalleEditando = null;
     }
 
     validarRow(rowData){
@@ -192,7 +222,31 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     autorizarCabecera() {
-        debugger;
-        this.service.autorizarCabecera2(this.cabecera.Id);
+        try {
+            this.service.autorizarCabecera(this.selectedCabecera.Id).subscribe(
+                result => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.selectedCabecera.Estado = 'Autorizado';
+                        this.cabeceras.find(c => c.Id == this.selectedCabecera).Estado = 'Autorizado';
+                        this.floatMsgService.setErrorMsg("Registro autorizado correctamente");
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    }
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false;
     }
+
 }

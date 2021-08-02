@@ -5,53 +5,49 @@
         </div>
         <div>
             <p-table #dt [columns]="cabeceraCols" [value]="cabeceras" selectionMode="single" [(selection)]="selectedCabecera" [paginator]="true" [rows]="10">
-                <ng-template pTemplate="caption">
-                    Listado de Cabeceras
-                </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th class="th-detalle" rowspan="2">Id</th>
-                        <th class="th-detalle">
+                        <th class="col-md-1 th-cabecera" rowspan="2">Id</th>
+                        <th class="col-md-3 th-cabecera" style="border-bottom:none">
                             Estado
                         </th>
-                        <th class="th-detalle" rowspan="2">CUIT</th>
-                        <th class="th-detalle" rowspan="2">Anticipo</th>
-                        <th class="th-detalle" rowspan="2">Sede</th>
-                        <th class="th-detalle" rowspan="2">Fecha Carga</th>
-                        <th class="th-detalle" rowspan="2">Última modificación</th>
+                        <th class="col-md-2 th-cabecera" rowspan="2">CUIT</th>
+                        <th class="col-md-1 th-cabecera" rowspan="2">Anticipo</th>
+                        <th class="col-md-1 th-cabecera" rowspan="2">Sede</th>
+                        <th class="col-md-2 th-cabecera" rowspan="2">Fecha Carga</th>
+                        <th class="col-md-2 th-cabecera" rowspan="2">Última modificación</th>
                     </tr>
                     <tr>
-                        <th>
-                            <p-multiSelect appendTo="body" [options]="estados" defaultLabel="Todos" optionLabel="label" dataKey="Id"  [maxSelectedLabels]="1"
-                            (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')" >
-                            <ng-template let-estado pTemplate="item">
-                                <span class="label label-default" [ngStyle]="{'background-color': estado.value.Color}">{{estado.label}} <span class="badge" *ngIf="!isExternal">{{estado.value.Cantidad}}</span></span>
-                            </ng-template>
+                        <th class="col-md-2 th-cabecera" style="font-size:10px !important; text-transform:capitalize; border-top:none">
+                            <p-multiSelect [styleClass]="spanFiltroMultiSelect" appendTo="body" [options]="estados" defaultLabel="" (onChange)="dt.filter($event.value, 'Estado', 'in')">
+                                <ng-template let-estado pTemplate="item">
+                                    <span>{{estado.label}}</span>
+                                </ng-template>
                             </p-multiSelect>
                         </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr (click)="onCabeceraClick(rowData)">
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.Id}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.Estado}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.CUIT}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.Anticipo}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.Sede}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.FechaCarga | date:'dd/MM/yyyy hh:mm:ss'}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-cabecera">
                             {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                         </td>
                     </tr>
@@ -61,20 +57,50 @@
     </section>
 </div>
 
-<p-dialog header="Cabecera detalles" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="1300" appendTo="body">
-    <div *ngIf="cabecera">
-        <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="800px" [frozenColumns]="frozenCols" frozenWidth="min-width">
+<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true"showEffect="fade" [modal]="true" [width]="900" appendTo="body">
+        <p-header>
+            <div class="col-md-3">
+                <label class="headerDetalle">
+                    CUIT:
+                </label>
+                <label>
+                    {{selectedCabecera.CUIT}}
+                </label>
+            </div>
+            <div class="col-md-3">
+                <label class="headerDetalle">
+                    Anticipo:
+                </label>
+                <label>
+                    {{selectedCabecera.Anticipo}}
+                </label>
+            </div>
+            <div class="col-md-3">
+                <label class="headerDetalle">
+                    Sede:
+                </label>
+                <label>
+                    {{selectedCabecera.Sede}}
+                </label>
+            </div>
+        </p-header>
+        <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="flex" [frozenColumns]="frozenCols" frozenWidth="min-width">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th class="th-detalle">Jurisdicción</th>
-                    <th class="th-detalle">Nro. Jurisdicción</th>
-                    <th class="th-detalle">Fecha Inicio</th>
-                    <th class="th-detalle">Fecha Cese</th>
-                    <th class="th-detalle">Coef. Ingresos</th>
-                    <th class="th-detalle">Coef. Gastos</th>
-                    <th class="th-detalle">Coef. Unificado</th>
-                    <th class="th-detalle">Última modificación</th>
-                    <th class="th-detalle">ALGO</th>
+                    <th class="col-md-3 th-detalle" rowspan="2" colspan="2">Jurisdicción</th>
+                    <!--<th class="th-detalle" rowspan="2">Nro. Jurisdicción</th>-->
+                    <th class="col-md-1 th-detalle" rowspan="2">Fecha Inicio</th>
+                    <th class="col-md-1 th-detalle" rowspan="2">Fecha Cese</th>
+                    <th class="col-md-4 th-detalle" colspan="3">Coeficientes</th>
+                    <!--<th class="th-detalle" rowspan="2">Coef. Gastos</th>
+                    <th class="th-detalle" rowspan="2">Coef. Unificado</th>-->
+                    <th class="col-md-2 th-detalle" rowspan="2">Última modificación</th>
+                    <th class="col-md-1 th-detalle" rowspan="2" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
+                </tr>
+                <tr>
+                    <th class="th-detalle">Ingresos</th>
+                    <th class="th-detalle">Gastos</th>
+                    <th class="th-detalle">Unificado</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
@@ -103,8 +129,8 @@
                     <td class="td-detalle">
                         {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                     </td>
-                    <td class="td-detalle">
-                        <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-pencil"></button>
+                    <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                        <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
                     </td>
                 </tr>
                 <ng-template #elseBlock>
@@ -133,13 +159,15 @@
                         <td class="td-detalle">
                             {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                         </td>
-                        <td class="td-detalle">
+                        <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
                             <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
+                            <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
                         </td>
                     </tr>
                 </ng-template>
             </ng-template>
         </p-table>
-       
-    </div>
+        <p-footer [minHeight]="'auto'">
+            <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
+        </p-footer>
 </p-dialog>
