@@ -497,8 +497,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.cambiosGuardados = true;
 
                         if(mostrarPreview){
-                            this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
-                            this.mostrarPreview = true;
+                            if(result.Pdf){
+                                this.pdfPreview = "data:application/pdf;base64," + result.Pdf;
+                                this.mostrarPreview = true;
+                            } else {
+                                this.messageService.add({severity:'error', detail:'Hubo un error al generar el preview. Por favor contacte con el administrador de sistemas.'});
+                            }
                         }
                     }
                 },
