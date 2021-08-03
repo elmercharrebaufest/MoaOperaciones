@@ -228,15 +228,13 @@ export class ReporteContratoComponent extends ReporteBaseComponent implements On
                                 Id: x.Id,
                                 ObservacionTercero: x.ObservacionTercero,
                                 Acuerdo: x.Acuerdo,
-                                Contrato: x.ContratoSAP
+                                Contrato: x.ContratoSAP,
+                                Dias_Pesificado: x.Dias_Pesificado,
+                                ImporteFinanciero: x.ImporteFinanciero,
                             };
                             return item;
                         });
-                        for (var i = 0; i < this.data.length; i++) {
-                            if (this.data[i].PagoDiferidoTercero == "Si") {
-                                this.data[i].PagoDiferidoTercero = this.obtenerPagoDiferido(this.data[i].ObservacionTercero);
-                            }
-                        }
+                        
                         console.log(this.data);
                     },
                     error => {
