@@ -25,7 +25,7 @@ export class GestionCM05Service extends BaseService {
         payload.append('detalleJson', detalleJson);
 
         return this.http
-            .post('/api/GestionImpuestos/Editar', payload, this.headers).map(this.extractData);
+            .post('/api/GestionImpuestos/EditarIngresosBrutosCoeficienteUnificadoDetalle', payload, this.headers).map(this.extractData);
     }
 
     public autorizarCabecera(idCabecera): Observable<any> {
@@ -33,12 +33,4 @@ export class GestionCM05Service extends BaseService {
             .get('/api/GestionImpuestos/AutorizarCabecera?idCabecera=' + idCabecera, { headers: this.headers })
             .pipe(map(this.extractData));
     }
-
-    //public recordarComentario(consultaId: any): Observable<any> {
-    //    let params: URLSearchParams = new URLSearchParams();
-    //    params.set('consultaId', consultaId.toString());
-    //    return this.http
-    //        .get(`/api/Consulta/RecordarComentario`, { search: params, headers: this.headers }).pipe(
-    //            map(this.extractData));
-    //}
 }
