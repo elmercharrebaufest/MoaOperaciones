@@ -127,6 +127,7 @@ export class GestionCM05Component extends ListBaseComponent {
     }
 
     guardarRow(rowData){
+        this.messageService.clear();
         try {
             if(this.validarRow(rowData)){
                 return
@@ -137,10 +138,13 @@ export class GestionCM05Component extends ListBaseComponent {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo editar', detail: result.error });
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
+                        this.messageService.add({ severity: 'info', summary: 'No se pudo editar', detail: result.info });
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        this.messageService.add({ severity: 'success', summary: 'Detalle actualizado', detail: result.Mensaje });
                         this.floatMsgService.setSuccessMsg(result.Mensaje);
                         rowData.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(result.FechaUltimaModificacion));
                         rowData.Editar = false;

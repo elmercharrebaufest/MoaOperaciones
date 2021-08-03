@@ -57,118 +57,118 @@
     </section>
 </div>
 
-<p-toast></p-toast>
-<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true"showEffect="fade" [modal]="true" [width]="900" appendTo="body">
-        <p-header>
-            <div class="col-md-3">
-                <label class="headerDetalle">
-                    CUIT:
-                </label>
-                <label>
-                    {{selectedCabecera.CUIT}}
-                </label>
-            </div>
-            <div class="col-md-3">
-                <label class="headerDetalle">
-                    Anticipo:
-                </label>
-                <label>
-                    {{selectedCabecera.Anticipo}}
-                </label>
-            </div>
-            <div class="col-md-3">
-                <label class="headerDetalle">
-                    Sede:
-                </label>
-                <label>
-                    {{selectedCabecera.Sede}}
-                </label>
-            </div>
-        </p-header>
-        <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="flex" [frozenColumns]="frozenCols" frozenWidth="min-width">
-            <ng-template pTemplate="header" let-columns>
+<p-dialog *ngIf="selectedCabecera" [(visible)]="displayDialog" [maximizable]="true" [responsive]="true" showEffect="fade" [modal]="true" [width]="900" appendTo="body">
+    <p-header>
+        <div class="col-md-3">
+            <label class="headerDetalle">
+                CUIT:
+            </label>
+            <label>
+                {{selectedCabecera.CUIT}}
+            </label>
+        </div>
+        <div class="col-md-3">
+            <label class="headerDetalle">
+                Anticipo:
+            </label>
+            <label>
+                {{selectedCabecera.Anticipo}}
+            </label>
+        </div>
+        <div class="col-md-3">
+            <label class="headerDetalle">
+                Sede:
+            </label>
+            <label>
+                {{selectedCabecera.Sede}}
+            </label>
+        </div>
+    </p-header>
+    <p-table [columns]="detalleCols" [value]="detalles" dataKey="Id" editMode="row" [scrollable]="true" scrollHeight="flex" [frozenColumns]="frozenCols" frozenWidth="min-width">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th class="col-md-3 th-detalle" rowspan="2" colspan="2">Jurisdicción</th>
+                <!--<th class="th-detalle" rowspan="2">Nro. Jurisdicción</th>-->
+                <th class="col-md-1 th-detalle" rowspan="2">Fecha Inicio</th>
+                <th class="col-md-1 th-detalle" rowspan="2">Fecha Cese</th>
+                <th class="col-md-4 th-detalle" colspan="3">Coeficientes</th>
+                <!--<th class="th-detalle" rowspan="2">Coef. Gastos</th>
+                <th class="th-detalle" rowspan="2">Coef. Unificado</th>-->
+                <th class="col-md-2 th-detalle" rowspan="2">Última modificación</th>
+                <th class="col-md-1 th-detalle" rowspan="2" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
+            </tr>
+            <tr>
+                <th class="th-detalle">Ingresos</th>
+                <th class="th-detalle">Gastos</th>
+                <th class="th-detalle">Unificado</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
+            <tr *ngIf="!rowData.Editar; else elseBlock">
+                <td class="td-detalle">
+                    {{rowData.Jurisdiccion}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.NumeroJurisdiccion}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.FechaCese | date:'dd/MM/yyyy'}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.CoeficienteIngresos}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.CoeficienteGastos}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.CoeficienteUnificado}}
+                </td>
+                <td class="td-detalle">
+                    {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
+                </td>
+                <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
+                    <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
+                </td>
+            </tr>
+            <ng-template #elseBlock>
                 <tr>
-                    <th class="col-md-3 th-detalle" rowspan="2" colspan="2">Jurisdicción</th>
-                    <!--<th class="th-detalle" rowspan="2">Nro. Jurisdicción</th>-->
-                    <th class="col-md-1 th-detalle" rowspan="2">Fecha Inicio</th>
-                    <th class="col-md-1 th-detalle" rowspan="2">Fecha Cese</th>
-                    <th class="col-md-4 th-detalle" colspan="3">Coeficientes</th>
-                    <!--<th class="th-detalle" rowspan="2">Coef. Gastos</th>
-                    <th class="th-detalle" rowspan="2">Coef. Unificado</th>-->
-                    <th class="col-md-2 th-detalle" rowspan="2">Última modificación</th>
-                    <th class="col-md-1 th-detalle" rowspan="2" *ngIf="selectedCabecera.Estado=='Pendiente'"></th>
-                </tr>
-                <tr>
-                    <th class="th-detalle">Ingresos</th>
-                    <th class="th-detalle">Gastos</th>
-                    <th class="th-detalle">Unificado</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex" let-columns="columns">
-                <tr *ngIf="!rowData.Editar; else elseBlock">
                     <td class="td-detalle">
-                        {{rowData.Jurisdiccion}}
+                        <input type="text" [(ngModel)]="rowData.Jurisdiccion" name="rowData.Jurisdiccion" required>
                     </td>
                     <td class="td-detalle">
-                        {{rowData.NumeroJurisdiccion}}
+                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.NumeroJurisdiccion" name="rowData.NumeroJurisdiccion" required>
                     </td>
                     <td class="td-detalle">
-                        {{rowData.FechaInicio | date:'dd/MM/yyyy'}}
+                        <p-calendar [(ngModel)]="rowData.FechaInicio" name="rowData.FechaInicio" dateFormat="dd/mm/yy"></p-calendar>
                     </td>
                     <td class="td-detalle">
-                        {{rowData.FechaCese | date:'dd/MM/yyyy'}}
+                        <p-calendar [(ngModel)]="rowData.FechaCese" name="rowData.FechaCese" dateFormat="dd/mm/yy"></p-calendar>
                     </td>
                     <td class="td-detalle">
-                        {{rowData.CoeficienteIngresos}}
+                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteIngresos" name="rowData.CoeficienteIngresos" required>
                     </td>
                     <td class="td-detalle">
-                        {{rowData.CoeficienteGastos}}
+                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteGastos" name="rowData.CoeficienteGastos" required>
                     </td>
                     <td class="td-detalle">
-                        {{rowData.CoeficienteUnificado}}
+                        <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteUnificado" name="rowData.CoeficienteUnificado" required>
                     </td>
                     <td class="td-detalle">
                         {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
                     </td>
                     <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
-                        <button pButton type="button" (click)="editarRow(rowData)" class="p-button-secondary" style="background-color: #075088;" icon="fa fa-edit"></button>
+                        <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
+                        <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
                     </td>
                 </tr>
-                <ng-template #elseBlock>
-                    <tr>
-                        <td class="td-detalle">
-                            <input type="text" [(ngModel)]="rowData.Jurisdiccion" name="rowData.Jurisdiccion" required>
-                        </td>
-                        <td class="td-detalle">
-                            <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.NumeroJurisdiccion" name="rowData.NumeroJurisdiccion" required>
-                        </td>
-                        <td class="td-detalle">
-                            <p-calendar [(ngModel)]="rowData.FechaInicio" name="rowData.FechaInicio" dateFormat="dd/mm/yy"></p-calendar>
-                        </td>
-                        <td class="td-detalle">
-                            <p-calendar [(ngModel)]="rowData.FechaCese" name="rowData.FechaCese" dateFormat="dd/mm/yy"></p-calendar>
-                        </td>
-                        <td class="td-detalle">
-                            <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteIngresos" name="rowData.CoeficienteIngresos" required>
-                        </td>
-                        <td class="td-detalle">
-                            <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteGastos" name="rowData.CoeficienteGastos" required>
-                        </td>
-                        <td class="td-detalle">
-                            <input type="text" pattern="[0-9]+" [(ngModel)]="rowData.CoeficienteUnificado" name="rowData.CoeficienteUnificado" required>
-                        </td>
-                        <td class="td-detalle">
-                            {{rowData.FechaUltimaModificacion | date:'dd/MM/yyyy HH:mm'}}
-                        </td>
-                        <td class="td-detalle" style="text-align:center" *ngIf="selectedCabecera.Estado=='Pendiente'">
-                            <button pButton type="button" (click)="guardarRow(rowData)" class="p-button-secondary" style="background-color: #067935;" icon="fa fa-check"></button>
-                            <button pButton type="button" (click)="cancelarGuardarRow(rowData)" class="p-button-secondary" style="background-color: #ff4343;" icon="fa fa-times"></button>
-                        </td>
-                    </tr>
-                </ng-template>
             </ng-template>
-        </p-table>
-        <p-footer [minHeight]="'auto'">
-            <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
-        </p-footer>
+        </ng-template>
+    </p-table>
+    <p-footer [minHeight]="'auto'">
+        <button pButton label="Autorizar" (click)="autorizarCabecera()" [disabled]="selectedCabecera.Estado!='Pendiente'" type="button" icon="fa fa-check-circle" iconPos="right" style="float: right"></button>
+    </p-footer>
+<p-toast></p-toast>
 </p-dialog>
