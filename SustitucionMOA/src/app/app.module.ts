@@ -145,7 +145,7 @@ import { InputTextModule } from 'primeng/inputtext';
     TicketPesadaService,
     ConsultaService,
     ConfirmationService,
-    ApikeyService
+    ApikeyService,
     GestionCM05Service
   ],
   bootstrap: [AppComponent],
